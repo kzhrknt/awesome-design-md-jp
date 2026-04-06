@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>従業員管理 — note style</title>
+  <style>
+    /* === Reset & Base === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-size: 16px;
+    }
+
+    body {
+      font-family: "Helvetica Neue", "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+        Arial, "Noto Sans JP", Meiryo, sans-serif;
+      color: #08131a;                        /* Gray 900 — ほぼ黒 */
+      background: #fff;                      /* Background Primary */
+      line-height: 1.5;                      /* body グローバル: 24px (16px × 1.5) */
+      letter-spacing: normal;                /* 実測: 本文は normal。0.04em ではない */
+      word-wrap: break-word;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-kerning: auto;
+    }
+
+    a { color: #08131a; text-decoration: underline; }
+    a:hover { opacity: 0.7; }
+
+    /* === Layout === */
+    .app { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 240px;
+      background: #fff;                      /* Surface Normal */
+      border-right: 1px solid rgba(8,19,26,0.14); /* Border Default */
+      padding: 24px 0;
+      flex-shrink: 0;
+    }
+    .sidebar-logo {
+      padding: 0 24px 24px;
+      font-size: 1.25rem;                   /* font-size-xl (20px) */
+      font-weight: 700;
+      line-height: 1.5;
+      color: #08131a;
+      letter-spacing: 0.04em;               /* 見出し用 */
+      font-feature-settings: "palt";         /* 見出し用 palt */
+    }
+    .sidebar-logo span { color: #5ac8b8; }  /* note Green — ロゴ用 */
+
+    .sidebar-nav { list-style: none; }
+    .sidebar-nav li a {
+      display: block;
+      padding: 10px 24px;
+      font-size: 0.875rem;                  /* font-size-sm (14px) */
+      color: rgba(8,19,26,0.66);            /* Text Secondary */
+      letter-spacing: normal;                /* UI要素は normal */
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .sidebar-nav li a:hover {
+      background: #f5f8fa;                   /* Background Secondary */
+    }
+    .sidebar-nav li a.active {
+      color: #08131a;                        /* Text Primary */
+      background: #f5f8fa;                   /* Surface Quaternary */
+      font-weight: 600;                      /* 実測: トップの active は 600 */
+    }
+
+    .main {
+      flex: 1;
+      padding: 32px;
+      max-width: 940px;                      /* --size-content: 940px */
+    }
+
+    /* === Header === */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .page-title {
+      font-size: 1.75rem;                   /* font-size-2xl (28px) */
+      font-weight: 700;                      /* 記事ページの見出しは 700 */
+      line-height: 1.286;                    /* 実測: 36px / 28px = 1.286 */
+      letter-spacing: 0.04em;               /* 実測: 見出し専用 */
+      font-feature-settings: "palt";         /* 実測: 見出し専用 */
+    }
+
+    /* === Buttons === */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 20px;
+      font-size: 1rem;                       /* 16px */
+      font-weight: 600;                      /* 実測: トップのボタンは 600 */
+      font-family: inherit;
+      line-height: 1;                        /* 実測: ボタンの line-height は 16px/16px */
+      letter-spacing: normal;
+      border: none;
+      border-radius: 8px;                   /* 実測: a-button は border-radius: 8px */
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.7; }
+
+    .btn-primary   { background: #08131a; color: #fff; }           /* Custom Accent */
+    .btn-secondary { background: transparent; color: #08131a; border: 1px solid rgba(8,19,26,0.22); } /* Border Strong */
+    .btn-danger    { background: #b22323; color: #fff; }           /* Danger surface（実測値） */
+
+    /* === Search / Filter Bar === */
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .input {
+      padding: 8px 12px;
+      font-size: 0.875rem;                   /* 実測: input は 14px */
+      font-family: inherit;
+      color: #08131a;
+      background: #fff;
+      border: 1px solid rgba(8,19,26,0.14); /* Border Default */
+      border-radius: 8px;                   /* 実測: 8px */
+      outline: none;
+      line-height: 1.5;                      /* 実測: 21px / 14px = 1.5 */
+      letter-spacing: normal;
+      transition: border-color 0.15s;
+    }
+    .input:focus { border: 2px solid #292d9e; padding: 7px 11px; } /* Border Focus（実測: darkblue-600） */
+    .input-search { width: 280px; }
+    .input::placeholder { color: #888; }     /* Text Placeholder */
+
+    /* === Stats === */
+    .stats {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #fff;                      /* Surface Normal */
+      border: 1px solid rgba(8,19,26,0.14); /* Border Default */
+      border-radius: 12px;
+      padding: 16px 24px;
+      min-width: 160px;
+      box-shadow: 0px 1px 3px 1px rgba(0,0,0,0.14), 0px 1px 2px 0px rgba(0,0,0,0.22); /* --elevation-1 */
+    }
+    .stat-label {
+      font-size: 0.75rem;                   /* font-size-xs (12px) */
+      color: rgba(8,19,26,0.66);            /* Text Secondary */
+      margin-bottom: 4px;
+      letter-spacing: normal;
+    }
+    .stat-value {
+      font-size: 1.75rem;                   /* font-size-2xl (28px) */
+      font-weight: 700;
+      color: #08131a;
+      font-family: "Open Sans", sans-serif;  /* --family-number: 数字専用フォント */
+      letter-spacing: normal;
+    }
+
+    /* === Table === */
+    .table-wrapper {
+      background: #fff;
+      border: 1px solid rgba(8,19,26,0.14);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0px 1px 3px 1px rgba(0,0,0,0.14), 0px 1px 2px 0px rgba(0,0,0,0.22); /* --elevation-1 */
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead { background: #f5f8fa; }           /* Background Secondary / Gray 50 */
+    th {
+      text-align: left;
+      padding: 10px 16px;
+      font-size: 0.875rem;                  /* font-size-sm (14px) */
+      font-weight: 600;                      /* 実測: トップの見出しは 600 */
+      color: #5a656b;                        /* Gray 600 / Surface Tertiary */
+      border-bottom: 1px solid rgba(8,19,26,0.14);
+      letter-spacing: normal;
+    }
+    td {
+      padding: 12px 16px;
+      font-size: 1rem;                       /* font-size-base (16px) */
+      border-bottom: 1px solid rgba(8,19,26,0.14);
+      letter-spacing: normal;                /* 本文は normal */
+    }
+    tr:nth-child(even) { background: #f5f8fa; }                    /* Gray 50 */
+    tr:last-child td { border-bottom: none; }
+    tr:hover { background: rgba(8,19,26,0.03); }                   /* --color-reactionOverlay */
+
+    /* === Badge === */
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      font-size: 0.75rem;                   /* font-size-xs (12px) */
+      font-weight: 600;                      /* 実測に合わせて 600 */
+      border-radius: 99px;                  /* ピル型バッジ */
+      line-height: 1.5;
+      letter-spacing: normal;
+    }
+    .badge-active  { background: rgba(30,123,101,0.12); color: #1e7b65; }  /* Success（実測値） */
+    .badge-warning { background: rgba(145,102,38,0.12); color: #916626; }  /* Caution（実測値） */
+    .badge-danger  { background: rgba(178,35,35,0.12);  color: #b22323; }  /* Danger（実測値） */
+
+    /* === Responsive — 実測ブレイクポイント === */
+    @media (max-width: 941px) {              /* --size-breakpoint-lg */
+      .stats { flex-wrap: wrap; }
+    }
+    @media (max-width: 769px) {              /* --size-breakpoint-md */
+      .sidebar { width: 200px; }
+    }
+    @media (max-width: 481px) {              /* --size-breakpoint-sm */
+      .app { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid rgba(8,19,26,0.14);
+        padding: 16px 0;
+      }
+      .sidebar-logo { padding: 0 16px 16px; }
+      .sidebar-nav { display: flex; overflow-x: auto; }
+      .sidebar-nav li a { white-space: nowrap; padding: 8px 16px; }
+      .main { padding: 16px; }
+      .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .toolbar { flex-direction: column; }
+      .input-search { width: 100%; }
+      .table-wrapper { overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo"><span>●</span> note</div>
+      <ul class="sidebar-nav">
+        <li><a href="#">ダッシュボード</a></li>
+        <li><a href="#" class="active">従業員管理</a></li>
+        <li><a href="#">届出・申請</a></li>
+        <li><a href="#">給与明細</a></li>
+        <li><a href="#">年末調整</a></li>
+        <li><a href="#">設定</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="page-header">
+        <h1 class="page-title">従業員管理</h1>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-secondary">CSVダウンロード</button>
+          <button class="btn btn-primary">＋ 従業員を追加</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-label">全従業員</div>
+          <div class="stat-value">128</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">在籍中</div>
+          <div class="stat-value">120</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">休職中</div>
+          <div class="stat-value">5</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">退職済</div>
+          <div class="stat-value">3</div>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <input type="text" class="input input-search" placeholder="氏名・社員番号で検索">
+        <select class="input">
+          <option>すべての部署</option>
+          <option>開発部</option>
+          <option>営業部</option>
+          <option>人事部</option>
+          <option>経理部</option>
+        </select>
+        <select class="input">
+          <option>すべてのステータス</option>
+          <option>在籍中</option>
+          <option>休職中</option>
+          <option>退職済</option>
+        </select>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>社員番号</th>
+              <th>氏名</th>
+              <th>部署</th>
+              <th>役職</th>
+              <th>入社日</th>
+              <th>ステータス</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>EMP-001</td>
+              <td><a href="#">田中 太郎</a></td>
+              <td>開発部</td>
+              <td>エンジニアリングマネージャー</td>
+              <td>2019-04-01</td>
+              <td><span class="badge badge-active">在籍中</span></td>
+            </tr>
+            <tr>
+              <td>EMP-002</td>
+              <td><a href="#">佐藤 花子</a></td>
+              <td>営業部</td>
+              <td>セールスリーダー</td>
+              <td>2020-07-15</td>
+              <td><span class="badge badge-active">在籍中</span></td>
+            </tr>
+            <tr>
+              <td>EMP-003</td>
+              <td><a href="#">鈴木 一郎</a></td>
+              <td>人事部</td>
+              <td>HRスペシャリスト</td>
+              <td>2021-01-10</td>
+              <td><span class="badge badge-active">在籍中</span></td>
+            </tr>
+            <tr>
+              <td>EMP-004</td>
+              <td><a href="#">山田 美咲</a></td>
+              <td>開発部</td>
+              <td>フロントエンドエンジニア</td>
+              <td>2022-04-01</td>
+              <td><span class="badge badge-warning">休職中</span></td>
+            </tr>
+            <tr>
+              <td>EMP-005</td>
+              <td><a href="#">高橋 健太</a></td>
+              <td>経理部</td>
+              <td>経理担当</td>
+              <td>2018-10-01</td>
+              <td><span class="badge badge-active">在籍中</span></td>
+            </tr>
+            <tr>
+              <td>EMP-006</td>
+              <td><a href="#">伊藤 直樹</a></td>
+              <td>営業部</td>
+              <td>アカウントエグゼクティブ</td>
+              <td>2020-03-16</td>
+              <td><span class="badge badge-danger">退職済</span></td>
+            </tr>
+            <tr>
+              <td>EMP-007</td>
+              <td><a href="#">渡辺 さくら</a></td>
+              <td>開発部</td>
+              <td>バックエンドエンジニア</td>
+              <td>2023-04-01</td>
+              <td><span class="badge badge-active">在籍中</span></td>
+            </tr>
+            <tr>
+              <td>EMP-008</td>
+              <td><a href="#">中村 大輔</a></td>
+              <td>人事部</td>
+              <td>採用担当</td>
+              <td>2021-09-01</td>
+              <td><span class="badge badge-active">在籍中</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

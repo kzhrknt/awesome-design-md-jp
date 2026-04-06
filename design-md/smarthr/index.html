@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>従業員管理 — SmartHR</title>
+  <style>
+    /* === 3.1 AdjustedYuGothic @font-face === */
+    @font-face {
+      font-family: AdjustedYuGothic;
+      font-weight: 400;
+      src: local("Yu Gothic Medium");
+    }
+    @font-face {
+      font-family: AdjustedYuGothic;
+      font-weight: 700;
+      src: local("Yu Gothic Bold");
+    }
+
+    /* === Reset & Base === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-size: 16px; /* Base M token */
+    }
+
+    body {
+      font-family: AdjustedYuGothic, "Yu Gothic", YuGothic, "Hiragino Sans", sans-serif;
+      color: #23221e;          /* Text Black */
+      background: #f8f7f6;     /* Stone 01 — COLUMN */
+      line-height: 1.5;        /* NORMAL leading */
+      overflow-wrap: break-word;
+    }
+
+    a { color: #0071c1; text-decoration: none; }   /* Text Link */
+    a:hover { text-decoration: underline; }
+
+    /* === Layout === */
+    .app { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 240px;
+      background: #ffffff;
+      border-right: 1px solid #d6d3d0;
+      padding: 24px 0;
+      flex-shrink: 0;
+    }
+    .sidebar-logo {
+      padding: 0 24px 24px;
+      font-size: 1.2rem;       /* L token */
+      font-weight: 700;
+      line-height: 1.25;       /* TIGHT */
+      color: #23221e;
+    }
+    .sidebar-logo span { color: #00c4cc; } /* Brand Blue — ロゴ用途のみ */
+
+    .sidebar-nav { list-style: none; }
+    .sidebar-nav li a {
+      display: block;
+      padding: 10px 24px;
+      font-size: 0.857rem;     /* S token */
+      color: #706d65;          /* Text Grey */
+      transition: background 0.15s;
+    }
+    .sidebar-nav li a:hover {
+      background: #f8f7f6;
+      text-decoration: none;
+    }
+    .sidebar-nav li a.active {
+      color: #0077c7;          /* Product Main */
+      background: #f2f1f0;     /* Over Background */
+      font-weight: 700;
+    }
+
+    .main {
+      flex: 1;
+      padding: 32px;           /* XL spacing */
+    }
+
+    /* === Header === */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;     /* L spacing */
+    }
+    .page-title {
+      font-size: 1.5rem;       /* XL token — Heading 1 */
+      font-weight: 700;
+      line-height: 1.25;       /* TIGHT */
+    }
+
+    /* === Buttons === */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      font-size: 1rem;         /* M token */
+      font-weight: 700;
+      font-family: inherit;
+      line-height: 1.5;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+
+    .btn-primary   { background: #0077c7; color: #ffffff; }
+    .btn-secondary { background: transparent; color: #0077c7; border: 1px solid #0077c7; }
+    .btn-danger    { background: #e01e5a; color: #ffffff; }
+
+    /* === Search / Filter Bar === */
+    .toolbar {
+      display: flex;
+      gap: 8px;                /* S spacing */
+      margin-bottom: 16px;     /* M spacing */
+    }
+    .input {
+      padding: 8px 12px;
+      font-size: 1rem;
+      font-family: inherit;
+      color: #23221e;
+      background: #ffffff;
+      border: 1px solid #d6d3d0;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .input:focus { border: 2px solid #0077c7; padding: 7px 11px; }
+    .input-search { width: 280px; }
+
+    /* === Stats === */
+    .stats {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #ffffff;
+      border: 1px solid #d6d3d0;
+      border-radius: 6px;
+      padding: 16px 24px;
+      min-width: 160px;
+    }
+    .stat-label {
+      font-size: 0.75rem;      /* XS token */
+      color: #706d65;
+      margin-bottom: 4px;
+    }
+    .stat-value {
+      font-size: 1.5rem;       /* XL token */
+      font-weight: 700;
+      color: #23221e;
+    }
+
+    /* === Table === */
+    .table-wrapper {
+      background: #ffffff;
+      border: 1px solid #d6d3d0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead { background: #edebe8; }  /* HEAD token */
+    th {
+      text-align: left;
+      padding: 10px 16px;
+      font-size: 0.857rem;     /* S token */
+      font-weight: 700;
+      color: #4e4c49;          /* Stone 04 */
+      border-bottom: 1px solid #d6d3d0;
+    }
+    td {
+      padding: 12px 16px;
+      font-size: 1rem;
+      border-bottom: 1px solid #d6d3d0;
+    }
+    tr:nth-child(even) { background: #f8f7f6; } /* COLUMN token — alternate row */
+    tr:last-child td { border-bottom: none; }
+    tr:hover { background: #f2f1f0; }           /* Over Background */
+
+    /* === Badge === */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 0.667rem;     /* XXS token */
+      font-weight: 700;
+      border-radius: 4px;
+      line-height: 1.5;
+    }
+    .badge-active  { background: #e6f7f8; color: #05878c; }
+    .badge-warning { background: #fff8e0; color: #9a7b00; }
+    .badge-danger  { background: #fce4eb; color: #e01e5a; }
+
+    /* === Responsive === */
+    @media (max-width: 959px) {
+      .sidebar { width: 200px; }
+      .stats { flex-wrap: wrap; }
+    }
+    @media (max-width: 599px) {
+      .app { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #d6d3d0;
+        padding: 16px 0;
+      }
+      .sidebar-logo { padding: 0 16px 16px; }
+      .sidebar-nav { display: flex; overflow-x: auto; }
+      .sidebar-nav li a { white-space: nowrap; padding: 8px 16px; }
+      .main { padding: 16px; }
+      .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .toolbar { flex-direction: column; }
+      .input-search { width: 100%; }
+      .table-wrapper { overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo"><span>■</span> SmartHR</div>
+      <ul class="sidebar-nav">
+        <li><a href="#">ダッシュボード</a></li>
+        <li><a href="#" class="active">従業員管理</a></li>
+        <li><a href="#">届出・申請</a></li>
+        <li><a href="#">給与明細</a></li>
+        <li><a href="#">年末調整</a></li>
+        <li><a href="#">設定</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="page-header">
+        <h1 class="page-title">従業員管理</h1>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-secondary">CSVダウンロード</button>
+          <button class="btn btn-primary">＋ 従業員を追加</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-label">全従業員</div>
+          <div class="stat-value">128</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">在籍中</div>
+          <div class="stat-value">120</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">休職中</div>
+          <div class="stat-value">5</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">退職済</div>
+          <div class="stat-value">3</div>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <input type="text" class="input input-search" placeholder="氏名・社員番号で検索">
+        <select class="input">
+          <option>すべての部署</option>
+          <option>開発部</option>
+          <option>営業部</option>
+          <option>人事部</option>
+          <option>経理部</option>
+        </select>
+        <select class="input">
+          <option>すべてのステータス</option>
+          <option>在籍中</option>
+          <option>休職中</option>
+          <option>退職済</option>
+        </select>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>社員番号</th>
+              <th>氏名</th>
+              <th>部署</th>
+              <th>役職</th>
+              <th>入社日</th>
+              <th>ステータス</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>EMP-001</td>
+              <td><a href="#">田中 太郎</a></td>
+              <td>開発部</td>
+              <td>エンジニアリングマネージャー</td>
+              <td>2019-04-01</td>
+              <td><span class="badge badge-active">在籍中</span></td>
+            </tr>
+            <tr>
+              <td>EMP-002</td>
+              <td><a href="#">佐藤 花子</a></td>
+              <td>営業部</td>
+              <td>セールスリーダー</td>
+              <td>2020-07-15</td>
+              <td><span class="badge badge-active">在籍中</span></td>
+            </tr>
+            <tr>
+              <td>EMP-003</td>
+              <td><a href="#">鈴木 一郎</a></td>
+              <td>人事部</td>
+              <td>HRスペシャリスト</td>
+              <td>2021-01-10</td>
+              <td><span class="badge badge-active">在籍中</span></td>
+            </tr>
+            <tr>
+              <td>EMP-004</td>
+              <td><a href="#">山田 美咲</a></td>
+              <td>開発部</td>
+              <td>フロントエンドエンジニア</td>
+              <td>2022-04-01</td>
+              <td><span class="badge badge-warning">休職中</span></td>
+            </tr>
+            <tr>
+              <td>EMP-005</td>
+              <td><a href="#">高橋 健太</a></td>
+              <td>経理部</td>
+              <td>経理担当</td>
+              <td>2018-10-01</td>
+              <td><span class="badge badge-active">在籍中</span></td>
+            </tr>
+            <tr>
+              <td>EMP-006</td>
+              <td><a href="#">伊藤 直樹</a></td>
+              <td>営業部</td>
+              <td>アカウントエグゼクティブ</td>
+              <td>2020-03-16</td>
+              <td><span class="badge badge-danger">退職済</span></td>
+            </tr>
+            <tr>
+              <td>EMP-007</td>
+              <td><a href="#">渡辺 さくら</a></td>
+              <td>開発部</td>
+              <td>バックエンドエンジニア</td>
+              <td>2023-04-01</td>
+              <td><span class="badge badge-active">在籍中</span></td>
+            </tr>
+            <tr>
+              <td>EMP-008</td>
+              <td><a href="#">中村 大輔</a></td>
+              <td>人事部</td>
+              <td>採用担当</td>
+              <td>2021-09-01</td>
+              <td><span class="badge badge-active">在籍中</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
