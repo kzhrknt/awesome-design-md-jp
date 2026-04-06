@@ -51,8 +51,8 @@
 
 3書体を用途で使い分け：
 
-- **gazzetta-variable**: セリフ系の Variable Font。巨大な Display 見出し用（最大 486px）。weight 400〜700
-- **neue-haas-grotesk-display**: サンセリフ。中サイズの見出し・ラベル用。weight 500〜700
+- **gazzetta-variable**: セリフ系の Variable Font。巨大な Display 見出し用（最大 486px）。weight 400〜700。Adobe Fonts でホストされており、novasell.com ドメインにライセンスされている。preview.html では Playfair Display で代替
+- **neue-haas-grotesk-display**: Neue Haas Grotesk（Helvetica の前身）。サンセリフ。中サイズの見出し・ラベル用。weight 500〜700。同じく Adobe Fonts。preview.html では Helvetica Neue で代替
 - **Zen Kaku Gothic New 内蔵の欧文グリフ**: 本文中の英数字
 
 ### 3.3 font-family 指定
