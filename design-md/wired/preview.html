@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: WIRED.jp (Light)</title>
+<style>
+  :root {
+    /* === Colors: DESIGN.md 実測値 === */
+    --black: #000;
+    --white: #fff;
+    --near-black: #1a1a1a;
+    --dark-gray: #333;
+    --medium-gray: #757575;
+    --light-gray: #999;
+    --very-light-gray: #e5e5e5;
+    --bg: #fff;
+    --header-bg: #000;
+    --cta-bg: #000;
+    --overlay-primary: #2b2e35;
+    --overlay-bg: #f7fafc;
+    --overlay-font: #4a5568;
+
+    /* === Fonts 実測値 === */
+    --font-body: HelveticaNeue, "Helvetica Neue", Helvetica, Arial,
+      游ゴシック体, YuGothic, "游ゴシック Medium", "Yu Gothic Medium",
+      游ゴシック, "Yu Gothic", "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN",
+      "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "MS ゴシック", "MS Gothic",
+      sans-serif;
+    --font-mono: WiredMono, helvetica, sans-serif;
+    --font-mono-fallback: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    --font-ui: Inter, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--near-black);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.75;
+    letter-spacing: normal;
+    word-wrap: break-word;
+    font-feature-settings: "palt";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV — WIRED black header */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 56px;
+    background: var(--header-bg);
+  }
+  .nav-brand {
+    font-family: var(--font-mono-fallback);
+    font-size: 20px; font-weight: 700; color: var(--white);
+    text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a {
+    font-family: var(--font-mono-fallback);
+    font-size: 11px; font-weight: 400; color: var(--very-light-gray);
+    text-decoration: none; letter-spacing: 0.083em; text-transform: uppercase;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-menu {
+    font-family: var(--font-body);
+    font-size: 12px; font-weight: 700; color: var(--white);
+    background: transparent; border: none; cursor: pointer;
+    line-height: 1.333;
+  }
+
+  /* HERO */
+  .hero { padding: 80px 32px 64px; text-align: center; background: var(--bg); }
+  .hero h1 {
+    font-size: 32px; font-weight: 700; line-height: 1.625;
+    letter-spacing: normal; font-feature-settings: "palt";
+    color: var(--black); margin-bottom: 16px;
+  }
+  .hero p {
+    font-size: 16px; font-weight: 400; line-height: 1.75;
+    color: var(--dark-gray); max-width: 620px; margin: 0 auto 32px;
+  }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  /* BUTTONS */
+  .btn-primary {
+    display: inline-block; background: var(--cta-bg); color: var(--white);
+    padding: 10px 28px; border-radius: 0; border: none;
+    font-family: var(--font-body); font-size: 12px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+    line-height: 1.333;
+  }
+  .btn-primary:hover { opacity: 0.7; }
+  .btn-outline {
+    display: inline-block; background: transparent; color: var(--black);
+    padding: 10px 28px; border-radius: 0;
+    border: 1px solid var(--black);
+    font-family: var(--font-body); font-size: 12px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+    line-height: 1.333;
+  }
+  .btn-outline:hover { background: rgba(0,0,0,0.05); }
+  .btn-rounded {
+    display: inline-block; background: var(--cta-bg); color: var(--white);
+    padding: 10px 28px; border-radius: 8px; border: none;
+    font-family: var(--font-body); font-size: 12px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+    line-height: 1.333;
+  }
+  .btn-rounded:hover { opacity: 0.7; }
+  .btn-consent {
+    display: inline-block; background: var(--overlay-primary); color: var(--white);
+    padding: 8px 20px; border-radius: 6px; border: none;
+    font-family: var(--font-ui); font-size: 14px; font-weight: 600;
+    text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-consent:hover { opacity: 0.7; }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 940px; margin: 0 auto; }
+  .section-label {
+    font-family: var(--font-mono-fallback);
+    font-size: 11px; font-weight: 400; color: var(--medium-gray);
+    text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.083em;
+  }
+  .section-title {
+    font-size: 28px; font-weight: 700; line-height: 1.625;
+    letter-spacing: normal; font-feature-settings: "palt";
+    color: var(--black); margin-bottom: 32px;
+  }
+  .section-divider { border: none; border-top: 1px solid var(--very-light-gray); margin: 0; }
+
+  .section-dark { background: var(--black); color: var(--white); padding: 64px 32px; }
+  .section-dark .section-inner { max-width: 940px; margin: 0 auto; }
+  .section-dark .section-label { color: var(--medium-gray); }
+  .section-dark .section-title { color: var(--white); }
+
+  .section-gray { background: #f5f5f5; padding: 64px 32px; }
+  .section-gray .section-inner { max-width: 940px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { overflow: hidden; background: #fff; }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; color: var(--black); }
+  .color-swatch-hex { font-size: 12px; color: var(--medium-gray); font-family: var(--font-mono-fallback); }
+  .color-swatch-role { font-size: 11px; color: var(--medium-gray); margin-top: 3px; }
+  .color-group-label {
+    font-family: var(--font-mono-fallback);
+    font-size: 11px; font-weight: 400; color: var(--medium-gray);
+    margin: 24px 0 10px; letter-spacing: 0.083em; text-transform: uppercase;
+  }
+
+  /* Dark color swatches */
+  .section-dark .color-swatch { background: #1a1a1a; }
+  .section-dark .color-swatch-name { color: var(--white); }
+  .section-dark .color-swatch-hex { color: var(--light-gray); }
+  .section-dark .color-swatch-role { color: var(--light-gray); }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--very-light-gray); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono-fallback); font-size: 12px; font-weight: 400; color: var(--medium-gray); margin-top: 8px; }
+  .type-context { display: inline-block; background: #f5f5f5; color: var(--medium-gray); font-size: 11px; padding: 2px 8px; margin-left: 8px; }
+
+  /* ARTICLE PREVIEW */
+  .article-preview { max-width: 620px; margin: 0 auto; }
+  .article-preview .article-category {
+    font-family: var(--font-mono-fallback);
+    font-size: 11px; font-weight: 400; letter-spacing: 0.083em;
+    text-transform: uppercase; color: var(--medium-gray); margin-bottom: 16px;
+  }
+  .article-preview h1 {
+    font-size: 32px; font-weight: 700; line-height: 1.625;
+    letter-spacing: normal; font-feature-settings: "palt";
+    color: var(--black); margin-bottom: 16px;
+  }
+  .article-preview .article-meta {
+    font-family: var(--font-mono-fallback);
+    font-size: 11px; font-weight: 400; letter-spacing: 0.083em;
+    color: var(--medium-gray); margin-bottom: 24px;
+  }
+  .article-preview h2 {
+    font-size: 18px; font-weight: 700; line-height: 1.556;
+    letter-spacing: normal; font-feature-settings: "palt";
+    color: var(--black); margin: 32px 0 12px;
+  }
+  .article-preview p {
+    font-size: 16px; font-weight: 400; line-height: 1.75;
+    letter-spacing: normal; font-feature-settings: "palt";
+    margin-bottom: 16px; color: var(--near-black);
+  }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; }
+  .card { background: var(--white); padding: 0; transition: opacity 0.15s; }
+  .card:hover { opacity: 0.8; }
+  .card-image { width: 100%; height: 180px; background: #e0e0e0; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; color: var(--medium-gray); font-size: 14px; }
+  .card-category {
+    font-family: var(--font-mono-fallback);
+    font-size: 11px; font-weight: 400; letter-spacing: 0.083em;
+    text-transform: uppercase; color: var(--medium-gray); margin-bottom: 8px;
+  }
+  .card h3 { font-size: 20px; font-weight: 700; line-height: 1.6; letter-spacing: normal; font-feature-settings: "palt"; color: var(--black); margin-bottom: 8px; }
+  .card p { font-size: 14px; color: var(--dark-gray); line-height: 1.75; }
+
+  /* Dark cards */
+  .section-dark .card { background: transparent; border-bottom: 1px solid #333; padding-bottom: 24px; }
+  .section-dark .card-image { background: #333; color: var(--light-gray); }
+  .section-dark .card-category { color: var(--light-gray); }
+  .section-dark .card h3 { color: var(--white); }
+  .section-dark .card p { color: var(--light-gray); }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 700; color: var(--black); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: var(--white); color: var(--near-black);
+    border: 1px solid var(--very-light-gray); padding: 10px 12px; border-radius: 0;
+    font-family: var(--font-body); font-size: 14px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-input--focus { border-color: var(--black); }
+  .form-input--error { border-color: #c00; }
+  .form-state-label { font-size: 11px; color: var(--medium-gray); margin-top: 4px; font-family: var(--font-mono-fallback); }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
+  .elevation-card { background: var(--white); padding: 24px; text-align: center; }
+  .elevation-label { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .elevation-desc { font-family: var(--font-mono-fallback); font-size: 11px; color: var(--medium-gray); word-break: break-all; }
+
+  /* CONTENT WIDTHS */
+  .width-bar { height: 32px; background: #f5f5f5; margin-bottom: 8px; position: relative; }
+  .width-bar-inner { height: 100%; background: var(--black); opacity: 0.1; }
+  .width-bar-label { font-size: 13px; font-weight: 700; color: var(--black); margin-bottom: 4px; }
+  .width-bar-value { font-family: var(--font-mono-fallback); font-size: 12px; color: var(--medium-gray); }
+
+  /* BUTTON ROW */
+  .button-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 400; color: var(--medium-gray); margin-top: 8px; font-family: var(--font-mono-fallback); }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; background: var(--black); font-size: 11px; color: var(--medium-gray); line-height: 1.455; }
+  .footer a { color: var(--very-light-gray); text-decoration: underline; }
+
+  @media (max-width: 769px) {
+    .hero h1 { font-size: 24px; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .section-dark { padding: 48px 20px; }
+    .section-gray { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV: WIRED black header -->
+<nav class="nav">
+  <a class="nav-brand" href="#">WIRED</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#article">Article</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#elevation">Elevation</a></li>
+    <li><a href="#layout">Layout</a></li>
+  </ul>
+  <button class="nav-menu">MENU</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Design System Preview<br>WIRED.jp</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。カラー、フォント、コンポーネント、レイアウトの全値を可視化。Puppeteer による computed style 実測値に基づく。</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">詳細はこちら</a>
+    <a class="btn-outline" href="#">DESIGN.md を読む</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS (Light) -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Primary</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000"></div><div class="color-swatch-info"><div class="color-swatch-name">Black</div><div class="color-swatch-hex">#000</div><div class="color-swatch-role">メインテキスト・ブランドカラー</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff; border:1px solid #e5e5e5"></div><div class="color-swatch-info"><div class="color-swatch-name">White</div><div class="color-swatch-hex">#fff</div><div class="color-swatch-role">背景・反転テキスト</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1a1a1a"></div><div class="color-swatch-info"><div class="color-swatch-name">Near Black</div><div class="color-swatch-hex">#1a1a1a</div><div class="color-swatch-role">記事本文テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#333"></div><div class="color-swatch-info"><div class="color-swatch-name">Dark Gray</div><div class="color-swatch-hex">#333</div><div class="color-swatch-role">説明テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#757575"></div><div class="color-swatch-info"><div class="color-swatch-name">Medium Gray</div><div class="color-swatch-hex">#757575</div><div class="color-swatch-role">メタ情報・カテゴリラベル</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#999"></div><div class="color-swatch-info"><div class="color-swatch-name">Light Gray</div><div class="color-swatch-hex">#999</div><div class="color-swatch-role">無効状態・補助テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e5e5e5"></div><div class="color-swatch-info"><div class="color-swatch-name">Very Light Gray</div><div class="color-swatch-hex">#e5e5e5</div><div class="color-swatch-role">ナビ内テキスト</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface &amp; Background</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff; border:1px solid #e5e5e5"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#fff</div><div class="color-swatch-role">ページ背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000"></div><div class="color-swatch-info"><div class="color-swatch-name">Header BG</div><div class="color-swatch-hex">#000</div><div class="color-swatch-role">ナビゲーション背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000"></div><div class="color-swatch-info"><div class="color-swatch-name">CTA BG</div><div class="color-swatch-hex">#000</div><div class="color-swatch-role">ボタン・リンク背景</div></div></div>
+  </div>
+
+  <div class="color-group-label">Consent Overlay (Fides)</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#2b2e35"></div><div class="color-swatch-info"><div class="color-swatch-name">Overlay Primary</div><div class="color-swatch-hex">#2b2e35</div><div class="color-swatch-role">同意バナー プライマリ</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f7fafc"></div><div class="color-swatch-info"><div class="color-swatch-name">Overlay BG</div><div class="color-swatch-hex">#f7fafc</div><div class="color-swatch-role">同意バナー背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#4a5568"></div><div class="color-swatch-info"><div class="color-swatch-name">Overlay Font</div><div class="color-swatch-hex">#4a5568</div><div class="color-swatch-role">同意バナーテキスト</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS (Dark section) -->
+<section class="section-dark" id="colors-dark">
+<div class="section-inner">
+  <div class="section-label">01b / Colors — Dark Context</div>
+  <h2 class="section-title">カラーパレット（黒背景）</h2>
+  <p style="font-size:14px; color:var(--light-gray); margin-bottom:32px; line-height:1.75;">WIRED のブランドの核心である黒背景でのカラー表現。ヘッダー、ヒーロー、特集セクションなどで使用。</p>
+
+  <div class="color-group-label" style="color:var(--light-gray);">On Dark</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff"></div><div class="color-swatch-info"><div class="color-swatch-name">White on Dark</div><div class="color-swatch-hex">#fff</div><div class="color-swatch-role">見出し・メニューテキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e5e5e5"></div><div class="color-swatch-info"><div class="color-swatch-name">Very Light Gray</div><div class="color-swatch-hex">#e5e5e5</div><div class="color-swatch-role">SEE MORE STORIES 等</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#757575"></div><div class="color-swatch-info"><div class="color-swatch-name">Medium Gray</div><div class="color-swatch-hex">#757575</div><div class="color-swatch-role">メタ情報</div></div></div>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-size:32px; font-weight:700; line-height:1.625; letter-spacing:normal; font-feature-settings:'palt'; color:var(--black);">記事タイトル — Article Title (h1)</div>
+    <div class="type-meta">32px / 700 / line-height: 1.625 / letter-spacing: normal / palt: あり<span class="type-context">記事ページ</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-size:32px; font-weight:700; line-height:1.625; letter-spacing:normal; font-feature-settings:'palt'; color:var(--black);">ヒーロー見出し — Hero Title (h3)</div>
+    <div class="type-meta">32px / 700 / line-height: 1.625 / letter-spacing: normal / palt: あり<span class="type-context">トップページ</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-size:20px; font-weight:700; line-height:1.6; letter-spacing:normal; font-feature-settings:'palt'; color:var(--black);">カード見出し — Card Title (h3)</div>
+    <div class="type-meta">20px / 700 / line-height: 1.6 / letter-spacing: normal / palt: あり<span class="type-context">トップページ</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-size:18px; font-weight:700; line-height:1.556; letter-spacing:normal; font-feature-settings:'palt'; color:var(--black);">セクション見出し — Section Heading (h2)</div>
+    <div class="type-meta">18px / 700 / line-height: 1.556 / letter-spacing: normal / palt: あり<span class="type-context">記事ページ</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.75; letter-spacing:normal; font-feature-settings:'palt'; color:var(--near-black);">本文テキスト — body の line-height: 1.75 はメディアサイトとして読みやすさを重視した広い行間。palt はグローバル適用で、見出しから本文まですべてに効いています。ABCabc 123</div>
+    <div class="type-meta">16px / 400 / line-height: 1.75 / letter-spacing: normal / palt: あり（body グローバル）<span class="type-context">記事ページ</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family:var(--font-mono-fallback); font-size:12px; font-weight:400; line-height:1.33; letter-spacing:0.047em; text-transform:uppercase; color:var(--medium-gray); font-feature-settings:normal;">Trending Stories</div>
+    <div class="type-meta">WiredMono / 12px / 400 / line-height: 1.33 / letter-spacing: 0.047em / palt: なし<span class="type-context">トップページ セクションラベル</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family:var(--font-mono-fallback); font-size:18px; font-weight:400; line-height:1.556; letter-spacing:0.031em; text-transform:uppercase; color:var(--black); font-feature-settings:normal;">Most Recent</div>
+    <div class="type-meta">WiredMono / 18px / 400 / line-height: 1.556 / letter-spacing: 0.031em / palt: なし<span class="type-context">トップページ セクション見出し</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family:var(--font-mono-fallback); font-size:11px; font-weight:400; line-height:1.18; letter-spacing:0.083em; text-transform:uppercase; color:var(--black); font-feature-settings:normal;">Business / Culture / Mobility / Science</div>
+    <div class="type-meta">WiredMono / 11px / 400 / line-height: 1.18 / letter-spacing: 0.083em / palt: なし<span class="type-context">ナビリンク・カテゴリラベル</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family:var(--font-mono-fallback); font-size:11px; font-weight:400; line-height:1.18; letter-spacing:0.1em; text-transform:uppercase; color:var(--medium-gray); font-feature-settings:normal;">SZ Membership</div>
+    <div class="type-meta">WiredMono / 11px / 400 / line-height: 1.18 / letter-spacing: 0.1em / palt: なし<span class="type-context">会員バッジ</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:700; line-height:1.333; color:var(--black);">CTA リンク — 詳細はこちら</div>
+    <div class="type-meta">12px / 700 / line-height: 1.333 / palt: あり<span class="type-context">トップページ CTA</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-size:11px; font-weight:400; line-height:1.455; color:var(--medium-gray);">フッターテキスト — &copy; Conde Nast Japan</div>
+    <div class="type-meta">11px / 400 / line-height: 1.455 / palt: あり<span class="type-context">フッター</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ARTICLE PREVIEW -->
+<section class="section-gray" id="article">
+<div class="section-inner">
+  <div class="section-label">03 / Article</div>
+  <h2 class="section-title">記事ページの組版サンプル</h2>
+  <div class="article-preview">
+    <div class="article-category">Science</div>
+    <h1>量子コンピューティングが切り拓く、次世代AIの可能性</h1>
+    <div class="article-meta">Author Name&ensp;/&ensp;2026.04.06</div>
+    <p>量子ビットの重ね合わせとエンタングルメントを活用した新しい計算パラダイムが、従来の古典的コンピュータでは解けなかった問題に挑んでいる。特に機械学習の最適化問題において、量子アニーリングが注目を集めている。</p>
+    <h2>ハードウェアの進化と誤り訂正</h2>
+    <p>超伝導量子ビット、イオントラップ、光量子コンピューティングなど、複数のアプローチが並行して研究されている。誤り訂正符号の実装が実用化への鍵を握る。2026年現在、論理量子ビットの実現に向けた競争が加速している。ABCabc 123</p>
+    <h2>産業界へのインパクト</h2>
+    <p>製薬・材料科学・金融工学・暗号技術など、量子コンピューティングが最初にブレークスルーをもたらすとされる領域は多岐にわたる。クラウド経由の量子コンピューティングサービスも広がりを見せており、スタートアップが参入しやすい環境が整いつつある。</p>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- DARK ARTICLE SECTION -->
+<section class="section-dark">
+<div class="section-inner">
+  <div class="section-label">03b / Article — Dark Context</div>
+  <h2 class="section-title">記事組版サンプル（黒背景）</h2>
+  <div style="max-width:620px; margin:0 auto;">
+    <div style="font-family:var(--font-mono-fallback); font-size:11px; font-weight:400; letter-spacing:0.083em; text-transform:uppercase; color:var(--light-gray); margin-bottom:16px; font-feature-settings:normal;">Business</div>
+    <h1 style="font-size:32px; font-weight:700; line-height:1.625; color:var(--white); margin-bottom:16px;">生成AIがもたらすクリエイティブ産業の構造転換</h1>
+    <p style="font-size:16px; font-weight:400; line-height:1.75; color:var(--very-light-gray); margin-bottom:16px;">テキスト、画像、音声、動画。あらゆるメディアの生成が自動化される時代に、クリエイターの役割はどう変わるのか。WIREDが取材した最前線のケーススタディから、新しい創造性のかたちを考える。</p>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">ボタンバリエーション</h2>
+  <div class="button-row" style="margin-bottom:32px;">
+    <div class="button-item"><a class="btn-primary" href="#">詳細はこちら</a><div class="button-label">Primary CTA<br>radius: 0</div></div>
+    <div class="button-item"><a class="btn-outline" href="#">DESIGN.md を読む</a><div class="button-label">Outline<br>radius: 0</div></div>
+    <div class="button-item"><a class="btn-rounded" href="#">SZ Membership</a><div class="button-label">Rounded<br>radius: 8px</div></div>
+    <div class="button-item"><a class="btn-consent" href="#">Accept All</a><div class="button-label">Consent<br>Inter / radius: 6px</div></div>
+  </div>
+
+  <!-- Dark button row -->
+  <div style="background:var(--black); padding:32px; margin-top:16px;">
+    <div class="button-row">
+      <div class="button-item"><a href="#" style="display:inline-block; background:var(--white); color:var(--black); padding:10px 28px; border-radius:0; font-size:12px; font-weight:700; text-decoration:none; font-family:var(--font-body); line-height:1.333;">詳細はこちら</a><div class="button-label" style="color:var(--medium-gray);">Inverted CTA</div></div>
+      <div class="button-item"><button class="nav-menu" style="border:1px solid var(--white); padding:8px 20px;">MENU</button><div class="button-label" style="color:var(--medium-gray);">Menu Button<br>on dark</div></div>
+      <div class="button-item"><span style="font-family:var(--font-mono-fallback); font-size:11px; font-weight:700; letter-spacing:0.083em; text-transform:uppercase; color:var(--very-light-gray); font-feature-settings:normal;">SEE MORE STORIES</span><div class="button-label" style="color:var(--medium-gray);">WiredMono Link<br>on dark</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">カードコンポーネント</h2>
+  <p style="font-size:14px; color:var(--medium-gray); margin-bottom:24px;">WIRED のカードはボーダーレス。罫線や影ではなく余白とタイポグラフィで区切る。</p>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-image">16:9 Image</div>
+      <div class="card-category">Science</div>
+      <h3>量子コンピュータの実用化が加速する</h3>
+      <p>超伝導量子ビットの誤り訂正技術に大きなブレークスルー。実用的な量子優位性の達成が近づいている。</p>
+    </div>
+    <div class="card">
+      <div class="card-image">16:9 Image</div>
+      <div class="card-category">Culture</div>
+      <h3>AIアートの倫理と著作権をめぐる最前線</h3>
+      <p>生成AIが作り出す作品は、誰のものか。クリエイターとテクノロジーの新しい関係を考える。</p>
+    </div>
+    <div class="card">
+      <div class="card-image">16:9 Image</div>
+      <div class="card-category">Mobility</div>
+      <h3>自律走行車が都市インフラを変える日</h3>
+      <p>レベル4自動運転の商用化が始まり、都市計画そのものが再定義されようとしている。</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- DARK CARDS -->
+<section class="section-dark">
+<div class="section-inner">
+  <div class="section-label">05b / Cards — Dark Context</div>
+  <h2 class="section-title">カード（黒背景）</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-image">16:9 Image</div>
+      <div class="card-category">Business</div>
+      <h3>Web3.0とDAO：分散型組織の実験</h3>
+      <p>ブロックチェーン技術がもたらす新しい組織のあり方と、その課題。</p>
+    </div>
+    <div class="card">
+      <div class="card-image">16:9 Image</div>
+      <div class="card-category">Environment</div>
+      <h3>気候テクノロジーへの巨額投資が意味するもの</h3>
+      <p>炭素回収、核融合、グリーン水素。次世代エネルギー技術の勝者は誰か。</p>
+    </div>
+    <div class="card">
+      <div class="card-image">16:9 Image</div>
+      <div class="card-category">Health</div>
+      <h3>mRNAワクチン技術の次なる応用先</h3>
+      <p>がん治療、自己免疫疾患、希少疾病。mRNA技術が医療を一変させる可能性。</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group">
+    <label class="form-label">メールアドレス</label>
+    <input class="form-input" type="text" placeholder="name@example.com">
+    <div class="form-state-label">Default — border: #e5e5e5, radius: 0</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">パスワード</label>
+    <input class="form-input form-input--focus" type="password" value="mypassword123">
+    <div class="form-state-label">Focus — border: #000</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">メールアドレス</label>
+    <input class="form-input form-input--error" type="text" value="invalid@">
+    <div class="form-state-label">Error — border: #c00</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">Depth &amp; Elevation</h2>
+  <p style="font-size:14px; color:var(--medium-gray); margin-bottom:24px;">WIRED はフラットデザイン。影やグラデーションをほぼ使わない。奥行きは画像のオーバーレイ（暗い透過）で表現する。</p>
+  <div class="elevation-grid">
+    <div class="elevation-card" style="border:1px solid var(--very-light-gray);">
+      <div class="elevation-label">Flat (Default)</div>
+      <div class="elevation-desc">影なし。ボーダーのみ、またはボーダーすら使わない</div>
+    </div>
+    <div class="elevation-card" style="border:none; padding:0;">
+      <div style="height:120px; background:#ccc; position:relative; display:flex; align-items:flex-end;">
+        <div style="position:absolute; inset:0; background:rgba(0,0,0,0.4);"></div>
+        <div style="position:relative; padding:12px; color:#fff; font-size:14px; font-weight:700;">Image Overlay</div>
+      </div>
+      <div style="padding:12px; text-align:center;">
+        <div class="elevation-desc">rgba(0,0,0,0.4) overlay<br>影の代わりに使用</div>
+      </div>
+    </div>
+    <div class="elevation-card" style="border:none; background:transparent;">
+      <div style="display:flex; gap:16px; justify-content:center;">
+        <div style="width:60px; height:60px; background:var(--white); border:1px solid var(--very-light-gray);"></div>
+        <div style="width:60px; height:60px; background:var(--white);"></div>
+      </div>
+      <div style="padding:12px; text-align:center;">
+        <div class="elevation-desc">Border vs Borderless<br>余白で区切るのが基本</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">08 / Layout</div>
+  <h2 class="section-title">レイアウト</h2>
+  <p style="font-size:14px; color:var(--medium-gray); margin-bottom:24px;">Conde Nast グローバルプラットフォーム。マガジン型の大きな余白レイアウト。記事間の区切りは罫線ではなく余白で表現。</p>
+
+  <div style="margin-bottom:16px"><div class="width-bar-label">記事本文エリア <span class="width-bar-value">中央寄せ・最大幅制限</span></div><div class="width-bar"><div class="width-bar-inner" style="width:65%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">ヒーロー画像 <span class="width-bar-value">全幅ブリード (100%)</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+
+  <div style="margin-top:40px;">
+    <div class="color-group-label">Spacing Principles</div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:24px; margin-top:16px;">
+      <div style="text-align:center;">
+        <div style="width:100%; height:120px; border:1px solid var(--very-light-gray); display:flex; flex-direction:column; justify-content:space-between; padding:16px;">
+          <div style="background:var(--black); height:20px; width:80%;"></div>
+          <div style="background:#e0e0e0; height:8px; width:100%;"></div>
+          <div style="background:#e0e0e0; height:8px; width:90%;"></div>
+        </div>
+        <div class="type-meta" style="margin-top:8px;">大きな余白で区切り</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="width:100%; height:120px; border:1px solid var(--very-light-gray); display:flex; gap:16px; padding:16px;">
+          <div style="flex:1; background:#e0e0e0;"></div>
+          <div style="flex:1; background:#e0e0e0;"></div>
+        </div>
+        <div class="type-meta" style="margin-top:8px;">ボーダーレスカードグリッド</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="width:100%; height:120px; background:var(--black); display:flex; align-items:center; justify-content:center;">
+          <span style="color:var(--white); font-family:var(--font-mono-fallback); font-size:11px; letter-spacing:0.083em; text-transform:uppercase; font-feature-settings:normal;">WIRED</span>
+        </div>
+        <div class="type-meta" style="margin-top:8px;">黒背景ヘッダー</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  Generated from <a href="https://wired.jp/">wired.jp</a> DESIGN.md &mdash; awesome-design-md-jp / computed style 実測値（2026-04-06）
+</footer>
+
+</body>
+</html>

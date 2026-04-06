@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: SmartHR (Light)</title>
+<style>
+  /* === AdjustedYuGothic @font-face トリック === */
+  @font-face {
+    font-family: AdjustedYuGothic;
+    font-weight: 400;
+    src: local("Yu Gothic Medium");
+  }
+  @font-face {
+    font-family: AdjustedYuGothic;
+    font-weight: 700;
+    src: local("Yu Gothic Bold");
+  }
+
+  :root {
+    /* === Colors: DESIGN.md トークン値 === */
+    /* Primary */
+    --smarthr-blue: #00c4cc;
+    --product-main: #0077c7;
+    /* Semantic */
+    --danger: #e01e5a;
+    --warning: #ffcc17;
+    /* Interactive */
+    --text-link: #0071c1;
+    --orange-accent: #ff9900;
+    /* Neutral — Stone Scale（ウォームグレー） */
+    --text-black: #23221e;
+    --text-grey: #706d65;
+    --text-disabled: #c1bdb7;
+    --stone-01: #f8f7f6;
+    --stone-02: #edebe8;
+    --stone-03: #aaa69f;
+    --stone-04: #4e4c49;
+    /* Surface & Borders */
+    --white: #ffffff;
+    --border: #d6d3d0;
+    --over-background: #f2f1f0;
+    --action-background: #d6d3d0;
+    /* === Elevation === */
+    --shadow-1: 0 2px 4px rgba(0,0,0,0.1);
+    --shadow-2: 0 4px 8px rgba(0,0,0,0.15);
+    /* === Fonts === */
+    --font-base: AdjustedYuGothic, "Yu Gothic", YuGothic, "Hiragino Sans", sans-serif;
+    --font-system: system-ui, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+    /* === Spacing (8px base) === */
+    --space-xs: 4px;
+    --space-s: 8px;
+    --space-m: 16px;
+    --space-l: 24px;
+    --space-xl: 32px;
+    --space-xxl: 40px;
+    /* === Radius === */
+    --radius: 6px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--stone-01);
+    color: var(--text-black);
+    font-family: var(--font-base);
+    font-size: 16px; font-weight: 400; line-height: 1.5;
+    letter-spacing: 0;
+    overflow-wrap: break-word;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 var(--space-xl); height: 56px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand { font-size: 18px; font-weight: 700; color: var(--text-black); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-brand .logo-mark { display: inline-block; width: 24px; height: 24px; background: var(--smarthr-blue); border-radius: 4px; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 400; color: var(--text-grey); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--text-black); }
+  .nav-cta {
+    display: inline-block; background: var(--product-main); color: #fff;
+    padding: 6px 16px; border-radius: var(--radius); font-size: 14px; font-weight: 700;
+    text-decoration: none; transition: opacity 0.15s;
+  }
+  .nav-cta:hover { opacity: 0.8; }
+
+  /* HERO */
+  .hero { padding: 80px 32px 64px; text-align: center; background: var(--white); }
+  .hero h1 {
+    font-size: 2rem; font-weight: 700; line-height: 1.25;
+    color: var(--text-black); margin-bottom: 16px;
+  }
+  .hero p {
+    font-size: 1rem; font-weight: 400; line-height: 1.5;
+    color: var(--text-grey); max-width: 620px; margin: 0 auto 32px;
+  }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; background: var(--product-main); color: #fff;
+    padding: 8px 16px; border-radius: var(--radius); border: none;
+    font-family: var(--font-base); font-size: 1rem; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.8; }
+  .btn-secondary {
+    display: inline-block; background: transparent; color: var(--product-main);
+    padding: 8px 16px; border-radius: var(--radius);
+    border: 1px solid var(--product-main);
+    font-family: var(--font-base); font-size: 1rem; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: var(--over-background); }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 940px; margin: 0 auto; }
+  .section-label {
+    font-size: 0.75rem; font-weight: 700; color: var(--text-grey);
+    text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.1rem;
+  }
+  .section-title {
+    font-size: 1.5rem; font-weight: 700; line-height: 1.25;
+    margin-bottom: 32px;
+  }
+  .section-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  .section-stone { background: var(--stone-01); padding: 64px 32px; }
+  .section-stone .section-inner { max-width: 940px; margin: 0 auto; }
+  .section-white { background: var(--white); padding: 64px 32px; }
+  .section-white .section-inner { max-width: 940px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: var(--radius); overflow: hidden; background: var(--white); box-shadow: var(--shadow-1); }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 0.857rem; font-weight: 700; margin-bottom: 2px; color: var(--text-black); }
+  .color-swatch-hex { font-size: 0.75rem; color: var(--text-grey); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 0.75rem; color: var(--text-grey); margin-top: 3px; }
+  .color-group-label { font-size: 0.857rem; font-weight: 700; color: var(--stone-04); margin: 24px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 400; color: var(--text-grey); margin-top: 8px; }
+  .type-context { display: inline-block; background: var(--stone-02); color: var(--stone-04); font-size: 0.667rem; padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 0.75rem; font-weight: 400; color: var(--text-grey); margin-top: 8px; }
+  .btn-danger {
+    display: inline-block; background: var(--danger); color: #fff;
+    padding: 8px 16px; border-radius: var(--radius); border: none;
+    font-family: var(--font-base); font-size: 1rem; font-weight: 700;
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-disabled {
+    display: inline-block; background: var(--stone-02); color: var(--text-disabled);
+    padding: 8px 16px; border-radius: var(--radius); border: none;
+    font-family: var(--font-base); font-size: 1rem; font-weight: 700;
+    text-decoration: none; cursor: not-allowed;
+  }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .card {
+    background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 24px; transition: box-shadow 0.3s;
+  }
+  .card:hover { box-shadow: var(--shadow-1); }
+  .card h3 { font-size: 1.2rem; font-weight: 700; line-height: 1.5; margin-bottom: 8px; }
+  .card p { font-size: 1rem; color: var(--text-grey); line-height: 1.5; }
+  .card-link { font-size: 0.857rem; color: var(--text-link); text-decoration: underline; margin-top: 12px; display: inline-block; }
+
+  /* ARTICLE PREVIEW */
+  .article-preview { max-width: 700px; margin: 0 auto; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; }
+  .article-preview h1 { font-size: 1.5rem; font-weight: 700; line-height: 1.25; margin-bottom: 16px; }
+  .article-preview h2 { font-size: 1.2rem; font-weight: 700; line-height: 1.5; margin: 24px 0 12px; }
+  .article-preview p { font-size: 1rem; font-weight: 400; line-height: 1.5; margin-bottom: 16px; color: var(--text-black); }
+  .article-preview p.relaxed { line-height: 1.75; }
+  .article-preview .meta-row { font-size: 0.857rem; color: var(--text-grey); margin-bottom: 16px; display: flex; gap: 16px; }
+  .article-preview .badge { display: inline-block; font-size: 0.667rem; font-weight: 700; background: var(--product-main); color: #fff; padding: 2px 8px; border-radius: 4px; }
+
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 0.857rem; }
+  .data-table th {
+    background: var(--stone-02); color: var(--text-black); font-weight: 700;
+    text-align: left; padding: 8px 12px; border: 1px solid var(--border);
+  }
+  .data-table td {
+    background: var(--white); padding: 8px 12px; border: 1px solid var(--border);
+  }
+  .data-table tr:nth-child(even) td { background: var(--stone-01); }
+  .data-table .action-row td { background: var(--action-background); font-weight: 700; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 0.857rem; font-weight: 700; color: var(--text-black); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: var(--white); color: var(--text-black);
+    border: 1px solid var(--border); padding: 8px 12px; border-radius: var(--radius);
+    font-family: var(--font-base); font-size: 1rem; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-input--focus { border: 2px solid var(--product-main); box-shadow: none; }
+  .form-input--error { border-color: var(--danger); box-shadow: 0 0 0 2px rgba(224,30,90,0.2); }
+  .form-state-label { font-size: 0.75rem; color: var(--text-grey); margin-top: 4px; }
+  .form-error-text { font-size: 0.75rem; color: var(--danger); margin-top: 4px; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .elevation-card { background: var(--white); border-radius: var(--radius); padding: 24px; text-align: center; border: 1px solid var(--border); }
+  .elevation-label { font-size: 0.857rem; font-weight: 700; margin-bottom: 4px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-grey); word-break: break-all; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--product-main); border-radius: 3px; margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 400; color: var(--text-grey); }
+
+  /* CONTENT WIDTHS */
+  .width-bar { height: 32px; background: var(--stone-01); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 8px; position: relative; }
+  .width-bar-inner { height: 100%; background: var(--product-main); border-radius: 5px; opacity: 0.25; }
+  .width-bar-label { font-size: 0.857rem; font-weight: 700; color: var(--text-black); margin-bottom: 4px; }
+  .width-bar-value { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-grey); }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; background: var(--stone-02); font-size: 0.75rem; color: var(--text-grey); }
+
+  @media (max-width: 599px) {
+    .hero h1 { font-size: 1.5rem; }
+    .hero p { font-size: 0.857rem; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .section-stone { padding: 48px 20px; }
+    .section-white { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .article-preview { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#"><span class="logo-mark"></span> SmartHR</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#article">Article</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#elevation">Elevation</a></li>
+    <li><a href="#layout">Layout</a></li>
+  </ul>
+  <a class="nav-cta" href="#">従業員を追加</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System Preview<br>SmartHR — 日本語版</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。SmartHR Design System の公式トークンに基づくカラー、フォント、コンポーネント、スペーシングの全値を可視化。</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">トークン一覧を見る</a>
+    <a class="btn-secondary" href="#">DESIGN.md を読む</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Primary</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#00c4cc"></div><div class="color-swatch-info"><div class="color-swatch-name">SmartHR Blue</div><div class="color-swatch-hex">#00c4cc</div><div class="color-swatch-role">ブランド・ロゴ・チャート用（UIには非推奨）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0077c7"></div><div class="color-swatch-info"><div class="color-swatch-name">Product Main</div><div class="color-swatch-hex">#0077c7</div><div class="color-swatch-role">UIプライマリ・ボタン・フォーカス</div></div></div>
+  </div>
+
+  <div class="color-group-label">Semantic</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e01e5a"></div><div class="color-swatch-info"><div class="color-swatch-name">Danger</div><div class="color-swatch-hex">#e01e5a</div><div class="color-swatch-role">エラー・削除操作</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffcc17"></div><div class="color-swatch-info"><div class="color-swatch-name">Warning</div><div class="color-swatch-hex">#ffcc17</div><div class="color-swatch-role">警告・注意喚起</div></div></div>
+  </div>
+
+  <div class="color-group-label">Interactive</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0071c1"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Link</div><div class="color-swatch-hex">#0071c1</div><div class="color-swatch-role">テキストリンク</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ff9900"></div><div class="color-swatch-info"><div class="color-swatch-name">Orange Accent</div><div class="color-swatch-hex">#ff9900</div><div class="color-swatch-role">アクセント・注目要素</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#23221e"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Black</div><div class="color-swatch-hex">#23221e</div><div class="color-swatch-role">本文・見出し（#000000は使わない）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#706d65"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Grey</div><div class="color-swatch-hex">#706d65</div><div class="color-swatch-role">補足テキスト・セカンダリラベル</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c1bdb7"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Disabled</div><div class="color-swatch-hex">#c1bdb7</div><div class="color-swatch-role">無効状態のテキスト</div></div></div>
+  </div>
+
+  <div class="color-group-label">Stone Scale（ウォームグレー）</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f8f7f6; border-bottom:1px solid #d6d3d0"></div><div class="color-swatch-info"><div class="color-swatch-name">Stone 01 (COLUMN)</div><div class="color-swatch-hex">#f8f7f6</div><div class="color-swatch-role">ページ背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#edebe8"></div><div class="color-swatch-info"><div class="color-swatch-name">Stone 02 (HEAD)</div><div class="color-swatch-hex">#edebe8</div><div class="color-swatch-role">テーブルヘッダー背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#aaa69f"></div><div class="color-swatch-info"><div class="color-swatch-name">Stone 03</div><div class="color-swatch-hex">#aaa69f</div><div class="color-swatch-role">補助ボーダー・アイコン</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#4e4c49"></div><div class="color-swatch-info"><div class="color-swatch-name">Stone 04</div><div class="color-swatch-hex">#4e4c49</div><div class="color-swatch-role">濃いグレーテキスト</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface & Borders</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #d6d3d0"></div><div class="color-swatch-info"><div class="color-swatch-name">White</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">コンポーネント背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d6d3d0"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#d6d3d0</div><div class="color-swatch-role">区切り線・入力欄の枠</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f2f1f0"></div><div class="color-swatch-info"><div class="color-swatch-name">Over Background</div><div class="color-swatch-hex">#f2f1f0</div><div class="color-swatch-role">グルーピング面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d6d3d0"></div><div class="color-swatch-info"><div class="color-swatch-name">Action Background</div><div class="color-swatch-hex">#d6d3d0</div><div class="color-swatch-role">テーブル一括操作エリア</div></div></div>
+  </div>
+
+  <div class="color-group-label">Chart Colors</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#00c4cc"></div><div class="color-swatch-info"><div class="color-swatch-hex">#00c4cc</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffcd00"></div><div class="color-swatch-info"><div class="color-swatch-hex">#ffcd00</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ff9100"></div><div class="color-swatch-info"><div class="color-swatch-hex">#ff9100</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e65537"></div><div class="color-swatch-info"><div class="color-swatch-hex">#e65537</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#2d4b9b"></div><div class="color-swatch-info"><div class="color-swatch-hex">#2d4b9b</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#2d7df0"></div><div class="color-swatch-info"><div class="color-swatch-hex">#2d7df0</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#69d7ff"></div><div class="color-swatch-info"><div class="color-swatch-hex">#69d7ff</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#4bb47d"></div><div class="color-swatch-info"><div class="color-swatch-hex">#4bb47d</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#05878c"></div><div class="color-swatch-info"><div class="color-swatch-hex">#05878c</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-size:2rem; font-weight:700; line-height:1.25;">ページタイトル — Display XXL</div>
+    <div class="type-meta">2rem (32px) / 700 / line-height: 1.25 / letter-spacing: 0<span class="type-context">Display</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:1.5rem; font-weight:700; line-height:1.25;">セクション見出し — Heading XL</div>
+    <div class="type-meta">1.5rem (24px) / 700 / line-height: 1.25 / letter-spacing: 0<span class="type-context">Heading 1</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:1.2rem; font-weight:700; line-height:1.5;">サブ見出し — Heading L</div>
+    <div class="type-meta">1.2rem (19.2px) / 700 / line-height: 1.5 / letter-spacing: 0<span class="type-context">Heading 2</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:1rem; font-weight:400; line-height:1.5;">本文テキスト — Body M。SmartHRは業務UIのため、情報密度を優先して line-height: 1.5 を標準としています。テキストカラーは #23221e を使い、純粋な #000000 は避けます。</div>
+    <div class="type-meta">1rem (16px) / 400 / line-height: 1.5 (NORMAL) / letter-spacing: 0<span class="type-context">Body</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:0.857rem; font-weight:400; line-height:1.5; color:var(--text-grey);">補足テキスト — Small S (13.7px)</div>
+    <div class="type-meta">0.857rem (13.7px) / 400 / line-height: 1.5 / color: Text Grey<span class="type-context">Small</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:0.75rem; font-weight:400; line-height:1.5; color:var(--text-grey);">キャプション・注釈 — Caption XS (12px)</div>
+    <div class="type-meta">0.75rem (12px) / 400 / line-height: 1.5<span class="type-context">Caption</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:0.667rem; font-weight:400; line-height:1.5; color:var(--text-grey);">バッジ・ラベル — Smallest XXS (10.7px)</div>
+    <div class="type-meta">0.667rem (10.7px) / 400 / line-height: 1.5<span class="type-context">Smallest</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:1rem; font-weight:400; line-height:1.5;">font-family: AdjustedYuGothic, "Yu Gothic", YuGothic, "Hiragino Sans", sans-serif</div>
+    <div class="type-meta">@font-face トリックで游ゴシック Medium を 400 にマッピング（Windows 表示品質対策）</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ARTICLE PREVIEW -->
+<section class="section-white" id="article">
+<div class="section-inner">
+  <div class="section-label">03 / Article — 業務UI組版サンプル</div>
+  <h2 class="section-title">従業員情報の表示</h2>
+  <div class="article-preview">
+    <div class="meta-row">
+      <span class="badge">正社員</span>
+      <span>従業員番号: EMP-2024-0042</span>
+      <span>更新日: 2026-04-01</span>
+    </div>
+    <h1>従業員詳細情報</h1>
+    <p>従業員の基本情報、所属部署、雇用形態などを一覧で確認できます。各項目は人事管理者が編集可能です。変更履歴は自動的に記録されます。</p>
+    <h2>所属・役職情報</h2>
+    <p>部署異動や役職変更が発生した場合、申請ワークフローを通じて更新されます。過去の異動履歴も参照可能です。SmartHR では、従業員データの一元管理により、年末調整や社会保険手続きの効率化を実現しています。</p>
+    <p class="relaxed">長文の説明テキストには line-height: 1.75（RELAXED トークン）を適用します。業務マニュアルや手続きガイドなど、じっくり読むコンテンツに適しています。従業員が自身の情報を確認・更新する画面では、読みやすさを優先した行間を採用します。</p>
+
+    <h2>従業員一覧テーブル</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>従業員番号</th>
+          <th>氏名</th>
+          <th>部署</th>
+          <th>役職</th>
+          <th>入社日</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>EMP-0042</td>
+          <td>山田 太郎</td>
+          <td>プロダクト開発部</td>
+          <td>シニアエンジニア</td>
+          <td>2021-04-01</td>
+        </tr>
+        <tr>
+          <td>EMP-0108</td>
+          <td>佐藤 花子</td>
+          <td>人事労務部</td>
+          <td>マネージャー</td>
+          <td>2019-10-01</td>
+        </tr>
+        <tr>
+          <td>EMP-0215</td>
+          <td>鈴木 一郎</td>
+          <td>カスタマーサクセス部</td>
+          <td>リーダー</td>
+          <td>2022-07-01</td>
+        </tr>
+        <tr class="action-row">
+          <td colspan="5">3件選択中 — 一括操作: 部署変更 / CSV出力 / 削除</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">ボタンバリエーション</h2>
+  <div class="button-row">
+    <div class="button-item">
+      <a class="btn-primary" href="#">保存する</a>
+      <div class="button-label">Primary<br><span style="font-family:var(--font-mono); font-size:10px;">#0077c7 / radius: 6px / 700</span></div>
+    </div>
+    <div class="button-item">
+      <a class="btn-secondary" href="#">キャンセル</a>
+      <div class="button-label">Secondary<br><span style="font-family:var(--font-mono); font-size:10px;">border: 1px solid #0077c7</span></div>
+    </div>
+    <div class="button-item">
+      <a class="btn-danger" href="#" style="text-decoration:none;">削除する</a>
+      <div class="button-label">Danger<br><span style="font-family:var(--font-mono); font-size:10px;">#e01e5a</span></div>
+    </div>
+    <div class="button-item">
+      <a class="btn-disabled" href="#" style="text-decoration:none; pointer-events:none;">無効</a>
+      <div class="button-label">Disabled<br><span style="font-family:var(--font-mono); font-size:10px;">bg: #edebe8 / text: #c1bdb7</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">カードコンポーネント</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h3>年末調整の電子化</h3>
+      <p>従業員への書類配付から回収・確認までをオンラインで完結。ペーパーレスで業務効率を大幅に向上させます。</p>
+      <a class="card-link" href="#">詳細を見る</a>
+    </div>
+    <div class="card" style="box-shadow: var(--shadow-1);">
+      <h3>入社手続きの自動化</h3>
+      <p>雇用契約書の締結、社会保険の届出、備品の手配まで。入社に必要な手続きをワンストップで管理できます。</p>
+      <a class="card-link" href="#">詳細を見る</a>
+    </div>
+    <div class="card">
+      <h3>人事評価の運用</h3>
+      <p>目標設定から評価シートの配布、フィードバック収集まで。評価プロセス全体を一元管理し、公平な評価制度を支援します。</p>
+      <a class="card-link" href="#">詳細を見る</a>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group">
+    <label class="form-label">従業員番号</label>
+    <input class="form-input" type="text" placeholder="EMP-0000">
+    <div class="form-state-label">デフォルト — border: 1px solid #d6d3d0, radius: 6px</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">氏名</label>
+    <input class="form-input form-input--focus" type="text" value="山田 太郎">
+    <div class="form-state-label">フォーカス — border: 2px solid #0077c7 (Product Main)</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">メールアドレス</label>
+    <input class="form-input form-input--error" type="text" value="invalid-email">
+    <div class="form-error-text">正しいメールアドレスを入力してください</div>
+    <div class="form-state-label">エラー — border-color: #e01e5a (Danger)</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">Depth & Elevation</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card">
+      <div class="elevation-label">Level 0: Flat</div>
+      <div class="elevation-desc">none — フラットな要素</div>
+    </div>
+    <div class="elevation-card" style="box-shadow: var(--shadow-1);">
+      <div class="elevation-label">Level 1</div>
+      <div class="elevation-desc">0 2px 4px rgba(0,0,0,0.1)<br>カード・ドロップダウン</div>
+    </div>
+    <div class="elevation-card" style="box-shadow: var(--shadow-2);">
+      <div class="elevation-label">Level 2</div>
+      <div class="elevation-desc">0 4px 8px rgba(0,0,0,0.15)<br>モーダル・ダイアログ</div>
+    </div>
+    <div class="elevation-card" style="border: 2px solid var(--product-main);">
+      <div class="elevation-label">Focus Ring</div>
+      <div class="elevation-desc">#0077c7 (Product Main)</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">08 / Layout — スペーシング & ブレークポイント</div>
+  <h2 class="section-title">レイアウト</h2>
+
+  <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:16px;">Spacing Scale（8px ベース）</h3>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px;"></div><div class="spacing-value">XS<br>4px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px;"></div><div class="spacing-value">S<br>8px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px;"></div><div class="spacing-value">M<br>16px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px;"></div><div class="spacing-value">L<br>24px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px;"></div><div class="spacing-value">XL<br>32px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px;"></div><div class="spacing-value">XXL<br>40px</div></div>
+  </div>
+
+  <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:16px; margin-top:32px;">Breakpoints</h3>
+  <div style="margin-bottom:16px">
+    <div class="width-bar-label">SP <span class="width-bar-value">&le; 599px</span></div>
+    <div class="width-bar"><div class="width-bar-inner" style="width:40%"></div></div>
+  </div>
+  <div style="margin-bottom:16px">
+    <div class="width-bar-label">Tablet <span class="width-bar-value">600px - 959px</span></div>
+    <div class="width-bar"><div class="width-bar-inner" style="width:65%"></div></div>
+  </div>
+  <div style="margin-bottom:16px">
+    <div class="width-bar-label">Desktop <span class="width-bar-value">&ge; 960px</span></div>
+    <div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div>
+  </div>
+
+  <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:16px; margin-top:32px;">タッチターゲット</h3>
+  <div style="display:flex; align-items:center; gap:16px;">
+    <div style="width:44px; height:44px; border:2px dashed var(--product-main); border-radius:var(--radius); display:flex; align-items:center; justify-content:center;">
+      <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--product-main);">44px</span>
+    </div>
+    <span style="font-size:0.857rem; color:var(--text-grey);">最小タッチターゲット: 44px x 44px</span>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://smarthr.jp/" style="color:var(--product-main); text-decoration:underline;">smarthr.jp</a> / <a href="https://smarthr.design/" style="color:var(--product-main); text-decoration:underline;">smarthr.design</a> DESIGN.md — awesome-design-md-jp
+</footer>
+
+</body>
+</html>
