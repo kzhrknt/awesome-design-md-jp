@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: pixiv (Light)</title>
+<style>
+  :root {
+    /* === Colors: CSS Custom Properties 実測値 === */
+    --pixiv-blue: #0096fa;
+    --pixiv-blue-dark: #0069b5;
+    --pixiv-like: #ff4060;
+    --pixiv-danger: #ff0000;
+    --pixiv-warning: #f5a623;
+    --pixiv-success: #00c853;
+    --text-primary: #464a4d;
+    --text-secondary: #8c8c8c;
+    --text-disabled: #b8b8b8;
+    --text-placeholder: #999;
+    --bg-primary: #eee;
+    --bg-surface: #fff;
+    --border-default: #d6d6d6;
+    --border-focus: #0096fa;
+    /* === Elevation 実測値 === */
+    --elevation-1: 0 1px 4px rgba(0,0,0,0.08);
+    --elevation-2: 0 2px 8px rgba(0,0,0,0.12);
+    --elevation-3: 0 4px 16px rgba(0,0,0,0.16);
+    /* === Fonts 実測値 === */
+    --font-base: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-base);
+    font-size: 12px; font-weight: 400; line-height: 18px;
+    letter-spacing: normal;
+    word-wrap: break-word;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: normal;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 56px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-default);
+  }
+  .nav-brand { font-size: 22px; font-weight: 700; color: var(--pixiv-blue); text-decoration: none; letter-spacing: -0.02em; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 400; color: var(--text-secondary); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--pixiv-blue); }
+  .nav-cta {
+    display: inline-block; background: var(--pixiv-blue); color: #fff;
+    padding: 6px 20px; border-radius: 20px; font-size: 14px; font-weight: 700;
+    text-decoration: none; transition: background 0.15s;
+  }
+  .nav-cta:hover { background: var(--pixiv-blue-dark); }
+
+  /* HERO */
+  .hero { padding: 72px 32px 56px; text-align: center; background: var(--bg-surface); }
+  .hero h1 {
+    font-size: 28px; font-weight: 700; line-height: 1.5;
+    color: var(--text-primary); margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--pixiv-blue); }
+  .hero p {
+    font-size: 14px; font-weight: 400; line-height: 22px;
+    color: var(--text-secondary); max-width: 600px; margin: 0 auto 28px;
+  }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; background: var(--pixiv-blue); color: #fff;
+    padding: 8px 24px; border-radius: 4px; border: none;
+    font-family: var(--font-base); font-size: 14px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-primary:hover { background: var(--pixiv-blue-dark); }
+  .btn-outline {
+    display: inline-block; background: transparent; color: var(--pixiv-blue);
+    padding: 8px 24px; border-radius: 4px;
+    border: 1px solid var(--pixiv-blue);
+    font-family: var(--font-base); font-size: 14px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-outline:hover { background: rgba(0,150,250,0.06); }
+
+  /* SECTIONS */
+  .section { padding: 56px 32px; max-width: 960px; margin: 0 auto; }
+  .section-label {
+    font-size: 12px; font-weight: 700; color: var(--text-secondary);
+    text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.06em;
+  }
+  .section-title {
+    font-size: 24px; font-weight: 700; line-height: 1.5;
+    margin-bottom: 28px; color: var(--text-primary);
+  }
+  .section-divider { border: none; border-top: 1px solid var(--border-default); margin: 0; }
+
+  .section-surface { background: var(--bg-surface); padding: 56px 32px; }
+  .section-surface .section-inner { max-width: 960px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .color-swatch { border-radius: 4px; overflow: hidden; background: #fff; box-shadow: var(--elevation-1); }
+  .color-swatch-block { height: 68px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 12px; font-weight: 700; margin-bottom: 2px; color: var(--text-primary); }
+  .color-swatch-hex { font-size: 11px; color: var(--text-secondary); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 10px; color: var(--text-secondary); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 700; color: var(--text-secondary); margin: 20px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border-default); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; font-weight: 400; color: var(--text-secondary); margin-top: 6px; }
+  .type-context { display: inline-block; background: var(--bg-primary); color: var(--text-secondary); font-size: 10px; padding: 2px 8px; border-radius: 3px; margin-left: 8px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; }
+  .btn-danger { display: inline-block; background: var(--pixiv-danger); color: #fff; padding: 8px 24px; border-radius: 4px; border: none; font-family: var(--font-base); font-size: 14px; font-weight: 700; text-decoration: none; cursor: pointer; }
+  .btn-like { display: inline-flex; align-items: center; gap: 4px; background: transparent; color: var(--pixiv-like); padding: 6px 16px; border-radius: 20px; border: 1px solid var(--pixiv-like); font-family: var(--font-base); font-size: 14px; font-weight: 700; cursor: pointer; }
+  .btn-round { display: inline-block; background: var(--pixiv-blue); color: #fff; padding: 6px 20px; border-radius: 20px; border: none; font-family: var(--font-base); font-size: 14px; font-weight: 700; text-decoration: none; cursor: pointer; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .card { background: #fff; border-radius: 4px; overflow: hidden; box-shadow: var(--elevation-1); transition: box-shadow 0.3s; }
+  .card:hover { box-shadow: var(--elevation-2); }
+  .card-thumb { height: 180px; width: 100%; background: linear-gradient(135deg, #e0e8ff 0%, #d0f0ff 50%, #ffe0f0 100%); position: relative; }
+  .card-thumb-label { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.6); color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 3px; }
+  .card-body { padding: 12px; }
+  .card h3 { font-size: 14px; font-weight: 700; line-height: 1.5; margin-bottom: 4px; color: var(--text-primary); }
+  .card p { font-size: 12px; color: var(--text-secondary); line-height: 18px; }
+  .card-author { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+  .card-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--bg-primary); }
+  .card-author-name { font-size: 12px; color: var(--text-secondary); }
+
+  /* ARTICLE PREVIEW */
+  .article-preview { max-width: 620px; margin: 0 auto; background: var(--bg-surface); padding: 32px; border-radius: 4px; }
+  .article-preview h1 { font-size: 24px; font-weight: 700; line-height: 1.5; margin-bottom: 16px; color: var(--text-primary); }
+  .article-preview p { font-size: 14px; font-weight: 400; line-height: 22px; letter-spacing: normal; font-feature-settings: normal; margin-bottom: 14px; color: var(--text-primary); }
+  .article-preview a { color: var(--pixiv-blue); text-decoration: none; font-size: 14px; line-height: 22px; }
+  .article-preview a:hover { text-decoration: underline; }
+  .article-preview .small-link { font-size: 12px; line-height: 18px; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: #fff; color: var(--text-primary);
+    border: 1px solid var(--border-default); padding: 8px 12px; border-radius: 4px;
+    font-family: var(--font-base); font-size: 14px; outline: none;
+    transition: border-color 0.15s; height: 36px;
+  }
+  .form-input:focus, .form-input--focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(0,150,250,0.2); }
+  .form-input--error { border-color: var(--pixiv-danger); box-shadow: 0 0 0 3px rgba(255,0,0,0.15); }
+  .form-state-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .elevation-card { background: #fff; border-radius: 4px; padding: 24px; text-align: center; border: 1px solid var(--border-default); }
+  .elevation-label { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); word-break: break-all; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--pixiv-blue); border-radius: 2px; margin-bottom: 6px; height: 28px; opacity: 0.6; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--text-secondary); }
+
+  /* CONTENT WIDTHS */
+  .width-bar { height: 28px; background: var(--bg-primary); border: 1px solid var(--border-default); border-radius: 4px; margin-bottom: 8px; position: relative; }
+  .width-bar-inner { height: 100%; background: var(--pixiv-blue); border-radius: 3px; opacity: 0.25; }
+  .width-bar-label { font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+  .width-bar-value { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; background: var(--bg-surface); font-size: 12px; color: var(--text-secondary); border-top: 1px solid var(--border-default); }
+
+  @media (max-width: 767px) {
+    .hero h1 { font-size: 22px; }
+    .hero p { font-size: 12px; line-height: 18px; }
+    .nav-links { display: none; }
+    .section { padding: 40px 16px; }
+    .section-surface { padding: 40px 16px; }
+    .card-grid { grid-template-columns: 1fr 1fr; }
+    .article-preview { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">pixiv</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#article">Article</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#elevation">Elevation</a></li>
+  </ul>
+  <a class="nav-cta" href="#">作品を投稿</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System Preview<br><span>pixiv</span>.net — 日本語版</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。カラー、フォント、コンポーネント、スペーシングの全値を可視化。computed style 実測値に基づく。</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">詳しく見る</a>
+    <a class="btn-outline" href="#">DESIGN.md を読む</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0096fa"></div><div class="color-swatch-info"><div class="color-swatch-name">pixiv Blue</div><div class="color-swatch-hex">#0096fa</div><div class="color-swatch-role">ブランド・CTA</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0069b5"></div><div class="color-swatch-info"><div class="color-swatch-name">Blue Dark</div><div class="color-swatch-hex">#0069b5</div><div class="color-swatch-role">ホバー・プレス</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#464a4d"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#464a4d</div><div class="color-swatch-role">本文テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#8c8c8c"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Secondary</div><div class="color-swatch-hex">#8c8c8c</div><div class="color-swatch-role">補足テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#b8b8b8"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Disabled</div><div class="color-swatch-hex">#b8b8b8</div><div class="color-swatch-role">無効・プレースホルダー</div></div></div>
+  </div>
+
+  <div class="color-group-label">Semantic</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ff4060"></div><div class="color-swatch-info"><div class="color-swatch-name">Like / Bookmark</div><div class="color-swatch-hex">#ff4060</div><div class="color-swatch-role">いいね・ブックマーク</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ff0000"></div><div class="color-swatch-info"><div class="color-swatch-name">Danger</div><div class="color-swatch-hex">#ff0000</div><div class="color-swatch-role">エラー・削除</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5a623"></div><div class="color-swatch-info"><div class="color-swatch-name">Warning</div><div class="color-swatch-hex">#f5a623</div><div class="color-swatch-role">警告・注意</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#00c853"></div><div class="color-swatch-info"><div class="color-swatch-name">Success</div><div class="color-swatch-hex">#00c853</div><div class="color-swatch-role">成功・完了</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface & Background</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#eee; border-bottom:1px solid #d6d6d6"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#eeeeee</div><div class="color-swatch-role">ページ背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff; border-bottom:1px solid #d6d6d6"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">カード・モーダル</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d6d6d6"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#d6d6d6</div><div class="color-swatch-role">ボーダー・区切り線</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section-surface" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-size:24px; font-weight:700; line-height:1.5;">作品タイトル — Heading Large</div>
+    <div class="type-meta">24px / 700 / line-height: 1.5 / letter-spacing: normal / palt: なし<span class="type-context">作品詳細</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:20px; font-weight:700; line-height:1.5;">セクション見出し — Heading 2</div>
+    <div class="type-meta">20px / 700 / line-height: 1.5 / letter-spacing: normal<span class="type-context">セクション</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:700; line-height:1.5;">小見出し — Heading 3</div>
+    <div class="type-meta">16px / 700 / line-height: 1.5 / letter-spacing: normal</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:22px;">本文テキスト — イラスト、マンガ、小説の投稿・閲覧ができるクリエイターのためのプラットフォーム。創作活動を支え、世界中のファンと作品を共有できます。line-height: 22px (x1.57) のバランスの取れた行間。</div>
+    <div class="type-meta">14px / 400 / line-height: 22px (x1.57) / letter-spacing: normal / palt: なし<span class="type-context">段落テキスト</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:22px;"><a href="#" style="color:#0096fa; text-decoration:none;">リンクテキスト — 14px アンカー</a></div>
+    <div class="type-meta">14px / 400 / line-height: 22px / color: #0096fa<span class="type-context">a 要素</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:400; line-height:18px;"><a href="#" style="color:#0096fa; text-decoration:none;">小サイズリンク — 12px アンカー</a></div>
+    <div class="type-meta">12px / 400 / line-height: 18px / color: #0096fa<span class="type-context">a 要素 (small)</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:400; line-height:18px; color:var(--text-secondary);">body デフォルト — 12px / 400 / 18px。pixiv の基本テキストサイズ。UI ラベルやメタ情報に使用。</div>
+    <div class="type-meta">12px / 400 / line-height: 18px (x1.5)<span class="type-context">body デフォルト</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:10px; font-weight:400; line-height:14px; color:var(--text-secondary);">キャプション — 10px / 最小テキスト</div>
+    <div class="type-meta">10px / 400 / line-height: 14px<span class="type-context">Caption</span></div>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ARTICLE PREVIEW -->
+<section class="section" id="article">
+  <div class="section-label">03 / Article — 作品キャプション組版</div>
+  <h2 class="section-title">テキスト組版サンプル</h2>
+  <div class="article-preview">
+    <h1>イラストの投稿と公開について</h1>
+    <p>pixiv はイラスト、マンガ、小説の投稿・閲覧ができるクリエイターのためのプラットフォームです。世界中のクリエイターとファンが作品を通じてつながることができます。</p>
+    <p>作品にはタグを設定でき、他のユーザーが検索やディスカバリーを通じて新しいクリエイターの作品に出会えます。<a href="#">タグの設定方法はこちら</a>をご覧ください。</p>
+    <p>ブックマークやいいねを通じて、お気に入りの作品をコレクションしたり、クリエイターを応援することもできます。<a href="#" class="small-link">利用規約を確認する</a></p>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section-surface" id="buttons">
+<div class="section-inner">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">ボタンバリエーション</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-primary" href="#">投稿する</a><div class="button-label">Primary</div></div>
+    <div class="button-item"><a class="btn-outline" href="#">フォローする</a><div class="button-label">Outline</div></div>
+    <div class="button-item"><a class="btn-round" href="#">作品を投稿</a><div class="button-label">Round CTA</div></div>
+    <div class="button-item"><button class="btn-like">&#9825; ブックマーク</button><div class="button-label">Bookmark</div></div>
+    <div class="button-item"><a class="btn-danger" href="#" style="display:inline-block; padding:8px 24px; text-decoration:none;">削除する</a><div class="button-label">Danger</div></div>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards — 作品カード</div>
+  <h2 class="section-title">カードコンポーネント</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-thumb" style="background: linear-gradient(135deg, #b3d9ff 0%, #e0f0ff 100%);"><span class="card-thumb-label">1/3</span></div>
+      <div class="card-body">
+        <h3>夕焼けの街並みイラスト</h3>
+        <p>オリジナル風景イラストです。夕暮れの光と影のコントラストを意識して描きました。</p>
+        <div class="card-author"><div class="card-avatar" style="background:linear-gradient(135deg,#0096fa,#00c8fa);"></div><span class="card-author-name">illustrator_a</span></div>
+      </div>
+    </div>
+    <div class="card" style="box-shadow: var(--elevation-2);">
+      <div class="card-thumb" style="background: linear-gradient(135deg, #ffd6e0 0%, #ffe0f0 100%);"><span class="card-thumb-label">1/1</span></div>
+      <div class="card-body">
+        <h3>キャラクターデザイン集</h3>
+        <p>オリジナルキャラクターのデザインシート。衣装バリエーションと表情差分を含みます。</p>
+        <div class="card-author"><div class="card-avatar" style="background:linear-gradient(135deg,#ff4060,#ff8090);"></div><span class="card-author-name">creator_b</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb" style="background: linear-gradient(135deg, #d0ffe0 0%, #e8fff0 100%);"><span class="card-thumb-label">1/8</span></div>
+      <div class="card-body">
+        <h3>背景美術メイキング</h3>
+        <p>背景イラストの制作過程をまとめました。レイヤー構成とブラシ設定の解説付き。</p>
+        <div class="card-author"><div class="card-avatar" style="background:linear-gradient(135deg,#00c853,#80e0a0);"></div><span class="card-author-name">artist_c</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section-surface" id="forms">
+<div class="section-inner">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group"><label class="form-label">pixiv ID</label><input class="form-input" type="text" placeholder="ユーザー名またはメールアドレス"><div class="form-state-label">デフォルト — border: #d6d6d6, radius: 4px, height: 36px</div></div>
+  <div class="form-group"><label class="form-label">パスワード</label><input class="form-input form-input--focus" type="password" value="mypassword123"><div class="form-state-label">フォーカス — border: #0096fa (pixiv Blue)</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー — border: #ff0000 (danger)</div></div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">Depth & Elevation</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">影なし、ボーダーのみ</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-1);"><div class="elevation-label">Level 1</div><div class="elevation-desc">0 1px 4px rgba(0,0,0,0.08) — カード</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-2);"><div class="elevation-label">Level 2</div><div class="elevation-desc">0 2px 8px rgba(0,0,0,0.12) — ドロップダウン</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-3);"><div class="elevation-label">Level 3</div><div class="elevation-desc">0 4px 16px rgba(0,0,0,0.16) — モーダル</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section-surface" id="spacing">
+<div class="section-inner">
+  <div class="section-label">08 / Spacing</div>
+  <h2 class="section-title">スペーシングスケール</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px;"></div><div class="spacing-value">4px<br>XS</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px;"></div><div class="spacing-value">8px<br>S</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px;"></div><div class="spacing-value">16px<br>M</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px;"></div><div class="spacing-value">24px<br>L</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px;"></div><div class="spacing-value">32px<br>XL</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px;"></div><div class="spacing-value">48px<br>XXL</div></div>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CONTENT WIDTHS -->
+<section class="section" id="widths">
+  <div class="section-label">09 / Layout</div>
+  <h2 class="section-title">コンテンツ幅</h2>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Max Container <span class="width-bar-value">1224px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Content Area <span class="width-bar-value">960px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:78.4%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Article / Caption <span class="width-bar-value">620px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:50.7%"></div></div></div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://www.pixiv.net/" style="color:var(--pixiv-blue); text-decoration:underline;">pixiv.net</a> DESIGN.md — awesome-design-md-jp
+</footer>
+
+</body>
+</html>

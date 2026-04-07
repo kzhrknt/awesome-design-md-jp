@@ -47,31 +47,54 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [MoneyForward](https://moneyforward.com/) | Fintech | [DESIGN.md](design-md/moneyforward/DESIGN.md) | [preview.html](design-md/moneyforward/preview.html) |
 | [Cybozu](https://cybozu.co.jp/) | Groupware | [DESIGN.md](design-md/cybozu/DESIGN.md) | [preview.html](design-md/cybozu/preview.html) |
 | [Qiita](https://qiita.com/) | Developer Community | [DESIGN.md](design-md/qiita/DESIGN.md) | [preview.html](design-md/qiita/preview.html) |
+| [Rakuten](https://www.rakuten.co.jp/) | EC | [DESIGN.md](design-md/rakuten/DESIGN.md) | [preview.html](design-md/rakuten/preview.html) |
+| [Tabelog](https://tabelog.com/) | Gourmet | [DESIGN.md](design-md/tabelog/DESIGN.md) | [preview.html](design-md/tabelog/preview.html) |
+| [pixiv](https://www.pixiv.net/) | Creator Platform | [DESIGN.md](design-md/pixiv/DESIGN.md) | [preview.html](design-md/pixiv/preview.html) |
+| [Zenn](https://zenn.dev/) | Tech Articles | [DESIGN.md](design-md/zenn/DESIGN.md) | [preview.html](design-md/zenn/preview.html) |
+| [connpass](https://connpass.com/) | Tech Events | [DESIGN.md](design-md/connpass/DESIGN.md) | [preview.html](design-md/connpass/preview.html) |
+| [Sansan](https://jp.sansan.com/) | Business Card SaaS | [DESIGN.md](design-md/sansan/DESIGN.md) | [preview.html](design-md/sansan/preview.html) |
+| [Notion](https://www.notion.so/ja) | Productivity | [DESIGN.md](design-md/notion/DESIGN.md) | [preview.html](design-md/notion/preview.html) |
+| [ABEMA](https://abema.tv/) | Video Streaming | [DESIGN.md](design-md/abema/DESIGN.md) | [preview.html](design-md/abema/preview.html) |
 | [WIRED.jp](https://wired.jp/) | Tech Media | [DESIGN.md](design-md/wired/DESIGN.md) | [preview.html](design-md/wired/preview.html) |
 
 ### Previews
 
+<p align="center">
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (23 sites)</a>
+</p>
+
 <table>
 <tr>
-<td align="center"><strong>Apple Japan</strong><br><img src="design-md/apple/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>MUJI</strong><br><img src="design-md/muji/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>Mercari</strong><br><img src="design-md/mercari/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>STUDIO</strong><br><img src="design-md/studio/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>SmartHR</strong><br><img src="design-md/smarthr/preview-screenshot.png" width="150"></td>
+<td align="center"><strong>Apple</strong><br><img src="design-md/apple/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>MUJI</strong><br><img src="design-md/muji/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Mercari</strong><br><img src="design-md/mercari/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>STUDIO</strong><br><img src="design-md/studio/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>SmartHR</strong><br><img src="design-md/smarthr/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>freee</strong><br><img src="design-md/freee/preview-screenshot.png" width="120"></td>
 </tr>
 <tr>
-<td align="center"><strong>freee</strong><br><img src="design-md/freee/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>note</strong><br><img src="design-md/note/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>Novasell</strong><br><img src="design-md/novasell/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>WIRED.jp</strong><br><img src="design-md/wired/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>Toyota</strong><br><img src="design-md/toyota/preview-screenshot.png" width="150"></td>
+<td align="center"><strong>note</strong><br><img src="design-md/note/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Novasell</strong><br><img src="design-md/novasell/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>WIRED</strong><br><img src="design-md/wired/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Toyota</strong><br><img src="design-md/toyota/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>LINE</strong><br><img src="design-md/line/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Cookpad</strong><br><img src="design-md/cookpad/preview-screenshot.png" width="120"></td>
 </tr>
 <tr>
-<td align="center"><strong>LINE</strong><br><img src="design-md/line/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>Cookpad</strong><br><img src="design-md/cookpad/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>MoneyForward</strong><br><img src="design-md/moneyforward/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>Cybozu</strong><br><img src="design-md/cybozu/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>Qiita</strong><br><img src="design-md/qiita/preview-screenshot.png" width="150"></td>
+<td align="center"><strong>MF</strong><br><img src="design-md/moneyforward/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Cybozu</strong><br><img src="design-md/cybozu/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Qiita</strong><br><img src="design-md/qiita/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Rakuten</strong><br><img src="design-md/rakuten/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Tabelog</strong><br><img src="design-md/tabelog/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>pixiv</strong><br><img src="design-md/pixiv/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>Zenn</strong><br><img src="design-md/zenn/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>connpass</strong><br><img src="design-md/connpass/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Sansan</strong><br><img src="design-md/sansan/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Notion</strong><br><img src="design-md/notion/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ABEMA</strong><br><img src="design-md/abema/preview-screenshot.png" width="120"></td>
+<td></td>
 </tr>
 </table>
 
@@ -104,27 +127,42 @@ Use [`template/DESIGN.md`](template/DESIGN.md) to create your own Japanese DESIG
 
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
+<p align="center">
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (23 sites)</a>
+</p>
+
 <table>
 <tr>
-<td align="center"><strong>Apple Japan</strong><br><img src="design-md/apple/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>MUJI</strong><br><img src="design-md/muji/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>Mercari</strong><br><img src="design-md/mercari/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>STUDIO</strong><br><img src="design-md/studio/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>SmartHR</strong><br><img src="design-md/smarthr/preview-screenshot.png" width="150"></td>
+<td align="center"><strong>Apple</strong><br><img src="design-md/apple/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>MUJI</strong><br><img src="design-md/muji/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Mercari</strong><br><img src="design-md/mercari/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>STUDIO</strong><br><img src="design-md/studio/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>SmartHR</strong><br><img src="design-md/smarthr/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>freee</strong><br><img src="design-md/freee/preview-screenshot.png" width="120"></td>
 </tr>
 <tr>
-<td align="center"><strong>freee</strong><br><img src="design-md/freee/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>note</strong><br><img src="design-md/note/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>Novasell</strong><br><img src="design-md/novasell/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>WIRED.jp</strong><br><img src="design-md/wired/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>Toyota</strong><br><img src="design-md/toyota/preview-screenshot.png" width="150"></td>
+<td align="center"><strong>note</strong><br><img src="design-md/note/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Novasell</strong><br><img src="design-md/novasell/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>WIRED</strong><br><img src="design-md/wired/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Toyota</strong><br><img src="design-md/toyota/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>LINE</strong><br><img src="design-md/line/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Cookpad</strong><br><img src="design-md/cookpad/preview-screenshot.png" width="120"></td>
 </tr>
 <tr>
-<td align="center"><strong>LINE</strong><br><img src="design-md/line/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>Cookpad</strong><br><img src="design-md/cookpad/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>MoneyForward</strong><br><img src="design-md/moneyforward/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>Cybozu</strong><br><img src="design-md/cybozu/preview-screenshot.png" width="150"></td>
-<td align="center"><strong>Qiita</strong><br><img src="design-md/qiita/preview-screenshot.png" width="150"></td>
+<td align="center"><strong>MF</strong><br><img src="design-md/moneyforward/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Cybozu</strong><br><img src="design-md/cybozu/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Qiita</strong><br><img src="design-md/qiita/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Rakuten</strong><br><img src="design-md/rakuten/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Tabelog</strong><br><img src="design-md/tabelog/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>pixiv</strong><br><img src="design-md/pixiv/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>Zenn</strong><br><img src="design-md/zenn/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>connpass</strong><br><img src="design-md/connpass/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Sansan</strong><br><img src="design-md/sansan/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Notion</strong><br><img src="design-md/notion/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ABEMA</strong><br><img src="design-md/abema/preview-screenshot.png" width="120"></td>
+<td></td>
 </tr>
 </table>
 

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Zenn (Light)</title>
+<style>
+  /* === Zenn は CSS Custom Properties を使用していない === */
+  /* === 直接値で記述（実測値ベース） === */
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #fff;
+    color: rgba(0,0,0,0.82);
+    font-family: -apple-system, "system-ui", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    font-size: 16px; font-weight: 400; line-height: 1.8;
+    letter-spacing: normal;
+    font-feature-settings: normal; /* palt 未適用 */
+    word-break: break-all;
+    overflow-wrap: break-word;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 56px;
+    background: #fff;
+    border-bottom: 1px solid #d6e3ed;
+  }
+  .nav-brand { font-size: 22px; font-weight: 700; color: rgba(0,0,0,0.82); text-decoration: none; display: flex; align-items: center; gap: 4px; }
+  .nav-brand span { color: #3ea8ff; font-size: 18px; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 400; color: rgba(0,0,0,0.55); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: rgba(0,0,0,0.82); }
+  .nav-cta {
+    display: inline-block; background: #3ea8ff; color: #fff;
+    padding: 6px 16px; border-radius: 8px; font-size: 14px; font-weight: 700;
+    text-decoration: none; transition: opacity 0.15s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero { padding: 80px 32px 64px; text-align: center; background: #f1f5f9; }
+  .hero h1 {
+    font-size: 32px; font-weight: 700; line-height: 1.5;
+    color: rgba(0,0,0,0.82); margin-bottom: 16px;
+  }
+  .hero p {
+    font-size: 16px; font-weight: 400; line-height: 1.8;
+    color: rgba(0,0,0,0.55); max-width: 620px; margin: 0 auto 32px;
+  }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; background: #3ea8ff; color: #fff;
+    padding: 8px 24px; border-radius: 8px; border: none;
+    font-family: inherit; font-size: 16px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-outline {
+    display: inline-block; background: transparent; color: #3ea8ff;
+    padding: 8px 24px; border-radius: 8px;
+    border: 1px solid #3ea8ff;
+    font-family: inherit; font-size: 16px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-outline:hover { background: rgba(62,168,255,0.06); }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 940px; margin: 0 auto; }
+  .section-label {
+    font-size: 12px; font-weight: 600; color: rgba(0,0,0,0.55);
+    text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.06em;
+  }
+  .section-title {
+    font-size: 28px; font-weight: 700; line-height: 1.5;
+    margin-bottom: 32px; color: rgba(0,0,0,0.82);
+  }
+  .section-divider { border: none; border-top: 1px solid #d6e3ed; margin: 0; }
+
+  .section-gray { background: #f1f5f9; padding: 64px 32px; }
+  .section-gray .section-inner { max-width: 940px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; color: rgba(0,0,0,0.82); }
+  .color-swatch-hex { font-size: 12px; color: rgba(0,0,0,0.55); font-family: SFMono-Regular, Consolas, Menlo, monospace; }
+  .color-swatch-role { font-size: 11px; color: rgba(0,0,0,0.55); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 600; color: rgba(0,0,0,0.55); margin: 24px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid #d6e3ed; }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 12px; font-weight: 400; color: rgba(0,0,0,0.55); margin-top: 8px; }
+  .type-context { display: inline-block; background: #f1f5f9; color: rgba(0,0,0,0.55); font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+
+  /* COMPARISON TABLE */
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 16px; }
+  .compare-table th { text-align: left; padding: 10px 12px; background: #f1f5f9; font-weight: 600; border-bottom: 2px solid #d6e3ed; }
+  .compare-table td { padding: 10px 12px; border-bottom: 1px solid #d6e3ed; }
+  .compare-table .brand-zenn { color: #3ea8ff; font-weight: 700; }
+  .compare-table .brand-qiita { color: #55c500; font-weight: 700; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 400; color: rgba(0,0,0,0.55); margin-top: 8px; }
+  .btn-danger { display: inline-block; background: #f43f5e; color: #fff; padding: 8px 24px; border-radius: 8px; border: none; font-family: inherit; font-size: 16px; font-weight: 700; text-decoration: none; cursor: pointer; }
+  .btn-like { display: inline-flex; align-items: center; gap: 4px; background: transparent; color: #f43f5e; padding: 6px 16px; border-radius: 99px; border: 1px solid #f43f5e; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .btn-ghost { display: inline-block; background: transparent; color: rgba(0,0,0,0.55); padding: 8px 24px; border-radius: 8px; border: 1px solid #d6e3ed; font-family: inherit; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; transition: background 0.15s; }
+  .btn-ghost:hover { background: #f1f5f9; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .card { background: #fff; border: 1px solid #d6e3ed; border-radius: 12px; padding: 20px; transition: box-shadow 0.3s; }
+  .card:hover { box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+  .card h3 { font-size: 16.8px; font-weight: 700; line-height: 1.5; margin-bottom: 8px; color: rgba(0,0,0,0.82); }
+  .card p { font-size: 14px; color: rgba(0,0,0,0.55); line-height: 1.5; }
+  .card-link { font-size: 14px; color: #3ea8ff; text-decoration: none; margin-top: 12px; display: inline-block; }
+  .card-link:hover { text-decoration: underline; }
+  .card-tag { display: inline-block; background: #f1f5f9; color: rgba(0,0,0,0.55); font-size: 12px; padding: 2px 8px; border-radius: 4px; margin-right: 4px; margin-top: 8px; }
+
+  /* ARTICLE PREVIEW */
+  .article-preview { max-width: 820px; margin: 0 auto; }
+  .article-preview h1 { font-size: 32px; font-weight: 700; line-height: 1.5; margin-bottom: 16px; color: rgba(0,0,0,0.82); }
+  .article-preview h2 { font-size: 24px; font-weight: 700; line-height: 1.5; margin: 24px 0 12px; color: rgba(0,0,0,0.82); }
+  .article-preview p { font-size: 16px; font-weight: 400; line-height: 1.8; letter-spacing: normal; font-feature-settings: normal; margin-bottom: 16px; color: rgba(0,0,0,0.82); }
+  .article-preview code {
+    font-family: SFMono-Regular, Consolas, Menlo, monospace;
+    font-size: 14px; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;
+  }
+  .article-preview pre {
+    background: #1e293b; color: #e2e8f0; padding: 16px 20px; border-radius: 8px;
+    font-family: SFMono-Regular, Consolas, Menlo, monospace;
+    font-size: 14px; line-height: 1.5; overflow-x: auto; margin-bottom: 16px;
+  }
+  .article-preview pre .kw { color: #93c5fd; }
+  .article-preview pre .str { color: #86efac; }
+  .article-preview pre .cm { color: #94a3b8; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 600; color: rgba(0,0,0,0.82); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: #fff; color: rgba(0,0,0,0.82);
+    border: 1px solid #d6e3ed; padding: 8px 12px; border-radius: 8px;
+    font-family: inherit; font-size: 16px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-input--focus { border-color: #3ea8ff; box-shadow: 0 0 0 3px rgba(62,168,255,0.2); }
+  .form-input--error { border-color: #f43f5e; box-shadow: 0 0 0 3px rgba(244,63,94,0.2); }
+  .form-state-label { font-size: 11px; color: rgba(0,0,0,0.55); margin-top: 4px; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .elevation-card { background: #fff; border-radius: 12px; padding: 24px; text-align: center; border: 1px solid #d6e3ed; }
+  .elevation-label { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .elevation-desc { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 11px; color: rgba(0,0,0,0.55); word-break: break-all; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: #3ea8ff; border-radius: 3px; margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.55); }
+
+  /* CONTENT WIDTHS */
+  .width-bar { height: 32px; background: #f1f5f9; border: 1px solid #d6e3ed; border-radius: 8px; margin-bottom: 8px; position: relative; }
+  .width-bar-inner { height: 100%; background: #3ea8ff; border-radius: 7px; opacity: 0.25; }
+  .width-bar-label { font-size: 13px; font-weight: 600; color: rgba(0,0,0,0.82); margin-bottom: 4px; }
+  .width-bar-value { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 12px; color: rgba(0,0,0,0.55); }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; background: #f1f5f9; font-size: 12px; color: rgba(0,0,0,0.55); }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 24px; }
+    .hero p { font-size: 15px; line-height: 1.75; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .section-gray { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .article-preview p { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#"><span>Z</span>enn</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#article">Article</a></li>
+    <li><a href="#comparison">Comparison</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#elevation">Elevation</a></li>
+  </ul>
+  <a class="nav-cta" href="#">記事を書く</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System Preview<br>zenn.dev -- 日本語版</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。カラー、フォント、コンポーネント、スペーシングの全値を可視化。computed style 実測値に基づく。CSS Custom Properties 未使用。</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">詳しく見る</a>
+    <a class="btn-outline" href="#">DESIGN.md を読む</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#3ea8ff"></div><div class="color-swatch-info"><div class="color-swatch-name">Zenn Blue</div><div class="color-swatch-hex">#3ea8ff</div><div class="color-swatch-role">ブランドカラー・CTA</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0f83fd"></div><div class="color-swatch-info"><div class="color-swatch-name">Zenn Blue Dark</div><div class="color-swatch-hex">#0f83fd</div><div class="color-swatch-role">ホバー・プレス</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text（rgba opacity ベース）</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(0,0,0,0.82)"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">rgba(0,0,0,0.82)</div><div class="color-swatch-role">本文テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(0,0,0,0.55)"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Secondary</div><div class="color-swatch-hex">rgba(0,0,0,0.55)</div><div class="color-swatch-role">補足テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(0,0,0,0.36)"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Disabled</div><div class="color-swatch-hex">rgba(0,0,0,0.36)</div><div class="color-swatch-role">無効状態</div></div></div>
+  </div>
+
+  <div class="color-group-label">Semantic</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#10b981"></div><div class="color-swatch-info"><div class="color-swatch-name">Success</div><div class="color-swatch-hex">#10b981</div><div class="color-swatch-role">成功・完了</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f43f5e"></div><div class="color-swatch-info"><div class="color-swatch-name">Danger</div><div class="color-swatch-hex">#f43f5e</div><div class="color-swatch-role">エラー・削除</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f59e0b"></div><div class="color-swatch-info"><div class="color-swatch-name">Warning</div><div class="color-swatch-hex">#f59e0b</div><div class="color-swatch-role">警告・注意</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface & Border</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff; border-bottom:1px solid #d6e3ed"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f1f5f9"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#f1f5f9</div><div class="color-swatch-role">カード・セクション背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d6e3ed"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#d6e3ed</div><div class="color-swatch-role">区切り線・入力枠</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography -- 実測値（CSS vars なし）</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-size:38.4px; font-weight:700; line-height:1.5;">Tech</div>
+    <div class="type-meta">38.4px / 700 / line-height: 1.5 (57.6px) / palt: なし<span class="type-context">トップ・セクション大見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:32px; font-weight:700; line-height:1.5;">記事タイトル -- Article Title (h1)</div>
+    <div class="type-meta">32px / 700 / line-height: 1.5 / palt: なし<span class="type-context">記事ページ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16.8px; font-weight:700; line-height:1.5;">記事カード見出し -- Heading 2 (記事)</div>
+    <div class="type-meta">16.8px / 700 / line-height: 25.2px (x1.5) / palt: なし<span class="type-context">記事一覧</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:700; line-height:1.5;">セクション見出し -- Heading 2 (UI)</div>
+    <div class="type-meta">16px / 700 / line-height: 24px (x1.5) / palt: なし<span class="type-context">UI見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.8;">本文テキスト -- ゆったりとした行間 (line-height: 1.8) で長文を読みやすく。テキスト色は rgba(0,0,0,0.82) で、純粋な黒よりも柔らかい印象。letter-spacing と palt は normal（適用なし）。Qiita と同じ line-height: 1.8 だが、YakuHanJPs による約物半角化がない分、括弧類は全角幅のままとなる。</div>
+    <div class="type-meta">16px / 400 / line-height: 28.8px (x1.8) / letter-spacing: normal / palt: なし<span class="type-context">本文</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:600; line-height:1.5; color:rgba(0,0,0,0.55);">ラベル・タグ -- Label (14px)</div>
+    <div class="type-meta">14px / 600 / line-height: 1.5 / color: Text Secondary</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:400; line-height:1.5; color:rgba(0,0,0,0.55);">キャプション -- Caption (12px)</div>
+    <div class="type-meta">12px / 400 / line-height: 1.5<span class="type-context">日付・メタ情報</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:SFMono-Regular, Consolas, Menlo, monospace; font-size:14px; font-weight:400; line-height:1.5; background:#f1f5f9; padding:8px 12px; border-radius:4px;">const greeting = "Hello, Zenn!";</div>
+    <div class="type-meta">SFMono-Regular, Consolas, Menlo, monospace / 14px / 400<span class="type-context">コードブロック</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ARTICLE PREVIEW -->
+<section class="section-gray" id="article">
+<div class="section-inner">
+  <div class="section-label">03 / Article -- 記事組版</div>
+  <h2 class="section-title">記事ページの組版サンプル</h2>
+  <div class="article-preview">
+    <h1>TypeScript で始めるデザインシステムの型安全な管理</h1>
+    <p>デザインシステムの運用において、カラートークンやスペーシング値を TypeScript の型で管理することで、開発時のミスを大幅に減らせます。この記事では、<code>as const</code> と Template Literal Types を活用した実装パターンを紹介します。</p>
+    <h2>1. デザイントークンの型定義</h2>
+    <p>まず、カラーパレットを <code>as const</code> で定義します。これにより、TypeScript がリテラル型として推論し、存在しない色名を参照した際にコンパイルエラーが発生します。</p>
+    <pre><span class="cm">// デザイントークンの型安全な定義</span>
+<span class="kw">const</span> colors = {
+  primary: <span class="str">"#3ea8ff"</span>,
+  danger: <span class="str">"#f43f5e"</span>,
+  text: <span class="str">"rgba(0,0,0,0.82)"</span>,
+} <span class="kw">as const</span>;
+
+<span class="kw">type</span> ColorKey = <span class="kw">keyof typeof</span> colors;</pre>
+    <p>font-family のフォールバックチェーンも同様に管理できます。Zenn では <code>-apple-system</code> を先頭に配置し、ヒラギノ角ゴ ProN、Meiryo と続くシステムフォント構成を採用しています。Qiita の YakuHanJPs のような Web フォントは使用していません。</p>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COMPARISON -->
+<section class="section" id="comparison">
+  <div class="section-label">04 / Comparison -- Zenn vs Qiita</div>
+  <h2 class="section-title">Qiita との比較</h2>
+  <p style="font-size:14px; color:rgba(0,0,0,0.55); margin-bottom:24px;">同じ技術記事プラットフォームとして、タイポグラフィとカラー設計の違いを比較。</p>
+  <table class="compare-table">
+    <thead>
+      <tr><th>項目</th><th class="brand-zenn">Zenn</th><th class="brand-qiita">Qiita</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>ブランドカラー</td><td><span style="color:#3ea8ff">&#9632;</span> #3ea8ff (Blue)</td><td><span style="color:#55c500">&#9632;</span> #55c500 (Green)</td></tr>
+      <tr><td>テキスト色</td><td>rgba(0,0,0,0.82)</td><td>rgba(0,0,0,0.87)</td></tr>
+      <tr><td>font-family 先頭</td><td>-apple-system</td><td>YakuHanJPs</td></tr>
+      <tr><td>約物半角化</td><td>なし</td><td>YakuHanJPs で半角化</td></tr>
+      <tr><td>本文 line-height</td><td>1.8</td><td>1.8</td></tr>
+      <tr><td>palt</td><td>normal</td><td>normal</td></tr>
+      <tr><td>CSS Custom Properties</td><td>なし</td><td>あり</td></tr>
+      <tr><td>ページ背景</td><td>#ffffff</td><td>#f5f6f6</td></tr>
+      <tr><td>ボーダー色</td><td>#d6e3ed</td><td>#e0e0e0</td></tr>
+      <tr><td>Border Radius</td><td>8-12px</td><td>4-8px</td></tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:32px;">
+    <div class="color-group-label">ブランドカラー並置</div>
+    <div class="color-grid">
+      <div class="color-swatch"><div class="color-swatch-block" style="background:#3ea8ff"></div><div class="color-swatch-info"><div class="color-swatch-name">Zenn Blue</div><div class="color-swatch-hex">#3ea8ff</div></div></div>
+      <div class="color-swatch"><div class="color-swatch-block" style="background:#55c500"></div><div class="color-swatch-info"><div class="color-swatch-name">Qiita Green</div><div class="color-swatch-hex">#55c500</div></div></div>
+    </div>
+    <div class="color-group-label">テキスト色の差（opacity ベース）</div>
+    <div class="color-grid">
+      <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(0,0,0,0.82)"></div><div class="color-swatch-info"><div class="color-swatch-name">Zenn Text</div><div class="color-swatch-hex">rgba(0,0,0,0.82)</div></div></div>
+      <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(0,0,0,0.87)"></div><div class="color-swatch-info"><div class="color-swatch-name">Qiita Text</div><div class="color-swatch-hex">rgba(0,0,0,0.87)</div></div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">05 / Buttons</div>
+  <h2 class="section-title">ボタンバリエーション</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-primary" href="#">記事を書く</a><div class="button-label">Primary CTA</div></div>
+    <div class="button-item"><a class="btn-outline" href="#">フォローする</a><div class="button-label">Outline</div></div>
+    <div class="button-item"><a class="btn-danger" href="#" style="display:inline-block; padding:8px 24px; text-decoration:none;">削除する</a><div class="button-label">Danger</div></div>
+    <div class="button-item"><button class="btn-like">&#9825; いいね</button><div class="button-label">Like</div></div>
+    <div class="button-item"><a class="btn-ghost" href="#">キャンセル</a><div class="button-label">Ghost</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">06 / Cards</div>
+  <h2 class="section-title">カードコンポーネント</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h3>TypeScript 5.x の新機能まとめ</h3>
+      <p>Decorator、const type parameters、satisfies など、TypeScript 5.x で追加された主要な機能を実例とともに解説。</p>
+      <div><span class="card-tag">TypeScript</span><span class="card-tag">フロントエンド</span></div>
+      <a class="card-link" href="#">続きを読む</a>
+    </div>
+    <div class="card" style="box-shadow: 0 2px 4px rgba(0,0,0,0.08);">
+      <h3>Zenn と Qiita の DESIGN.md 比較</h3>
+      <p>同じ技術記事プラットフォームでも、フォント戦略・色設計・コンポーネントの思想が大きく異なる。AI エージェント向け仕様書としての差分を分析。</p>
+      <div><span class="card-tag">デザインシステム</span><span class="card-tag">AI</span></div>
+      <a class="card-link" href="#">続きを読む</a>
+    </div>
+    <div class="card">
+      <h3>日本語 Web フォントの最適化戦略</h3>
+      <p>YakuHanJPs、Noto Sans JP、Google Fonts の woff2 サブセット化。パフォーマンスと表示品質のトレードオフを検証。</p>
+      <div><span class="card-tag">パフォーマンス</span><span class="card-tag">CSS</span></div>
+      <a class="card-link" href="#">続きを読む</a>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">07 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input" type="text" placeholder="name@example.com"><div class="form-state-label">デフォルト -- border: #d6e3ed, radius: 8px</div></div>
+  <div class="form-group"><label class="form-label">パスワード</label><input class="form-input form-input--focus" type="password" value="mypassword123"><div class="form-state-label">フォーカス -- border: #3ea8ff (Zenn Blue)</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー -- border: #f43f5e (Danger)</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">08 / Elevation</div>
+  <h2 class="section-title">Depth & Elevation</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">影なし、ボーダーのみ（デフォルト）</div></div>
+    <div class="elevation-card" style="box-shadow: 0 2px 4px rgba(0,0,0,0.08);"><div class="elevation-label">Level 1</div><div class="elevation-desc">0 2px 4px rgba(0,0,0,0.08) -- カードホバー</div></div>
+    <div class="elevation-card" style="box-shadow: 0 4px 12px rgba(0,0,0,0.1);"><div class="elevation-label">Level 2</div><div class="elevation-desc">0 4px 12px rgba(0,0,0,0.1) -- ドロップダウン</div></div>
+    <div class="elevation-card" style="box-shadow: 0 8px 24px rgba(0,0,0,0.12);"><div class="elevation-label">Level 3</div><div class="elevation-desc">0 8px 24px rgba(0,0,0,0.12) -- モーダル</div></div>
+    <div class="elevation-card" style="border: 2px solid #3ea8ff;"><div class="elevation-label">Focus Ring</div><div class="elevation-desc">#3ea8ff + box-shadow ring</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section" id="spacing">
+  <div class="section-label">09 / Spacing</div>
+  <h2 class="section-title">スペーシングスケール</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:20px"></div><div class="spacing-value">20</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px"></div><div class="spacing-value">48</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:64px"></div><div class="spacing-value">64</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CONTENT WIDTHS -->
+<section class="section" id="widths">
+  <div class="section-label">10 / Layout</div>
+  <h2 class="section-title">コンテンツ幅</h2>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Page Container <span class="width-bar-value">960px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Article Body <span class="width-bar-value">820px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:85.4%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Feed Content <span class="width-bar-value">690px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:71.9%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Sidebar <span class="width-bar-value">300px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:31.3%"></div></div></div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://zenn.dev/" style="color:#3ea8ff; text-decoration:underline;">zenn.dev</a> DESIGN.md -- awesome-design-md-jp
+</footer>
+
+</body>
+</html>

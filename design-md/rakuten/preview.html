@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 楽天市場 (rakuten.co.jp)</title>
+<style>
+  /* === 楽天市場: CSS Variables なし — 直書きスタイル === */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #ffffff;
+    color: #666666;
+    font-family: Meiryo, "Hiragino Kaku Gothic ProN", "MS PGothic", sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 13.2px;
+    letter-spacing: normal;
+    font-feature-settings: normal;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === NAV（楽天ヘッダー） === */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px; height: 48px;
+    background: #bf0000;
+    border-bottom: 1px solid #990000;
+  }
+  .nav-brand {
+    font-size: 18px; font-weight: 700; color: #ffffff;
+    text-decoration: none; letter-spacing: 0.02em;
+  }
+  .nav-links { display: flex; gap: 16px; list-style: none; }
+  .nav-links a { font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.85); text-decoration: none; }
+  .nav-links a:hover { color: #ffffff; text-decoration: underline; }
+  .nav-search {
+    display: flex; align-items: center; gap: 0;
+  }
+  .nav-search input {
+    width: 240px; height: 28px; padding: 4px 8px;
+    border: none; border-radius: 2px 0 0 2px;
+    font-family: inherit; font-size: 12px;
+    outline: none;
+  }
+  .nav-search button {
+    height: 28px; padding: 0 12px;
+    background: #ff8c00; color: #fff; border: none;
+    border-radius: 0 2px 2px 0;
+    font-family: inherit; font-size: 12px; font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* === HERO === */
+  .hero {
+    padding: 32px 16px 24px;
+    text-align: center;
+    background: #f6f6f6;
+    border-bottom: 1px solid #dddddd;
+  }
+  .hero h1 {
+    font-size: 20px; font-weight: 600; line-height: 28px;
+    color: #333333; margin-bottom: 8px;
+  }
+  .hero p {
+    font-size: 12px; font-weight: 400; line-height: 18px;
+    color: #666666; max-width: 640px; margin: 0 auto 16px;
+  }
+  .hero-buttons { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+  /* === BUTTONS === */
+  .btn-primary {
+    display: inline-block; background: #bf0000; color: #ffffff;
+    padding: 8px 16px; border-radius: 4px; border: none;
+    font-family: inherit; font-size: 14px; font-weight: 700;
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-primary:hover { background: #990000; }
+  .btn-outline {
+    display: inline-block; background: #ffffff; color: #bf0000;
+    padding: 8px 16px; border-radius: 4px;
+    border: 2px solid #bf0000;
+    font-family: inherit; font-size: 14px; font-weight: 700;
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-outline:hover { background: #fff5f5; }
+  .btn-point {
+    display: inline-block; background: #ff8c00; color: #ffffff;
+    padding: 4px 12px; border-radius: 4px; border: none;
+    font-family: inherit; font-size: 12px; font-weight: 700;
+    text-decoration: none; cursor: pointer;
+  }
+
+  /* === SECTIONS === */
+  .section { padding: 32px 16px; max-width: 1120px; margin: 0 auto; }
+  .section-label {
+    font-size: 10px; font-weight: 700; color: #999999;
+    text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.06em;
+  }
+  .section-title {
+    font-size: 20px; font-weight: 600; line-height: 28px;
+    color: #333333; margin-bottom: 16px;
+  }
+  .section-divider { border: none; border-top: 1px solid #dddddd; margin: 0; }
+
+  .section-gray { background: #f6f6f6; padding: 32px 16px; border-top: 1px solid #dddddd; border-bottom: 1px solid #dddddd; }
+  .section-gray .section-inner { max-width: 1120px; margin: 0 auto; }
+
+  /* === COLORS === */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-bottom: 16px; }
+  .color-swatch { border-radius: 0; overflow: hidden; background: #fff; border: 1px solid #dddddd; }
+  .color-swatch-block { height: 56px; width: 100%; }
+  .color-swatch-info { padding: 6px 8px; }
+  .color-swatch-name { font-size: 11px; font-weight: 700; margin-bottom: 2px; color: #333333; }
+  .color-swatch-hex { font-size: 10px; color: #999999; font-family: Consolas, monospace; }
+  .color-swatch-role { font-size: 10px; color: #999999; margin-top: 2px; }
+  .color-group-label { font-size: 12px; font-weight: 700; color: #666666; margin: 16px 0 6px; }
+
+  /* === TYPOGRAPHY === */
+  .type-sample { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #eeeeee; }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: Consolas, monospace; font-size: 10px; font-weight: 400; color: #999999; margin-top: 4px; }
+  .type-context { display: inline-block; background: #f6f6f6; color: #666666; font-size: 10px; padding: 1px 6px; border: 1px solid #dddddd; margin-left: 6px; }
+
+  /* === PRODUCT GRID === */
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+  .product-card {
+    background: #ffffff; border: 1px solid #dddddd;
+    padding: 8px; text-align: center;
+  }
+  .product-card:hover { border-color: #bf0000; }
+  .product-img {
+    width: 100%; height: 120px; background: #f6f6f6;
+    border: 1px solid #eeeeee; margin-bottom: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: #cccccc;
+  }
+  .product-name {
+    font-size: 12px; font-weight: 400; line-height: 13.2px;
+    color: #333333; margin-bottom: 4px;
+    text-align: left;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .product-price {
+    font-size: 14px; font-weight: 700; color: #bf0000;
+    text-align: left; margin-bottom: 2px;
+  }
+  .product-price-original {
+    font-size: 11px; font-weight: 400; color: #999999;
+    text-decoration: line-through; text-align: left;
+  }
+  .product-point {
+    font-size: 10px; font-weight: 700; color: #ff8c00;
+    text-align: left; margin-top: 2px;
+  }
+  .product-shipping {
+    font-size: 10px; font-weight: 700; color: #008000;
+    text-align: left;
+  }
+  .product-review {
+    font-size: 10px; color: #ff8c00; text-align: left; margin-top: 2px;
+  }
+
+  /* === RANKING === */
+  .ranking-list { list-style: none; counter-reset: rank; }
+  .ranking-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 0; border-bottom: 1px solid #eeeeee;
+    counter-increment: rank;
+  }
+  .ranking-item::before {
+    content: counter(rank);
+    display: flex; align-items: center; justify-content: center;
+    min-width: 24px; height: 24px;
+    background: #bf0000; color: #fff;
+    font-size: 12px; font-weight: 700; border-radius: 2px;
+  }
+  .ranking-item:nth-child(n+4)::before { background: #999999; }
+  .ranking-info { flex: 1; }
+  .ranking-name { font-size: 12px; line-height: 13.2px; color: #333333; margin-bottom: 2px; }
+  .ranking-price { font-size: 14px; font-weight: 700; color: #bf0000; }
+
+  /* === GENRE NAV === */
+  .genre-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 4px; }
+  .genre-item {
+    display: block; padding: 6px 8px;
+    background: #ffffff; border: 1px solid #dddddd;
+    font-size: 12px; font-weight: 400; color: #333333;
+    text-decoration: none; text-align: center;
+  }
+  .genre-item:hover { background: #fff5f5; border-color: #bf0000; color: #bf0000; }
+
+  /* === CARDS === */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 8px; }
+  .card {
+    background: #ffffff; border: 1px solid #dddddd;
+    padding: 12px;
+  }
+  .card:hover { border-color: #bf0000; }
+  .card h3 { font-size: 14px; font-weight: 700; line-height: 18px; color: #333333; margin-bottom: 4px; }
+  .card p { font-size: 12px; color: #666666; line-height: 16px; }
+  .card-link { font-size: 12px; color: #bf0000; text-decoration: underline; margin-top: 6px; display: inline-block; }
+
+  /* === FORMS === */
+  .form-group { margin-bottom: 12px; max-width: 360px; }
+  .form-label { display: block; font-size: 12px; font-weight: 700; color: #333333; margin-bottom: 4px; }
+  .form-input {
+    width: 100%; background: #ffffff; color: #333333;
+    border: 1px solid #cccccc; padding: 6px 8px; border-radius: 4px;
+    font-family: inherit; font-size: 14px; height: 32px; outline: none;
+  }
+  .form-input:focus, .form-input--focus { border-color: #bf0000; box-shadow: 0 0 0 2px rgba(191,0,0,0.15); }
+  .form-input--error { border-color: #bf0000; }
+  .form-state-label { font-size: 10px; color: #999999; margin-top: 2px; }
+
+  /* === ELEVATION === */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .elevation-card { background: #fff; padding: 16px; text-align: center; border: 1px solid #dddddd; }
+  .elevation-label { font-size: 12px; font-weight: 700; margin-bottom: 4px; color: #333333; }
+  .elevation-desc { font-family: Consolas, monospace; font-size: 10px; color: #999999; word-break: break-all; }
+
+  /* === SPACING === */
+  .spacing-row { display: flex; align-items: flex-end; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: #bf0000; border-radius: 0; margin-bottom: 4px; height: 24px; }
+  .spacing-value { font-family: Consolas, monospace; font-size: 10px; font-weight: 700; color: #999999; }
+
+  /* === DENSE TEXT DEMO === */
+  .dense-demo {
+    background: #ffffff; border: 1px solid #dddddd; padding: 12px;
+    max-width: 640px;
+  }
+  .dense-demo p {
+    font-size: 12px; line-height: 13.2px; color: #666666; margin-bottom: 8px;
+  }
+  .dense-demo p:last-child { margin-bottom: 0; }
+
+  /* === FOOTER === */
+  .footer { padding: 16px; text-align: center; background: #f6f6f6; border-top: 1px solid #dddddd; font-size: 10px; color: #999999; }
+
+  @media (max-width: 767px) {
+    .hero h1 { font-size: 16px; line-height: 22px; }
+    .nav-links { display: none; }
+    .nav-search input { width: 140px; }
+    .section { padding: 24px 12px; }
+    .section-gray { padding: 24px 12px; }
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">楽天市場</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#products">Products</a></li>
+    <li><a href="#ranking">Ranking</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#forms">Forms</a></li>
+  </ul>
+  <div class="nav-search">
+    <input type="text" placeholder="商品を検索">
+    <button>検索</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>Design System Preview<br>rakuten.co.jp — 日本語版</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。body 12px / line-height 1.1 の超高密度レイアウト、楽天レッド #bf0000、CSS vars なし。computed style 実測値に基づく。</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">お買い物はこちら</a>
+    <a class="btn-outline" href="#">DESIGN.md を読む</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#bf0000"></div><div class="color-swatch-info"><div class="color-swatch-name">楽天レッド</div><div class="color-swatch-hex">#bf0000</div><div class="color-swatch-role">ブランドカラー</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#990000"></div><div class="color-swatch-info"><div class="color-swatch-name">楽天レッド Dark</div><div class="color-swatch-hex">#990000</div><div class="color-swatch-role">ホバー・プレス</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#333333"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Dark</div><div class="color-swatch-hex">#333333</div><div class="color-swatch-role">見出し・強調</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#666666"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#666666</div><div class="color-swatch-role">本文テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#999999"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Secondary</div><div class="color-swatch-hex">#999999</div><div class="color-swatch-role">補足・注釈</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#cccccc"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Disabled</div><div class="color-swatch-hex">#cccccc</div><div class="color-swatch-role">無効状態</div></div></div>
+  </div>
+
+  <div class="color-group-label">Semantic</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#bf0000"></div><div class="color-swatch-info"><div class="color-swatch-name">Sale / Danger</div><div class="color-swatch-hex">#bf0000</div><div class="color-swatch-role">セール・エラー</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ff8c00"></div><div class="color-swatch-info"><div class="color-swatch-name">Point / Warning</div><div class="color-swatch-hex">#ff8c00</div><div class="color-swatch-role">ポイント・注意</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#008000"></div><div class="color-swatch-info"><div class="color-swatch-name">Success</div><div class="color-swatch-hex">#008000</div><div class="color-swatch-role">在庫あり・送料無料</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface & Border</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #ddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f6f6f6"></div><div class="color-swatch-info"><div class="color-swatch-name">Background Gray</div><div class="color-swatch-hex">#f6f6f6</div><div class="color-swatch-role">セクション背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dddddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#dddddd</div><div class="color-swatch-role">区切り線・枠</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#eeeeee"></div><div class="color-swatch-info"><div class="color-swatch-name">Border Light</div><div class="color-swatch-hex">#eeeeee</div><div class="color-swatch-role">薄い区切り</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-size:20px; font-weight:600; line-height:28px;">人気商品ランキング — Heading 2 (Ranking)</div>
+    <div class="type-meta">20px / 600 / line-height: 28px (x1.4) / ls: normal / palt: なし<span class="type-context">ランキング見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:20px; font-weight:600; line-height:26px;">最近チェックした商品 — Heading 2 (History)</div>
+    <div class="type-meta">20px / 600 / line-height: 26px (x1.3) / ls: normal / palt: なし<span class="type-context">閲覧履歴見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:700; line-height:17.6px; color:#333333;">ジャンル一覧 — Heading 2 (Genre)</div>
+    <div class="type-meta">16px / 700 / line-height: 17.6px (x1.1) / ls: normal / palt: なし<span class="type-context">ジャンル見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:700; line-height:18px; color:#bf0000;">12,800円（税込） — Price</div>
+    <div class="type-meta">14px / 700 / color: #bf0000<span class="type-context">商品価格</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:700; line-height:20px; color:#bf0000;">9,980円（税込）<span style="font-size:11px; color:#999999; text-decoration:line-through; margin-left:6px;">15,800円</span> — Sale Price</div>
+    <div class="type-meta">16px / 700 / color: #bf0000 + 取消線 11px #999<span class="type-context">セール価格</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:400; line-height:13.2px; color:#666666;">本文テキスト — body 12px / line-height 1.1 の超高密度な本文。楽天市場の情報密度を支える基本設定。一画面に可能な限り多くの情報を詰め込む設計思想。ABCabc 123</div>
+    <div class="type-meta">12px / 400 / line-height: 13.2px (x1.1) / color: #666<span class="type-context">body デフォルト</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:10px; font-weight:400; line-height:11px; color:#999999;">注釈・免責事項テキスト — Caption (10px)</div>
+    <div class="type-meta">10px / 400 / line-height: 11px (x1.1) / color: #999<span class="type-context">最小テキスト</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- DENSE TEXT DEMO -->
+<section class="section-gray">
+<div class="section-inner">
+  <div class="section-label">03 / Dense Text — 高密度テキスト実演</div>
+  <h2 class="section-title">情報密度の実演: body 12px / lh 1.1</h2>
+  <div class="dense-demo">
+    <p>楽天市場は日本最大級のインターネットショッピングモールです。ファッション、食品、家電、日用品など、あらゆるジャンルの商品を取り扱っています。楽天ポイントが貯まる・使えるお得なショッピング体験を提供します。</p>
+    <p>お買い物マラソン、楽天スーパーSALE、楽天大感謝祭など、定期的に開催される大型セールイベントでは、ポイント最大46.5倍などの特典があります。エントリー不要でポイントアップする商品も多数。</p>
+    <p style="color:#999999;">※ 本テキストは body 12px / line-height: 13.2px (1.1) の実測値に基づく表示サンプルです。楽天市場の極めてタイトな行間設定を再現しています。一般的な日本語サイトの推奨値（line-height: 1.5以上）を大きく下回りますが、これは情報密度最大化の設計意図に基づくものです。</p>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- PRODUCTS -->
+<section class="section" id="products">
+  <div class="section-label">04 / Products — 商品グリッド</div>
+  <h2 class="section-title">商品一覧</h2>
+  <div class="product-grid">
+    <div class="product-card">
+      <div class="product-img">160 x 120</div>
+      <div class="product-name">【送料無料】国産黒毛和牛 切り落とし 1kg 冷凍 お取り寄せグルメ</div>
+      <div class="product-price-original">8,980円</div>
+      <div class="product-price">4,980円</div>
+      <div class="product-point">+245ポイント (5倍)</div>
+      <div class="product-shipping">送料無料</div>
+      <div class="product-review">★★★★☆ 4.52 (1,284件)</div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">160 x 120</div>
+      <div class="product-name">ワイヤレスイヤホン Bluetooth 5.3 ノイズキャンセリング IPX7防水</div>
+      <div class="product-price">3,280円</div>
+      <div class="product-point">+164ポイント (5倍)</div>
+      <div class="product-shipping">送料無料</div>
+      <div class="product-review">★★★★☆ 4.31 (8,721件)</div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">160 x 120</div>
+      <div class="product-name">【1000円ポッキリ】 お試しセット 無添加 ドライフルーツ ミックスナッツ</div>
+      <div class="product-price">1,000円</div>
+      <div class="product-point">+50ポイント (5倍)</div>
+      <div class="product-shipping">送料無料</div>
+      <div class="product-review">★★★★★ 4.78 (15,432件)</div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">160 x 120</div>
+      <div class="product-name">布団セット シングル 7点 洗える 抗菌防臭 防ダニ 新生活応援</div>
+      <div class="product-price-original">12,800円</div>
+      <div class="product-price">6,980円</div>
+      <div class="product-point">+349ポイント (5倍)</div>
+      <div class="product-shipping">送料無料</div>
+      <div class="product-review">★★★★☆ 4.45 (3,567件)</div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">160 x 120</div>
+      <div class="product-name">スマホケース iPhone16 手帳型 マグネット レザー カード収納</div>
+      <div class="product-price">1,580円</div>
+      <div class="product-point">+79ポイント (5倍)</div>
+      <div class="product-review">★★★★☆ 4.22 (2,198件)</div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">160 x 120</div>
+      <div class="product-name">プロテイン ホエイ 3kg チョコレート味 WPC 国内製造</div>
+      <div class="product-price">4,480円</div>
+      <div class="product-point">+224ポイント (5倍)</div>
+      <div class="product-shipping">送料無料</div>
+      <div class="product-review">★★★★★ 4.61 (6,890件)</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- RANKING -->
+<section class="section-gray" id="ranking">
+<div class="section-inner">
+  <div class="section-label">05 / Ranking — 人気ランキング</div>
+  <h2 class="section-title" style="font-size:20px; font-weight:600; line-height:28px;">人気商品ランキング</h2>
+  <ol class="ranking-list" style="max-width:480px;">
+    <li class="ranking-item"><div class="ranking-info"><div class="ranking-name">【楽天1位】 ワイヤレスイヤホン 高音質 ノイキャン</div><div class="ranking-price">3,280円</div></div></li>
+    <li class="ranking-item"><div class="ranking-info"><div class="ranking-name">国産黒毛和牛 切り落とし 1kg 冷凍便</div><div class="ranking-price">4,980円</div></div></li>
+    <li class="ranking-item"><div class="ranking-info"><div class="ranking-name">お試しセット ドライフルーツ&ナッツ</div><div class="ranking-price">1,000円</div></div></li>
+    <li class="ranking-item"><div class="ranking-info"><div class="ranking-name">布団セット シングル 7点 新生活応援</div><div class="ranking-price">6,980円</div></div></li>
+    <li class="ranking-item"><div class="ranking-info"><div class="ranking-name">プロテイン ホエイ 3kg チョコレート味</div><div class="ranking-price">4,480円</div></div></li>
+  </ol>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- GENRE -->
+<section class="section" id="genre">
+  <div class="section-label">06 / Genre — ジャンルナビ</div>
+  <h2 class="section-title" style="font-size:16px; font-weight:700; line-height:17.6px;">ジャンル一覧</h2>
+  <div class="genre-grid">
+    <a class="genre-item" href="#">レディースファッション</a>
+    <a class="genre-item" href="#">メンズファッション</a>
+    <a class="genre-item" href="#">食品</a>
+    <a class="genre-item" href="#">スイーツ</a>
+    <a class="genre-item" href="#">家電・PC</a>
+    <a class="genre-item" href="#">スマホ・タブレット</a>
+    <a class="genre-item" href="#">インテリア・寝具</a>
+    <a class="genre-item" href="#">キッチン用品</a>
+    <a class="genre-item" href="#">日用品・文具</a>
+    <a class="genre-item" href="#">コスメ・美容</a>
+    <a class="genre-item" href="#">スポーツ</a>
+    <a class="genre-item" href="#">おもちゃ・ホビー</a>
+    <a class="genre-item" href="#">ペット用品</a>
+    <a class="genre-item" href="#">本・CD・DVD</a>
+    <a class="genre-item" href="#">車・バイク</a>
+    <a class="genre-item" href="#">花・ガーデン</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">07 / Buttons</div>
+  <h2 class="section-title">ボタンバリエーション</h2>
+  <div class="button-row" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+    <div style="text-align:center"><a class="btn-primary" href="#">購入手続きへ</a><div style="font-size:10px; color:#999; margin-top:4px;">Primary CTA</div></div>
+    <div style="text-align:center"><a class="btn-outline" href="#">カートに入れる</a><div style="font-size:10px; color:#999; margin-top:4px;">Outline</div></div>
+    <div style="text-align:center"><a class="btn-point" href="#">ポイント付与</a><div style="font-size:10px; color:#999; margin-top:4px;">Point</div></div>
+    <div style="text-align:center"><a href="#" style="display:inline-block; background:#008000; color:#fff; padding:4px 12px; border-radius:4px; font-size:12px; font-weight:700; text-decoration:none;">送料無料</a><div style="font-size:10px; color:#999; margin-top:4px;">Success Badge</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">08 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input" type="text" placeholder="name@example.com"><div class="form-state-label">デフォルト — border: #cccccc, radius: 4px, height: 32px</div></div>
+  <div class="form-group"><label class="form-label">パスワード</label><input class="form-input form-input--focus" type="password" value="mypassword123"><div class="form-state-label">フォーカス — border: #bf0000</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー — border: #bf0000</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">09 / Elevation</div>
+  <h2 class="section-title">Depth & Elevation</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">影なし、ボーダーのみ（基本）</div></div>
+    <div class="elevation-card" style="box-shadow: 0 1px 3px rgba(0,0,0,0.12);"><div class="elevation-label">Level 1</div><div class="elevation-desc">ドロップダウン</div></div>
+    <div class="elevation-card" style="box-shadow: 0 2px 6px rgba(0,0,0,0.15);"><div class="elevation-label">Level 2</div><div class="elevation-desc">モーダル</div></div>
+    <div class="elevation-card" style="border: 2px solid #bf0000;"><div class="elevation-label">Hover Border</div><div class="elevation-desc">#bf0000（商品カードホバー）</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section" id="spacing">
+  <div class="section-label">10 / Spacing</div>
+  <h2 class="section-title">スペーシングスケール</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px;"></div><div class="spacing-value">4px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px;"></div><div class="spacing-value">8px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px;"></div><div class="spacing-value">12px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px;"></div><div class="spacing-value">16px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px;"></div><div class="spacing-value">24px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px;"></div><div class="spacing-value">32px</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://www.rakuten.co.jp/" style="color:#bf0000; text-decoration:underline;">rakuten.co.jp</a> DESIGN.md — awesome-design-md-jp
+</footer>
+
+</body>
+</html>

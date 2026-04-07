@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ABEMA (Dark)</title>
+<style>
+  :root {
+    /* === Colors: CSS Custom Properties 実測値 === */
+    --abema-green: #00b900;
+    --abema-green-dark: #009a00;
+    --abema-pink: #ff0077;
+    --abema-pink-dark: #d40063;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255,255,255,0.7);
+    --text-disabled: rgba(255,255,255,0.38);
+    --text-placeholder: rgba(255,255,255,0.5);
+    --bg-primary: #000000;
+    --bg-surface: #1a1a1a;
+    --bg-elevated: #212121;
+    --bg-hover: #2a2a2a;
+    --border-default: rgba(255,255,255,0.12);
+    --border-strong: rgba(255,255,255,0.3);
+    --border-focus: #00b900;
+    --danger: #e53935;
+    --warning: #ff9800;
+    --success: #00b900;
+    /* === Elevation 実測値 === */
+    --elevation-1: 0 2px 4px rgba(0,0,0,0.5);
+    --elevation-2: 0 4px 12px rgba(0,0,0,0.6);
+    --elevation-3: 0 8px 24px rgba(0,0,0,0.7);
+    /* === Fonts 実測値 === */
+    --font-base: CopyRight, Emoji, "Hiragino Sans", "BIZ UDPGothic Alphabet", "BIZ UDGothic", Meiryo, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-base);
+    font-size: 14px; font-weight: 400; line-height: 1.5;
+    letter-spacing: normal;
+    word-wrap: break-word;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: normal;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 56px;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border-default);
+  }
+  .nav-brand { font-size: 22px; font-weight: 700; color: var(--text-primary); text-decoration: none; letter-spacing: 0.04em; }
+  .nav-brand span { color: var(--abema-green); }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 13px; font-weight: 400; color: var(--text-secondary); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--text-primary); }
+  .nav-cta {
+    display: inline-block; background: var(--abema-green); color: #fff;
+    padding: 6px 16px; border-radius: 4px; font-size: 13px; font-weight: 700;
+    text-decoration: none; transition: opacity 0.15s;
+  }
+  .nav-cta:hover { opacity: 0.8; }
+
+  /* HERO */
+  .hero { padding: 80px 32px 64px; text-align: center; background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-primary) 100%); }
+  .hero h1 {
+    font-size: 32px; font-weight: 700; line-height: 1.3;
+    letter-spacing: normal;
+    color: var(--text-primary); margin-bottom: 16px;
+  }
+  .hero h1 em { font-style: normal; color: var(--abema-green); }
+  .hero p {
+    font-size: 16px; font-weight: 400; line-height: 1.75;
+    color: var(--text-secondary); max-width: 640px; margin: 0 auto 32px;
+  }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; background: var(--abema-green); color: #fff;
+    padding: 8px 24px; border-radius: 4px; border: none;
+    font-family: var(--font-base); font-size: 14px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.8; }
+  .btn-outline {
+    display: inline-block; background: transparent; color: var(--text-primary);
+    padding: 8px 24px; border-radius: 4px;
+    border: 1px solid var(--border-strong);
+    font-family: var(--font-base); font-size: 14px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-outline:hover { background: var(--bg-hover); }
+  .btn-pink {
+    display: inline-block; background: var(--abema-pink); color: #fff;
+    padding: 8px 24px; border-radius: 4px; border: none;
+    font-family: var(--font-base); font-size: 14px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-pink:hover { opacity: 0.8; }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 960px; margin: 0 auto; }
+  .section-label {
+    font-size: 11px; font-weight: 700; color: var(--text-secondary);
+    text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.08em;
+  }
+  .section-title {
+    font-size: 24px; font-weight: 700; line-height: 1.5;
+    margin-bottom: 32px; color: var(--text-primary);
+  }
+  .section-divider { border: none; border-top: 1px solid var(--border-default); margin: 0; }
+
+  .section-surface { background: var(--bg-surface); padding: 64px 32px; }
+  .section-surface .section-inner { max-width: 960px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 4px; overflow: hidden; background: var(--bg-surface); border: 1px solid var(--border-default); }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; color: var(--text-primary); }
+  .color-swatch-hex { font-size: 12px; color: var(--text-secondary); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 700; color: var(--text-secondary); margin: 24px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border-default); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; }
+  .type-context { display: inline-block; background: var(--bg-elevated); color: var(--text-secondary); font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; }
+  .btn-danger { display: inline-block; background: var(--danger); color: #fff; padding: 8px 24px; border-radius: 4px; border: none; font-family: var(--font-base); font-size: 14px; font-weight: 700; text-decoration: none; cursor: pointer; }
+  .btn-ghost { display: inline-block; background: transparent; color: var(--text-secondary); padding: 8px 24px; border-radius: 4px; border: none; font-family: var(--font-base); font-size: 14px; font-weight: 400; cursor: pointer; transition: color 0.15s; }
+  .btn-ghost:hover { color: var(--text-primary); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .card { background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: 4px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+  .card:hover { transform: translateY(-2px); box-shadow: var(--elevation-2); }
+  .card-thumb { width: 100%; aspect-ratio: 16/9; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; color: var(--text-disabled); font-size: 13px; }
+  .card-body { padding: 12px 16px; }
+  .card h3 { font-size: 14px; font-weight: 700; line-height: 1.3; margin-bottom: 4px; color: var(--text-primary); }
+  .card p { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+  .card-badge { display: inline-block; background: var(--abema-green); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 2px; margin-bottom: 6px; }
+  .card-badge--pink { background: var(--abema-pink); }
+
+  /* CONTENT PREVIEW */
+  .content-preview { max-width: 640px; margin: 0 auto; }
+  .content-preview h1 { font-size: 24px; font-weight: 700; line-height: 1.5; margin-bottom: 16px; }
+  .content-preview h2 { font-size: 22px; font-weight: 700; line-height: 1.0; margin: 24px 0 12px; }
+  .content-preview p { font-size: 14px; font-weight: 400; line-height: 1.5; letter-spacing: normal; margin-bottom: 16px; color: var(--text-secondary); }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: var(--bg-surface); color: var(--text-primary);
+    border: 1px solid var(--border-default); padding: 8px 12px; border-radius: 4px;
+    font-family: var(--font-base); font-size: 14px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input::placeholder { color: var(--text-placeholder); }
+  .form-input:focus, .form-input--focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(0,185,0,0.2); }
+  .form-input--error { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(229,57,53,0.2); }
+  .form-state-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .elevation-card { background: var(--bg-surface); border-radius: 4px; padding: 24px; text-align: center; border: 1px solid var(--border-default); }
+  .elevation-label { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); word-break: break-all; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--abema-green); border-radius: 2px; margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--text-secondary); }
+
+  /* CONTENT WIDTHS */
+  .width-bar { height: 32px; background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: 4px; margin-bottom: 8px; position: relative; }
+  .width-bar-inner { height: 100%; background: var(--abema-green); border-radius: 3px; opacity: 0.3; }
+  .width-bar-label { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+  .width-bar-value { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); }
+
+  /* PROGRAM TABLE */
+  .program-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+  .program-table th { text-align: left; font-size: 12px; font-weight: 700; color: var(--text-secondary); padding: 8px 12px; border-bottom: 1px solid var(--border-default); }
+  .program-table td { font-size: 13px; color: var(--text-primary); padding: 10px 12px; border-bottom: 1px solid var(--border-default); }
+  .program-table tr:hover { background: var(--bg-hover); }
+  .program-time { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+  .program-live { display: inline-block; background: var(--danger); color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 2px; margin-left: 4px; }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; background: var(--bg-elevated); font-size: 12px; color: var(--text-secondary); }
+
+  @media (max-width: 769px) {
+    .hero h1 { font-size: 24px; }
+    .hero p { font-size: 14px; line-height: 1.5; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .section-surface { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#"><span>&#9654;</span> ABEMA</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#content">Content</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#elevation">Elevation</a></li>
+  </ul>
+  <a class="nav-cta" href="#">番組表</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System Preview<br><em>ABEMA</em> — 日本語版</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。ダーク基調の動画配信UI。カラー、フォント、コンポーネント、スペーシングの全値を可視化。computed style 実測値に基づく。</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">番組を探す</a>
+    <a class="btn-outline" href="#">DESIGN.md を読む</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#00b900"></div><div class="color-swatch-info"><div class="color-swatch-name">ABEMA Green</div><div class="color-swatch-hex">#00b900</div><div class="color-swatch-role">ブランドカラー・CTA</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ff0077"></div><div class="color-swatch-info"><div class="color-swatch-name">ABEMA Pink</div><div class="color-swatch-hex">#ff0077</div><div class="color-swatch-role">プレミアム・ハイライト</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border:1px solid #333"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">本文テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(255,255,255,0.7)"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Secondary</div><div class="color-swatch-hex">rgba(255,255,255,0.7)</div><div class="color-swatch-role">補足テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(255,255,255,0.38)"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Disabled</div><div class="color-swatch-hex">rgba(255,255,255,0.38)</div><div class="color-swatch-role">無効状態</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(255,255,255,0.5)"></div><div class="color-swatch-info"><div class="color-swatch-name">Placeholder</div><div class="color-swatch-hex">rgba(255,255,255,0.5)</div><div class="color-swatch-role">プレースホルダー</div></div></div>
+  </div>
+
+  <div class="color-group-label">Semantic</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#00b900"></div><div class="color-swatch-info"><div class="color-swatch-name">Success</div><div class="color-swatch-hex">#00b900</div><div class="color-swatch-role">成功・完了</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e53935"></div><div class="color-swatch-info"><div class="color-swatch-name">Danger</div><div class="color-swatch-hex">#e53935</div><div class="color-swatch-role">エラー・LIVE</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ff9800"></div><div class="color-swatch-info"><div class="color-swatch-name">Warning</div><div class="color-swatch-hex">#ff9800</div><div class="color-swatch-role">警告・注意</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface & Border</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000000; border:1px solid #333"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">ページ背景（純黒）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1a1a1a"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#1a1a1a</div><div class="color-swatch-role">カード・パネル</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#212121"></div><div class="color-swatch-info"><div class="color-swatch-name">Elevated</div><div class="color-swatch-hex">#212121</div><div class="color-swatch-role">ナビ・ヘッダー</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#2a2a2a"></div><div class="color-swatch-info"><div class="color-swatch-name">Hover</div><div class="color-swatch-hex">#2a2a2a</div><div class="color-swatch-role">ホバー状態</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(255,255,255,0.12)"></div><div class="color-swatch-info"><div class="color-swatch-name">Border Default</div><div class="color-swatch-hex">rgba(255,255,255,0.12)</div><div class="color-swatch-role">標準ボーダー</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(255,255,255,0.3)"></div><div class="color-swatch-info"><div class="color-swatch-name">Border Strong</div><div class="color-swatch-hex">rgba(255,255,255,0.3)</div><div class="color-swatch-role">強調ボーダー</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography -- 実測値</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-size:24px; font-weight:700; line-height:36px; letter-spacing:normal;">ニュース、アニメ、ドラマ — Display (24px)</div>
+    <div class="type-meta">24px / 700 / line-height: 36px (1.5) / letter-spacing: normal / palt: なし<span class="type-context">ジャンル見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:22px; font-weight:700; line-height:22px; letter-spacing:normal;">人気・注目 — Heading 1 (22px)</div>
+    <div class="type-meta">22px / 700 / line-height: 22px (1.0) / letter-spacing: normal / palt: なし<span class="type-context">セクション見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:18px; font-weight:700; line-height:24px; letter-spacing:normal;">今日のおすすめ — Heading 2 (18px)</div>
+    <div class="type-meta">18px / 700 / line-height: 24px (1.33) / letter-spacing: normal / palt: なし</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:700; line-height:20px; letter-spacing:normal;">番組カテゴリ — Heading 3 (16px)</div>
+    <div class="type-meta">16px / 700 / line-height: 20px (1.25) / letter-spacing: normal / palt: なし</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:21px; letter-spacing:normal;">本文テキスト — 動画配信サービスのUI。番組情報やお知らせ、ユーザーへの案内文などに使用。line-height: 1.5 でコンパクトだが読みやすい行間を確保。</div>
+    <div class="type-meta">14px / 400 / line-height: 21px (1.5) / letter-spacing: normal / palt: なし<span class="type-context">本文</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:700; line-height:18.2px; letter-spacing:normal;">番組タイトルテキスト — Body Bold (14px/700)</div>
+    <div class="type-meta">14px / 700 / line-height: 18.2px (1.3) / letter-spacing: normal<span class="type-context">番組タイトル</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:400; line-height:16px; letter-spacing:normal; color:var(--text-secondary);">補足テキスト・番組時間 — Caption (12px)</div>
+    <div class="type-meta">12px / 400 / line-height: 16px (1.33) / color: Text Secondary</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:10px; font-weight:400; line-height:14px; letter-spacing:normal; color:var(--text-secondary);">メタ情報・最小テキスト — Small (10px)</div>
+    <div class="type-meta">10px / 400 / line-height: 14px (1.4)</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CONTENT PREVIEW -->
+<section class="section-surface" id="content">
+<div class="section-inner">
+  <div class="section-label">03 / Content -- 番組情報の組版</div>
+  <h2 class="section-title">コンテンツ組版サンプル</h2>
+  <div class="content-preview">
+    <h1>今夜の注目番組ラインナップ</h1>
+    <p>ABEMAでは、ニュース、アニメ、ドラマ、バラエティ、スポーツなど多彩なジャンルの番組を24時間無料で配信しています。話題の新作アニメから、地上波では見られないオリジナルドラマまで。</p>
+    <h2>人気・注目</h2>
+    <p>今週もっとも視聴された番組をピックアップ。リアルタイム配信と見逃し配信の両方に対応しており、いつでもどこでもお楽しみいただけます。ABEMAプレミアムなら、さらに多くの作品が見放題。</p>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- PROGRAM TABLE -->
+<section class="section" id="program">
+  <div class="section-label">04 / Program Table -- 番組表サンプル</div>
+  <h2 class="section-title">番組表</h2>
+  <table class="program-table">
+    <thead>
+      <tr><th>時間</th><th>番組名</th><th>ジャンル</th><th>状態</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="program-time">19:00 - 20:00</td><td>ABEMAニュース</td><td style="color:var(--text-secondary)">ニュース</td><td><span class="program-live">LIVE</span></td></tr>
+      <tr><td class="program-time">20:00 - 21:00</td><td>恋愛リアリティーショー Season 5</td><td style="color:var(--text-secondary)">バラエティ</td><td style="color:var(--text-secondary)">予定</td></tr>
+      <tr><td class="program-time">21:00 - 21:30</td><td>推しの子 第2期 #08</td><td style="color:var(--text-secondary)">アニメ</td><td style="color:var(--text-secondary)">予定</td></tr>
+      <tr><td class="program-time">21:30 - 22:00</td><td>呪術廻戦 懐玉・玉折 #04</td><td style="color:var(--text-secondary)">アニメ</td><td style="color:var(--text-secondary)">予定</td></tr>
+      <tr><td class="program-time">22:00 - 23:00</td><td>格闘代理戦争 特別編</td><td style="color:var(--text-secondary)">スポーツ</td><td style="color:var(--text-secondary)">予定</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">05 / Buttons</div>
+  <h2 class="section-title">ボタンバリエーション</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-primary" href="#">視聴する</a><div class="button-label">Primary (Green)</div></div>
+    <div class="button-item"><a class="btn-pink" href="#">プレミアム</a><div class="button-label">Premium (Pink)</div></div>
+    <div class="button-item"><a class="btn-outline" href="#">詳細を見る</a><div class="button-label">Outline</div></div>
+    <div class="button-item"><a class="btn-danger" href="#" style="display:inline-block; padding:8px 24px; text-decoration:none;">解約する</a><div class="button-label">Danger</div></div>
+    <div class="button-item"><button class="btn-ghost">あとで見る</button><div class="button-label">Ghost</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">06 / Cards -- 番組サムネイル</div>
+  <h2 class="section-title">カードコンポーネント</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-thumb">16:9 サムネイル</div>
+      <div class="card-body">
+        <span class="card-badge">NEW</span>
+        <h3>ABEMAオリジナルドラマ 新シーズン配信開始</h3>
+        <p>地上波では見られないABEMA限定のオリジナルドラマ。豪華キャストで贈る話題作。</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb">16:9 サムネイル</div>
+      <div class="card-body">
+        <span class="card-badge card-badge--pink">PREMIUM</span>
+        <h3>今週の人気アニメランキング TOP10</h3>
+        <p>視聴数をもとにした週間ランキング。今期の覇権アニメをチェック。</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb">16:9 サムネイル</div>
+      <div class="card-body">
+        <span class="card-badge">LIVE</span>
+        <h3>緊急ニュース特番 ライブ配信中</h3>
+        <p>24時間体制のニュースチャンネル。いま起きていることをリアルタイムでお届け。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">07 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input" type="text" placeholder="name@example.com"><div class="form-state-label">デフォルト -- border: rgba(255,255,255,0.12), radius: 4px</div></div>
+  <div class="form-group"><label class="form-label">パスワード</label><input class="form-input form-input--focus" type="password" value="mypassword123"><div class="form-state-label">フォーカス -- border: #00b900 (ABEMA Green)</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー -- border: #e53935 (Danger)</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">08 / Elevation</div>
+  <h2 class="section-title">Depth & Elevation</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">影なし、ボーダーのみ</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-1);"><div class="elevation-label">Elevation 1</div><div class="elevation-desc">ドロップダウン・ツールチップ</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-2);"><div class="elevation-label">Elevation 2</div><div class="elevation-desc">モーダル・ダイアログ</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-3);"><div class="elevation-label">Elevation 3</div><div class="elevation-desc">フローティング要素</div></div>
+    <div class="elevation-card" style="border: 2px solid var(--border-focus);"><div class="elevation-label">Focus Ring</div><div class="elevation-desc">#00b900 (ABEMA Green)</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section" id="spacing">
+  <div class="section-label">09 / Spacing</div>
+  <h2 class="section-title">スペーシングスケール</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px;"></div><div class="spacing-value">4px<br>XS</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px;"></div><div class="spacing-value">8px<br>S</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px;"></div><div class="spacing-value">16px<br>M</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px;"></div><div class="spacing-value">24px<br>L</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px;"></div><div class="spacing-value">32px<br>XL</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px;"></div><div class="spacing-value">48px<br>XXL</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CONTENT WIDTHS -->
+<section class="section" id="widths">
+  <div class="section-label">10 / Layout</div>
+  <h2 class="section-title">コンテンツ幅</h2>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Max Container <span class="width-bar-value">1280px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Main Content <span class="width-bar-value">960px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:75%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Content Area <span class="width-bar-value">640px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:50%"></div></div></div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://abema.tv/" style="color:var(--abema-green); text-decoration:underline;">abema.tv</a> DESIGN.md — awesome-design-md-jp
+</footer>
+
+</body>
+</html>

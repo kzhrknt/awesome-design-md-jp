@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: connpass (Light)</title>
+<style>
+  :root {
+    /* === Colors: CSS Custom Properties 実測値 === */
+    --connpass-orange: #f18d05;
+    --connpass-orange-dark: #d97e04;
+    --connpass-red: #e8283f;
+    --connpass-red-dark: #c41e32;
+    --text-primary: #444;
+    --text-heading: #333;
+    --text-secondary: #888;
+    --text-disabled: #aaa;
+    --link-color: #0066cc;
+    --link-hover: #003366;
+    --success: #5cb85c;
+    --bg-primary: #fff;
+    --bg-secondary: #f5f5f5;
+    --border-default: #ddd;
+    --border-light: #eee;
+    /* === Elevation 実測値 === */
+    --elevation-1: 0 1px 3px rgba(0,0,0,0.12);
+    --elevation-2: 0 2px 6px rgba(0,0,0,0.15);
+    /* === Fonts 実測値 === */
+    --font-base: "Lucida Grande", Verdana, "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "MS Pゴシック", sans-serif;
+    --font-mono: Consolas, "Courier New", monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-base);
+    font-size: 12px; font-weight: 400; line-height: 18px;
+    letter-spacing: normal;
+    word-wrap: break-word;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: normal;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; height: 50px;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-default);
+  }
+  .nav-brand { font-size: 18px; font-weight: 700; color: var(--connpass-orange); text-decoration: none; }
+  .nav-links { display: flex; gap: 20px; list-style: none; }
+  .nav-links a { font-size: 12px; font-weight: 400; color: var(--text-secondary); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--text-primary); }
+  .nav-cta {
+    display: inline-block; background: var(--connpass-orange); color: #fff;
+    padding: 6px 16px; border-radius: 4px; font-size: 12px; font-weight: 700;
+    text-decoration: none; transition: background 0.15s;
+  }
+  .nav-cta:hover { background: var(--connpass-orange-dark); }
+
+  /* HERO */
+  .hero { padding: 64px 24px 48px; text-align: center; background: var(--bg-secondary); }
+  .hero h1 {
+    font-size: 36px; font-weight: 400; line-height: 36px;
+    letter-spacing: normal; font-feature-settings: normal;
+    color: var(--text-heading); margin-bottom: 16px;
+  }
+  .hero p {
+    font-size: 14px; font-weight: 400; line-height: 24px;
+    color: var(--text-secondary); max-width: 600px; margin: 0 auto 24px;
+  }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; background: var(--connpass-orange); color: #fff;
+    padding: 8px 24px; border-radius: 4px; border: none;
+    font-family: var(--font-base); font-size: 14px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-primary:hover { background: var(--connpass-orange-dark); }
+  .btn-outline {
+    display: inline-block; background: transparent; color: var(--text-primary);
+    padding: 8px 24px; border-radius: 4px;
+    border: 1px solid var(--border-default);
+    font-family: var(--font-base); font-size: 14px; font-weight: 400;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-outline:hover { background: var(--bg-secondary); }
+
+  /* SECTIONS */
+  .section { padding: 48px 24px; max-width: 980px; margin: 0 auto; }
+  .section-label {
+    font-size: 11px; font-weight: 700; color: var(--text-secondary);
+    text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.06em;
+  }
+  .section-title {
+    font-size: 24px; font-weight: 400; line-height: 24px;
+    letter-spacing: normal; font-feature-settings: normal;
+    margin-bottom: 28px; color: var(--text-heading);
+  }
+  .section-divider { border: none; border-top: 1px solid var(--border-default); margin: 0; }
+
+  .section-gray { background: var(--bg-secondary); padding: 48px 24px; }
+  .section-gray .section-inner { max-width: 980px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .color-swatch { border-radius: 4px; overflow: hidden; background: #fff; border: 1px solid var(--border-default); }
+  .color-swatch-block { height: 64px; width: 100%; }
+  .color-swatch-info { padding: 8px 10px; }
+  .color-swatch-name { font-size: 12px; font-weight: 700; margin-bottom: 2px; color: var(--text-primary); }
+  .color-swatch-hex { font-size: 11px; color: var(--text-secondary); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
+  .color-group-label { font-size: 13px; font-weight: 700; color: var(--text-secondary); margin: 20px 0 8px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border-light); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; font-weight: 400; color: var(--text-secondary); margin-top: 6px; }
+  .type-context { display: inline-block; background: var(--bg-secondary); color: var(--text-secondary); font-size: 10px; padding: 2px 6px; border-radius: 3px; margin-left: 6px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 11px; font-weight: 400; color: var(--text-secondary); margin-top: 6px; }
+  .btn-danger { display: inline-block; background: var(--connpass-red); color: #fff; padding: 8px 24px; border-radius: 4px; border: none; font-family: var(--font-base); font-size: 14px; font-weight: 700; text-decoration: none; cursor: pointer; }
+  .btn-danger:hover { background: var(--connpass-red-dark); }
+  .btn-success { display: inline-block; background: var(--success); color: #fff; padding: 8px 24px; border-radius: 4px; border: none; font-family: var(--font-base); font-size: 14px; font-weight: 700; text-decoration: none; cursor: pointer; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .card { background: #fff; border: 1px solid var(--border-default); border-radius: 4px; padding: 16px; transition: box-shadow 0.2s; }
+  .card:hover { box-shadow: var(--elevation-1); }
+  .card h3 { font-size: 18px; font-weight: 400; line-height: 24px; letter-spacing: normal; margin-bottom: 8px; color: var(--text-heading); }
+  .card p { font-size: 12px; color: var(--text-secondary); line-height: 18px; }
+  .card-meta { font-size: 11px; color: var(--text-secondary); margin-top: 8px; }
+  .card-tag { display: inline-block; font-size: 10px; background: var(--bg-secondary); color: var(--text-secondary); padding: 2px 8px; border-radius: 3px; border: 1px solid var(--border-default); margin-right: 4px; }
+  .card-link { font-size: 12px; color: var(--link-color); text-decoration: none; margin-top: 10px; display: inline-block; }
+  .card-link:hover { color: var(--link-hover); text-decoration: underline; }
+  .card-orange-bar { border-left: 3px solid var(--connpass-orange); }
+
+  /* EVENT LIST */
+  .event-item { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border-light); align-items: flex-start; }
+  .event-date { text-align: center; min-width: 48px; }
+  .event-date-month { font-size: 10px; font-weight: 700; color: var(--connpass-orange); text-transform: uppercase; }
+  .event-date-day { font-size: 24px; font-weight: 400; color: var(--text-heading); line-height: 1.2; }
+  .event-date-dow { font-size: 10px; color: var(--text-secondary); }
+  .event-body h4 { font-size: 14px; font-weight: 400; color: var(--link-color); line-height: 20px; margin-bottom: 4px; cursor: pointer; }
+  .event-body h4:hover { text-decoration: underline; }
+  .event-body p { font-size: 11px; color: var(--text-secondary); line-height: 16px; }
+  .event-badge { display: inline-block; font-size: 10px; color: #fff; background: var(--connpass-orange); padding: 1px 6px; border-radius: 3px; margin-left: 6px; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 16px; max-width: 400px; }
+  .form-label { display: block; font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+  .form-input {
+    width: 100%; background: #fff; color: var(--text-primary);
+    border: 1px solid var(--border-default); padding: 6px 10px; border-radius: 4px;
+    font-family: var(--font-base); font-size: 12px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-input--focus { border-color: var(--connpass-orange); box-shadow: 0 0 0 2px rgba(241,141,5,0.2); }
+  .form-input--error { border-color: var(--connpass-red); box-shadow: 0 0 0 2px rgba(232,40,63,0.2); }
+  .form-state-label { font-size: 10px; color: var(--text-secondary); margin-top: 4px; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .elevation-card { background: #fff; border-radius: 4px; padding: 20px; text-align: center; border: 1px solid var(--border-default); }
+  .elevation-label { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); word-break: break-all; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--connpass-orange); border-radius: 2px; margin-bottom: 4px; height: 24px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 10px; font-weight: 400; color: var(--text-secondary); }
+
+  /* CONTENT WIDTHS */
+  .width-bar { height: 28px; background: var(--bg-secondary); border: 1px solid var(--border-default); border-radius: 4px; margin-bottom: 6px; position: relative; }
+  .width-bar-inner { height: 100%; background: var(--connpass-orange); border-radius: 3px; opacity: 0.3; }
+  .width-bar-label { font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+  .width-bar-value { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
+
+  /* FOOTER */
+  .footer { padding: 24px; text-align: center; background: var(--bg-secondary); font-size: 11px; color: var(--text-secondary); border-top: 1px solid var(--border-default); }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 24px; line-height: 28px; }
+    .hero p { font-size: 12px; line-height: 18px; }
+    .nav-links { display: none; }
+    .section { padding: 36px 16px; }
+    .section-gray { padding: 36px 16px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">connpass</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#elevation">Elevation</a></li>
+  </ul>
+  <a class="nav-cta" href="#">イベント作成</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System Preview<br>connpass.com</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。カラー、フォント、コンポーネント、スペーシングの全値を可視化。computed style 実測値に基づく。</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">イベントを探す</a>
+    <a class="btn-outline" href="#">DESIGN.md を読む</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f18d05"></div><div class="color-swatch-info"><div class="color-swatch-name">connpass Orange</div><div class="color-swatch-hex">#f18d05</div><div class="color-swatch-role">ブランド・CTA</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d97e04"></div><div class="color-swatch-info"><div class="color-swatch-name">Orange Dark</div><div class="color-swatch-hex">#d97e04</div><div class="color-swatch-role">ホバー・プレス</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e8283f"></div><div class="color-swatch-info"><div class="color-swatch-name">connpass Red</div><div class="color-swatch-hex">#e8283f</div><div class="color-swatch-role">強調・エラー</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c41e32"></div><div class="color-swatch-info"><div class="color-swatch-name">Red Dark</div><div class="color-swatch-hex">#c41e32</div><div class="color-swatch-role">ホバー・プレス</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#333"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Heading</div><div class="color-swatch-hex">#333</div><div class="color-swatch-role">見出しテキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#444"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#444</div><div class="color-swatch-role">本文テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#888"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Secondary</div><div class="color-swatch-hex">#888</div><div class="color-swatch-role">補足・メタ情報</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#aaa"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Disabled</div><div class="color-swatch-hex">#aaa</div><div class="color-swatch-role">無効テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0066cc"></div><div class="color-swatch-info"><div class="color-swatch-name">Link</div><div class="color-swatch-hex">#0066cc</div><div class="color-swatch-role">リンクテキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#003366"></div><div class="color-swatch-info"><div class="color-swatch-name">Link Hover</div><div class="color-swatch-hex">#003366</div><div class="color-swatch-role">リンクホバー</div></div></div>
+  </div>
+
+  <div class="color-group-label">Semantic</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#5cb85c"></div><div class="color-swatch-info"><div class="color-swatch-name">Success</div><div class="color-swatch-hex">#5cb85c</div><div class="color-swatch-role">成功・参加済み</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e8283f"></div><div class="color-swatch-info"><div class="color-swatch-name">Danger</div><div class="color-swatch-hex">#e8283f</div><div class="color-swatch-role">エラー・削除</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f18d05"></div><div class="color-swatch-info"><div class="color-swatch-name">Warning</div><div class="color-swatch-hex">#f18d05</div><div class="color-swatch-role">警告・注意</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface & Border</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff; border-bottom:1px solid #ddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5f5f5"></div><div class="color-swatch-info"><div class="color-swatch-name">Background Secondary</div><div class="color-swatch-hex">#f5f5f5</div><div class="color-swatch-role">セクション背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ddd; border-bottom:1px solid #ccc"></div><div class="color-swatch-info"><div class="color-swatch-name">Border Default</div><div class="color-swatch-hex">#ddd</div><div class="color-swatch-role">標準ボーダー</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#eee; border-bottom:1px solid #ddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Border Light</div><div class="color-swatch-hex">#eee</div><div class="color-swatch-role">薄いボーダー</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography -- 実測値</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-size:36px; font-weight:400; line-height:36px; letter-spacing:normal; color:var(--text-heading);">エンジニアをつなぐ IT勉強会支援プラットフォーム</div>
+    <div class="type-meta">36px / 400 / line-height: 36px (x1.0) / letter-spacing: normal / palt: なし<span class="type-context">トップページ h2</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:24px; font-weight:400; line-height:24px; letter-spacing:normal; color:var(--text-heading);">おすすめグループ</div>
+    <div class="type-meta">24px / 400 / line-height: 24px (x1.0) / letter-spacing: normal / palt: なし<span class="type-context">セクション見出し h2</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:18px; font-weight:400; line-height:24px; letter-spacing:normal; color:var(--text-heading);">イベント詳細 -- Heading 3</div>
+    <div class="type-meta">18px / 400 / line-height: 24px (x1.33) / letter-spacing: normal<span class="type-context">小見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:20px; letter-spacing:normal; color:var(--text-primary);">React.js ハンズオン勉強会 #42 -- 初心者歓迎、もくもく会形式で進めます</div>
+    <div class="type-meta">14px / 400 / line-height: 20px (x1.43) / letter-spacing: normal<span class="type-context">イベントタイトル（一覧）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:400; line-height:18px; letter-spacing:normal; color:var(--text-primary);">本文テキスト -- connpass の基本テキストサイズ。font-size: 12px / line-height: 18px (x1.5) の組み合わせ。Lucida Grande を先頭に置くフォントスタックが特徴的で、欧文のグリフ品質を優先する古典的な日本語Webサービスの構成。</div>
+    <div class="type-meta">12px / 400 / line-height: 18px (x1.5) / letter-spacing: normal / palt: なし<span class="type-context">本文</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:11px; font-weight:400; line-height:16px; letter-spacing:normal; color:var(--text-secondary);">2026/04/15 (水) 19:00 - 21:00 JST -- オンライン開催 -- 参加者 42/50人</div>
+    <div class="type-meta">11px / 400 / line-height: 16px (x1.45) / color: Text Secondary<span class="type-context">メタ情報</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:10px; font-weight:400; line-height:14px; letter-spacing:normal; color:var(--text-disabled);">最小テキスト -- Small (10px)</div>
+    <div class="type-meta">10px / 400 / line-height: 14px (x1.4)</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- EVENT LIST PREVIEW -->
+<section class="section-gray" id="events">
+<div class="section-inner">
+  <div class="section-label">03 / Events -- イベント一覧</div>
+  <h2 class="section-title">イベント一覧サンプル</h2>
+
+  <div style="max-width:700px; background:#fff; border:1px solid var(--border-default); border-radius:4px; padding:0 16px;">
+    <div class="event-item">
+      <div class="event-date">
+        <div class="event-date-month">APR</div>
+        <div class="event-date-day">15</div>
+        <div class="event-date-dow">水</div>
+      </div>
+      <div class="event-body">
+        <h4>React.js ハンズオン勉強会 #42 -- 初心者歓迎<span class="event-badge">残り8枠</span></h4>
+        <p>React の基礎から Hooks まで。もくもく会形式で進めます。メンターが常駐しているので初心者も安心。</p>
+        <p style="margin-top:4px;">主催: Frontend Tokyo / 参加者 42/50人</p>
+      </div>
+    </div>
+    <div class="event-item">
+      <div class="event-date">
+        <div class="event-date-month">APR</div>
+        <div class="event-date-day">18</div>
+        <div class="event-date-dow">土</div>
+      </div>
+      <div class="event-body">
+        <h4>Kubernetes 入門ワークショップ -- ハンズオン形式</h4>
+        <p>Kubernetes クラスタの構築からデプロイまでを半日で学ぶワークショップ。Docker の基礎知識があれば参加可能。</p>
+        <p style="margin-top:4px;">主催: Cloud Native JP / 参加者 28/30人</p>
+      </div>
+    </div>
+    <div class="event-item" style="border-bottom:none;">
+      <div class="event-date">
+        <div class="event-date-month">APR</div>
+        <div class="event-date-day">22</div>
+        <div class="event-date-dow">水</div>
+      </div>
+      <div class="event-body">
+        <h4>Python データ分析もくもく会 vol.15</h4>
+        <p>pandas, matplotlib を使ったデータ分析をもくもくと進める会。成果発表タイムあり。初心者歓迎。</p>
+        <p style="margin-top:4px;">主催: PyData Tokyo / 参加者 15/20人</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">ボタンバリエーション</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-primary" href="#">イベント作成</a><div class="button-label">Primary (Orange)</div></div>
+    <div class="button-item"><a class="btn-danger" href="#" style="text-decoration:none;">キャンセル</a><div class="button-label">Danger (Red)</div></div>
+    <div class="button-item"><a class="btn-success" href="#" style="text-decoration:none;">参加する</a><div class="button-label">Success</div></div>
+    <div class="button-item"><a class="btn-outline" href="#">詳細を見る</a><div class="button-label">Outline</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">カードコンポーネント</h2>
+  <div class="card-grid">
+    <div class="card card-orange-bar">
+      <h3>フロントエンド勉強会</h3>
+      <p>React, Vue, Svelte など最新のフロントエンド技術について議論・ハンズオンを行うコミュニティです。毎月第2水曜日に開催。</p>
+      <div style="margin-top:8px;"><span class="card-tag">React</span><span class="card-tag">TypeScript</span><span class="card-tag">初心者歓迎</span></div>
+      <a class="card-link" href="#">グループを見る</a>
+    </div>
+    <div class="card card-orange-bar">
+      <h3>インフラ勉強会</h3>
+      <p>AWS, GCP, Azure などクラウドインフラの設計・運用について学ぶグループ。LT会とハンズオンを交互に実施。</p>
+      <div style="margin-top:8px;"><span class="card-tag">AWS</span><span class="card-tag">Docker</span><span class="card-tag">Kubernetes</span></div>
+      <a class="card-link" href="#">グループを見る</a>
+    </div>
+    <div class="card card-orange-bar">
+      <h3>機械学習もくもく会</h3>
+      <p>機械学習・データサイエンスに興味がある方が集まるもくもく会。初心者からプロまで幅広く参加しています。</p>
+      <div style="margin-top:8px;"><span class="card-tag">Python</span><span class="card-tag">ML</span><span class="card-tag">データ分析</span></div>
+      <a class="card-link" href="#">グループを見る</a>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group"><label class="form-label">イベントタイトル</label><input class="form-input" type="text" placeholder="例: React.js ハンズオン勉強会 #42"><div class="form-state-label">デフォルト -- border: #ddd, radius: 4px</div></div>
+  <div class="form-group"><label class="form-label">開催場所</label><input class="form-input form-input--focus" type="text" value="東京都渋谷区 コワーキングスペース"><div class="form-state-label">フォーカス -- border: #f18d05 (connpass Orange)</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー -- border: #e8283f (connpass Red)</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">Depth & Elevation</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">影なし、ボーダーのみ（基本）</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-1);"><div class="elevation-label">Elevation 1</div><div class="elevation-desc">カード・ホバー時</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-2);"><div class="elevation-label">Elevation 2</div><div class="elevation-desc">ドロップダウン・ポップオーバー</div></div>
+    <div class="elevation-card" style="border: 2px solid var(--connpass-orange);"><div class="elevation-label">Orange Border</div><div class="elevation-desc">アクティブ・選択中</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section" id="spacing">
+  <div class="section-label">08 / Spacing</div>
+  <h2 class="section-title">スペーシングスケール</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px;"></div><div class="spacing-value">4px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px;"></div><div class="spacing-value">8px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px;"></div><div class="spacing-value">16px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px;"></div><div class="spacing-value">24px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px;"></div><div class="spacing-value">32px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px;"></div><div class="spacing-value">48px</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CONTENT WIDTHS -->
+<section class="section" id="widths">
+  <div class="section-label">09 / Layout</div>
+  <h2 class="section-title">コンテンツ幅</h2>
+  <div style="margin-bottom:12px"><div class="width-bar-label">Main Container <span class="width-bar-value">980px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:12px"><div class="width-bar-label">Event List <span class="width-bar-value">700px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:71.4%"></div></div></div>
+  <div style="margin-bottom:12px"><div class="width-bar-label">Sidebar <span class="width-bar-value">260px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:26.5%"></div></div></div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://connpass.com/" style="color:var(--connpass-orange); text-decoration:underline;">connpass.com</a> DESIGN.md -- awesome-design-md-jp
+</footer>
+
+</body>
+</html>

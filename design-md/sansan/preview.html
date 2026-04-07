@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Sansan (Light)</title>
+<style>
+  :root {
+    /* === Colors: CSS Custom Properties 実測値 === */
+    --sansan-navy: #042a6d;
+    --sansan-blue: #2566d4;
+    --sansan-blue-hover: #1d54b0;
+    --text-primary: #1a1a1a;
+    --text-secondary: #666666;
+    --text-disabled: #999999;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --bg-navy: #042a6d;
+    --border-default: #dddddd;
+    --border-focus: #2566d4;
+    --surface-card: #ffffff;
+    --surface-danger: #cc0000;
+    --surface-warning: #f5a623;
+    --surface-success: #2e8b57;
+    /* === Elevation 実測値 === */
+    --elevation-1: 0 2px 8px rgba(0,0,0,0.08);
+    --elevation-2: 0 4px 16px rgba(0,0,0,0.12);
+    --elevation-3: 0 8px 32px rgba(0,0,0,0.16);
+    /* === Fonts 実測値 === */
+    --font-base: helvetica, arial, YuGothic, "Yu Gothic", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-base);
+    font-size: 14px; font-weight: 400; line-height: 14px;
+    letter-spacing: normal;
+    font-feature-settings: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 64px;
+    background: var(--sansan-navy);
+  }
+  .nav-brand { font-size: 20px; font-weight: 700; color: #fff; text-decoration: none; letter-spacing: 0.04em; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.8); text-decoration: none; line-height: 1.4; transition: color 0.15s; }
+  .nav-links a:hover { color: #fff; }
+  .nav-cta {
+    display: inline-block; background: var(--sansan-blue); color: #fff;
+    padding: 8px 20px; border-radius: 4px; font-size: 14px; font-weight: 700;
+    text-decoration: none; line-height: 1.4; transition: background 0.15s;
+  }
+  .nav-cta:hover { background: var(--sansan-blue-hover); }
+
+  /* HERO */
+  .hero { padding: 80px 32px 72px; text-align: center; background: var(--sansan-navy); color: #fff; }
+  .hero h1 {
+    font-size: 54.8px; font-weight: 700; line-height: 76.7px;
+    letter-spacing: normal; font-feature-settings: normal;
+    color: #fff; margin-bottom: 20px;
+  }
+  .hero p {
+    font-size: 18px; font-weight: 400; line-height: 1.6;
+    color: rgba(255,255,255,0.85); max-width: 640px; margin: 0 auto 36px;
+  }
+  .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; background: var(--sansan-blue); color: #fff;
+    padding: 12px 32px; border-radius: 4px; border: none;
+    font-family: var(--font-base); font-size: 16px; font-weight: 700;
+    line-height: 1.4; text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-primary:hover { background: var(--sansan-blue-hover); }
+  .btn-outline-white {
+    display: inline-block; background: transparent; color: #fff;
+    padding: 12px 32px; border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.6);
+    font-family: var(--font-base); font-size: 16px; font-weight: 700;
+    line-height: 1.4; text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-outline-white:hover { background: rgba(255,255,255,0.1); }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 960px; margin: 0 auto; }
+  .section-label {
+    font-size: 12px; font-weight: 700; color: var(--sansan-blue);
+    text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.08em; line-height: 1.4;
+  }
+  .section-title {
+    font-size: 28px; font-weight: 700; line-height: 1.4;
+    letter-spacing: normal; font-feature-settings: normal;
+    margin-bottom: 32px;
+  }
+  .section-divider { border: none; border-top: 1px solid var(--border-default); margin: 0; }
+
+  .section-gray { background: var(--bg-secondary); padding: 64px 32px; }
+  .section-gray .section-inner { max-width: 960px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 8px; overflow: hidden; background: #fff; box-shadow: var(--elevation-1); }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; color: var(--text-primary); line-height: 1.4; }
+  .color-swatch-hex { font-size: 12px; color: var(--text-secondary); font-family: var(--font-mono); line-height: 1.4; }
+  .color-swatch-role { font-size: 11px; color: var(--text-secondary); margin-top: 3px; line-height: 1.4; }
+  .color-group-label { font-size: 14px; font-weight: 700; color: var(--text-secondary); margin: 24px 0 10px; line-height: 1.4; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border-default); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; line-height: 1.4; }
+  .type-context { display: inline-block; background: var(--bg-secondary); color: var(--text-secondary); font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-left: 8px; line-height: 1.4; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; line-height: 1.4; }
+  .btn-outline {
+    display: inline-block; background: transparent; color: var(--sansan-blue);
+    padding: 12px 32px; border-radius: 4px;
+    border: 1px solid var(--sansan-blue);
+    font-family: var(--font-base); font-size: 16px; font-weight: 700;
+    line-height: 1.4; text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-outline:hover { background: rgba(37,102,212,0.06); }
+  .btn-navy {
+    display: inline-block; background: var(--sansan-navy); color: #fff;
+    padding: 12px 32px; border-radius: 4px; border: none;
+    font-family: var(--font-base); font-size: 16px; font-weight: 700;
+    line-height: 1.4; text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-navy:hover { opacity: 0.85; }
+  .btn-danger {
+    display: inline-block; background: var(--surface-danger); color: #fff;
+    padding: 12px 32px; border-radius: 4px; border: none;
+    font-family: var(--font-base); font-size: 16px; font-weight: 700;
+    line-height: 1.4; text-decoration: none; cursor: pointer;
+  }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .card { background: #fff; border: 1px solid #eeeeee; border-radius: 8px; padding: 24px; transition: box-shadow 0.3s; }
+  .card:hover { box-shadow: var(--elevation-2); }
+  .card h3 { font-size: 20px; font-weight: 700; line-height: 1.4; margin-bottom: 8px; }
+  .card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+  .card-link { font-size: 14px; color: var(--sansan-blue); text-decoration: none; font-weight: 700; margin-top: 12px; display: inline-block; line-height: 1.4; }
+  .card-link:hover { text-decoration: underline; }
+
+  /* ARTICLE PREVIEW */
+  .article-preview { max-width: 640px; margin: 0 auto; }
+  .article-preview h1 { font-size: 40px; font-weight: 700; line-height: 56px; margin-bottom: 20px; }
+  .article-preview h2 { font-size: 28px; font-weight: 700; line-height: 1.4; margin: 28px 0 12px; }
+  .article-preview p { font-size: 16px; font-weight: 400; line-height: 1.8; letter-spacing: normal; margin-bottom: 16px; color: var(--text-primary); }
+  .article-preview .body-note { font-size: 12px; color: var(--text-secondary); background: var(--bg-secondary); padding: 12px 16px; border-radius: 4px; line-height: 1.6; margin-bottom: 16px; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; line-height: 1.4; }
+  .form-input {
+    width: 100%; background: #fff; color: var(--text-primary);
+    border: 1px solid var(--border-default); padding: 10px 14px; border-radius: 4px;
+    font-family: var(--font-base); font-size: 14px; line-height: 1.4; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-input--focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(37,102,212,0.2); }
+  .form-input--error { border-color: var(--surface-danger); box-shadow: 0 0 0 3px rgba(204,0,0,0.15); }
+  .form-state-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .elevation-card { background: #fff; border-radius: 8px; padding: 24px; text-align: center; border: 1px solid var(--border-default); }
+  .elevation-label { font-size: 14px; font-weight: 700; margin-bottom: 4px; line-height: 1.4; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); word-break: break-all; line-height: 1.4; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--sansan-blue); border-radius: 3px; margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--text-secondary); line-height: 1.4; }
+
+  /* CONTENT WIDTHS */
+  .width-bar { height: 32px; background: var(--bg-secondary); border: 1px solid var(--border-default); border-radius: 4px; margin-bottom: 8px; position: relative; }
+  .width-bar-inner { height: 100%; background: var(--sansan-blue); border-radius: 3px; opacity: 0.25; }
+  .width-bar-label { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; line-height: 1.4; }
+  .width-bar-value { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; background: var(--sansan-navy); font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.6; }
+  .footer a { color: rgba(255,255,255,0.8); text-decoration: underline; }
+
+  @media (max-width: 767px) {
+    .hero h1 { font-size: 28px; line-height: 1.4; }
+    .hero p { font-size: 15px; line-height: 1.6; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .section-gray { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .article-preview h1 { font-size: 28px; line-height: 1.4; }
+    .article-preview p { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">Sansan</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#article">Article</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#elevation">Elevation</a></li>
+  </ul>
+  <a class="nav-cta" href="#">資料請求</a>
+</nav>
+
+<section class="hero">
+  <h1>名刺管理から、<br>収益を最大化する</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。カラー、フォント、コンポーネント、スペーシングの全値を可視化。computed style 実測値に基づく。</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">資料をダウンロード</a>
+    <a class="btn-outline-white" href="#">DESIGN.md を読む</a>
+  </div>
+</section>
+
+<hr class="section-divider" style="border-color: rgba(255,255,255,0.1);">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#042a6d"></div><div class="color-swatch-info"><div class="color-swatch-name">Sansan Navy</div><div class="color-swatch-hex">#042a6d</div><div class="color-swatch-role">ブランド・ヘッダー背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#2566d4"></div><div class="color-swatch-info"><div class="color-swatch-name">Sansan Blue</div><div class="color-swatch-hex">#2566d4</div><div class="color-swatch-role">CTA・リンク・アクセント</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1a1a1a"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#1a1a1a</div><div class="color-swatch-role">本文テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#666666"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Secondary</div><div class="color-swatch-hex">#666666</div><div class="color-swatch-role">補足テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#999999"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Disabled</div><div class="color-swatch-hex">#999999</div><div class="color-swatch-role">無効状態</div></div></div>
+  </div>
+
+  <div class="color-group-label">Semantic</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#2e8b57"></div><div class="color-swatch-info"><div class="color-swatch-name">Success</div><div class="color-swatch-hex">#2e8b57</div><div class="color-swatch-role">成功・完了</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#cc0000"></div><div class="color-swatch-info"><div class="color-swatch-name">Danger</div><div class="color-swatch-hex">#cc0000</div><div class="color-swatch-role">エラー・削除</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5a623"></div><div class="color-swatch-info"><div class="color-swatch-name">Warning</div><div class="color-swatch-hex">#f5a623</div><div class="color-swatch-role">警告・注意</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface & Border</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff; border-bottom:1px solid #ddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5f5f5"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#f5f5f5</div><div class="color-swatch-role">セクション背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dddddd; border-bottom:1px solid #ccc"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#dddddd</div><div class="color-swatch-role">標準ボーダー</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#eeeeee; border-bottom:1px solid #ddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Card Border</div><div class="color-swatch-hex">#eeeeee</div><div class="color-swatch-role">カード枠</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography -- 実測値</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-size:54.8px; font-weight:700; line-height:76.7px;">名刺管理から、収益を最大化する</div>
+    <div class="type-meta">54.8px / 700 / line-height: 76.7px (x1.4) / palt: なし<span class="type-context">Display</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:40px; font-weight:700; line-height:56px;">売上拡大とコスト削減を実現します</div>
+    <div class="type-meta">40px / 700 / line-height: 56px (x1.4) / palt: なし<span class="type-context">Heading 1</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:28px; font-weight:700; line-height:1.4;">営業DXサービス Sansan</div>
+    <div class="type-meta">28px / 700 / line-height: 1.4 / palt: なし<span class="type-context">Heading 2</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:20px; font-weight:700; line-height:1.4;">人脈を企業の資産に変える</div>
+    <div class="type-meta">20px / 700 / line-height: 1.4 / palt: なし<span class="type-context">Heading 3</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:14px;">本文テキスト body 実測値 -- line-height: 14px (x1.0) という極めてタイトな行間。body 要素に設定されているリセット値であり、コンポーネント単位で適切な行間を上書きして使用する設計。</div>
+    <div class="type-meta">14px / 400 / line-height: 14px (x1.0) / letter-spacing: normal<span class="type-context">Body (実測値)</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:1.7;">本文テキスト（推奨行間） -- 日本語コンテンツでは line-height: 1.7 程度が可読性に優れます。Sansanのコンポーネント内では、このようにコンポーネント単位で行間を調整して使用します。名刺管理サービスのUI設計に最適な組版。</div>
+    <div class="type-meta">14px / 400 / line-height: 1.7 (推奨上書き値)<span class="type-context">Body (推奨)</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:400; line-height:1.4; color:var(--text-secondary);">キャプション・補足テキスト Caption (12px)</div>
+    <div class="type-meta">12px / 400 / line-height: 1.4 / color: Text Secondary</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ARTICLE PREVIEW -->
+<section class="section-gray" id="article">
+<div class="section-inner">
+  <div class="section-label">03 / Article -- 組版サンプル</div>
+  <h2 class="section-title">ビジネスSaaS 組版サンプル</h2>
+  <div class="article-preview">
+    <h1>売上拡大とコスト削減を実現します</h1>
+    <div class="body-note">body の line-height は 1.0（実測値）。以下の本文は、コンポーネント単位で line-height: 1.8 を上書きした推奨スタイルで表示。</div>
+    <p>Sansanは、名刺をはじめとしたあらゆる顧客との接点情報を一元管理し、全社で共有することで、売上拡大とコスト削減を実現する営業DXサービスです。</p>
+    <h2>人脈を企業の資産に変える</h2>
+    <p>社内に蓄積された名刺データを組織全体で共有・活用することで、これまで個人に閉じていた人脈を企業の資産に変えます。helvetica と游ゴシックの混植で、欧文と和文の両方を美しく表示。ABCabc 123</p>
+    <p>営業活動の属人化を防ぎ、組織としての営業力を最大化します。CRM連携、メール配信、AI名刺管理などの機能を通じて、ビジネスの成長を支援します。</p>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">ボタンバリエーション</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-primary" href="#">資料をダウンロード</a><div class="button-label">Primary CTA</div></div>
+    <div class="button-item"><a class="btn-outline" href="#">詳しく見る</a><div class="button-label">Outline</div></div>
+    <div class="button-item"><a class="btn-navy" href="#">お問い合わせ</a><div class="button-label">Navy</div></div>
+    <div class="button-item"><a class="btn-danger" href="#" style="text-decoration:none;">削除する</a><div class="button-label">Danger</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">カードコンポーネント</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h3>名刺管理の効率化</h3>
+      <p>AI-OCRによる高精度なデータ化で、名刺情報を正確にデジタル化。手入力の手間を大幅に削減し、営業活動に集中できます。</p>
+      <a class="card-link" href="#">詳しく見る</a>
+    </div>
+    <div class="card" style="box-shadow: var(--elevation-2);">
+      <h3>全社での情報共有</h3>
+      <p>社内の人脈を可視化し、部門を超えた連携を促進。属人化していた顧客情報を組織の資産として活用できます。</p>
+      <a class="card-link" href="#">詳しく見る</a>
+    </div>
+    <div class="card">
+      <h3>CRM・SFA連携</h3>
+      <p>Salesforceなど主要なCRM/SFAとのシームレスな連携。名刺データを起点に、営業プロセス全体を最適化します。</p>
+      <a class="card-link" href="#">詳しく見る</a>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group"><label class="form-label">会社名</label><input class="form-input" type="text" placeholder="株式会社サンプル"><div class="form-state-label">デフォルト -- border: #dddddd, radius: 4px</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--focus" type="email" value="taro@example.com"><div class="form-state-label">フォーカス -- border: #2566d4 (Sansan Blue)</div></div>
+  <div class="form-group"><label class="form-label">電話番号</label><input class="form-input form-input--error" type="tel" value="000-"><div class="form-state-label">エラー -- border: #cc0000 (Danger)</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">Depth & Elevation</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">影なし、ボーダーのみ</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-1);"><div class="elevation-label">Level 1</div><div class="elevation-desc">カード・ドロップダウン</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-2);"><div class="elevation-label">Level 2</div><div class="elevation-desc">モーダル・ポップオーバー</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-3);"><div class="elevation-label">Level 3</div><div class="elevation-desc">ダイアログ・フローティング</div></div>
+    <div class="elevation-card" style="border: 2px solid var(--sansan-blue);"><div class="elevation-label">Focus Ring</div><div class="elevation-desc">#2566d4 (Sansan Blue)</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section-gray" id="spacing">
+<div class="section-inner">
+  <div class="section-label">08 / Spacing</div>
+  <h2 class="section-title">スペーシングスケール</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">40px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:64px"></div><div class="spacing-value">64px</div></div>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider" style="border-color:#eee;">
+
+<!-- CONTENT WIDTHS -->
+<section class="section" id="widths">
+  <div class="section-label">09 / Layout</div>
+  <h2 class="section-title">コンテンツ幅</h2>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Container Max <span class="width-bar-value">1200px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Content Area <span class="width-bar-value">960px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:80%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Article / Text <span class="width-bar-value">640px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:53.3%"></div></div></div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://jp.sansan.com/">jp.sansan.com</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-04-06）
+</footer>
+
+</body>
+</html>

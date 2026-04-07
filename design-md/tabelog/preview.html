@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 食べログ (Light)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #fff;
+    color: #595960;
+    font-family: メイリオ, Meiryo, "Hiragino Sans", ヒラギノ角ゴシック, "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", sans-serif;
+    font-size: 12px; font-weight: 400; line-height: 16.8px;
+    letter-spacing: normal;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: normal;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; height: 48px;
+    background: #fff;
+    border-bottom: 2px solid #f09000;
+  }
+  .nav-brand { font-size: 18px; font-weight: 700; color: #f09000; text-decoration: none; }
+  .nav-brand span { font-size: 11px; color: #595960; font-weight: 400; margin-left: 8px; }
+  .nav-links { display: flex; gap: 16px; list-style: none; }
+  .nav-links a { font-size: 12px; font-weight: 400; color: #595960; text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: #f09000; }
+  .nav-cta {
+    display: inline-block; background: #f09000; color: #fff;
+    padding: 6px 14px; border-radius: 3px; font-size: 12px; font-weight: 700;
+    text-decoration: none; transition: opacity 0.15s;
+  }
+  .nav-cta:hover { opacity: 0.8; }
+
+  /* HERO */
+  .hero { padding: 48px 24px 40px; text-align: center; background: #f5f5f5; border-bottom: 1px solid #ddd; }
+  .hero h1 {
+    font-size: 22.5px; font-weight: 600; line-height: 22.5px;
+    color: #333; margin-bottom: 12px;
+  }
+  .hero p {
+    font-size: 12px; font-weight: 400; line-height: 16.8px;
+    color: #595960; max-width: 620px; margin: 0 auto 24px;
+  }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; background: #f09000; color: #fff;
+    padding: 8px 16px; border-radius: 3px; border: none;
+    font-family: inherit; font-size: 12px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.8; }
+  .btn-outline {
+    display: inline-block; background: transparent; color: #f09000;
+    padding: 8px 16px; border-radius: 3px;
+    border: 1px solid #f09000;
+    font-family: inherit; font-size: 12px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-outline:hover { background: rgba(240,144,0,0.06); }
+
+  /* SECTIONS */
+  .section { padding: 48px 24px; max-width: 980px; margin: 0 auto; }
+  .section-label {
+    font-size: 10px; font-weight: 600; color: #999;
+    text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.06em;
+  }
+  .section-title {
+    font-size: 22.5px; font-weight: 600; line-height: 22.5px;
+    color: #333; margin-bottom: 24px;
+  }
+  .section-divider { border: none; border-top: 1px solid #ddd; margin: 0; }
+
+  .section-gray { background: #f5f5f5; padding: 48px 24px; }
+  .section-gray .section-inner { max-width: 980px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .color-swatch { border-radius: 3px; overflow: hidden; background: #fff; border: 1px solid #ddd; }
+  .color-swatch-block { height: 64px; width: 100%; }
+  .color-swatch-info { padding: 8px 10px; }
+  .color-swatch-name { font-size: 12px; font-weight: 700; margin-bottom: 2px; color: #333; }
+  .color-swatch-hex { font-size: 11px; color: #999; font-family: Consolas, monospace; }
+  .color-swatch-role { font-size: 10px; color: #999; margin-top: 2px; }
+  .color-group-label { font-size: 12px; font-weight: 700; color: #595960; margin: 20px 0 8px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #ddd; }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: Consolas, monospace; font-size: 10px; font-weight: 400; color: #999; margin-top: 6px; }
+  .type-context { display: inline-block; background: #f5f5f5; color: #595960; font-size: 10px; padding: 1px 6px; border-radius: 2px; margin-left: 6px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 10px; font-weight: 400; color: #999; margin-top: 6px; }
+  .btn-danger { display: inline-block; background: #cc3333; color: #fff; padding: 8px 16px; border-radius: 3px; border: none; font-family: inherit; font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; }
+  .btn-score {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: transparent; color: #f09000;
+    padding: 4px 10px; border-radius: 3px;
+    border: 1px solid #f09000;
+    font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+
+  /* RATING */
+  .rating { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .rating-score { font-size: 24px; font-weight: 700; color: #f09000; }
+  .rating-stars { display: flex; gap: 2px; }
+  .star { font-size: 16px; color: #f09000; }
+  .star.empty { color: #ddd; }
+  .rating-count { font-size: 11px; color: #999; }
+  .rating-bar-group { max-width: 320px; }
+  .rating-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .rating-bar-label { font-size: 11px; color: #595960; width: 24px; text-align: right; }
+  .rating-bar { flex: 1; height: 12px; background: #eee; border-radius: 2px; overflow: hidden; }
+  .rating-bar-fill { height: 100%; background: #f09000; border-radius: 2px; }
+  .rating-bar-count { font-size: 10px; color: #999; width: 28px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+  .card { background: #fff; border: 1px solid #ddd; border-radius: 0px; padding: 12px; transition: background 0.2s; }
+  .card:hover { background: #fafafa; }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .card h3 { font-size: 14px; font-weight: 600; line-height: 19.6px; color: #333; }
+  .card h3 a { color: #333; text-decoration: none; }
+  .card h3 a:hover { color: #f09000; text-decoration: underline; }
+  .card-score { font-size: 16px; font-weight: 700; color: #f09000; white-space: nowrap; }
+  .card p { font-size: 12px; color: #595960; line-height: 16.8px; }
+  .card-meta { font-size: 10px; color: #999; margin-top: 6px; }
+  .card-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+  .card-tag { font-size: 10px; color: #595960; background: #f5f5f5; padding: 2px 6px; border-radius: 2px; text-decoration: none; }
+  .card-tag:hover { background: #eee; }
+
+  /* REVIEW */
+  .review-preview { max-width: 620px; margin: 0 auto; }
+  .review-preview .review-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .review-avatar { width: 32px; height: 32px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #999; }
+  .review-user { font-size: 12px; font-weight: 700; color: #333; }
+  .review-date { font-size: 10px; color: #999; }
+  .review-body { font-size: 12px; line-height: 16.8px; color: #595960; margin-bottom: 8px; }
+  .review-visit { font-size: 10px; color: #999; background: #f5f5f5; padding: 4px 8px; border-radius: 2px; display: inline-block; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 16px; max-width: 400px; }
+  .form-label { display: block; font-size: 12px; font-weight: 700; color: #333; margin-bottom: 4px; }
+  .form-input {
+    width: 100%; background: #fff; color: #595960;
+    border: 1px solid #ccc; padding: 6px 8px; border-radius: 3px;
+    font-family: inherit; font-size: 12px; height: 30px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-input--focus { border-color: #f09000; box-shadow: 0 0 0 2px rgba(240,144,0,0.2); }
+  .form-input--error { border-color: #cc3333; box-shadow: 0 0 0 2px rgba(204,51,51,0.2); }
+  .form-state-label { font-size: 10px; color: #999; margin-top: 3px; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .elevation-card { background: #fff; border-radius: 3px; padding: 20px; text-align: center; border: 1px solid #ddd; }
+  .elevation-label { font-size: 12px; font-weight: 700; margin-bottom: 4px; color: #333; }
+  .elevation-desc { font-family: Consolas, monospace; font-size: 10px; color: #999; word-break: break-all; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: #f09000; border-radius: 2px; margin-bottom: 4px; height: 24px; }
+  .spacing-value { font-family: Consolas, monospace; font-size: 10px; font-weight: 500; color: #999; }
+
+  /* CONTENT WIDTHS */
+  .width-bar { height: 28px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 3px; margin-bottom: 6px; position: relative; }
+  .width-bar-inner { height: 100%; background: #f09000; border-radius: 2px; opacity: 0.3; }
+  .width-bar-label { font-size: 12px; font-weight: 700; color: #333; margin-bottom: 3px; }
+  .width-bar-value { font-family: Consolas, monospace; font-size: 11px; color: #999; }
+
+  /* FOOTER */
+  .footer { padding: 24px; text-align: center; background: #f5f5f5; border-top: 1px solid #ddd; font-size: 11px; color: #999; }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 18px; line-height: 24px; }
+    .nav-links { display: none; }
+    .section { padding: 32px 16px; }
+    .section-gray { padding: 32px 16px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">食べログ<span>全国のグルメ・レストランガイド</span></a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#rating">Rating</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#elevation">Elevation</a></li>
+  </ul>
+  <a class="nav-cta" href="#">お店を探す</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System Preview<br>tabelog.com</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。カラー、フォント、コンポーネント、レーティングUIの全値を可視化。computed style 実測値に基づく。</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">エリアから探す</a>
+    <a class="btn-outline" href="#">DESIGN.md を読む</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f09000"></div><div class="color-swatch-info"><div class="color-swatch-name">食べログオレンジ</div><div class="color-swatch-hex">#f09000</div><div class="color-swatch-role">ブランド・スコア</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d07e00"></div><div class="color-swatch-info"><div class="color-swatch-name">Primary Dark</div><div class="color-swatch-hex">#d07e00</div><div class="color-swatch-role">ホバー・プレス</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#333"></div><div class="color-swatch-info"><div class="color-swatch-name">Heading</div><div class="color-swatch-hex">#333333</div><div class="color-swatch-role">見出し・店名</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#595960"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#595960</div><div class="color-swatch-role">本文テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#999"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Secondary</div><div class="color-swatch-hex">#999999</div><div class="color-swatch-role">補足・メタ情報</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ccc; border-bottom:1px solid #ddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Disabled</div><div class="color-swatch-hex">#cccccc</div><div class="color-swatch-role">無効状態</div></div></div>
+  </div>
+
+  <div class="color-group-label">Semantic</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#339933"></div><div class="color-swatch-info"><div class="color-swatch-name">Success</div><div class="color-swatch-hex">#339933</div><div class="color-swatch-role">成功・営業中</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#cc3333"></div><div class="color-swatch-info"><div class="color-swatch-name">Danger</div><div class="color-swatch-hex">#cc3333</div><div class="color-swatch-role">エラー・削除</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f09000"></div><div class="color-swatch-info"><div class="color-swatch-name">Warning</div><div class="color-swatch-hex">#f09000</div><div class="color-swatch-role">警告・注意</div></div></div>
+  </div>
+
+  <div class="color-group-label">Score</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f09000"></div><div class="color-swatch-info"><div class="color-swatch-name">Score High</div><div class="color-swatch-hex">#f09000</div><div class="color-swatch-role">高評価 (3.5+)</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#996600"></div><div class="color-swatch-info"><div class="color-swatch-name">Score Mid</div><div class="color-swatch-hex">#996600</div><div class="color-swatch-role">中評価</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#666"></div><div class="color-swatch-info"><div class="color-swatch-name">Score Low</div><div class="color-swatch-hex">#666666</div><div class="color-swatch-role">低評価・未評価</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface & Border</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff; border-bottom:1px solid #ddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5f5f5"></div><div class="color-swatch-info"><div class="color-swatch-name">Background Secondary</div><div class="color-swatch-hex">#f5f5f5</div><div class="color-swatch-role">セクション背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ddd; border-bottom:1px solid #ccc"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#dddddd</div><div class="color-swatch-role">区切り線</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ccc"></div><div class="color-swatch-info"><div class="color-swatch-name">Border Strong</div><div class="color-swatch-hex">#cccccc</div><div class="color-swatch-role">入力欄の枠</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography -- computed style 実測値</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-size:22.5px; font-weight:600; line-height:22.5px; color:#333;">エリアから探す -- Section Heading (h2)</div>
+    <div class="type-meta">22.5px / 600 / line-height: 22.5px (x1.0) / palt: なし<span class="type-context">トップページ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:600; line-height:19.6px; color:#333;">閲覧履歴 -- Sub Heading (h2)</div>
+    <div class="type-meta">14px / 600 / line-height: 19.6px (x1.4) / palt: なし<span class="type-context">サイドバー</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:700; line-height:12px; color:#333;">全国のグルメ・レストランガイド 食べログ -- Page Title (h1)</div>
+    <div class="type-meta">12px / 700 / line-height: 12px (x1.0) / palt: なし<span class="type-context">ヘッダー</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:400; line-height:16.8px; color:#595960;">本文テキスト -- body のデフォルトスタイル。メイリオを日本語名で先頭に指定し、12px / line-height 1.4 の高密度な情報設計。食べログでは一覧性を重視し、コンパクトなテキストサイズで多くの店舗情報を表示します。</div>
+    <div class="type-meta">12px / 400 / line-height: 16.8px (x1.4) / letter-spacing: normal / palt: なし<span class="type-context">本文</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:700; line-height:1.2; color:#f09000;">3.72</div>
+    <div class="type-meta">16px / 700 / line-height: 1.2 / color: #f09000<span class="type-context">評価スコア</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:10px; font-weight:400; line-height:14px; color:#999;">補足テキスト -- Caption (10px)</div>
+    <div class="type-meta">10px / 400 / line-height: 14px (x1.4) / color: #999<span class="type-context">注釈</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- RATING -->
+<section class="section-gray" id="rating">
+<div class="section-inner">
+  <div class="section-label">03 / Rating -- レーティングUI</div>
+  <h2 class="section-title">評価スコア・レーティング</h2>
+
+  <div style="margin-bottom:32px;">
+    <div style="font-size:14px; font-weight:600; line-height:19.6px; color:#333; margin-bottom:12px;">総合評価サンプル</div>
+    <div class="rating">
+      <div class="rating-score">3.72</div>
+      <div class="rating-stars">
+        <span class="star">&#9733;</span>
+        <span class="star">&#9733;</span>
+        <span class="star">&#9733;</span>
+        <span class="star">&#9733;</span>
+        <span class="star empty">&#9733;</span>
+      </div>
+      <div class="rating-count">( 128件 )</div>
+    </div>
+    <div class="rating-bar-group">
+      <div class="rating-bar-row"><div class="rating-bar-label">5</div><div class="rating-bar"><div class="rating-bar-fill" style="width:15%"></div></div><div class="rating-bar-count">19</div></div>
+      <div class="rating-bar-row"><div class="rating-bar-label">4</div><div class="rating-bar"><div class="rating-bar-fill" style="width:40%"></div></div><div class="rating-bar-count">51</div></div>
+      <div class="rating-bar-row"><div class="rating-bar-label">3</div><div class="rating-bar"><div class="rating-bar-fill" style="width:30%"></div></div><div class="rating-bar-count">38</div></div>
+      <div class="rating-bar-row"><div class="rating-bar-label">2</div><div class="rating-bar"><div class="rating-bar-fill" style="width:12%"></div></div><div class="rating-bar-count">15</div></div>
+      <div class="rating-bar-row"><div class="rating-bar-label">1</div><div class="rating-bar"><div class="rating-bar-fill" style="width:4%"></div></div><div class="rating-bar-count">5</div></div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:24px;">
+    <div style="font-size:14px; font-weight:600; line-height:19.6px; color:#333; margin-bottom:12px;">スコア色分け</div>
+    <div style="display:flex; gap:24px; flex-wrap:wrap; align-items:baseline;">
+      <div><span style="font-size:24px; font-weight:700; color:#f09000;">4.21</span><span style="font-size:10px; color:#999; margin-left:4px;">高評価</span></div>
+      <div><span style="font-size:24px; font-weight:700; color:#996600;">3.15</span><span style="font-size:10px; color:#999; margin-left:4px;">中評価</span></div>
+      <div><span style="font-size:24px; font-weight:700; color:#666;">--</span><span style="font-size:10px; color:#999; margin-left:4px;">未評価</span></div>
+    </div>
+  </div>
+
+  <div>
+    <div style="font-size:14px; font-weight:600; line-height:19.6px; color:#333; margin-bottom:12px;">口コミサンプル</div>
+    <div class="review-preview" style="background:#fff; border:1px solid #ddd; padding:16px; border-radius:0;">
+      <div class="review-header">
+        <div class="review-avatar">U</div>
+        <div>
+          <div class="review-user">グルメ太郎</div>
+          <div class="review-date">2026/03 訪問</div>
+        </div>
+        <div style="margin-left:auto;">
+          <span class="star" style="font-size:12px;">&#9733;</span>
+          <span style="font-size:14px; font-weight:700; color:#f09000;">4.2</span>
+        </div>
+      </div>
+      <div class="review-body">久しぶりに訪問しました。いつも通り安定したクオリティで、特に季節の魚を使った刺身盛り合わせが絶品でした。接客も丁寧で、予約なしでもカウンター席に案内してもらえました。コスパも良く、また近いうちに再訪したいと思います。</div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <div class="review-visit">料理・味 4.5</div>
+        <div class="review-visit">サービス 4.0</div>
+        <div class="review-visit">雰囲気 3.8</div>
+        <div class="review-visit">CP 4.5</div>
+        <div class="review-visit">酒・ドリンク 4.0</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">ボタンバリエーション</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-primary" href="#">お店を探す</a><div class="button-label">Primary CTA</div></div>
+    <div class="button-item"><a class="btn-outline" href="#">条件を変更</a><div class="button-label">Outline</div></div>
+    <div class="button-item"><a class="btn-danger" href="#" style="display:inline-block; padding:8px 16px; text-decoration:none;">削除する</a><div class="button-label">Danger</div></div>
+    <div class="button-item"><button class="btn-score">&#9733; 3.72</button><div class="button-label">Score Badge</div></div>
+    <div class="button-item">
+      <a href="#" style="display:inline-block; background:#339933; color:#fff; padding:6px 14px; border-radius:3px; font-size:12px; font-weight:700; text-decoration:none;">ネット予約</a>
+      <div class="button-label">Success CTA</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards -- 店舗カード</div>
+  <h2 class="section-title">店舗一覧カード</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-header">
+        <h3><a href="#">鮨 さいとう</a></h3>
+        <div class="card-score">3.97</div>
+      </div>
+      <p>六本木の隠れ家的寿司店。厳選されたネタと職人の技が光る江戸前鮨。完全予約制で、カウンター8席のみの特別な空間。</p>
+      <div class="card-tags">
+        <a class="card-tag" href="#">寿司</a>
+        <a class="card-tag" href="#">六本木</a>
+        <a class="card-tag" href="#">個室あり</a>
+      </div>
+      <div class="card-meta">東京都 港区 / 夜: ¥30,000〜 / 128件の口コミ</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h3><a href="#">トラットリア・ダル・ビルバンテ・ジョコンド</a></h3>
+        <div class="card-score">3.58</div>
+      </div>
+      <p>本格的なイタリアンを気軽に楽しめるトラットリア。自家製パスタと窯焼きピッツァが自慢。ワインリストも充実。</p>
+      <div class="card-tags">
+        <a class="card-tag" href="#">イタリアン</a>
+        <a class="card-tag" href="#">渋谷</a>
+        <a class="card-tag" href="#">ランチ営業</a>
+      </div>
+      <div class="card-meta">東京都 渋谷区 / 夜: ¥6,000〜 / 85件の口コミ</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h3><a href="#">麺屋 一燈</a></h3>
+        <div class="card-score">3.81</div>
+      </div>
+      <p>新小岩の名店。鶏と魚介のWスープが特徴のつけ麺は、濃厚ながらも後味すっきり。チャーシューも低温調理で絶品。</p>
+      <div class="card-tags">
+        <a class="card-tag" href="#">ラーメン</a>
+        <a class="card-tag" href="#">新小岩</a>
+        <a class="card-tag" href="#">行列</a>
+      </div>
+      <div class="card-meta">東京都 葛飾区 / 夜: ¥1,000〜 / 312件の口コミ</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group"><label class="form-label">エリア・駅</label><input class="form-input" type="text" placeholder="例: 渋谷、新宿、東京駅"><div class="form-state-label">デフォルト -- border: #cccccc, radius: 3px, height: 30px</div></div>
+  <div class="form-group"><label class="form-label">キーワード</label><input class="form-input form-input--focus" type="text" value="個室 接待"><div class="form-state-label">フォーカス -- border: #f09000</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー -- border: #cc3333</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">Depth & Elevation</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">影なし、ボーダーのみ（基本）</div></div>
+    <div class="elevation-card" style="box-shadow: 0 1px 3px rgba(0,0,0,0.12);"><div class="elevation-label">Level 1</div><div class="elevation-desc">0 1px 3px rgba(0,0,0,0.12) / ドロップダウン</div></div>
+    <div class="elevation-card" style="box-shadow: 0 2px 6px rgba(0,0,0,0.15);"><div class="elevation-label">Level 2</div><div class="elevation-desc">0 2px 6px rgba(0,0,0,0.15) / モーダル</div></div>
+    <div class="elevation-card" style="border: 2px solid #f09000;"><div class="elevation-label">Focus Ring</div><div class="elevation-desc">#f09000 (食べログオレンジ)</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section" id="spacing">
+  <div class="section-label">08 / Spacing</div>
+  <h2 class="section-title">スペーシングスケール</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32px</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CONTENT WIDTHS -->
+<section class="section" id="widths">
+  <div class="section-label">09 / Layout</div>
+  <h2 class="section-title">コンテンツ幅</h2>
+  <div style="margin-bottom:12px"><div class="width-bar-label">Container <span class="width-bar-value">980px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:12px"><div class="width-bar-label">Main Column <span class="width-bar-value">680px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:69.4%"></div></div></div>
+  <div style="margin-bottom:12px"><div class="width-bar-label">Side Column <span class="width-bar-value">280px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:28.6%"></div></div></div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://tabelog.com/" style="color:#f09000; text-decoration:underline;">tabelog.com</a> DESIGN.md — awesome-design-md-jp
+</footer>
+
+</body>
+</html>
