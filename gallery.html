@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Awesome Design MD JP — Gallery</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background: #0a0a0a;
+    color: #f5f5f5;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    padding: 48px 32px 32px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .header h1 span { color: #5ac8b8; }
+  .header p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.5);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* Filter */
+  .filter-bar {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 24px 32px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 6px 16px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .filter-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .filter-btn.active { background: #fff; color: #0a0a0a; border-color: #fff; }
+
+  /* Grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 24px;
+    padding: 24px 32px 64px;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  /* Card */
+  .card {
+    background: #141414;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .card:hover {
+    border-color: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+  }
+
+  .card-preview {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    overflow: hidden;
+    background: #fff;
+    cursor: pointer;
+  }
+  .card-preview iframe {
+    width: 1440px;
+    height: 900px;
+    border: none;
+    transform: scale(0.3);
+    transform-origin: top left;
+    pointer-events: none;
+  }
+  .card-preview-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0);
+    transition: background 0.2s;
+    cursor: pointer;
+  }
+  .card-preview-overlay:hover {
+    background: rgba(0,0,0,0.4);
+  }
+  .card-preview-overlay span {
+    opacity: 0;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 20px;
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 99px;
+    transition: opacity 0.2s;
+  }
+  .card-preview-overlay:hover span { opacity: 1; }
+
+  .card-info {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-name {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .card-category {
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 2px;
+  }
+  .card-meta {
+    text-align: right;
+  }
+  .card-font {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    font-family: ui-monospace, SFMono-Regular, monospace;
+  }
+  .card-tags {
+    display: flex;
+    gap: 4px;
+    margin-top: 4px;
+    justify-content: flex-end;
+  }
+  .tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.4);
+    font-weight: 500;
+  }
+
+  .card-links {
+    display: flex;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .card-links a {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+  }
+  .card-links a:hover { background: rgba(255,255,255,0.04); color: #fff; }
+  .card-links a + a { border-left: 1px solid rgba(255,255,255,0.06); }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 32px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.25);
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .footer a { color: #5ac8b8; text-decoration: none; }
+
+  /* Full preview modal */
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0,0,0,0.9);
+    padding: 20px;
+  }
+  .modal.active { display: flex; flex-direction: column; }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0 12px;
+  }
+  .modal-title { font-size: 16px; font-weight: 700; }
+  .modal-close {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.2); }
+  .modal-body {
+    flex: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .modal-body iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  @media (max-width: 500px) {
+    .grid { grid-template-columns: 1fr; padding: 16px; gap: 16px; }
+    .header { padding: 32px 16px 24px; }
+    .header h1 { font-size: 24px; }
+    .filter-bar { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Awesome Design MD <span>JP</span></h1>
+  <p>日本語サービスの DESIGN.md から抽出したデザイントークンの一覧。各カードをクリックするとフルプレビューが開きます。</p>
+</div>
+
+<div class="filter-bar">
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="saas">SaaS</button>
+  <button class="filter-btn" data-filter="media">Media</button>
+  <button class="filter-btn" data-filter="consumer">Consumer</button>
+  <button class="filter-btn" data-filter="agency">Agency</button>
+</div>
+
+<div class="grid" id="grid">
+
+  <div class="card" data-category="consumer">
+    <div class="card-preview" onclick="openModal('Apple Japan', 'design-md/apple/preview.html')">
+      <iframe src="design-md/apple/preview.html" loading="lazy"></iframe>
+      <div class="card-preview-overlay"><span>Preview</span></div>
+    </div>
+    <div class="card-info">
+      <div><div class="card-name">Apple Japan</div><div class="card-category">Consumer Tech</div></div>
+      <div class="card-meta">
+        <div class="card-font">SF Pro JP</div>
+        <div class="card-tags"><tag class="tag">palt:off</tag><tag class="tag">ls:-0.36px</tag></div>
+      </div>
+    </div>
+    <div class="card-links">
+      <a href="design-md/apple/DESIGN.md">DESIGN.md</a>
+      <a href="design-md/apple/preview.html">Preview</a>
+    </div>
+  </div>
+
+  <div class="card" data-category="consumer">
+    <div class="card-preview" onclick="openModal('MUJI', 'design-md/muji/preview.html')">
+      <iframe src="design-md/muji/preview.html" loading="lazy"></iframe>
+      <div class="card-preview-overlay"><span>Preview</span></div>
+    </div>
+    <div class="card-info">
+      <div><div class="card-name">MUJI</div><div class="card-category">Retail / Lifestyle</div></div>
+      <div class="card-meta">
+        <div class="card-font">Noto Sans JP</div>
+        <div class="card-tags"><tag class="tag">lh:1.6</tag><tag class="tag">kinari</tag></div>
+      </div>
+    </div>
+    <div class="card-links">
+      <a href="design-md/muji/DESIGN.md">DESIGN.md</a>
+      <a href="design-md/muji/preview.html">Preview</a>
+    </div>
+  </div>
+
+  <div class="card" data-category="consumer">
+    <div class="card-preview" onclick="openModal('Mercari', 'design-md/mercari/preview.html')">
+      <iframe src="design-md/mercari/preview.html" loading="lazy"></iframe>
+      <div class="card-preview-overlay"><span>Preview</span></div>
+    </div>
+    <div class="card-info">
+      <div><div class="card-name">Mercari</div><div class="card-category">C2C Marketplace</div></div>
+      <div class="card-meta">
+        <div class="card-font">Hiragino Custom</div>
+        <div class="card-tags"><tag class="tag">15px body</tag><tag class="tag">lh:1.4</tag></div>
+      </div>
+    </div>
+    <div class="card-links">
+      <a href="design-md/mercari/DESIGN.md">DESIGN.md</a>
+      <a href="design-md/mercari/preview.html">Preview</a>
+    </div>
+  </div>
+
+  <div class="card" data-category="saas">
+    <div class="card-preview" onclick="openModal('STUDIO', 'design-md/studio/preview.html')">
+      <iframe src="design-md/studio/preview.html" loading="lazy"></iframe>
+      <div class="card-preview-overlay"><span>Preview</span></div>
+    </div>
+    <div class="card-info">
+      <div><div class="card-name">STUDIO</div><div class="card-category">No-Code Design</div></div>
+      <div class="card-meta">
+        <div class="card-font">Inter + Noto Sans JP</div>
+        <div class="card-tags"><tag class="tag">ls:negative</tag><tag class="tag">w:600</tag></div>
+      </div>
+    </div>
+    <div class="card-links">
+      <a href="design-md/studio/DESIGN.md">DESIGN.md</a>
+      <a href="design-md/studio/preview.html">Preview</a>
+    </div>
+  </div>
+
+  <div class="card" data-category="saas">
+    <div class="card-preview" onclick="openModal('SmartHR', 'design-md/smarthr/preview.html')">
+      <iframe src="design-md/smarthr/preview.html" loading="lazy"></iframe>
+      <div class="card-preview-overlay"><span>Preview</span></div>
+    </div>
+    <div class="card-info">
+      <div><div class="card-name">SmartHR</div><div class="card-category">HR SaaS</div></div>
+      <div class="card-meta">
+        <div class="card-font">Yu Gothic (Adjusted)</div>
+        <div class="card-tags"><tag class="tag">warm gray</tag><tag class="tag">@font-face</tag></div>
+      </div>
+    </div>
+    <div class="card-links">
+      <a href="design-md/smarthr/DESIGN.md">DESIGN.md</a>
+      <a href="design-md/smarthr/preview.html">Preview</a>
+    </div>
+  </div>
+
+  <div class="card" data-category="saas">
+    <div class="card-preview" onclick="openModal('freee', 'design-md/freee/preview.html')">
+      <iframe src="design-md/freee/preview.html" loading="lazy"></iframe>
+      <div class="card-preview-overlay"><span>Preview</span></div>
+    </div>
+    <div class="card-info">
+      <div><div class="card-name">freee</div><div class="card-category">Fintech SaaS</div></div>
+      <div class="card-meta">
+        <div class="card-font">Noto Sans JP</div>
+        <div class="card-tags"><tag class="tag">blue</tag><tag class="tag">w:500</tag></div>
+      </div>
+    </div>
+    <div class="card-links">
+      <a href="design-md/freee/DESIGN.md">DESIGN.md</a>
+      <a href="design-md/freee/preview.html">Preview</a>
+    </div>
+  </div>
+
+  <div class="card" data-category="media">
+    <div class="card-preview" onclick="openModal('note', 'design-md/note/preview.html')">
+      <iframe src="design-md/note/preview.html" loading="lazy"></iframe>
+      <div class="card-preview-overlay"><span>Preview</span></div>
+    </div>
+    <div class="card-info">
+      <div><div class="card-name">note</div><div class="card-category">Media Platform</div></div>
+      <div class="card-meta">
+        <div class="card-font">Hiragino Sans</div>
+        <div class="card-tags"><tag class="tag">lh:2.0</tag><tag class="tag">palt:heading</tag></div>
+      </div>
+    </div>
+    <div class="card-links">
+      <a href="design-md/note/DESIGN.md">DESIGN.md</a>
+      <a href="design-md/note/preview.html">Preview</a>
+    </div>
+  </div>
+
+  <div class="card" data-category="agency">
+    <div class="card-preview" onclick="openModal('Novasell', 'design-md/novasell/preview.html')">
+      <iframe src="design-md/novasell/preview.html" loading="lazy"></iframe>
+      <div class="card-preview-overlay"><span>Preview</span></div>
+    </div>
+    <div class="card-info">
+      <div><div class="card-name">Novasell</div><div class="card-category">AI Agency</div></div>
+      <div class="card-meta">
+        <div class="card-font">Zen Kaku Gothic New</div>
+        <div class="card-tags"><tag class="tag">all bold</tag><tag class="tag">#00fa27</tag></div>
+      </div>
+    </div>
+    <div class="card-links">
+      <a href="design-md/novasell/DESIGN.md">DESIGN.md</a>
+      <a href="design-md/novasell/preview.html">Preview</a>
+    </div>
+  </div>
+
+  <div class="card" data-category="media">
+    <div class="card-preview" onclick="openModal('WIRED.jp', 'design-md/wired/preview.html')">
+      <iframe src="design-md/wired/preview.html" loading="lazy"></iframe>
+      <div class="card-preview-overlay"><span>Preview</span></div>
+    </div>
+    <div class="card-info">
+      <div><div class="card-name">WIRED.jp</div><div class="card-category">Tech Media</div></div>
+      <div class="card-meta">
+        <div class="card-font">Helvetica + Yu Gothic</div>
+        <div class="card-tags"><tag class="tag">palt:global</tag><tag class="tag">mono</tag></div>
+      </div>
+    </div>
+    <div class="card-links">
+      <a href="design-md/wired/DESIGN.md">DESIGN.md</a>
+      <a href="design-md/wired/preview.html">Preview</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal" id="modal">
+  <div class="modal-header">
+    <div class="modal-title" id="modal-title"></div>
+    <button class="modal-close" onclick="closeModal()">×</button>
+  </div>
+  <div class="modal-body">
+    <iframe id="modal-iframe" src=""></iframe>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="https://github.com/kzhrknt/awesome-design-md-jp">awesome-design-md-jp</a> — 日本語UIをAIエージェントに正しくつくらせるための DESIGN.md 集
+</div>
+
+<script>
+// Filter
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.card').forEach(card => {
+      card.style.display = (filter === 'all' || card.dataset.category === filter) ? '' : 'none';
+    });
+  });
+});
+
+// Modal
+function openModal(title, src) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-iframe').src = src;
+  document.getElementById('modal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+  document.getElementById('modal-iframe').src = '';
+  document.body.style.overflow = '';
+}
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+
+</body>
+</html>
