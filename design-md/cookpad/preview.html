@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Cookpad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600&display=swap" rel="stylesheet">
+<!-- 注記: 実サイトは Adobe Fonts 版 noto-sans を使用。このプレビューでは Google Fonts の Noto Sans JP で代替しています。 -->
+<style>
+  :root {
+    /* === Colors === */
+    --cookpad-orange: #f28c06;
+    --cookpad-orange-dark: #d97a00;
+    --text-primary: #0f0f0f;
+    --text-secondary: #757575;
+    --text-disabled: #bdbdbd;
+    --border-default: #e0e0e0;
+    --bg-primary: #f8f6f2;
+    --bg-surface: #fff;
+    --danger: #e53935;
+    --success: #43a047;
+    --warning: #f9a825;
+    /* === Elevation === */
+    --elevation-1: 0 1px 3px rgba(0,0,0,0.08);
+    --elevation-2: 0 4px 8px rgba(0,0,0,0.1);
+    --elevation-3: 0 8px 24px rgba(0,0,0,0.15);
+    /* === Fonts === */
+    --font-base: "Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-base);
+    font-size: 16px; font-weight: 400; line-height: 24px;
+    letter-spacing: -0.4px;
+    font-feature-settings: "liga";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 56px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-default);
+  }
+  .nav-brand { font-size: 20px; font-weight: 600; color: var(--cookpad-orange); text-decoration: none; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 400; color: var(--text-secondary); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--text-primary); }
+  .nav-cta {
+    display: inline-block; background: var(--cookpad-orange); color: #fff;
+    padding: 6px 16px; border-radius: 8px; font-size: 14px; font-weight: 600;
+    text-decoration: none; transition: background 0.15s;
+    font-family: var(--font-base); letter-spacing: -0.4px;
+  }
+  .nav-cta:hover { background: var(--cookpad-orange-dark); }
+
+  /* HERO */
+  .hero { padding: 80px 32px 64px; text-align: center; background: var(--bg-surface); }
+  .hero h1 {
+    font-size: 28px; font-weight: 600; line-height: 40px;
+    letter-spacing: -0.4px;
+    color: var(--text-primary); margin-bottom: 16px;
+  }
+  .hero p {
+    font-size: 16px; font-weight: 400; line-height: 24px;
+    color: var(--text-secondary); max-width: 620px; margin: 0 auto 32px;
+  }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; background: var(--cookpad-orange); color: #fff;
+    padding: 8px 24px; border-radius: 8px; border: none;
+    font-family: var(--font-base); font-size: 14px; font-weight: 600;
+    letter-spacing: -0.4px;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-primary:hover { background: var(--cookpad-orange-dark); }
+  .btn-outline {
+    display: inline-block; background: transparent; color: var(--text-primary);
+    padding: 8px 24px; border-radius: 8px;
+    border: 1px solid var(--border-default);
+    font-family: var(--font-base); font-size: 14px; font-weight: 600;
+    letter-spacing: -0.4px;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-outline:hover { background: rgba(0,0,0,0.03); }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 940px; margin: 0 auto; }
+  .section-label {
+    font-size: 12px; font-weight: 600; color: var(--text-secondary);
+    text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.06em;
+  }
+  .section-title {
+    font-size: 18px; font-weight: 600; line-height: 28px;
+    letter-spacing: -0.4px;
+    margin-bottom: 32px;
+  }
+  .section-divider { border: none; border-top: 1px solid var(--border-default); margin: 0; }
+
+  .section-warm { background: var(--bg-primary); padding: 64px 32px; }
+  .section-warm .section-inner { max-width: 940px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 12px; overflow: hidden; background: #fff; box-shadow: var(--elevation-1); }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; color: var(--text-primary); }
+  .color-swatch-hex { font-size: 12px; color: var(--text-secondary); font-family: monospace; }
+  .color-swatch-role { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 600; color: var(--text-secondary); margin: 24px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border-default); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: monospace; font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; }
+  .type-context { display: inline-block; background: rgba(242,140,6,0.1); color: var(--cookpad-orange-dark); font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; }
+  .btn-danger { display: inline-block; background: var(--danger); color: #fff; padding: 8px 24px; border-radius: 8px; border: none; font-family: var(--font-base); font-size: 14px; font-weight: 600; letter-spacing: -0.4px; text-decoration: none; cursor: pointer; }
+  .btn-bookmark { display: inline-flex; align-items: center; gap: 4px; background: transparent; color: var(--cookpad-orange); padding: 6px 16px; border-radius: 99px; border: 1px solid var(--cookpad-orange); font-family: var(--font-base); font-size: 14px; font-weight: 600; letter-spacing: -0.4px; cursor: pointer; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .card { background: #fff; border: 1px solid var(--border-default); border-radius: 12px; overflow: hidden; transition: box-shadow 0.3s; }
+  .card:hover { box-shadow: var(--elevation-2); }
+  .card-img { width: 100%; height: 160px; object-fit: cover; background: #e8e2d8; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 13px; }
+  .card-body { padding: 16px; }
+  .card h3 { font-size: 16px; font-weight: 600; line-height: 24px; letter-spacing: -0.4px; margin-bottom: 4px; }
+  .card p { font-size: 12px; color: var(--text-secondary); line-height: 16px; }
+  .card-author { font-size: 12px; color: var(--text-secondary); margin-top: 8px; }
+
+  /* RECIPE PREVIEW */
+  .recipe-preview { max-width: 620px; margin: 0 auto; background: var(--bg-surface); border-radius: 12px; padding: 32px; }
+  .recipe-preview h1 { font-size: 18px; font-weight: 600; line-height: 28px; letter-spacing: -0.4px; margin-bottom: 8px; }
+  .recipe-preview h2 { font-size: 16px; font-weight: 600; line-height: 24px; letter-spacing: -0.4px; margin: 24px 0 12px; border-bottom: 2px solid var(--cookpad-orange); padding-bottom: 4px; display: inline-block; }
+  .recipe-preview p { font-size: 16px; font-weight: 400; line-height: 24px; letter-spacing: -0.4px; margin-bottom: 12px; color: var(--text-primary); }
+  .recipe-preview .caption { font-size: 12px; font-weight: 400; line-height: 16px; color: var(--text-secondary); }
+  .recipe-preview .label { font-size: 14px; font-weight: 600; line-height: 20px; color: var(--text-primary); }
+
+  /* INGREDIENT LIST */
+  .ingredient-list { list-style: none; padding: 0; }
+  .ingredient-list li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-default); font-size: 14px; line-height: 20px; }
+  .ingredient-list li:last-child { border-bottom: none; }
+  .ingredient-name { font-weight: 400; }
+  .ingredient-amount { font-weight: 600; color: var(--text-secondary); }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: #fff; color: var(--text-primary);
+    border: 1px solid var(--border-default); padding: 8px 12px; border-radius: 8px;
+    font-family: var(--font-base); font-size: 16px; outline: none;
+    letter-spacing: -0.4px; transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-input--focus { border-color: var(--cookpad-orange); box-shadow: 0 0 0 3px rgba(242,140,6,0.2); }
+  .form-input--error { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(229,57,53,0.2); }
+  .form-state-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .elevation-card { background: #fff; border-radius: 12px; padding: 24px; text-align: center; border: 1px solid var(--border-default); }
+  .elevation-label { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .elevation-desc { font-family: monospace; font-size: 11px; color: var(--text-secondary); word-break: break-all; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--cookpad-orange); border-radius: 3px; margin-bottom: 6px; height: 28px; opacity: 0.6; }
+  .spacing-value { font-family: monospace; font-size: 11px; font-weight: 500; color: var(--text-secondary); }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; background: var(--bg-surface); border-top: 1px solid var(--border-default); font-size: 12px; color: var(--text-secondary); }
+
+  @media (max-width: 767px) {
+    .hero h1 { font-size: 22px; line-height: 32px; }
+    .hero p { font-size: 14px; line-height: 22px; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .section-warm { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .recipe-preview { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">cookpad</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#recipe">Recipe</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#elevation">Elevation</a></li>
+  </ul>
+  <a class="nav-cta" href="#">レシピを書く</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System Preview<br>cookpad.com</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。カラー、フォント、コンポーネント、スペーシングの全値を可視化。温かみのある #f8f6f2 背景と -0.4px の詰め組みが特徴。</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">レシピを探す</a>
+    <a class="btn-outline" href="#">DESIGN.md を読む</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f28c06"></div><div class="color-swatch-info"><div class="color-swatch-name">Cookpad Orange</div><div class="color-swatch-hex">#f28c06</div><div class="color-swatch-role">ブランド・CTA</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d97a00"></div><div class="color-swatch-info"><div class="color-swatch-name">Orange Dark</div><div class="color-swatch-hex">#d97a00</div><div class="color-swatch-role">ホバー・プレス</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0f0f0f"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#0f0f0f</div><div class="color-swatch-role">本文テキスト（ほぼ黒）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#757575"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Secondary</div><div class="color-swatch-hex">#757575</div><div class="color-swatch-role">補足テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#bdbdbd; border-bottom:1px solid #ddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Disabled</div><div class="color-swatch-hex">#bdbdbd</div><div class="color-swatch-role">無効状態</div></div></div>
+  </div>
+
+  <div class="color-group-label">Semantic</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#43a047"></div><div class="color-swatch-info"><div class="color-swatch-name">Success</div><div class="color-swatch-hex">#43a047</div><div class="color-swatch-role">成功・完了</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e53935"></div><div class="color-swatch-info"><div class="color-swatch-name">Danger</div><div class="color-swatch-hex">#e53935</div><div class="color-swatch-role">エラー・削除</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f9a825"></div><div class="color-swatch-info"><div class="color-swatch-name">Warning</div><div class="color-swatch-hex">#f9a825</div><div class="color-swatch-role">警告・注意</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface & Background</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f8f6f2; border-bottom:1px solid #e0e0e0"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#f8f6f2</div><div class="color-swatch-role">ページ背景（温かみオフホワイト）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff; border-bottom:1px solid #e0e0e0"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">カード・モーダル面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e0e0e0"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#e0e0e0</div><div class="color-swatch-role">区切り線・枠</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-size:18px; font-weight:600; line-height:28px; letter-spacing:-0.4px;">人気の食材 — Heading 1 (h1)</div>
+    <div class="type-meta">18px / 600 / line-height: 28px (x1.556) / letter-spacing: -0.4px<span class="type-context">セクション見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:600; line-height:24px; letter-spacing:-0.4px;">殿堂入りレシピ — Heading 2 (h2)</div>
+    <div class="type-meta">16px / 600 / line-height: 24px (x1.5) / letter-spacing: -0.4px<span class="type-context">サブ見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:24px; letter-spacing:-0.4px; font-feature-settings:'liga';">本文テキスト — 毎日の料理を楽しみにする。家族のために作る温かいご飯、季節の食材を活かしたレシピ。クックパッドには340万品を超えるレシピが集まっています。</div>
+    <div class="type-meta">16px / 400 / line-height: 24px (x1.5) / letter-spacing: -0.4px / font-feature-settings: "liga"<span class="type-context">本文</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:600; line-height:20px; letter-spacing:-0.4px;">ラベルテキスト — Label (14px semibold)</div>
+    <div class="type-meta">14px / 600 / line-height: 20px (x1.429) / letter-spacing: -0.4px<span class="type-context">ラベル・ナビ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:400; line-height:16px; letter-spacing:-0.4px; color:var(--text-secondary);">キャプション — 2024年12月15日に投稿 / 3人が「つくれぽ」を投稿</div>
+    <div class="type-meta">12px / 400 / line-height: 16px (x1.333) / letter-spacing: -0.4px<span class="type-context">補足・日時</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- RECIPE PREVIEW -->
+<section class="section-warm" id="recipe">
+<div class="section-inner">
+  <div class="section-label">03 / Recipe — レシピ組版</div>
+  <h2 class="section-title">レシピページの組版サンプル</h2>
+  <div class="recipe-preview">
+    <h1>ふわふわ卵のだし巻き玉子</h1>
+    <p class="caption">by 料理好きママ / 2024年11月20日</p>
+    <p>白だしを使った簡単だし巻き玉子。ふわふわに仕上げるコツは、卵液にマヨネーズを少し加えること。お弁当にもぴったりです。</p>
+
+    <h2>材料（2人分）</h2>
+    <ul class="ingredient-list">
+      <li><span class="ingredient-name">卵</span><span class="ingredient-amount">3個</span></li>
+      <li><span class="ingredient-name">白だし</span><span class="ingredient-amount">大さじ1</span></li>
+      <li><span class="ingredient-name">水</span><span class="ingredient-amount">大さじ2</span></li>
+      <li><span class="ingredient-name">マヨネーズ</span><span class="ingredient-amount">小さじ1</span></li>
+      <li><span class="ingredient-name">サラダ油</span><span class="ingredient-amount">適量</span></li>
+    </ul>
+
+    <h2>作り方</h2>
+    <p class="label">1. 卵液を作る</p>
+    <p>ボウルに卵を割り入れ、白だし、水、マヨネーズを加えてよく混ぜます。泡立てすぎないのがポイント。</p>
+    <p class="label">2. 焼く</p>
+    <p>卵焼き器にサラダ油を薄くひき、中火で温めます。卵液の1/3量を流し入れ、半熟のうちに奥から手前に巻きます。</p>
+    <p class="label">3. 仕上げ</p>
+    <p>残りの卵液も同様に2〜3回に分けて焼き、巻いていきます。焼きあがったら巻きすで形を整え、粗熱が取れたら切り分けます。</p>
+
+    <p class="caption" style="margin-top:16px;">つくれぽ 1,284件 / 印刷する / 保存する</p>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">ボタンバリエーション</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-primary" href="#">レシピを書く</a><div class="button-label">Primary CTA</div></div>
+    <div class="button-item"><a class="btn-outline" href="#">詳しく見る</a><div class="button-label">Outline</div></div>
+    <div class="button-item"><a class="btn-danger" href="#" style="display:inline-block; padding:8px 24px; text-decoration:none;">削除する</a><div class="button-label">Danger</div></div>
+    <div class="button-item"><button class="btn-bookmark">&#9734; 保存</button><div class="button-label">Bookmark</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards — レシピカード</div>
+  <h2 class="section-title">レシピカードコンポーネント</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-img">Photo: 肉じゃが</div>
+      <div class="card-body">
+        <h3>ほっこり肉じゃが</h3>
+        <p>じゃがいもがホクホクに仕上がる定番の肉じゃが。煮崩れしないコツも紹介。</p>
+        <div class="card-author">by おうちごはん / つくれぽ 2,451件</div>
+      </div>
+    </div>
+    <div class="card" style="box-shadow: var(--elevation-2);">
+      <div class="card-img">Photo: 鶏むね肉のよだれ鶏</div>
+      <div class="card-body">
+        <h3>簡単よだれ鶏</h3>
+        <p>レンジで作れるお手軽よだれ鶏。ピリ辛タレが絶品で、ビールのおつまみにも最適です。</p>
+        <div class="card-author">by 節約キッチン / つくれぽ 856件</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img">Photo: 無限ピーマン</div>
+      <div class="card-body">
+        <h3>やみつき無限ピーマン</h3>
+        <p>ツナとごま油で和えるだけ。あと一品ほしい時の救世主レシピ。子どもも食べられます。</p>
+        <div class="card-author">by 毎日レシピ / つくれぽ 4,102件</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group"><label class="form-label">レシピ名</label><input class="form-input" type="text" placeholder="例: 簡単肉じゃが"><div class="form-state-label">デフォルト — border: #e0e0e0, radius: 8px</div></div>
+  <div class="form-group"><label class="form-label">食材を検索</label><input class="form-input form-input--focus" type="text" value="鶏むね肉"><div class="form-state-label">フォーカス — border: #f28c06 (orange)</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー — border: #e53935 (danger)</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">Depth & Elevation</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">影なし、ボーダーのみ</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-1);"><div class="elevation-label">Level 1</div><div class="elevation-desc">レシピカード</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-2);"><div class="elevation-label">Level 2</div><div class="elevation-desc">ドロップダウン</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-3);"><div class="elevation-label">Level 3</div><div class="elevation-desc">モーダル・ダイアログ</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section" id="spacing">
+  <div class="section-label">08 / Spacing</div>
+  <h2 class="section-title">スペーシングスケール</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px"></div><div class="spacing-value">48px</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://cookpad.com/" style="color:var(--cookpad-orange); text-decoration:underline;">cookpad.com</a> DESIGN.md — awesome-design-md-jp
+  <br><span style="margin-top:4px; display:inline-block; font-size:11px; color:var(--text-disabled);">注: 実サイトは Adobe Fonts 版 noto-sans を使用。このプレビューでは Google Fonts の Noto Sans JP で代替しています。</span>
+</footer>
+
+</body>
+</html>

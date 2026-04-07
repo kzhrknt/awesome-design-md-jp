@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Toyota (toyota.jp)</title>
+<style>
+  :root {
+    /* === Colors: Toyota Design Tokens === */
+    --toyota-red: #eb0a1e;
+    --toyota-red-dark: #cc0000;
+    --text-primary: #222222;
+    --text-secondary: #666666;
+    --text-disabled: #999999;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --bg-dark: #222222;
+    --border-default: #dddddd;
+    --border-strong: #cccccc;
+    --danger: #d32f2f;
+    --warning: #f9a825;
+    --success: #388e3c;
+    /* === Elevation === */
+    --elevation-1: 0 2px 8px rgba(0,0,0,0.08);
+    --elevation-2: 0 4px 16px rgba(0,0,0,0.12);
+    --elevation-3: 0 8px 32px rgba(0,0,0,0.16);
+    /* === Fonts === */
+    --font-base: "SF Pro", -apple-system, "system-ui", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-base);
+    font-size: 16px; font-weight: 400; line-height: 1.5;
+    letter-spacing: 0.04em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 60px;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-default);
+  }
+  .nav-brand { font-size: 18px; font-weight: 700; color: var(--text-primary); text-decoration: none; letter-spacing: 0.08em; }
+  .nav-brand span { color: var(--toyota-red); }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 400; color: var(--text-secondary); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--toyota-red); }
+  .nav-cta {
+    display: inline-block; background: var(--toyota-red); color: #fff;
+    padding: 8px 20px; border-radius: 4px; font-size: 14px; font-weight: 700;
+    text-decoration: none; transition: background 0.15s;
+  }
+  .nav-cta:hover { background: var(--toyota-red-dark); }
+
+  /* HERO — 車種ヒーロー */
+  .hero {
+    padding: 80px 32px 64px; text-align: center;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #fff; position: relative;
+  }
+  .hero-label {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-size: 40px; font-weight: 700; line-height: 1.5;
+    letter-spacing: 0.04em; margin-bottom: 8px;
+  }
+  .hero .hero-sub {
+    font-size: 20px; font-weight: 400; line-height: 1.5;
+    color: rgba(255,255,255,0.7); margin-bottom: 32px;
+  }
+  .hero p {
+    font-size: 16px; font-weight: 400; line-height: 1.5;
+    color: rgba(255,255,255,0.8); max-width: 620px; margin: 0 auto 32px;
+  }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; background: var(--toyota-red); color: #fff;
+    padding: 12px 32px; border-radius: 4px; border: none;
+    font-family: var(--font-base); font-size: 16px; font-weight: 700;
+    letter-spacing: 0.04em; text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-primary:hover { background: var(--toyota-red-dark); }
+  .btn-outline {
+    display: inline-block; background: transparent; color: #fff;
+    padding: 12px 32px; border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.5);
+    font-family: var(--font-base); font-size: 16px; font-weight: 700;
+    letter-spacing: 0.04em; text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-outline:hover { background: rgba(255,255,255,0.1); }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 1000px; margin: 0 auto; }
+  .section-label {
+    font-size: 12px; font-weight: 700; color: var(--text-secondary);
+    text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.08em;
+  }
+  .section-title {
+    font-size: 20px; font-weight: 700; line-height: 1.5;
+    letter-spacing: 0.04em; margin-bottom: 32px;
+  }
+  .section-divider { border: none; border-top: 1px solid var(--border-default); margin: 0; }
+
+  .section-gray { background: var(--bg-secondary); padding: 64px 32px; }
+  .section-gray .section-inner { max-width: 1000px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 8px; overflow: hidden; background: #fff; box-shadow: var(--elevation-1); }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; color: var(--text-primary); }
+  .color-swatch-hex { font-size: 12px; color: var(--text-secondary); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 700; color: var(--text-secondary); margin: 24px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border-default); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; }
+  .type-context { display: inline-block; background: var(--bg-secondary); color: var(--text-secondary); font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; }
+  .btn-dark {
+    display: inline-block; background: var(--bg-dark); color: #fff;
+    padding: 12px 32px; border-radius: 4px; border: none;
+    font-family: var(--font-base); font-size: 16px; font-weight: 700;
+    letter-spacing: 0.04em; text-decoration: none; cursor: pointer;
+  }
+  .btn-outline-dark {
+    display: inline-block; background: transparent; color: var(--text-primary);
+    padding: 12px 32px; border-radius: 4px;
+    border: 1px solid var(--text-primary);
+    font-family: var(--font-base); font-size: 16px; font-weight: 700;
+    letter-spacing: 0.04em; text-decoration: none; cursor: pointer;
+  }
+  .btn-danger {
+    display: inline-block; background: var(--danger); color: #fff;
+    padding: 12px 32px; border-radius: 4px; border: none;
+    font-family: var(--font-base); font-size: 16px; font-weight: 700;
+    letter-spacing: 0.04em; text-decoration: none; cursor: pointer;
+  }
+
+  /* CARDS — 車種カード */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .card { background: #fff; border: 1px solid #eee; border-radius: 8px; overflow: hidden; transition: box-shadow 0.3s; }
+  .card:hover { box-shadow: var(--elevation-2); }
+  .card-img {
+    width: 100%; height: 180px;
+    background: linear-gradient(135deg, #e8e8e8, #d0d0d0);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-disabled); font-size: 14px; font-weight: 700;
+  }
+  .card-body { padding: 20px; }
+  .card-body .card-category { font-size: 11px; font-weight: 700; color: var(--toyota-red); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .card-body h3 { font-size: 20px; font-weight: 700; line-height: 1.5; letter-spacing: 0.04em; margin-bottom: 8px; }
+  .card-body p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+  .card-body .card-price { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-top: 12px; }
+  .card-link { display: inline-block; font-size: 14px; color: var(--toyota-red); text-decoration: none; margin-top: 12px; font-weight: 700; }
+  .card-link:hover { text-decoration: underline; }
+
+  /* VEHICLE ARTICLE — 車種紹介の組版サンプル */
+  .vehicle-article { max-width: 720px; margin: 0 auto; }
+  .vehicle-article .vehicle-name {
+    font-size: 40px; font-weight: 700; line-height: 1.5;
+    letter-spacing: 0.04em; margin-bottom: 8px;
+  }
+  .vehicle-article .vehicle-tagline {
+    font-size: 20px; font-weight: 700; line-height: 1.5;
+    color: var(--text-secondary); margin-bottom: 24px;
+  }
+  .vehicle-article h2 {
+    font-size: 20px; font-weight: 700; line-height: 1.5;
+    letter-spacing: 0.04em; margin: 32px 0 12px;
+  }
+  .vehicle-article p {
+    font-size: 16px; font-weight: 400; line-height: 1.5;
+    letter-spacing: 0.04em; margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+  .vehicle-article .spec-table {
+    width: 100%; border-collapse: collapse; margin: 16px 0 24px;
+    font-size: 14px;
+  }
+  .vehicle-article .spec-table th,
+  .vehicle-article .spec-table td {
+    padding: 10px 16px; text-align: left;
+    border-bottom: 1px solid var(--border-default);
+  }
+  .vehicle-article .spec-table th {
+    font-weight: 700; color: var(--text-primary); background: var(--bg-secondary);
+    width: 35%;
+  }
+  .vehicle-article .spec-table td { color: var(--text-secondary); }
+  .vehicle-article .notice {
+    background: #fff8e1; border-left: 4px solid var(--warning);
+    padding: 16px 20px; border-radius: 0 4px 4px 0; margin: 24px 0;
+    font-size: 14px; line-height: 1.5; color: var(--text-primary);
+  }
+  .vehicle-article .notice strong { font-weight: 700; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: #fff; color: var(--text-primary);
+    border: 1px solid var(--border-default); padding: 10px 12px; border-radius: 4px;
+    font-family: var(--font-base); font-size: 16px; outline: none;
+    letter-spacing: 0.04em; transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-input--focus { border-color: var(--text-primary); box-shadow: 0 0 0 2px rgba(34,34,34,0.15); }
+  .form-input--error { border-color: var(--danger); box-shadow: 0 0 0 2px rgba(211,47,47,0.15); }
+  .form-state-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .elevation-card { background: #fff; border-radius: 8px; padding: 24px; text-align: center; border: 1px solid #eee; }
+  .elevation-label { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); word-break: break-all; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--toyota-red); border-radius: 2px; margin-bottom: 6px; height: 28px; opacity: 0.7; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--text-secondary); }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; background: var(--bg-dark); font-size: 12px; color: rgba(255,255,255,0.5); }
+  .footer a { color: var(--toyota-red); text-decoration: underline; }
+
+  @media (max-width: 767px) {
+    .hero h1 { font-size: 28px; }
+    .hero .hero-sub { font-size: 16px; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .section-gray { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .vehicle-article .vehicle-name { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#"><span>TOYOTA</span></a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#vehicle">Vehicle</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Lineup</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#elevation">Elevation</a></li>
+  </ul>
+  <a class="nav-cta" href="#">試乗予約</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-label">Toyota Design System Preview</div>
+  <h1>bZ4X Touring</h1>
+  <div class="hero-sub">Beyond Zero — 未来へ走り出す電気自動車</div>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。カラー、フォント、コンポーネント、スペーシングの全値を可視化。computed style 実測値に基づく。</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">見積りシミュレーション</a>
+    <a class="btn-outline" href="#">DESIGN.md を読む</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#eb0a1e"></div><div class="color-swatch-info"><div class="color-swatch-name">Toyota Red</div><div class="color-swatch-hex">#eb0a1e</div><div class="color-swatch-role">ブランドカラー</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#cc0000"></div><div class="color-swatch-info"><div class="color-swatch-name">Toyota Red Dark</div><div class="color-swatch-hex">#cc0000</div><div class="color-swatch-role">ホバー・プレス</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#222222"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#222222</div><div class="color-swatch-role">本文テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#666666"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Secondary</div><div class="color-swatch-hex">#666666</div><div class="color-swatch-role">補足テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#999999"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Disabled</div><div class="color-swatch-hex">#999999</div><div class="color-swatch-role">無効状態</div></div></div>
+  </div>
+
+  <div class="color-group-label">Semantic</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#388e3c"></div><div class="color-swatch-info"><div class="color-swatch-name">Success</div><div class="color-swatch-hex">#388e3c</div><div class="color-swatch-role">成功・完了</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d32f2f"></div><div class="color-swatch-info"><div class="color-swatch-name">Danger</div><div class="color-swatch-hex">#d32f2f</div><div class="color-swatch-role">エラー・削除</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f9a825"></div><div class="color-swatch-info"><div class="color-swatch-name">Warning</div><div class="color-swatch-hex">#f9a825</div><div class="color-swatch-role">警告・注意</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface & Border</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #ddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5f5f5"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#f5f5f5</div><div class="color-swatch-role">カード・セクション背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#222222"></div><div class="color-swatch-info"><div class="color-swatch-name">Dark Surface</div><div class="color-swatch-hex">#222222</div><div class="color-swatch-role">ダーク背景・CTA</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dddddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#dddddd</div><div class="color-swatch-role">標準ボーダー</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-size:40px; font-weight:700; line-height:1.5; letter-spacing:0.04em;">bZ4X Touring — Display (40px)</div>
+    <div class="type-meta">40px / 700 / line-height: 1.5 / letter-spacing: 0.04em<span class="type-context">車種名見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:20px; font-weight:700; line-height:1.5; letter-spacing:0.04em;">あなたのクルマ — Heading 2 (20px)</div>
+    <div class="type-meta">20px / 700 / line-height: 1.5 / letter-spacing: 0.04em<span class="type-context">セクション見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:700; line-height:1.5; letter-spacing:0.04em;">重要なお知らせ — Heading 3 (16px)</div>
+    <div class="type-meta">16px / 700 / line-height: 1.5 / letter-spacing: 0.04em<span class="type-context">小見出し・お知らせ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.5; letter-spacing:0.04em;">本文テキスト — トヨタ自動車は、すべての人に移動の自由を提供するために、クルマづくりを続けています。letter-spacing: 0.04em がグローバルに適用され、和文の可読性を高めています。ABCabc 123</div>
+    <div class="type-meta">16px / 400 / line-height: 1.5 / letter-spacing: 0.64px (0.04em)<span class="type-context">本文</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:400; line-height:1.5; letter-spacing:0.04em; color:var(--text-secondary);">補足テキスト — Caption (12px)</div>
+    <div class="type-meta">12px / 400 / line-height: 1.5 / color: Text Secondary</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- VEHICLE ARTICLE — 車種紹介の組版サンプル -->
+<section class="section-gray" id="vehicle">
+<div class="section-inner">
+  <div class="section-label">03 / Vehicle Article — 車種紹介の組版</div>
+  <h2 class="section-title">車種紹介ページの組版サンプル</h2>
+  <div class="vehicle-article">
+    <div class="vehicle-name">bZ4X</div>
+    <div class="vehicle-tagline">Beyond Zero — 新しい時代の、新しい移動体験</div>
+    <p>トヨタ初のグローバルBEV専用モデル。e-TNGA プラットフォームを採用し、低重心と広い室内空間を両立。ソーラー充電システムや最新の安全装備など、電気自動車ならではの先進技術を搭載しています。</p>
+
+    <h2>主要スペック</h2>
+    <table class="spec-table">
+      <tr><th>駆動方式</th><td>FWD / 4WD</td></tr>
+      <tr><th>航続距離（WLTC）</th><td>約 559 km（FWD）</td></tr>
+      <tr><th>バッテリー容量</th><td>71.4 kWh</td></tr>
+      <tr><th>全長 x 全幅 x 全高</th><td>4,690 x 1,860 x 1,650 mm</td></tr>
+      <tr><th>車両価格（税込）</th><td>6,000,000 円〜</td></tr>
+    </table>
+
+    <h2>安全性能</h2>
+    <p>Toyota Safety Sense を標準装備。プリクラッシュセーフティ、レーントレーシングアシスト、レーダークルーズコントロールなど、先進の予防安全パッケージで、あらゆるシーンでの安心をサポートします。</p>
+
+    <div class="notice">
+      <strong>重要なお知らせ:</strong> 掲載の車両写真はグレード・オプション装着車です。ボディカラーおよび内装色は撮影条件により実車と異なる場合があります。
+    </div>
+
+    <h2>環境性能</h2>
+    <p>走行中の CO2 排出ゼロ。さらにルーフに搭載したソーラー充電システムにより、年間約 1,800 km 分の電力を太陽光から発電。持続可能なモビリティの実現に貢献します。</p>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">ボタンバリエーション</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-primary" href="#">見積りシミュレーション</a><div class="button-label">Primary (Toyota Red)</div></div>
+    <div class="button-item"><a class="btn-dark" href="#">試乗予約</a><div class="button-label">Dark CTA</div></div>
+    <div class="button-item"><a class="btn-outline-dark" href="#">詳しく見る</a><div class="button-label">Outline</div></div>
+    <div class="button-item"><a class="btn-danger" href="#">削除する</a><div class="button-label">Danger</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS — 車種ラインナップ -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards — Vehicle Lineup</div>
+  <h2 class="section-title">車種カード</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-img">Photo: bZ4X</div>
+      <div class="card-body">
+        <div class="card-category">BEV</div>
+        <h3>bZ4X</h3>
+        <p>トヨタ初のグローバルBEV専用モデル。e-TNGA プラットフォーム採用。</p>
+        <div class="card-price">6,000,000 円〜</div>
+        <a class="card-link" href="#">詳しく見る &rarr;</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img">Photo: CROWN</div>
+      <div class="card-body">
+        <div class="card-category">Sedan</div>
+        <h3>クラウン</h3>
+        <p>伝統と革新の融合。新世代クラウンが切り拓く、新しいセダンの形。</p>
+        <div class="card-price">4,350,000 円〜</div>
+        <a class="card-link" href="#">詳しく見る &rarr;</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img">Photo: HARRIER</div>
+      <div class="card-body">
+        <div class="card-category">SUV</div>
+        <h3>ハリアー</h3>
+        <p>洗練された都市型 SUV。上質な走りとデザインで、日常に特別を。</p>
+        <div class="card-price">3,128,000 円〜</div>
+        <a class="card-link" href="#">詳しく見る &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group"><label class="form-label">お名前</label><input class="form-input" type="text" placeholder="山田 太郎"><div class="form-state-label">デフォルト — border: #dddddd, radius: 4px</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--focus" type="text" value="yamada@example.com"><div class="form-state-label">フォーカス — border: #222222</div></div>
+  <div class="form-group"><label class="form-label">電話番号</label><input class="form-input form-input--error" type="text" value="090-xxxx"><div class="form-state-label">エラー — border: #d32f2f (danger)</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">Depth & Elevation</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">影なし、ボーダーのみ</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-1);"><div class="elevation-label">Level 1</div><div class="elevation-desc">カード、車種サムネイル</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-2);"><div class="elevation-label">Level 2</div><div class="elevation-desc">ドロップダウン、ポップオーバー</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-3);"><div class="elevation-label">Level 3</div><div class="elevation-desc">モーダル・ダイアログ</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section" id="spacing">
+  <div class="section-label">08 / Spacing</div>
+  <h2 class="section-title">スペーシングスケール</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px;"></div><div class="spacing-value">4px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px;"></div><div class="spacing-value">8px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px;"></div><div class="spacing-value">16px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px;"></div><div class="spacing-value">24px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px;"></div><div class="spacing-value">40px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:64px;"></div><div class="spacing-value">64px</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://toyota.jp/">toyota.jp</a> DESIGN.md — awesome-design-md-jp
+</footer>
+
+</body>
+</html>

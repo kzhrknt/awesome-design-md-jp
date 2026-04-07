@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: サイボウズ (Cybozu)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #fff;
+    color: #333;
+    font-family: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", Meiryo, メイリオ, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 2.0;
+    letter-spacing: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 64px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+  }
+  .nav-brand { font-size: 18px; font-weight: 700; color: #333; text-decoration: none; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 400; color: #666; text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: #333; }
+
+  /* HERO */
+  .hero { padding: 80px 32px 64px; text-align: center; background: #f7f7f7; }
+  .hero h1 {
+    font-size: 28px; font-weight: 700; line-height: 2.0;
+    color: #333; margin-bottom: 16px;
+  }
+  .hero p {
+    font-size: 16px; font-weight: 400; line-height: 2.0;
+    color: #555; max-width: 640px; margin: 0 auto 32px;
+  }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 860px; margin: 0 auto; }
+  .section-label {
+    font-size: 12px; font-weight: 600; color: #999;
+    text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.06em;
+  }
+  .section-title {
+    font-size: 22px; font-weight: 700; line-height: 2.0;
+    margin-bottom: 32px; color: #333;
+  }
+  .section-divider { border: none; border-top: 1px solid #ddd; margin: 0; }
+  .section-gray { background: #f7f7f7; padding: 64px 32px; }
+  .section-gray .section-inner { max-width: 860px; margin: 0 auto; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid #eee; }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-size: 12px; font-weight: 400; color: #999; margin-top: 8px; font-family: Menlo, Consolas, monospace; }
+  .type-context { display: inline-block; background: #f0f0f0; color: #666; font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+
+  /* LINE-HEIGHT COMPARISON */
+  .lh-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 32px; }
+  .lh-box { padding: 24px; border: 1px solid #ddd; border-radius: 8px; background: #fff; }
+  .lh-box h3 { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #333; }
+  .lh-box-label { font-size: 11px; font-weight: 600; color: #999; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .lh-highlight { background: #fffde7; }
+
+  /* ARTICLE PREVIEW */
+  .article-preview { max-width: 640px; margin: 0 auto; }
+  .article-preview h1 { font-size: 28px; font-weight: 700; line-height: 2.0; margin-bottom: 16px; }
+  .article-preview h2 { font-size: 16px; font-weight: 400; line-height: 2.0; margin: 24px 0 12px; }
+  .article-preview p { font-size: 16px; font-weight: 400; line-height: 2.0; letter-spacing: normal; font-feature-settings: normal; margin-bottom: 16px; color: #333; }
+  .article-preview p strong { font-weight: 700; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 8px; overflow: hidden; background: #fff; border: 1px solid #ddd; }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; color: #333; }
+  .color-swatch-hex { font-size: 12px; color: #999; font-family: Menlo, Consolas, monospace; }
+  .color-swatch-role { font-size: 11px; color: #999; margin-top: 3px; }
+
+  /* FONT STACK */
+  .font-stack { background: #f7f7f7; border: 1px solid #ddd; border-radius: 8px; padding: 20px 24px; margin-bottom: 24px; font-family: Menlo, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333; overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 24px; }
+  .card h3 { font-size: 16px; font-weight: 700; line-height: 2.0; margin-bottom: 8px; }
+  .card p { font-size: 16px; color: #555; line-height: 2.0; }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; background: #f7f7f7; font-size: 12px; color: #999; }
+  .footer a { color: #666; text-decoration: underline; }
+
+  @media (max-width: 769px) {
+    .hero h1 { font-size: 22px; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .section-gray { padding: 48px 20px; }
+    .lh-comparison { grid-template-columns: 1fr; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">サイボウズ Cybozu</a>
+  <ul class="nav-links">
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#line-height">Line Height</a></li>
+    <li><a href="#article">Article</a></li>
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#font-stack">Font Stack</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <h1>Design System Preview<br>cybozu.co.jp</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。line-height: 2.0 のゆったりとした行間と、ヒラギノ角ゴ Pro W3 を先頭に置く和文優先フォントスタックが特徴。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">01 / Typography</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:700; line-height:2.0;">チームで働くことが、楽しくなるサービスを</div>
+    <div class="type-meta">16px / 700 / line-height: 2.0 / letter-spacing: normal / palt: なし<span class="type-context">本文強調 (p bold)</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:2.0;">セクション見出し — Heading 2</div>
+    <div class="type-meta">16px / 400 / line-height: 2.0 / letter-spacing: normal / palt: なし<span class="type-context">h2</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:2.0;">本文テキスト — サイボウズは「チームワークあふれる社会を創る」を企業理念として掲げています。グループウェアを通じて、チームの生産性と働きがいの両立を支援します。line-height: 2.0 のゆったりとした行間で、コーポレートメッセージの読みやすさを確保しています。</div>
+    <div class="type-meta">16px / 400 / line-height: 2.0 / letter-spacing: normal / palt: なし<span class="type-context">body</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- LINE-HEIGHT COMPARISON -->
+<section class="section-gray" id="line-height">
+<div class="section-inner">
+  <div class="section-label">02 / Line Height Comparison</div>
+  <h2 class="section-title">行間比較 — line-height: 2.0 vs 1.5</h2>
+  <p style="font-size:14px; color:#666; margin-bottom:24px;">サイボウズと SmartHR の行間設計の違い。同じテキストで読みやすさの差を体感できます。</p>
+
+  <div class="lh-comparison">
+    <div class="lh-box lh-highlight">
+      <div class="lh-box-label">サイボウズ — line-height: 2.0</div>
+      <h3>cybozu.co.jp</h3>
+      <p style="font-size:16px; line-height:2.0; color:#333;">チームワークあふれる社会を創る。サイボウズは、働く人の生産性と幸福感を高めるグループウェアを提供しています。多様な個性を重視し、100人100通りの働き方を実現する。それが私たちの目指す姿です。</p>
+    </div>
+    <div class="lh-box">
+      <div class="lh-box-label">SmartHR — line-height: 1.5</div>
+      <h3>smarthr.jp</h3>
+      <p style="font-size:16px; line-height:1.5; color:#333;">チームワークあふれる社会を創る。サイボウズは、働く人の生産性と幸福感を高めるグループウェアを提供しています。多様な個性を重視し、100人100通りの働き方を実現する。それが私たちの目指す姿です。</p>
+    </div>
+  </div>
+
+  <div class="lh-comparison">
+    <div class="lh-box lh-highlight">
+      <div class="lh-box-label">サイボウズ — line-height: 2.0</div>
+      <h3>長文での読みやすさ</h3>
+      <p style="font-size:16px; line-height:2.0; color:#333;">働き方改革は制度だけでは実現しません。チームメンバー一人ひとりが自分らしく働ける環境をつくること。テレワーク、副業、時短勤務。多様な選択肢を用意し、それぞれが最も力を発揮できる形を見つけることが大切です。kintone や Garoon などのツールは、そうした柔軟な働き方を技術面から支えています。</p>
+    </div>
+    <div class="lh-box">
+      <div class="lh-box-label">SmartHR — line-height: 1.5</div>
+      <h3>長文での読みやすさ</h3>
+      <p style="font-size:16px; line-height:1.5; color:#333;">働き方改革は制度だけでは実現しません。チームメンバー一人ひとりが自分らしく働ける環境をつくること。テレワーク、副業、時短勤務。多様な選択肢を用意し、それぞれが最も力を発揮できる形を見つけることが大切です。kintone や Garoon などのツールは、そうした柔軟な働き方を技術面から支えています。</p>
+    </div>
+  </div>
+
+  <p style="font-size:13px; color:#999; margin-top:16px;">左: サイボウズ（line-height: 2.0）は行間が広く、1行ずつ視線を追いやすい。右: SmartHR（line-height: 1.5）は業務UIとして情報密度を優先した設計。</p>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ARTICLE PREVIEW -->
+<section class="section" id="article">
+  <div class="section-label">03 / Article Preview</div>
+  <h2 class="section-title">コーポレートメッセージの組版サンプル</h2>
+  <div class="article-preview">
+    <h1>チームワークあふれる社会を創る</h1>
+    <p><strong>チームで働くことが、楽しくなるサービスを</strong>。サイボウズは創業以来、グループウェアの開発を通じてチームワークを支援してきました。kintone、Garoon、サイボウズ Office、メールワイズ。それぞれのプロダクトが、異なるチームの課題に応えています。</p>
+    <h2>多様な働き方の実現</h2>
+    <p>100人いれば100通りの働き方がある。サイボウズはこの考えのもと、社員一人ひとりが自分に合った働き方を選べる制度を整えてきました。在宅勤務、副業、育児との両立。制度とツールの両面から、働く人を支えます。</p>
+    <h2>チームワークを技術で支える</h2>
+    <p>情報共有、ワークフロー、コミュニケーション。チームの活動に必要な機能をクラウドで提供し、場所や時間にとらわれない働き方を可能にします。グループウェアは単なるツールではなく、チームの文化をかたちづくるインフラです。</p>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">04 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#333"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#333333</div><div class="color-swatch-role">本文テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff; border-bottom:1px solid #ddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ背景</div></div></div>
+  </div>
+
+  <p style="font-size:13px; color:#999; margin-top:16px;">CSS Custom Properties による体系的なカラートークンは使用されていない。コーポレートサイトとしてシンプルな構成。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- FONT STACK -->
+<section class="section" id="font-stack">
+  <div class="section-label">05 / Font Stack</div>
+  <h2 class="section-title">フォントスタック詳細</h2>
+
+  <div class="font-stack">font-family: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", Meiryo, メイリオ, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;</div>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>和文優先の指定順</h3>
+      <p>ヒラギノ角ゴ Pro W3 の日本語名を英語名より先に記述。和文の表示品質を最優先とする設計思想が表れている。</p>
+    </div>
+    <div class="card">
+      <h3>Pro vs ProN</h3>
+      <p>ヒラギノ角ゴ Pro（JIS90字形）を使用。ProN（JIS2004字形）ではないため、一部の漢字で字形が異なる点に注意。</p>
+    </div>
+    <div class="card">
+      <h3>レガシー対応</h3>
+      <p>ＭＳ Ｐゴシックの全角名・半角名の両方を記述し、古い Windows 環境でも確実にフォールバックする構成。</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPEC SUMMARY -->
+<section class="section" id="spec">
+  <div class="section-label">06 / Spec Summary</div>
+  <h2 class="section-title">仕様サマリー</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>line-height: 2.0</h3>
+      <p>グローバル適用。note の記事本文と同じ水準のゆったりした行間。SmartHR（1.5）と比較して約33%広い。</p>
+    </div>
+    <div class="card">
+      <h3>palt: なし</h3>
+      <p>font-feature-settings は normal。プロポーショナル字詰めを行わず、等幅配置のまま表示。本文の安定した可読性を優先。</p>
+    </div>
+    <div class="card">
+      <h3>CSS Custom Properties なし</h3>
+      <p>デザイントークンの体系的な管理は行われていない。伝統的なCSS構成でシンプルに記述。</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://cybozu.co.jp/">cybozu.co.jp</a> DESIGN.md — awesome-design-md-jp
+</footer>
+
+</body>
+</html>

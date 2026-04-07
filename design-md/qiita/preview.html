@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Qiita</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://cdn.jsdelivr.net/npm/yakuhanjp@4.0.0/dist/css/yakuhanjps.css" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors === */
+    --qiita-green: #55c500;
+    --qiita-green-dark: #468c00;
+    --text-primary: rgba(0,0,0,0.87);
+    --text-secondary: rgba(0,0,0,0.54);
+    --text-disabled: rgba(0,0,0,0.38);
+    --bg-page: #f5f6f6;
+    --bg-surface: #ffffff;
+    --border-default: #e0e0e0;
+    --danger: #d32f2f;
+    --warning: #f57c00;
+    --success: #388e3c;
+    /* === Elevation === */
+    --elevation-1: 0 2px 4px rgba(0,0,0,0.1);
+    --elevation-2: 0 4px 8px rgba(0,0,0,0.1);
+    /* === Fonts === */
+    --font-base: YakuHanJPs, -apple-system, "system-ui", "Segoe UI", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    /* === Code Block === */
+    --code-bg: #364549;
+    --code-text: #e3e3e3;
+    --inline-code-bg: #f0f0f0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-family: var(--font-base);
+    font-size: 16px; font-weight: 400;
+    line-height: 1.8;
+    letter-spacing: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: normal;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 56px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-default);
+  }
+  .nav-brand {
+    font-size: 20px; font-weight: 700; color: var(--text-primary);
+    text-decoration: none; display: flex; align-items: center; gap: 8px;
+  }
+  .nav-brand svg { width: 24px; height: 24px; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 400; color: var(--text-secondary); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--qiita-green); }
+  .nav-cta {
+    display: inline-block; background: var(--qiita-green); color: #fff;
+    padding: 6px 16px; border-radius: 4px; font-size: 14px; font-weight: 600;
+    text-decoration: none; transition: background 0.15s;
+  }
+  .nav-cta:hover { background: var(--qiita-green-dark); }
+
+  /* HERO */
+  .hero { padding: 72px 32px 56px; text-align: center; background: var(--bg-surface); border-bottom: 1px solid var(--border-default); }
+  .hero h1 {
+    font-size: 28px; font-weight: 600; line-height: 1.4;
+    color: var(--text-primary); margin-bottom: 12px;
+  }
+  .hero h1 span { color: var(--qiita-green); }
+  .hero p {
+    font-size: 16px; font-weight: 400; line-height: 1.8;
+    color: var(--text-secondary); max-width: 640px; margin: 0 auto 24px;
+  }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; background: var(--qiita-green); color: #fff;
+    padding: 8px 24px; border-radius: 4px; border: none;
+    font-family: var(--font-base); font-size: 14px; font-weight: 600;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-primary:hover { background: var(--qiita-green-dark); }
+  .btn-outline {
+    display: inline-block; background: transparent; color: var(--qiita-green);
+    padding: 8px 24px; border-radius: 4px;
+    border: 1px solid var(--qiita-green);
+    font-family: var(--font-base); font-size: 14px; font-weight: 600;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-outline:hover { background: rgba(85,197,0,0.06); }
+
+  /* SECTIONS */
+  .section { padding: 56px 32px; max-width: 960px; margin: 0 auto; }
+  .section-label {
+    font-size: 12px; font-weight: 600; color: var(--text-secondary);
+    text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.06em;
+  }
+  .section-title {
+    font-size: 20px; font-weight: 600; line-height: 1.4;
+    margin-bottom: 28px; color: var(--text-primary);
+  }
+  .section-divider { border: none; border-top: 1px solid var(--border-default); margin: 0; }
+
+  .section-surface { background: var(--bg-surface); padding: 56px 32px; }
+  .section-surface .section-inner { max-width: 960px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .color-swatch { border-radius: 4px; overflow: hidden; background: #fff; border: 1px solid var(--border-default); }
+  .color-swatch-block { height: 64px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; color: var(--text-primary); }
+  .color-swatch-hex { font-size: 12px; color: var(--text-secondary); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 600; color: var(--text-secondary); margin: 20px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border-default); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; }
+  .type-context { display: inline-block; background: rgba(85,197,0,0.1); color: var(--qiita-green-dark); font-size: 11px; padding: 2px 8px; border-radius: 3px; margin-left: 8px; }
+
+  /* YAKUHAN NOTE */
+  .yakuhan-note {
+    background: var(--bg-surface); border: 1px solid var(--border-default);
+    border-left: 4px solid var(--qiita-green); border-radius: 4px;
+    padding: 20px 24px; margin: 24px 0;
+  }
+  .yakuhan-note h4 { font-size: 14px; font-weight: 600; color: var(--qiita-green-dark); margin-bottom: 8px; }
+  .yakuhan-note p { font-size: 14px; line-height: 1.8; color: var(--text-primary); margin-bottom: 8px; }
+  .yakuhan-note p:last-child { margin-bottom: 0; }
+  .yakuhan-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+  .yakuhan-compare-item { padding: 12px; border-radius: 4px; background: var(--bg-page); }
+  .yakuhan-compare-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; text-transform: uppercase; }
+  .yakuhan-compare-text { font-size: 16px; line-height: 1.8; }
+
+  /* ARTICLE */
+  .article-preview { max-width: 700px; margin: 0 auto; }
+  .article-preview h1 { font-size: 24px; font-weight: 600; line-height: 1.4; margin-bottom: 16px; }
+  .article-preview h2 { font-size: 20px; font-weight: 600; line-height: 1.4; margin: 28px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-default); }
+  .article-preview h3 { font-size: 16px; font-weight: 600; line-height: 1.4; margin: 20px 0 8px; }
+  .article-preview p { font-size: 16px; font-weight: 400; line-height: 1.8; letter-spacing: normal; margin-bottom: 16px; color: var(--text-primary); }
+  .article-preview ul { margin: 0 0 16px 24px; font-size: 16px; line-height: 1.8; }
+  .article-preview li { margin-bottom: 4px; }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: var(--code-bg); color: var(--code-text);
+    font-family: var(--font-mono); font-size: 14px; line-height: 1.5;
+    padding: 16px 20px; border-radius: 4px; overflow-x: auto;
+    margin-bottom: 16px;
+  }
+  .code-block .kw { color: #c678dd; }
+  .code-block .fn { color: #61afef; }
+  .code-block .str { color: #98c379; }
+  .code-block .cm { color: #5c6370; font-style: italic; }
+  .code-block .num { color: #d19a66; }
+  .code-block .op { color: #56b6c2; }
+  .code-block .type { color: #e5c07b; }
+
+  .inline-code {
+    background: var(--inline-code-bg); color: var(--text-primary);
+    font-family: var(--font-mono); font-size: 14px;
+    padding: 2px 6px; border-radius: 3px;
+  }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; }
+  .btn-danger { display: inline-block; background: var(--danger); color: #fff; padding: 8px 24px; border-radius: 4px; border: none; font-family: var(--font-base); font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; }
+  .btn-tag {
+    display: inline-block; background: rgba(85,197,0,0.1); color: var(--qiita-green-dark);
+    padding: 4px 12px; border-radius: 16px; font-size: 13px; font-weight: 400;
+    text-decoration: none; border: none; cursor: pointer;
+  }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .card { background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: 4px; padding: 20px; transition: box-shadow 0.2s; }
+  .card:hover { box-shadow: var(--elevation-1); }
+  .card h3 { font-size: 16px; font-weight: 600; line-height: 1.5; margin-bottom: 8px; }
+  .card p { font-size: 14px; color: var(--text-secondary); line-height: 1.8; }
+  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  .card-meta { font-size: 12px; color: var(--text-disabled); margin-top: 8px; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: var(--bg-surface); color: var(--text-primary);
+    border: 1px solid var(--border-default); padding: 8px 12px; border-radius: 4px;
+    font-family: var(--font-base); font-size: 14px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-input--focus { border-color: var(--qiita-green); box-shadow: 0 0 0 3px rgba(85,197,0,0.2); }
+  .form-input--error { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(211,47,47,0.2); }
+  .form-state-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .elevation-card { background: var(--bg-surface); border-radius: 4px; padding: 20px; text-align: center; border: 1px solid var(--border-default); }
+  .elevation-label { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); word-break: break-all; }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; background: var(--bg-surface); border-top: 1px solid var(--border-default); font-size: 12px; color: var(--text-secondary); }
+
+  @media (max-width: 767px) {
+    .hero h1 { font-size: 22px; }
+    .nav-links { display: none; }
+    .section { padding: 40px 20px; }
+    .section-surface { padding: 40px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .yakuhan-compare { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">
+    <svg viewBox="0 0 24 24" fill="var(--qiita-green)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-1-1 4-4-4-4 1-1 5 5-5 5z"/></svg>
+    Qiita
+  </a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#article">Article</a></li>
+    <li><a href="#code">Code</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+  </ul>
+  <a class="nav-cta" href="#">投稿する</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System Preview<br><span>Qiita</span> — 日本語版</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。YakuHanJPs による約物半角化、コードブロック混植、rgba opacity ベースのカラーリングを可視化。</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">記事を探す</a>
+    <a class="btn-outline" href="#">DESIGN.md を読む</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#55c500"></div><div class="color-swatch-info"><div class="color-swatch-name">Qiita Green</div><div class="color-swatch-hex">#55c500</div><div class="color-swatch-role">ブランド・CTA</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#468c00"></div><div class="color-swatch-info"><div class="color-swatch-name">Green Dark</div><div class="color-swatch-hex">#468c00</div><div class="color-swatch-role">ホバー時</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text（opacity ベース）</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(0,0,0,0.87)"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">rgba(0,0,0,0.87)</div><div class="color-swatch-role">本文テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(0,0,0,0.54)"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Secondary</div><div class="color-swatch-hex">rgba(0,0,0,0.54)</div><div class="color-swatch-role">補足テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(0,0,0,0.38)"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Disabled</div><div class="color-swatch-hex">rgba(0,0,0,0.38)</div><div class="color-swatch-role">無効状態</div></div></div>
+  </div>
+
+  <div class="color-group-label">Semantic</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#388e3c"></div><div class="color-swatch-info"><div class="color-swatch-name">Success</div><div class="color-swatch-hex">#388e3c</div><div class="color-swatch-role">成功・完了</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d32f2f"></div><div class="color-swatch-info"><div class="color-swatch-name">Danger</div><div class="color-swatch-hex">#d32f2f</div><div class="color-swatch-role">エラー・削除</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f57c00"></div><div class="color-swatch-info"><div class="color-swatch-name">Warning</div><div class="color-swatch-hex">#f57c00</div><div class="color-swatch-role">警告・注意</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface & Background</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5f6f6"></div><div class="color-swatch-info"><div class="color-swatch-name">Page Background</div><div class="color-swatch-hex">#f5f6f6</div><div class="color-swatch-role">ページ背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff; border-bottom:1px solid #e0e0e0"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">カード・モーダル</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e0e0e0"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#e0e0e0</div><div class="color-swatch-role">区切り線</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#364549"></div><div class="color-swatch-info"><div class="color-swatch-name">Code Block BG</div><div class="color-swatch-hex">#364549</div><div class="color-swatch-role">コードブロック背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f0f0f0"></div><div class="color-swatch-info"><div class="color-swatch-name">Inline Code BG</div><div class="color-swatch-hex">#f0f0f0</div><div class="color-swatch-role">インラインコード背景</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-size:20px; font-weight:600; line-height:1.4;">Qiitaにログインして、便利な機能を使ってみませんか？</div>
+    <div class="type-meta">20px / 600 / line-height: 1.4 (28px)<span class="type-context">CTA見出し h2</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.8;">React Hooks の使い方と実践的なパターン集</div>
+    <div class="type-meta">16px / 400 / line-height: 1.8 (28.8px)<span class="type-context">記事タイトル h2</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:600; line-height:1.8;">タグランキング — Section Heading (h3)</div>
+    <div class="type-meta">14px / 600 / line-height: 1.8 (25.2px)<span class="type-context">セクション見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.8;">本文テキスト — line-height: 1.8 のゆったりとした行間で、コードと日本語が混在する技術記事を読みやすく。YakuHanJPs により「括弧」や、句読点の幅が半角化されています。</div>
+    <div class="type-meta">16px / 400 / line-height: 1.8 (28.8px) / letter-spacing: normal<span class="type-context">本文</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:600; line-height:1.5;">タグランキング</div>
+    <div class="type-meta">14px / 600 / line-height: 1.5 (21px)<span class="type-context">ラベル</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-mono); font-size:14px; font-weight:400; line-height:1.5; color:var(--text-secondary);">const app = express();</div>
+    <div class="type-meta">SFMono-Regular, Consolas... / 14px / 400 / line-height: 1.5<span class="type-context">コード</span></div>
+  </div>
+
+  <!-- YakuHanJPs 解説 -->
+  <div class="yakuhan-note">
+    <h4>YakuHanJPs について</h4>
+    <p>YakuHanJPs は「約物半角化フォント」です。括弧（「」）や句読点（、。）など、約物と呼ばれる記号文字のみを半角幅のグリフで上書きします。font-family の先頭に配置することで、約物だけが半角幅で描画され、その他の文字は後続のフォントにフォールバックします。</p>
+    <p>Qiita では <span class="inline-code">font-feature-settings: "palt"</span> を使用せず、YakuHanJPs で約物の詰めを処理しています。palt とは異なり、フォント非依存で一貫した半角化が可能です。</p>
+    <div class="yakuhan-compare">
+      <div class="yakuhan-compare-item">
+        <div class="yakuhan-compare-label">YakuHanJPs あり（Qiita）</div>
+        <div class="yakuhan-compare-text" style="font-family:var(--font-base);">「日本語」の（テスト）です。</div>
+      </div>
+      <div class="yakuhan-compare-item">
+        <div class="yakuhan-compare-label">通常のフォント</div>
+        <div class="yakuhan-compare-text" style="font-family:-apple-system, 'system-ui', 'Hiragino Kaku Gothic ProN', sans-serif;">「日本語」の（テスト）です。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ARTICLE + CODE -->
+<section class="section-surface" id="article">
+<div class="section-inner">
+  <div class="section-label">03 / Article — 技術記事の組版</div>
+  <h2 class="section-title">記事ページの組版サンプル</h2>
+  <div class="article-preview">
+    <h1>React Server Components 入門</h1>
+    <p>React Server Components（RSC）は、サーバーサイドでレンダリングされるコンポーネントです。クライアントに JavaScript バンドルを送信せずに、サーバー上でデータの取得とレンダリングを行います。</p>
+
+    <h2>基本的な使い方</h2>
+    <p>Server Component はデフォルトの動作です。<span class="inline-code">'use client'</span> ディレクティブを付けない限り、すべてのコンポーネントは Server Component として扱われます。</p>
+
+    <div class="code-block"><span class="cm">// Server Component（デフォルト）</span>
+<span class="kw">async function</span> <span class="fn">ArticleList</span>() {
+  <span class="kw">const</span> articles = <span class="kw">await</span> <span class="fn">fetchArticles</span>();
+
+  <span class="kw">return</span> (
+    &lt;<span class="type">ul</span>&gt;
+      {articles.<span class="fn">map</span>(<span class="type">article</span> <span class="op">=&gt;</span> (
+        &lt;<span class="type">li</span> key={article.id}&gt;
+          &lt;<span class="type">h3</span>&gt;{article.title}&lt;/<span class="type">h3</span>&gt;
+          &lt;<span class="type">p</span>&gt;{article.summary}&lt;/<span class="type">p</span>&gt;
+        &lt;/<span class="type">li</span>&gt;
+      ))}
+    &lt;/<span class="type">ul</span>&gt;
+  );
+}</div>
+
+    <h3>Client Component との組み合わせ</h3>
+    <p>インタラクティブな要素が必要な場合は、<span class="inline-code">'use client'</span> を宣言して Client Component にします。状態管理（<span class="inline-code">useState</span>）やイベントハンドラ（<span class="inline-code">onClick</span>）を使うコンポーネントが該当します。</p>
+
+    <div class="code-block"><span class="str">'use client'</span>;
+
+<span class="kw">import</span> { <span class="fn">useState</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="kw">export default function</span> <span class="fn">LikeButton</span>({ articleId }: { articleId: <span class="type">string</span> }) {
+  <span class="kw">const</span> [liked, setLiked] = <span class="fn">useState</span>(<span class="num">false</span>);
+  <span class="kw">const</span> [count, setCount] = <span class="fn">useState</span>(<span class="num">0</span>);
+
+  <span class="kw">const</span> <span class="fn">handleLike</span> = <span class="kw">async</span> () <span class="op">=&gt;</span> {
+    setLiked(<span class="op">!</span>liked);
+    setCount(prev <span class="op">=&gt;</span> liked ? prev <span class="op">-</span> <span class="num">1</span> : prev <span class="op">+</span> <span class="num">1</span>);
+    <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">`/api/articles/${articleId}/like`</span>, {
+      method: <span class="str">'POST'</span>,
+    });
+  };
+
+  <span class="kw">return</span> (
+    &lt;<span class="type">button</span> onClick={handleLike}&gt;
+      {liked ? <span class="str">'&#9829;'</span> : <span class="str">'&#9825;'</span>} {count}
+    &lt;/<span class="type">button</span>&gt;
+  );
+}</div>
+
+    <h2>パフォーマンスの利点</h2>
+    <p>Server Components を活用することで、以下の利点が得られます：</p>
+    <ul>
+      <li>クライアントに送信する JavaScript バンドルサイズの削減</li>
+      <li>サーバーサイドでのデータ取得によるウォーターフォールの回避</li>
+      <li>重い依存関係（マークダウンパーサー等）をサーバーに閉じ込められる</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons & Tags</div>
+  <h2 class="section-title">ボタン・タグバリエーション</h2>
+  <div class="button-row" style="margin-bottom:24px;">
+    <div class="button-item"><a class="btn-primary" href="#">投稿する</a><div class="button-label">Primary CTA</div></div>
+    <div class="button-item"><a class="btn-outline" href="#">フォローする</a><div class="button-label">Outline</div></div>
+    <div class="button-item"><a class="btn-danger" href="#" style="display:inline-block; padding:8px 24px; text-decoration:none;">削除する</a><div class="button-label">Danger</div></div>
+  </div>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-tag" href="#">React</a></div>
+    <div class="button-item"><a class="btn-tag" href="#">TypeScript</a></div>
+    <div class="button-item"><a class="btn-tag" href="#">Next.js</a></div>
+    <div class="button-item"><a class="btn-tag" href="#">Python</a></div>
+    <div class="button-item"><a class="btn-tag" href="#">Docker</a></div>
+  </div>
+  <div class="button-label" style="margin-top:8px;">Tags</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">記事カード</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h3>TypeScriptの型パズル入門</h3>
+      <p>Conditional Types, Mapped Types, Template Literal Types を使った実践的な型レベルプログラミングの解説。</p>
+      <div class="card-tags">
+        <a class="btn-tag" href="#">TypeScript</a>
+        <a class="btn-tag" href="#">型システム</a>
+      </div>
+      <div class="card-meta">@engineer_taro / 2026-04-01 / 142 LGTM</div>
+    </div>
+    <div class="card" style="box-shadow:var(--elevation-1);">
+      <h3>Docker Compose で開発環境を構築する</h3>
+      <p>PostgreSQL + Redis + Next.js のローカル開発環境を docker-compose.yml ひとつで立ち上げる手順。</p>
+      <div class="card-tags">
+        <a class="btn-tag" href="#">Docker</a>
+        <a class="btn-tag" href="#">Next.js</a>
+      </div>
+      <div class="card-meta">@devops_hanako / 2026-03-28 / 89 LGTM</div>
+    </div>
+    <div class="card">
+      <h3>GitHub Actions でCI/CDパイプラインを組む</h3>
+      <p>テスト、lint、ビルド、デプロイまでを自動化するワークフローの設計と実装パターン。</p>
+      <div class="card-tags">
+        <a class="btn-tag" href="#">GitHub Actions</a>
+        <a class="btn-tag" href="#">CI/CD</a>
+      </div>
+      <div class="card-meta">@infra_jiro / 2026-03-25 / 203 LGTM</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group"><label class="form-label">ユーザー名</label><input class="form-input" type="text" placeholder="@username"><div class="form-state-label">デフォルト — border: #e0e0e0, radius: 4px</div></div>
+  <div class="form-group"><label class="form-label">タイトル</label><input class="form-input form-input--focus" type="text" value="React Server Components 入門"><div class="form-state-label">フォーカス — border: #55c500 (Qiita Green)</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー — border: #d32f2f (danger)</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">Depth & Elevation</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">影なし（基調）</div></div>
+    <div class="elevation-card" style="box-shadow:var(--elevation-1);"><div class="elevation-label">Elevation 1</div><div class="elevation-desc">ホバー時カード</div></div>
+    <div class="elevation-card" style="box-shadow:var(--elevation-2);"><div class="elevation-label">Elevation 2</div><div class="elevation-desc">ドロップダウン</div></div>
+    <div class="elevation-card" style="border:2px solid var(--qiita-green);"><div class="elevation-label">Focus Ring</div><div class="elevation-desc">#55c500 (Qiita Green)</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://qiita.com/" style="color:var(--qiita-green); text-decoration:underline;">qiita.com</a> DESIGN.md — awesome-design-md-jp
+</footer>
+
+</body>
+</html>

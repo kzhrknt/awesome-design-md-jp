@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: マネーフォワード (Light)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #fff;
+    color: #333;
+    font-family: "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", Meiryo, メイリオ, "MS PGothic", Osaka, sans-serif;
+    font-size: 14px; font-weight: 400; line-height: 21px;
+    letter-spacing: normal;
+    font-feature-settings: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; height: 56px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+  }
+  .nav-brand { font-size: 16px; font-weight: 500; color: #333; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+  .nav-brand .logo-mark { display: inline-block; width: 24px; height: 24px; background: #4db848; border-radius: 4px; }
+  .nav-links { display: flex; gap: 20px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 500; color: #666; text-decoration: none; line-height: 20px; transition: color 0.15s; }
+  .nav-links a:hover { color: #4db848; }
+  .nav-cta {
+    display: inline-block; background: #4db848; color: #fff;
+    padding: 6px 16px; border-radius: 4px; font-size: 14px; font-weight: 500;
+    text-decoration: none; transition: background 0.15s;
+  }
+  .nav-cta:hover { background: #3a9a35; }
+
+  /* HERO */
+  .hero { padding: 64px 20px 48px; text-align: center; background: #f5f5f5; }
+  .hero h1 {
+    font-size: 20px; font-weight: 500; line-height: normal;
+    color: #333; margin-bottom: 12px;
+  }
+  .hero p {
+    font-size: 14px; font-weight: 400; line-height: 21px;
+    color: #666; max-width: 560px; margin: 0 auto 24px;
+  }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; background: #4db848; color: #fff;
+    padding: 8px 24px; border-radius: 4px; border: none;
+    font-family: inherit; font-size: 14px; font-weight: 500;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-primary:hover { background: #3a9a35; }
+  .btn-outline {
+    display: inline-block; background: transparent; color: #333;
+    padding: 8px 24px; border-radius: 4px;
+    border: 1px solid #ddd;
+    font-family: inherit; font-size: 14px; font-weight: 500;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-outline:hover { background: #f5f5f5; }
+
+  /* SECTIONS */
+  .section { padding: 48px 20px; max-width: 840px; margin: 0 auto; }
+  .section-label {
+    font-size: 12px; font-weight: 500; color: #999;
+    text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.04em;
+  }
+  .section-title {
+    font-size: 20px; font-weight: 500; line-height: normal;
+    margin-bottom: 24px;
+  }
+  .section-divider { border: none; border-top: 1px solid #eee; margin: 0; }
+
+  .section-gray { background: #f5f5f5; padding: 48px 20px; }
+  .section-gray .section-inner { max-width: 840px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .color-swatch { border-radius: 4px; overflow: hidden; background: #fff; border: 1px solid #eee; }
+  .color-swatch-block { height: 64px; width: 100%; }
+  .color-swatch-info { padding: 8px 10px; }
+  .color-swatch-name { font-size: 12px; font-weight: 500; margin-bottom: 2px; color: #333; }
+  .color-swatch-hex { font-size: 11px; color: #666; font-family: Menlo, Consolas, monospace; }
+  .color-swatch-role { font-size: 11px; color: #999; margin-top: 2px; }
+  .color-group-label { font-size: 14px; font-weight: 500; color: #666; margin: 20px 0 8px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: Menlo, Consolas, monospace; font-size: 11px; font-weight: 400; color: #999; margin-top: 6px; }
+  .type-context { display: inline-block; background: #f5f5f5; color: #666; font-size: 11px; padding: 1px 6px; border-radius: 3px; margin-left: 6px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 11px; font-weight: 400; color: #999; margin-top: 6px; }
+  .btn-danger { display: inline-block; background: #e74c3c; color: #fff; padding: 8px 24px; border-radius: 4px; border: none; font-family: inherit; font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; }
+  .btn-ghost { display: inline-block; background: transparent; color: #4db848; padding: 8px 24px; border-radius: 4px; border: none; font-family: inherit; font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; }
+  .btn-ghost:hover { background: rgba(77,184,72,0.08); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+  .card { background: #fff; border: 1px solid #eee; border-radius: 4px; padding: 20px; transition: box-shadow 0.3s; }
+  .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  .card h3 { font-size: 17px; font-weight: 500; line-height: 28.9px; margin-bottom: 8px; }
+  .card p { font-size: 14px; color: #666; line-height: 21px; }
+  .card-link { font-size: 13px; color: #4db848; text-decoration: none; margin-top: 10px; display: inline-block; }
+  .card-link:hover { text-decoration: underline; }
+  .card-amount { font-size: 20px; font-weight: 500; color: #333; margin: 8px 0; }
+  .card-amount.income { color: #27ae60; }
+  .card-amount.expense { color: #e74c3c; }
+
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .data-table th { background: #f5f5f5; font-weight: 500; text-align: left; padding: 8px 12px; border-bottom: 1px solid #ddd; font-size: 12px; color: #666; }
+  .data-table td { padding: 8px 12px; border-bottom: 1px solid #eee; color: #333; }
+  .data-table .amount-plus { color: #27ae60; font-weight: 500; }
+  .data-table .amount-minus { color: #e74c3c; font-weight: 500; }
+  .data-table .category-tag { display: inline-block; background: #f0f0f0; color: #666; font-size: 11px; padding: 1px 6px; border-radius: 3px; }
+
+  /* COMPARISON TABLE */
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 16px; }
+  .compare-table th { background: #f5f5f5; font-weight: 500; text-align: left; padding: 8px 12px; border-bottom: 1px solid #ddd; }
+  .compare-table td { padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: top; }
+  .compare-table .label-col { font-weight: 500; color: #666; white-space: nowrap; width: 160px; }
+  .compare-table .mf-col { background: rgba(77,184,72,0.04); }
+  .compare-table .freee-col { background: rgba(40,100,240,0.04); }
+  .brand-mf { color: #4db848; font-weight: 500; }
+  .brand-freee { color: #2864f0; font-weight: 500; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 16px; max-width: 360px; }
+  .form-label { display: block; font-size: 12px; font-weight: 500; color: #333; margin-bottom: 4px; }
+  .form-input {
+    width: 100%; background: #fff; color: #333;
+    border: 1px solid #ddd; padding: 8px 12px; border-radius: 4px;
+    font-family: inherit; font-size: 14px; line-height: 21px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-input--focus { border-color: #4db848; box-shadow: 0 0 0 2px rgba(77,184,72,0.2); }
+  .form-input--error { border-color: #e74c3c; box-shadow: 0 0 0 2px rgba(231,76,60,0.2); }
+  .form-hint { font-size: 11px; color: #999; margin-top: 4px; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+  .elevation-card { background: #fff; border-radius: 4px; padding: 20px; text-align: center; border: 1px solid #eee; }
+  .elevation-label { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .elevation-desc { font-family: Menlo, Consolas, monospace; font-size: 11px; color: #999; word-break: break-all; }
+
+  /* ARTICLE / CONTENT PREVIEW */
+  .article-preview { max-width: 560px; margin: 0 auto; }
+  .article-preview h2 { font-size: 20px; font-weight: 500; line-height: normal; margin: 20px 0 10px; }
+  .article-preview h3 { font-size: 17px; font-weight: 500; line-height: 28.9px; margin: 16px 0 8px; }
+  .article-preview p { font-size: 14px; font-weight: 400; line-height: 21px; letter-spacing: normal; font-feature-settings: normal; margin-bottom: 14px; color: #333; }
+
+  /* FOOTER */
+  .footer { padding: 24px 20px; text-align: center; background: #f5f5f5; font-size: 12px; color: #999; border-top: 1px solid #eee; }
+  .footer a { color: #4db848; text-decoration: underline; }
+
+  @media (max-width: 767px) {
+    .hero h1 { font-size: 17px; }
+    .nav-links { display: none; }
+    .section { padding: 32px 16px; }
+    .section-gray { padding: 32px 16px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .data-table { font-size: 13px; }
+    .compare-table { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#"><span class="logo-mark"></span> マネーフォワード</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#content">Content</a></li>
+    <li><a href="#table">Table</a></li>
+    <li><a href="#compare">Compare</a></li>
+    <li><a href="#forms">Forms</a></li>
+  </ul>
+  <a class="nav-cta" href="#">ログイン</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System Preview — moneyforward.com</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。14px ベースの業務ツール型タイポグラフィ、ヒラギノ角ゴ Pro 優先のフォントスタック、weight 500 の見出し階層を可視化。</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">家計簿をつける</a>
+    <a class="btn-outline" href="#">サービス一覧</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#4db848"></div><div class="color-swatch-info"><div class="color-swatch-name">Primary Green</div><div class="color-swatch-hex">#4db848</div><div class="color-swatch-role">ブランド・CTA</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#3a9a35"></div><div class="color-swatch-info"><div class="color-swatch-name">Primary Dark</div><div class="color-swatch-hex">#3a9a35</div><div class="color-swatch-role">ホバー・プレス</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#333"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#333333</div><div class="color-swatch-role">本文テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#666"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Secondary</div><div class="color-swatch-hex">#666666</div><div class="color-swatch-role">補足テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#999"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Disabled</div><div class="color-swatch-hex">#999999</div><div class="color-swatch-role">無効・ヒント</div></div></div>
+  </div>
+
+  <div class="color-group-label">Semantic</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#27ae60"></div><div class="color-swatch-info"><div class="color-swatch-name">Success</div><div class="color-swatch-hex">#27ae60</div><div class="color-swatch-role">収入・成功</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e74c3c"></div><div class="color-swatch-info"><div class="color-swatch-name">Danger</div><div class="color-swatch-hex">#e74c3c</div><div class="color-swatch-role">支出・エラー</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f39c12"></div><div class="color-swatch-info"><div class="color-swatch-name">Warning</div><div class="color-swatch-hex">#f39c12</div><div class="color-swatch-role">警告・予算超過</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface & Border</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff; border-bottom:1px solid #ddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5f5f5"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#f5f5f5</div><div class="color-swatch-role">カード・セクション背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ddd; border-bottom:1px solid #ccc"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#dddddd</div><div class="color-swatch-role">区切り線・入力枠</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#eee; border-bottom:1px solid #ddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Border Light</div><div class="color-swatch-hex">#eeeeee</div><div class="color-swatch-role">カードボーダー</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-size:20px; font-weight:500; line-height:normal;">サービス一覧 — Heading 2 (large)</div>
+    <div class="type-meta">20px / 500 / line-height: normal / palt: なし<span class="type-context">セクション見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:17px; font-weight:500; line-height:28.9px;">資産管理・家計簿 — Heading 3</div>
+    <div class="type-meta">17px / 500 / line-height: 28.9px (×1.7) / palt: なし<span class="type-context">サブ見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:500; line-height:20px;">ログイン ／ 新規登録 ／ サービス一覧</div>
+    <div class="type-meta">14px / 500 / line-height: 20px / palt: なし<span class="type-context">ナビゲーション</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:21px;">本文テキスト — 14px ベースの業務ツール的なサイズ感。ヒラギノ角ゴ Pro を先頭に置く和文優先のフォントスタックにより、macOS環境では高品質な日本語表示を実現します。line-height は 1.5 で、密度の高い画面でも最低限の可読性を確保しています。</div>
+    <div class="type-meta">14px / 400 / line-height: 21px (×1.5) / letter-spacing: normal / palt: なし<span class="type-context">本文</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:400; line-height:18px; color:#999;">補足テキスト・注釈 — Caption (12px)</div>
+    <div class="type-meta">12px / 400 / line-height: 18px (×1.5) / color: #999<span class="type-context">注釈</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CONTENT PREVIEW -->
+<section class="section-gray" id="content">
+<div class="section-inner">
+  <div class="section-label">03 / Content — 家計管理の組版サンプル</div>
+  <h2 class="section-title">資産管理ガイド</h2>
+  <div class="article-preview">
+    <h2>家計簿で収支を把握する</h2>
+    <p>毎月の収入と支出を正確に記録することで、お金の流れが見えるようになります。マネーフォワードでは、銀行口座やクレジットカードと連携して、自動で家計簿を作成します。</p>
+    <h3>資産の一元管理</h3>
+    <p>銀行口座、証券口座、ポイント、電子マネーなど、複数の資産を一つの画面で確認できます。総資産の推移をグラフで可視化し、資産形成の進捗を把握しましょう。</p>
+    <h3>予算管理と支出分析</h3>
+    <p>カテゴリごとに予算を設定し、支出が予算を超えそうな場合はアラートで通知します。食費、交通費、日用品など、どこにお金を使っているかを分析できます。</p>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- DATA TABLE -->
+<section class="section" id="table">
+  <div class="section-label">04 / Table — 収支データ</div>
+  <h2 class="section-title">家計簿テーブル</h2>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>日付</th>
+        <th>内容</th>
+        <th>カテゴリ</th>
+        <th style="text-align:right;">金額</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>04/01</td>
+        <td>給与振込</td>
+        <td><span class="category-tag">収入</span></td>
+        <td style="text-align:right;" class="amount-plus">+350,000</td>
+      </tr>
+      <tr>
+        <td>04/03</td>
+        <td>家賃引き落とし</td>
+        <td><span class="category-tag">住宅</span></td>
+        <td style="text-align:right;" class="amount-minus">-95,000</td>
+      </tr>
+      <tr>
+        <td>04/04</td>
+        <td>スーパーマーケット</td>
+        <td><span class="category-tag">食費</span></td>
+        <td style="text-align:right;" class="amount-minus">-4,280</td>
+      </tr>
+      <tr>
+        <td>04/05</td>
+        <td>電気料金</td>
+        <td><span class="category-tag">光熱費</span></td>
+        <td style="text-align:right;" class="amount-minus">-8,650</td>
+      </tr>
+      <tr>
+        <td>04/05</td>
+        <td>交通系ICチャージ</td>
+        <td><span class="category-tag">交通費</span></td>
+        <td style="text-align:right;" class="amount-minus">-3,000</td>
+      </tr>
+      <tr>
+        <td>04/06</td>
+        <td>投資信託 積立</td>
+        <td><span class="category-tag">投資</span></td>
+        <td style="text-align:right;" class="amount-minus">-33,333</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards — 資産概要</div>
+  <h2 class="section-title">資産サマリーカード</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h3>今月の収入</h3>
+      <div class="card-amount income">+350,000円</div>
+      <p>給与、副業収入、配当金などの合計です。先月比 +12,000円。</p>
+    </div>
+    <div class="card">
+      <h3>今月の支出</h3>
+      <div class="card-amount expense">-186,430円</div>
+      <p>固定費と変動費の合計です。予算 200,000円 に対して残り 13,570円。</p>
+    </div>
+    <div class="card">
+      <h3>総資産</h3>
+      <div class="card-amount">4,823,500円</div>
+      <p>銀行口座、証券口座、ポイント残高の合計。前月比 +163,570円。</p>
+      <a class="card-link" href="#">資産推移を見る →</a>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">06 / Buttons</div>
+  <h2 class="section-title">ボタンバリエーション</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-primary" href="#">家計簿をつける</a><div class="button-label">Primary</div></div>
+    <div class="button-item"><a class="btn-outline" href="#">詳細を見る</a><div class="button-label">Outline</div></div>
+    <div class="button-item"><a class="btn-danger" href="#" style="display:inline-block; padding:8px 24px; text-decoration:none;">口座を解除</a><div class="button-label">Danger</div></div>
+    <div class="button-item"><a class="btn-ghost" href="#">もっと見る</a><div class="button-label">Ghost</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">07 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input" type="text" placeholder="example@moneyforward.com"><div class="form-hint">デフォルト — border: #ddd, radius: 4px</div></div>
+  <div class="form-group"><label class="form-label">パスワード</label><input class="form-input form-input--focus" type="password" value="password123"><div class="form-hint">フォーカス — border: #4db848</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-hint">エラー — border: #e74c3c</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">08 / Elevation</div>
+  <h2 class="section-title">Depth & Elevation</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">影なし、ボーダーのみ</div></div>
+    <div class="elevation-card" style="box-shadow: 0 1px 3px rgba(0,0,0,0.08);"><div class="elevation-label">Level 1</div><div class="elevation-desc">カード・リスト</div></div>
+    <div class="elevation-card" style="box-shadow: 0 2px 8px rgba(0,0,0,0.12);"><div class="elevation-label">Level 2</div><div class="elevation-desc">ドロップダウン</div></div>
+    <div class="elevation-card" style="box-shadow: 0 4px 16px rgba(0,0,0,0.15);"><div class="elevation-label">Level 3</div><div class="elevation-desc">モーダル</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COMPARISON WITH freee -->
+<section class="section-gray" id="compare">
+<div class="section-inner">
+  <div class="section-label">09 / Comparison — freee vs マネーフォワード</div>
+  <h2 class="section-title">freee との比較</h2>
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th class="label-col">項目</th>
+        <th class="mf-col"><span class="brand-mf">マネーフォワード</span></th>
+        <th class="freee-col"><span class="brand-freee">freee</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label-col">ブランドカラー</td>
+        <td class="mf-col"><span style="display:inline-block;width:14px;height:14px;background:#4db848;border-radius:2px;vertical-align:middle;margin-right:4px;"></span> #4db848 (Green)</td>
+        <td class="freee-col"><span style="display:inline-block;width:14px;height:14px;background:#2864f0;border-radius:2px;vertical-align:middle;margin-right:4px;"></span> #2864f0 (Blue)</td>
+      </tr>
+      <tr>
+        <td class="label-col">本文 font-size</td>
+        <td class="mf-col">14px（業務ツール的）</td>
+        <td class="freee-col">16px（標準的）</td>
+      </tr>
+      <tr>
+        <td class="label-col">line-height</td>
+        <td class="mf-col">1.5 (21px)</td>
+        <td class="freee-col">1.7 (27.2px)</td>
+      </tr>
+      <tr>
+        <td class="label-col">見出し weight</td>
+        <td class="mf-col">500 (medium)</td>
+        <td class="freee-col">700 (bold)</td>
+      </tr>
+      <tr>
+        <td class="label-col">和文フォント</td>
+        <td class="mf-col">ヒラギノ角ゴ Pro 優先</td>
+        <td class="freee-col">Noto Sans JP / ヒラギノ角ゴ ProN</td>
+      </tr>
+      <tr>
+        <td class="label-col">欧文フォント</td>
+        <td class="mf-col">和文フォント内蔵</td>
+        <td class="freee-col">Helvetica Neue 先頭</td>
+      </tr>
+      <tr>
+        <td class="label-col">palt</td>
+        <td class="mf-col">未使用</td>
+        <td class="freee-col">見出しで使用</td>
+      </tr>
+      <tr>
+        <td class="label-col">CSS Custom Properties</td>
+        <td class="mf-col">なし</td>
+        <td class="freee-col">Vibes Design System で使用</td>
+      </tr>
+      <tr>
+        <td class="label-col">border-radius</td>
+        <td class="mf-col">4px（角張った印象）</td>
+        <td class="freee-col">8px（やわらかい印象）</td>
+      </tr>
+      <tr>
+        <td class="label-col">デザインシステム</td>
+        <td class="mf-col">従来型CSS</td>
+        <td class="freee-col">Vibes（体系化済み）</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://moneyforward.com/">moneyforward.com</a> DESIGN.md — awesome-design-md-jp
+</footer>
+
+</body>
+</html>
