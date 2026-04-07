@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: STUDIO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: CSS Custom Properties 実測値 === */
+    --text-primary: #222222;
+    --text-secondary: #707070;
+    --text-feature: #333333;
+    --text-on-dark: #f7f7f7;
+    --bg-primary: #ffffff;
+    --bg-surface: #f7f7f7;
+    --bg-light-blue: #eef9ff;
+    --studio-blue: #0275fd;
+    --cta-bg: #222222;
+    /* === Fonts 実測値 === */
+    --font-base: Inter, "Noto Sans JP", sans-serif;
+    --font-morisawa: "ゴシックMB101 B JIS2004", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+    --font-mono: "IBM Plex Mono", monospace;
+    --font-serif: "Instrument Serif", serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-base);
+    font-size: 16px; font-weight: 400; line-height: 1.5;
+    letter-spacing: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 56px;
+    background: var(--bg-primary);
+    border-bottom: 1px solid #eee;
+  }
+  .nav-brand {
+    font-size: 18px; font-weight: 600; color: var(--text-primary);
+    text-decoration: none; letter-spacing: -0.36px;
+  }
+  .nav-brand span { color: var(--studio-blue); }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a {
+    font-family: var(--font-base);
+    font-size: 14px; font-weight: 500; color: var(--text-primary);
+    text-decoration: none; letter-spacing: -0.28px;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--studio-blue); }
+  .nav-cta {
+    display: inline-block; background: var(--cta-bg); color: var(--text-on-dark);
+    padding: 6px 16px; border-radius: 500px;
+    font-family: var(--font-base);
+    font-size: 12px; font-weight: 600; letter-spacing: -0.48px;
+    text-decoration: none; transition: opacity 0.15s;
+  }
+  .nav-cta:hover { opacity: 0.8; }
+
+  /* HERO */
+  .hero { padding: 80px 32px 64px; text-align: center; background: var(--bg-primary); }
+  .hero h1 {
+    font-family: var(--font-base);
+    font-size: 35.04px; font-weight: 600; line-height: 42.048px;
+    letter-spacing: normal;
+    color: var(--text-primary); margin-bottom: 16px;
+  }
+  .hero p {
+    font-family: var(--font-base);
+    font-size: 15.04px; font-weight: 400; line-height: 25.568px;
+    color: var(--text-secondary); max-width: 560px; margin: 0 auto 32px;
+  }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-pill {
+    display: inline-block; background: var(--cta-bg); color: var(--text-on-dark);
+    padding: 12px 32px; border-radius: 500px; border: none;
+    font-family: var(--font-base); font-size: 13px; font-weight: 500;
+    letter-spacing: -0.26px;
+    text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-pill:hover { opacity: 0.8; }
+  .btn-rect {
+    display: inline-block; background: transparent; color: var(--text-primary);
+    padding: 12px 32px; border-radius: 4px;
+    border: 1px solid var(--text-primary);
+    font-family: var(--font-base); font-size: 13px; font-weight: 500;
+    letter-spacing: -0.26px;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-rect:hover { background: var(--bg-surface); }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 940px; margin: 0 auto; }
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 11px; font-weight: 500; color: var(--text-secondary);
+    text-transform: uppercase; margin-bottom: 8px; letter-spacing: -0.44px;
+  }
+  .section-title {
+    font-family: var(--font-base);
+    font-size: 36px; font-weight: 600; line-height: 45px;
+    letter-spacing: normal;
+    margin-bottom: 32px;
+  }
+  .section-divider { border: none; border-top: 1px solid #eee; margin: 0; }
+
+  .section-gray { background: var(--bg-surface); padding: 64px 32px; }
+  .section-gray .section-inner { max-width: 940px; margin: 0 auto; }
+
+  .section-blue { background: var(--bg-light-blue); padding: 64px 32px; }
+  .section-blue .section-inner { max-width: 940px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 8px; overflow: hidden; background: #fff; border: 1px solid #eee; }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; color: var(--text-primary); }
+  .color-swatch-hex { font-size: 12px; color: var(--text-secondary); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 600; color: var(--text-secondary); margin: 24px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid #eee; }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; }
+  .type-context { display: inline-block; background: var(--bg-surface); color: var(--text-secondary); font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+  .type-font-label {
+    display: inline-block; background: var(--studio-blue); color: #fff;
+    font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 500px;
+    margin-bottom: 12px; letter-spacing: 0.02em;
+  }
+
+  /* ARTICLE PREVIEW */
+  .article-preview { max-width: 620px; margin: 0 auto; }
+  .article-preview h1 {
+    font-family: var(--font-base);
+    font-size: 35.04px; font-weight: 600; line-height: 42.048px;
+    letter-spacing: normal; margin-bottom: 16px;
+  }
+  .article-preview h2 {
+    font-family: var(--font-base);
+    font-size: 36px; font-weight: 600; line-height: 45px;
+    letter-spacing: normal; margin: 24px 0 12px;
+  }
+  .article-preview p {
+    font-family: var(--font-base);
+    font-size: 15.04px; font-weight: 400; line-height: 25.568px;
+    letter-spacing: normal; margin-bottom: 16px; color: var(--text-secondary);
+  }
+  .article-preview .accent { color: var(--studio-blue); }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; font-family: var(--font-mono); }
+  .btn-blue {
+    display: inline-block; background: var(--studio-blue); color: #fff;
+    padding: 12px 32px; border-radius: 500px; border: none;
+    font-family: var(--font-base); font-size: 13px; font-weight: 500;
+    letter-spacing: -0.26px;
+    text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-blue:hover { opacity: 0.8; }
+  .btn-ghost {
+    display: inline-block; background: transparent; color: var(--text-secondary);
+    padding: 12px 32px; border-radius: 500px; border: none;
+    font-family: var(--font-base); font-size: 13px; font-weight: 500;
+    letter-spacing: -0.26px;
+    text-decoration: none; cursor: pointer; transition: color 0.15s;
+  }
+  .btn-ghost:hover { color: var(--text-primary); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .card { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 24px; transition: box-shadow 0.3s; }
+  .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .card h3 {
+    font-family: var(--font-base);
+    font-size: 18.72px; font-weight: 700; line-height: 18.72px;
+    letter-spacing: normal; margin-bottom: 12px; color: var(--text-feature);
+  }
+  .card p { font-size: 15.04px; color: var(--text-secondary); line-height: 25.568px; }
+  .card-link { font-size: 13px; color: var(--studio-blue); text-decoration: none; margin-top: 12px; display: inline-block; font-weight: 500; }
+  .card-link:hover { text-decoration: underline; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px; letter-spacing: -0.28px; }
+  .form-input {
+    width: 100%; background: #fff; color: var(--text-primary);
+    border: 1px solid #ddd; padding: 10px 14px; border-radius: 4px;
+    font-family: var(--font-base); font-size: 14px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-input--focus { border-color: var(--studio-blue); box-shadow: 0 0 0 3px rgba(2,117,253,0.15); }
+  .form-state-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; font-family: var(--font-mono); }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .elevation-card { background: #fff; border-radius: 12px; padding: 24px; text-align: center; border: 1px solid #eee; }
+  .elevation-label { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); word-break: break-all; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--studio-blue); border-radius: 3px; margin-bottom: 6px; height: 28px; opacity: 0.7; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--text-secondary); }
+
+  /* LETTER-SPACING DEMO */
+  .ls-demo { margin-bottom: 20px; }
+  .ls-demo-text { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+  .ls-demo-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; background: var(--cta-bg); font-size: 12px; color: var(--text-secondary); }
+  .footer a { color: var(--studio-blue); text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 24px; line-height: 1.3; }
+    .hero p { font-size: 14px; line-height: 1.7; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .section-gray { padding: 48px 20px; }
+    .section-blue { padding: 48px 20px; }
+    .section-title { font-size: 24px; line-height: 1.3; }
+    .card-grid { grid-template-columns: 1fr; }
+    .article-preview h1 { font-size: 24px; line-height: 1.3; }
+    .article-preview h2 { font-size: 24px; line-height: 1.3; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#"><span>S</span>TUDIO</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#article">Article</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#spacing">Spacing</a></li>
+  </ul>
+  <a class="nav-cta" href="#">無料ではじめる</a>
+</nav>
+
+<section class="hero">
+  <h1>あなたの理想のサイトを、<br>最速で公開。</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。カラー、フォント、コンポーネント、スペーシングの全値を可視化。computed style 実測値に基づく。</p>
+  <div class="hero-buttons">
+    <a class="btn-pill" href="#">無料ではじめる</a>
+    <a class="btn-rect" href="#">DESIGN.md を読む</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0275fd"></div><div class="color-swatch-info"><div class="color-swatch-name">STUDIO Blue</div><div class="color-swatch-hex">#0275fd</div><div class="color-swatch-role">ブランドカラー・アクセント</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#eef9ff"></div><div class="color-swatch-info"><div class="color-swatch-name">Light Blue BG</div><div class="color-swatch-hex">#eef9ff</div><div class="color-swatch-role">ライトブルー背景</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#222222"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#222222</div><div class="color-swatch-role">本文テキスト（ほぼ黒）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#333333"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Feature</div><div class="color-swatch-hex">#333333</div><div class="color-swatch-role">機能カード見出し</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#707070"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Secondary</div><div class="color-swatch-hex">#707070</div><div class="color-swatch-role">補足テキスト・説明文</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f7f7f7; border-bottom:1px solid #ddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Text on Dark</div><div class="color-swatch-hex">#f7f7f7</div><div class="color-swatch-role">ダークボタン上の文字</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface & Background</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #ddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f7f7f7"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Light</div><div class="color-swatch-hex">#f7f7f7</div><div class="color-swatch-role">カード・セクション背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#222222"></div><div class="color-swatch-info"><div class="color-swatch-name">CTA Surface</div><div class="color-swatch-hex">#222222</div><div class="color-swatch-role">CTAボタン背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#eef9ff"></div><div class="color-swatch-info"><div class="color-swatch-name">Light Blue</div><div class="color-swatch-hex">#eef9ff</div><div class="color-swatch-role">ハイライト背景</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <!-- Inter + Noto Sans JP -->
+  <div class="type-font-label">Inter + Noto Sans JP</div>
+
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:35.04px; font-weight:600; line-height:42.048px; letter-spacing:normal;">あなたの理想のサイトを、最速で公開。</div>
+    <div class="type-meta">35.04px / 600 / line-height: 42.048px (x1.2) / ls: normal<span class="type-context">Hero h1</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:36px; font-weight:600; line-height:45px; letter-spacing:normal;">さあ、今すぐStudioを始めよう。</div>
+    <div class="type-meta">36px / 600 / line-height: 45px (x1.25) / ls: normal<span class="type-context">Section h2 / h3</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:24px; font-weight:600; line-height:36px; letter-spacing:normal;">ノーコードでWebサイトを作る時代</div>
+    <div class="type-meta">24px / 600 / line-height: 36px (x1.5) / ls: normal<span class="type-context">News h3</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:15.04px; font-weight:600; line-height:15.04px; letter-spacing:-0.3008px;">規模や業種を問わず、あらゆるサイトを作れます。</div>
+    <div class="type-meta">15.04px / 600 / line-height: 15.04px / ls: -0.3008px<span class="type-context">Sub h2</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:15.04px; font-weight:400; line-height:25.568px; letter-spacing:normal; color:var(--text-secondary);">ノーコードでWebサイトを作る。デザインから公開まで、コードを書かずにプロフェッショナルなサイトを構築できます。サーバーの準備も不要で、ドメイン設定もワンクリック。直感的なエディタで、思い描いたデザインをそのまま形にできます。</div>
+    <div class="type-meta">15.04px / 400 / line-height: 25.568px (x1.7) / ls: normal / color: #707070<span class="type-context">Body</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:14px; font-weight:500; line-height:14px; letter-spacing:-0.28px;">テンプレート&nbsp;&nbsp;事例&nbsp;&nbsp;料金&nbsp;&nbsp;お知らせ</div>
+    <div class="type-meta">14px / 500 / line-height: 14px / ls: -0.28px / color: #222<span class="type-context">Nav</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:14.08px; font-weight:500; line-height:21.12px; letter-spacing:-0.2816px; color:var(--text-primary);">株式会社スタジオ</div>
+    <div class="type-meta">14.08px / 500 / line-height: 21.12px / ls: -0.2816px<span class="type-context">H4 Company</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:13px; font-weight:500; line-height:15.6px; letter-spacing:-0.26px; color:var(--text-on-dark); background:var(--cta-bg); display:inline-block; padding:10px 28px; border-radius:500px;">無料ではじめる</div>
+    <div class="type-meta">13px / 500 / line-height: 15.6px / ls: -0.26px / color: #f7f7f7 on #222<span class="type-context">CTA Label</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:12px; font-weight:600; line-height:16.8px; letter-spacing:-0.48px; color:var(--text-on-dark); background:var(--cta-bg); display:inline-block; padding:6px 16px; border-radius:500px;">無料ではじめる</div>
+    <div class="type-meta">12px / 600 / line-height: 16.8px / ls: -0.48px / color: #f7f7f7 on #222<span class="type-context">Header CTA</span></div>
+  </div>
+
+  <!-- Morisawa -->
+  <div style="margin-top: 40px;"></div>
+  <div class="type-font-label">Gothic MB101 B (Morisawa)</div>
+
+  <div class="type-sample">
+    <div style="font-family:var(--font-morisawa); font-size:11px; font-weight:500; line-height:1.4;">法人向けプラン</div>
+    <div class="type-meta">11px / 500 / font: Gothic MB101 B JIS2004<span class="type-context">Business Label</span></div>
+    <div class="type-meta" style="margin-top:4px; color:var(--studio-blue);">* モリサワフォント。再現時は Hiragino Kaku Gothic ProN で代替</div>
+  </div>
+
+  <!-- IBM Plex Mono -->
+  <div style="margin-top: 40px;"></div>
+  <div class="type-font-label">IBM Plex Mono</div>
+
+  <div class="type-sample">
+    <div style="font-family:var(--font-mono); font-size:11px; font-weight:500; letter-spacing:-0.44px; line-height:1.4;">FOR BUSINESS</div>
+    <div class="type-meta">11px / 500 / ls: -0.44px / font: IBM Plex Mono<span class="type-context">Mono Label</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-mono); font-size:13px; font-weight:500; letter-spacing:-0.26px; color:var(--text-secondary);">DESIGN SYSTEM &mdash; STUDIO.DESIGN/JA</div>
+    <div class="type-meta">IBM Plex Mono / テクニカルラベル・ナビゲーション補助</div>
+  </div>
+
+  <!-- Instrument Serif (CSS変数にあり) -->
+  <div style="margin-top: 40px;"></div>
+  <div class="type-font-label">Instrument Serif (CSS変数定義あり)</div>
+
+  <div class="type-sample">
+    <div style="font-family:var(--font-serif); font-size:36px; font-weight:400; line-height:1.3; font-style:italic;">Design your website</div>
+    <div class="type-meta">Instrument Serif / CSS変数 --s-font-b18a84da に定義。使用箇所は限定的</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ARTICLE / COMPOSITION PREVIEW -->
+<section class="section-gray" id="article">
+<div class="section-inner">
+  <div class="section-label">03 / Composition</div>
+  <h2 class="section-title">組版サンプル</h2>
+  <div class="article-preview">
+    <h1>ノーコードでWebサイトを作る</h1>
+    <p>STUDIOは、コードを一切書かずにプロフェッショナルなWebサイトを構築できるデザインプラットフォームです。直感的なドラッグ&ドロップエディタで、思い描いたデザインをそのまま形にできます。</p>
+    <h2>サーバー不要で、そのまま公開。</h2>
+    <p>サーバーの準備もドメインの設定も、すべてSTUDIO上で完結します。作ったサイトはワンクリックで世界に公開。更新も即座に反映されるため、スピーディーな運用が可能です。<span class="accent"> STUDIO Blue (#0275fd) </span>はアクセントカラーとして使用されます。</p>
+    <p>Inter と Noto Sans JP の組み合わせにより、欧文と和文が自然に調和します。ABCabc 123。負の letter-spacing（-0.28px）で文字を詰めるのが STUDIO の特徴です。palt は使用していません。</p>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">ボタンバリエーション</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-pill" href="#">無料ではじめる</a><div class="button-label">Primary Pill (r:500px)</div></div>
+    <div class="button-item"><a class="btn-rect" href="#">詳しく見る</a><div class="button-label">Secondary Rect (r:4px)</div></div>
+    <div class="button-item"><a class="btn-blue" href="#">プランを見る</a><div class="button-label">Blue Pill (r:500px)</div></div>
+    <div class="button-item"><a class="btn-ghost" href="#">ログイン</a><div class="button-label">Ghost</div></div>
+  </div>
+  <div style="margin-top:24px;">
+    <div class="button-row">
+      <div class="button-item">
+        <a href="#" style="display:inline-block; background:var(--cta-bg); color:var(--text-on-dark); padding:6px 16px; border-radius:500px; font-family:var(--font-base); font-size:12px; font-weight:600; letter-spacing:-0.48px; text-decoration:none;">無料ではじめる</a>
+        <div class="button-label">Header CTA (12px/600)</div>
+      </div>
+      <div class="button-item">
+        <a href="#" style="display:inline-block; background:var(--cta-bg); color:var(--text-on-dark); padding:10px 28px; border-radius:500px; font-family:var(--font-base); font-size:13px; font-weight:500; letter-spacing:-0.26px; text-decoration:none;">無料ではじめる</a>
+        <div class="button-label">Hero CTA (13px/500)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section-blue" id="cards">
+<div class="section-inner">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">カードコンポーネント</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h3>直感的なデザインエディタ</h3>
+      <p>コードを書かずに、プロフェッショナルなWebサイトをデザイン。ドラッグ&ドロップの操作で、思い通りのレイアウトを実現します。</p>
+      <a class="card-link" href="#">詳しく見る →</a>
+    </div>
+    <div class="card" style="box-shadow: 0 4px 16px rgba(0,0,0,0.08);">
+      <h3>ワンクリックで公開</h3>
+      <p>サーバーの準備は不要。ドメインの設定もSTUDIO上で完結。作ったサイトはすぐに公開できます。</p>
+      <a class="card-link" href="#">詳しく見る →</a>
+    </div>
+    <div class="card">
+      <h3>チームでのコラボレーション</h3>
+      <p>デザイナーとエンジニアが同じプラットフォーム上でリアルタイムに共同作業。フィードバックもその場で反映。</p>
+      <a class="card-link" href="#">詳しく見る →</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input" type="text" placeholder="name@example.com"><div class="form-state-label">default / border: #ddd, radius: 4px</div></div>
+  <div class="form-group"><label class="form-label">パスワード</label><input class="form-input form-input--focus" type="password" value="mypassword123"><div class="form-state-label">focus / border: #0275fd (STUDIO Blue)</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- LETTER-SPACING DEMO -->
+<section class="section-gray" id="letter-spacing">
+<div class="section-inner">
+  <div class="section-label">07 / Letter Spacing</div>
+  <h2 class="section-title">負の letter-spacing デモ</h2>
+  <p style="font-size:15.04px; color:var(--text-secondary); line-height:25.568px; margin-bottom:24px;">STUDIO は小さいテキストで負の letter-spacing を多用する。Apple に似たアプローチで文字を詰め、密度のある洗練された印象を作る。</p>
+
+  <div class="ls-demo">
+    <div class="ls-demo-text" style="letter-spacing:normal;">テンプレート　事例　料金　お知らせ</div>
+    <div class="ls-demo-meta">letter-spacing: normal (0px) — 比較用</div>
+  </div>
+  <div class="ls-demo">
+    <div class="ls-demo-text" style="letter-spacing:-0.28px;">テンプレート　事例　料金　お知らせ</div>
+    <div class="ls-demo-meta">letter-spacing: -0.28px — Nav (14px/500)</div>
+  </div>
+  <div class="ls-demo">
+    <div class="ls-demo-text" style="letter-spacing:-0.48px; font-size:12px; font-weight:600;">無料ではじめる</div>
+    <div class="ls-demo-meta">letter-spacing: -0.48px — Header CTA (12px/600)</div>
+  </div>
+  <div class="ls-demo">
+    <div class="ls-demo-text" style="letter-spacing:-0.44px; font-family:var(--font-mono); font-size:11px; font-weight:500;">FOR BUSINESS</div>
+    <div class="ls-demo-meta">letter-spacing: -0.44px — IBM Plex Mono (11px/500)</div>
+  </div>
+  <div class="ls-demo">
+    <div class="ls-demo-text" style="letter-spacing:-0.3008px; font-size:15.04px; font-weight:600;">規模や業種を問わず、あらゆるサイトを作れます。</div>
+    <div class="ls-demo-meta">letter-spacing: -0.3008px — Sub H2 (15.04px/600)</div>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">08 / Elevation</div>
+  <h2 class="section-title">Depth & Elevation</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">影なし。フラットデザインが基調</div></div>
+    <div class="elevation-card" style="box-shadow: 0 2px 8px rgba(0,0,0,0.08);"><div class="elevation-label">Level 1</div><div class="elevation-desc">0 2px 8px rgba(0,0,0,0.08)</div></div>
+    <div class="elevation-card" style="box-shadow: 0 4px 16px rgba(0,0,0,0.12);"><div class="elevation-label">Level 2</div><div class="elevation-desc">0 4px 16px rgba(0,0,0,0.12)</div></div>
+    <div class="elevation-card" style="border: 2px solid var(--studio-blue);"><div class="elevation-label">Focus Ring</div><div class="elevation-desc">#0275fd (STUDIO Blue)</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section" id="spacing">
+  <div class="section-label">09 / Spacing</div>
+  <h2 class="section-title">スペーシング</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px"></div><div class="spacing-value">48</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:64px"></div><div class="spacing-value">64</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:80px"></div><div class="spacing-value">80</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://studio.design/ja">studio.design/ja</a> DESIGN.md — awesome-design-md-jp
+</footer>
+
+</body>
+</html>

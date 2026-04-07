@@ -38,20 +38,28 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [freee](https://www.freee.co.jp/) | Fintech SaaS | [DESIGN.md](design-md/freee/DESIGN.md) | [preview.html](design-md/freee/preview.html) |
 | [note](https://note.com/) | Media Platform | [DESIGN.md](design-md/note/DESIGN.md) | [preview.html](design-md/note/preview.html) |
 | [Novasell](https://novasell.com/) | AI Agency | [DESIGN.md](design-md/novasell/DESIGN.md) | [preview.html](design-md/novasell/preview.html) |
+| [MUJI](https://www.muji.com/jp/ja/store) | Retail / Lifestyle | [DESIGN.md](design-md/muji/DESIGN.md) | [preview.html](design-md/muji/preview.html) |
+| [Mercari](https://www.mercari.com/jp/) | C2C Marketplace | [DESIGN.md](design-md/mercari/DESIGN.md) | [preview.html](design-md/mercari/preview.html) |
+| [STUDIO](https://studio.design/ja) | No-Code Design | [DESIGN.md](design-md/studio/DESIGN.md) | [preview.html](design-md/studio/preview.html) |
 | [WIRED.jp](https://wired.jp/) | Tech Media | [DESIGN.md](design-md/wired/DESIGN.md) | [preview.html](design-md/wired/preview.html) |
 
 ### Previews
 
 <table>
 <tr>
-<td align="center"><strong>Apple Japan</strong><br>SF Pro JP / ピル型ボタン<br><img src="design-md/apple/preview-screenshot.png" width="220"></td>
-<td align="center"><strong>SmartHR</strong><br>ウォームグレー / 游ゴシック<br><img src="design-md/smarthr/preview-screenshot.png" width="220"></td>
-<td align="center"><strong>freee</strong><br>ブルー基調 / Noto Sans JP<br><img src="design-md/freee/preview-screenshot.png" width="220"></td>
+<td align="center"><strong>Apple Japan</strong><br>SF Pro JP / ピル型ボタン<br><img src="design-md/apple/preview-screenshot.png" width="180"></td>
+<td align="center"><strong>MUJI</strong><br>きなり色 / ミニマル<br><img src="design-md/muji/preview-screenshot.png" width="180"></td>
+<td align="center"><strong>Mercari</strong><br>メルカリレッド / 15px body<br><img src="design-md/mercari/preview-screenshot.png" width="180"></td>
 </tr>
 <tr>
-<td align="center"><strong>note</strong><br>クールグレー / 明朝体オプション<br><img src="design-md/note/preview-screenshot.png" width="220"></td>
-<td align="center"><strong>Novasell</strong><br>ネオングリーン / Zen Kaku Gothic<br><img src="design-md/novasell/preview-screenshot.png" width="220"></td>
-<td align="center"><strong>WIRED.jp</strong><br>モノトーン / WiredMono<br><img src="design-md/wired/preview-screenshot.png" width="220"></td>
+<td align="center"><strong>STUDIO</strong><br>Inter + Noto Sans JP / 負ls<br><img src="design-md/studio/preview-screenshot.png" width="180"></td>
+<td align="center"><strong>SmartHR</strong><br>ウォームグレー / 游ゴシック<br><img src="design-md/smarthr/preview-screenshot.png" width="180"></td>
+<td align="center"><strong>freee</strong><br>ブルー基調 / Noto Sans JP<br><img src="design-md/freee/preview-screenshot.png" width="180"></td>
+</tr>
+<tr>
+<td align="center"><strong>note</strong><br>クールグレー / 明朝体オプション<br><img src="design-md/note/preview-screenshot.png" width="180"></td>
+<td align="center"><strong>Novasell</strong><br>ネオングリーン / 全bold<br><img src="design-md/novasell/preview-screenshot.png" width="180"></td>
+<td align="center"><strong>WIRED.jp</strong><br>モノトーン / WiredMono<br><img src="design-md/wired/preview-screenshot.png" width="180"></td>
 </tr>
 </table>
 
@@ -86,14 +94,19 @@ Use [`template/DESIGN.md`](template/DESIGN.md) to create your own Japanese DESIG
 
 <table>
 <tr>
-<td align="center"><strong>Apple Japan</strong><br>SF Pro JP / ピル型ボタン<br><img src="design-md/apple/preview-screenshot.png" width="220"></td>
-<td align="center"><strong>SmartHR</strong><br>ウォームグレー / 游ゴシック<br><img src="design-md/smarthr/preview-screenshot.png" width="220"></td>
-<td align="center"><strong>freee</strong><br>ブルー基調 / Noto Sans JP<br><img src="design-md/freee/preview-screenshot.png" width="220"></td>
+<td align="center"><strong>Apple Japan</strong><br>SF Pro JP / ピル型ボタン<br><img src="design-md/apple/preview-screenshot.png" width="180"></td>
+<td align="center"><strong>MUJI</strong><br>きなり色 / ミニマル<br><img src="design-md/muji/preview-screenshot.png" width="180"></td>
+<td align="center"><strong>Mercari</strong><br>メルカリレッド / 15px body<br><img src="design-md/mercari/preview-screenshot.png" width="180"></td>
 </tr>
 <tr>
-<td align="center"><strong>note</strong><br>クールグレー / 明朝体オプション<br><img src="design-md/note/preview-screenshot.png" width="220"></td>
-<td align="center"><strong>Novasell</strong><br>ネオングリーン / Zen Kaku Gothic<br><img src="design-md/novasell/preview-screenshot.png" width="220"></td>
-<td align="center"><strong>WIRED.jp</strong><br>モノトーン / WiredMono<br><img src="design-md/wired/preview-screenshot.png" width="220"></td>
+<td align="center"><strong>STUDIO</strong><br>Inter + Noto Sans JP / 負ls<br><img src="design-md/studio/preview-screenshot.png" width="180"></td>
+<td align="center"><strong>SmartHR</strong><br>ウォームグレー / 游ゴシック<br><img src="design-md/smarthr/preview-screenshot.png" width="180"></td>
+<td align="center"><strong>freee</strong><br>ブルー基調 / Noto Sans JP<br><img src="design-md/freee/preview-screenshot.png" width="180"></td>
+</tr>
+<tr>
+<td align="center"><strong>note</strong><br>クールグレー / 明朝体オプション<br><img src="design-md/note/preview-screenshot.png" width="180"></td>
+<td align="center"><strong>Novasell</strong><br>ネオングリーン / 全bold<br><img src="design-md/novasell/preview-screenshot.png" width="180"></td>
+<td align="center"><strong>WIRED.jp</strong><br>モノトーン / WiredMono<br><img src="design-md/wired/preview-screenshot.png" width="180"></td>
 </tr>
 </table>
 

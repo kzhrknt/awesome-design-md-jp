@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: MUJI / 無印良品</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: CSS Custom Properties 実測値 === */
+    --color-muji-red: #7f0019;
+    --color-red: #dd0c14;
+    --color-black: #000;
+    --color-beige: #e0ceaa;
+    --color-kinari: #f4eede;
+    --color-gray-800: #3c3c43;
+    --color-gray-700: #6d6d72;
+    --color-gray-600: #76767b;
+    --color-gray-500: #9d9da0;
+    --color-gray-400: #c4c4c6;
+    --color-gray-300: #d8d8d9;
+    --color-gray-200: #ebebec;
+    --color-gray-100: #f5f5f5;
+    --color-white: #fff;
+    /* === Semantic === */
+    --text-primary: #3c3c43;
+    --text-secondary: #6d6d72;
+    --text-tertiary: #76767b;
+    --text-disabled: #9d9da0;
+    --bg-primary: #fff;
+    --bg-secondary: #f5f5f5;
+    --bg-kinari: #f4eede;
+    --border-default: #d8d8d9;
+    --border-light: #ebebec;
+    /* === Spacing Scale === */
+    --space-xxxxs: 4px;
+    --space-xxxs: 8px;
+    --space-xxs: 12px;
+    --space-xs: 16px;
+    --space-s: 20px;
+    --space-sm: 24px;
+    --space-m: 32px;
+    --space-ml: 40px;
+    --space-l: 48px;
+    --space-xl: 56px;
+    --space-xxl: 64px;
+    --space-xxxl: 80px;
+    --space-xxxxl: 96px;
+    /* === Fonts 実測値 === */
+    --font-base: "Helvetica Neue", Arial, "Noto Sans JP", "Noto Sans JP Fallback", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-base);
+    font-size: 16px; font-weight: 400; line-height: 1.6;
+    letter-spacing: normal;
+    font-feature-settings: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 56px;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-default);
+  }
+  .nav-brand {
+    font-size: 18px; font-weight: 700; color: var(--text-primary);
+    text-decoration: none; letter-spacing: 0.1em;
+  }
+  .nav-brand span { color: var(--color-muji-red); }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a {
+    font-size: 14px; font-weight: 400; color: var(--text-secondary);
+    text-decoration: none; transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--text-primary); }
+  .nav-cta {
+    display: inline-block; background: var(--text-primary); color: #fff;
+    padding: 6px 16px; border-radius: 4px; font-size: 12px; font-weight: 700;
+    text-decoration: none; transition: opacity 0.15s;
+  }
+  .nav-cta:hover { opacity: 0.7; }
+
+  /* HERO */
+  .hero {
+    padding: 80px 32px 64px; text-align: center;
+    background: var(--bg-kinari);
+  }
+  .hero h1 {
+    font-size: 32px; font-weight: 700; line-height: 1.6;
+    letter-spacing: normal; font-feature-settings: normal;
+    color: var(--text-primary); margin-bottom: 16px;
+  }
+  .hero p {
+    font-size: 16px; font-weight: 400; line-height: 1.6;
+    color: var(--text-secondary); max-width: 560px; margin: 0 auto 32px;
+  }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; background: var(--text-primary); color: #fff;
+    padding: 10px 24px; border-radius: 4px; border: none;
+    font-family: var(--font-base); font-size: 12px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.7; }
+  .btn-outline {
+    display: inline-block; background: transparent; color: var(--text-primary);
+    padding: 10px 24px; border-radius: 4px;
+    border: 1px solid var(--border-default);
+    font-family: var(--font-base); font-size: 12px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-outline:hover { background: var(--bg-secondary); }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 940px; margin: 0 auto; }
+  .section-label {
+    font-size: 12px; font-weight: 700; color: var(--text-secondary);
+    text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.06em;
+  }
+  .section-title {
+    font-size: 26px; font-weight: 700; line-height: 1.6;
+    letter-spacing: normal; font-feature-settings: normal;
+    margin-bottom: 32px;
+  }
+  .section-divider { border: none; border-top: 1px solid var(--border-light); margin: 0; }
+
+  .section-kinari { background: var(--bg-kinari); padding: 64px 32px; }
+  .section-kinari .section-inner { max-width: 940px; margin: 0 auto; }
+
+  .section-gray { background: var(--bg-secondary); padding: 64px 32px; }
+  .section-gray .section-inner { max-width: 940px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 4px; overflow: hidden; background: #fff; border: 1px solid var(--border-light); }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; color: var(--text-primary); }
+  .color-swatch-hex { font-size: 12px; color: var(--text-secondary); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 700; color: var(--text-tertiary); margin: 24px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border-light); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; }
+  .type-context { display: inline-block; background: var(--bg-secondary); color: var(--text-tertiary); font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; }
+  .btn-muji-red {
+    display: inline-block; background: var(--color-muji-red); color: #fff;
+    padding: 10px 24px; border-radius: 4px; border: none;
+    font-family: var(--font-base); font-size: 12px; font-weight: 700;
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-danger {
+    display: inline-block; background: var(--color-red); color: #fff;
+    padding: 10px 24px; border-radius: 4px; border: none;
+    font-family: var(--font-base); font-size: 12px; font-weight: 700;
+    text-decoration: none; cursor: pointer;
+  }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .card {
+    background: #fff; border: 1px solid var(--border-light);
+    border-radius: 0; padding: 24px;
+    transition: box-shadow 0.3s;
+  }
+  .card:hover { box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+  .card h3 {
+    font-size: 16px; font-weight: 700; line-height: 1.6;
+    letter-spacing: normal; font-feature-settings: normal;
+    margin-bottom: 8px;
+  }
+  .card p { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+  .card-price { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-top: 12px; }
+
+  /* ARTICLE PREVIEW */
+  .article-preview { max-width: 620px; margin: 0 auto; }
+  .article-preview h1 {
+    font-size: 26px; font-weight: 700; line-height: 1.6;
+    letter-spacing: normal; font-feature-settings: normal;
+    margin-bottom: 16px;
+  }
+  .article-preview h2 {
+    font-size: 32px; font-weight: 700; line-height: 1.6;
+    letter-spacing: normal; font-feature-settings: normal;
+    margin: 24px 0 12px;
+  }
+  .article-preview h3 {
+    font-size: 26px; font-weight: 700; line-height: 1.15;
+    letter-spacing: 2.4px; font-feature-settings: normal;
+    margin: 20px 0 10px;
+  }
+  .article-preview p {
+    font-size: 12px; font-weight: 400; line-height: 1.6;
+    letter-spacing: normal; font-feature-settings: normal;
+    margin-bottom: 16px; color: var(--text-primary);
+  }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: #fff; color: var(--text-primary);
+    border: 1px solid var(--border-default); padding: 8px 12px; border-radius: 0;
+    font-family: var(--font-base); font-size: 16px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-input--focus { border-color: var(--text-primary); }
+  .form-input--error { border-color: var(--color-red); }
+  .form-state-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--color-beige); border-radius: 0; margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; font-weight: 400; color: var(--text-secondary); }
+  .spacing-label { font-size: 10px; color: var(--text-tertiary); margin-top: 2px; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .elevation-card { background: #fff; border-radius: 0; padding: 24px; text-align: center; border: 1px solid var(--border-light); }
+  .elevation-label { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); word-break: break-all; }
+
+  /* FOOTER */
+  .footer {
+    padding: 32px; text-align: center;
+    background: var(--bg-secondary);
+    font-size: 12px; color: var(--text-secondary);
+  }
+  .footer a { color: var(--color-muji-red); text-decoration: underline; }
+
+  @media (max-width: 767px) {
+    .hero h1 { font-size: 24px; }
+    .hero p { font-size: 14px; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .section-kinari { padding: 48px 20px; }
+    .section-gray { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#"><span>MUJI</span></a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#article">Article</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#spacing">Spacing</a></li>
+  </ul>
+  <a class="nav-cta" href="#">アプリで開く</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System Preview<br>muji.com — 無印良品</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。ミニマリズムの極致 -- 装飾を排し、余白で語るデザイン。computed style 実測値に基づく。</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">詳しく見る</a>
+    <a class="btn-outline" href="#">DESIGN.md を読む</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#7f0019"></div><div class="color-swatch-info"><div class="color-swatch-name">MUJI Red</div><div class="color-swatch-hex">#7f0019</div><div class="color-swatch-role">ブランドカラー（深い赤）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f4eede"></div><div class="color-swatch-info"><div class="color-swatch-name">Kinari（きなり色）</div><div class="color-swatch-hex">#f4eede</div><div class="color-swatch-role">MUJIの象徴・背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e0ceaa"></div><div class="color-swatch-info"><div class="color-swatch-name">Beige</div><div class="color-swatch-hex">#e0ceaa</div><div class="color-swatch-role">温かみのあるアクセント</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dd0c14"></div><div class="color-swatch-info"><div class="color-swatch-name">Red</div><div class="color-swatch-hex">#dd0c14</div><div class="color-swatch-role">セール・エラー</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#3c3c43"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#3c3c43</div><div class="color-swatch-role">本文テキスト（暗いグレー）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#6d6d72"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Secondary</div><div class="color-swatch-hex">#6d6d72</div><div class="color-swatch-role">補足テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#76767b"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Tertiary</div><div class="color-swatch-hex">#76767b</div><div class="color-swatch-role">さらに薄い補足</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#9d9da0"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Disabled</div><div class="color-swatch-hex">#9d9da0</div><div class="color-swatch-role">無効状態</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface & Border</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff; border-bottom:1px solid #ebebec"></div><div class="color-swatch-info"><div class="color-swatch-name">White</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5f5f5"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 100</div><div class="color-swatch-hex">#f5f5f5</div><div class="color-swatch-role">セクション背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ebebec"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 200</div><div class="color-swatch-hex">#ebebec</div><div class="color-swatch-role">薄い区切り線</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d8d8d9"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 300</div><div class="color-swatch-hex">#d8d8d9</div><div class="color-swatch-role">標準ボーダー</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000"></div><div class="color-swatch-info"><div class="color-swatch-name">Black</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">限定使用</div></div></div>
+  </div>
+
+  <div class="color-group-label">Gray Scale</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#3c3c43"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 800</div><div class="color-swatch-hex">#3c3c43</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#6d6d72"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 700</div><div class="color-swatch-hex">#6d6d72</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#76767b"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 600</div><div class="color-swatch-hex">#76767b</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#9d9da0"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 500</div><div class="color-swatch-hex">#9d9da0</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c4c4c6"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 400</div><div class="color-swatch-hex">#c4c4c6</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d8d8d9"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 300</div><div class="color-swatch-hex">#d8d8d9</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ebebec"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 200</div><div class="color-swatch-hex">#ebebec</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5f5f5; border-bottom:1px solid #ddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 100</div><div class="color-swatch-hex">#f5f5f5</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography -- 実測値</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-size:26px; font-weight:700; line-height:1.6; letter-spacing:normal; font-feature-settings:normal;">店舗を探す -- Heading 1 (h1)</div>
+    <div class="type-meta">26px / 700 / line-height: 1.6 (41.6px) / letter-spacing: normal / palt: なし<span class="type-context">セクション見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:32px; font-weight:700; line-height:1.6; letter-spacing:normal; font-feature-settings:normal;">新商品 -- Heading 2 (h2)</div>
+    <div class="type-meta">32px / 700 / line-height: 1.6 (51.2px) / letter-spacing: normal / palt: なし<span class="type-context">メイン見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:26px; font-weight:700; line-height:1.15; letter-spacing:2.4px; font-feature-settings:normal;">季節のおすすめ -- Heading 3 (h3)</div>
+    <div class="type-meta">26px / 700 / line-height: 1.15 (29.9px) / letter-spacing: 2.4px / palt: なし<span class="type-context">広いトラッキング</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:700; line-height:1.4; letter-spacing:normal;">ナビゲーション -- Nav Link</div>
+    <div class="type-meta">16px / 700 / line-height: 1.4 (22.4px) / letter-spacing: normal<span class="type-context">ナビ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.6; letter-spacing:normal; font-feature-settings:normal;">ベースフォント -- Body (16px)。ページ全体の標準サイズ。line-height: 1.6 のゆったりとしたリズムで、余白を感じる組版です。</div>
+    <div class="type-meta">16px / 400 / line-height: 1.6 (25.6px) / letter-spacing: normal / palt: なし<span class="type-context">body</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:400; line-height:1.6; letter-spacing:normal; font-feature-settings:normal;">段落テキスト -- Paragraph (12px)。商品の説明文やキャプションに使用されるサイズ。控えめながら読みやすい。</div>
+    <div class="type-meta">12px / 400 / line-height: 1.6 (19.2px) / letter-spacing: normal / palt: なし<span class="type-context">商品説明</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:1.6; letter-spacing:normal; color:var(--text-secondary);">フッターキャプション -- Caption (14px)</div>
+    <div class="type-meta">14px / 400 / line-height: 1.6 (22.4px) / color: Text Secondary<span class="type-context">フッター</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:700; line-height:1.6; letter-spacing:normal; background:var(--text-primary); color:#fff; display:inline-block; padding:6px 16px; border-radius:4px;">アプリで開く -- CTA Button</div>
+    <div class="type-meta">12px / 700 / color: #fff / bg: #3c3c43 / radius: 4px<span class="type-context">CTAボタン</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ARTICLE PREVIEW -->
+<section class="section-kinari" id="article">
+<div class="section-inner">
+  <div class="section-label">03 / Article -- 組版サンプル</div>
+  <h2 class="section-title">無印良品の暮らしの提案</h2>
+  <div class="article-preview">
+    <h1>くらしの基本が、ここにある</h1>
+    <p>無印良品は、素材の選択、工程の見直し、包装の簡略化を通じて、本当に必要なものを、本当に必要なかたちでつくることを追求しています。それは「これがいい」ではなく「これでいい」という理性的な満足感をめざすものです。</p>
+    <h2>シンプルで美しい暮らし</h2>
+    <p>過剰な装飾を取り除き、素材そのものの質感を活かすこと。無印良品の商品には、そうした引き算の美学が込められています。生活の中で静かに寄り添い、長く使い続けられるものづくり。</p>
+    <h3>季節の移ろいとともに</h3>
+    <p>春には綿のシャツを、夏にはリネンの服を、秋にはウールのニットを。素材が持つ本来の心地よさを、季節とともに感じる暮らし。無印良品は、そんなささやかな豊かさを提案します。</p>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">ボタンバリエーション</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-primary" href="#">アプリで開く</a><div class="button-label">Primary CTA<br>bg: #3c3c43, r: 4px</div></div>
+    <div class="button-item"><a class="btn-outline" href="#">詳しく見る</a><div class="button-label">Outline<br>border: #d8d8d9, r: 4px</div></div>
+    <div class="button-item"><a class="btn-muji-red" href="#">会員登録</a><div class="button-label">MUJI Red<br>bg: #7f0019, r: 4px</div></div>
+    <div class="button-item"><a class="btn-danger" href="#">削除する</a><div class="button-label">Danger<br>bg: #dd0c14, r: 4px</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section-gray" id="cards">
+<div class="section-inner">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">商品カード</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h3>オーガニックコットン洗いざらしブロードシャツ</h3>
+      <p>着るほどに肌になじむ、オーガニックコットンを使用した洗いざらしのシャツ。自然な風合いが特徴です。</p>
+      <div class="card-price">2,990円</div>
+    </div>
+    <div class="card">
+      <h3>壁に付けられる家具・棚</h3>
+      <p>石膏ボードの壁に簡単に取り付けられる棚。壁を大きく傷つけることなく、収納スペースを増やせます。</p>
+      <div class="card-price">1,990円</div>
+    </div>
+    <div class="card">
+      <h3>不揃い バナナバウム</h3>
+      <p>焼きムラや凹凸など、おいしさに関係なくはじかれていたものも活かしました。食品ロスの削減にも。</p>
+      <div class="card-price">150円</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input" type="text" placeholder="name@example.com"><div class="form-state-label">デフォルト -- border: #d8d8d9, radius: 0px（角丸なし）</div></div>
+  <div class="form-group"><label class="form-label">パスワード</label><input class="form-input form-input--focus" type="password" value="mypassword123"><div class="form-state-label">フォーカス -- border: #3c3c43</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー -- border: #dd0c14</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section" id="spacing">
+  <div class="section-label">07 / Spacing -- 12段階スペーシングスケール</div>
+  <h2 class="section-title">スペーシングスケール</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4px</div><div class="spacing-label">xxxxs</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8px</div><div class="spacing-label">xxxs</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12px</div><div class="spacing-label">xxs</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16px</div><div class="spacing-label">xs</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:20px"></div><div class="spacing-value">20px</div><div class="spacing-label">s</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24px</div><div class="spacing-label">sm</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32px</div><div class="spacing-label">m</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">40px</div><div class="spacing-label">ml</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px"></div><div class="spacing-value">48px</div><div class="spacing-label">l</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:56px"></div><div class="spacing-value">56px</div><div class="spacing-label">xl</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:64px"></div><div class="spacing-value">64px</div><div class="spacing-label">xxl</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:80px"></div><div class="spacing-value">80px</div><div class="spacing-label">xxxl</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:96px"></div><div class="spacing-value">96px</div><div class="spacing-label">xxxxl</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">08 / Elevation</div>
+  <h2 class="section-title">Depth & Elevation</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">影なし。MUJIの基本</div></div>
+    <div class="elevation-card" style="box-shadow: 0 1px 2px rgba(0,0,0,0.08);"><div class="elevation-label">Level 1: Hover</div><div class="elevation-desc">0 1px 2px rgba(0,0,0,0.08)</div></div>
+    <div class="elevation-card" style="box-shadow: 0 2px 8px rgba(0,0,0,0.1);"><div class="elevation-label">Level 2: Dropdown</div><div class="elevation-desc">0 2px 8px rgba(0,0,0,0.1)</div></div>
+  </div>
+  <p style="margin-top:24px; font-size:12px; color:var(--text-secondary);">MUJIは影をほぼ使わない。フラットで素朴な表現が基本方針。</p>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://www.muji.com/jp/ja/store">muji.com</a> DESIGN.md -- awesome-design-md-jp / computed style 実測値（2026-04-06）
+</footer>
+
+</body>
+</html>

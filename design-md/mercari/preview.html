@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: mercari (Light)</title>
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --mercari-red: #ff333f;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --link-color: #0073cc;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --border-default: #e0e0e0;
+    --border-focus: #0073cc;
+    /* === Fonts 実測値 === */
+    --font-base: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN Custom", "Hiragino Sans Custom", "Meiryo Custom", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+    /* === Layout 実測値 === */
+    --grid-layout-gutter: 24px;
+    --grid-layout-inset: 16px;
+    --grid-layout-page-padding-top: 40px;
+    --grid-layout-page-padding-bottom: 64px;
+    --grid-layout-page-padding-horizontal: 36px;
+    /* === z-index 実測値 === */
+    --mer-z-index-menu: 1100;
+    --mer-z-index-navigation: 1200;
+    --mer-z-index-modal: 1400;
+    --mer-z-index-snackbar: 1500;
+    --mer-z-index-tooltip: 1600;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-base);
+    font-size: 15px; font-weight: 400; line-height: 1.4;
+    letter-spacing: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 36px; height: 56px;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-default);
+  }
+  .nav-brand { font-size: 20px; font-weight: 700; color: var(--mercari-red); text-decoration: none; }
+  .nav-links { display: flex; gap: 24px; list-style: none; align-items: center; }
+  .nav-links a { font-size: 14px; font-weight: 400; color: var(--text-secondary); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--text-primary); }
+  .nav-search {
+    flex: 1; max-width: 400px; margin: 0 24px;
+    padding: 8px 12px; border: 1px solid var(--border-default);
+    border-radius: 0; font-family: var(--font-base);
+    font-size: 16px; font-weight: 400; line-height: 1.4;
+    color: var(--text-primary); outline: none;
+  }
+  .nav-search::placeholder { color: #999; }
+  .nav-search:focus { border-color: var(--border-focus); }
+  .nav-cta {
+    display: inline-block; background: var(--mercari-red); color: #fff;
+    padding: 6px 16px; border-radius: 4px; font-size: 14px; font-weight: 700;
+    text-decoration: none; transition: opacity 0.15s; border: none; cursor: pointer;
+  }
+  .nav-cta:hover { opacity: 0.8; }
+  .nav-login {
+    display: inline-block; background: #fff; color: var(--text-primary);
+    padding: 6px 16px; border-radius: 4px; font-size: 14px; font-weight: 400;
+    text-decoration: none; border: 1px solid var(--border-default); cursor: pointer;
+    transition: background 0.15s;
+  }
+  .nav-login:hover { background: var(--bg-secondary); }
+
+  /* HERO */
+  .hero { padding: 80px 36px 64px; text-align: center; background: var(--bg-secondary); }
+  .hero h1 {
+    font-size: 20px; font-weight: 700; line-height: 1.4;
+    color: var(--text-secondary); margin-bottom: 16px;
+  }
+  .hero p {
+    font-size: 15px; font-weight: 400; line-height: 1.4;
+    color: var(--text-primary); max-width: 620px; margin: 0 auto 32px;
+  }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  /* SECTIONS */
+  .section { padding: 64px 36px; max-width: 940px; margin: 0 auto; }
+  .section-label {
+    font-size: 12px; font-weight: 700; color: var(--text-secondary);
+    text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.06em;
+  }
+  .section-title {
+    font-size: 20px; font-weight: 700; line-height: 1.4;
+    color: var(--text-secondary); margin-bottom: 32px;
+  }
+  .section-divider { border: none; border-top: 1px solid var(--border-default); margin: 0; }
+
+  .section-gray { background: var(--bg-secondary); padding: 64px 36px; }
+  .section-gray .section-inner { max-width: 940px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 4px; overflow: hidden; background: #fff; border: 1px solid var(--border-default); }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; color: var(--text-primary); }
+  .color-swatch-hex { font-size: 12px; color: var(--text-secondary); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 700; color: var(--text-secondary); margin: 24px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border-default); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; }
+  .type-context { display: inline-block; background: var(--bg-secondary); color: var(--text-secondary); font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; }
+
+  .btn-primary {
+    display: inline-block; background: var(--mercari-red); color: #fff;
+    padding: 8px 24px; border-radius: 4px; border: none;
+    font-family: var(--font-base); font-size: 14px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.8; }
+  .btn-secondary {
+    display: inline-block; background: #fff; color: var(--text-primary);
+    padding: 8px 24px; border-radius: 4px;
+    border: 1px solid var(--border-default);
+    font-family: var(--font-base); font-size: 14px; font-weight: 400;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: var(--bg-secondary); }
+
+  /* TABS */
+  .tab-bar { display: flex; gap: 0; border-bottom: 1px solid var(--border-default); margin-bottom: 24px; }
+  .tab {
+    padding: 12px 20px; font-size: 14px; font-weight: 700;
+    color: var(--text-secondary); background: #fff;
+    border: none; border-bottom: 2px solid transparent;
+    cursor: pointer; font-family: var(--font-base); transition: color 0.15s;
+  }
+  .tab:hover { color: var(--text-primary); }
+  .tab--active { color: var(--mercari-red); border-bottom-color: var(--mercari-red); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
+  .card { background: #fff; border: 1px solid var(--border-default); border-radius: 4px; overflow: hidden; transition: box-shadow 0.2s; }
+  .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .card-image { width: 100%; height: 160px; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 13px; }
+  .card-body { padding: 12px; }
+  .card-price { font-size: 17px; font-weight: 700; color: var(--text-primary); line-height: 1.4; }
+  .card-title { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4; }
+
+  /* ARTICLE PREVIEW */
+  .article-preview { max-width: 620px; margin: 0 auto; }
+  .article-preview h2 { font-size: 20px; font-weight: 700; line-height: 1.4; color: var(--text-secondary); margin: 24px 0 12px; }
+  .article-preview h3 { font-size: 17px; font-weight: 700; line-height: 1.4; color: var(--text-primary); margin: 20px 0 8px; }
+  .article-preview p { font-size: 15px; font-weight: 400; line-height: 1.4; color: var(--text-primary); margin-bottom: 16px; }
+  .article-preview a { color: var(--link-color); text-decoration: none; }
+  .article-preview a:hover { text-decoration: underline; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: #fff; color: var(--text-primary);
+    border: 1px solid var(--border-default); padding: 8px 12px; border-radius: 0;
+    font-family: var(--font-base); font-size: 16px; line-height: 1.4; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-input--focus { border-color: var(--border-focus); box-shadow: 0 0 0 2px rgba(0,115,204,0.2); }
+  .form-input--error { border-color: #ff333f; box-shadow: 0 0 0 2px rgba(255,51,63,0.2); }
+  .form-state-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--mercari-red); border-radius: 2px; margin-bottom: 6px; height: 28px; opacity: 0.6; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--text-secondary); }
+
+  /* Z-INDEX */
+  .zindex-table { width: 100%; border-collapse: collapse; }
+  .zindex-table th, .zindex-table td { padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--border-default); font-size: 14px; }
+  .zindex-table th { font-weight: 700; color: var(--text-secondary); font-size: 12px; text-transform: uppercase; }
+  .zindex-table td:first-child { font-family: var(--font-mono); font-size: 13px; color: var(--text-primary); }
+  .zindex-table td:nth-child(2) { font-family: var(--font-mono); font-weight: 700; }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; background: var(--bg-secondary); font-size: 12px; color: var(--text-secondary); }
+
+  @media (max-width: 769px) {
+    .hero h1 { font-size: 17px; }
+    .hero p { font-size: 15px; }
+    .nav-links { display: none; }
+    .nav-search { display: none; }
+    .section { padding: 48px 20px; }
+    .section-gray { padding: 48px 20px; }
+    .card-grid { grid-template-columns: repeat(2, 1fr); }
+    .article-preview p { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">mercari</a>
+  <input class="nav-search" type="text" placeholder="なにをお探しですか？">
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#tabs">Tabs</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+  </ul>
+  <div style="display:flex; gap:8px; align-items:center;">
+    <a class="nav-login" href="#">ログイン</a>
+    <a class="nav-cta" href="#">出品</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>Design System Preview<br>mercari.com/jp — 日本語版</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。カラー、フォント、コンポーネント、スペーシングの全値を可視化。computed style 実測値に基づく。body 15px / line-height 1.4 / Panda CSS。</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">出品する</a>
+    <a class="btn-secondary" href="#">DESIGN.md を読む</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ff333f"></div><div class="color-swatch-info"><div class="color-swatch-name">Mercari Red</div><div class="color-swatch-hex">#ff333f</div><div class="color-swatch-role">ブランドカラー・CTA</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#333333"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#333333</div><div class="color-swatch-role">本文テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#666666"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Secondary</div><div class="color-swatch-hex">#666666</div><div class="color-swatch-role">見出し・補足テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#999999; border-bottom:1px solid #ddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Placeholder</div><div class="color-swatch-hex">#999999</div><div class="color-swatch-role">入力プレースホルダー</div></div></div>
+  </div>
+
+  <div class="color-group-label">Link</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0073cc"></div><div class="color-swatch-info"><div class="color-swatch-name">Link</div><div class="color-swatch-hex">#0073cc</div><div class="color-swatch-role">テキストリンク</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface & Border</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff; border-bottom:1px solid #ddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5f5f5"></div><div class="color-swatch-info"><div class="color-swatch-name">Background Secondary</div><div class="color-swatch-hex">#f5f5f5</div><div class="color-swatch-role">セクション背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e0e0e0"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#e0e0e0</div><div class="color-swatch-role">標準ボーダー</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-size:20px; font-weight:700; line-height:1.4; color:#666666;">おすすめの商品 — Heading 2</div>
+    <div class="type-meta">20px / 700 / line-height: 1.4 (28px) / color: #666666 / letter-spacing: normal<span class="type-context">トップページ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:17px; font-weight:700; line-height:1.4; color:#333333;">掘り出しもの — Heading 3</div>
+    <div class="type-meta">17px / 700 / line-height: 1.4 (23.8px) / color: #333333 / letter-spacing: normal<span class="type-context">トップページ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:20px; font-weight:700; line-height:1.4; color:#666666;">人気のブランド — Heading 3 variant</div>
+    <div class="type-meta">20px / 700 / line-height: 1.4 (28px) / color: #666666 / letter-spacing: normal<span class="type-context">トップページ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:15px; font-weight:400; line-height:1.4; color:#333333;">本文テキスト — 白背景にグレーテキストのクリーンなデザイン。全体で line-height 1.4 に統一されている。letter-spacing と palt は適用されていない。body font-size は 15px で、一般的な 16px よりやや小さい。</div>
+    <div class="type-meta">15px / 400 / line-height: 1.4 (21px) / color: #333333 / letter-spacing: normal<span class="type-context">全体</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:15px; font-weight:700; line-height:1.4; color:#333333;">フッターテキスト — Footer Bold</div>
+    <div class="type-meta">15px / 700 / line-height: 1.4 (21px) / color: #333333<span class="type-context">フッター</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:15px; font-weight:400; line-height:1.4;"><a href="#" style="color:#0073cc; text-decoration:none;">リンクテキスト — Link Style</a></div>
+    <div class="type-meta">15px / 400 / color: #0073cc / text-decoration: none<span class="type-context">全体</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.4; color:#333; padding:8px 12px; border:1px solid #e0e0e0; display:inline-block; min-width:300px;">検索入力テキスト — Input</div>
+    <div class="type-meta">16px / 400 / line-height: 1.4 (22.4px) / color: #333 / border-radius: 0<span class="type-context">検索バー</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TABS -->
+<section class="section" id="tabs">
+  <div class="section-label">03 / Tabs — アクティブ / 非アクティブ</div>
+  <h2 class="section-title">タブ UI</h2>
+
+  <div class="tab-bar">
+    <button class="tab tab--active">おすすめ</button>
+    <button class="tab">マイリスト</button>
+    <button class="tab">お知らせ</button>
+    <button class="tab">いいね!</button>
+    <button class="tab">閲覧履歴</button>
+  </div>
+  <div style="margin-top:8px;">
+    <div class="type-meta">Active: 14px / 700 / color: #ff333f / border-bottom: 2px solid #ff333f</div>
+    <div class="type-meta">Inactive: 14px / 700 / color: #666666 / border-bottom: transparent</div>
+  </div>
+
+  <div style="margin-top:40px;">
+    <div class="section-label" style="margin-bottom:16px;">タブ切り替えサンプル</div>
+    <div class="tab-bar">
+      <button class="tab tab--active">すべて</button>
+      <button class="tab">レディース</button>
+      <button class="tab">メンズ</button>
+      <button class="tab">ベビー・キッズ</button>
+      <button class="tab">インテリア</button>
+      <button class="tab">本・音楽</button>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ARTICLE PREVIEW -->
+<section class="section-gray" id="article">
+<div class="section-inner">
+  <div class="section-label">04 / Article — 組版サンプル</div>
+  <h2 class="section-title">フリマアプリの使い方</h2>
+  <div class="article-preview">
+    <h2>はじめての出品ガイド</h2>
+    <p>メルカリで不要品を出品するのはとても簡単です。スマートフォンで商品の写真を撮り、商品名と説明を入力し、価格を設定するだけ。最短3分で出品が完了します。</p>
+    <h3>写真撮影のコツ</h3>
+    <p>商品写真は最大10枚まで登録できます。明るい場所で撮影し、商品の全体像がわかる写真と、<a href="#">傷や汚れがある場合はその部分のアップ写真</a>を掲載すると、購入者に安心感を与えられます。</p>
+    <h3>価格設定のポイント</h3>
+    <p>同じ商品がいくらで売れているかを検索して相場を確認しましょう。送料込みの価格設定が一般的で、購入者にとってわかりやすい表示になります。販売手数料は10%です。</p>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">05 / Buttons</div>
+  <h2 class="section-title">ボタンバリエーション</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-primary" href="#">出品する</a><div class="button-label">CTA (Primary)</div></div>
+    <div class="button-item"><a class="btn-primary" href="#" style="font-size:14px; padding:6px 16px;">購入手続きへ</a><div class="button-label">CTA (Small)</div></div>
+    <div class="button-item"><a class="btn-secondary" href="#">ログイン</a><div class="button-label">Secondary</div></div>
+    <div class="button-item"><a class="btn-secondary" href="#" style="font-weight:700;">会員登録</a><div class="button-label">Secondary (Bold)</div></div>
+  </div>
+  <div style="margin-top:16px;">
+    <div class="type-meta">CTA: bg #ff333f / color #fff / 14px / 700 / radius 4px</div>
+    <div class="type-meta">Secondary: bg #fff / color #333 / 14px / 400 / radius 4px / border: 1px solid #e0e0e0</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">06 / Cards — 商品カード</div>
+  <h2 class="section-title">カードコンポーネント</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-image">商品画像</div>
+      <div class="card-body">
+        <div class="card-price">&yen;1,500</div>
+        <div class="card-title">ブランドTシャツ メンズ M</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-image">商品画像</div>
+      <div class="card-body">
+        <div class="card-price">&yen;3,200</div>
+        <div class="card-title">ワイヤレスイヤホン 未使用</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-image">商品画像</div>
+      <div class="card-body">
+        <div class="card-price">&yen;800</div>
+        <div class="card-title">絵本セット 3冊まとめ売り</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-image">商品画像</div>
+      <div class="card-body">
+        <div class="card-price">&yen;12,000</div>
+        <div class="card-title">スニーカー 27cm 美品</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">07 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input" type="text" placeholder="name@example.com"><div class="form-state-label">デフォルト — border: #e0e0e0, radius: 0px, font-size: 16px</div></div>
+  <div class="form-group"><label class="form-label">パスワード</label><input class="form-input form-input--focus" type="password" value="mypassword123"><div class="form-state-label">フォーカス — border: #0073cc</div></div>
+  <div class="form-group"><label class="form-label">商品名</label><input class="form-input form-input--error" type="text" value=""><div class="form-state-label">エラー — border: #ff333f</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section" id="spacing">
+  <div class="section-label">08 / Layout — CSS Custom Properties 実測値</div>
+  <h2 class="section-title">スペーシング & レイアウト</h2>
+
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:16px;"></div><div class="spacing-value">16px</div><div style="font-size:10px; color:#999; margin-top:2px;">inset</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px;"></div><div class="spacing-value">24px</div><div style="font-size:10px; color:#999; margin-top:2px;">gutter</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:36px;"></div><div class="spacing-value">36px</div><div style="font-size:10px; color:#999; margin-top:2px;">page-h</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px;"></div><div class="spacing-value">40px</div><div style="font-size:10px; color:#999; margin-top:2px;">page-top</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:64px;"></div><div class="spacing-value">64px</div><div style="font-size:10px; color:#999; margin-top:2px;">page-btm</div></div>
+  </div>
+
+  <div style="margin-top:32px;">
+    <div class="section-label" style="margin-bottom:16px;">z-index 階層</div>
+    <table class="zindex-table">
+      <thead><tr><th>Token</th><th>Value</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td>--mer-z-index-menu</td><td>1100</td><td>メニュー</td></tr>
+        <tr><td>--mer-z-index-navigation</td><td>1200</td><td>ナビゲーション</td></tr>
+        <tr><td>--mer-z-index-modal</td><td>1400</td><td>モーダル</td></tr>
+        <tr><td>--mer-z-index-snackbar</td><td>1500</td><td>スナックバー通知</td></tr>
+        <tr><td>--mer-z-index-tooltip</td><td>1600</td><td>ツールチップ</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://jp.mercari.com/" style="color:var(--mercari-red); text-decoration:underline;">mercari.com/jp</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-04-06）
+</footer>
+
+</body>
+</html>
