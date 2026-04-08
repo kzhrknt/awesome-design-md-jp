@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Droga5 Japan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: CSS Custom Properties 実測値 === */
+    --cool-grey: #9ea7aa;
+    --cool-grey-two: #949799;
+    --pale-salmon: #ffb78c;
+    --pale-teal: #86d1bb;
+    --pig-pink: #e4838f;
+    --black-two: #000000;
+    --cta-blue: #0000d5;
+    --text-primary: #000000;
+    --text-secondary: #959595;
+    --bg-primary: #ffffff;
+    /* === Fonts === */
+    --font-display: "Noto Sans JP", sans-serif;
+    --font-body: "Noto Sans JP", sans-serif;
+    --font-nav: "Noto Sans JP", sans-serif;
+    --font-mono: "Roboto Mono", monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 16px; font-weight: 400; line-height: 1.5;
+    letter-spacing: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 60px;
+    background: var(--bg-primary);
+    border-bottom: 1px solid #eee;
+  }
+  .nav-brand {
+    font-family: var(--font-mono);
+    font-size: 14px; font-weight: 400; color: var(--text-primary);
+    text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .nav-brand span { color: var(--text-secondary); font-size: 12px; display: block; letter-spacing: 0; text-transform: none; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a {
+    font-family: var(--font-nav); font-size: 14px; font-weight: 500;
+    color: var(--text-primary); text-decoration: none; transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--text-secondary); }
+  .nav-cta {
+    display: inline-block; background: var(--cta-blue); color: #fff;
+    padding: 8px 20px; border-radius: 5px;
+    font-family: var(--font-mono); font-size: 14px; font-weight: 400;
+    text-decoration: none; transition: opacity 0.15s;
+  }
+  .nav-cta:hover { opacity: 0.8; }
+
+  /* HERO */
+  .hero {
+    padding: 120px 40px 100px; text-align: left;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .hero-label {
+    font-family: var(--font-mono); font-size: 14px; font-weight: 400;
+    color: var(--text-secondary); line-height: 17px;
+    margin-bottom: 24px; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: 100px; font-weight: 700; line-height: 120px;
+    letter-spacing: -3px;
+    color: var(--text-primary); margin-bottom: 32px;
+  }
+  .hero p {
+    font-family: var(--font-body);
+    font-size: 28px; font-weight: 400; line-height: 42px;
+    color: var(--text-secondary); max-width: 700px;
+  }
+
+  /* SECTIONS */
+  .section { padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+  .section-label {
+    font-family: var(--font-mono); font-size: 14px; font-weight: 400;
+    color: var(--text-secondary); line-height: 17px;
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 35px; font-weight: 400; line-height: 48px;
+    margin-bottom: 48px;
+  }
+  .section-divider { border: none; border-top: 1px solid #eee; margin: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .color-swatch { border-radius: 8px; overflow: hidden; background: #fff; border: 1px solid #eee; }
+  .color-swatch-block { height: 80px; width: 100%; }
+  .color-swatch-info { padding: 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; color: var(--text-primary); }
+  .color-swatch-hex { font-size: 12px; color: var(--text-secondary); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+  .color-group-label { font-size: 14px; font-weight: 500; color: var(--text-secondary); margin: 32px 0 12px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid #eee; }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 400;
+    color: var(--text-secondary); margin-top: 12px;
+  }
+  .type-context {
+    display: inline-block; background: #f5f5f5; color: var(--text-secondary);
+    font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-left: 8px;
+  }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-top: 8px; }
+  .btn-primary-demo {
+    display: inline-block; background: var(--cta-blue); color: #fff;
+    padding: 10px 28px; border-radius: 5px; border: none;
+    font-family: var(--font-mono); font-size: 14px; font-weight: 400;
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-nav-demo {
+    display: inline-block; background: transparent; color: var(--text-primary);
+    padding: 10px 28px; border: 1px solid #ddd; border-radius: 5px;
+    font-family: var(--font-nav); font-size: 14px; font-weight: 500;
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-skip-demo {
+    display: inline-block; background: #000; color: #fff;
+    padding: 10px 28px; border-radius: 5px; border: none;
+    font-family: var(--font-nav); font-size: 16px; font-weight: 500;
+    text-decoration: none; cursor: pointer;
+  }
+
+  /* ACCENT BLOCKS */
+  .accent-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 32px; }
+  .accent-block {
+    padding: 48px 32px; border-radius: 8px; text-align: center;
+    font-family: var(--font-mono); font-size: 14px; font-weight: 400;
+    color: var(--text-primary);
+  }
+  .accent-block .accent-name { font-size: 16px; font-weight: 500; margin-bottom: 8px; }
+  .accent-block .accent-hex { font-family: var(--font-mono); font-size: 13px; opacity: 0.7; }
+
+  /* SHOWCASE */
+  .showcase {
+    background: #000; color: #fff; padding: 120px 40px; text-align: center;
+    margin: 0 -40px;
+  }
+  .showcase-inner { max-width: 1200px; margin: 0 auto; }
+  .showcase h2 {
+    font-family: var(--font-display);
+    font-size: 100px; font-weight: 700; line-height: 120px;
+    letter-spacing: -3px; margin-bottom: 24px;
+  }
+  .showcase p {
+    font-family: var(--font-body);
+    font-size: 28px; font-weight: 400; line-height: 42px;
+    color: rgba(255,255,255,0.6); max-width: 600px; margin: 0 auto;
+  }
+
+  /* CARDS SECTION */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+  .card {
+    background: #fff; border: 1px solid #eee; border-radius: 8px;
+    padding: 32px; transition: box-shadow 0.3s;
+  }
+  .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .card-label {
+    font-family: var(--font-mono); font-size: 14px; font-weight: 400;
+    color: var(--cta-blue); line-height: 17px; margin-bottom: 16px;
+  }
+  .card h3 {
+    font-family: var(--font-display);
+    font-size: 24px; font-weight: 700; line-height: 1.4;
+    margin-bottom: 12px;
+  }
+  .card p { font-size: 16px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* FOOTER */
+  .footer {
+    padding: 40px; text-align: center;
+    font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary);
+    border-top: 1px solid #eee;
+  }
+  .footer a { color: var(--text-secondary); text-decoration: none; }
+  .footer a:hover { color: var(--text-primary); }
+
+  @media (max-width: 768px) {
+    .hero { padding: 80px 20px 60px; }
+    .hero h1 { font-size: 48px; line-height: 56px; letter-spacing: -1.5px; }
+    .hero p { font-size: 18px; line-height: 28px; }
+    .section { padding: 48px 20px; }
+    .section-title { font-size: 24px; line-height: 34px; }
+    .nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .showcase { padding: 80px 20px; margin: 0 -20px; }
+    .showcase h2 { font-size: 48px; line-height: 56px; letter-spacing: -1.5px; }
+    .showcase p { font-size: 18px; line-height: 28px; }
+    .accent-grid { grid-template-columns: 1fr; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">Droga5 Japan<span>Part of Accenture Song</span></a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#showcase">Showcase</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+  </ul>
+  <a class="nav-cta" href="#">Contact us</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-label">OUR DNA</div>
+  <h1>創造力でブランド<br>体験に変革を</h1>
+  <p>パーパス起点のクリエイティブを通じて、ブランドと人々の関係を再構築する。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Primary & CTA</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0000d5"></div><div class="color-swatch-info"><div class="color-swatch-name">CTA Blue</div><div class="color-swatch-hex">#0000d5</div><div class="color-swatch-role">CTA・リンク</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000"></div><div class="color-swatch-info"><div class="color-swatch-name">Black Two</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">テキスト・見出し</div></div></div>
+  </div>
+
+  <div class="color-group-label">Accent — パステル系</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffb78c"></div><div class="color-swatch-info"><div class="color-swatch-name">Pale Salmon</div><div class="color-swatch-hex">#ffb78c</div><div class="color-swatch-role">アクセント（温かみ）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#86d1bb"></div><div class="color-swatch-info"><div class="color-swatch-name">Pale Teal</div><div class="color-swatch-hex">#86d1bb</div><div class="color-swatch-role">アクセント（落ち着き）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e4838f"></div><div class="color-swatch-info"><div class="color-swatch-name">Pig Pink</div><div class="color-swatch-hex">#e4838f</div><div class="color-swatch-role">アクセント（やわらかさ）</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff; border:1px solid #eee"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#959595"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Secondary</div><div class="color-swatch-hex">#959595</div><div class="color-swatch-role">補足テキスト・ラベル</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#9ea7aa"></div><div class="color-swatch-info"><div class="color-swatch-name">Cool Grey</div><div class="color-swatch-hex">#9ea7aa</div><div class="color-swatch-role">--cool-grey</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#949799"></div><div class="color-swatch-info"><div class="color-swatch-name">Cool Grey Two</div><div class="color-swatch-hex">#949799</div><div class="color-swatch-role">フッターリンク</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-display); font-size:100px; font-weight:700; line-height:120px; letter-spacing:-3px;">創造力でブランド体験に変革を</div>
+    <div class="type-meta">NotoSansJP-Bold / 100px / 700 / lh: 120px (x1.2) / ls: -3px<span class="type-context">巨大見出し</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-body); font-size:35px; font-weight:400; line-height:48px;">パーパス起点のクリエイティブを</div>
+    <div class="type-meta">NotoSansJP-Regular / 35px / 400 / lh: 48px (x1.37) / ls: normal<span class="type-context">セクション見出し</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-body); font-size:28px; font-weight:400; line-height:42px; color: #959595;">ブランドと人々の関係を再構築し、社会に意味のあるインパクトをもたらすクリエイティブソリューション。</div>
+    <div class="type-meta">NotoSansJP-Regular / 28px / 400 / lh: 42px (x1.5) / color: #959595<span class="type-context">説明文</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-mono); font-size:14px; font-weight:400; line-height:17px; color: #959595; text-transform: uppercase;">OUR DNA</div>
+    <div class="type-meta">GTPressuraMono (Roboto Mono) / 14px / 400 / lh: 17px / color: #959595<span class="type-context">セクションラベル</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-mono); font-size:14px; font-weight:400; line-height:17px; color: #0000d5;">Contact us</div>
+    <div class="type-meta">GTPressuraMono (Roboto Mono) / 14px / 400 / lh: 17px / color: #0000d5<span class="type-context">CTA ラベル</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-nav); font-size:14px; font-weight:500; line-height:14px;">Menu  About  Work  Culture  News</div>
+    <div class="type-meta">NotoSansJP-Medium / 14px / 500 / lh: 14px / color: #000<span class="type-context">ナビゲーション</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-body); font-size:14px; font-weight:400; line-height:14px; color: #949799;">Privacy Policy  |  Terms of Use  |  Cookie Policy</div>
+    <div class="type-meta">NotoSansJP-Regular / 14px / 400 / lh: 14px / color: #949799<span class="type-context">フッターリンク</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ACCENT COLORS SHOWCASE -->
+<section class="section">
+  <div class="section-label">03 / Accent Colors</div>
+  <h2 class="section-title">パステルアクセントカラー</h2>
+  <div class="accent-grid">
+    <div class="accent-block" style="background: #ffb78c;">
+      <div class="accent-name">Pale Salmon</div>
+      <div class="accent-hex">#ffb78c</div>
+    </div>
+    <div class="accent-block" style="background: #86d1bb;">
+      <div class="accent-name">Pale Teal</div>
+      <div class="accent-hex">#86d1bb</div>
+    </div>
+    <div class="accent-block" style="background: #e4838f; color: #fff;">
+      <div class="accent-name">Pig Pink</div>
+      <div class="accent-hex">#e4838f</div>
+    </div>
+  </div>
+</section>
+
+<!-- DARK SHOWCASE -->
+<section class="showcase" id="showcase">
+  <div class="showcase-inner">
+    <h2>404 error...</h2>
+    <p>ページが見つかりませんでした。巨大タイポグラフィのインパクトを確認してください。</p>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">ボタンスタイル</h2>
+
+  <div class="button-row">
+    <div class="button-item">
+      <button class="btn-primary-demo">Accept</button>
+      <div class="button-label">CTA / Accept<br>bg: #0000d5 / radius: 5px</div>
+    </div>
+    <div class="button-item">
+      <button class="btn-nav-demo">Menu</button>
+      <div class="button-label">Nav Button<br>NotoSansJP-Medium / 14px</div>
+    </div>
+    <div class="button-item">
+      <button class="btn-skip-demo">Skip to content</button>
+      <div class="button-label">Skip Link<br>bg: #000 / 16px</div>
+    </div>
+    <div class="button-item">
+      <span style="font-family: var(--font-mono); font-size: 14px; color: #0000d5; cursor: pointer;">Contact us &rarr;</span>
+      <div class="button-label">CTA Link (mono)<br>color: #0000d5</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">コンテンツカード</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-label">Brand Experience</div>
+      <h3>ブランド体験の設計</h3>
+      <p>パーパスを起点に、ブランドの本質的な価値を体験として設計。消費者との深い関係構築を実現する。</p>
+    </div>
+    <div class="card">
+      <div class="card-label">Creative Strategy</div>
+      <h3>クリエイティブ戦略</h3>
+      <p>データインサイトと創造力を融合し、市場に新しい視点を提供するクリエイティブソリューションを策定。</p>
+    </div>
+    <div class="card">
+      <div class="card-label">Cultural Impact</div>
+      <h3>カルチャーインパクト</h3>
+      <p>社会の文脈を読み解き、ブランドが文化に参加するための戦略とクリエイティブを開発する。</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FONT NOTE -->
+<section class="section">
+  <div class="section-label">06 / Font Note</div>
+  <h2 class="section-title">フォント代替について</h2>
+  <div style="font-size: 16px; line-height: 1.8; color: var(--text-secondary); max-width: 700px;">
+    <p style="margin-bottom: 16px;">実サイトの <strong style="color: var(--text-primary);">GTPressuraMono</strong> (GT Pressura Mono) は Adobe Fonts ライセンスのブランドフォントです。このプレビューでは <strong style="color: var(--text-primary);">Roboto Mono</strong> (Google Fonts) で代替しています。</p>
+    <p style="margin-bottom: 16px;">和文フォントは <strong style="color: var(--text-primary);">Noto Sans JP</strong> を Google Fonts から weight 400 / 500 / 700 で読み込み、実サイトの NotoSansJP-Regular / Medium / Bold に対応させています。</p>
+    <p>実サイトでは body の font-size が <strong style="color: var(--text-primary);">10px</strong> に設定されていますが、実際のコンテンツはすべてコンポーネント単位で個別にサイズ指定されています。</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>Generated from <a href="https://droga5.jp">droga5.jp</a> DESIGN.md — <a href="https://github.com/awesome-design-md-jp">awesome-design-md-jp</a></p>
+</footer>
+
+</body>
+</html>
