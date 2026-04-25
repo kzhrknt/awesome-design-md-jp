@@ -10,41 +10,53 @@
 
 - **デザイン方針**: ミニマル・大胆なタイポグラフィ主導。巨大見出し + 余白で強い印象を与えるクリエイティブエージェンシーの定型
 - **密度**: 非常にゆったり。フルスクリーンのセクションに大きな文字を配置し、余白を贅沢に使う
-- **キーワード**: Bold Typography, Minimal, Pastel Accents, Creative, Purpose-driven
+- **キーワード**: Bold Typography, Minimal, High Contrast, Creative, Purpose-driven
 
 ---
 
 ## 2. Color Palette & Roles
 
-### CSS Custom Properties（実測値）
+> 出典: Accenture Song 101（April 2022）— Droga5 公式ブランドガイド。
+> "The digital-first, high-contrast palette we use is made up of five main colors: white, blue, black, orange and gray(s)."
+
+### Brand Palette（公式5色）
+
+| Role | Hex | 備考 |
+|------|-----|------|
+| White | `#FFFFFF` | ページ背景・暗背景上のテキスト |
+| Blue | `#0000D5` | プライマリ。CTA・リンク・キーカラー |
+| Black | `#000000` | テキスト・暗背景・見出し |
+| Orange | `#D05005` | アクセント。差し色として限定使用 |
+| Gray Light | `#D5D5D5` | ボーダー・薄い区切り |
+| Gray Mid | `#959595` | 補足テキスト・セクションラベル |
+| Gray Dark | `#555555` | サブテキスト・キャプション |
+
+### CSS Custom Properties
 
 ```css
---cool-grey: #9ea7aa;
---cool-grey-two: #949799;
---pale-salmon: #ffb78c;
---pale-teal: #86d1bb;
---pig-pink: #e4838f;
---black-two: #000000;
+--brand-white:  #ffffff;
+--brand-blue:   #0000d5;
+--brand-black:  #000000;
+--brand-orange: #d05005;
+--gray-light:   #d5d5d5;
+--gray-mid:     #959595;
+--gray-dark:    #555555;
 ```
 
-### Primary（ブランドカラー）
+### Roles
 
-- **Primary / CTA Blue** (`#0000d5`): CTA ボタン、リンクテキスト。鮮やかなブルー
-- **Primary Dark**: 明示なし（ホバー時は opacity 変化等を想定）
+- **Primary / CTA Blue** (`#0000D5`): CTA ボタン、リンクテキスト、ブランドキーカラー
+- **Accent Orange** (`#D05005`): 差し色。ハイライト・強調点。本文や広面積には使わない
+- **Text Primary** (`#000000`): 本文・見出し
+- **Text Secondary** (`#555555` / `#959595`): キャプション・補足・セクションラベル
+- **Border / Divider** (`#D5D5D5`): 薄い区切り線・ボーダー
+- **Background** (`#FFFFFF`): ページ背景
+- **Inverse Background** (`#000000`): ダーク反転背景。テキストは `#FFFFFF`
 
-### Accent（パステル系アクセント）
+### 使用比率
 
-- **Pale Salmon** (`#ffb78c`): アクセント。温かみのあるサーモンピンク
-- **Pale Teal** (`#86d1bb`): アクセント。落ち着いたティール
-- **Pig Pink** (`#e4838f`): アクセント。やわらかいピンク
-
-### Neutral（ニュートラル）
-
-- **Text Primary** (`#000000`): 本文テキスト（`--black-two`）
-- **Text Secondary** (`#959595`): 補足テキスト、セクションラベル、説明文
-- **Cool Grey** (`#9ea7aa` / `#949799`): フッターリンク、リージョン表記
-- **Background** (`#ffffff`): ページ背景
-- **Surface**: 明示的なカード背景の定義なし（白背景ベース）
+ブランドガイドのバー比は **Blue ≈ Black > Orange / Grays > White**。
+Blue と Black が支配的、Orange は最も小さい面積でアクセント運用。
 
 ---
 
@@ -223,16 +235,18 @@ font-feature-settings: "palt" 0; /* body では palt 無効（normal） */
 
 - 巨大な見出し（100px クラス）で visual impact を出す
 - letter-spacing: -3px で見出しを詰めてインパクトを強調する
-- パステル系アクセントカラー（salmon, teal, pink）をポイント使いする
-- GTPressuraMono をラベルやCTAに限定して使い、ブランド感を出す
+- 公式5色（white / blue / black / orange / grays）に絞ってハイコントラストを保つ
+- Orange (`#D05005`) は差し色として限定的に使う（広面積には使わない）
+- GTPressuraMono をラベルや CTA に限定して使い、ブランド感を出す
 - フォントは @font-face 名で指定する場合は必ず汎用フォールバックを含める
 
 ### Don't（禁止）
 
 - body の font-size: 10px をそのまま本文に使わない（コンポーネントで必ず上書き）
 - GTPressuraMono を本文に使わない（ラベル専用）
-- パステルカラーを背景全体に使わない（アクセントとして部分的に使用）
-- CTA Blue (`#0000d5`) を本文テキストに使わない（リンク・CTA 専用）
+- 公式パレット外の色（パステル系・追加アクセント）を勝手に持ち込まない
+- Orange を本文や広面積背景に使わない（あくまでアクセント）
+- CTA Blue (`#0000D5`) を本文テキストに使わない（リンク・CTA 専用）
 - 3つの Noto Sans JP ウェイトを混同しない（それぞれ独立した @font-face 名）
 
 ---
@@ -265,16 +279,19 @@ font-feature-settings: "palt" 0; /* body では palt 無効（normal） */
 ### クイックリファレンス
 
 ```
-Primary Color (CTA): #0000d5
-Text Color: #000000
-Text Secondary: #959595
-Background: #ffffff
-Accent Salmon: #ffb78c
-Accent Teal: #86d1bb
-Accent Pink: #e4838f
+# Brand Palette (Accenture Song 101 / April 2022)
+White:        #FFFFFF
+Blue (CTA):   #0000D5
+Black:        #000000
+Orange:       #D05005   ← アクセント。限定使用
+Gray Light:   #D5D5D5   ← ボーダー
+Gray Mid:     #959595   ← 補足テキスト
+Gray Dark:    #555555   ← サブテキスト
+
+# Typography
 Font (Display): "Noto Sans JP", sans-serif / 100px / 700 / ls: -3px
-Font (Body): "Noto Sans JP", sans-serif / 28px / 400
-Font (Mono Label): "Roboto Mono", monospace / 14px / 400
+Font (Body):    "Noto Sans JP", sans-serif / 28px / 400
+Font (Mono):    "Roboto Mono", monospace / 14px / 400
 Body Base Size: 10px (override per component)
 ```
 
@@ -282,12 +299,13 @@ Body Base Size: 10px (override per component)
 
 ```
 Droga5 のデザインシステムに従って、サービス紹介ページを作成してください。
-- ヒーロー見出し: "Noto Sans JP" 700 / 100px / line-height: 1.2 / letter-spacing: -3px
-- 説明文: "Noto Sans JP" 400 / 28px / line-height: 1.5 / color: #959595
+- カラー: 公式5色（white / blue #0000D5 / black / orange #D05005 / grays）のみ使用
+- ヒーロー見出し: "Noto Sans JP" 700 / 100px / line-height: 1.2 / letter-spacing: -3px / color: #000
+- 説明文: "Noto Sans JP" 400 / 28px / line-height: 1.5 / color: #555555
 - セクションラベル: "Roboto Mono" 400 / 14px / color: #959595 / 英字大文字
-- CTAボタン: background: #0000d5 / color: #fff / border-radius: 5px
-- アクセントカラー: #ffb78c, #86d1bb, #e4838f をポイント使い
-- 背景: #ffffff / テキスト: #000000
+- CTAボタン: background: #0000D5 / color: #FFFFFF / border-radius: 5px
+- アクセント: #D05005 を差し色として限定的に使用（広面積には使わない）
+- 背景: #FFFFFF / テキスト: #000000 / ボーダー: #D5D5D5
 ```
 
 ### GTPressuraMono 代替について
