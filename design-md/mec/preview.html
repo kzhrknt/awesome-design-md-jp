@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Mitsubishi Estate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Brand === */
+    --brand-red: #dc000c;
+    --brand-red-dark: #d7000f;
+
+    /* === Neutral === */
+    --text-primary: #000000;
+    --text-sub: #404040;
+    --text-tertiary: #757575;
+    --text-meta: #999999;
+    --text-disabled: #c9c9c9;
+    --beige-accent: #9f9889;
+
+    /* === Backgrounds === */
+    --bg-page: #ffffff;
+    --bg-hero: #f7f6f6;
+    --bg-info: #f2f1ec;
+    --bg-subtle: #efefef;
+
+    /* === Tag === */
+    --tag-green: #4da262;
+    --tag-blue: #4a94bd;
+
+    /* === Fonts ===
+       実サイトは Century Gothic を先頭に置くが、Linux 環境では未搭載のことが多いため、
+       Jost (Google Fonts) を Century Gothic の代替として後段に置く。 */
+    --font-global: "Century Gothic", "Jost", "Noto Sans", "Noto Sans JP", sans-serif;
+    --font-content: "Noto Sans JP", "Noto Sans", sans-serif;
+    --font-h1: "Noto Sans JP", sans-serif;
+    --font-en-only: "Century Gothic", "Jost", sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-family: var(--font-global);
+    font-size: 16px; font-weight: 400; line-height: normal;
+    letter-spacing: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 80px;
+    background: var(--bg-page);
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .nav-brand {
+    font-family: var(--font-en-only);
+    font-size: 18px; font-weight: 700; color: var(--text-primary);
+    text-decoration: none; line-height: 1.2;
+  }
+  .nav-brand small { display: block; font-size: 11px; font-weight: 400; color: var(--text-meta); margin-top: 2px; }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    font-family: var(--font-global); font-size: 16px; font-weight: 400;
+    color: var(--text-primary); text-decoration: none; transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--brand-red); }
+  .nav-cta {
+    display: inline-flex; align-items: center;
+    background: var(--brand-red); color: #fff;
+    padding: 12px 28px; border-radius: 50px;
+    font-family: var(--font-global); font-size: 14px; font-weight: 400;
+    text-decoration: none; transition: background 0.15s;
+  }
+  .nav-cta:hover { background: var(--brand-red-dark); }
+
+  /* HERO PAGE TITLE BAR */
+  .page-hero {
+    background: var(--bg-hero);
+    padding: 80px 40px;
+  }
+  .page-hero-inner {
+    max-width: 1200px; margin: 0 auto;
+  }
+  .page-hero h1 {
+    font-family: var(--font-h1);
+    font-size: 34px; font-weight: 700; line-height: 47.6px;
+    color: var(--text-primary);
+  }
+  .page-hero-en {
+    font-family: var(--font-en-only);
+    font-size: 14px; font-weight: 400;
+    color: var(--text-meta);
+    margin-bottom: 12px; letter-spacing: 0.05em;
+  }
+
+  /* SECTIONS */
+  .section { padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+  .section-eyebrow {
+    font-family: var(--font-en-only);
+    font-size: 24px; font-weight: 400; line-height: normal;
+    color: var(--text-meta);
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: var(--font-content);
+    font-size: 28px; font-weight: 700; line-height: 39.2px;
+    margin-bottom: 48px;
+  }
+  .display-en {
+    font-family: var(--font-en-only);
+    font-size: 58px; font-weight: 700; line-height: 1;
+    margin-bottom: 16px; color: var(--text-primary);
+  }
+  .display-en.size-l { font-size: 46px; }
+  .display-en.size-m { font-size: 40px; }
+  .section-divider { border: none; border-top: 1px solid #e5e5e5; margin: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .color-swatch { border-radius: 4px; overflow: hidden; background: #fff; border: 1px solid #e5e5e5; }
+  .color-swatch-block { height: 96px; width: 100%; }
+  .color-swatch-info { padding: 14px; }
+  .color-swatch-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-content); }
+  .color-swatch-hex { font-size: 12px; color: var(--text-meta); font-family: var(--font-en-only); }
+  .color-swatch-role { font-size: 12px; color: var(--text-tertiary); margin-top: 4px; font-family: var(--font-content); line-height: 1.5; }
+  .color-group-label { font-family: var(--font-en-only); font-size: 14px; font-weight: 700; color: var(--text-tertiary); margin: 32px 0 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid #e5e5e5; }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta {
+    font-family: var(--font-en-only); font-size: 12px; font-weight: 400;
+    color: var(--text-meta); margin-top: 12px;
+  }
+  .type-context {
+    display: inline-block; background: var(--bg-subtle); color: var(--text-tertiary);
+    font-family: var(--font-content);
+    font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-left: 8px;
+  }
+
+  /* ARTICLE / CORPORATE SAMPLE */
+  .article {
+    max-width: 760px; margin: 0 auto;
+    font-family: var(--font-content);
+  }
+  .article-lead {
+    font-family: var(--font-content);
+    font-size: 22px; font-weight: 700; line-height: 30.8px;
+    color: var(--beige-accent);
+    margin-bottom: 32px;
+  }
+  .article h2 {
+    font-family: var(--font-content);
+    font-size: 28px; font-weight: 700; line-height: 39.2px;
+    color: var(--text-primary);
+    margin: 56px 0 24px;
+  }
+  .article h3 {
+    font-family: var(--font-content);
+    font-size: 22px; font-weight: 700; line-height: 30.8px;
+    margin: 40px 0 16px;
+  }
+  .article p {
+    font-family: var(--font-content);
+    font-size: 16px; font-weight: 400; line-height: 32px;
+    margin-bottom: 24px;
+    color: var(--text-primary);
+  }
+  .article p.compact {
+    line-height: 25.6px;
+  }
+  .article-meta {
+    font-family: var(--font-en-only);
+    font-size: 14px; color: var(--text-meta);
+    margin-bottom: 16px;
+  }
+  .info-card {
+    background: var(--bg-info);
+    padding: 32px;
+    margin: 40px 0;
+  }
+  .info-card p {
+    font-size: 18px; line-height: 32.4px;
+    margin-bottom: 0;
+  }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+  .button-item { text-align: center; }
+  .button-label {
+    font-family: var(--font-content);
+    font-size: 12px; font-weight: 400; color: var(--text-tertiary);
+    margin-top: 12px; line-height: 1.5;
+  }
+  .btn-cta-pill {
+    display: inline-block; background: var(--brand-red); color: #fff;
+    padding: 12px 32px; border-radius: 50px; border: none;
+    font-family: var(--font-global); font-size: 14px; font-weight: 400;
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-cta-pill:hover { background: var(--brand-red-dark); }
+  .btn-search {
+    display: inline-block; background: var(--brand-red); color: #fff;
+    padding: 14px 40px; border-radius: 32px; border: none;
+    font-family: var(--font-content); font-size: 22px; font-weight: 400;
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-tag {
+    display: inline-block; background: var(--bg-subtle); color: var(--text-primary);
+    padding: 8px 20px; border-radius: 0; border: none;
+    font-family: var(--font-content); font-size: 14px; font-weight: 400;
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-clear {
+    display: inline-block; background: var(--bg-hero); color: var(--brand-red);
+    padding: 8px 20px; border-radius: 0; border: 1px solid #e5e5e5;
+    font-family: var(--font-content); font-size: 14px; font-weight: 400;
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-modal-close {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px;
+    background: #fff; color: var(--text-primary);
+    border-radius: 50%; border: 1px solid #e5e5e5;
+    font-family: Arial, sans-serif; font-size: 13px; font-weight: 400;
+    cursor: pointer;
+  }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+  .card {
+    background: #fff; border: 1px solid #e5e5e5;
+    padding: 32px; transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--text-primary); }
+  .card-tag {
+    display: inline-block;
+    font-family: var(--font-en-only);
+    font-size: 11px; font-weight: 700;
+    color: #fff;
+    padding: 4px 10px;
+    margin-bottom: 16px;
+    letter-spacing: 0.05em;
+  }
+  .card-tag.green { background: var(--tag-green); }
+  .card-tag.blue { background: var(--tag-blue); }
+  .card-tag.red { background: var(--brand-red); }
+  .card-date {
+    font-family: var(--font-en-only);
+    font-size: 14px; color: var(--text-meta);
+    margin-bottom: 8px;
+  }
+  .card h3 {
+    font-family: var(--font-content);
+    font-size: 18px; font-weight: 700; line-height: 25.2px;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+  .card p {
+    font-family: var(--font-content);
+    font-size: 14px; line-height: 25.2px;
+    color: var(--text-tertiary);
+  }
+
+  /* SERVICE GRID */
+  .service-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .service-item {
+    background: var(--bg-info);
+    padding: 32px 24px;
+    text-align: left;
+    transition: background 0.2s;
+  }
+  .service-item:hover { background: #ebe9e1; }
+  .service-item-en {
+    font-family: var(--font-en-only);
+    font-size: 14px; color: var(--brand-red);
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
+  .service-item h3 {
+    font-family: var(--font-content);
+    font-size: 18px; font-weight: 700; line-height: 25.2px;
+    color: var(--text-primary);
+  }
+
+  /* FORM */
+  .form-grid { display: grid; gap: 24px; max-width: 600px; }
+  .form-field { display: flex; flex-direction: column; gap: 8px; }
+  .form-label {
+    font-family: var(--font-content);
+    font-size: 14px; font-weight: 700; color: var(--text-primary);
+  }
+  .form-required {
+    color: var(--brand-red);
+    font-size: 11px; margin-left: 6px;
+  }
+  .form-input {
+    font-family: var(--font-content);
+    font-size: 16px; line-height: 1.5;
+    padding: 12px 16px;
+    border: 1px solid #c9c9c9;
+    border-radius: 0;
+    color: var(--text-primary);
+    background: #fff;
+  }
+  .form-input:focus {
+    outline: none;
+    border-color: var(--brand-red);
+  }
+  .form-input.error {
+    border-color: var(--brand-red);
+    background: #fff5f5;
+  }
+  .form-error-text {
+    font-family: var(--font-content);
+    font-size: 12px; color: var(--brand-red);
+  }
+  .form-help {
+    font-family: var(--font-content);
+    font-size: 12px; color: var(--text-meta);
+  }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 24px; }
+  .elev-block {
+    background: #fff;
+    padding: 32px;
+    text-align: center;
+    font-family: var(--font-en-only);
+    font-size: 14px; color: var(--text-tertiary);
+  }
+  .elev-block.flat { border: 1px solid #e5e5e5; }
+  .elev-block.tonal { background: var(--bg-info); }
+  .elev-block.subtle { background: var(--bg-subtle); }
+
+  /* LAYOUT */
+  .layout-demo {
+    background: var(--bg-hero);
+    padding: 24px;
+    margin-bottom: 16px;
+    font-family: var(--font-en-only);
+    font-size: 12px; color: var(--text-tertiary);
+  }
+  .layout-demo strong { color: var(--text-primary); font-size: 14px; }
+
+  /* FONT NOTE */
+  .font-note {
+    background: var(--bg-info);
+    padding: 32px;
+    font-family: var(--font-content);
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--text-primary);
+  }
+  .font-note strong { font-weight: 700; }
+
+  /* FOOTER */
+  .footer {
+    background: var(--bg-hero);
+    padding: 40px;
+    text-align: center;
+    font-family: var(--font-en-only);
+    font-size: 12px; color: var(--text-tertiary);
+    margin-top: 80px;
+  }
+  .footer a { color: var(--text-tertiary); text-decoration: none; }
+  .footer a:hover { color: var(--brand-red); }
+
+  @media (max-width: 768px) {
+    .nav { padding: 0 20px; height: 64px; }
+    .nav-links { display: none; }
+    .page-hero { padding: 48px 20px; }
+    .page-hero h1 { font-size: 24px; line-height: 1.4; }
+    .display-en { font-size: 36px; }
+    .display-en.size-l { font-size: 32px; }
+    .display-en.size-m { font-size: 28px; }
+    .section { padding: 48px 20px; }
+    .section-title { font-size: 22px; line-height: 30.8px; }
+    .article h2 { font-size: 22px; line-height: 30.8px; }
+    .article-lead { font-size: 18px; line-height: 28.8px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">
+    Mitsubishi Estate
+    <small>三菱地所 — Design System Preview</small>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#article">Article</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+  </ul>
+  <a class="nav-cta" href="#">お問合せ</a>
+</nav>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-hero-en">DESIGN SYSTEM</div>
+    <h1>三菱地所のデザインシステム</h1>
+  </div>
+</section>
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-eyebrow">Our Palette</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dc000c"></div><div class="color-swatch-info"><div class="color-swatch-name">Brand Red</div><div class="color-swatch-hex">#DC000C</div><div class="color-swatch-role">CTA・検索・強調</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d7000f"></div><div class="color-swatch-info"><div class="color-swatch-name">Brand Red Dark</div><div class="color-swatch-hex">#D7000F</div><div class="color-swatch-role">プレス時</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000000"></div><div class="color-swatch-info"><div class="color-swatch-name">Black</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">本文・見出し</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border:1px solid #e5e5e5"></div><div class="color-swatch-info"><div class="color-swatch-name">White</div><div class="color-swatch-hex">#FFFFFF</div><div class="color-swatch-role">ページ背景</div></div></div>
+  </div>
+
+  <div class="color-group-label">Backgrounds</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f7f6f6"></div><div class="color-swatch-info"><div class="color-swatch-name">Hero Bg</div><div class="color-swatch-hex">#F7F6F6</div><div class="color-swatch-role">ページタイトル帯</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f2f1ec"></div><div class="color-swatch-info"><div class="color-swatch-name">Info Card Bg</div><div class="color-swatch-hex">#F2F1EC</div><div class="color-swatch-role">情報カード（ベージュ）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#efefef"></div><div class="color-swatch-info"><div class="color-swatch-name">Subtle Bg</div><div class="color-swatch-hex">#EFEFEF</div><div class="color-swatch-role">二次ボタン・タグ</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000000"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">本文</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#404040"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Sub</div><div class="color-swatch-hex">#404040</div><div class="color-swatch-role">控えめな本文</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#757575"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Tertiary</div><div class="color-swatch-hex">#757575</div><div class="color-swatch-role">補助・キャプション</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#999999"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Meta</div><div class="color-swatch-hex">#999999</div><div class="color-swatch-role">メタ・ラベル</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c9c9c9"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Disabled</div><div class="color-swatch-hex">#C9C9C9</div><div class="color-swatch-role">無効状態</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#9f9889"></div><div class="color-swatch-info"><div class="color-swatch-name">Beige Accent</div><div class="color-swatch-hex">#9F9889</div><div class="color-swatch-role">リード文専用</div></div></div>
+  </div>
+
+  <div class="color-group-label">Tag (Category)</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#4da262"></div><div class="color-swatch-info"><div class="color-swatch-name">Tag Green</div><div class="color-swatch-hex">#4DA262</div><div class="color-swatch-role">カテゴリ識別</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#4a94bd"></div><div class="color-swatch-info"><div class="color-swatch-name">Tag Blue</div><div class="color-swatch-hex">#4A94BD</div><div class="color-swatch-role">カテゴリ識別</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-eyebrow">Typography</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-en-only); font-size:58px; font-weight:700; line-height:1;">TOPICS</div>
+    <div class="type-meta">Century Gothic / 58px / 700 / lh: normal / ls: normal<span class="type-context">大型英字見出し</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-en-only); font-size:46px; font-weight:700; line-height:1;">NEWS</div>
+    <div class="type-meta">Century Gothic / 46px / 700 / lh: normal<span class="type-context">英字セクション見出し</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-en-only); font-size:40px; font-weight:700; line-height:1;">SUSTAINABILITY</div>
+    <div class="type-meta">Century Gothic / 40px / 700 / lh: normal<span class="type-context">英字セクション見出し（中）</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-h1); font-size:34px; font-weight:700; line-height:47.6px;">三菱地所のニュースリリース</div>
+    <div class="type-meta">Noto Sans JP / 34px / 700 / lh: 47.6px (×1.4)<span class="type-context">ページタイトル H1</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-content); font-size:28px; font-weight:700; line-height:39.2px;">時代に合わせた、まちづくりの実績。</div>
+    <div class="type-meta">Noto Sans JP / 28px / 700 / lh: 39.2px (×1.4)<span class="type-context">セクション見出し H2</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-content); font-size:24px; font-weight:700; line-height:33.6px;">トップメッセージ</div>
+    <div class="type-meta">Noto Sans JP / 24px / 700 / lh: 33.6px (×1.4)<span class="type-context">サブセクション見出し</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-content); font-size:22px; font-weight:700; line-height:30.8px; color: var(--beige-accent);">超長期視点でのまちづくりと時代を先取りするDNA</div>
+    <div class="type-meta">Noto Sans JP / 22px / 700 / lh: 30.8px / color: #9F9889<span class="type-context">リード・特徴コピー</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-content); font-size:18px; font-weight:700; line-height:25.2px;">オフィス事業</div>
+    <div class="type-meta">Noto Sans JP / 18px / 700 / lh: 25.2px (×1.4)<span class="type-context">事業一覧カードタイトル</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-content); font-size:16px; font-weight:400; line-height:32px;">三菱地所グループは、丸の内を「日本のビジネス街にする」という想いから始まり、長期視点に立ったまちづくりを続けてきました。本文は line-height 32px (×2.0) と広めに取り、コーポレート系の安定した可読性を確保しています。</div>
+    <div class="type-meta">Noto Sans JP / 16px / 400 / lh: 32px (×2.0)<span class="type-context">本文（広め）</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-content); font-size:16px; font-weight:400; line-height:25.6px;">カード内テキスト等の場合は line-height 25.6px (×1.6) と少し詰めて使用するパターンも観測されました。</div>
+    <div class="type-meta">Noto Sans JP / 16px / 400 / lh: 25.6px (×1.6)<span class="type-context">本文（詰め）</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-en-only); font-size:24px; font-weight:400; line-height:normal; color:#999;">Our Business</div>
+    <div class="type-meta">Century Gothic / 24px / 400 / color: #999<span class="type-context">英字エイブロウ</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-en-only); font-size:12px; font-weight:400; color:#404040;">HOME &gt; NEWS &gt; PRESS RELEASE</div>
+    <div class="type-meta">Century Gothic / 12px / 400 / color: #404040<span class="type-context">パンくず・メタ</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ARTICLE / CORPORATE -->
+<section class="section" id="article">
+  <div class="section-eyebrow">Article Sample</div>
+  <h2 class="section-title">記事・コーポレートコンテンツの組版</h2>
+
+  <article class="article">
+    <div class="article-meta">2026.04.25 — Press Release</div>
+    <h2 style="margin-top:0;">「三菱地所と次にいこう。」新TVCM放映開始のお知らせ</h2>
+
+    <p class="article-lead">人を、想う力。街を、想う力。三菱地所グループは、丸の内エリアを中心としたまちづくりで蓄積した知見を、次の時代の都市づくりへ広げていきます。</p>
+
+    <p>三菱地所株式会社（本社：東京都千代田区、執行役社長：中島篤）は、コーポレートメッセージ「人を、想う力。街を、想う力。」のもと、新たなTVCMを2026年4月25日（金）より全国で順次放映いたします。</p>
+
+    <h3>本TVCMのねらい</h3>
+    <p>本CMでは、三菱地所グループが取り組むまちづくりを、そこに集う人々の視点から描きました。建物そのものではなく、街を支える人とその想いに焦点を当て、コーポレートメッセージの核を伝えます。</p>
+
+    <div class="info-card">
+      <p><strong>放映期間</strong>: 2026年4月25日(金) 〜 2026年6月30日(月)<br><strong>放映地域</strong>: 全国エリア<br><strong>媒体</strong>: 民放各局・BS各局</p>
+    </div>
+
+    <h3>三菱地所グループのまちづくり</h3>
+    <p>三菱地所グループは、丸の内・大手町・有楽町エリアを中心に、約100年にわたるまちづくりを続けてきました。オフィス、商業、住宅、ホテル、空港、物流など、多様な領域で価値を提供しています。</p>
+
+    <p class="compact">本リリースに関するお問い合わせは、三菱地所株式会社 広報部までお願いいたします。</p>
+  </article>
+</section>
+
+<hr class="section-divider">
+
+<!-- DISPLAY EN SECTION SHOWCASE -->
+<section class="section">
+  <div class="section-eyebrow">Display Headlines</div>
+  <h2 class="section-title">大型英字見出しのショーケース</h2>
+  <div class="display-en">TOPICS</div>
+  <p style="font-family: var(--font-content); color: var(--text-tertiary); margin-bottom: 48px; line-height: 1.8;">最新のトピックをお届けします。</p>
+  <div class="display-en size-l">NEWS</div>
+  <p style="font-family: var(--font-content); color: var(--text-tertiary); margin-bottom: 48px; line-height: 1.8;">最新のニュースリリースをご覧ください。</p>
+  <div class="display-en size-m">SUSTAINABILITY</div>
+  <p style="font-family: var(--font-content); color: var(--text-tertiary); line-height: 1.8;">持続可能な社会の実現に向けた取り組み。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-eyebrow">Buttons</div>
+  <h2 class="section-title">ボタンスタイル</h2>
+
+  <div class="button-row">
+    <div class="button-item">
+      <button class="btn-cta-pill">お問合せ</button>
+      <div class="button-label">CTA Pill<br>bg: #DC000C / radius: 50px</div>
+    </div>
+    <div class="button-item">
+      <button class="btn-search">検索する</button>
+      <div class="button-label">Search<br>bg: #DC000C / radius: 32px / 22px</div>
+    </div>
+    <div class="button-item">
+      <button class="btn-tag">オフィス事業</button>
+      <div class="button-label">Filter Tag<br>bg: #EFEFEF / radius: 0</div>
+    </div>
+    <div class="button-item">
+      <button class="btn-clear">選択条件をクリア</button>
+      <div class="button-label">Clear (text)<br>color: #DC000C</div>
+    </div>
+    <div class="button-item">
+      <button class="btn-modal-close">×</button>
+      <div class="button-label">Modal Close<br>radius: 50%</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-eyebrow">Cards</div>
+  <h2 class="section-title">ニュースカード</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-tag red">PRESS RELEASE</div>
+      <div class="card-date">2026.04.25</div>
+      <h3>「三菱地所と次にいこう。」新TVCM放映開始</h3>
+      <p>コーポレートメッセージのもと、新たなTVCMを全国で順次放映いたします。</p>
+    </div>
+    <div class="card">
+      <div class="card-tag green">SUSTAINABILITY</div>
+      <div class="card-date">2026.04.18</div>
+      <h3>丸の内エリアの脱炭素化に向けた取り組み</h3>
+      <p>2030年までのカーボンニュートラル達成に向けた施策を発表。</p>
+    </div>
+    <div class="card">
+      <div class="card-tag blue">OFFICE</div>
+      <div class="card-date">2026.04.10</div>
+      <h3>常盤橋プロジェクト 新オフィスタワー竣工</h3>
+      <p>東京駅前再開発の中核となる新タワーが完成しました。</p>
+    </div>
+  </div>
+
+  <h3 style="font-family: var(--font-content); font-size: 22px; font-weight: 700; line-height: 30.8px; margin-top: 64px; margin-bottom: 24px;">事業領域グリッド</h3>
+
+  <div class="service-grid">
+    <a href="#" class="service-item" style="text-decoration:none;">
+      <div class="service-item-en">OFFICE</div>
+      <h3>オフィス事業</h3>
+    </a>
+    <a href="#" class="service-item" style="text-decoration:none;">
+      <div class="service-item-en">SHOPPING</div>
+      <h3>商業施設事業</h3>
+    </a>
+    <a href="#" class="service-item" style="text-decoration:none;">
+      <div class="service-item-en">RESIDENTIAL</div>
+      <h3>住宅事業</h3>
+    </a>
+    <a href="#" class="service-item" style="text-decoration:none;">
+      <div class="service-item-en">HOTEL</div>
+      <h3>ホテル事業</h3>
+    </a>
+    <a href="#" class="service-item" style="text-decoration:none;">
+      <div class="service-item-en">AIRPORT</div>
+      <h3>空港事業</h3>
+    </a>
+    <a href="#" class="service-item" style="text-decoration:none;">
+      <div class="service-item-en">LOGISTIC</div>
+      <h3>物流施設事業</h3>
+    </a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-eyebrow">Forms</div>
+  <h2 class="section-title">フォーム</h2>
+
+  <form class="form-grid" onsubmit="return false;">
+    <div class="form-field">
+      <label class="form-label">お名前<span class="form-required">必須</span></label>
+      <input type="text" class="form-input" value="山田 太郎">
+      <div class="form-help">フルネームをご記入ください</div>
+    </div>
+
+    <div class="form-field">
+      <label class="form-label">メールアドレス<span class="form-required">必須</span></label>
+      <input type="email" class="form-input" value="example@" placeholder="example@mec.co.jp">
+      <div class="form-help">フォーカスされた状態（border: 赤）</div>
+    </div>
+
+    <div class="form-field">
+      <label class="form-label">電話番号<span class="form-required">必須</span></label>
+      <input type="tel" class="form-input error" value="abc">
+      <div class="form-error-text">半角数字でご入力ください</div>
+    </div>
+
+    <div style="margin-top: 16px;">
+      <button class="btn-cta-pill">送信する</button>
+    </div>
+  </form>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section">
+  <div class="section-eyebrow">Elevation</div>
+  <h2 class="section-title">奥行き表現</h2>
+  <p style="font-family: var(--font-content); color: var(--text-tertiary); margin-bottom: 32px; line-height: 1.8;">三菱地所のサイトは基本フラット。box-shadow は使わず、色面の差（背景トーン）と境界線で奥行きを表現します。</p>
+  <div class="elevation-grid">
+    <div class="elev-block flat">FLAT<br><span style="color: var(--text-meta); font-size: 12px;">border 1px</span></div>
+    <div class="elev-block tonal">TONAL (Beige)<br><span style="color: var(--text-meta); font-size: 12px;">bg #F2F1EC</span></div>
+    <div class="elev-block subtle">TONAL (Subtle)<br><span style="color: var(--text-meta); font-size: 12px;">bg #EFEFEF</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- LAYOUT -->
+<section class="section">
+  <div class="section-eyebrow">Layout</div>
+  <h2 class="section-title">レイアウト原則</h2>
+  <div class="layout-demo"><strong>HEADER:</strong> 固定 / 高さ約 110px / bg #FFFFFF / 横並び nav + 右端の赤いピル CTA</div>
+  <div class="layout-demo"><strong>PAGE TITLE BAR:</strong> bg #F7F6F6 / H1 Noto Sans JP 34px 700 / 大きめの上下余白</div>
+  <div class="layout-demo"><strong>CONTENT:</strong> 中央寄せ / max-width 約 1200px / 両端余白あり / セクション間の縦余白 80px+</div>
+  <div class="layout-demo"><strong>GRID:</strong> 2-4 カラムカードグリッド / ブレークポイントで段組み変化</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FONT NOTE -->
+<section class="section">
+  <div class="section-eyebrow">Font Note</div>
+  <h2 class="section-title">フォントの注記</h2>
+  <div class="font-note">
+    <p style="margin-bottom: 16px;">実サイトはグローバル領域で <strong>Century Gothic</strong> を先頭に置く独特な構成です。Century Gothic は macOS / Windows に標準搭載されているシステムフォントですが、Linux 系（puppeteer の headless Chrome を含む）には未搭載のことが多いため、このプレビューでは <strong>Jost</strong>（Google Fonts）を Century Gothic の代替として後段に置いています。</p>
+    <p style="margin-bottom: 16px;">和文は <strong>Noto Sans JP</strong> を Google Fonts から weight 400 / 500 / 700 で読み込んでいます。実サイトでは下層ページで <strong>Noto Sans JP 先頭</strong>、ヘッダー・ナビ・トップ大型英字見出しで <strong>Century Gothic 先頭</strong> と stack を切り替えています。</p>
+    <p>letter-spacing は全要素 normal、font-feature-settings も normal。和文の字詰め（palt）は使用せず、ベタ組で組まれています。和文見出しの行間は <strong>font-size × 1.4</strong>、本文は <strong>× 1.6〜2.0</strong> が基本ルール。</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>Generated from <a href="https://www.mec.co.jp">mec.co.jp</a> DESIGN.md — <a href="https://github.com/kzhrknt/awesome-design-md-jp">awesome-design-md-jp</a></p>
+</footer>
+
+</body>
+</html>
