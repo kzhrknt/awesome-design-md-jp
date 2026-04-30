@@ -58,11 +58,12 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [Droga5](https://droga5.jp/) | Creative Agency | [DESIGN.md](design-md/droga5/DESIGN.md) | [preview.html](design-md/droga5/preview.html) |
 | [WIRED.jp](https://wired.jp/) | Tech Media | [DESIGN.md](design-md/wired/DESIGN.md) | [preview.html](design-md/wired/preview.html) |
 | [Mitsubishi Estate](https://www.mec.co.jp/) | Real Estate | [DESIGN.md](design-md/mec/DESIGN.md) | [preview.html](design-md/mec/preview.html) |
+| [Nintendo](https://www.nintendo.com/jp/) | Gaming | [DESIGN.md](design-md/nintendo/DESIGN.md) | [preview.html](design-md/nintendo/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (25 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (26 sites)</a>
 </p>
 
 <table>
@@ -100,7 +101,7 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>三菱地所</strong><br><img src="design-md/mec/preview-screenshot.png" width="120"></td>
-<td></td>
+<td align="center"><strong>Nintendo</strong><br><img src="design-md/nintendo/preview-screenshot.png" width="120"></td>
 <td></td>
 <td></td>
 <td></td>
@@ -138,7 +139,7 @@ Use [`template/DESIGN.md`](template/DESIGN.md) to create your own Japanese DESIG
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (25 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (26 sites)</a>
 </p>
 
 <table>
@@ -176,7 +177,7 @@ Use [`template/DESIGN.md`](template/DESIGN.md) to create your own Japanese DESIG
 </tr>
 <tr>
 <td align="center"><strong>三菱地所</strong><br><img src="design-md/mec/preview-screenshot.png" width="120"></td>
-<td></td>
+<td align="center"><strong>Nintendo</strong><br><img src="design-md/nintendo/preview-screenshot.png" width="120"></td>
 <td></td>
 <td></td>
 <td></td>
