@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: UNIQLO Japan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- UniqloPro 代替として Inter を使用 -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Brand Colors === */
+    --backgroundPrimaryDefault: #000;
+    --backgroundPrimaryHover: #2a2a2a;
+    --backgroundPrimaryPressed: #3e3e3e;
+    --backgroundSecondaryDefault: #6a6a6a;
+    --backgroundSecondaryHover: #767676;
+    --backgroundTertiaryDefault: #f4f4f4;
+    --backgroundTertiaryHover: #fafafa;
+    --backgroundNeutralDefault: #fff;
+    --backgroundNeutralHover: #f4f4f4;
+    --backgroundInactiveDefault: #dadada;
+    --backgroundPositiveDefault: #00ab0f;
+    --backgroundAttentionDefault: #e00;
+    --backgroundAttentionHover: #ef5555;
+    --backgroundAccentDefault: #005db5;
+    --backgroundAccentHover: #006ed7;
+
+    /* === Text === */
+    --text-primary: #000;
+    --text-secondary: #6a6a6a;
+    --text-disabled: #ababab;
+    --text-placeholder: #767676;
+    --text-error: #e00;
+    --text-promotional: #e00;
+
+    /* === Border === */
+    --border-lines: #dadada;
+    --border-focus: #005db5;
+    --border-error: #e00;
+
+    /* === Spacing === */
+    --spacing-01: 0.25rem;
+    --spacing-02: 0.5rem;
+    --spacing-03: 0.75rem;
+    --spacing-04: 1rem;
+    --spacing-05: 1.5rem;
+    --spacing-06: 2rem;
+    --spacing-07: 3.25rem;
+    --spacing-08: 5.5rem;
+
+    /* === Type Scale (CJK) === */
+    --type-cjk-minus-2: 0.6875rem;
+    --type-cjk-minus-1: 0.8125rem;
+    --type-cjk-base: 0.9375rem;
+    --type-cjk-plus-1: 1.0625rem;
+    --type-cjk-plus-2: 1.1875rem;
+    --type-cjk-plus-3: 1.375rem;
+    --type-cjk-plus-4: 1.625rem;
+    --type-cjk-plus-5: 1.875rem;
+    --type-cjk-plus-6: 2.25rem;
+    --type-cjk-plus-7: 2.5rem;
+
+    /* === Type Scale (Latin) === */
+    --type-latin-base: 1rem;
+    --type-latin-plus-3: 1.5rem;
+    --type-latin-plus-5: 2rem;
+
+    /* === Line Heights === */
+    --lh-01: 1;
+    --lh-02: 1.1;
+    --lh-03: 1.2;
+    --lh-04: 1.4;
+    --lh-05: 1.5;
+
+    /* === Fonts === */
+    --title-font-ja: "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro", "Hiragino Sans", "Noto Sans JP", "Noto Sans CJK JP", Osaka, sans-serif;
+    --body-font-ja: "Twemoji Country Flags", "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro", "Hiragino Sans", "Noto Sans JP", "Noto Sans CJK JP", Osaka, system-ui, -apple-system, sans-serif;
+    --uniqlo-pro: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+    /* === Shadows === */
+    --shadow-floating: 0px 2px 4px rgba(0,0,0,0.2);
+    --shadow-floating-er: 0px 0px 10px rgba(0,0,0,0.1);
+    --shadow-bottom-nav: 0px 0px 20px rgba(0,0,0,0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--backgroundNeutralDefault);
+    color: var(--text-primary);
+    font-family: var(--body-font-ja);
+    font-size: 16px; font-weight: 400; line-height: 1.5;
+    letter-spacing: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 24px;
+    padding: 0 24px; height: 64px;
+    background: var(--backgroundNeutralDefault);
+    border-bottom: 1px solid var(--border-lines);
+  }
+  .nav-brand {
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none; color: var(--text-primary);
+    flex-shrink: 0;
+  }
+  .nav-logo {
+    background: var(--backgroundAttentionDefault);
+    color: #fff;
+    font-family: var(--uniqlo-pro);
+    font-weight: 700; font-size: 14px;
+    padding: 6px 12px;
+    letter-spacing: 0.025rem;
+  }
+  .nav-brand-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.3;
+  }
+  .nav-tabs { display: flex; gap: 32px; flex: 1; }
+  .nav-tabs a {
+    font-family: var(--body-font-ja);
+    font-size: 16px; font-weight: 400;
+    color: var(--text-secondary);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.025rem;
+  }
+  .nav-tabs a.active { color: var(--text-primary); }
+  .nav-search {
+    background: rgba(255,255,255,0.95);
+    border: 1px solid var(--border-lines);
+    border-radius: 999px;
+    padding: 8px 20px;
+    font-family: var(--body-font-ja);
+    font-size: 14px;
+    color: var(--text-placeholder);
+    width: 280px;
+  }
+  .nav-icons { display: flex; gap: 8px; }
+  .nav-icon {
+    width: 44px; height: 44px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: none; background: transparent;
+    cursor: pointer; color: var(--text-primary);
+    font-size: 18px;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    aspect-ratio: 16 / 6;
+    min-height: 360px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1a3a5c 0%, #2d5a8c 100%);
+    display: flex; align-items: flex-end;
+    color: #fff;
+  }
+  .hero-content {
+    padding: 48px;
+    max-width: 720px;
+  }
+  .hero-headline {
+    font-family: var(--title-font-ja);
+    font-size: 32px; font-weight: 300;
+    line-height: 44.8px;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  .hero-sub {
+    font-size: 17px; font-weight: 300;
+    line-height: 25.5px;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  .hero-price {
+    font-family: var(--uniqlo-pro);
+    font-size: 36px; font-weight: 400;
+    line-height: 43.2px;
+    letter-spacing: 0.36px;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .hero-disclaimer {
+    font-size: 8px; font-weight: 600;
+    line-height: 9.6px;
+    color: rgba(255,255,255,0.85);
+    max-width: 420px;
+  }
+
+  /* SECTIONS */
+  .section { padding: 64px 24px; max-width: 1440px; margin: 0 auto; }
+  .section-eyebrow {
+    font-family: var(--uniqlo-pro);
+    font-size: 12px; font-weight: 500;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: var(--title-font-ja);
+    font-size: 24px; font-weight: 300;
+    line-height: 33.6px;
+    color: var(--text-primary);
+    margin-bottom: 32px;
+  }
+  .section-divider { border: none; border-top: 1px solid var(--border-lines); margin: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .color-swatch { background: #fff; border: 1px solid var(--border-lines); }
+  .color-swatch-block { height: 96px; width: 100%; }
+  .color-swatch-info { padding: 14px; }
+  .color-swatch-name { font-size: 14px; font-weight: 400; margin-bottom: 4px; color: var(--text-primary); line-height: 1.4; }
+  .color-swatch-hex { font-family: var(--uniqlo-pro); font-size: 12px; color: var(--text-secondary); letter-spacing: 0.025rem; }
+  .color-swatch-role { font-size: 12px; color: var(--text-secondary); margin-top: 4px; line-height: 1.5; }
+  .color-group-label {
+    font-family: var(--uniqlo-pro);
+    font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    margin: 32px 0 12px; text-transform: uppercase; letter-spacing: 0.08em;
+  }
+
+  /* COLOR STATES TABLE */
+  .state-table {
+    width: 100%; border-collapse: collapse;
+    margin-top: 16px;
+  }
+  .state-table th, .state-table td {
+    padding: 12px;
+    border: 1px solid var(--border-lines);
+    font-size: 13px;
+    text-align: left;
+  }
+  .state-table th {
+    background: var(--backgroundTertiaryDefault);
+    font-weight: 700;
+    font-family: var(--uniqlo-pro);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 11px;
+  }
+  .state-chip {
+    display: inline-block;
+    width: 24px; height: 24px;
+    border: 1px solid var(--border-lines);
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border-lines); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta {
+    font-family: var(--uniqlo-pro);
+    font-size: 12px; color: var(--text-secondary);
+    margin-top: 12px;
+  }
+  .type-context {
+    display: inline-block;
+    background: var(--backgroundTertiaryDefault); color: var(--text-secondary);
+    font-family: var(--body-font-ja);
+    font-size: 11px; padding: 2px 8px; margin-left: 8px;
+  }
+
+  /* TYPE SCALE */
+  .type-scale-table {
+    width: 100%; border-collapse: collapse;
+    font-family: var(--body-font-ja);
+  }
+  .type-scale-table th, .type-scale-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-lines);
+    text-align: left;
+    font-size: 13px;
+  }
+  .type-scale-table th {
+    font-weight: 700; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    border-bottom: 2px solid var(--text-primary);
+  }
+  .scale-cjk-sample { font-family: var(--title-font-ja); }
+  .scale-latin-sample { font-family: var(--uniqlo-pro); }
+
+  /* PRODUCT GRID */
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 24px 12px; }
+  .product-card {
+    background: #fff;
+    text-decoration: none; color: inherit;
+    transition: opacity 0.2s;
+  }
+  .product-card:hover { opacity: 0.85; }
+  .product-card-image {
+    aspect-ratio: 3 / 4;
+    background: var(--backgroundTertiaryDefault);
+    margin-bottom: 12px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-secondary);
+    font-family: var(--uniqlo-pro);
+    font-size: 12px; letter-spacing: 0.05em;
+  }
+  .product-card-image.gradient-1 { background: linear-gradient(135deg, #c4b5a0 0%, #8a7660 100%); color: #fff; }
+  .product-card-image.gradient-2 { background: linear-gradient(135deg, #2c4356 0%, #1a2533 100%); color: #fff; }
+  .product-card-image.gradient-3 { background: linear-gradient(135deg, #d4d4d4 0%, #a0a0a0 100%); color: #fff; }
+  .product-card-image.gradient-4 { background: linear-gradient(135deg, #f5e6d8 0%, #d4a574 100%); color: #fff; }
+  .product-name {
+    font-size: 13px; font-weight: 400;
+    line-height: 1.4;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .product-meta {
+    font-size: 11px; font-weight: 300;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+  .product-price {
+    font-family: var(--uniqlo-pro);
+    font-size: 17px; font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.025rem;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .product-price.sale {
+    font-size: 19px;
+    color: var(--text-promotional);
+  }
+  .product-price-original {
+    text-decoration: line-through;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-left: 6px;
+  }
+  .product-tag {
+    display: inline-block;
+    font-size: 11px; font-weight: 700;
+    color: var(--text-promotional);
+    margin-bottom: 4px;
+    letter-spacing: 0.025rem;
+  }
+
+  /* CATEGORIES */
+  .category-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px; }
+  .category-item {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    text-decoration: none; color: inherit;
+    padding: 12px;
+    transition: background 0.15s;
+  }
+  .category-item:hover { background: var(--backgroundTertiaryDefault); }
+  .category-icon {
+    width: 64px; height: 64px;
+    background: var(--backgroundTertiaryDefault);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+  }
+  .category-label {
+    font-size: 13px;
+    color: var(--text-primary);
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
+  .button-item { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .button-label {
+    font-family: var(--uniqlo-pro);
+    font-size: 11px; color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .btn-primary {
+    background: var(--backgroundPrimaryDefault); color: #fff;
+    padding: 14px 32px; border: none; border-radius: 0;
+    font-family: var(--body-font-ja); font-size: 14.4px; font-weight: 700;
+    line-height: 14.4px; letter-spacing: 0.144px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-primary:hover { background: var(--backgroundPrimaryHover); }
+  .btn-primary:active { background: var(--backgroundPrimaryPressed); }
+
+  .btn-secondary {
+    background: transparent; color: var(--text-primary);
+    padding: 14px 32px;
+    border: 1px solid var(--text-primary);
+    border-radius: 0;
+    font-family: var(--body-font-ja); font-size: 14.4px; font-weight: 700;
+    line-height: 14.4px; letter-spacing: 0.144px;
+    cursor: pointer;
+  }
+  .btn-secondary:hover { background: var(--backgroundTertiaryDefault); }
+
+  .btn-pill-large {
+    background: #fff; color: var(--text-primary);
+    padding: 16px 32px;
+    border: 1px solid var(--border-lines);
+    border-radius: 999px;
+    font-family: var(--body-font-ja); font-size: 16px; font-weight: 400;
+    cursor: pointer;
+  }
+  .btn-pill-large:hover { background: var(--backgroundTertiaryDefault); }
+
+  .btn-search-pill {
+    background: var(--backgroundTertiaryDefault);
+    border: 1px solid var(--border-lines);
+    border-radius: 999px;
+    padding: 12px 20px;
+    font-family: var(--body-font-ja); font-size: 14px;
+    color: var(--text-placeholder);
+    width: 320px;
+    cursor: text;
+  }
+
+  .btn-icon-md {
+    width: 44px; height: 44px;
+    background: transparent; color: var(--text-primary);
+    border: 1px solid var(--text-primary);
+    border-radius: 0;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .btn-icon-md:hover { background: var(--backgroundTertiaryDefault); }
+
+  /* PRICE SHOWCASE */
+  .price-showcase {
+    background: var(--backgroundTertiaryDefault);
+    padding: 48px 32px;
+    text-align: center;
+  }
+  .price-showcase-big {
+    font-family: var(--uniqlo-pro);
+    font-size: 36px; font-weight: 400;
+    line-height: 43.2px;
+    letter-spacing: 0.36px;
+    color: var(--text-promotional);
+  }
+  .price-showcase-term {
+    font-family: var(--body-font-ja);
+    font-size: 13px; font-weight: 300;
+    line-height: 19.5px;
+    color: var(--text-promotional);
+    margin-top: 8px;
+  }
+
+  /* FORM */
+  .form-grid { display: grid; gap: 20px; max-width: 480px; }
+  .form-field { display: flex; flex-direction: column; gap: 8px; }
+  .form-label {
+    font-family: var(--body-font-ja);
+    font-size: 13px; font-weight: 700; color: var(--text-primary);
+  }
+  .form-required {
+    display: inline-block;
+    background: var(--backgroundAttentionDefault);
+    color: #fff;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 6px;
+    margin-left: 6px;
+    letter-spacing: 0.05em;
+  }
+  .form-input {
+    font-family: var(--body-font-ja);
+    font-size: 16px; line-height: 1.5;
+    padding: 12px 16px;
+    border: 1px solid var(--border-lines);
+    border-radius: 0;
+    color: var(--text-primary);
+    background: #fff;
+  }
+  .form-input:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 2px rgba(0, 93, 181, 0.2);
+  }
+  .form-input.error {
+    border-color: var(--border-error);
+  }
+  .form-error-text {
+    font-family: var(--body-font-ja);
+    font-size: 12px; color: var(--text-error);
+  }
+  .form-help {
+    font-family: var(--body-font-ja);
+    font-size: 12px; color: var(--text-secondary);
+  }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 24px; }
+  .elev-block {
+    background: #fff;
+    padding: 32px;
+    text-align: center;
+    font-family: var(--uniqlo-pro);
+    font-size: 13px; color: var(--text-secondary);
+    border-radius: 0;
+  }
+  .elev-block.flat { border: 1px solid var(--border-lines); }
+  .elev-block.floating { box-shadow: var(--shadow-floating); }
+  .elev-block.soft { box-shadow: var(--shadow-floating-er); }
+  .elev-block.bottom-nav { box-shadow: var(--shadow-bottom-nav); }
+
+  /* LAYOUT */
+  .layout-demo {
+    background: var(--backgroundTertiaryDefault);
+    padding: 20px;
+    margin-bottom: 12px;
+    font-family: var(--body-font-ja);
+    font-size: 14px; color: var(--text-primary);
+  }
+  .layout-demo strong { font-weight: 700; }
+
+  /* FONT NOTE */
+  .font-note {
+    background: var(--backgroundTertiaryDefault);
+    padding: 32px;
+    font-family: var(--body-font-ja);
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-primary);
+  }
+  .font-note strong { font-weight: 700; }
+
+  /* FOOTER */
+  .footer {
+    background: var(--backgroundPrimaryDefault);
+    color: #fff;
+    padding: 48px 32px;
+    font-family: var(--body-font-ja);
+    font-size: 12px;
+    margin-top: 0;
+  }
+  .footer-inner { max-width: 1440px; margin: 0 auto; text-align: center; }
+  .footer a { color: #fff; text-decoration: underline; }
+  .footer a:hover { opacity: 0.7; }
+
+  @media (max-width: 768px) {
+    .nav { padding: 0 16px; height: 56px; gap: 12px; }
+    .nav-tabs { display: none; }
+    .nav-search { display: none; }
+    .hero-content { padding: 24px; }
+    .hero-headline { font-size: 22px; line-height: 1.4; }
+    .section { padding: 40px 16px; }
+    .section-title { font-size: 20px; line-height: 1.4; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">
+    <div class="nav-logo">UNIQLO</div>
+    <div class="nav-brand-text">Design System<br>Preview</div>
+  </a>
+  <div class="nav-tabs">
+    <a href="#" class="active">men</a>
+    <a href="#">women</a>
+    <a href="#">kids</a>
+    <a href="#">baby</a>
+  </div>
+  <input class="nav-search" type="text" placeholder="何をお探しですか？">
+  <div class="nav-icons">
+    <button class="nav-icon" aria-label="Search">⌕</button>
+    <button class="nav-icon" aria-label="Account">◯</button>
+    <button class="nav-icon" aria-label="Favorites">♡</button>
+    <button class="nav-icon" aria-label="Cart">◇</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-headline">ゴールデンウィーク 特価アイテムはこちらから</h1>
+    <p class="hero-sub">一瞬で紫外線カット、着るUVカット。エアリズムUVカットメッシュフルジップパーカ。</p>
+    <div class="hero-price">¥1,990</div>
+    <p class="hero-disclaimer">※ ウィメンズ エアリズムUVカットメッシュフルジップパーカは期間限定価格です。実際の価格・取り扱いは販売店舗・販売チャネルにより異なります。</p>
+  </div>
+</section>
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-eyebrow">Color Tokens</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ee0000"></div><div class="color-swatch-info"><div class="color-swatch-name">Brand Red / Attention</div><div class="color-swatch-hex">#EE0000</div><div class="color-swatch-role">--backgroundAttentionDefault / 価格・SALE</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#005db5"></div><div class="color-swatch-info"><div class="color-swatch-name">Accent Blue</div><div class="color-swatch-hex">#005DB5</div><div class="color-swatch-role">--backgroundAccentDefault / リンク</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000000"></div><div class="color-swatch-info"><div class="color-swatch-name">Primary</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">--backgroundPrimaryDefault</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#00ab0f"></div><div class="color-swatch-info"><div class="color-swatch-name">Positive</div><div class="color-swatch-hex">#00AB0F</div><div class="color-swatch-role">--backgroundPositiveDefault</div></div></div>
+  </div>
+
+  <div class="color-group-label">Background States</div>
+  <table class="state-table">
+    <thead><tr><th></th><th>Default</th><th>Hover</th><th>Pressed</th></tr></thead>
+    <tbody>
+      <tr><th>Primary</th>
+        <td><span class="state-chip" style="background:#000"></span>#000</td>
+        <td><span class="state-chip" style="background:#2a2a2a"></span>#2A2A2A</td>
+        <td><span class="state-chip" style="background:#3e3e3e"></span>#3E3E3E</td>
+      </tr>
+      <tr><th>Secondary</th>
+        <td><span class="state-chip" style="background:#6a6a6a"></span>#6A6A6A</td>
+        <td><span class="state-chip" style="background:#767676"></span>#767676</td>
+        <td><span class="state-chip" style="background:#ababab"></span>#ABABAB</td>
+      </tr>
+      <tr><th>Tertiary</th>
+        <td><span class="state-chip" style="background:#f4f4f4"></span>#F4F4F4</td>
+        <td><span class="state-chip" style="background:#fafafa"></span>#FAFAFA</td>
+        <td><span class="state-chip" style="background:#fafafa"></span>#FAFAFA</td>
+      </tr>
+      <tr><th>Accent (Blue)</th>
+        <td><span class="state-chip" style="background:#005db5"></span>#005DB5</td>
+        <td><span class="state-chip" style="background:#006ed7"></span>#006ED7</td>
+        <td><span class="state-chip" style="background:#007aff"></span>#007AFF</td>
+      </tr>
+      <tr><th>Attention (Red)</th>
+        <td><span class="state-chip" style="background:#e00"></span>#EE0000</td>
+        <td><span class="state-chip" style="background:#ef5555"></span>#EF5555</td>
+        <td><span class="state-chip" style="background:#ff728d"></span>#FF728D</td>
+      </tr>
+      <tr><th>Positive (Green)</th>
+        <td><span class="state-chip" style="background:#00ab0f"></span>#00AB0F</td>
+        <td><span class="state-chip" style="background:#34bc3f"></span>#34BC3F</td>
+        <td><span class="state-chip" style="background:#55c75e"></span>#55C75E</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="color-group-label">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000"></div><div class="color-swatch-info"><div class="color-swatch-name">Body Primary</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">本文・見出し</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#6a6a6a"></div><div class="color-swatch-info"><div class="color-swatch-name">Body Secondary</div><div class="color-swatch-hex">#6A6A6A</div><div class="color-swatch-role">サブテキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#767676"></div><div class="color-swatch-info"><div class="color-swatch-name">Placeholder</div><div class="color-swatch-hex">#767676</div><div class="color-swatch-role">入力プレースホルダー</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ababab"></div><div class="color-swatch-info"><div class="color-swatch-name">Disabled</div><div class="color-swatch-hex">#ABABAB</div><div class="color-swatch-role">無効状態</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dadada"></div><div class="color-swatch-info"><div class="color-swatch-name">Border / Inactive</div><div class="color-swatch-hex">#DADADA</div><div class="color-swatch-role">区切り線・無効背景</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPE SCALE -->
+<section class="section" id="type-scale">
+  <div class="section-eyebrow">Type Scale</div>
+  <h2 class="section-title">CJK / Latin デュアルスケール</h2>
+  <p style="margin-bottom: 24px; color: var(--text-secondary); line-height: 1.7;">UNIQLO の最大の特徴: <strong>CJK と Latin で別々の type-scale</strong>。日本語は同一 px でも欧文より字面が大きく見えるため、CJK は Latin より少し小さい基準値（0.9375rem = 15px）に設定されている。</p>
+  <table class="type-scale-table">
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th>CJK (rem / px)</th>
+        <th>Latin (rem / px)</th>
+        <th>CJK Sample</th>
+        <th>Latin Sample</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>−2</td><td>0.6875rem (11px)</td><td>0.75rem (12px)</td><td class="scale-cjk-sample" style="font-size:11px">価格表示</td><td class="scale-latin-sample" style="font-size:12px">UNIQLO</td></tr>
+      <tr><td>−1</td><td>0.8125rem (13px)</td><td>0.875rem (14px)</td><td class="scale-cjk-sample" style="font-size:13px">価格表示</td><td class="scale-latin-sample" style="font-size:14px">UNIQLO</td></tr>
+      <tr><td><strong>base</strong></td><td><strong>0.9375rem (15px)</strong></td><td><strong>1rem (16px)</strong></td><td class="scale-cjk-sample" style="font-size:15px"><strong>価格表示</strong></td><td class="scale-latin-sample" style="font-size:16px"><strong>UNIQLO</strong></td></tr>
+      <tr><td>+1</td><td>1.0625rem (17px)</td><td>1.125rem (18px)</td><td class="scale-cjk-sample" style="font-size:17px">価格表示</td><td class="scale-latin-sample" style="font-size:18px">UNIQLO</td></tr>
+      <tr><td>+2</td><td>1.1875rem (19px)</td><td>1.25rem (20px)</td><td class="scale-cjk-sample" style="font-size:19px">価格表示</td><td class="scale-latin-sample" style="font-size:20px">UNIQLO</td></tr>
+      <tr><td>+3</td><td>1.375rem (22px)</td><td>1.5rem (24px)</td><td class="scale-cjk-sample" style="font-size:22px">価格表示</td><td class="scale-latin-sample" style="font-size:24px">UNIQLO</td></tr>
+      <tr><td>+4</td><td>1.625rem (26px)</td><td>1.75rem (28px)</td><td class="scale-cjk-sample" style="font-size:26px">価格表示</td><td class="scale-latin-sample" style="font-size:28px">UNIQLO</td></tr>
+      <tr><td>+5</td><td>1.875rem (30px)</td><td>2rem (32px)</td><td class="scale-cjk-sample" style="font-size:30px">価格表示</td><td class="scale-latin-sample" style="font-size:32px">UNIQLO</td></tr>
+      <tr><td>+6</td><td>2.25rem (36px)</td><td>2.25rem (36px)</td><td class="scale-cjk-sample" style="font-size:36px">価格表示</td><td class="scale-latin-sample" style="font-size:36px">UNIQLO</td></tr>
+      <tr><td>+7</td><td>2.5rem (40px)</td><td>2.625rem (42px)</td><td class="scale-cjk-sample" style="font-size:40px">価格表示</td><td class="scale-latin-sample" style="font-size:42px">UNIQLO</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-eyebrow">Typography</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-family: var(--title-font-ja); font-size:32px; font-weight:300; line-height:44.8px;">ゴールデンウィーク 特価アイテムはこちらから</div>
+    <div class="type-meta">Hiragino Pro / 32px / <strong>300 (Light)</strong> / lh: 44.8px (×1.4)<span class="type-context">Hero Headline</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--title-font-ja); font-size:24px; font-weight:300; line-height:33.6px;">LifeWear — シンプルで上質な、毎日の服。</div>
+    <div class="type-meta">Hiragino Pro / 24px / <strong>300 (Light)</strong> / lh: 33.6px (×1.4)<span class="type-context">Section H2 (大)</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--title-font-ja); font-size:20px; font-weight:300; line-height:28px;">カテゴリから探す</div>
+    <div class="type-meta">Hiragino Pro / 20px / <strong>300 (Light)</strong> / lh: 28px (×1.4)<span class="type-context">Section H2 (小)</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--title-font-ja); font-size:17px; font-weight:300; line-height:25.5px;">一瞬で紫外線カット、着るUVカット。</div>
+    <div class="type-meta">Hiragino Pro / 17px / 300 / lh: 25.5px (×1.5)<span class="type-context">Hero Sub</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--body-font-ja); font-size:16px; font-weight:400; line-height:1.5;">本文の標準サイズは 16px / 400 / line-height 1.5。 letter-spacing は normal でベタ組です。</div>
+    <div class="type-meta">Hiragino Pro / 16px / 400 / lh: 1.5<span class="type-context">Body</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--body-font-ja); font-size:14px; font-weight:300; line-height:21px; color: var(--backgroundAccentDefault);">GW期間中は店舗により営業時間が異なります。</div>
+    <div class="type-meta">Hiragino Pro / 14px / 300 / lh: 21px (×1.5) / color: #005DB5<span class="type-context">Notice</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--uniqlo-pro); font-size:36px; font-weight:400; line-height:43.2px; letter-spacing:0.36px; color: var(--text-promotional);">¥1,990</div>
+    <div class="type-meta">UniqloProRegular (Inter) / 36px / 400 / lh: 43.2px / ls: 0.36px / color: #EE0000<span class="type-context">Price</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--body-font-ja); font-size:13px; font-weight:300; line-height:19.5px; color: var(--text-promotional);">4月30日まで期間限定価格</div>
+    <div class="type-meta">Hiragino Pro / 13px / 300 / lh: 19.5px (×1.5) / color: #EE0000<span class="type-context">Sale Term</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--body-font-ja); font-size:8px; font-weight:600; line-height:9.6px; color: var(--text-secondary); max-width: 480px;">※ ウィメンズ エアリズムUVカットメッシュフルジップパーカは期間限定価格です。実際の価格・取り扱いは販売店舗・販売チャネルにより異なります。</div>
+    <div class="type-meta">Hiragino Pro / 8px / 600 / lh: 9.6px (×1.2)<span class="type-context">Disclaimer</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CATEGORY GRID -->
+<section class="section">
+  <div class="section-eyebrow">Categories</div>
+  <h2 class="section-title">カテゴリから探す</h2>
+  <div class="category-grid">
+    <a href="#" class="category-item"><div class="category-icon">👕</div><div class="category-label">トップス</div></a>
+    <a href="#" class="category-item"><div class="category-icon">👖</div><div class="category-label">パンツ</div></a>
+    <a href="#" class="category-item"><div class="category-icon">🧥</div><div class="category-label">アウター</div></a>
+    <a href="#" class="category-item"><div class="category-icon">🥋</div><div class="category-label">インナー</div></a>
+    <a href="#" class="category-item"><div class="category-icon">👟</div><div class="category-label">シューズ</div></a>
+    <a href="#" class="category-item"><div class="category-icon">🧢</div><div class="category-label">帽子・小物</div></a>
+    <a href="#" class="category-item"><div class="category-icon">💼</div><div class="category-label">バッグ</div></a>
+    <a href="#" class="category-item"><div class="category-icon">⌚</div><div class="category-label">アクセサリー</div></a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- PRODUCT GRID -->
+<section class="section" id="products">
+  <div class="section-eyebrow">Product Grid</div>
+  <h2 class="section-title">商品カード</h2>
+  <div class="product-grid">
+    <a href="#" class="product-card">
+      <div class="product-card-image gradient-1">BEIGE</div>
+      <div class="product-tag">期間限定</div>
+      <div class="product-name">エアリズムUVカットメッシュフルジップパーカ</div>
+      <div class="product-meta">ウィメンズ・全6色</div>
+      <div class="product-price sale">¥1,990 <span class="product-price-original">¥2,990</span></div>
+    </a>
+    <a href="#" class="product-card">
+      <div class="product-card-image gradient-2">NAVY</div>
+      <div class="product-name">ヒートテック クルーネックT</div>
+      <div class="product-meta">メンズ・全12色</div>
+      <div class="product-price">¥1,290</div>
+    </a>
+    <a href="#" class="product-card">
+      <div class="product-card-image gradient-3">GRAY</div>
+      <div class="product-tag">SALE</div>
+      <div class="product-name">スマートアンクルパンツ</div>
+      <div class="product-meta">メンズ・全8色</div>
+      <div class="product-price sale">¥2,990 <span class="product-price-original">¥3,990</span></div>
+    </a>
+    <a href="#" class="product-card">
+      <div class="product-card-image gradient-4">CAMEL</div>
+      <div class="product-name">カシミヤクルーネックセーター</div>
+      <div class="product-meta">ウィメンズ・全10色</div>
+      <div class="product-price">¥9,990</div>
+    </a>
+    <a href="#" class="product-card">
+      <div class="product-card-image gradient-1">BEIGE</div>
+      <div class="product-name">ワッフルクルーネックT 長袖</div>
+      <div class="product-meta">メンズ・全5色</div>
+      <div class="product-price">¥1,990</div>
+    </a>
+    <a href="#" class="product-card">
+      <div class="product-card-image gradient-2">NAVY</div>
+      <div class="product-tag">期間限定</div>
+      <div class="product-name">感動パンツ ストレート</div>
+      <div class="product-meta">メンズ・全6色</div>
+      <div class="product-price sale">¥2,990 <span class="product-price-original">¥3,990</span></div>
+    </a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- PRICE SHOWCASE -->
+<section class="section">
+  <div class="section-eyebrow">Price</div>
+  <h2 class="section-title">価格表示の組版</h2>
+  <div class="price-showcase">
+    <div class="price-showcase-big">¥1,990</div>
+    <div class="price-showcase-term">4月30日まで期間限定価格</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-eyebrow">Buttons</div>
+  <h2 class="section-title">ボタン（直角・Pill の二択）</h2>
+
+  <p style="margin-bottom: 32px; color: var(--text-secondary); line-height: 1.7;">UNIQLO のデザインシステムは <strong>border-radius: 0（直角）</strong> が基本ルール。検索バー・大型 CTA のみ <strong>border-radius: 999px（pill）</strong> を別カテゴリとして運用。</p>
+
+  <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; font-family: var(--body-font-ja);">直角コーナー</h3>
+  <div class="button-row" style="margin-bottom: 40px;">
+    <div class="button-item">
+      <button class="btn-primary">カートに追加</button>
+      <span class="button-label">Primary<br>bg #000 / radius 0 / 14.4px 700 / ls 0.144px</span>
+    </div>
+    <div class="button-item">
+      <button class="btn-secondary">お気に入り</button>
+      <span class="button-label">Secondary<br>border #000 / radius 0</span>
+    </div>
+    <div class="button-item">
+      <button class="btn-icon-md">♡</button>
+      <span class="button-label">Icon (44×44)<br>WCAG 準拠タッチターゲット</span>
+    </div>
+  </div>
+
+  <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; font-family: var(--body-font-ja);">Pill 型</h3>
+  <div class="button-row">
+    <div class="button-item">
+      <button class="btn-pill-large">すべてのカテゴリを見る</button>
+      <span class="button-label">Pill Large<br>bg #fff / radius 999px / 16px</span>
+    </div>
+    <div class="button-item">
+      <input type="text" class="btn-search-pill" placeholder="何をお探しですか？" />
+      <span class="button-label">Search Pill<br>radius 999px / placeholder #767676</span>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-eyebrow">Forms</div>
+  <h2 class="section-title">フォーム</h2>
+
+  <form class="form-grid" onsubmit="return false;">
+    <div class="form-field">
+      <label class="form-label">メールアドレス<span class="form-required">必須</span></label>
+      <input type="email" class="form-input" value="example@uniqlo.example" placeholder="example@uniqlo.com">
+      <div class="form-help">登録メールアドレスをご入力ください</div>
+    </div>
+
+    <div class="form-field">
+      <label class="form-label">パスワード<span class="form-required">必須</span></label>
+      <input type="password" class="form-input" value="••••••••" placeholder="8文字以上">
+      <div class="form-help">フォーカスされた状態（border 青 + リング）</div>
+    </div>
+
+    <div class="form-field">
+      <label class="form-label">郵便番号<span class="form-required">必須</span></label>
+      <input type="text" class="form-input error" value="abc">
+      <div class="form-error-text">半角数字でご入力ください</div>
+    </div>
+
+    <div style="margin-top: 8px;">
+      <button class="btn-primary" style="width: 100%;">ログイン</button>
+    </div>
+  </form>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section">
+  <div class="section-eyebrow">Elevation</div>
+  <h2 class="section-title">奥行き表現</h2>
+  <div class="elevation-grid">
+    <div class="elev-block flat">FLAT<br><span style="font-size: 11px;">border 1px</span></div>
+    <div class="elev-block floating">FLOATING<br><span style="font-size: 11px;">0 2px 4px rgba(0,0,0,.2)</span></div>
+    <div class="elev-block soft">SOFT<br><span style="font-size: 11px;">0 0 10px rgba(0,0,0,.1)</span></div>
+    <div class="elev-block bottom-nav">BOTTOM NAV<br><span style="font-size: 11px;">0 0 20px rgba(0,0,0,.1)</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- LAYOUT -->
+<section class="section">
+  <div class="section-eyebrow">Layout</div>
+  <h2 class="section-title">レイアウト原則</h2>
+  <div class="layout-demo"><strong>HEADER:</strong> Sticky / 高さ 56-64px / ロゴ + タブ + Pill 検索 + アイコン群</div>
+  <div class="layout-demo"><strong>HERO:</strong> aspect-ratio 16:6 / 大型ビジュアル + Light 見出し（300）+ 価格（赤・UniqloPro）</div>
+  <div class="layout-demo"><strong>PRODUCT GRID:</strong> minmax(180px, 1fr) / モバイル 2 → デスクトップ 5-6 カラム</div>
+  <div class="layout-demo"><strong>SPACING:</strong> 0.25 / 0.5 / 0.75 / 1 / 1.5 / 2 / 3.25 / 5.5 rem の 8 段階</div>
+  <div class="layout-demo"><strong>GRID GUTTER:</strong> モバイル 1rem / タブレット〜デスクトップ 1.5rem</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FONT NOTE -->
+<section class="section">
+  <div class="section-eyebrow">Font Note</div>
+  <h2 class="section-title">フォントの注記</h2>
+  <div class="font-note">
+    <p style="margin-bottom: 16px;">UNIQLO は独自の <strong>UniqloPro</strong> ファミリ（Light / Regular / Bold）を Web フォントで配信し、価格表示や英字数字に使っています。このプレビューでは <strong>Inter</strong>（Google Fonts）を代替として使用しています。</p>
+    <p style="margin-bottom: 16px;">和文は <strong>「ヒラギノ角ゴ Pro」（ProN ではなく Pro）</strong>を最優先で指定する Apple Japan 系の思想を踏襲しています。フォント stack の最先頭には <strong>Twemoji Country Flags</strong> を置き、国旗絵文字を全プラットフォームで一貫表示させています。</p>
+    <p style="margin-bottom: 16px;">最大の特徴は <strong>CJK と Latin で別々の type-scale</strong> を持つこと。同じ "Step +3" でも CJK は 1.375rem (22px)、Latin は 1.5rem (24px) と異なる値になっています。日本語が同一 px でも欧文より字面が大きく見える視覚特性に対応した本格的な多言語デザインシステム設計です。</p>
+    <p>見出しは <strong>font-weight: 300（Light）</strong> という珍しい設計で、繊細でモードな印象を出しています。一般的な太字見出しに慣れていると違和感がありますが、これが UNIQLO の voice です。</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <p>Generated from <a href="https://www.uniqlo.com/jp/ja/">uniqlo.com/jp/ja</a> DESIGN.md — <a href="https://github.com/kzhrknt/awesome-design-md-jp">awesome-design-md-jp</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
