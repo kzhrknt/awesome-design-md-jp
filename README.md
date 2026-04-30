@@ -60,11 +60,15 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [Mitsubishi Estate](https://www.mec.co.jp/) | Real Estate | [DESIGN.md](design-md/mec/DESIGN.md) | [preview.html](design-md/mec/preview.html) |
 | [Nintendo](https://www.nintendo.com/jp/) | Gaming | [DESIGN.md](design-md/nintendo/DESIGN.md) | [preview.html](design-md/nintendo/preview.html) |
 | [UNIQLO](https://www.uniqlo.com/jp/ja/) | Apparel EC | [DESIGN.md](design-md/uniqlo/DESIGN.md) | [preview.html](design-md/uniqlo/preview.html) |
+| [Hoshino Resorts](https://hoshinoresorts.com/) | Hospitality | [DESIGN.md](design-md/hoshinoresorts/DESIGN.md) | [preview.html](design-md/hoshinoresorts/preview.html) |
+| [Digital Agency](https://www.digital.go.jp/) | Public / Gov | [DESIGN.md](design-md/digital-go/DESIGN.md) | [preview.html](design-md/digital-go/preview.html) |
+| [PayPay](https://paypay.ne.jp/) | Fintech | [DESIGN.md](design-md/paypay/DESIGN.md) | [preview.html](design-md/paypay/preview.html) |
+| [Nikkei](https://www.nikkei.com/) | News / Editorial | [DESIGN.md](design-md/nikkei/DESIGN.md) | [preview.html](design-md/nikkei/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (27 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (31 sites)</a>
 </p>
 
 <table>
@@ -104,6 +108,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>三菱地所</strong><br><img src="design-md/mec/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>Nintendo</strong><br><img src="design-md/nintendo/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>UNIQLO</strong><br><img src="design-md/uniqlo/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>星野リゾート</strong><br><img src="design-md/hoshinoresorts/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>デジタル庁</strong><br><img src="design-md/digital-go/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>PayPay</strong><br><img src="design-md/paypay/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>日経電子版</strong><br><img src="design-md/nikkei/preview-screenshot.png" width="120"></td>
+<td></td>
+<td></td>
 <td></td>
 <td></td>
 <td></td>
@@ -140,7 +152,7 @@ Use [`template/DESIGN.md`](template/DESIGN.md) to create your own Japanese DESIG
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (27 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (31 sites)</a>
 </p>
 
 <table>
@@ -180,6 +192,14 @@ Use [`template/DESIGN.md`](template/DESIGN.md) to create your own Japanese DESIG
 <td align="center"><strong>三菱地所</strong><br><img src="design-md/mec/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>Nintendo</strong><br><img src="design-md/nintendo/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>UNIQLO</strong><br><img src="design-md/uniqlo/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>星野リゾート</strong><br><img src="design-md/hoshinoresorts/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>デジタル庁</strong><br><img src="design-md/digital-go/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>PayPay</strong><br><img src="design-md/paypay/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>日経電子版</strong><br><img src="design-md/nikkei/preview-screenshot.png" width="120"></td>
+<td></td>
+<td></td>
 <td></td>
 <td></td>
 <td></td>

@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: PayPay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Brand === */
+    --paypay-blue: #3895ff;
+    --paypay-blue-visited: #214dd2;
+    --paypay-blue-dark: #1a7ddd;
+    --paypay-red: #f24f4f;
+    --paypay-red-light: #fd5c5c;
+
+    /* === Text === */
+    --text-primary: #242323;
+    --text-sub: #606060;
+
+    /* === Background === */
+    --bg-page: #ffffff;
+    --bg-subtle: #eeeeee;
+    --bg-hero: linear-gradient(135deg, #3895ff 0%, #214dd2 100%);
+
+    /* === Tags === */
+    --tag-kisekae-bg: #d9b0ec;     --tag-kisekae-text: #7921a3;
+    --tag-campaign-bg: #bbcff2;    --tag-campaign-text: #002970;
+    --tag-external-bg: #ffffff;    --tag-external-text: #3895ff;
+    --tag-organizer-bg: #ffffff;   --tag-organizer-text: #fd5c5c;
+
+    /* === Fonts === */
+    --font-body: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3", Meiryo, sans-serif;
+    --font-heading: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3", Meiryo, sans-serif;
+    --font-display-en: Futura, "Trebuchet MS", Arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 16px; font-weight: 400;
+    line-height: 22.4px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; height: 64px;
+    background: var(--bg-page);
+    border-bottom: 1px solid #eaeaea;
+  }
+  .nav-brand {
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none; color: var(--paypay-blue-visited);
+  }
+  .nav-logo {
+    background: var(--paypay-red);
+    color: #fff;
+    font-family: var(--font-display-en); font-weight: 700;
+    font-size: 18px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    letter-spacing: 0.05em;
+  }
+  .nav-brand-text { font-size: 13px; line-height: 1.3; color: var(--text-sub); }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a {
+    font-family: var(--font-body); font-size: 16px; font-weight: 700;
+    color: var(--text-primary); text-decoration: none;
+  }
+  .nav-cta {
+    background: var(--paypay-blue); color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-family: var(--font-heading); font-size: 14px; font-weight: 700;
+  }
+  .nav-cta:hover { background: var(--paypay-blue-dark); }
+
+  /* HERO */
+  .hero {
+    background: var(--bg-hero);
+    padding: 96px 24px 80px;
+    color: #fff;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero h1 {
+    font-family: var(--font-heading);
+    font-size: 55px; font-weight: 700;
+    line-height: 88px;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  .hero p {
+    font-family: var(--font-heading);
+    font-size: 20px; font-weight: 400;
+    line-height: 32px;
+    color: rgba(255,255,255,0.95);
+    max-width: 720px; margin: 0 auto 32px;
+  }
+  .hero-scroll {
+    display: inline-block;
+    font-family: var(--font-display-en);
+    font-size: 16px; font-weight: 700;
+    color: var(--paypay-red);
+    background: #fff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    letter-spacing: 0.1em;
+  }
+
+  /* SECTIONS */
+  .section { padding: 80px 24px; max-width: 1200px; margin: 0 auto; }
+  .section-eyebrow {
+    font-family: var(--font-display-en);
+    font-size: 13px; font-weight: 700;
+    color: var(--paypay-red);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: var(--font-heading);
+    font-size: 42px; font-weight: 700;
+    line-height: 67.2px;
+    color: var(--text-primary);
+    margin-bottom: 32px;
+  }
+  .section-divider { border: none; border-top: 1px solid #eaeaea; margin: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .color-swatch { background: #fff; border: 1px solid #eaeaea; border-radius: 6px; overflow: hidden; }
+  .color-swatch-block { height: 96px; width: 100%; }
+  .color-swatch-info { padding: 14px; }
+  .color-swatch-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; line-height: 1.4; }
+  .color-swatch-hex { font-family: monospace; font-size: 12px; color: var(--text-sub); }
+  .color-swatch-role { font-size: 12px; color: var(--text-sub); margin-top: 4px; line-height: 1.5; }
+  .color-group-label {
+    font-family: var(--font-display-en);
+    font-size: 13px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-sub);
+    margin: 24px 0 12px;
+  }
+
+  /* TAG SHOWCASE */
+  .tag-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .tag-card {
+    background: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 6px;
+    padding: 20px;
+  }
+  .tag-card-spec { font-size: 12px; color: var(--text-sub); margin-top: 12px; font-family: monospace; line-height: 1.6; }
+  .tag {
+    display: inline-block;
+    font-size: 12px; font-weight: 700;
+    line-height: 12px;
+    padding: 6px 10px;
+    border-radius: 4px;
+  }
+  .tag.kisekae   { background: var(--tag-kisekae-bg);   color: var(--tag-kisekae-text); }
+  .tag.campaign  { background: var(--tag-campaign-bg);  color: var(--tag-campaign-text); }
+  .tag.external  { background: var(--tag-external-bg);  color: var(--tag-external-text); border: 1px solid #eaeaea; }
+  .tag.organizer { background: var(--tag-organizer-bg); color: var(--tag-organizer-text); border: 1px solid #eaeaea; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #eaeaea; }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta {
+    font-family: monospace; font-size: 12px; color: var(--text-sub);
+    margin-top: 12px;
+  }
+  .type-context {
+    display: inline-block;
+    background: var(--bg-subtle); color: var(--text-sub);
+    font-family: var(--font-body);
+    font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-left: 8px;
+  }
+
+  /* HIGHLIGHT NUMBER */
+  .number-showcase {
+    background: var(--bg-subtle);
+    padding: 64px 32px;
+    border-radius: 12px;
+    text-align: center;
+  }
+  .number-big {
+    font-family: var(--font-heading);
+    font-size: 35px; font-weight: 700;
+    line-height: 56px;
+    color: var(--paypay-red);
+  }
+  .number-big strong {
+    font-size: 64px;
+    color: var(--paypay-red);
+  }
+
+  /* CAMPAIGN CARDS */
+  .campaign-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .campaign-card {
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: transform 0.2s;
+  }
+  .campaign-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .campaign-card-image {
+    aspect-ratio: 16/10;
+    background: linear-gradient(135deg, #3895ff 0%, #214dd2 100%);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-family: var(--font-display-en);
+    font-weight: 700; font-size: 20px;
+    letter-spacing: 0.05em;
+  }
+  .campaign-card-image.red { background: linear-gradient(135deg, #f24f4f 0%, #cc3030 100%); }
+  .campaign-card-image.purple { background: linear-gradient(135deg, #d9b0ec 0%, #7921a3 100%); }
+  .campaign-card-image.dark { background: linear-gradient(135deg, #242323 0%, #4a4a4a 100%); }
+  .campaign-card-info { padding: 20px; }
+  .campaign-card-tags { margin-bottom: 8px; }
+  .campaign-card-name {
+    font-family: var(--font-body);
+    font-size: 14px; font-weight: 700;
+    line-height: 19.6px;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+  .campaign-card-date {
+    font-size: 12px; line-height: 16.8px;
+    color: var(--text-sub);
+  }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
+  .button-item { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .button-label {
+    font-family: monospace; font-size: 11px; color: var(--text-sub);
+    line-height: 1.6;
+  }
+  .btn-primary {
+    background: var(--paypay-blue); color: #fff;
+    padding: 14px 28px; border: none;
+    border-radius: 6px;
+    font-family: var(--font-heading); font-size: 16px; font-weight: 700;
+    line-height: 25.6px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-primary:hover { background: var(--paypay-blue-dark); }
+  .btn-link {
+    background: transparent; color: var(--paypay-blue);
+    border: none; padding: 14px 0;
+    font-family: var(--font-heading); font-size: 16px; font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .btn-link:hover { color: var(--paypay-blue-dark); }
+  .btn-faq {
+    background: transparent; color: var(--text-primary);
+    border: 1px solid #eaeaea;
+    padding: 16px 20px;
+    width: 100%;
+    text-align: left;
+    border-radius: 6px;
+    font-family: var(--font-heading); font-size: 16px; font-weight: 400;
+    line-height: 25.6px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .btn-faq:hover { border-color: var(--paypay-blue); }
+  .btn-faq::after { content: '＋'; color: var(--paypay-blue); font-weight: 700; }
+
+  /* FAQ LIST */
+  .faq-list { display: flex; flex-direction: column; gap: 12px; max-width: 720px; }
+
+  /* LAYOUT */
+  .layout-demo {
+    background: var(--bg-subtle);
+    padding: 20px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    border-left: 4px solid var(--paypay-blue);
+    font-size: 14px; line-height: 1.7;
+  }
+  .layout-demo strong { color: var(--paypay-blue-visited); }
+
+  /* FONT NOTE */
+  .font-note {
+    background: var(--bg-subtle);
+    padding: 32px;
+    border-radius: 6px;
+    font-size: 14px; line-height: 1.8;
+  }
+  .font-note strong { font-weight: 700; }
+
+  /* FOOTER */
+  .footer {
+    background: var(--text-primary);
+    color: #fff;
+    padding: 48px 24px;
+    text-align: center;
+    margin-top: 80px;
+  }
+  .footer p { font-size: 12px; opacity: 0.8; }
+  .footer a { color: var(--paypay-red-light); text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hero h1 { font-size: 32px; line-height: 1.4; }
+    .hero p { font-size: 16px; line-height: 1.6; }
+    .section-title { font-size: 24px; line-height: 1.4; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">
+    <div class="nav-logo">PayPay</div>
+    <div class="nav-brand-text">Design System Preview</div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#">はじめる</a></li>
+    <li><a href="#">使い方</a></li>
+    <li><a href="#">キャンペーン</a></li>
+    <li><a href="#">ヘルプ</a></li>
+  </ul>
+  <a href="#" class="nav-cta">アプリを開く</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>スマホひとつで<br>かんたんにお支払いはPayPayで</h1>
+  <p>おサイフを持ち歩かなくても、スマホひとつで簡単・スマートにお支払いができる、新しい決済サービスです。</p>
+  <div class="hero-scroll">SCROLL</div>
+</section>
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-eyebrow">Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#3895ff"></div><div class="color-swatch-info"><div class="color-swatch-name">PayPay Blue</div><div class="color-swatch-hex">#3895FF</div><div class="color-swatch-role">プライマリ CTA・リンク</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#214dd2"></div><div class="color-swatch-info"><div class="color-swatch-name">Blue Visited</div><div class="color-swatch-hex">#214DD2</div><div class="color-swatch-role">visited link 等</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f24f4f"></div><div class="color-swatch-info"><div class="color-swatch-name">PayPay Red</div><div class="color-swatch-hex">#F24F4F</div><div class="color-swatch-role">強調テキスト・SCROLL</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fd5c5c"></div><div class="color-swatch-info"><div class="color-swatch-name">Red Accent</div><div class="color-swatch-hex">#FD5C5C</div><div class="color-swatch-role">主催ラベル等</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#242323"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#242323</div><div class="color-swatch-role">本文・見出し（純黒ではない）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#606060"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Sub</div><div class="color-swatch-hex">#606060</div><div class="color-swatch-role">キャプション・日付</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff; border:1px solid #eaeaea"></div><div class="color-swatch-info"><div class="color-swatch-name">Page Bg</div><div class="color-swatch-hex">#FFFFFF</div><div class="color-swatch-role">ページ背景</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#eeeeee"></div><div class="color-swatch-info"><div class="color-swatch-name">Bg Subtle</div><div class="color-swatch-hex">#EEEEEE</div><div class="color-swatch-role">薄背景・サブセクション</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TAG SYSTEM -->
+<section class="section">
+  <div class="section-eyebrow">Tag System</div>
+  <h2 class="section-title">タグカラー体系</h2>
+  <p style="margin-bottom: 32px; color: var(--text-sub); max-width: 720px; line-height: 1.7;">PayPay 特有のタグカラー体系。背景色付き（濃い同系色文字）と白背景（ブランドカラー文字）の二パターンで運用。</p>
+
+  <div class="tag-grid">
+    <div class="tag-card">
+      <span class="tag kisekae">きせかえ</span>
+      <div class="tag-card-spec">bg: #D9B0EC<br>color: #7921A3</div>
+    </div>
+    <div class="tag-card">
+      <span class="tag campaign">キャンペーン</span>
+      <div class="tag-card-spec">bg: #BBCFF2<br>color: #002970</div>
+    </div>
+    <div class="tag-card">
+      <span class="tag external">外部主催</span>
+      <div class="tag-card-spec">bg: #FFFFFF<br>color: #3895FF</div>
+    </div>
+    <div class="tag-card">
+      <span class="tag organizer">PayPay主催</span>
+      <div class="tag-card-spec">bg: #FFFFFF<br>color: #FD5C5C</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-eyebrow">Typography</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-heading); font-size:55px; font-weight:700; line-height:88px;">スマホひとつでかんたんに</div>
+    <div class="type-meta">Noto Sans JP / 55px / 700 / lh: 88px (×1.6)<span class="type-context">Hero H1</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-heading); font-size:42px; font-weight:700; line-height:67.2px;">PayPayってどんなサービス？</div>
+    <div class="type-meta">Noto Sans JP / 42px / 700 / lh: 67.2px (×1.6)<span class="type-context">H2 Major</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-heading); font-size:36px; font-weight:700; line-height:57.6px;">本人確認でPayPayをもっと便利に！</div>
+    <div class="type-meta">Noto Sans JP / 36px / 700 / lh: 57.6px (×1.6)<span class="type-context">H2 Section</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-heading); font-size:35px; font-weight:700; line-height:56px; color: var(--paypay-red);">登録ユーザー ついに7,300万人到達！</div>
+    <div class="type-meta">Noto Sans JP / 35px / 700 / lh: 56px / color: #F24F4F<span class="type-context">H3 Highlight (Red)</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-heading); font-size:20px; font-weight:400; line-height:32px;">おサイフを持ち歩かなくても、スマホひとつで簡単・スマートにお支払いができる、新しい決済サービスです。</div>
+    <div class="type-meta">Noto Sans JP / 20px / 400 / lh: 32px (×1.6)<span class="type-context">Body Large</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-body); font-size:16px; font-weight:400; line-height:22.4px;">PayPayは、QRコードや バーコードを使ってお支払いができる決済サービスです。本文は line-height ×1.4 (22.4 / 16) とタイト目に組まれています。</div>
+    <div class="type-meta">Hiragino ProN / 16px / 400 / lh: 22.4px (×1.4)<span class="type-context">Body</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-body); font-size:12px; font-weight:400; line-height:16.8px; color: var(--text-sub);">2026/4/24 10:00 〜 2026/5/31 23:59</div>
+    <div class="type-meta">Hiragino ProN / 12px / 400 / lh: 16.8px (×1.4) / color: #606060<span class="type-context">Caption</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-family: var(--font-display-en); font-size:16px; font-weight:700; line-height:25.6px; color: var(--paypay-red); letter-spacing: 0.1em;">SCROLL</div>
+    <div class="type-meta">Futura / 16px / 700 / color: #F24F4F<span class="type-context">Display EN</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- NUMBER HIGHLIGHT -->
+<section class="section">
+  <div class="section-eyebrow">Highlight</div>
+  <h2 class="section-title">数字の強調</h2>
+  <div class="number-showcase">
+    <div class="number-big">登録ユーザー ついに<br><strong>7,300万人</strong>到達！</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CAMPAIGNS -->
+<section class="section">
+  <div class="section-eyebrow">Campaigns</div>
+  <h2 class="section-title">キャンペーン</h2>
+  <div class="campaign-grid">
+    <a href="#" class="campaign-card">
+      <div class="campaign-card-image red">CAMPAIGN</div>
+      <div class="campaign-card-info">
+        <div class="campaign-card-tags">
+          <span class="tag organizer">PayPay主催</span>
+          <span class="tag campaign">キャンペーン</span>
+        </div>
+        <div class="campaign-card-name">最大10%戻ってくる！スーパーポイント祭り</div>
+        <div class="campaign-card-date">2026/4/24 10:00 〜 2026/5/31 23:59</div>
+      </div>
+    </a>
+    <a href="#" class="campaign-card">
+      <div class="campaign-card-image purple">KISEKAE</div>
+      <div class="campaign-card-info">
+        <div class="campaign-card-tags">
+          <span class="tag kisekae">きせかえ</span>
+        </div>
+        <div class="campaign-card-name">『崩壊：スターレイル』カードきせかえ</div>
+        <div class="campaign-card-date">2026/4/24 10:00 〜 限定配布</div>
+      </div>
+    </a>
+    <a href="#" class="campaign-card">
+      <div class="campaign-card-image">EXTERNAL</div>
+      <div class="campaign-card-info">
+        <div class="campaign-card-tags">
+          <span class="tag external">外部主催</span>
+        </div>
+        <div class="campaign-card-name">マクドナルドでPayPay利用で 5%戻ってくる</div>
+        <div class="campaign-card-date">2026/4/15 〜 5/15</div>
+      </div>
+    </a>
+    <a href="#" class="campaign-card">
+      <div class="campaign-card-image dark">EVENT</div>
+      <div class="campaign-card-info">
+        <div class="campaign-card-tags">
+          <span class="tag organizer">PayPay主催</span>
+        </div>
+        <div class="campaign-card-name">本人確認完了で500ポイントプレゼント</div>
+        <div class="campaign-card-date">2026/4/1 〜 6/30</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section">
+  <div class="section-eyebrow">Buttons</div>
+  <h2 class="section-title">ボタン</h2>
+  <div class="button-row">
+    <div class="button-item">
+      <button class="btn-primary">アプリをダウンロード</button>
+      <span class="button-label">Primary CTA<br>bg #3895FF / radius 6px / 16px 700</span>
+    </div>
+    <div class="button-item">
+      <button class="btn-link">使えるお店をみる ＞</button>
+      <span class="button-label">Inline Link<br>color #3895FF / 下線なし</span>
+    </div>
+  </div>
+
+  <h3 style="font-family: var(--font-heading); font-size: 28px; font-weight: 700; line-height: 1.4; color: var(--text-primary); margin: 64px 0 24px;">FAQ アコーディオン</h3>
+  <div class="faq-list">
+    <button class="btn-faq">アプリの登録は無料ですか？</button>
+    <button class="btn-faq">本人確認は必要ですか？</button>
+    <button class="btn-faq">クレジットカードは使えますか？</button>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- LAYOUT -->
+<section class="section">
+  <div class="section-eyebrow">Layout</div>
+  <h2 class="section-title">レイアウト原則</h2>
+  <div class="layout-demo"><strong>HERO:</strong> 大型グラデーション + Noto Sans JP 55px 700 / lh ×1.6 / 中央寄せ</div>
+  <div class="layout-demo"><strong>FONT SWITCHING:</strong> body は Hiragino ProN、見出しは Noto Sans JP に切り替える二段構成</div>
+  <div class="layout-demo"><strong>BUTTON RADIUS:</strong> 6px が PayPay 共通（UNIQLO の 0、Nintendo の 6 とは異なる中間値）</div>
+  <div class="layout-demo"><strong>HEADING WEIGHT:</strong> 全見出し 700 統一 / サイズと色（黒 vs 赤）でメリハリ</div>
+  <div class="layout-demo"><strong>LH RATIO:</strong> 見出し ×1.6 / 本文 ×1.4 / リード ×1.6〜2.0</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FONT NOTE -->
+<section class="section">
+  <div class="section-eyebrow">Font Note</div>
+  <h2 class="section-title">フォントの注記</h2>
+  <div class="font-note">
+    <p style="margin-bottom: 16px;">PayPay は和文の本文に <strong>「Hiragino Kaku Gothic ProN」（ProN — JIS90 字形）</strong> を最先頭に置きます。UNIQLO・Apple Japan の <strong>Pro</strong>（JIS78 字形）とは別物で、字形の好みが異なります。</p>
+    <p style="margin-bottom: 16px;">主要見出し（H1〜H3）では <strong>Noto Sans JP</strong> に切り替え、ヒラギノを後段に置く二段構成。見出しウェイトは <strong>全 700 統一</strong>で、サイズとカラー（黒 #242323 vs 赤 #F24F4F）でメリハリを付けます。</p>
+    <p style="margin-bottom: 16px;">"SCROLL" 等の Display 用英字に <strong>Futura</strong> が指定されているのも特徴的です。</p>
+    <p>PayPay 独自の <strong>CSS Custom Properties は事実上存在しません</strong>。<code>:root</code> に観測される 47 個の <code>--wp--preset-*</code> は WordPress Gutenberg のデフォルト値であり、PayPay のデザイントークンではない点に注意。デザイントークンは BEM 形式の class 名（<code>mainButton__button</code>, <code>campaign__title</code> 等）に直接エンコードされています。</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>Generated from <a href="https://paypay.ne.jp/">paypay.ne.jp</a> DESIGN.md — <a href="https://github.com/kzhrknt/awesome-design-md-jp">awesome-design-md-jp</a></p>
+</footer>
+
+</body>
+</html>

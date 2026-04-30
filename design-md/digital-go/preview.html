@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Digital Agency Japan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Brand === */
+    --accent-navy: #00118f;
+    --accent-bg: #d9e6ff;
+
+    /* === Text === */
+    --text-primary: #333333;
+    --text-sub: #4d4d4d;
+
+    /* === Surface === */
+    --bg: #ffffff;
+    --border-line: #dddddd;
+    --header-block-size: 5rem;
+
+    /* === Fonts === */
+    --font-base: "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-base);
+    font-size: 17px; font-weight: 400;
+    line-height: 28.9px;
+    letter-spacing: 0.34px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* SKIP LINK */
+  .skip-link {
+    position: absolute; top: -40px; left: 0;
+    background: var(--accent-navy); color: #fff;
+    padding: 12px 20px;
+    text-decoration: underline;
+    font-size: 17px; font-weight: 700;
+    letter-spacing: 0.34px;
+    z-index: 1000;
+    border-radius: 4px;
+  }
+  .skip-link:focus { top: 8px; left: 8px; }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 24px;
+    padding: 0 32px; height: var(--header-block-size);
+    background: var(--bg);
+    border-bottom: 1px solid var(--border-line);
+  }
+  .nav-brand {
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none; color: var(--text-primary);
+    flex-shrink: 0;
+  }
+  .nav-logo {
+    width: 44px; height: 44px;
+    background: var(--accent-navy); color: #fff;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 18px;
+  }
+  .nav-brand-text { font-size: 17px; line-height: 1.3; letter-spacing: 0.34px; }
+  .nav-brand-text small { display: block; font-size: 13px; color: var(--text-sub); margin-top: 2px; }
+  .nav-items { display: flex; gap: 4px; flex: 1; flex-wrap: wrap; }
+  .nav-item {
+    font-family: var(--font-base);
+    font-size: 14px; font-weight: 400;
+    line-height: 14px;
+    letter-spacing: 0.28px;
+    color: var(--text-primary); text-decoration: none;
+    padding: 14px 18px;
+    border-radius: 9999px;
+    transition: background 0.15s;
+  }
+  .nav-item:hover { background: #f0f0f0; }
+  .nav-item.active {
+    font-weight: 800;
+    background: var(--accent-bg);
+    color: var(--accent-navy);
+  }
+  .lang-selector { display: flex; gap: 0; border: 1px solid var(--accent-navy); border-radius: 9999px; overflow: hidden; }
+  .lang-link {
+    font-size: 14px; font-weight: 400;
+    line-height: 20px; letter-spacing: 0.28px;
+    padding: 8px 16px;
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+  .lang-link.active { background: var(--accent-bg); color: var(--accent-navy); font-weight: 700; }
+
+  /* PAGE TITLE */
+  .page-hero {
+    padding: 96px 32px 64px;
+    border-bottom: 1px solid var(--border-line);
+  }
+  .page-hero-inner { max-width: 1200px; margin: 0 auto; }
+  .page-hero h1 {
+    font-size: 45px; font-weight: 700;
+    line-height: 63px;
+    letter-spacing: 0.45px;
+    color: var(--text-primary);
+  }
+  .page-hero p {
+    font-size: 17px; color: var(--text-sub);
+    line-height: 28.9px;
+    letter-spacing: 0.34px;
+    margin-top: 16px;
+    max-width: 720px;
+  }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 1200px; margin: 0 auto; }
+  .section-eyebrow {
+    font-size: 14px; font-weight: 700; color: var(--accent-navy);
+    letter-spacing: 0.28px;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 32px; font-weight: 700;
+    line-height: 48px; letter-spacing: 0.32px;
+    color: var(--text-primary);
+    margin-bottom: 32px;
+  }
+  .section-divider { border: none; border-top: 1px solid var(--border-line); margin: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .color-swatch { background: #fff; border: 1px solid var(--border-line); border-radius: 4px; overflow: hidden; }
+  .color-swatch-block { height: 96px; width: 100%; }
+  .color-swatch-info { padding: 14px; }
+  .color-swatch-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; line-height: 1.4; letter-spacing: 0.28px; }
+  .color-swatch-hex { font-family: monospace; font-size: 12px; color: var(--text-sub); }
+  .color-swatch-role { font-size: 13px; color: var(--text-sub); margin-top: 6px; line-height: 1.6; letter-spacing: 0.26px; }
+
+  /* TYPOGRAPHY SAMPLES */
+  .type-sample { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border-line); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta {
+    font-family: monospace;
+    font-size: 12px; color: var(--text-sub);
+    margin-top: 12px;
+  }
+  .type-context {
+    display: inline-block;
+    background: var(--accent-bg); color: var(--accent-navy);
+    font-family: var(--font-base);
+    font-size: 11px; padding: 3px 10px; border-radius: 9999px; margin-left: 8px;
+    font-weight: 700;
+  }
+
+  /* LETTER-SPACING TABLE */
+  .ls-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 15px;
+    letter-spacing: 0.30px;
+  }
+  .ls-table th, .ls-table td {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--border-line);
+    text-align: left;
+  }
+  .ls-table th {
+    font-weight: 700; font-size: 13px;
+    color: var(--accent-navy);
+    letter-spacing: 0.26px;
+    border-bottom: 2px solid var(--accent-navy);
+  }
+  .ls-table td.em { color: var(--accent-navy); font-weight: 700; }
+
+  /* INFO CARDS */
+  .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+  .info-card {
+    background: #fff;
+    border: 1px solid var(--border-line);
+    border-radius: 4px;
+    padding: 24px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s;
+  }
+  .info-card:hover { border-color: var(--accent-navy); }
+  .info-card-meta {
+    display: inline-block;
+    font-size: 13px; font-weight: 700;
+    color: var(--accent-navy);
+    letter-spacing: 0.26px;
+    margin-bottom: 12px;
+  }
+  .info-card-title {
+    font-size: 17px; font-weight: 400;
+    line-height: 28.9px; letter-spacing: 0.34px;
+    color: var(--text-primary);
+  }
+
+  /* LINK SHOWCASE */
+  .link-showcase {
+    background: #f8f8f8;
+    padding: 32px;
+    border-radius: 4px;
+    line-height: 2;
+    font-size: 17px;
+    letter-spacing: 0.34px;
+  }
+  .link-showcase a {
+    color: var(--accent-navy);
+    text-decoration: underline;
+    font-weight: 700;
+  }
+
+  /* ARTICLE-LIKE BODY */
+  .article {
+    max-width: 720px;
+    margin: 0 auto;
+    font-size: 17px;
+    letter-spacing: 0.34px;
+    line-height: 28.9px;
+  }
+  .article h2 {
+    font-size: 28px; font-weight: 700;
+    line-height: 42px; letter-spacing: 0.28px;
+    margin: 48px 0 24px;
+  }
+  .article h3 {
+    font-size: 22px; font-weight: 700;
+    line-height: 33px; letter-spacing: 0.44px;
+    margin: 32px 0 16px;
+  }
+  .article p { margin-bottom: 24px; }
+  .article ul { margin-left: 28px; margin-bottom: 24px; }
+  .article li { margin-bottom: 8px; }
+
+  /* PHONE / FOOTER INFO */
+  .footer {
+    padding: 48px 32px;
+    background: #f4f4f4;
+    border-top: 4px solid var(--accent-navy);
+    margin-top: 64px;
+  }
+  .footer-inner { max-width: 1200px; margin: 0 auto; }
+  .footer-phone {
+    font-size: 14px; font-weight: 400;
+    line-height: 14px; letter-spacing: 0.28px;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+  .footer-copy {
+    font-size: 13px; color: var(--text-sub);
+    letter-spacing: 0.26px;
+    margin-top: 24px;
+  }
+
+  /* LAYOUT DEMO */
+  .layout-demo {
+    background: #f8f8f8;
+    padding: 20px;
+    margin-bottom: 12px;
+    font-size: 14px; line-height: 1.7;
+    letter-spacing: 0.28px;
+    border-left: 4px solid var(--accent-navy);
+    border-radius: 0 4px 4px 0;
+  }
+  .layout-demo strong { color: var(--accent-navy); }
+
+  /* FONT NOTE */
+  .font-note {
+    background: #f4f4f4;
+    padding: 32px;
+    border-radius: 4px;
+    font-size: 15px;
+    line-height: 1.8;
+    letter-spacing: 0.30px;
+  }
+  .font-note strong { font-weight: 700; color: var(--accent-navy); }
+
+  @media (max-width: 768px) {
+    .nav { padding: 0 16px; height: auto; min-height: 64px; flex-wrap: wrap; gap: 12px; }
+    .nav-items { display: none; }
+    .page-hero h1 { font-size: 28px; line-height: 1.4; }
+    .section-title { font-size: 22px; line-height: 1.5; }
+  }
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">本文へ移動</a>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">
+    <div class="nav-logo">D</div>
+    <div class="nav-brand-text">
+      デジタル庁
+      <small>Digital Agency — Design System Preview</small>
+    </div>
+  </a>
+  <div class="nav-items">
+    <a href="#" class="nav-item active">ホーム</a>
+    <a href="#" class="nav-item">一般の方</a>
+    <a href="#" class="nav-item">事業者の方</a>
+    <a href="#" class="nav-item">公共の方</a>
+    <a href="#" class="nav-item">採用情報</a>
+  </div>
+  <div class="lang-selector">
+    <a href="#" class="lang-link active">日本語</a>
+    <a href="#" class="lang-link">English</a>
+  </div>
+</nav>
+
+<main id="main">
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <h1>政策とサービス</h1>
+    <p>デジタル庁では、これから日本が目指すデジタル社会の姿と、それを実現するための政策・サービスをわかりやすく公開しています。</p>
+  </div>
+</section>
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-eyebrow">Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+  <p style="margin-bottom: 32px; color: var(--text-sub); max-width: 720px;">公共サービスとして極めてミニマルなパレット。装飾色を持たず、リンク・focus・選択状態をすべて <strong style="color: var(--accent-navy);">#00118F</strong> 一色に統一しています。</p>
+
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#00118f"></div><div class="color-swatch-info"><div class="color-swatch-name">Accent Navy</div><div class="color-swatch-hex">#00118F</div><div class="color-swatch-role">リンク・focus・選択状態（一色統一）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d9e6ff"></div><div class="color-swatch-info"><div class="color-swatch-name">Accent Bg</div><div class="color-swatch-hex">#D9E6FF</div><div class="color-swatch-role">選択中の背景チップ</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#333"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#333333</div><div class="color-swatch-role">本文・見出し</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#4d4d4d"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Sub</div><div class="color-swatch-hex">#4D4D4D</div><div class="color-swatch-role">補足テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff; border: 1px solid var(--border-line)"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#FFFFFF</div><div class="color-swatch-role">ページ背景</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- LETTER SPACING PHILOSOPHY -->
+<section class="section">
+  <div class="section-eyebrow">Letter-spacing 哲学</div>
+  <h2 class="section-title">font-size × 0.02em の一貫トラッキング</h2>
+  <p style="margin-bottom: 24px; color: var(--text-sub); max-width: 720px;">デジタル庁デザインの最大の特徴は、すべての要素に <strong style="color: var(--accent-navy);">0.02em の一貫した letter-spacing</strong> を適用している点です。大型見出しは em 換算で 0.01em（半分）に縮小されます。</p>
+
+  <table class="ls-table">
+    <thead>
+      <tr><th>font-size</th><th>letter-spacing (px)</th><th>em 換算</th><th>用途</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>14px</td><td>0.28px</td><td class="em">0.020em</td><td>ナビ・キャプション</td></tr>
+      <tr><td>16px</td><td>0.32px</td><td class="em">0.020em</td><td>説明文・言語切替</td></tr>
+      <tr><td>17px</td><td>0.34px</td><td class="em">0.020em</td><td>本文（base）</td></tr>
+      <tr><td>18px</td><td>0.36px</td><td class="em">0.020em</td><td>H3 (alt)</td></tr>
+      <tr><td>22px</td><td>0.44px</td><td class="em">0.020em</td><td>H4</td></tr>
+      <tr><td>28px</td><td>0.28px</td><td class="em">0.010em ※</td><td>H2 / H3</td></tr>
+      <tr><td>32px</td><td>0.32px</td><td class="em">0.010em ※</td><td>H2 (Section Major)</td></tr>
+      <tr><td>45px</td><td>0.45px</td><td class="em">0.010em ※</td><td>H1 (Page Title)</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top: 16px; font-size: 14px; color: var(--text-sub); letter-spacing: 0.28px;">※ 大型見出しは em 換算で 0.01em（半分）に縮小。サイズが上がるほど相対トラッキングを抑える。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-eyebrow">Typography</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-size:45px; font-weight:700; line-height:63px; letter-spacing:0.45px; color: var(--text-primary);">政策とサービス</div>
+    <div class="type-meta">Noto Sans JP / 45px / 700 / lh: 63px (×1.4) / ls: 0.45px (≈0.01em)<span class="type-context">H1 Page Title</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-size:32px; font-weight:700; line-height:48px; letter-spacing:0.32px;">デジタル社会の実現に向けた重点計画</div>
+    <div class="type-meta">Noto Sans JP / 32px / 700 / lh: 48px (×1.5) / ls: 0.32px<span class="type-context">H2 Section Major</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-size:28px; font-weight:700; line-height:42px; letter-spacing:0.28px;">重要なお知らせ</div>
+    <div class="type-meta">Noto Sans JP / 28px / 700 / lh: 42px (×1.5) / ls: 0.28px<span class="type-context">H2</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-size:22px; font-weight:700; line-height:33px; letter-spacing:0.44px;">マイナンバー（個人番号）制度・マイナンバーカード</div>
+    <div class="type-meta">Noto Sans JP / 22px / 700 / lh: 33px (×1.5) / ls: 0.44px<span class="type-context">H4</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-size:17px; font-weight:400; line-height:28.9px; letter-spacing:0.34px;">デジタル庁は、デジタル社会形成の司令塔として、未来志向のDXを大胆に推進する役割を担います。本文 <strong>17px</strong>（標準より +1px 大）でアクセシビリティを確保し、letter-spacing 0.34px (≈0.02em) で一貫した字間を保ちます。</div>
+    <div class="type-meta">Noto Sans JP / 17px / 400 / lh: 28.9px (×1.7) / ls: 0.34px<span class="type-context">Body</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:14px; letter-spacing:0.28px;">電話番号：(03)4477-6775（代表）</div>
+    <div class="type-meta">Noto Sans JP / 14px / 400 / lh: 14px / ls: 0.28px<span class="type-context">Footer Info</span></div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:800; line-height:14px; letter-spacing:0.28px; background: var(--accent-bg); color: var(--accent-navy); display: inline-block; padding: 12px 24px; border-radius: 9999px;">ホーム</div>
+    <div class="type-meta">Noto Sans JP / 14px / **800 (ExtraBold)** / pill / bg #D9E6FF / color #00118F<span class="type-context">Active Nav Item</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- INFO CARDS (NEWS) -->
+<section class="section">
+  <div class="section-eyebrow">News</div>
+  <h2 class="section-title">新着・更新</h2>
+
+  <div class="info-grid">
+    <a href="#" class="info-card">
+      <div class="info-card-meta">2026.04.30 — お知らせ</div>
+      <div class="info-card-title">令和7年度GビズIDの民間サービスでの活用事例等の募集及び実施に関するお知らせ</div>
+    </a>
+    <a href="#" class="info-card">
+      <div class="info-card-meta">2026.04.28 — 政策</div>
+      <div class="info-card-title">マイナンバーカードの健康保険証利用について、対応医療機関を拡大しました</div>
+    </a>
+    <a href="#" class="info-card">
+      <div class="info-card-meta">2026.04.25 — 採用</div>
+      <div class="info-card-title">デジタル庁 民間専門人材の募集（任期付職員・常勤）について</div>
+    </a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- LINK SHOWCASE -->
+<section class="section">
+  <div class="section-eyebrow">Links</div>
+  <h2 class="section-title">リンク色は #00118F に統一</h2>
+  <div class="link-showcase">
+    本サービスのご利用にあたっては、<a href="#">利用規約</a>、<a href="#">プライバシーポリシー</a> および <a href="#">アクセシビリティ方針</a> をご確認ください。お問い合わせは <a href="#">こちら</a> から、各種申請については <a href="#">マイナンバー総合サイト</a> をご利用いただけます。
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ARTICLE -->
+<section class="section">
+  <div class="section-eyebrow">Article Sample</div>
+  <h2 class="section-title">本文の組版例</h2>
+  <article class="article">
+    <p>デジタル庁のミッションは「<strong style="color: var(--accent-navy);">誰一人取り残されない、人に優しいデジタル化を。</strong>」です。本文サイズは標準より +1px 大きい 17px に設定され、line-height 1.7、letter-spacing 0.34px (≈0.02em) で組まれています。</p>
+
+    <h2>3つの取り組み柱</h2>
+    <p>デジタル庁では、以下の3つを柱として取り組みを進めています。</p>
+    <ul>
+      <li>デジタル社会の実現に向けた重点計画</li>
+      <li>マイナンバー制度・マイナンバーカードの利活用</li>
+      <li>政府情報システムの整備・運用</li>
+    </ul>
+
+    <h3>アクセシビリティへの配慮</h3>
+    <p>本サイトは <strong>WCAG 2.2 レベル AA 準拠</strong> を目標に設計されています。スキップリンク、適切なコントラスト比、キーボード操作可能な UI、構造化されたランドマーク等、全ての利用者がアクセスできる設計になっています。</p>
+  </article>
+</section>
+
+<hr class="section-divider">
+
+<!-- LAYOUT -->
+<section class="section">
+  <div class="section-eyebrow">Layout</div>
+  <h2 class="section-title">レイアウト原則</h2>
+  <div class="layout-demo"><strong>HEADER:</strong> 高さ 5rem (80px) — <code>--header-block-size: 5rem</code> / Sticky</div>
+  <div class="layout-demo"><strong>NAV ITEM:</strong> pill 型 (border-radius 9999px) / 現在ページは bg #D9E6FF + font-weight 800</div>
+  <div class="layout-demo"><strong>SHADOW:</strong> 完全フラット — box-shadow を使わない</div>
+  <div class="layout-demo"><strong>CONTAINER:</strong> max-width 1200px / 中央寄せ / 大きな縦余白</div>
+  <div class="layout-demo"><strong>SKIP LINK:</strong> tab フォーカス時のみ表示。WCAG 必須</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FONT NOTE -->
+<section class="section">
+  <div class="section-eyebrow">Font Note</div>
+  <h2 class="section-title">フォントの注記</h2>
+  <div class="font-note">
+    <p style="margin-bottom: 16px;">デジタル庁のサイトは <strong>Noto Sans JP</strong> を最先頭に置く明確なフォントスタックを採用しています。続いて <code>-apple-system, BlinkMacSystemFont, "Segoe UI"</code> という OS のシステム UI フォントへフォールバック。</p>
+    <p style="margin-bottom: 16px;">本文サイズが <strong>17px</strong>（標準 16px より +1px 大）であること、letter-spacing が全要素 <strong>0.02em の一貫値</strong>であること、リンク色が <strong>#00118F 一色に統一</strong>されていることが、公共サービスデザインのリファレンスとして特に参考になります。</p>
+    <p>純黒 #000 は使わず <strong>#333</strong>、行間は <strong>1.7</strong>、shadow は使わず完全フラット。これらの選択は明確に「<strong>誰一人取り残さない</strong>」というミッションに沿った、アクセシビリティ最優先の設計判断です。</p>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="footer-phone">電話番号：(03)4477-6775（代表）</p>
+    <p class="footer-phone">〒102-0094 東京都千代田区紀尾井町1-3 東京ガーデンテラス紀尾井町</p>
+    <p class="footer-copy">Generated from <a href="https://www.digital.go.jp/" style="color: var(--accent-navy);">digital.go.jp</a> DESIGN.md — <a href="https://github.com/kzhrknt/awesome-design-md-jp" style="color: var(--accent-navy);">awesome-design-md-jp</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
