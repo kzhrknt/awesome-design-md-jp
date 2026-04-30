@@ -5,13 +5,14 @@
 > デジタル庁公式ウェブサイト + 公式デザインシステム（Digital Agency Design System / DADS）。
 
 > **公式仕様情報**
-> - Storybook: <https://design.digital.go.jp/dads/html/>
-> - GitHub: <https://github.com/digital-go-jp/design-system-example-components-html>
+> - **Foundations ドキュメント**: <https://design.digital.go.jp/dads/foundations/>
+> - **Storybook（HTML 版）**: <https://design.digital.go.jp/dads/html/>
+> - **GitHub**: <https://github.com/digital-go-jp/design-system-example-components-html>
 > - License: MIT
 > - 設計トークンパッケージ: `@digital-go-jp/design-tokens`
 > - CSS class 規約: `dads-` プレフィックス + BEM + data attributes
 >
-> 本 DESIGN.md は **公式リポジトリの実装トークンをベースに**作成されています。実サイト digital.go.jp は本デザインシステムを部分採用しているため、観測値とトークン仕様で異なる場合は **公式仕様を優先**してください。
+> 本 DESIGN.md は **公式 Foundations ドキュメント + 実装リポジトリのトークン**をベースに作成されています。実サイト digital.go.jp は本デザインシステムを部分採用しているため、観測値とトークン仕様で異なる場合は **公式仕様を優先**してください。
 
 ---
 
@@ -21,15 +22,59 @@
 - **密度**: 余裕のある縦余白、本文の line-height 1.7 が標準。タップターゲット最小 44×44px を全コンポーネントで担保
 - **キーワード**: Accessible, Public Service, Token-Driven, Forced-Colors-Aware, Methodical
 
+### 公式が明示する 8 つの Foundations
+
+公式 Foundations ページが明示するカテゴリ:
+
+1. **Color**（カラー）
+2. **Typography**（タイポグラフィ）
+3. **Icon**（アイコン）— 文書構造中の位置による 4 種類定義
+4. **Layout**（レイアウト）— **breakpoint は 768px 1 点のみ**
+5. **Link Text**（リンクテキスト）— 5 状態の state machine
+6. **Spacing**（余白）— 3〜5 値の modular scale
+7. **Corner Shapes**（角の形状）— 5 段階のスケール
+8. **Elevation**（エレベーション）— 8 段階の box-shadow
+
+### アクセシビリティ準拠基準
+
+- **JIS X 8341-3:2016**（WCAG 2.0 相当）
+- **WCAG 2.2** — WAIC（ウェブアクセシビリティ基盤委員会）日本語訳優先
+- テキストコントラスト: **4.5:1 以上**
+- 非テキスト UI コントラスト: **3:1 以上**
+- タッチターゲット: **44×44 CSS px 以上**
+- 最小フォントサイズ: **14px 未満は原則使用禁止**
+
 ---
 
 ## 2. Color Palette & Roles
+
+### 概念層（公式 Foundations が定義する 5 役割）
+
+公式 Color ページは以下の **5 つの役割カテゴリ**を提示しています（リポジトリの Primitive/Neutral/Semantic とは別の概念モデル）:
+
+| Category | Purpose | 含まれる色 |
+|----------|---------|----------|
+| **Key Colors** | ブランドの基盤 | Primary / Secondary / Tertiary / Background |
+| **Common Colors** | 中立色（テキスト・罫線） | White〜Black の 14 段階グレースケール |
+| **Functional Colors** | インタラクティブ状態 | Hover / Active バリアント |
+| **Accent Colors** | 強調・ハイライト | 慎重に使用 |
+| **Semantic Colors** | 意味付け | Success / Error / Warning（各 1/2 の 2 段階） |
+
+### 実装層（リポジトリの 3 階層トークン）
 
 DADS の `--color-*` 名前空間は **3 階層**で構成されています:
 
 1. **Primitive**: 11 色相 × 13 段階のスケール（全 143 色）
 2. **Neutral**: White / Black / SolidGray / OpacityGray
 3. **Semantic**: Success / Error / Warning（Yellow/Orange）— Primitive を意味付けに割り当て
+
+### コントラスト比の必須要件
+
+| 用途 | 比率 |
+|------|------|
+| テキスト（リンクを含む） | **4.5:1 以上** |
+| 非テキスト UI 要素（アイコン・border 等） | **3:1 以上** |
+| アイコン（テキスト隣接） | **4.5:1 以上** |
 
 ### 2.1 Primitive Colors（プリミティブカラー）
 
@@ -202,13 +247,23 @@ DADS は **`dads-u-{prefix}-{size}{weight}-{lineHeight}`** という命名のユ
 
 これは **`dads-u-std-17N-170`** に相当。
 
-### 3.7 OpenType / 特殊機能
+### 3.7 最小フォントサイズ（公式ルール）
+
+> **14 CSS px 未満の大きさの使用は原則として許容されません**（公式 Foundations 明記）
+
+つまり Typography Utility の最小値は **14px**。それ以下のサイズは法令や WCAG 準拠の理由がない限り使用しません。
+
+### 3.8 フォント独立性の原則
+
+公式は **「情報伝達は書体に非依存で実施可能」** であることを前提にしています。Web フォントがロード失敗してもメッセージが伝わる stack を組むこと。
+
+### 3.9 OpenType / 特殊機能
 
 - `font-feature-settings: normal`
 - `palt` 不使用（ベタ組）
 - `forced-colors: active` メディアクエリでハイコントラストモード対応
 
-### 3.8 縦書き
+### 3.10 縦書き
 
 該当なし
 
@@ -263,7 +318,19 @@ DADS は **`dads-u-{prefix}-{size}{weight}-{lineHeight}`** という命名のユ
 
 **4px 黒 outline + 2px 黄色（yellow-300 #ffd43d）リング**。WCAG 2.2 のフォーカス指標可視性要件を満たす公式仕様。Text 型ボタンでは追加で背景も yellow-300 に。
 
-### Link
+### Link（5 状態の State Machine）
+
+公式 Foundations の Link Text ページは **5 つの状態**を明示しています:
+
+| 状態 | 色 | 装飾 |
+|------|----|------|
+| **Default** | 青（`blue-1000` #00118f） | underline / thickness 1px / offset 3px |
+| **Visited** | **マゼンタ** | underline 維持 |
+| **Hover** | より明るい色 + 下線を太く | weight・size は **絶対に変えない**（がたつき防止） |
+| **Active** | **オレンジ** | underline 維持 |
+| **Focus** | 黒枠線 | + **黄色背景（yellow-300 全体）** |
+
+#### 実装例（公式 CSS）
 
 ```css
 .dads-link:any-link {
@@ -272,9 +339,25 @@ DADS は **`dads-u-{prefix}-{size}{weight}-{lineHeight}`** という命名のユ
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
+
+.dads-link:visited { color: <magenta>; }
+.dads-link:hover {
+  /* ⚠ font-weight や font-size は変えない */
+  text-decoration-thickness: 3px;  /* 下線を太くする */
+}
+.dads-link:active { color: <orange>; }
+.dads-link:focus-visible {
+  outline: 4px solid var(--color-neutral-black);
+  outline-offset: 2px;
+  background-color: var(--color-primitive-yellow-300);  /* 全体背景！ */
+}
 ```
 
-リンク色は **必ず blue-1000 (#00118f)**、下線は 1px / offset 3px の細めで上品な指定。
+#### Link 必須ルール
+
+- **色のみで判別させない**: 必ず下線などの非色情報を併用
+- **外部リンク・新規タブリンクには末尾にアイコン**（位置タイプは Tail Icon）
+- **Hover で文字サイズ・ウェイトを変えない**（領域がたつき防止）
 
 ### Input Text
 
@@ -326,6 +409,26 @@ DADS は **`dads-u-{prefix}-{size}{weight}-{lineHeight}`** という命名のユ
 
 ## 5. Layout Principles
 
+### Breakpoint（公式: たった 1 点）
+
+> **デジタル庁デザインシステムでは、ブレークポイントを 1 つ設定する想定**
+
+```css
+@media (min-width: 48rem) {
+  /* ≥ 768px: タブレット〜デスクトップ */
+}
+/* < 768px: モバイル */
+```
+
+これだけです。XS / SM / MD / LG / XL のような多段階は使いません。極めてミニマルな設計判断で、サービスごとのスタイルガイドで追加 breakpoint を定義する方針。
+
+### Grid（12 カラム）
+
+- **カラム数**: 12
+- **カラム幅**: 本文の文字サイズの整数倍
+- **ガター**: **本文文字サイズの 2 倍**（body 16px なら gutter = 32px）
+- **マージン**: ページ幅制約に応じて可変
+
 ### Header
 
 ```css
@@ -333,10 +436,6 @@ DADS は **`dads-u-{prefix}-{size}{weight}-{lineHeight}`** という命名のユ
   --header-block-size: 5rem; /* 80px */
 }
 ```
-
-### Container & Spacing
-
-公式トークンは Color / Typography / Elevation 中心で、**汎用 spacing トークンは限定的**。コンポーネント毎にパディング・マージンを `calc(N / 16 * 1rem)` 形式で直接指定する方針。
 
 ### Unit Convention
 
@@ -348,6 +447,82 @@ border: 1px solid;
 ```
 
 `calc(N / 16 * 1rem)` は「設計時の N px をユーザー設定に応じてスケールさせる」公式パターン。
+
+---
+
+## 5b. Spacing（公式：3〜5 値の Modular Scale）
+
+公式 Foundations の Spacing ページは **3〜5 個の値による modular scale** を推奨しています。具体的なトークン名は定義されておらず、サービスごとのスタイルガイドで決定する方針。
+
+### 公式が示す例
+
+| スケール | 値 | 倍率（基準 8px） |
+|----------|-----|------------------|
+| 基準単位 | **8 CSS px** | 1× |
+| 中間 | **24 CSS px** | 3× |
+| 大 | **64 CSS px** | 8× |
+
+中間値（16px / 32px / 48px 等）への明示的な言及はなく、**「3〜5 値で modular scale を作る」原則**のみが提示されています。
+
+### 推奨運用
+
+- 余白スケールはサービス単位で **3〜5 個**に絞る
+- 倍率系列で構成（1× / 3× / 8× など、単純な等比または整数倍）
+- コンポーネント間の視覚調和を優先
+
+---
+
+## 5c. Corner Shapes（5 段階のスケール）
+
+公式 Foundations の Corner Shapes ページは **5 段階**の border-radius スケールを定義:
+
+| Stage | 名称 | 標準値 | 矩形（横長）の調整値 |
+|-------|------|--------|--------------------|
+| 1 | **角丸なし** | `0` | — |
+| 2 | **角丸スモール** | `8px` | — |
+| 3 | **角丸ミディアム** | `16px` | `12px` |
+| 4 | **角丸ラージ** | `32px` | `16px` |
+| 5 | **角丸フル** | `50%` | — |
+
+### 重要ルール
+
+- **同じ radius 値でもコンポーネントサイズで見え方が変わる**ため、**矩形（幅 ≫ 高さ）は radius を縮小**して視覚的な統一感を維持
+- **部分適用可能**: 4 隅すべてに同じ値を当てる以外に、特定の角だけ丸める運用も許容
+- 5 段階を**目安**として、コンポーネント単位で個別調整
+
+### コンポーネント別の対応（実装リポジトリ実測）
+
+| コンポーネント | 適用 radius |
+|--------------|-----------|
+| Button lg / md | 8px（角丸スモール） |
+| Button sm | 6px（補間） |
+| Button xs | 4px（補間） |
+| Input Text | 8px |
+| Notification Banner standard | 12px（角丸ミディアム矩形版） |
+| Skip Link | 4px |
+| Header Logo | 4px |
+| Pill / Lang Selector | 9999px（角丸フル相当） |
+
+---
+
+## 5d. Icon（公式：文書構造ベースの 4 位置タイプ）
+
+公式 Icon ページは、アイコンを**視覚サイズや機能ではなく「テキストフロー上の位置」で 4 種類**に分類します。これは独自の概念モデル:
+
+| 位置タイプ | 配置場所 | 用途例 |
+|----------|---------|-------|
+| **Front Icon** | ブロックレベルボックスの先頭 | セクション見出し前のアイコン |
+| **Lead Icon** | 行ボックスの先頭 | ボタンテキスト前のアイコン |
+| **Tail Icon** | 行ボックスの末尾 | 外部リンク・新規タブ表示 |
+| **End Icon** | ブロックレベルボックスの末尾 | カード下部のアクション矢印 |
+
+### Icon アクセシビリティ仕様（公式）
+
+- **必ずラベルと併用**（単独使用は原則禁止）
+- ラベル併記時は `alt=""`（または `aria-label` 不要）
+- 単独使用の例外時のみ `aria-label` にラベル内容を記入
+- **テキスト隣接アイコンは 4.5:1 のコントラスト比**を維持
+- インタラクティブアイコン（クリック可能）は **44×44 CSS px のターゲットサイズ**必須
 
 ---
 
@@ -374,26 +549,43 @@ border: 1px solid;
 
 ### Do（推奨）
 
-- リンクは **`var(--color-primitive-blue-1000)` (#00118f)** で統一
+- リンクは **`blue-1000` (#00118f)** から開始し、**5 状態（default/visited/hover/active/focus）** すべてを定義
+- リンク **focus は黒枠 + 黄色背景（yellow-300 全体）** で示す
 - ボタンは **default = blue-900 / hover = blue-1000 / active = blue-1200** の 3 段階
 - focus indicator は **4px 黒 outline + 2px yellow-300 リング** の公式パターン
 - Heading は 10 サイズスケール（16/18/20/24/28/32/36/45/57/64）から選ぶ
 - letter-spacing は **3 段階**（0 / 0.01em / 0.02em）でサイズに反比例
+- 本文の **最小 font-size は 14px**。それ以下は原則使用しない
 - フォントは `"Noto Sans JP", -apple-system, BlinkMacSystemFont, sans-serif` で OK
 - 等幅は `"Noto Sans Mono", monospace`（数値・コード）
 - 単位は **`calc(N / 16 * 1rem)`** で書く（border のみ px）
 - semantic-error は `--color-semantic-error-1`（red-800）から始める
+- **breakpoint は 768px の 1 点のみ**（XS/SM/MD/LG/XL は使わない）
+- グリッドは **12 カラム**、ガターは本文文字サイズの **2 倍**
+- 余白は **3〜5 値の modular scale** に絞る（例: 8/24/64）
+- 角丸は **5 段階スケール**（0 / 8 / 16 / 32 / 50%）。矩形は radius を縮小
+- アイコンは **位置で 4 タイプ**（Front / Lead / Tail / End）に分類
+- 外部リンクには **Tail Icon** を末尾配置
+- アイコンは必ずラベルと併用、単独使用しない
+- インタラクティブアイコンは **44×44 CSS px** のタッチターゲット
 - WCAG 2.2 AA を最小目標、`forced-colors: active` 対応も忘れない
 - 小さいボタン（sm/xs）は **44px の不可視タップターゲット**を `::after` で確保
+- テキストコントラストは **4.5:1 以上**、非テキスト UI は **3:1 以上**
 
 ### Don't（禁止）
 
 - `Segoe UI` を font stack に含めない（公式は4要素のみ）
+- 14px 未満のフォントサイズを使わない
 - letter-spacing を全要素 0.02em にしない（サイズにより変える）
 - ボタンに `box-shadow` で奥行きを作らない（ボーダーと色面で）
 - ただし「shadow を絶対使うな」ではない — Drawer / Modal 等は elevation-1〜8 を使う
 - 純黒 `#000` を本文に使わない（`solid-gray-800 #333` を使う）
-- リンク色を複数持たない（blue-1000 一色）
+- **リンクの hover で文字サイズ・ウェイトを変えない**（領域がたつき防止）
+- リンクを default 色だけで実装しない（5 状態すべて定義する）
+- 色だけでリンクを判別させない（必ず下線などの非色情報を併用）
+- アイコンを単独で使わない（必ずラベルと併用）
+- breakpoint を多段階で持たない（768px 1 点のみ）
+- 余白スケールを 6 値以上にしない（3〜5 値推奨）
 - `dads-` 以外のプレフィックスでデザインシステム由来の class を作らない
 - `:hover` を必ず `@media (hover: hover)` で囲む（タッチデバイスでの誤発火を防ぐ）
 
@@ -482,8 +674,40 @@ Radius:             8px
 Heights:            sm 40 / md 48 / lg 56
 Read-only:          border-style: dashed
 
+# Link (5-state state machine)
+Default:            blue (blue-1000 #00118f) + underline
+Visited:            magenta + underline
+Hover:              lighter color + thicker underline (NEVER change weight/size)
+Active:             orange + underline
+Focus:              black border + yellow-300 background (whole bg)
+
+# Icon (4-position model)
+Front Icon:         block-level head（見出し前等）
+Lead Icon:          inline start（ボタン内アイコン等）
+Tail Icon:          inline end（外部リンク表示等）
+End Icon:           block-level tail（カード下のアクション等）
+
 # Elevation
 8 levels:           --elevation-1 〜 --elevation-8
+
+# Layout / Breakpoint
+Single breakpoint:  768px のみ（min-width: 48rem）
+Grid:               12 columns / gutter = 本文 × 2 (= 32px)
+
+# Spacing
+Recommended:        3〜5 値の modular scale
+Example:            8 / 24 / 64 (1× / 3× / 8×)
+
+# Corner Shapes (5 stages)
+None / Small / Medium / Large / Full = 0 / 8 / 16 / 32 / 50%
+矩形は radius を縮小: Medium 16→12, Large 32→16
+
+# Min Font Size
+14px 未満は原則使用禁止（公式ルール）
+
+# Contrast
+Text:               4.5:1 以上
+Non-text UI:        3:1 以上
 
 # Unit Convention
 font-size:          calc(16 / 16 * 1rem)
