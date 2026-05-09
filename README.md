@@ -514,6 +514,7 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [visvim (ビズビム)](https://www.visvim.tv/) | Fashion / Premium Lifestyle | [DESIGN.md](design-md/visvim/DESIGN.md) | [preview.html](design-md/visvim/preview.html) |
 | [NEIGHBORHOOD (ネイバーフッド)](https://www.neighborhood.jp/) | Fashion / Streetwear | [DESIGN.md](design-md/neighborhood/DESIGN.md) | [preview.html](design-md/neighborhood/preview.html) |
 | [Afternoon Tea (アフタヌーンティー)](https://www.afternoon-tea.net/) | Lifestyle / Retail | [DESIGN.md](design-md/afternoontea/DESIGN.md) | [preview.html](design-md/afternoontea/preview.html) |
+| [XECIN](https://xecin.jp/) | Web Development Lab | [DESIGN.md](design-md/xecin/DESIGN.md) | [preview.html](design-md/xecin/preview.html) |
 
 ### Previews
 
