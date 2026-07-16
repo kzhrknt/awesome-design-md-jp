@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (387 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (390 sites)</a>
 </p>
 
 <table>
@@ -573,6 +573,11 @@
 <tr>
 <td align="center"><strong>CINRA</strong><br><img src="design-md/cinra/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>Loftwork</strong><br><img src="design-md/loftwork/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Subsequence</strong><br><img src="design-md/subsequence/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>PUEBCO</strong><br><img src="design-md/puebco/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Landscape Products</strong><br><img src="design-md/landscape-products/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1021,11 +1026,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [BAUM (バウム)](https://www.baumjapan.com/) | Botanical Skincare / Beauty | [DESIGN.md](design-md/baum/DESIGN.md) | [preview.html](design-md/baum/preview.html) |
 | [CINRA (シンラ)](https://www.cinra.net/) | Culture Media / Editorial | [DESIGN.md](design-md/cinra/DESIGN.md) | [preview.html](design-md/cinra/preview.html) |
 | [Loftwork (ロフトワーク)](https://loftwork.com/jp/) | Creative Company / Agency | [DESIGN.md](design-md/loftwork/DESIGN.md) | [preview.html](design-md/loftwork/preview.html) |
+| [Subsequence (サブシーケンス)](https://subsequence.tv/) | Culture Magazine / Editorial | [DESIGN.md](design-md/subsequence/DESIGN.md) | [preview.html](design-md/subsequence/preview.html) |
+| [PUEBCO (プエブコ)](https://www.puebco.com/) | Homeware / Lifestyle | [DESIGN.md](design-md/puebco/DESIGN.md) | [preview.html](design-md/puebco/preview.html) |
+| [Landscape Products (ランドスケーププロダクツ)](https://landscape-products.net/) | Design Studio / Shop | [DESIGN.md](design-md/landscape-products/DESIGN.md) | [preview.html](design-md/landscape-products/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (387 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (390 sites)</a>
 </p>
 
 <table>
@@ -1564,6 +1572,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <tr>
 <td align="center"><strong>CINRA</strong><br><img src="design-md/cinra/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>Loftwork</strong><br><img src="design-md/loftwork/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Subsequence</strong><br><img src="design-md/subsequence/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>PUEBCO</strong><br><img src="design-md/puebco/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Landscape Products</strong><br><img src="design-md/landscape-products/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

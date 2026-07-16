@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Subsequence (サブシーケンス)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: Subsequence 実測値 === */
+    --bg:        #f7f7e8;  /* 温かいクリーム（body 実測） */
+    --surface:   #ffffff;
+    --ink:       #000000;
+    --muted:     #555555;
+    --border:    #000000;
+    --line-soft: #d9d9c6;
+    --white:     #ffffff;
+
+    /* カテゴリー チップ（パステルの署名多色） */
+    --chip-olive: #e7e5b5;  /* Discovery */
+    --chip-blue:  #d2e3ea;  /* Getaway */
+    --chip-sage:  #cce1d0;  /* Artisan */
+    --chip-pink:  #eed3d9;  /* Event */
+    --chip-gray:  #cbc9c5;
+    --chip-peach: #fcdfb7;
+
+    /* === Fonts ===
+       和文: "Noto Sans JP", system-ui, -apple-system, sans-serif
+       欧文: "Winden"（Web ライセンス, 英字見出し・本文）→ Inter で代替 */
+    --font-jp: "Noto Sans JP", system-ui, -apple-system, sans-serif;
+    --font-en: "Inter", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-jp);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 2.0;
+    letter-spacing: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 40px; }
+
+  header.site {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 40px 22px; border-bottom: 1px solid var(--ink);
+  }
+  header.site .logo { font-family: var(--font-en); font-size: 24px; font-weight: 600; letter-spacing: 0.01em; }
+  header.site nav { display: flex; gap: 26px; align-items: center; }
+  header.site nav a {
+    font-family: var(--font-en); color: var(--ink); text-decoration: none;
+    font-size: 14px; font-weight: 400; letter-spacing: normal;
+  }
+  header.site nav a:hover { opacity: 0.5; }
+  header.site .lang { font-family: var(--font-en); font-size: 13px; border: 1px solid var(--ink); padding: 3px 6px; border-radius: 2px; }
+
+  .section { padding: 52px 0; border-bottom: 1px solid var(--line-soft); }
+  .section-label {
+    font-family: var(--font-en); font-size: 12px; letter-spacing: 0.14em;
+    color: var(--muted); margin-bottom: 22px; text-transform: uppercase;
+  }
+  h2.display {
+    font-family: var(--font-en); font-size: 64px; font-weight: 600; line-height: 1.3;
+    letter-spacing: normal; margin-bottom: 8px;
+  }
+
+  /* Colors */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--ink); border-radius: 2px; overflow: hidden; background: var(--surface); }
+  .swatch .chip { height: 84px; }
+  .swatch .meta { padding: 10px 12px; }
+  .swatch .meta .name { font-family: var(--font-jp); font-size: 12px; line-height: 1.5; }
+  .swatch .meta .hex { font-family: var(--font-en); color: var(--muted); font-size: 11px; }
+
+  /* Typography */
+  .type-row { display: flex; align-items: baseline; gap: 24px; padding: 14px 0; border-bottom: 1px solid var(--line-soft); }
+  .type-row .tag { font-family: var(--font-en); width: 176px; flex: none; font-size: 11px; letter-spacing: 0.02em; color: var(--muted); line-height: 1.5; }
+  .t-display { font-family: var(--font-en); font-size: 64px; font-weight: 600; line-height: 1.3; letter-spacing: normal; }
+  .t-headline { font-family: var(--font-en); font-size: 17px; font-weight: 500; line-height: 1.5; }
+  .t-nav { font-family: var(--font-en); font-size: 14px; font-weight: 400; letter-spacing: normal; }
+  .t-body { font-family: var(--font-jp); font-size: 14px; font-weight: 400; line-height: 2.0; }
+  .t-small { font-family: var(--font-en); font-size: 13px; font-weight: 400; line-height: 1.4; color: var(--muted); }
+
+  /* Article / prose */
+  .prose { max-width: 660px; }
+  .prose .kicker { font-family: var(--font-en); font-size: 13px; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; }
+  .prose h3 { font-family: var(--font-en); font-size: 30px; font-weight: 600; line-height: 1.3; margin-bottom: 20px; }
+  .prose p { font-family: var(--font-jp); font-size: 14px; line-height: 2.0; margin-bottom: 18px; }
+  .prose p.en { font-family: var(--font-en); color: var(--muted); }
+
+  /* Category chips (inline) */
+  .chip-tag {
+    display: inline-block; font-family: var(--font-en); font-size: 13px; font-weight: 400;
+    color: var(--ink); padding: 3px 8px; border-radius: 2px; line-height: 1.4;
+  }
+  .chip-outline { background: transparent; border: 1px solid var(--ink); padding: 3px 5px; }
+  .chip-list { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+  /* Buttons */
+  .btns { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--font-jp); cursor: pointer; border-radius: 2px; letter-spacing: normal; line-height: 1.4; }
+  .btn-fill {
+    background: var(--ink); color: var(--white); border: 1px solid var(--ink);
+    font-size: 14px; font-weight: 400; padding: 8px 20px;
+  }
+  .btn-fill:hover { opacity: 0.82; }
+  .btn-outline {
+    background: transparent; color: var(--ink); border: 1px solid var(--ink);
+    font-size: 14px; font-weight: 400; padding: 8px 20px;
+  }
+  .btn-outline:hover { background: var(--ink); color: var(--white); }
+
+  /* Cards */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 28px; }
+  .card { background: var(--surface); border: 1px solid var(--line-soft); border-radius: 2px; overflow: hidden; }
+  .card .ph { height: 180px; }
+  .card .ph.p1 { background: #e3e0c8; }
+  .card .ph.p2 { background: #cddbe1; }
+  .card .ph.p3 { background: #cbdccf; }
+  .card .ph.p4 { background: #e7d0d6; }
+  .card .body { padding: 14px 16px 20px; }
+  .card .body .tagrow { margin-bottom: 10px; }
+  .card .body .title-en { font-family: var(--font-en); font-size: 17px; font-weight: 500; line-height: 1.35; }
+  .card .body .title-jp { font-family: var(--font-jp); font-size: 13px; color: var(--muted); line-height: 1.7; margin-top: 4px; }
+  .card .body .meta { font-family: var(--font-en); font-size: 12px; color: var(--muted); margin-top: 10px; line-height: 1.4; }
+
+  /* Forms */
+  .field { margin-bottom: 18px; max-width: 420px; }
+  .field label { display: block; font-family: var(--font-jp); font-size: 12px; letter-spacing: normal; color: var(--muted); margin-bottom: 6px; line-height: 1.5; }
+  .field input {
+    width: 100%; font-family: var(--font-jp); font-size: 16px;
+    padding: 9px 12px; border: 1px solid var(--ink); border-radius: 2px;
+    background: var(--white); color: var(--ink); line-height: 1.5;
+  }
+  .field input:focus { outline: none; border-color: var(--ink); box-shadow: inset 0 -2px 0 var(--ink); }
+  .field.err input { border-color: #b23a48; }
+  .field.err .msg { color: #b23a48; font-family: var(--font-jp); font-size: 12px; margin-top: 6px; line-height: 1.5; }
+
+  /* Elevation */
+  .elevs { display: flex; gap: 28px; flex-wrap: wrap; }
+  .elev { width: 180px; height: 108px; background: var(--white); border: 1px solid var(--line-soft); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-family: var(--font-en); font-size: 12px; letter-spacing: 0.04em; color: var(--muted); }
+  .elev.e1 { box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .elev.e2 { box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+
+  /* Layout */
+  .layout-demo { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+  .layout-demo .col { background: #e3e0c8; grid-column: span 4; height: 72px; display: flex; align-items: center; justify-content: center; font-family: var(--font-en); font-size: 12px; color: var(--muted); border-radius: 2px; }
+
+  footer { padding: 44px 40px; color: var(--muted); font-family: var(--font-en); font-size: 12px; letter-spacing: 0.04em; text-align: center; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="logo">SUBSEQUENCE</div>
+  <nav>
+    <a href="#">DISCOVERY</a><a href="#">GETAWAY</a><a href="#">ARTISAN</a><a href="#">EVENT</a>
+    <span class="lang">EN / JP</span>
+  </nav>
+</header>
+
+<div class="wrap">
+
+  <section class="section">
+    <div class="section-label">01 — Colors</div>
+    <h2 class="display">Palette</h2>
+    <div class="swatches">
+      <div class="swatch"><div class="chip" style="background:#f7f7e8;border-bottom:1px solid var(--line-soft)"></div><div class="meta"><div class="name">Background クリーム</div><div class="hex">#f7f7e8</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#ffffff;border-bottom:1px solid var(--line-soft)"></div><div class="meta"><div class="name">Surface</div><div class="hex">#ffffff</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#000000"></div><div class="meta"><div class="name">Ink / 罫 / CTA</div><div class="hex">#000000</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#e7e5b5"></div><div class="meta"><div class="name">Chip Olive · Discovery</div><div class="hex">#e7e5b5</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#d2e3ea"></div><div class="meta"><div class="name">Chip Blue · Getaway</div><div class="hex">#d2e3ea</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#cce1d0"></div><div class="meta"><div class="name">Chip Sage · Artisan</div><div class="hex">#cce1d0</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#eed3d9"></div><div class="meta"><div class="name">Chip Pink · Event</div><div class="hex">#eed3d9</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#fcdfb7"></div><div class="meta"><div class="name">Chip Peach</div><div class="hex">#fcdfb7</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#cbc9c5"></div><div class="meta"><div class="name">Chip Warm Gray</div><div class="hex">#cbc9c5</div></div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">02 — Typography（字間 normal / 和文本文 line-height 2.0 / palt off）</div>
+    <div class="type-row"><div class="tag">Display EN 64 / 600</div><div class="t-display">Subsequence</div></div>
+    <div class="type-row"><div class="tag">Headline 17 / 500</div><div class="t-headline">A Slow Journal of Craft</div></div>
+    <div class="type-row"><div class="tag">Nav EN 14 / 400</div><div class="t-nav">DISCOVERY</div></div>
+    <div class="type-row"><div class="tag">Body JP 14 / 2.0</div><div class="t-body">つくり手の手仕事と、旅先で出会う風景。日々の暮らしの奥にある「もの」の背景を、ゆっくりと辿る誌面です。</div></div>
+    <div class="type-row"><div class="tag">Small EN 13 / muted</div><div class="t-small">Issue 12 — Spring / Summer</div></div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">03 — Article</div>
+    <div class="prose">
+      <div class="chip-list" style="margin-bottom:16px">
+        <span class="chip-tag" style="background:var(--chip-sage)">Artisan</span>
+      </div>
+      <p class="kicker">The Maker's Hands</p>
+      <h3>The Grain of Time</h3>
+      <p class="en">Independent culture and craft, published by visvim. A slow, bilingual journal on arts, travel, food and music — made to be kept, not scrolled.</p>
+      <p>木地師の仕事場を訪ねると、削り出される椀の内側に、季節の移ろいがそのまま残っていることに気づきます。急がず、素材の声を聞きながら手を動かす。その静けさこそが、Subsequence が誌面を通して伝えたいものです。</p>
+      <p>旅の途中で出会った器、その土地の食、つくり手の言葉。断片を集めるように綴じられた一冊は、読み終えたあとも棚に残り、時折ひらかれるための本です。</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">04 — Category Chips & Buttons（radius 0–2px）</div>
+    <div class="chip-list" style="margin-bottom:24px">
+      <span class="chip-tag" style="background:var(--chip-olive)">Discovery</span>
+      <span class="chip-tag" style="background:var(--chip-blue)">Getaway</span>
+      <span class="chip-tag" style="background:var(--chip-sage)">Artisan</span>
+      <span class="chip-tag" style="background:var(--chip-pink)">Event</span>
+      <span class="chip-tag" style="background:var(--chip-peach)">Feature</span>
+      <span class="chip-tag chip-outline">EN / JP</span>
+    </div>
+    <div class="btns">
+      <button class="btn btn-fill">定期購読する</button>
+      <button class="btn btn-outline">記事一覧</button>
+      <button class="btn btn-outline">Subscribe</button>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">05 — Cards（1記事 = 1チップ色）</div>
+    <div class="cards">
+      <div class="card"><div class="ph p1"></div><div class="body"><div class="tagrow"><span class="chip-tag" style="background:var(--chip-olive)">Discovery</span></div><div class="title-en">The Blue Indigo Road</div><div class="title-jp">藍を巡る、南の島の旅</div><div class="meta">Issue 12 · Textile</div></div></div>
+      <div class="card"><div class="ph p2"></div><div class="body"><div class="tagrow"><span class="chip-tag" style="background:var(--chip-blue)">Getaway</span></div><div class="title-en">A Cabin by the Fjord</div><div class="title-jp">フィヨルドの小屋で過ごす一週間</div><div class="meta">Issue 12 · Travel</div></div></div>
+      <div class="card"><div class="ph p3"></div><div class="body"><div class="tagrow"><span class="chip-tag" style="background:var(--chip-sage)">Artisan</span></div><div class="title-en">The Grain of Time</div><div class="title-jp">木地師の手が刻む、時間の年輪</div><div class="meta">Issue 12 · Craft</div></div></div>
+      <div class="card"><div class="ph p4"></div><div class="body"><div class="tagrow"><span class="chip-tag" style="background:var(--chip-pink)">Event</span></div><div class="title-en">A Table for Twelve</div><div class="title-jp">十二人の食卓、ある夜の記録</div><div class="meta">Issue 12 · Food</div></div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">06 — Forms</div>
+    <div class="field"><label>メールアドレス</label><input type="email" placeholder="you@example.com"></div>
+    <div class="field"><label>お名前</label><input type="text" value="山田 花子"></div>
+    <div class="field err"><label>郵便番号</label><input type="text" value="000"><div class="msg">郵便番号を正しく入力してください</div></div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">07 — Elevation</div>
+    <div class="elevs">
+      <div class="elev">Level 0 · Flat</div>
+      <div class="elev e1">Level 1 · Dropdown</div>
+      <div class="elev e2">Level 2 · Overlay</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">08 — Layout · 12 col</div>
+    <div class="layout-demo">
+      <div class="col">4</div><div class="col">4</div><div class="col">4</div>
+    </div>
+  </section>
+
+</div>
+
+<footer>Subsequence (サブシーケンス) — Design System Preview · 代替フォント: Inter + Noto Sans JP（Winden → Inter）</footer>
+
+</body>
+</html>

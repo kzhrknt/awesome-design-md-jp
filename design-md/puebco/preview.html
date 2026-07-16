@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: PUEBCO (プエブコ)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: PUEBCO 実測値 === */
+    --bg:         #ffffff;  /* 純白のギャラリー下地（body 実測 / --background） */
+    --surface:    #ffffff;
+    --ink:        #000000;  /* 見出し・本文・罫・ボタン（--heading-color / --text-color） */
+    --hairline:   #d9d9d9;  /* 極細グレー罫（--border-color） */
+    --nav-muted:  rgba(0,0,0,0.5);   /* --navigation-text-color-light */
+    --nav-border: rgba(0,0,0,0.25);  /* --navigation-border-color */
+    --sale:       #f94c43;  /* 唯一の差し色・セール価格のみ（--product-sale-price-color） */
+    --star:       #f6a429;  /* 星評価のみ（--product-star-rating） */
+    --muted:      #666666;
+    --white:      #ffffff;
+
+    /* === Fonts ===
+       見出しから本文・価格・ボタンまで セリフ1書体で統一
+       Cardo は Google Fonts で直接利用可（代替不要）、和文は Noto Serif JP にフォールバック */
+    --font-serif: "Cardo", "Noto Serif JP", serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-serif);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.65;
+    letter-spacing: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 40px; }
+
+  header.site {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 30px 40px 24px; border-bottom: 1px solid var(--hairline);
+  }
+  header.site .logo { font-family: var(--font-serif); font-size: 19px; font-weight: 700; letter-spacing: 0.06em; }
+  header.site nav { display: flex; gap: 28px; }
+  header.site nav a {
+    font-family: var(--font-serif); color: var(--ink); text-decoration: none;
+    font-size: 13px; font-weight: 400; letter-spacing: 0.12em;
+  }
+  header.site nav a:hover { color: var(--nav-muted); }
+
+  .section { padding: 56px 0; border-bottom: 1px solid var(--hairline); }
+  .section-label {
+    font-family: var(--font-serif); font-size: 12px; letter-spacing: 0.2em;
+    color: var(--muted); margin-bottom: 24px;
+  }
+  h2.display {
+    font-family: var(--font-serif); font-size: 24px; font-weight: 400; line-height: 1.65;
+    letter-spacing: normal; margin-bottom: 20px;
+  }
+
+  /* Colors */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--hairline); }
+  .swatch .chip { height: 84px; }
+  .swatch .meta { padding: 10px 12px; }
+  .swatch .meta .name { font-size: 12px; letter-spacing: 0.02em; }
+  .swatch .meta .hex { font-family: var(--font-serif); color: var(--muted); font-size: 11px; }
+
+  /* Typography */
+  .type-row { display: flex; align-items: baseline; gap: 24px; padding: 14px 0; border-bottom: 1px solid var(--hairline); }
+  .type-row .tag { font-family: var(--font-serif); width: 178px; flex: none; font-size: 11px; letter-spacing: 0.04em; color: var(--muted); }
+  .t-display { font-family: var(--font-serif); font-size: 24px; font-weight: 400; line-height: 1.65; letter-spacing: normal; }
+  .t-heading { font-family: var(--font-serif); font-size: 21px; font-weight: 400; line-height: 1.65; letter-spacing: normal; }
+  .t-sub { font-family: var(--font-serif); font-size: 15px; font-weight: 400; line-height: 1.65; letter-spacing: normal; }
+  .t-nav { font-family: var(--font-serif); font-size: 19px; font-weight: 400; letter-spacing: normal; }
+  .t-body { font-family: var(--font-serif); font-size: 14px; font-weight: 400; line-height: 1.65; }
+  .t-price { font-family: var(--font-serif); font-size: 12px; font-weight: 400; line-height: 1.65; }
+  .t-label { font-family: var(--font-serif); font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; }
+
+  /* Product / prose */
+  .prose { max-width: 640px; }
+  .prose .caption { font-family: var(--font-serif); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .prose p { font-family: var(--font-serif); font-size: 14px; line-height: 1.75; margin-bottom: 18px; }
+  .prose .lead { font-family: var(--font-serif); font-size: 18px; line-height: 1.65; margin-bottom: 18px; }
+
+  /* Buttons */
+  .btns { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--font-serif); cursor: pointer; border-radius: 0; letter-spacing: 0.2em; text-transform: uppercase; font-size: 11px; }
+  .btn-fill {
+    background: var(--ink); color: var(--white); border: 1px solid var(--ink);
+    font-weight: 400; padding: 14px 28px;
+  }
+  .btn-fill:hover { opacity: 0.82; }
+  .btn-outline {
+    background: transparent; color: var(--ink); border: 1px solid var(--ink);
+    font-weight: 400; padding: 14px 28px;
+  }
+  .btn-outline:hover { background: var(--ink); color: var(--white); }
+
+  /* Cards */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap: 40px; }
+  .card { background: var(--surface); border: 1px solid var(--hairline); }
+  .card .ph { height: 220px; background: #f2f2f2; }
+  .card .body { padding: 16px 16px 20px; }
+  .card .body .name { font-family: var(--font-serif); font-size: 12px; font-weight: 400; letter-spacing: 0.04em; text-transform: uppercase; }
+  .card .body .vol { font-family: var(--font-serif); font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .card .body .price { font-family: var(--font-serif); font-size: 12px; margin-top: 8px; }
+  .card .body .price .sale { color: var(--sale); }
+  .card .body .price .was { color: var(--muted); text-decoration: line-through; margin-right: 8px; }
+
+  /* Forms */
+  .field { margin-bottom: 18px; max-width: 420px; }
+  .field label { display: block; font-family: var(--font-serif); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .field input {
+    width: 100%; font-family: var(--font-serif); font-size: 14px;
+    padding: 12px 14px; border: 1px solid var(--hairline); border-radius: 0;
+    background: var(--white); color: var(--ink);
+  }
+  .field input:focus { outline: none; border-color: var(--ink); }
+  .field.err input { border-color: var(--sale); }
+  .field.err .msg { color: var(--sale); font-size: 12px; margin-top: 6px; }
+
+  /* Elevation */
+  .elevs { display: flex; gap: 28px; flex-wrap: wrap; }
+  .elev { width: 180px; height: 108px; background: var(--white); border: 1px solid var(--hairline); display: flex; align-items: center; justify-content: center; font-family: var(--font-serif); font-size: 12px; letter-spacing: 0.06em; color: var(--muted); }
+  .elev.e1 { box-shadow: 0 2px 10px rgba(54,54,54,0.15); }
+  .elev.e2 { box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+
+  /* Layout */
+  .layout-demo { display: grid; grid-template-columns: repeat(12, 1fr); gap: 40px; }
+  .layout-demo .col { background: #f2f2f2; grid-column: span 3; height: 72px; display: flex; align-items: center; justify-content: center; font-family: var(--font-serif); font-size: 12px; color: var(--muted); }
+
+  footer { padding: 44px 40px; color: var(--muted); font-family: var(--font-serif); font-size: 12px; letter-spacing: 0.08em; text-align: center; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="logo">PUEBCO</div>
+  <nav>
+    <a href="#">ALL PRODUCTS</a><a href="#">NEW</a><a href="#">FEATURE</a><a href="#">ABOUT</a><a href="#">CART</a>
+  </nav>
+</header>
+
+<div class="wrap">
+
+  <section class="section">
+    <div class="section-label">01 — COLORS</div>
+    <h2 class="display">Palette</h2>
+    <div class="swatches">
+      <div class="swatch"><div class="chip" style="background:#ffffff;border-bottom:1px solid var(--hairline)"></div><div class="meta"><div class="name">Background</div><div class="hex">#ffffff</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#000000"></div><div class="meta"><div class="name">Ink / 罫 / CTA</div><div class="hex">#000000</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#d9d9d9"></div><div class="meta"><div class="name">Hairline Gray</div><div class="hex">#d9d9d9</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#f94c43"></div><div class="meta"><div class="name">Sale Red-Orange</div><div class="hex">#f94c43</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#f6a429"></div><div class="meta"><div class="name">Star Rating</div><div class="hex">#f6a429</div></div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">02 — TYPOGRAPHY（全システムを Cardo セリフで統一 / line-height 1.65）</div>
+    <div class="type-row"><div class="tag">Heading L EN 24 / 400</div><div class="t-display">PUEBCO INC.</div></div>
+    <div class="type-row"><div class="tag">Heading M EN 21 / 400</div><div class="t-heading">Reversible Short Robe</div></div>
+    <div class="type-row"><div class="tag">SubHeading EN 15 / 400</div><div class="t-sub">Feature Products</div></div>
+    <div class="type-row"><div class="tag">Nav / Logo EN 19 / 400</div><div class="t-nav">PUEBCO ONLINE STORE</div></div>
+    <div class="type-row"><div class="tag">Body JP 14 / 1.65</div><div class="t-body">工業用の道具や found object を思わせる質感を、日々の暮らしの道具として仕立てる。使い込むほどに味の出る雑貨です。</div></div>
+    <div class="type-row"><div class="tag">Price 12 / 400</div><div class="t-price">¥9,900</div></div>
+    <div class="type-row"><div class="tag">Button Label EN 11 / 0.2em</div><div class="t-label">View Products</div></div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">03 — PRODUCT</div>
+    <div class="prose">
+      <p class="caption">Industrial Homeware</p>
+      <p class="lead">工業製品の質感を、暮らしの道具へ。</p>
+      <p>PUEBCO は、倉庫や工場で見かける道具・素材・found object に着想を得た生活雑貨のブランドです。リサイクル素材やヴィンテージの風合いを活かし、キャンバスバッグ、収納ボックス、オブジェにいたるまで、飾りすぎない実用の美しさを追い求めます。</p>
+      <p>ひとつひとつに個体差のある質感を、そのまま日々の道具として。使い込むほどに馴染む、素っ気ないけれど愛着の湧く暮らしの道具を届けます。</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">04 — BUTTONS（radius 0 / 大文字ラベル 字間 0.2em）</div>
+    <div class="btns">
+      <button class="btn btn-fill">View Products</button>
+      <button class="btn btn-outline">All Products</button>
+      <button class="btn btn-outline">Add to Cart</button>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">05 — CARDS（セール価格に唯一の差し色 #f94c43）</div>
+    <div class="cards">
+      <div class="card"><div class="ph"></div><div class="body"><div class="name">Reversible Short Robe</div><div class="vol">Green x Yellow</div><div class="price">¥9,900</div></div></div>
+      <div class="card"><div class="ph"></div><div class="body"><div class="name">Canvas Storage Box</div><div class="vol">Medium</div><div class="price">¥4,400</div></div></div>
+      <div class="card"><div class="ph"></div><div class="body"><div class="name">Recycled Canvas Bag</div><div class="vol">Olive</div><div class="price"><span class="was">¥6,600</span><span class="sale">¥4,620</span></div></div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">06 — FORMS</div>
+    <div class="field"><label>Email</label><input type="email" placeholder="you@example.com"></div>
+    <div class="field"><label>お名前</label><input type="text" value="山田 花子"></div>
+    <div class="field err"><label>郵便番号</label><input type="text" value="000"><div class="msg">郵便番号を正しく入力してください</div></div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">07 — ELEVATION</div>
+    <div class="elevs">
+      <div class="elev">Level 0 · Flat</div>
+      <div class="elev e1">Level 1 · Scroll Button</div>
+      <div class="elev e2">Level 2 · Overlay</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">08 — LAYOUT · 12 col</div>
+    <div class="layout-demo">
+      <div class="col">3</div><div class="col">3</div><div class="col">3</div><div class="col">3</div>
+    </div>
+  </section>
+
+</div>
+
+<footer>PUEBCO (プエブコ) — Design System Preview · Font: Cardo + Noto Serif JP（Google Fonts）</footer>
+
+</body>
+</html>
