@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 暮しの手帖 (Kurashi no Techo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 暮しの手帖 実測値 === */
+    --bg:            #ffffff;  /* 純白（body 実測 / --wp--preset--color--white） */
+    --surface:       #ffffff;
+    --ink:           #000000;  /* body / header / footer の基準色・罫 */
+    --text:          #222222;  /* 実効文字色 rgb(34,34,34) */
+    --border:        #000000;  /* 1px 黒罫のみ */
+    --line-soft:     #e0e0d8;  /* プレビュー用の淡い区切り */
+    --white:         #ffffff;
+
+    /* 刷り色（セクション単位のベタ面） */
+    --techo-yellow:  #fae67a;  /* 最新号パネル / もっと見る帯（最頻出） */
+    --pale-yellow:   #f8f89c;  /* トピックス pill */
+    --pale-blue:     #cadfe5;  /* 手帖通信セクション */
+    --eggshell:      #efefe2;  /* 書影の台紙 */
+    --off-white:     #f8f8f8;  /* 囲み罫ボックス */
+
+    /* バッジ（円形の刷り色） */
+    --badge-red:     #df2016;  /* 最新刊 */
+    --badge-blue:    #73bed3;  /* 近刊予定 */
+
+    /* === Fonts ===
+       明朝（主）: dnp-shuei-mincho-pr6n, serif   → Shippori Mincho で代替
+       ゴシック（従）: dnp-shuei-gothic-gin-std, sans-serif → Zen Kaku Gothic New で代替 */
+    --font-mincho: "Shippori Mincho", "ヒラギノ明朝 ProN", "Yu Mincho", serif;
+    --font-gothic: "Zen Kaku Gothic New", "ヒラギノ角ゴ ProN", sans-serif;
+
+    /* Elevation */
+    --shadow-book: 0 3px 6px rgba(0, 0, 0, 0.16);
+    --shadow-overlay: 0 8px 24px rgba(0, 0, 0, 0.16);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mincho);
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.75;
+    letter-spacing: normal;
+    font-feature-settings: normal;  /* palt off */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 0 70px; }
+
+  /* 左サイドバー型ヘッダー */
+  header.site {
+    display: flex; align-items: flex-start; gap: 60px;
+    padding: 40px 70px 36px;
+  }
+  header.site .logo {
+    font-family: var(--font-mincho); font-size: 34px; font-weight: 600;
+    line-height: 1.3; color: var(--text); letter-spacing: normal; flex: none;
+  }
+  header.site nav { display: flex; gap: 30px; align-items: center; flex-wrap: wrap; padding-top: 8px; }
+  header.site nav a {
+    font-family: var(--font-mincho); color: var(--text); text-decoration: none;
+    font-size: 20px; font-weight: 400; line-height: 1.75; letter-spacing: normal;
+  }
+  header.site nav a:hover { opacity: 0.55; }
+  header.site .topics { margin-left: auto; }
+
+  .section { padding: 80px 0; border-bottom: 1px solid var(--line-soft); }
+  .section-label {
+    font-family: var(--font-gothic); font-size: 14px; line-height: 1.5;
+    color: var(--text); opacity: 0.6; margin-bottom: 28px;
+  }
+
+  /* 縦書きセクションタイトル（このサイトの署名） */
+  .vtitle {
+    writing-mode: vertical-rl; text-orientation: mixed;
+    font-family: var(--font-mincho); font-size: 27px; font-weight: 400;
+    line-height: 1.75; letter-spacing: normal; color: var(--text);
+    border: 1px solid var(--border); padding: 24px 12px;
+    line-break: strict; flex: none;
+  }
+  .with-vtitle { display: flex; gap: 48px; align-items: flex-start; }
+  .with-vtitle > .col-main { flex: 1; min-width: 0; }
+
+  /* Colors */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px,1fr)); gap: 20px; }
+  .swatch { border: 1px solid var(--border); border-radius: 0; overflow: hidden; background: var(--surface); }
+  .swatch .chip { height: 88px; }
+  .swatch .meta { padding: 10px 12px; }
+  .swatch .meta .name { font-family: var(--font-mincho); font-size: 14px; line-height: 1.6; }
+  .swatch .meta .hex { font-family: var(--font-gothic); font-size: 12px; line-height: 1.5; opacity: 0.65; }
+
+  /* Typography */
+  .type-row { display: flex; align-items: baseline; gap: 28px; padding: 18px 0; border-bottom: 1px solid var(--line-soft); }
+  .type-row .tag { font-family: var(--font-gothic); width: 210px; flex: none; font-size: 12px; line-height: 1.5; opacity: 0.6; }
+  .t-cover   { font-family: var(--font-mincho); font-size: 36px; font-weight: 400; line-height: 1.5; writing-mode: vertical-rl; text-orientation: mixed; height: 520px; line-break: strict; }
+  /* 縦中横: 縦書き中の半角数字を横に組む */
+  .tcy { text-combine-upright: all; -webkit-text-combine: horizontal; }
+  .t-feature { font-family: var(--font-mincho); font-size: 40px; font-weight: 400; line-height: 1.4; }
+  .t-sub     { font-family: var(--font-mincho); font-size: 28px; font-weight: 400; line-height: 1.4; }
+  .t-section { font-family: var(--font-mincho); font-size: 27px; font-weight: 400; line-height: 1.75; }
+  .t-nav     { font-family: var(--font-mincho); font-size: 24px; font-weight: 400; line-height: 1.75; }
+  .t-footer  { font-family: var(--font-mincho); font-size: 22px; font-weight: 500; line-height: 1.75; }
+  .t-lead    { font-family: var(--font-mincho); font-size: 20px; font-weight: 400; line-height: 1.5; }
+  .t-body    { font-family: var(--font-mincho); font-size: 18px; font-weight: 400; line-height: 1.75; }
+  .t-price   { font-family: var(--font-gothic); font-size: 14px; font-weight: 400; line-height: 1.5; }
+  .t-badge   { font-family: var(--font-mincho); font-size: 12px; font-weight: 400; line-height: 1.75; }
+
+  /* Article / prose */
+  .prose { max-width: 720px; }
+  .prose .kicker { font-family: var(--font-gothic); font-size: 14px; line-height: 1.5; opacity: 0.65; margin-bottom: 12px; }
+  .prose h3 { font-family: var(--font-mincho); font-size: 40px; font-weight: 400; line-height: 1.4; margin-bottom: 8px; letter-spacing: normal; }
+  .prose h4 { font-family: var(--font-mincho); font-size: 28px; font-weight: 400; line-height: 1.4; margin: 36px 0 14px; }
+  .prose .lead { font-family: var(--font-mincho); font-size: 20px; line-height: 1.5; margin-bottom: 28px; }
+  .prose p { font-family: var(--font-mincho); font-size: 18px; line-height: 1.75; margin-bottom: 22px; line-break: strict; overflow-wrap: break-word; }
+
+  /* 囲み罫ボックス（今日の献立） */
+  .rule-box { background: var(--off-white); border: 1px solid var(--border); border-radius: 0; padding: 50px 70px; }
+  .rule-box .rb-ttl { font-family: var(--font-mincho); font-size: 28px; line-height: 1.4; margin-bottom: 14px; }
+  .rule-box p { font-family: var(--font-mincho); font-size: 18px; line-height: 1.75; margin: 0; }
+  .rule-box .date { font-family: var(--font-gothic); font-size: 14px; line-height: 1.5; opacity: 0.65; margin-top: 16px; }
+
+  /* 刷り色パネル */
+  .fill-panel { background: var(--techo-yellow); border-radius: 0; padding: 50px 40px 48px 70px; }
+  .fill-panel.blue { background: var(--pale-blue); padding: 60px 70px 60px 84px; }
+  .fill-panel ul { list-style: none; }
+  .fill-panel li { font-family: var(--font-mincho); font-size: 18px; line-height: 1.75; padding: 6px 0; }
+
+  /* Topics pill / Badges / More bar */
+  .pill {
+    display: inline-block; background: var(--pale-yellow); color: var(--text);
+    font-family: var(--font-mincho); font-size: 18px; font-weight: 400; line-height: 1.6;
+    border: none; border-radius: 20px; padding: 5px 16px; letter-spacing: normal;
+  }
+  .badge {
+    display: inline-flex; align-items: center; justify-content: center; text-align: center;
+    width: 72px; height: 72px; border-radius: 50%; color: var(--white);
+    font-family: var(--font-mincho); font-size: 12px; font-weight: 400; line-height: 1.75; letter-spacing: normal;
+  }
+  .badge.red  { background: var(--badge-red); }
+  .badge.blue { background: var(--badge-blue); }
+  .more-bar {
+    display: inline-block; background: var(--techo-yellow); color: var(--text);
+    font-family: var(--font-gothic); font-size: 18px; font-weight: 400; line-height: 1.75;
+    border: none; border-radius: 0; padding: 18px 44px; cursor: pointer; letter-spacing: normal;
+  }
+  .more-bar.blue { background: var(--pale-blue); }
+  .more-bar:hover { opacity: 0.75; }
+  .btn-outline {
+    display: inline-block; background: transparent; color: var(--text);
+    font-family: var(--font-mincho); font-size: 18px; font-weight: 400; line-height: 1.75;
+    border: 1px solid var(--border); border-radius: 0; padding: 16px 20px; cursor: pointer; letter-spacing: normal;
+  }
+  .btn-outline:hover { background: var(--ink); color: var(--white); }
+  .btns { display: flex; gap: 28px; flex-wrap: wrap; align-items: center; }
+
+  /* Cards（書影 / 商品カード） */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 40px; }
+  .card { background: transparent; border: none; border-radius: 0; }
+  .card .plate {
+    background: var(--eggshell); border-radius: 0; height: 250px;
+    display: flex; align-items: center; justify-content: center; position: relative;
+  }
+  .card .plate .book {
+    width: 130px; height: 186px; box-shadow: var(--shadow-book);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mincho); font-size: 14px; line-height: 1.6; color: var(--text);
+    text-align: center; padding: 8px;
+  }
+  .card .plate .badge { position: absolute; top: -12px; left: -12px; }
+  .card .c-ttl  { font-family: var(--font-mincho); font-size: 18px; line-height: 1.75; margin-top: 16px; }
+  .card .c-date { font-family: var(--font-gothic); font-size: 14px; line-height: 1.5; opacity: 0.65; margin-top: 6px; }
+  .card .c-price{ font-family: var(--font-gothic); font-size: 14px; line-height: 1.5; margin-top: 10px; }
+
+  /* Forms */
+  .field { margin-bottom: 26px; max-width: 460px; }
+  .field label { display: block; font-family: var(--font-mincho); font-size: 14px; line-height: 1.6; opacity: 0.7; margin-bottom: 8px; letter-spacing: normal; }
+  .field input {
+    width: 100%; font-family: var(--font-mincho); font-size: 18px; line-height: 1.75;
+    padding: 12px 16px; border: 1px solid var(--border); border-radius: 0;
+    background: var(--white); color: var(--text); letter-spacing: normal;
+  }
+  .field input:focus { outline: none; border: 2px solid var(--border); padding: 11px 15px; }
+  .field.err input { border-color: var(--badge-red); }
+  .field.err .msg { color: var(--badge-red); font-family: var(--font-mincho); font-size: 14px; line-height: 1.6; margin-top: 8px; }
+
+  /* Elevation */
+  .elevs { display: flex; gap: 32px; flex-wrap: wrap; }
+  .elev {
+    width: 200px; height: 120px; background: var(--white); border: 1px solid var(--line-soft); border-radius: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-gothic); font-size: 13px; line-height: 1.5; opacity: 0.85; text-align: center;
+  }
+  .elev.e1 { box-shadow: var(--shadow-book); }
+  .elev.e2 { box-shadow: var(--shadow-overlay); }
+
+  /* Layout */
+  .layout-demo { display: grid; grid-template-columns: repeat(12, 1fr); gap: 40px; }
+  .layout-demo .col {
+    background: var(--eggshell); grid-column: span 4; height: 80px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-gothic); font-size: 13px; line-height: 1.5; opacity: 0.85; border-radius: 0;
+  }
+  .space-scale { display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; margin-top: 32px; }
+  .space-scale div { background: var(--techo-yellow); font-family: var(--font-gothic); font-size: 12px; line-height: 1.5; text-align: center; padding-bottom: 4px; }
+
+  footer {
+    padding: 80px 100px; font-family: var(--font-mincho); font-size: 18px;
+    line-height: 1.75; text-align: center; color: var(--text);
+  }
+  footer .note { font-family: var(--font-gothic); font-size: 14px; line-height: 1.6; opacity: 0.65; margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="logo">暮しの手帖</div>
+  <nav>
+    <a href="#">新刊・既刊情報</a><a href="#">手帖通信</a><a href="#">オンラインストア</a><a href="#">暮しの手帖 電子版</a>
+  </nav>
+  <div class="topics"><span class="pill">【7月28日開催！】暮しの手帖の紙祭り</span></div>
+</header>
+
+<div class="wrap">
+
+  <section class="section">
+    <div class="section-label">01 — Colors（白い紙 × 墨 × セクション単位の刷り色）</div>
+    <div class="swatches">
+      <div class="swatch"><div class="chip" style="background:#ffffff;border-bottom:1px solid var(--line-soft)"></div><div class="meta"><div class="name">Background 純白</div><div class="hex">#ffffff</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#222222"></div><div class="meta"><div class="name">Text Primary 墨</div><div class="hex">#222222</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#000000"></div><div class="meta"><div class="name">Ink / 1px 黒罫</div><div class="hex">#000000</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#fae67a"></div><div class="meta"><div class="name">Techo Yellow 刷り色</div><div class="hex">#fae67a</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#f8f89c"></div><div class="meta"><div class="name">Pale Yellow トピックス</div><div class="hex">#f8f89c</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#cadfe5"></div><div class="meta"><div class="name">Pale Blue 手帖通信</div><div class="hex">#cadfe5</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#efefe2"></div><div class="meta"><div class="name">Eggshell 書影の台紙</div><div class="hex">#efefe2</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#f8f8f8;border-bottom:1px solid var(--line-soft)"></div><div class="meta"><div class="name">Off White 囲み罫</div><div class="hex">#f8f8f8</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#df2016"></div><div class="meta"><div class="name">Badge Red 最新刊</div><div class="hex">#df2016</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#73bed3"></div><div class="meta"><div class="name">Badge Blue 近刊予定</div><div class="hex">#73bed3</div></div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">02 — Typography（明朝で通す / 本文 18px・line-height 1.75 / 字間 normal / palt off / weight 400）</div>
+    <div class="type-row"><div class="tag">Cover Title 縦書き 36 / 1.5</div><div class="t-cover">暮しの手帖　第<span class="tcy">5</span>世紀<span class="tcy">42</span>号</div></div>
+    <div class="type-row"><div class="tag">Feature Title 40 / 1.4</div><div class="t-feature">今度のお休み、何しよう？</div></div>
+    <div class="type-row"><div class="tag">Sub Feature 28 / 1.4</div><div class="t-sub">あの人の旅案内　旅好きたちのアイデア帖</div></div>
+    <div class="type-row"><div class="tag">Section Title 27 / 1.75</div><div class="t-section">新刊・既刊情報</div></div>
+    <div class="type-row"><div class="tag">Nav 24 / 1.75</div><div class="t-nav">オンラインストア</div></div>
+    <div class="type-row"><div class="tag">Footer Link 22 / 500</div><div class="t-footer">暮しの手帖 電子版</div></div>
+    <div class="type-row"><div class="tag">Lead 20 / 1.5</div><div class="t-lead">特別付録「復刻版　花の圖案集」</div></div>
+    <div class="type-row"><div class="tag">Body 18 / 1.75</div><div class="t-body">台所に立つ時間が、少しだけ楽しみになる。そんな一品を、毎号ひとつずつ。</div></div>
+    <div class="type-row"><div class="tag">Price ゴシック 14 / 1.5</div><div class="t-price">1,980円(税込)</div></div>
+    <div class="type-row"><div class="tag">Badge 12 / 1.75</div><div class="t-badge">最新刊</div></div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">03 — Article（縦書きセクションタイトル＋誌面組版）</div>
+    <div class="with-vtitle">
+      <div class="vtitle">今日の一品</div>
+      <div class="col-main">
+        <div class="prose">
+          <p class="kicker">気楽な和食　第12回</p>
+          <h3>牛こま麻婆豆腐</h3>
+          <p class="lead">牛小間切れ肉を使うと、食べごたえと軽やかさが同時に手に入ります。</p>
+          <p>ひき肉でつくる麻婆豆腐もおいしいのですが、小間切れ肉に替えると、噛むたびに肉の輪郭が立ち上がってきます。豆腐は絹でも木綿でもかまいません。水切りをきちんとして、崩さないようにそっと返すこと。それだけで、家の麻婆はぐんと違ってきます。</p>
+          <h4>下ごしらえのこと</h4>
+          <p>豆腐は二センチ角に切り、塩少々を加えた湯にくぐらせておきます。この一手間で水っぽさが抜け、味がぼやけません。牛肉は食べやすい大きさに切り、酒と醤油をもみ込んで十分ほどおきます。</p>
+          <p>仕上げに花椒を挽きかけると、香りが立ちのぼって食卓の空気が変わります。辛さは控えめに、香りは大胆に。それが家庭の麻婆豆腐のちょうどよさだと思うのです。</p>
+        </div>
+        <div class="rule-box" style="margin-top:40px">
+          <div class="rb-ttl">今日の献立</div>
+          <p>牛こま麻婆豆腐／きゅうりとザーサイの和えもの／わかめとねぎのスープ／ごはん</p>
+          <div class="date">2026年06月10日</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">04 — Buttons & Badges（角丸は pill 20px とバッジ 50% のみ）</div>
+    <div class="btns" style="margin-bottom:36px">
+      <span class="pill">【7月28日開催！】暮しの手帖の紙祭り</span>
+      <span class="badge red">最新刊</span>
+      <span class="badge blue">近刊予定</span>
+    </div>
+    <div class="btns">
+      <button class="more-bar">もっと見る　→</button>
+      <button class="more-bar blue">手帖通信を読む　→</button>
+      <button class="btn-outline">定期購読をはじめませんか。　→</button>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">05 — Panels & Cards（刷り色のベタ面／書影は台紙＋影）</div>
+    <div class="with-vtitle" style="margin-bottom:48px">
+      <div class="col-main">
+        <div class="fill-panel">
+          <div class="t-sub" style="margin-bottom:20px">暮しの手帖　第5世紀42号</div>
+          <ul>
+            <li>特別付録「復刻版　花の圖案集」</li>
+            <li>野﨑洋光さんの気楽な和食</li>
+            <li>キム・ナレさんのごはんどろぼう</li>
+            <li>日傘の似合うひと</li>
+            <li>昭和・平成・令和の傑作エッセイ本</li>
+          </ul>
+          <div style="margin-top:28px"><button class="more-bar">もっと見る　→</button></div>
+        </div>
+      </div>
+      <div class="vtitle">新刊・既刊情報</div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="plate"><span class="badge red">最新刊</span><div class="book" style="background:#e8eef0">暮しの手帖<br>第5世紀42号</div></div>
+        <div class="c-ttl">暮しの手帖　第5世紀42号</div>
+        <div class="c-date">2026年6月下旬刊</div>
+        <div class="c-price">1,100円(税込)</div>
+      </div>
+      <div class="card">
+        <div class="plate"><span class="badge blue">近刊予定</span><div class="book" style="background:#f0ece0">稲田俊輔の<br>おそうざい十二カ月</div></div>
+        <div class="c-ttl">稲田俊輔のおそうざい十二カ月　旬を味わう一汁三菜</div>
+        <div class="c-date">2026年4月上旬</div>
+        <div class="c-price">1,980円(税込)</div>
+      </div>
+      <div class="card">
+        <div class="plate"><div class="book" style="background:#dfe6d8">昔話の扉を<br>ひらこう</div></div>
+        <div class="c-ttl">昔話の扉をひらこう</div>
+        <div class="c-date">2022年1月下旬刊</div>
+        <div class="c-price">2,200円(税込)</div>
+      </div>
+      <div class="card">
+        <div class="plate"><div class="book" style="background:#e6e0d6">戦争中の<br>暮しの記録</div></div>
+        <div class="c-ttl">戦争中の暮しの記録</div>
+        <div class="c-date">1969年8月刊</div>
+        <div class="c-price">2,750円(税込)</div>
+      </div>
+    </div>
+
+    <div class="fill-panel blue" style="margin-top:48px">
+      <div class="t-sub" style="margin-bottom:12px">第15回　村上春樹風れんこん揚げと訳者あとがき</div>
+      <p class="t-body" style="max-width:720px">読んだ本のなかに出てきた料理を、記憶をたよりにつくってみる。うまくいかない日もありますが、その手さぐりの時間そのものが、読書のつづきのように思えるのです。</p>
+      <div style="margin-top:24px"><button class="more-bar blue">もっと見る　→</button></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">06 — Forms（角丸 0 / フォーカスは罫を太く / エラーは #df2016）</div>
+    <div class="field"><label>メールアドレス</label><input type="email" placeholder="you@example.com"></div>
+    <div class="field"><label>お名前</label><input type="text" value="山田 花子"></div>
+    <div class="field err"><label>郵便番号</label><input type="text" value="000"><div class="msg">郵便番号を正しく入力してください</div></div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">07 — Elevation（影は書影だけ。UI はフラット）</div>
+    <div class="elevs">
+      <div class="elev">Level 0 · Flat<br>パネル・カード・帯・バッジ</div>
+      <div class="elev e1">Level 1 · 書影のみ<br>0 3px 6px rgba(0,0,0,.16)</div>
+      <div class="elev e2">Level 2 · Overlay<br>0 8px 24px rgba(0,0,0,.16)</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">08 — Layout（max-width 1400px / 12 col / gutter 40px / セクション余白 80px）</div>
+    <div class="layout-demo">
+      <div class="col">4</div><div class="col">4</div><div class="col">4</div>
+    </div>
+    <div class="space-scale">
+      <div style="width:8px;height:8px"></div>
+      <div style="width:16px;height:16px"></div>
+      <div style="width:40px;height:40px">40</div>
+      <div style="width:50px;height:50px">50</div>
+      <div style="width:70px;height:70px">70</div>
+      <div style="width:80px;height:80px">80</div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  暮しの手帖 (Kurashi no Techo) — Design System Preview
+  <div class="note">代替フォント: Shippori Mincho（← DNP 秀英明朝 Pr6N）／ Zen Kaku Gothic New（← DNP 秀英角ゴシック銀 Std）</div>
+</footer>
+
+</body>
+</html>

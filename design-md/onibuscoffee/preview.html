@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ONIBUS COFFEE (オニバスコーヒー)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: ONIBUS COFFEE 実測値 === */
+    --bg:           #f8f6f4;  /* 温かいアイボリー（html / body 共通の実測背景） */
+    --surface:      #ffffff;  /* 商品写真・検索入力欄の白 */
+    --ink:          #000000;  /* 本文・商品名・価格・罫 */
+    --roast-brown:  #40150b;  /* 告知バーの面（深煎りの豆の色） */
+    --olive:        #c4c22c;  /* 人気NO.x ランキングバッジ */
+    --badge-gray:   #888888;  /* NEW バッジ */
+    --heading:      #464646;  /* セクション見出しの文字色 */
+    --muted:        #bfb7af;  /* 見出し下罫・補助文字（グレージュ） */
+    --line-soft:    #bfb7af;
+    --white:        #ffffff;
+    --danger:       #b23a3a;  /* エラー表示（ブランド外の最小限） */
+
+    /* === Fonts ===
+       実サイト: tenon, MyYuGothicM, 游ゴシック, "Yu Gothic", YuGothic,
+                 "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", メイリオ, Meiryo, sans-serif
+       tenon は Typotheque の Web ライセンスフォントのためローカルでは表示できない。
+       tenon           → Work Sans（低コントラストのヒューマニスト サンセリフ）
+       MyYuGothicM/游ゴシック → Zen Kaku Gothic New */
+    --font-base: "Work Sans", "Zen Kaku Gothic New", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", メイリオ, Meiryo, sans-serif;
+    --font-en:   "Work Sans", sans-serif;
+
+    /* === Metrics === */
+    --radius:       0;        /* 全要素 0 */
+    --ls-body:      0.05em;   /* 0.7px / 14px */
+    --ls-en:        0.1em;    /* 1.4px / 14px */
+    --ls-heading:   0.2em;    /* 3.6px / 18px */
+    --ls-cta:       0.05em;   /* 0.6px / 12px */
+    --ls-badge:     0.06em;   /* 0.7px / 12px */
+    --lh-tight:     1.0;      /* 1 行テキスト */
+    --lh-prose:     1.75;     /* 折り返す段落 */
+    --container:    1200px;
+    --gutter:       8px;
+    --shadow-popup: 0 4px 5px rgba(0,0,0,0.05);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-base);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 告知バー（Roast Brown） */
+  .announce {
+    background: var(--roast-brown); color: var(--white);
+    font-size: 14px; line-height: var(--lh-tight); letter-spacing: var(--ls-body);
+    text-align: center; padding: 16px 20px;
+  }
+
+  header.site {
+    max-width: var(--container); margin: 0 auto;
+    padding: 56px 20px 40px;
+    display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 20px;
+  }
+  header.site .logo {
+    font-family: var(--font-en); font-size: 26px; font-weight: 700;
+    letter-spacing: var(--ls-heading); line-height: var(--lh-tight);
+  }
+  header.site .catch { margin-top: 14px; }
+  header.site .catch .jp { font-size: 18px; font-weight: 400; letter-spacing: 0.04em; line-height: var(--lh-tight); }
+  header.site .catch .en {
+    font-family: var(--font-en); font-size: 14px; letter-spacing: var(--ls-en);
+    line-height: var(--lh-tight); margin-top: 12px; color: var(--muted);
+  }
+  header.site nav { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+  header.site nav a {
+    color: var(--ink); text-decoration: none;
+    font-size: 14px; font-weight: 400; letter-spacing: var(--ls-body); line-height: var(--lh-tight);
+  }
+  header.site nav a:hover { color: var(--muted); }
+
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 20px; }
+
+  .section { padding: 56px 0 64px; }
+  .section-label {
+    font-family: var(--font-en); font-size: 12px; letter-spacing: var(--ls-en);
+    color: var(--muted); margin-bottom: 22px; line-height: var(--lh-tight);
+  }
+
+  /* Section Heading = ラベル + 下罫（.c-headerLine 再現） */
+  h2.c-headerLine {
+    font-size: 18px; font-weight: 700; color: var(--heading);
+    letter-spacing: var(--ls-heading); line-height: 1.72;
+    padding: 0 0 18px; margin-bottom: 28px;
+    border-bottom: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+  }
+
+  /* 01 Colors */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px,1fr)); gap: var(--gutter); }
+  .swatch { background: var(--surface); border: 1px solid var(--line-soft); border-radius: var(--radius); overflow: hidden; }
+  .swatch .chip { height: 92px; }
+  .swatch .meta { padding: 12px 14px 16px; }
+  .swatch .meta .name { font-size: 12px; line-height: 1.6; letter-spacing: var(--ls-body); }
+  .swatch .meta .hex { font-family: var(--font-en); color: var(--muted); font-size: 11px; letter-spacing: var(--ls-en); margin-top: 4px; }
+
+  /* 02 Typography */
+  .type-row { display: flex; align-items: baseline; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--line-soft); }
+  .type-row .tag {
+    font-family: var(--font-en); width: 210px; flex: none; font-size: 11px;
+    letter-spacing: var(--ls-en); color: var(--muted); line-height: 1.5;
+  }
+  .t-heading { font-size: 18px; font-weight: 700; color: var(--heading); letter-spacing: var(--ls-heading); line-height: var(--lh-tight); }
+  .t-catch-jp { font-size: 18px; font-weight: 400; letter-spacing: 0.04em; line-height: var(--lh-tight); }
+  .t-catch-en { font-family: var(--font-en); font-size: 14px; font-weight: 400; letter-spacing: var(--ls-en); line-height: var(--lh-tight); }
+  .t-body { font-size: 14px; font-weight: 400; letter-spacing: var(--ls-body); line-height: var(--lh-tight); }
+  .t-product { font-size: 14px; font-weight: 400; letter-spacing: var(--ls-body); line-height: 1.71; }
+  .t-accordion { font-size: 16px; font-weight: 700; letter-spacing: var(--ls-body); line-height: 1.8; }
+  .t-cta { font-size: 12px; font-weight: 400; letter-spacing: var(--ls-cta); line-height: var(--lh-tight); }
+
+  /* 03 Product / Article */
+  .prose { max-width: 680px; }
+  .prose .kicker { font-family: var(--font-en); font-size: 12px; letter-spacing: var(--ls-en); color: var(--muted); margin-bottom: 14px; line-height: var(--lh-tight); }
+  .prose h3 { font-size: 18px; font-weight: 700; color: var(--heading); letter-spacing: var(--ls-heading); line-height: 1.72; padding-bottom: 18px; border-bottom: 1px solid var(--line-soft); margin-bottom: 24px; }
+  .prose p { font-size: 14px; line-height: var(--lh-prose); letter-spacing: var(--ls-body); margin-bottom: 20px; }
+  .prose p.en { font-family: var(--font-en); letter-spacing: var(--ls-en); color: var(--muted); }
+  .spec { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .spec th, .spec td { text-align: left; font-size: 14px; font-weight: 400; letter-spacing: var(--ls-body); line-height: 1.71; padding: 12px 0; border-bottom: 1px solid var(--line-soft); }
+  .spec th { width: 140px; color: var(--muted); }
+
+  /* 04 Buttons */
+  .btns { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .c-buttonLink {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: transparent; color: var(--ink);
+    border: 1px solid var(--ink); border-radius: var(--radius);
+    padding: 2px 25px 0; min-width: 180px; height: 36px;
+    font-family: var(--font-base); font-size: 12px; font-weight: 400;
+    letter-spacing: var(--ls-cta); line-height: var(--lh-tight);
+    text-decoration: none; cursor: pointer; box-shadow: none;
+  }
+  .c-buttonLink:hover { background: var(--ink); color: var(--white); }
+  .c-textButton {
+    background: transparent; border: none; color: var(--ink); cursor: pointer;
+    font-family: var(--font-base); font-size: 12px; letter-spacing: var(--ls-cta); line-height: var(--lh-tight);
+    padding: 0; text-decoration: underline; text-underline-offset: 4px;
+  }
+  .badges { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 28px; }
+  .badge {
+    display: inline-flex; align-items: center; height: 22px;
+    color: var(--white); border-radius: var(--radius); padding: 0 11px;
+    font-size: 12px; font-weight: 400; letter-spacing: var(--ls-badge); line-height: var(--lh-tight);
+  }
+  .badge-rank { background: var(--olive); }
+  .badge-new  { background: var(--badge-gray); }
+
+  /* 05 Cards */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: var(--gutter); }
+  .card { background: transparent; border: none; border-radius: var(--radius); box-shadow: none; }
+  .card .ph { position: relative; aspect-ratio: 1 / 1; background: var(--surface); display: flex; align-items: center; justify-content: center; }
+  .card .ph .bag { width: 44%; aspect-ratio: 3 / 4; background: #f2f0ee; border: 1px solid #e6e2de; display: flex; align-items: center; justify-content: center; }
+  .card .ph .bag .label { width: 62%; aspect-ratio: 1 / 1; }
+  .card .ph .badge { position: absolute; top: 0; left: 0; }
+  .card .body { padding: 16px 4px 0; text-align: center; }
+  .card .body .title { font-size: 14px; font-weight: 400; line-height: 1.71; letter-spacing: var(--ls-body); min-height: calc(14px * 1.71 * 2); }
+  .card .body .price { font-size: 14px; font-weight: 400; line-height: var(--lh-tight); letter-spacing: var(--ls-body); margin-top: 14px; }
+
+  /* 06 Forms */
+  .field { margin-bottom: 26px; max-width: 440px; }
+  .field label { display: block; font-size: 12px; letter-spacing: var(--ls-body); color: var(--muted); margin-bottom: 10px; line-height: 1.5; }
+  .field input {
+    width: 100%; font-family: var(--font-base); font-size: 16px; letter-spacing: normal;
+    padding: 0 0 10px; background: transparent; color: var(--ink);
+    border: none; border-bottom: 1px solid var(--ink); border-radius: var(--radius);
+    line-height: 1.6;
+  }
+  .field input::placeholder { color: var(--muted); }
+  .field input:focus { outline: none; border-bottom: 2px solid var(--ink); padding-bottom: 9px; }
+  .field.is-focus input { border-bottom: 2px solid var(--ink); padding-bottom: 9px; }
+  .field.is-error input { border-bottom: 1px solid var(--danger); }
+  .field.is-error .msg { color: var(--danger); font-size: 12px; margin-top: 8px; line-height: 1.6; letter-spacing: var(--ls-body); }
+  .field .state { font-family: var(--font-en); font-size: 11px; color: var(--muted); letter-spacing: var(--ls-en); margin-bottom: 6px; }
+  .search-demo { max-width: 440px; margin-top: 8px; }
+  .search-demo input { width: 100%; background: var(--surface); border: none; border-radius: var(--radius); padding: 0 0 0 24px; height: 48px; font-family: var(--font-base); font-size: 16px; letter-spacing: normal; color: var(--ink); }
+  .search-demo input:focus { outline: 1px solid var(--ink); }
+
+  /* 07 Elevation */
+  .elevs { display: flex; gap: 24px; flex-wrap: wrap; }
+  .elev {
+    width: 220px; height: 112px; background: var(--surface);
+    border-radius: var(--radius); display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-en); font-size: 12px; letter-spacing: var(--ls-en); color: var(--muted);
+  }
+  .elev.e0 { box-shadow: none; }
+  .elev.e1 { box-shadow: var(--shadow-popup); }
+
+  /* 08 Layout */
+  .layout-demo { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gutter); }
+  .layout-demo .col {
+    background: var(--surface); height: 84px; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-en); font-size: 12px; letter-spacing: var(--ls-en); color: var(--muted);
+    border-radius: var(--radius);
+  }
+  .layout-note { font-size: 12px; color: var(--muted); line-height: 1.8; letter-spacing: var(--ls-body); margin-top: 20px; }
+
+  footer {
+    padding: 56px 20px 64px; color: var(--muted); text-align: center;
+    font-size: 12px; letter-spacing: var(--ls-body); line-height: 1.9;
+  }
+</style>
+</head>
+<body>
+
+<div class="announce">【全商品対象】ご注文金額5,500円以上で、国内送料無料！</div>
+
+<header class="site">
+  <div>
+    <div class="logo">ONIBUS COFFEE</div>
+    <div class="catch">
+      <div class="jp">コーヒーで、街と暮らしを豊かにする。</div>
+      <div class="en">Connecting people through coffee.</div>
+    </div>
+  </div>
+  <nav>
+    <a href="#">オンラインストア</a>
+    <a href="#">店舗</a>
+    <a href="#">抽出方法</a>
+    <a href="#">ブログ</a>
+    <a href="#">ONIBUSについて</a>
+  </nav>
+</header>
+
+<div class="wrap">
+
+  <section class="section">
+    <div class="section-label">01 — COLORS</div>
+    <h2 class="c-headerLine">カラー</h2>
+    <div class="swatches">
+      <div class="swatch"><div class="chip" style="background:#f8f6f4;border-bottom:1px solid var(--line-soft)"></div><div class="meta"><div class="name">Background アイボリー</div><div class="hex">#f8f6f4</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#ffffff;border-bottom:1px solid var(--line-soft)"></div><div class="meta"><div class="name">Surface 商品面</div><div class="hex">#ffffff</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#000000"></div><div class="meta"><div class="name">Ink / 罫 / CTA</div><div class="hex">#000000</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#40150b"></div><div class="meta"><div class="name">Roast Brown 告知バー</div><div class="hex">#40150b</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#c4c22c"></div><div class="meta"><div class="name">Olive Yellow 人気バッジ</div><div class="hex">#c4c22c</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#888888"></div><div class="meta"><div class="name">Badge Gray NEW</div><div class="hex">#888888</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#464646"></div><div class="meta"><div class="name">Heading Text 見出し</div><div class="hex">#464646</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#bfb7af"></div><div class="meta"><div class="name">Muted / Line 罫・補助文字</div><div class="hex">#bfb7af</div></div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">02 — TYPOGRAPHY（字間は開く方向のみ / palt off / 1 行は line-height 1.0）</div>
+    <h2 class="c-headerLine">タイポグラフィ</h2>
+    <div class="type-row"><div class="tag">Section Heading 18 / 700 / 0.2em / #464646</div><div class="t-heading">新着</div></div>
+    <div class="type-row"><div class="tag">Catch JP 18 / 400 / 0.04em</div><div class="t-catch-jp">コーヒーで、街と暮らしを豊かにする。</div></div>
+    <div class="type-row"><div class="tag">Catch EN 14 / 400 / 0.1em</div><div class="t-catch-en">Connecting people through coffee.</div></div>
+    <div class="type-row"><div class="tag">Accordion 16 / 700 / lh 1.8</div><div class="t-accordion">マイメニュー</div></div>
+    <div class="type-row"><div class="tag">Body / Nav 14 / 400 / lh 1.0</div><div class="t-body">オンラインストア　店舗　抽出方法　ブログ</div></div>
+    <div class="type-row"><div class="tag">Product Name 14 / 400 / lh 1.71</div><div class="t-product">コロンビア / ルイス・フェリペ<br>[ゲイシャ ナチュラル]</div></div>
+    <div class="type-row"><div class="tag">Price 14 / 400 / lh 1.0</div><div class="t-body">¥1,944~</div></div>
+    <div class="type-row"><div class="tag">CTA 12 / 400 / 0.05em</div><div class="t-cta">全ての商品を見る</div></div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">03 — PRODUCT</div>
+    <div class="prose">
+      <p class="kicker">SINGLE ORIGIN — COLOMBIA</p>
+      <h3>コロンビア / ルイス・フェリペ</h3>
+      <p class="en">Washed Geisha, harvested in Huila. Roasted in Okusawa, Tokyo.</p>
+      <p>コロンビア南部ウイラ県、標高1,800mの畑でルイス・フェリペさんが育てたゲイシャ種です。完熟したチェリーだけを手摘みし、丁寧にウォッシュド精製したロットを、浅めの焙煎で仕上げました。ジャスミンや白桃を思わせる華やかな香りと、紅茶のように軽やかな口当たりが特徴です。</p>
+      <p>お湯の温度は92℃前後、粉量20gに対して湯量300gを目安に、3分ほどかけてゆっくり抽出してください。冷めていく過程で果実味がひらいていくので、少し時間をおいてから飲むのもおすすめです。</p>
+      <table class="spec">
+        <tr><th>生産国</th><td>コロンビア / ウイラ県</td></tr>
+        <tr><th>生産者</th><td>ルイス・フェリペ</td></tr>
+        <tr><th>品種</th><td>ゲイシャ</td></tr>
+        <tr><th>精製方法</th><td>ウォッシュド</td></tr>
+        <tr><th>焙煎度</th><td>ミディアム</td></tr>
+        <tr><th>内容量</th><td>100g / 200g</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">04 — BUTTONS & BADGES（radius 0 / 塗りつぶし CTA は使わない）</div>
+    <h2 class="c-headerLine">ボタン</h2>
+    <div class="btns">
+      <a href="#" class="c-buttonLink">全ての商品を見る</a>
+      <a href="#" class="c-buttonLink">商品を見る</a>
+      <a href="#" class="c-buttonLink">詳しく見る</a>
+      <button class="c-textButton">メールマガジンに登録</button>
+    </div>
+    <div class="badges">
+      <span class="badge badge-rank">人気NO.1</span>
+      <span class="badge badge-rank">人気NO.2</span>
+      <span class="badge badge-rank">人気NO.3</span>
+      <span class="badge badge-new">NEW</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">05 — CARDS（枠なし・影なし・角ゼロ / 中央揃え）</div>
+    <h2 class="c-headerLine">商品カード</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="ph">
+          <span class="badge badge-rank">人気NO.1</span>
+          <div class="bag"><svg class="label" viewBox="0 0 60 60" aria-hidden="true"><rect width="60" height="60" fill="#f1c40b"/><path d="M0 0h20v20H0zM20 20h20v20H20zM40 0h20v20H40zM0 40h20v20H0zM40 40h20v20H40z" fill="#1c3f94"/></svg></div>
+        </div>
+        <div class="body"><div class="title">ブラジル / イナシオ・ウルバン</div><div class="price">¥1,674~</div></div>
+      </div>
+      <div class="card">
+        <div class="ph">
+          <span class="badge badge-new">NEW</span>
+          <div class="bag"><svg class="label" viewBox="0 0 60 60" aria-hidden="true"><rect width="60" height="60" fill="#c0392b"/><path d="M0 0h20v20H0zM40 0h20v20H40zM20 20h20v20H20zM0 40h20v20H0zM40 40h20v20H40z" fill="#ecf0f1"/></svg></div>
+        </div>
+        <div class="body"><div class="title">ホンジュラス / エドガルド・ティノコ</div><div class="price">¥1,674~</div></div>
+      </div>
+      <div class="card">
+        <div class="ph">
+          <div class="bag"><svg class="label" viewBox="0 0 60 60" aria-hidden="true"><rect width="60" height="60" fill="#16a085"/><path d="M0 0h20v60H0zM40 0h20v60H40z" fill="#2c3e50"/></svg></div>
+        </div>
+        <div class="body"><div class="title">ケニア / ガトンボヤ</div><div class="price">¥1,620~</div></div>
+      </div>
+      <div class="card">
+        <div class="ph">
+          <span class="badge badge-rank">人気NO.2</span>
+          <div class="bag"><svg class="label" viewBox="0 0 60 60" aria-hidden="true"><rect width="60" height="60" fill="#8e44ad"/><path d="M0 0h20v20H0zM20 20h20v20H20zM40 40h20v20H40z" fill="#f8f6f4"/></svg></div>
+        </div>
+        <div class="body"><div class="title">オニバスブレンド【ONIBUSオリジナルブレンド】</div><div class="price">¥1,080~</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">06 — FORMS（Default / Focus / Error）</div>
+    <h2 class="c-headerLine">フォーム</h2>
+    <div class="field">
+      <div class="state">DEFAULT</div>
+      <label>メールアドレス</label>
+      <input type="email" placeholder="you@example.com">
+    </div>
+    <div class="field is-focus">
+      <div class="state">FOCUS — 下線を 2px に増す。色相は変えない</div>
+      <label>お名前</label>
+      <input type="text" value="山田 花子">
+    </div>
+    <div class="field is-error">
+      <div class="state">ERROR</div>
+      <label>郵便番号</label>
+      <input type="text" value="000">
+      <div class="msg">郵便番号を正しく入力してください</div>
+    </div>
+    <div class="field">
+      <div class="state">SEARCH — 白の面 / 枠なし / padding-left 24px / 16px</div>
+      <label>商品を検索</label>
+      <div class="search-demo"><input type="search" placeholder="コーヒー豆を探す"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">07 — ELEVATION（ポップアップ以外は影なし）</div>
+    <h2 class="c-headerLine">奥行き</h2>
+    <div class="elevs">
+      <div class="elev e0">LEVEL 0 — FLAT（既定）</div>
+      <div class="elev e1">LEVEL 1 — POPUP ONLY</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">08 — LAYOUT（container 1200px / 4 カラム / gutter 8px）</div>
+    <h2 class="c-headerLine">レイアウト</h2>
+    <div class="layout-demo">
+      <div class="col">1</div><div class="col">2</div><div class="col">3</div><div class="col">4</div>
+    </div>
+    <div class="layout-note">
+      Desktop（&gt; 989px）: 4 カラム / gutter 8px / container 1200px<br>
+      Tablet（≤ 989px）: 3 カラム　—　Mobile（≤ 749px）: 2 カラム / gutter 4px<br>
+      セクション間の余白は要素側のパディングで制御する（--spacing-sections-desktop: 0px）
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  ONIBUS COFFEE (オニバスコーヒー) — Design System Preview<br>
+  代替フォント: Work Sans + Zen Kaku Gothic New（tenon → Work Sans / MyYuGothicM・游ゴシック → Zen Kaku Gothic New）
+</footer>
+
+</body>
+</html>

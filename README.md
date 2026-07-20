@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (390 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (393 sites)</a>
 </p>
 
 <table>
@@ -578,6 +578,11 @@
 <tr>
 <td align="center"><strong>PUEBCO</strong><br><img src="design-md/puebco/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>Landscape Products</strong><br><img src="design-md/landscape-products/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>金沢21世紀美術館</strong><br><img src="design-md/kanazawa21/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>ONIBUS COFFEE</strong><br><img src="design-md/onibuscoffee/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>暮しの手帖</strong><br><img src="design-md/kurashi-no-techo/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1029,11 +1034,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [Subsequence (サブシーケンス)](https://subsequence.tv/) | Culture Magazine / Editorial | [DESIGN.md](design-md/subsequence/DESIGN.md) | [preview.html](design-md/subsequence/preview.html) |
 | [PUEBCO (プエブコ)](https://www.puebco.com/) | Homeware / Lifestyle | [DESIGN.md](design-md/puebco/DESIGN.md) | [preview.html](design-md/puebco/preview.html) |
 | [Landscape Products (ランドスケーププロダクツ)](https://landscape-products.net/) | Design Studio / Shop | [DESIGN.md](design-md/landscape-products/DESIGN.md) | [preview.html](design-md/landscape-products/preview.html) |
+| [金沢21世紀美術館 (21st Century Museum of Contemporary Art, Kanazawa)](https://www.kanazawa21.jp/) | Contemporary Art Museum | [DESIGN.md](design-md/kanazawa21/DESIGN.md) | [preview.html](design-md/kanazawa21/preview.html) |
+| [ONIBUS COFFEE (オニバスコーヒー)](https://onibuscoffee.com/) | D2C / Specialty Coffee | [DESIGN.md](design-md/onibuscoffee/DESIGN.md) | [preview.html](design-md/onibuscoffee/preview.html) |
+| [暮しの手帖 (Kurashi no Techo)](https://www.kurashi-no-techo.co.jp/) | Media / Magazine | [DESIGN.md](design-md/kurashi-no-techo/DESIGN.md) | [preview.html](design-md/kurashi-no-techo/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (390 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (393 sites)</a>
 </p>
 
 <table>
@@ -1577,6 +1585,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <tr>
 <td align="center"><strong>PUEBCO</strong><br><img src="design-md/puebco/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>Landscape Products</strong><br><img src="design-md/landscape-products/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>金沢21世紀美術館</strong><br><img src="design-md/kanazawa21/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>ONIBUS COFFEE</strong><br><img src="design-md/onibuscoffee/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>暮しの手帖</strong><br><img src="design-md/kurashi-no-techo/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
