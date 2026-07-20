@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 飛騨産業 HIDA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測値 === */
+    --bg-primary: #ffffff;
+    --surface: #f5f5f5;
+    --surface-dark: #282828;
+    --overlay: rgba(0,0,0,0.6);
+
+    --text-primary: #282828;
+    --text-on-image: #ffffff;
+    --text-muted: #a0a0a0;
+    --text-subtle: #f0f0f0;
+    --text-ua-black: #000000;
+
+    --accent-news: #c82832;
+
+    --border: #dcdcdc;
+    --border-focus: #282828;
+    --border-error: #c82832;
+
+    /* === Fonts 実測値（游ゴシック単独チェーン + Web フォールバック） === */
+    --font-base: 游ゴシック体, YuGothic, "游ゴシック Medium", "Yu Gothic Medium", 游ゴシック, "Yu Gothic", "Zen Kaku Gothic New", sans-serif;
+
+    /* === Typography 実測値 === */
+    --fs-h2: 24px;
+    --fs-body: 16px;
+    --fs-btn: 15px;
+    --fs-nav: 12px;
+    --fs-caption: 12.8px;
+    --lh-base: 1.75;
+    --ls-base: 1.6px;   /* = 0.1em @16px。全要素にグローバル適用 */
+    --ls-btn: 0.75px;   /* = 0.05em @15px */
+
+    /* === Shape 実測値 === */
+    --radius: 0px;      /* 全要素 0。円形アイコンのみ 50% */
+    --border-width: 1px;
+    --shadow-none: none; /* サイト内に box-shadow は 0 件 */
+
+    /* === Layout 実測値 === */
+    --container: 1280px;
+    --container-pad: 50px;
+    --content: 1180px;
+    --space-xs: 8px;
+    --space-s: 16px;
+    --space-m: 24px;
+    --space-l: 50px;
+    --space-xl: 60px;
+    --space-xxl: 120px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-base);
+    font-size: var(--fs-body);
+    font-weight: 400;
+    line-height: var(--lh-base);
+    letter-spacing: var(--ls-base);
+    font-feature-settings: normal; /* palt は使わない */
+    overflow-wrap: break-word;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 var(--container-pad); height: 80px;
+    background: var(--bg-primary);
+    border-bottom: var(--border-width) solid var(--border);
+  }
+  .nav-brand {
+    font-size: 28px; font-weight: 400; letter-spacing: 0.28em;
+    color: var(--text-primary); text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a {
+    font-size: var(--fs-nav); font-weight: 600; line-height: 1;
+    letter-spacing: 0.133em;
+    color: var(--text-primary); text-decoration: none;
+  }
+  .nav-utils { display: flex; gap: 16px; align-items: center; font-size: 13px; }
+  .nav-utils .on { color: var(--text-primary); border-bottom: 1px solid var(--text-primary); }
+  .nav-utils .off { color: var(--text-muted); }
+
+  /* HERO */
+  .hero {
+    padding: var(--space-xxl) var(--container-pad);
+    max-width: var(--container); margin: 0 auto; text-align: center;
+  }
+  .hero h1 {
+    font-size: 34px; font-weight: 700; line-height: 1.75;
+    letter-spacing: 0.1em; margin-bottom: var(--space-m);
+  }
+  .hero p {
+    font-size: var(--fs-body); color: var(--text-primary);
+    max-width: 720px; margin: 0 auto var(--space-xl);
+  }
+  .hero-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+
+  /* SECTION */
+  .section {
+    padding: var(--space-xl) var(--container-pad) var(--space-xxl);
+    max-width: var(--container); margin: 0 auto;
+  }
+  .section-gray { background: var(--surface); }
+  .section-gray .section-inner {
+    max-width: var(--content); margin: 0 auto;
+    padding: var(--space-xl) 0 var(--space-xxl);
+  }
+  .section-label {
+    font-size: var(--fs-nav); font-weight: 600; letter-spacing: 0.133em;
+    color: var(--text-muted); margin-bottom: var(--space-xs);
+  }
+  .section-title {
+    font-size: var(--fs-h2); font-weight: 700; line-height: var(--lh-base);
+    letter-spacing: var(--ls-base); padding: var(--space-m) 0;
+  }
+  .section-divider { border: none; border-top: var(--border-width) solid var(--border); margin: 0; }
+
+  /* COLORS */
+  .color-group-label {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.123em;
+    margin: var(--space-m) 0 var(--space-s);
+  }
+  .color-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 20px; margin-bottom: var(--space-m);
+  }
+  .color-swatch { border: var(--border-width) solid var(--border); }
+  .color-swatch-block { height: 92px; }
+  .color-swatch-info { padding: 12px 14px; }
+  .color-swatch-name { font-size: 13px; font-weight: 600; }
+  .color-swatch-hex { font-size: 12.8px; color: var(--text-muted); letter-spacing: 0.125em; }
+  .color-swatch-role { font-size: 12.8px; margin-top: 4px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: var(--space-m) 0; border-bottom: var(--border-width) solid var(--border); }
+  .type-meta {
+    font-size: 12.8px; color: var(--text-muted); margin-top: 10px;
+    letter-spacing: 0.125em;
+  }
+  .type-context { margin-left: 12px; color: var(--text-primary); }
+
+  /* ARTICLE */
+  .article { max-width: 760px; margin: 0 auto; }
+  .article h2 {
+    font-size: var(--fs-h2); font-weight: 700; line-height: var(--lh-base);
+    padding: var(--space-m) 0;
+  }
+  .article p { margin-bottom: var(--space-m); }
+  .article .lead { font-size: 18px; }
+  .article .caption { font-size: var(--fs-caption); color: var(--text-muted); }
+  .article .date { font-size: var(--fs-caption); color: var(--accent-news); }
+  .article figure { margin: var(--space-m) 0; }
+  .article .photo {
+    height: 260px; border: var(--border-width) solid var(--border);
+    background: repeating-linear-gradient(45deg, #f7f5f2 0 14px, #efece7 14px 28px);
+  }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+  .btn-primary {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 400px; padding: 16px 20px;
+    background: transparent; color: var(--text-primary);
+    border: var(--border-width) solid var(--border); border-radius: var(--radius);
+    font-family: var(--font-base); font-size: var(--fs-body); font-weight: 400;
+    line-height: var(--lh-base); letter-spacing: var(--ls-base);
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-primary .chev { font-size: 13px; }
+  .btn-secondary {
+    display: inline-block; padding: 15px;
+    background: transparent; color: var(--text-primary);
+    border: var(--border-width) solid var(--border); border-radius: var(--radius);
+    font-family: var(--font-base); font-size: var(--fs-btn); font-weight: 400;
+    line-height: 1.62; letter-spacing: var(--ls-btn);
+    text-align: left; text-decoration: none; cursor: pointer; min-width: 280px;
+  }
+  .btn-menu {
+    display: inline-block; padding: 0 32px;
+    background: var(--bg-primary); color: var(--text-ua-black);
+    border: var(--border-width) solid var(--border); border-radius: var(--radius);
+    font-family: var(--font-base); font-size: var(--fs-btn); font-weight: 400;
+    line-height: 50px; letter-spacing: 0.107em; text-decoration: none;
+  }
+  .btn-inverse {
+    display: inline-block; padding: 15px 32px;
+    background: var(--surface-dark); color: var(--text-on-image);
+    border: var(--border-width) solid var(--surface-dark); border-radius: var(--radius);
+    font-family: var(--font-base); font-size: var(--fs-btn);
+    letter-spacing: var(--ls-btn); text-decoration: none;
+  }
+  .btn-note { font-size: 12.8px; color: var(--text-muted); margin-top: 10px; letter-spacing: 0.125em; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .card {
+    background: var(--bg-primary); border: none;
+    border-radius: var(--radius); box-shadow: var(--shadow-none);
+  }
+  .card-photo {
+    height: 150px;
+    background: repeating-linear-gradient(45deg, #f7f5f2 0 14px, #efece7 14px 28px);
+  }
+  .card-photo.dark { background: repeating-linear-gradient(45deg, #e6e2db 0 14px, #dcd7ce 14px 28px); }
+  .card-caption { text-align: center; padding: var(--space-s) 0; font-size: var(--fs-body); }
+  .card-underline { border-top: var(--border-width) solid var(--border); }
+
+  /* FORMS */
+  .form-group { margin-bottom: var(--space-m); max-width: 480px; }
+  .form-label { display: block; font-size: 13px; font-weight: 600; letter-spacing: 0.123em; margin-bottom: var(--space-xs); }
+  .form-input {
+    width: 100%; height: 48px; padding: 12px 15px;
+    background: var(--bg-primary); color: var(--text-primary);
+    border: var(--border-width) solid var(--border); border-radius: var(--radius);
+    font-family: var(--font-base); font-size: var(--fs-body);
+    letter-spacing: var(--ls-base); outline: none;
+  }
+  .form-input::placeholder { color: var(--text-muted); }
+  .form-input--focus { border-color: var(--border-focus); }
+  .form-input--error { border-color: var(--border-error); }
+  .form-state-label { font-size: 12.8px; color: var(--text-muted); margin-top: 8px; letter-spacing: 0.125em; }
+  .form-error-msg { font-size: 12.8px; color: var(--accent-news); margin-top: 8px; letter-spacing: 0.125em; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .elevation-card {
+    padding: var(--space-m); background: var(--bg-primary);
+    border: var(--border-width) solid var(--border); border-radius: var(--radius);
+    box-shadow: var(--shadow-none);
+  }
+  .elevation-label { font-size: 13px; font-weight: 600; letter-spacing: 0.123em; }
+  .elevation-desc { font-size: 12.8px; color: var(--text-muted); margin-top: 6px; letter-spacing: 0.125em; }
+  .elevation-card.filled { background: var(--surface); border-color: var(--surface); }
+  .elevation-card.inverse { background: var(--surface-dark); border-color: var(--surface-dark); color: var(--text-on-image); }
+  .elevation-card.inverse .elevation-desc { color: var(--text-subtle); }
+
+  /* LAYOUT */
+  .width-bar-label { font-size: 13px; margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .width-bar-value { color: var(--text-muted); font-size: 12.8px; }
+  .width-bar { height: 26px; background: var(--surface); }
+  .width-bar-inner { height: 100%; background: var(--surface-dark); }
+  .spacing-row { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+  .spacing-token { width: 60px; font-size: 13px; font-weight: 600; letter-spacing: 0.123em; }
+  .spacing-bar { height: 14px; background: var(--surface-dark); }
+  .spacing-value { font-size: 12.8px; color: var(--text-muted); letter-spacing: 0.125em; }
+
+  /* FOOTER */
+  .footer {
+    background: var(--surface);
+    padding: var(--space-xl) var(--container-pad);
+    font-size: 12.8px; color: var(--text-primary);
+    text-align: center; letter-spacing: 0.125em;
+  }
+
+  @media screen and (max-width: 767px) {
+    .section { padding: var(--space-m) 20px var(--space-xl); }
+    .card-grid { grid-template-columns: repeat(2, 1fr); }
+    .elevation-grid { grid-template-columns: 1fr; }
+    .btn-primary { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">HIDA</a>
+  <ul class="nav-links">
+    <li><a href="#colors">商品情報／オンラインストア</a></li>
+    <li><a href="#typography">店舗情報</a></li>
+    <li><a href="#article">法人のお客様</a></li>
+    <li><a href="#buttons">納入事例</a></li>
+    <li><a href="#cards">お知らせ</a></li>
+    <li><a href="#forms">会社情報</a></li>
+  </ul>
+  <div class="nav-utils"><span class="on">JP</span><span class="off">/ EN</span></div>
+</nav>
+
+<section class="hero">
+  <h1>Design System Preview<br>飛騨産業 HIDA</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。角丸ゼロ・影ゼロ・letter-spacing 0.1em という、白と細罫だけで構成された設計を可視化する。すべて computed style の実測値に基づく。</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#colors">カラーパレットを見る<span class="chev">›</span></a>
+    <a class="btn-secondary" href="#typography">タイポグラフィ階層を見る</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 01 COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="color-group-label">Base — 面色は3枚だけ</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #dcdcdc"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ全体の下地</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5f5f5"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#f5f5f5</div><div class="color-swatch-role">フッター全域の面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#282828"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Dark</div><div class="color-swatch-hex">#282828</div><div class="color-swatch-role">反転させる局所面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(0,0,0,0.6)"></div><div class="color-swatch-info"><div class="color-swatch-name">Overlay</div><div class="color-swatch-hex">rgba(0,0,0,0.6)</div><div class="color-swatch-role">モーダル暗幕</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#282828"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#282828</div><div class="color-swatch-role">見出し・本文・ナビ（墨色）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #dcdcdc"></div><div class="color-swatch-info"><div class="color-swatch-name">Text on Image</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">写真・墨色面の上の文字</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#a0a0a0"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Muted</div><div class="color-swatch-hex">#a0a0a0</div><div class="color-swatch-role">非選択の言語切替など</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f0f0f0"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Subtle</div><div class="color-swatch-hex">#f0f0f0</div><div class="color-swatch-role">写真上の非選択リンク</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000000"></div><div class="color-swatch-info"><div class="color-swatch-name">UA Black</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">既定色の残り／新規は不可</div></div></div>
+  </div>
+
+  <div class="color-group-label">Accent &amp; Line — 唯一の彩度色と唯一の罫色</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c82832"></div><div class="color-swatch-info"><div class="color-swatch-name">News Red</div><div class="color-swatch-hex">#c82832</div><div class="color-swatch-role">お知らせ日付の文字色のみ</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dcdcdc"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#dcdcdc</div><div class="color-swatch-role">1px solid。罫はこの1色のみ</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:32px; font-weight:400; letter-spacing:0.28em; line-height:1.4;">HIDA</div>
+    <div class="type-meta">32px / 400 / letter-spacing: 0.28em<span class="type-context">ロゴ（実体は画像／SVG）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:24px; font-weight:700; line-height:1.75; letter-spacing:1.6px;">木工の聖地　飛騨高山 — Section Heading (h2)</div>
+    <div class="type-meta">24px / 700 / line-height: 1.75 / letter-spacing: 1.6px (0.067em) / palt: なし<span class="type-context">.c_title</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:13px; font-weight:600; line-height:1.75; letter-spacing:1.6px;">商品情報／オンラインストア — Footer Heading (h5)</div>
+    <div class="type-meta">13px / 600 / line-height: 1.75 / letter-spacing: 1.6px (0.123em)<span class="type-context">フッター見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:12px; font-weight:600; line-height:1; letter-spacing:1.6px;">納入事例　お知らせ　会社情報 — Global Nav</div>
+    <div class="type-meta">12px / 600 / line-height: 1.0 / letter-spacing: 1.6px (0.133em)<span class="type-context">グローバルナビ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:16px; font-weight:400; line-height:1.75; letter-spacing:1.6px;">飛騨の匠の技を受け継ぎ、国産の広葉樹を家具に変えてきました。本文 — Body 16px</div>
+    <div class="type-meta">16px / 400 / line-height: 1.75 / letter-spacing: 1.6px (0.1em)<span class="type-context">本文（実測 579 要素）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:15px; font-weight:400; line-height:1.62; letter-spacing:0.75px;">飛騨産業の強みと納入事例について — Button 15px</div>
+    <div class="type-meta">15px / 400 / line-height: 1.62 / letter-spacing: 0.75px (0.05em)<span class="type-context">.c-sib2-btn</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:12.8px; font-weight:400; line-height:1.75; letter-spacing:1.6px;">2026/07/03 — Caption 12.8px</div>
+    <div class="type-meta">12.8px / 400 / line-height: 1.75 / letter-spacing: 1.6px (0.125em)<span class="type-context">日付・注記</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:12px; font-weight:400; line-height:1.75; letter-spacing:1.6px;">© Hida Sangyo Co., Ltd. — Small 12px</div>
+    <div class="type-meta">12px / 400 / line-height: 1.75 / letter-spacing: 1.6px (0.133em)<span class="type-context">コピーライト</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:16px; letter-spacing:0;">letter-spacing: 0 — 字間を詰めると、このサイトの静けさは失われる</div>
+    <div class="type-meta">比較用（非推奨）。実サイトは全 806 要素が letter-spacing: 1.6px<span class="type-context">Don't</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 03 ARTICLE / PRODUCT -->
+<section class="section-gray" id="article">
+<div class="section" style="padding-top:var(--space-xl)">
+  <div class="section-label">03 / Product — 商品ページの組版</div>
+  <h2 class="section-title">商品ページの組版サンプル</h2>
+  <div class="article">
+    <div class="date">2026/07/03　新商品</div>
+    <h2>デザイナー 熊野 亘 氏とのコラボレーションモデル「kei」</h2>
+    <p class="lead">節や色の違いを含んだ国産広葉樹を、そのまま素材として受け入れる。飛騨の職人が長年培ってきた曲木と圧縮の技術で、木の個体差を活かした一脚に仕上げました。</p>
+    <figure>
+      <div class="photo"></div>
+      <figcaption class="caption">kei アームチェア／ホワイトオーク・オイル仕上げ　撮影協力：鈴木大拙館</figcaption>
+    </figure>
+    <h2>木を使い切るという考え方</h2>
+    <p>創業から一世紀、飛騨産業は「木を活かす」ことを軸に家具をつくってきました。曲木の技法は、直線の板からは生まれない柔らかな輪郭を可能にします。杉の圧縮技術は、これまで家具に向かないとされてきた針葉樹を、堅く美しい素材へと変えました。</p>
+    <p>本文の行間は 1.75、字間は 0.1em。日本語としてはかなり広い設定ですが、白い余白とあいまって、読み手の呼吸を整えるようなリズムを作ります。<strong style="font-weight:700;">見出しも本文と同じ行間 1.75</strong> を共有するのが、このサイトの組版の特徴です。</p>
+    <p class="caption">※ 天然木を使用しているため、色味・木目には個体差があります。</p>
+    <div style="margin-top:var(--space-xl); display:flex; justify-content:center;">
+      <a class="btn-primary" href="#" style="background:#fff;">オンラインストアトップ<span class="chev">›</span></a>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 04 BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons — 塗りボタンは存在しない</div>
+  <h2 class="section-title">ボタンバリエーション</h2>
+  <div class="btn-row">
+    <div>
+      <a class="btn-primary" href="#">オンラインストアトップ<span class="chev">›</span></a>
+      <div class="btn-note">Primary（.btn_link）— transparent / 1px solid #dcdcdc / radius 0 / width 400px / 16px</div>
+    </div>
+    <div>
+      <a class="btn-secondary" href="#">飛騨産業の強みと納入事例について</a>
+      <div class="btn-note">Secondary（.c-sib2-btn）— padding 15px / 15px / letter-spacing 0.05em / 左寄せ</div>
+    </div>
+  </div>
+  <div class="btn-row" style="margin-top:var(--space-m)">
+    <div>
+      <a class="btn-menu" href="#">WEBカタログ</a>
+      <div class="btn-note">Menu（.c-headerMenuBtn）— background #ffffff / line-height 50px で高さを作る</div>
+    </div>
+    <div>
+      <a class="btn-inverse" href="#">検索する</a>
+      <div class="btn-note">Inverse — background #282828 / text #ffffff。検索モーダル等の局所反転のみ</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 05 CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards — 枠線も影も付けない</div>
+  <h2 class="section-title">カードコンポーネント</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-photo"></div><div class="card-caption">WEBカタログ</div></div>
+    <div class="card"><div class="card-photo dark"></div><div class="card-caption">サポート</div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-caption">店舗情報</div></div>
+    <div class="card"><div class="card-photo dark"></div><div class="card-caption">会社情報</div></div>
+  </div>
+  <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:24px; margin-top:var(--space-xl)">
+    <div class="card"><div class="card-photo" style="height:240px"></div><div class="card-caption">▸ カテゴリーから探す</div><div class="card-underline"></div></div>
+    <div class="card"><div class="card-photo dark" style="height:240px"></div><div class="card-caption">▸ シリーズから探す</div><div class="card-underline"></div></div>
+  </div>
+  <div class="btn-note">カードは写真そのものが輪郭。border-radius 0 / box-shadow none / 枠線なし。キャプションは中央寄せ 16px。下線は 1px solid #dcdcdc</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 06 FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group">
+    <label class="form-label">お名前</label>
+    <input class="form-input" type="text" placeholder="飛騨 太郎">
+    <div class="form-state-label">デフォルト — border: 1px solid #dcdcdc / radius: 0 / height: 48px</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">メールアドレス</label>
+    <input class="form-input form-input--focus" type="text" value="taro@example.com">
+    <div class="form-state-label">フォーカス — border-color を #282828 に置換。リング・シャドウは使わない</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">メールアドレス</label>
+    <input class="form-input form-input--error" type="text" value="invalid@">
+    <div class="form-error-msg">メールアドレスの形式が正しくありません</div>
+    <div class="form-state-label">エラー — border-color: #c82832。背景は塗らない</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 07 ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation — box-shadow はサイト内に0件</div>
+  <h2 class="section-title">Depth &amp; Elevation</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0 — 罫</div><div class="elevation-desc">1px solid #dcdcdc。奥行きはこれで作る</div></div>
+    <div class="elevation-card filled"><div class="elevation-label">Level 0 — 面</div><div class="elevation-desc">#f5f5f5。白との差だけで層を分ける</div></div>
+    <div class="elevation-card inverse"><div class="elevation-label">Level 0 — 反転</div><div class="elevation-desc">#282828。最前面の局所にのみ使う</div></div>
+  </div>
+  <div class="btn-note">実測で box-shadow を持つ要素は 0 件。カードにもドロップダウンにもモーダルにも影を付けない。モーダルは背後に rgba(0,0,0,0.6) の暗幕を敷くだけ</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 08 LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">08 / Layout — 実測値</div>
+  <h2 class="section-title">コンテンツ幅とスペーシング</h2>
+
+  <div style="margin-bottom:16px"><div class="width-bar-label">Container (.l-container) <span class="width-bar-value">1280px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Content (padding 50px 差引後) <span class="width-bar-value">1180px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:92.2%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Pickup Block <span class="width-bar-value">1200px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:93.8%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Button Width <span class="width-bar-value">400px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:31.3%"></div></div></div>
+
+  <div class="color-group-label">Spacing Scale</div>
+  <div class="spacing-row"><div class="spacing-token">XS</div><div class="spacing-bar" style="width:8px"></div><div class="spacing-value">8px — アイコンとラベルの間</div></div>
+  <div class="spacing-row"><div class="spacing-token">S</div><div class="spacing-bar" style="width:16px"></div><div class="spacing-value">16px — カード内テキスト間</div></div>
+  <div class="spacing-row"><div class="spacing-token">M</div><div class="spacing-bar" style="width:24px"></div><div class="spacing-value">24px — 見出しの上下 padding</div></div>
+  <div class="spacing-row"><div class="spacing-token">L</div><div class="spacing-bar" style="width:50px"></div><div class="spacing-value">50px — コンテナ左右 padding</div></div>
+  <div class="spacing-row"><div class="spacing-token">XL</div><div class="spacing-bar" style="width:60px"></div><div class="spacing-value">60px — セクション下 padding</div></div>
+  <div class="spacing-row"><div class="spacing-token">XXL</div><div class="spacing-bar" style="width:120px"></div><div class="spacing-value">120px — セクション間の抜き</div></div>
+
+  <div class="color-group-label">Breakpoints</div>
+  <div class="btn-note" style="font-size:13px; letter-spacing:0.1em;">Mobile ≤ 767px ／ Tablet 768–1023px ／ Desktop ≥ 1024px ／ Wide ≥ 1280px</div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://kitutuki.co.jp/" style="color:var(--text-primary);">飛騨産業 HIDA</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-07-20）<br>
+  ※ 游ゴシックが無い環境向けに Google Fonts の Zen Kaku Gothic New をフォールバックとして追加しています
+</footer>
+
+</body>
+</html>

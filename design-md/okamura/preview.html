@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: オカムラ (Okamura)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Source+Sans+3:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: オカムラ 実測値 === */
+    --bg-white:      #ffffff;   /* トップのページ背景 */
+    --bg-light-gray: #ededeb;   /* 下層コンテンツ帯・フッター (--bg-light-gray) */
+    --surface:       #f5f5f3;   /* 面色 (--okm-light-gray) */
+    --surface-tight: #f5f5f5;   /* フォーム面 (--frame-tight-gray / --form-gray) */
+
+    --okm-red:       #e60039;   /* ブランドレッド (--okm-red) ロゴ・ホバーのみ */
+
+    --cta-gray-1:    #515151;
+    --cta-gray-2:    #616161;
+    --cta-gray-3:    #666666;
+    --cta-gray-4:    #717171;
+
+    --text:          #333333;   /* (--okm-text-color) */
+    --ink:           #111111;   /* (--color-blk) */
+    --text-on-dark:  #ffffff;
+    --muted:         #666666;   /* (--form-dark-gray) */
+    --black:         #000000;   /* フッターロゴのみ */
+
+    --border:        #dddddd;   /* (--header-footer-border-color) */
+    --border-btn:    #999999;
+    --border-card:   #cccccc;
+    --border-cta:    #e5e5e5;   /* (--cta_border_color) */
+    --border-input:  #d1d1d1;
+
+    --err-bg:        #fffafb;   /* (--form-err-pink) */
+    --err-text:      #e60039;
+
+    /* === Metrics === */
+    --contents-width: 1366px;
+    --radius-flat:    0px;
+    --radius-pill:    50px;
+    --radius-item:    10px;     /* (--item-corner-radius) */
+    --cta-shadow:     0 0 10px rgba(0,0,0,0.2);
+
+    /* === Fonts ===
+       UD新ゴ (UD Shin Go / モリサワ・TypeSquare) → BIZ UDPGothic（同じモリサワの UD 書体）
+       Slate (Monotype) → Source Sans 3
+       OkamuraSans → Noto Sans JP */
+    --font:    "BIZ UDPGothic", "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+    --font-en: "Source Sans 3", "BIZ UDPGothic", sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-white);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.8;
+    letter-spacing: normal;
+    font-feature-settings: "palt";   /* body でグローバルに palt ON */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .wrap { max-width: var(--contents-width); margin: 0 auto; padding: 0 40px; }
+
+  /* Header */
+  header.site {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 40px; border-bottom: 1px solid var(--border);
+    background: var(--bg-white);
+  }
+  header.site .logo { display: flex; align-items: center; gap: 10px; }
+  header.site .logo .mark {
+    width: 26px; height: 26px; background: var(--okm-red);
+    transform: rotate(45deg); border-radius: 3px;
+  }
+  header.site .logo .word {
+    font-family: var(--font-en); font-size: 26px; font-weight: 600;
+    letter-spacing: -0.01em; color: var(--ink);
+  }
+  header.site nav { display: flex; gap: 34px; }
+  header.site nav a {
+    color: var(--text); text-decoration: none;
+    font-size: 14px; line-height: 1.0; letter-spacing: 0.166em;  /* ナビだけ大きく開く */
+  }
+  header.site nav a:hover { color: var(--okm-red); }
+
+  /* Sections */
+  .section { padding: 60px 0; border-bottom: 1px solid var(--border); }
+  .section.tinted { background: var(--bg-light-gray); border-bottom: none; }
+  .section.tinted .inner { max-width: var(--contents-width); margin: 0 auto; padding: 0 40px; }
+  .section-label {
+    font-family: var(--font-en);
+    font-size: 14px; line-height: 2.06; letter-spacing: 0.126em;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  h2.display { font-size: 30px; font-weight: 700; line-height: 0.96; margin: 12px 0 30px; }
+
+  /* 01 Colors */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 14px; }
+  .swatch { border: 1px solid var(--border-card); border-radius: var(--radius-flat); background: var(--bg-white); }
+  .swatch .chip { height: 80px; }
+  .swatch .meta { padding: 10px 12px; }
+  .swatch .meta .name { font-size: 13px; line-height: 1.6; }
+  .swatch .meta .hex { font-family: var(--font-en); font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
+
+  /* 02 Typography */
+  .type-row { display: flex; align-items: baseline; gap: 24px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .type-row .tag {
+    width: 210px; flex: none; font-family: var(--font-en);
+    font-size: 12px; letter-spacing: 0.06em; color: var(--muted); line-height: 1.5;
+  }
+  .t-h1      { font-size: 24px; font-weight: 700; line-height: 1.8; }
+  .t-toph2   { font-size: 30px; font-weight: 700; line-height: 0.96; }
+  .t-h2      { font-size: 24px; font-weight: 500; line-height: 1.8; }
+  .t-h3      { font-size: 20px; font-weight: 700; line-height: 1.44; }
+  .t-card    { font-size: 16px; font-weight: 700; line-height: 1.8; }
+  .t-nav     { font-size: 14px; font-weight: 400; line-height: 1.0; letter-spacing: 0.166em; }
+  .t-menu-en { font-family: var(--font-en); font-size: 14px; font-weight: 400; line-height: 2.06; letter-spacing: 0.126em; }
+  .t-body    { font-size: 16px; font-weight: 400; line-height: 1.8; }
+  .t-small   { font-size: 14px; font-weight: 400; line-height: 2.06; }
+  .t-caption { font-size: 11px; font-weight: 400; line-height: 1.2; letter-spacing: 0.058em; color: var(--muted); }
+
+  /* 03 Product */
+  .prose { max-width: 720px; }
+  .prose .eyebrow { font-family: var(--font-en); font-size: 14px; letter-spacing: 0.126em; color: var(--muted); }
+  .prose h3 { font-size: 24px; font-weight: 700; line-height: 1.2; margin: 6px 0 18px; }
+  .prose .kana { font-size: 14px; line-height: 2.06; color: var(--muted); margin-bottom: 20px; }
+  .prose p { font-size: 16px; line-height: 1.8; margin-bottom: 20px; }
+  .spec { border-top: 1px solid var(--border); margin-top: 10px; }
+  .spec div { display: flex; gap: 20px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; line-height: 2.06; }
+  .spec div span:first-child { width: 160px; flex: none; color: var(--muted); }
+
+  /* 04 Buttons */
+  .btns { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--font); cursor: pointer; text-decoration: none; display: inline-block; font-feature-settings: "palt"; }
+  .btn-outline {
+    background: var(--bg-white); color: var(--text);
+    border: 1px solid var(--border-btn); border-radius: var(--radius-flat);
+    padding: 25px 40px 25px 30px; font-size: 15px; font-weight: 400; line-height: 1.0;
+  }
+  .btn-outline:hover { box-shadow: var(--cta-shadow); }
+  .btn-outline-sm {
+    background: var(--bg-white); color: var(--text);
+    border: 1px solid var(--border-btn); border-radius: var(--radius-flat);
+    padding: 14px 45px; font-size: 12px; font-weight: 400; line-height: 1.0;
+  }
+  .btn-outline-sm:hover { box-shadow: var(--cta-shadow); }
+  .btn-bar {
+    background: var(--cta-gray-3); color: var(--text-on-dark);
+    border: none; border-radius: var(--radius-flat);
+    padding: 16px 13px; font-size: 10px; font-weight: 700; line-height: 1.2;
+    min-width: 250px; text-align: left; position: relative;
+  }
+  .btn-bar::after { content: "→"; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 12px; }
+  .btn-tag {
+    background: var(--bg-white); color: var(--text);
+    border: 1px solid var(--border); border-radius: var(--radius-pill);
+    padding: 9px 13px; font-size: 12px; font-weight: 400; line-height: 1.4;
+  }
+  .btn-tag:hover { border-color: var(--border-btn); }
+  .block-ctas { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 20px; margin-top: 28px; }
+  .block-cta { padding: 34px 26px; color: var(--text-on-dark); border-radius: var(--radius-flat); }
+  .block-cta h4 { font-size: 20px; font-weight: 700; line-height: 1.4; }
+  .block-cta p { font-size: 14px; line-height: 2.06; opacity: 0.9; }
+  .bc1 { background: var(--cta-gray-1); }
+  .bc2 { background: var(--cta-gray-2); }
+  .bc3 { background: var(--cta-gray-4); }
+
+  /* 05 Cards */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 24px; }
+  .card {
+    background: var(--bg-white); border: 1px solid var(--border-card);
+    border-radius: var(--radius-flat); box-shadow: 0 0 0 0 rgba(0,0,0,0.2);
+    transition: box-shadow .25s ease;
+  }
+  .card:hover { box-shadow: var(--cta-shadow); }
+  .card .ph { height: 150px; background: var(--surface); }
+  .card .body { padding: 18px 20px 22px; }
+  .card .body .catch { font-size: 14px; line-height: 2.06; }
+  .card .body .name { font-family: var(--font-en); font-size: 20px; font-weight: 400; line-height: 1.4; margin-top: 4px; }
+  .card .body .kana { font-size: 11px; line-height: 1.2; letter-spacing: 0.058em; color: var(--muted); }
+
+  /* 06 Forms */
+  .field { margin-bottom: 20px; max-width: 460px; }
+  .field label { display: block; font-size: 14px; line-height: 2.06; margin-bottom: 6px; }
+  .field input {
+    width: 100%; font-family: var(--font); font-size: 16px; line-height: 1.8;
+    padding: 12px 15px; border: 1px solid var(--border-input);
+    border-radius: var(--radius-flat); background: var(--bg-white); color: var(--text);
+  }
+  .field input::placeholder { color: var(--muted); }
+  .field input:focus { outline: none; border-color: var(--text); box-shadow: var(--cta-shadow); }
+  .field.err input { border-color: var(--err-text); background: var(--err-bg); }
+  .field.err .msg { color: var(--err-text); font-size: 14px; line-height: 2.06; margin-top: 4px; }
+  .field.search input { border-radius: var(--radius-pill); font-size: 12.8px; padding: 8px 35px 8px 15px; }
+  .state-note { font-size: 11px; letter-spacing: 0.058em; color: var(--muted); margin-bottom: 6px; }
+
+  /* 07 Elevation */
+  .elevs { display: flex; gap: 28px; flex-wrap: wrap; }
+  .elev {
+    width: 220px; height: 120px; background: var(--bg-white);
+    border: 1px solid var(--border-card); border-radius: var(--radius-flat);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; letter-spacing: 0.06em; color: var(--muted); text-align: center;
+  }
+  .elev.e1 { box-shadow: var(--cta-shadow); }
+  .elev.e2 { box-shadow: var(--cta-shadow); border-radius: var(--radius-item); }
+
+  /* 08 Layout */
+  .layout-demo { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .layout-demo .col {
+    background: var(--surface); border: 1px solid var(--border-card);
+    height: 90px; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; color: var(--muted);
+  }
+  .layout-meta { margin-top: 16px; font-size: 14px; line-height: 2.06; color: var(--muted); }
+
+  footer.site {
+    background: var(--bg-light-gray); padding: 44px 40px;
+    color: var(--text); font-size: 14px; line-height: 2.06; text-align: center;
+  }
+  footer.site .flogo { font-family: var(--font-en); font-size: 22px; font-weight: 600; color: var(--black); letter-spacing: -0.01em; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="logo"><div class="mark"></div><div class="word">okamura</div></div>
+  <nav>
+    <a href="#">事業領域から探す</a><a href="#">製品・カタログから探す</a><a href="#">ショールーム</a><a href="#">サステナビリティ</a><a href="#">企業情報</a><a href="#">IR情報</a>
+  </nav>
+</header>
+
+<div class="wrap">
+
+  <section class="section">
+    <div class="section-label">01 — COLORS</div>
+    <h2 class="display">カラーパレット</h2>
+    <div class="swatches">
+      <div class="swatch"><div class="chip" style="background:#ffffff;border-bottom:1px solid var(--border)"></div><div class="meta"><div class="name">Background (Top)</div><div class="hex">#ffffff</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#ededeb"></div><div class="meta"><div class="name">Background (Content)</div><div class="hex">#ededeb</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#f5f5f3"></div><div class="meta"><div class="name">Surface Light</div><div class="hex">#f5f5f3</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#e60039"></div><div class="meta"><div class="name">Okamura Red</div><div class="hex">#e60039</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#333333"></div><div class="meta"><div class="name">Text Primary</div><div class="hex">#333333</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#111111"></div><div class="meta"><div class="name">Ink</div><div class="hex">#111111</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#515151"></div><div class="meta"><div class="name">CTA Gray 1</div><div class="hex">#515151</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#616161"></div><div class="meta"><div class="name">CTA Gray 2</div><div class="hex">#616161</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#666666"></div><div class="meta"><div class="name">CTA Gray 3</div><div class="hex">#666666</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#717171"></div><div class="meta"><div class="name">CTA Gray 4</div><div class="hex">#717171</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#999999"></div><div class="meta"><div class="name">Border (Button)</div><div class="hex">#999999</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#cccccc"></div><div class="meta"><div class="name">Border (Card)</div><div class="hex">#cccccc</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#dddddd"></div><div class="meta"><div class="name">Border (Rule)</div><div class="hex">#dddddd</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#fffafb;border-bottom:1px solid var(--border)"></div><div class="meta"><div class="name">Error Background</div><div class="hex">#fffafb</div></div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">02 — TYPOGRAPHY（UD新ゴ / palt on / 基準 line-height 1.8）</div>
+    <div class="type-row"><div class="tag">Page Title 24 / 700 / 1.8</div><div class="t-h1">製品情報 - オフィス家具・什器</div></div>
+    <div class="type-row"><div class="tag">Top Section 30 / 700 / 0.96</div><div class="t-toph2">オカムラのソリューション・製品</div></div>
+    <div class="type-row"><div class="tag">Section 24 / 500 / 1.8</div><div class="t-h2">ピックアップ</div></div>
+    <div class="type-row"><div class="tag">Sub Heading 20 / 700 / 1.44</div><div class="t-h3">ワーク＆ライフクリエイション事業</div></div>
+    <div class="type-row"><div class="tag">Card Title 16 / 700 / 1.8</div><div class="t-card">チェア</div></div>
+    <div class="type-row"><div class="tag">Global Nav 14 / 400 / 0.166em</div><div class="t-nav">事業領域から探す</div></div>
+    <div class="type-row"><div class="tag">Menu Label (EN) Slate 14 / 0.126em</div><div class="t-menu-en">SOLUTION</div></div>
+    <div class="type-row"><div class="tag">Body 16 / 400 / 1.8</div><div class="t-body">オカムラは、オフィス・商環境・物流の3つの領域で、人が働き、集い、暮らす場をつくってきました。空間づくりを通して、人の可能性を拓きます。</div></div>
+    <div class="type-row"><div class="tag">Body Small 14 / 400 / 2.06</div><div class="t-small">機能性と快適性を追求したオフィス家具と、働き方に合わせた空間づくりのご提案。</div></div>
+    <div class="type-row"><div class="tag">Caption 11 / 400 / 0.058em</div><div class="t-caption">【フローテ】ハイバック / アルミ脚 / ブラック</div></div>
+  </section>
+
+</div>
+
+<section class="section tinted">
+  <div class="inner">
+    <div class="section-label">03 — PRODUCT</div>
+    <h2 class="display" style="line-height:1.2;font-size:24px">製品ページの組版</h2>
+    <div class="prose">
+      <div class="eyebrow">OFFICE CHAIR</div>
+      <h3>Flotte</h3>
+      <div class="kana">【フローテ】</div>
+      <p>凛とした佇まいで、しなやかさと気品が漂う。背もたれは座る人の動きに追従してしなり、長時間のデスクワークでも身体を預けたままでいられます。ミーティングにも執務にも、姿勢を選ばず馴染むチェアです。</p>
+      <p>ランバーサポートは工具なしで高さを調整でき、座面の奥行きもレバー一つで変えられます。日々の使い手が自分で合わせられることを前提に設計しました。</p>
+      <div class="spec">
+        <div><span>シリーズ</span><span>Flotte（フローテ）</span></div>
+        <div><span>タイプ</span><span>ハイバック / ミドルバック / エクストラハイバック</span></div>
+        <div><span>張地</span><span>クロス / 革</span></div>
+        <div><span>脚</span><span>ナイロンキャスター脚 / アルミ脚</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <section class="section">
+    <div class="section-label">04 — BUTTONS</div>
+    <h2 class="display" style="line-height:1.2;font-size:24px">ボタン</h2>
+    <div class="btns">
+      <a class="btn btn-outline" href="#">ニュースリリース一覧　→</a>
+      <a class="btn btn-outline-sm" href="#">一覧を見る</a>
+      <a class="btn btn-bar" href="#">オカムラのブランドページへ</a>
+      <a class="btn btn-tag" href="#">椅子</a>
+      <a class="btn btn-tag" href="#">シルフィー</a>
+      <a class="btn btn-tag" href="#">デスク</a>
+    </div>
+    <div class="block-ctas">
+      <div class="block-cta bc1"><h4>移転・改装など空間づくりのご相談</h4><p>オフィス移転・改装のご相談はこちら</p></div>
+      <div class="block-cta bc2"><h4>製品の使い方・その他お問い合わせ</h4><p>使い方やお困りごとに関するご相談は</p></div>
+      <div class="block-cta bc3"><h4>資料ダウンロード</h4><p>オフィスづくりに役立つ資料をご用意</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">05 — CARDS</div>
+    <h2 class="display" style="line-height:1.2;font-size:24px">製品カード（hover で影）</h2>
+    <div class="cards">
+      <div class="card"><div class="ph"></div><div class="body"><div class="catch">凛とした佇まいで、しなやかさと気品が漂う。</div><div class="name">Flotte</div><div class="kana">【フローテ】</div></div></div>
+      <div class="card"><div class="ph"></div><div class="body"><div class="catch">会話が自然に生まれるオフィスへ。</div><div class="name">YAA</div><div class="kana">【ヤア】</div></div></div>
+      <div class="card"><div class="ph"></div><div class="body"><div class="catch">これまでにない集中環境をもたらす。</div><div class="name">TELECUBE</div><div class="kana">【テレキューブ】</div></div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">06 — FORMS（default / focus / error）</div>
+    <h2 class="display" style="line-height:1.2;font-size:24px">フォーム</h2>
+    <div class="state-note">DEFAULT</div>
+    <div class="field"><label>会社名</label><input type="text" placeholder="株式会社オカムラ"></div>
+    <div class="state-note">FOCUS（border #333 ＋ 0 0 10px rgba(0,0,0,0.2)）</div>
+    <div class="field"><label>ご担当者名</label><input type="text" value="岡村 太郎" style="border-color:#333333;box-shadow:0 0 10px rgba(0,0,0,0.2)"></div>
+    <div class="state-note">ERROR（background #fffafb ／ border・文字 #e60039）</div>
+    <div class="field err"><label>メールアドレス</label><input type="text" value="taro@"><div class="msg">メールアドレスを正しく入力してください</div></div>
+    <div class="state-note">SEARCH（radius 50px のピル）</div>
+    <div class="field search"><input type="text" placeholder="製品名・キーワードで検索"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">07 — ELEVATION</div>
+    <h2 class="display" style="line-height:1.2;font-size:24px">奥行き</h2>
+    <div class="elevs">
+      <div class="elev">Level 0 · Flat<br>（既定・静止状態）</div>
+      <div class="elev e1">Level 1 · Hover<br>0 0 10px rgba(0,0,0,0.2)</div>
+      <div class="elev e2">Level 2 · Menu Item<br>radius 10px ＋ 同じ影</div>
+    </div>
+  </section>
+
+  <section class="section" style="border-bottom:none">
+    <div class="section-label">08 — LAYOUT</div>
+    <h2 class="display" style="line-height:1.2;font-size:24px">レイアウト（2 カラム / container 1366px）</h2>
+    <div class="layout-demo">
+      <div class="col">Card 1/2</div><div class="col">Card 1/2</div>
+      <div class="col">Card 1/2</div><div class="col">Card 1/2</div>
+    </div>
+    <div class="layout-meta">
+      container: 1366px（--contents-width）／ section padding: 60px 0 ／ gutter: 24px ／
+      背景帯は全幅、中身のみ 1366px に収める
+    </div>
+  </section>
+
+</div>
+
+<footer class="site">
+  <div class="flogo">okamura</div>
+  オカムラ (Okamura) — Design System Preview<br>
+  代替フォント: BIZ UDPGothic（UD新ゴ）＋ Source Sans 3（Slate）
+</footer>
+
+</body>
+</html>

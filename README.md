@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (393 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (396 sites)</a>
 </p>
 
 <table>
@@ -583,6 +583,11 @@
 <tr>
 <td align="center"><strong>ONIBUS COFFEE</strong><br><img src="design-md/onibuscoffee/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>暮しの手帖</strong><br><img src="design-md/kurashi-no-techo/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>BIOTOP</strong><br><img src="design-md/biotop/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>オカムラ</strong><br><img src="design-md/okamura/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>飛騨産業</strong><br><img src="design-md/hida/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1037,11 +1042,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [金沢21世紀美術館 (21st Century Museum of Contemporary Art, Kanazawa)](https://www.kanazawa21.jp/) | Contemporary Art Museum | [DESIGN.md](design-md/kanazawa21/DESIGN.md) | [preview.html](design-md/kanazawa21/preview.html) |
 | [ONIBUS COFFEE (オニバスコーヒー)](https://onibuscoffee.com/) | D2C / Specialty Coffee | [DESIGN.md](design-md/onibuscoffee/DESIGN.md) | [preview.html](design-md/onibuscoffee/preview.html) |
 | [暮しの手帖 (Kurashi no Techo)](https://www.kurashi-no-techo.co.jp/) | Media / Magazine | [DESIGN.md](design-md/kurashi-no-techo/DESIGN.md) | [preview.html](design-md/kurashi-no-techo/preview.html) |
+| [BIOTOP (ビオトープ)](https://www.biotop.jp/) | Select Shop / Lifestyle | [DESIGN.md](design-md/biotop/DESIGN.md) | [preview.html](design-md/biotop/preview.html) |
+| [オカムラ (Okamura)](https://www.okamura.co.jp/) | Office Furniture / Workplace | [DESIGN.md](design-md/okamura/DESIGN.md) | [preview.html](design-md/okamura/preview.html) |
+| [飛騨産業 (HIDA)](https://kitutuki.co.jp/) | Wood Furniture / Manufacturer | [DESIGN.md](design-md/hida/DESIGN.md) | [preview.html](design-md/hida/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (393 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (396 sites)</a>
 </p>
 
 <table>
@@ -1590,6 +1598,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <tr>
 <td align="center"><strong>ONIBUS COFFEE</strong><br><img src="design-md/onibuscoffee/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>暮しの手帖</strong><br><img src="design-md/kurashi-no-techo/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>BIOTOP</strong><br><img src="design-md/biotop/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>オカムラ</strong><br><img src="design-md/okamura/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>飛騨産業</strong><br><img src="design-md/hida/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

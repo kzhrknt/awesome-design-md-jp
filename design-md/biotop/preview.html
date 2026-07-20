@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: BIOTOP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --white: #ffffff;              /* ページ背景 / 写真上のテキスト */
+    --green: #354443;              /* BIOTOP Green（唯一のブランドカラー） */
+    --green-tint: rgba(53, 68, 67, 0.15); /* フッター地 ≒ #e1e3e3 */
+    --panel-grey: #eaeaea;         /* 二次パネル */
+    --black: #000000;              /* 白・グレー地のテキスト */
+    --hairline: rgba(53, 68, 67, 0.18);
+    --error: #b23b32;              /* 実サイトに定義なし。トーンに沿った推奨値 */
+
+    /* === Fonts === */
+    /* 原典: din-2014, 游ゴシック, YuGothic, "Yu Gothic medium", "Hiragino Sans", Meiryo, sans-serif */
+    /* din-2014 は Adobe Fonts のため Barlow で代替、和文フォールバックに Noto Sans JP を追加 */
+    --font-primary: "Barlow", 游ゴシック, YuGothic, "Yu Gothic medium", "Hiragino Sans", Meiryo, "Noto Sans JP", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-base: 13px;
+    --lh-base: 1.8;
+    --ls-base: 0.05em;
+
+    /* === Shape === */
+    --radius: 0px;                 /* パネル・カードは直角 */
+    --radius-pill: 1.5em;          /* タグ／ラベルのみ完全なピル */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--font-primary);
+    font-size: var(--fs-base); font-weight: 400; line-height: var(--lh-base);
+    letter-spacing: var(--ls-base);
+    font-feature-settings: "palt";   /* ← グローバル適用が BIOTOP の要 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .caps { text-transform: uppercase; }
+
+  /* HEADER */
+  .header {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 35px; background: var(--white);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .header-brand { font-family: var(--font-primary); font-size: 21px; font-weight: 300; color: var(--black); text-decoration: none; letter-spacing: 0.045em; }
+  .header-menu { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 300; color: var(--black); }
+  .header-menu .ring { display: inline-block; width: 26px; height: 32px; border: 1px solid var(--black); border-radius: 50%; }
+
+  /* HERO */
+  .hero { position: relative; min-height: 460px; display: flex; align-items: flex-end;
+    background: linear-gradient(135deg, #6b5a42 0%, #8a7350 45%, #3d3428 100%); }
+  .hero-inner { padding: 30px; width: 100%; display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; flex-wrap: wrap; }
+  .hero-left { color: var(--white); }
+  .hero-left .places { font-size: 15px; font-weight: 300; line-height: 1.4; letter-spacing: 0.043em; }
+  .hero-left .news { font-size: 13px; font-weight: 400; margin-top: 26px; }
+  .hero-right { text-align: right; color: var(--white); }
+  .hero-right .pickup { font-size: 29px; font-weight: 300; line-height: 1.2; letter-spacing: 0.045em; }
+  .hero-right .display { font-size: 72px; font-weight: 400; line-height: 1.0; letter-spacing: 0.045em; margin: 6px 0 16px; }
+  .hero-tags { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+
+  /* PILL TAG（唯一の角丸） */
+  .pill {
+    display: inline-block; background: transparent; color: var(--white);
+    border: 1px solid var(--white); border-radius: var(--radius-pill);
+    font-family: var(--font-primary); font-size: 13px; font-weight: 400;
+    line-height: 1; letter-spacing: var(--ls-base); font-feature-settings: "palt";
+    padding: 0.55em 0.9em; text-decoration: none; transition: background 0.2s, color 0.2s;
+  }
+  .pill:hover { background: var(--white); color: var(--green); }
+  .pill--lg { font-size: 19.6px; padding: 0.45em 0.6em; }
+  .pill--dark { color: var(--green); border-color: var(--green); }
+  .pill--dark:hover { background: var(--green); color: var(--white); }
+
+  /* SECTIONS */
+  .section { padding: 72px 35px; }
+  .section-eyebrow { font-size: 9.1px; font-weight: 400; letter-spacing: 0.071em; color: var(--green); margin-bottom: 10px; }
+  .section-title { font-family: var(--font-primary); font-size: 29px; font-weight: 300; line-height: 1.2; letter-spacing: 0.045em; margin-bottom: 14px; color: var(--black); }
+  .section-lead { font-size: 13px; font-weight: 400; line-height: 1.8; color: var(--green); max-width: 640px; margin-bottom: 34px; }
+  .section-divider { border: none; border-top: 1px solid var(--hairline); margin: 0; }
+  .section-green { background: var(--green); color: var(--white); }
+  .section-green .section-title, .section-green .section-eyebrow, .section-green .section-lead { color: var(--white); }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 1px; margin-bottom: 26px; }
+  .color-swatch { background: var(--white); border-radius: var(--radius); overflow: hidden; outline: 1px solid var(--hairline); }
+  .color-swatch-block { height: 84px; width: 100%; }
+  .color-swatch-info { padding: 12px 14px 16px; }
+  .color-swatch-name { font-size: 13px; font-weight: 400; letter-spacing: 0.045em; margin-bottom: 2px; }
+  .color-swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--green); letter-spacing: 0; }
+  .color-swatch-role { font-size: 11px; color: var(--green); margin-top: 4px; line-height: 1.6; }
+  .color-group-label { font-size: 9.1px; letter-spacing: 0.071em; color: var(--green); margin: 30px 0 12px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 24px 0; border-bottom: 1px solid var(--hairline); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: var(--green); margin-top: 12px; }
+  .type-context { display: inline-block; background: var(--panel-grey); color: var(--green); font-family: var(--font-primary); font-size: 10px; letter-spacing: 0.05em; padding: 2px 8px; margin-left: 8px; }
+
+  /* ARTICLE / PRODUCT PANELS（gutter 0） */
+  .panel-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0; }
+  .panel { position: relative; min-height: 340px; display: flex; flex-direction: column; justify-content: space-between; padding: 20px 30px 30px; border-radius: var(--radius); text-decoration: none; }
+  .panel--green { background: var(--green); color: var(--white); }
+  .panel--grey { background: var(--panel-grey); color: var(--black); }
+  .panel--photo1 { background: linear-gradient(160deg, #b9b2a6 0%, #8d8579 100%); color: var(--white); }
+  .panel--photo2 { background: linear-gradient(160deg, #55504a 0%, #26241f 100%); color: var(--white); }
+  .panel-title { font-size: 40px; font-weight: 400; line-height: 1.0; letter-spacing: 0.045em; }
+  .panel-date { font-size: 13px; font-weight: 400; margin-top: 8px; }
+  .panel-foot { margin-top: auto; padding-top: 40px; }
+  .panel-no { font-size: 13px; font-weight: 400; }
+  .panel-name { font-size: 21px; font-weight: 300; line-height: 1.2; letter-spacing: 0.045em; margin-top: 2px; }
+
+  /* PRODUCT CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0; }
+  .card { background: var(--white); border-radius: var(--radius); }
+  .card-img { aspect-ratio: 3/4; display: flex; align-items: center; justify-content: center; }
+  .card-img .ph { font-size: 9.1px; letter-spacing: 0.071em; color: var(--white); }
+  .card-img--1 { background: linear-gradient(150deg, #9aa39c 0%, #6f7a72 100%); }
+  .card-img--2 { background: linear-gradient(150deg, #c3bcae 0%, #96907f 100%); }
+  .card-img--3 { background: linear-gradient(150deg, #6d7a78 0%, #354443 100%); }
+  .card-img--4 { background: linear-gradient(150deg, #adb4ae 0%, #7d857f 100%); }
+  .card-info { padding: 14px 30px 30px; }
+  .card-brand { font-size: 9.1px; letter-spacing: 0.071em; color: var(--green); }
+  .card-name { font-size: 15px; font-weight: 300; line-height: 1.4; letter-spacing: 0.043em; color: var(--black); margin-top: 4px; }
+  .card-price { font-size: 13px; font-weight: 400; color: var(--black); margin-top: 6px; }
+
+  /* BUTTONS showcase */
+  .button-row { display: flex; gap: 26px; flex-wrap: wrap; align-items: flex-start; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 11px; line-height: 1.6; color: var(--green); margin-top: 12px; max-width: 190px; }
+  .section-green .button-label { color: var(--white); }
+  .panel-cta { display: inline-flex; align-items: center; background: var(--green); color: var(--white); border-radius: var(--radius); padding: 30px; font-size: 13px; letter-spacing: var(--ls-base); text-decoration: none; }
+  .panel-cta--grey { background: var(--panel-grey); color: var(--black); padding: 20px 30px 30px; }
+  .link-plain { color: var(--black); text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 3px; font-size: 13px; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 26px; max-width: 440px; }
+  .form-label { display: block; font-size: 9.1px; letter-spacing: 0.071em; color: var(--green); margin-bottom: 8px; }
+  .form-input {
+    width: 100%; background: transparent; color: var(--black);
+    border: none; border-bottom: 1px solid var(--green); border-radius: var(--radius);
+    padding: 8px 0; font-family: var(--font-primary); font-size: 13px;
+    letter-spacing: var(--ls-base); font-feature-settings: "palt"; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-input::placeholder { color: rgba(53,68,67,0.45); }
+  .form-input:focus, .form-input--focus { border-bottom-width: 2px; border-bottom-color: var(--green); }
+  .form-input--error { border-bottom-color: var(--error); border-bottom-width: 2px; }
+  .form-state-label { font-size: 11px; color: var(--green); margin-top: 8px; }
+  .form-state-label--error { color: var(--error); }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1px; background: var(--hairline); }
+  .elevation-card { background: var(--white); padding: 30px; border-radius: var(--radius); }
+  .elevation-card--green { background: var(--green); color: var(--white); }
+  .elevation-card--grey { background: var(--panel-grey); }
+  .elevation-label { font-size: 15px; font-weight: 300; letter-spacing: 0.043em; margin-bottom: 6px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; line-height: 1.6; color: var(--green); }
+  .elevation-card--green .elevation-desc { color: rgba(255,255,255,0.75); }
+
+  /* LAYOUT / SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; margin-bottom: 30px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--green); margin-bottom: 8px; height: 28px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0; color: var(--green); }
+  .layout-demo { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0; margin-top: 10px; }
+  .layout-cell { min-height: 96px; display: flex; align-items: center; justify-content: center; font-size: 9.1px; letter-spacing: 0.071em; color: var(--white); }
+  .layout-cell--a { background: var(--green); }
+  .layout-cell--b { background: #5a6a68; }
+  .layout-cell--c { background: #808d8b; }
+
+  /* FOOTER */
+  .footer { background: var(--green-tint); padding: 50px 35px; font-size: 13px; color: var(--black); }
+  .footer-cols { display: flex; gap: 96px; flex-wrap: wrap; margin-bottom: 40px; }
+  .footer-cols a { display: block; color: var(--black); text-decoration: none; line-height: 1.8; }
+  .footer-note { font-size: 11px; color: var(--green); text-align: right; }
+
+  @media (max-width: 767px) {
+    .section { padding: 48px 20px; }
+    .header { padding: 14px 20px; }
+    .hero-right .display { font-size: 36px; }
+    .hero-right .pickup { font-size: 20px; }
+    .panel-grid { grid-template-columns: 1fr; }
+    .panel-title { font-size: 32px; }
+    .footer-cols { gap: 36px; }
+    .layout-demo { grid-template-columns: 1fr; }
+    .pill { padding: 0.7em 1em; }  /* タップ領域を確保 */
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-brand caps" href="#">Biotop</a>
+  <div class="header-menu"><span class="ring"></span><span>menu</span></div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="places caps">Tokyo<br>Osaka<br>Fukuoka<br>Kobe<br>Sapporo</div>
+      <div class="news">-News</div>
+    </div>
+    <div class="hero-right">
+      <div class="pickup caps">Pick Up</div>
+      <div class="display caps">Biotop</div>
+      <div class="hero-tags">
+        <a class="pill" href="#colors">#biotop</a>
+        <a class="pill" href="#typography">#exclusive</a>
+        <a class="pill" href="#buttons">#2026 collection</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 01 COLORS -->
+<section class="section" id="colors">
+  <div class="section-eyebrow caps">01 / Colors</div>
+  <h2 class="section-title caps">Color Palette</h2>
+  <p class="section-lead">有彩色はディープグリーン #354443 ただ一色。それ以外は白・黒・グレーに絞り、写真の色を邪魔しない。フッターだけはブランドグリーンを 15% 敷いた淡いグレーグリーンになる。</p>
+
+  <div class="color-group-label caps">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#354443"></div><div class="color-swatch-info"><div class="color-swatch-name caps">Biotop Green</div><div class="color-swatch-hex">#354443</div><div class="color-swatch-role">唯一のブランドカラー。特集パネルのベタ地</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e1e3e3"></div><div class="color-swatch-info"><div class="color-swatch-name caps">Green Tint 15%</div><div class="color-swatch-hex">rgba(53,68,67,.15)</div><div class="color-swatch-role">フッター地 ≒ #e1e3e3</div></div></div>
+  </div>
+
+  <div class="color-group-label caps">Neutral</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #e1e3e3"></div><div class="color-swatch-info"><div class="color-swatch-name caps">White</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ背景 / 写真上のテキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#eaeaea"></div><div class="color-swatch-info"><div class="color-swatch-name caps">Panel Grey</div><div class="color-swatch-hex">#eaeaea</div><div class="color-swatch-role">二次パネルの地。黒文字と組む</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000000"></div><div class="color-swatch-info"><div class="color-swatch-name caps">Black</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">白・グレー地の本文テキスト</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-eyebrow caps">02 / Typography — 実測値</div>
+  <h2 class="section-title caps">Typography</h2>
+  <p class="section-lead">原典は <code style="font-family:var(--font-mono);letter-spacing:0">din-2014, 游ゴシック, YuGothic, "Yu Gothic medium", "Hiragino Sans", Meiryo, sans-serif</code>。din-2014 は Adobe Fonts のため、本プレビューでは DIN 系グロテスクの <strong style="font-weight:400">Barlow</strong>（Google Fonts）で代替している。<code style="font-family:var(--font-mono);letter-spacing:0">font-feature-settings: "palt"</code> と <code style="font-family:var(--font-mono);letter-spacing:0">letter-spacing: 0.05em</code> がグローバル適用。ウェイトは 300 / 400 の二択で、Bold は使わない。</p>
+
+  <div class="type-sample">
+    <div class="caps" style="font-family:var(--font-primary); font-size:72px; font-weight:400; line-height:1.0; letter-spacing:0.045em; color:var(--black);">Biotop People</div>
+    <div class="type-meta">Display / Feature Title — 72px（≒5vw）/ 400 / lh 1.0 / ls 0.045em<span class="type-context">特集大見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="caps" style="font-family:var(--font-primary); font-size:60px; font-weight:300; line-height:1.0; letter-spacing:0.045em; color:var(--black);">Biotop</div>
+    <div class="type-meta">Display Light — 60px / 300 / lh 1.0 / ls 0.045em</div>
+  </div>
+  <div class="type-sample">
+    <div class="caps" style="font-family:var(--font-primary); font-size:29px; font-weight:300; line-height:1.2; letter-spacing:0.045em; color:var(--black);">Pick Up — 今季のピックアップ</div>
+    <div class="type-meta">Heading 1 — 29px / 300 / lh 1.2 / ls 0.045em</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-primary); font-size:21px; font-weight:300; line-height:1.2; letter-spacing:0.045em; color:var(--black);">News — 新着のお知らせ</div>
+    <div class="type-meta">Heading 2 — 21px / 300 / lh 1.2 / ls 0.045em</div>
+  </div>
+  <div class="type-sample">
+    <div class="caps" style="font-family:var(--font-primary); font-size:19.9px; font-weight:400; line-height:1.0; letter-spacing:0.033em; color:var(--black);">All Topics　Tokyo</div>
+    <div class="type-meta">Heading 3 / Nav — 19.9px / 400 / lh 1.0 / ls 0.033em<span class="type-context">ナビ見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-primary); font-size:18px; font-weight:300; line-height:1.6; letter-spacing:0.04em; color:var(--green);">(LATEST POST: 14.07.2026) — リード・キャプション</div>
+    <div class="type-meta">Lead / Caption — 18px / 300 / lh 1.6 / ls 0.04em / 色 #354443</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-primary); font-size:13px; font-weight:400; line-height:1.8; letter-spacing:0.05em; color:var(--black); font-feature-settings:'palt';">BIOTOP はアパレル、フラワーショップ、カフェ、ギャラリーが同居する複合ショップです。異なる文化が一つの場所で混ざり合う、その関係性そのものを店名に置きました。ABCabc 0123</div>
+    <div class="type-meta">Body / Base — 13px / 400 / lh 1.8 / ls 0.05em / palt<span class="type-context">本文</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="margin-bottom:4px;"><a class="pill pill--dark caps" href="#">Event</a></div>
+    <div class="type-meta">Tag / Pill — 13px / 400 / lh 1.0 / ls 0.05em / radius 1.5em</div>
+  </div>
+  <div class="type-sample">
+    <div class="caps" style="font-family:var(--font-primary); font-size:9.1px; font-weight:400; line-height:1.2; letter-spacing:0.071em; color:var(--green);">Latest Post: 20.05.2026　No.51 Mari Okamoto</div>
+    <div class="type-meta">Small / Meta — 9.1px / 400 / lh 1.0–1.2 / ls 0.071em</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 03 ARTICLE / PRODUCT -->
+<section class="section" style="padding-bottom:0;" id="panels">
+  <div class="section-eyebrow caps">03 / Article — フルブリード・パネル</div>
+  <h2 class="section-title caps">Feature Panels</h2>
+  <p class="section-lead">写真・グリーン・グレーのパネルを gutter 0 で隙間なく敷き詰める。max-width は設けず、面の色と写真の切り替わりだけが区切りになる。テキストは白抜きの大文字英字＋ドット区切りの日付。</p>
+</section>
+<div class="panel-grid">
+  <a class="panel panel--green" href="#">
+    <div><div class="panel-title caps">Biotop<br>People</div><div class="panel-date">20.05.2026</div></div>
+    <div class="panel-foot"><div class="panel-no">No.51</div><div class="panel-name caps">Mari Okamoto</div></div>
+  </a>
+  <a class="panel panel--photo1" href="#">
+    <div><div class="panel-title caps">Flower</div><div class="panel-date">12.07.2026</div></div>
+    <div class="panel-foot"><div class="panel-no">No.08</div><div class="panel-name caps">Zero Two Three</div></div>
+  </a>
+  <a class="panel panel--photo2" href="#">
+    <div><div class="panel-title caps">Biotop<br>Side-B</div><div class="panel-date">28.10.2024</div></div>
+    <div class="panel-foot"><div class="panel-no">No.2</div><div class="panel-name caps">Hisashi Ohta</div></div>
+  </a>
+  <a class="panel panel--grey" href="#">
+    <div><div class="panel-title caps">Biotop<br>Online</div><div class="panel-date">14.07.2026</div></div>
+    <div class="panel-foot"><div class="panel-no">Shop All</div><div class="panel-name caps">Store</div></div>
+  </a>
+</div>
+
+<section class="section">
+  <div class="section-eyebrow caps">03b / Product</div>
+  <h2 class="section-title caps">Web Store</h2>
+  <p class="section-lead">商品も同じ作法。radius 0 の大判ビジュアルを隙間なく並べ、その下にブランド名（9.1px 大文字）、商品名（15px / Light）、価格（13px）を添える。</p>
+</section>
+<div class="card-grid">
+  <div class="card"><div class="card-img card-img--1"><span class="ph caps">Image</span></div><div class="card-info"><div class="card-brand caps">Birkenstock for Biotop</div><div class="card-name">Kyoto Suede Sandal</div><div class="card-price">¥27,500</div></div></div>
+  <div class="card"><div class="card-img card-img--2"><span class="ph caps">Image</span></div><div class="card-info"><div class="card-brand caps">Biotop Exclusive</div><div class="card-name">Linen Wide Shirt</div><div class="card-price">¥34,100</div></div></div>
+  <div class="card"><div class="card-img card-img--3"><span class="ph caps">Image</span></div><div class="card-info"><div class="card-brand caps">Keep Green Biotop</div><div class="card-name">Recycled Wool Knit</div><div class="card-price">¥29,700</div></div></div>
+  <div class="card"><div class="card-img card-img--4"><span class="ph caps">Image</span></div><div class="card-info"><div class="card-brand caps">Bw Biotop</div><div class="card-name">Garment Dyed Trousers</div><div class="card-price">¥38,500</div></div></div>
+</div>
+
+<hr class="section-divider">
+
+<!-- 04 BUTTONS -->
+<section class="section section-green" id="buttons">
+  <div class="section-eyebrow caps">04 / Buttons</div>
+  <h2 class="section-title caps">Buttons</h2>
+  <p class="section-lead">塗りつぶしボタンは存在しない。CTA は「透明地＋1px 白枠・radius 1.5em の完全なピルタグ」か、パネル全体をリンクにするかの二択。</p>
+  <div class="button-row">
+    <div class="button-item"><a class="pill caps" href="#">Event</a><div class="button-label">Pill Tag — 透明地 ＋ 1px solid #ffffff / radius 1.5em / 13px</div></div>
+    <div class="button-item"><a class="pill pill--lg" href="#">#BIRKENSTOCK for BIOTOP</a><div class="button-label">Pill Tag (L) — 19.6px / radius 27.5px</div></div>
+    <div class="button-item"><a class="panel-cta caps" href="#">Online Store</a><div class="button-label">Panel Link — #354443 地・白文字・radius 0・padding 30px</div></div>
+    <div class="button-item"><a class="panel-cta panel-cta--grey caps" href="#">Shop All</a><div class="button-label">Panel Link (grey) — #eaeaea 地・黒文字</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 05 CARDS -->
+<section class="section" id="cards">
+  <div class="section-eyebrow caps">05 / Cards</div>
+  <h2 class="section-title caps">Cards</h2>
+  <p class="section-lead">カードは影も枠も持たない。地色（グリーン / グレー / 写真）だけで面を分け、padding 20px 30px 30px の中にテキストを置く。</p>
+  <div class="panel-grid" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="panel panel--green" style="min-height:260px;">
+      <div><div class="panel-title caps" style="font-size:29px;">Green</div><div class="panel-date">#354443 地・白文字</div></div>
+      <div class="panel-foot" style="padding-top:24px;"><div class="panel-no">radius 0 / shadow none</div></div>
+    </div>
+    <div class="panel panel--grey" style="min-height:260px;">
+      <div><div class="panel-title caps" style="font-size:29px;">Grey</div><div class="panel-date">#eaeaea 地・黒文字</div></div>
+      <div class="panel-foot" style="padding-top:24px;"><div class="panel-no">radius 0 / shadow none</div></div>
+    </div>
+    <div class="panel panel--photo1" style="min-height:260px;">
+      <div><div class="panel-title caps" style="font-size:29px;">Photo</div><div class="panel-date">写真全面・白抜き文字</div></div>
+      <div class="panel-foot" style="padding-top:24px;"><a class="pill caps" href="#">View</a></div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 06 FORMS -->
+<section class="section" id="forms">
+  <div class="section-eyebrow caps">06 / Forms</div>
+  <h2 class="section-title caps">Forms</h2>
+  <p class="section-lead">実サイトのフォームは検索窓のみでブラウザ既定のまま（font-family: Arial）。以下は BIOTOP のトーンに沿った推奨実装 — 角丸なし、枠は持たず下線 1 本、フォーカスは下線を太らせる。</p>
+  <div class="form-group"><label class="form-label caps">Name</label><input class="form-input" type="text" placeholder="山田 太郎"><div class="form-state-label">デフォルト — border-bottom: 1px solid #354443 / radius 0</div></div>
+  <div class="form-group"><label class="form-label caps">Email</label><input class="form-input form-input--focus" type="text" value="name@example.com"><div class="form-state-label">フォーカス — border-bottom: 2px solid #354443（リングは使わない）</div></div>
+  <div class="form-group"><label class="form-label caps">Email</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label form-state-label--error">エラー — border-bottom: 2px solid #b23b32（実サイトに定義なし。最小限の差し色）</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 07 ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-eyebrow caps">07 / Elevation</div>
+  <h2 class="section-title caps">Depth &amp; Elevation</h2>
+  <p class="section-lead">実測でも全要素が box-shadow: none。影を一切使わず、面の色と写真の明度差だけで階層をつくる完全フラット設計。オーバーレイメニューだけは全面の暗幕で前後を分ける。</p>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label caps">Level 0 — Flat</div><div class="elevation-desc">box-shadow: none（全コンポーネントの基本）</div></div>
+    <div class="elevation-card elevation-card--grey"><div class="elevation-label caps">Level 1 — Tone</div><div class="elevation-desc">#eaeaea のベタ地で面を起こす（影は使わない）</div></div>
+    <div class="elevation-card elevation-card--green"><div class="elevation-label caps">Level 2 — Brand</div><div class="elevation-desc">#354443 のベタ地。最前面の特集パネル</div></div>
+    <div class="elevation-card" style="background:rgba(0,0,0,0.85); color:#fff;"><div class="elevation-label caps">Overlay</div><div class="elevation-desc" style="color:rgba(255,255,255,0.75)">rgba(0,0,0,0.4–0.85) の全面暗幕（メニュー）</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 08 LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-eyebrow caps">08 / Layout</div>
+  <h2 class="section-title caps">Layout &amp; Spacing</h2>
+  <p class="section-lead">基本単位は本文サイズ 13px とその倍数。パネル内側は 30px、ヘッダー左右は 35px。コンテナに max-width は設けず、gutter 0 の不等分割グリッドをフルブリードで敷く。</p>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:6.5px"></div><div class="spacing-value">6.5</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:13px"></div><div class="spacing-value">13</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:20px"></div><div class="spacing-value">20</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:26px"></div><div class="spacing-value">26</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:30px"></div><div class="spacing-value">30</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:35px"></div><div class="spacing-value">35</div></div>
+  </div>
+  <div class="color-group-label caps">Grid — 不等分割 / gutter 0 / full bleed</div>
+  <div class="layout-demo">
+    <div class="layout-cell layout-cell--a caps">2fr</div>
+    <div class="layout-cell layout-cell--b caps">1fr</div>
+    <div class="layout-cell layout-cell--c caps">1fr</div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-cols">
+    <div>
+      <a class="caps" href="#">Biotop</a>
+      <a href="#">ë BIOTOP</a>
+      <a href="#">Flower shop BIOTOP by zero two THREE</a>
+      <a class="caps" href="#">Keep Green Biotop</a>
+      <a class="caps" href="#">Ramusio Biotop Fukuoka</a>
+    </div>
+    <div>
+      <a class="caps" href="#">Contact</a>
+      <a class="caps" href="#">Privacy Policy</a>
+      <a class="caps" href="#">About This Site</a>
+      <a class="caps" href="#">Recruit</a>
+      <a class="caps" href="#">Store Info</a>
+    </div>
+  </div>
+  <div class="footer-note">Generated from <a style="color:var(--green)" href="https://www.biotop.jp/">biotop.jp</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-07-20）</div>
+</footer>
+
+</body>
+</html>
