@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: kolor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === kolor Color Tokens (実測値 rgb→hex) === */
+    --kolor-navy: #283249;        /* rgb(40,50,73) ブランド支配色 */
+    --limited-yellow: #fbc02d;    /* rgb(251,192,45) 差し色 */
+
+    --text-body: #666666;         /* rgb(102,102,102) 本文 */
+    --text-input: #222222;        /* rgb(34,34,34) 入力文字 */
+    --product-gray: #e5e5e5;      /* rgb(229,229,229) 商品タイル面 */
+    --product-gray-alt: #e7e7e7;  /* rgb(231,231,231) 一覧ページ */
+    --chip-gray: #f3f3f6;         /* rgb(243,243,246) 言語/通貨チップ */
+    --field-gray: #f1f1f1;        /* rgb(241,241,241) 入力面 */
+    --border: #e0e0e0;            /* rgb(224,224,224) 罫線 */
+
+    --page-white: #ffffff;
+    --overlay-navy: rgba(18, 17, 39, 0.72);
+
+    --inverse: #ffffff;
+
+    /* semantic (error) — kolor 実サイトには明示のエラー色がないため近縁の警告赤を補完 */
+    --danger: #c0392b;
+
+    /* === Fonts ===
+       Note: 実サイトは商用の "LTUnivers"（Linotype Univers, スイス・グロテスク）を使用。
+       ローカルでは表示できないため、最も近い Google Fonts のグロテスク "Inter" で代替。
+       和文は Noto Sans JP で代替（実サイトはヒラギノ/メイリオ）。 */
+    --font-base: "Inter", "Noto Sans JP", "Helvetica Neue", Arial,
+                 "Hiragino Kaku Gothic ProN", メイリオ, Meiryo, sans-serif;
+    --font-mono: "SFMono-Regular", Consolas, Menlo, Courier, monospace;
+
+    --palt: "palt";
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--page-white);
+    color: var(--text-body);
+    font-family: var(--font-base);
+    font-size: 16px; font-weight: 400; line-height: 1.4;
+    letter-spacing: normal;
+    font-feature-settings: "palt";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 72px;
+    background: var(--page-white);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand {
+    font-family: var(--font-base); font-size: 26px; font-weight: 700;
+    color: var(--kolor-navy); text-decoration: none; letter-spacing: 0.02em;
+  }
+  .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
+  .nav-links a {
+    font-family: var(--font-base); font-size: 15px; font-weight: 700;
+    color: var(--kolor-navy); text-decoration: none;
+  }
+  .nav-links a:hover { opacity: 0.6; }
+  .nav-chip {
+    font-size: 10px; font-weight: 400; color: var(--kolor-navy);
+    background: var(--chip-gray); padding: 5px 7.5px; border-radius: 3px;
+  }
+
+  /* ANNOUNCEMENT BAR */
+  .announce {
+    background: var(--kolor-navy); color: var(--inverse);
+    text-align: center; font-size: 14px; font-weight: 400; line-height: 1.5;
+    padding: 8px 16px; letter-spacing: 0.01em;
+  }
+
+  /* HERO (navy) */
+  .hero {
+    padding: 96px 32px 88px;
+    text-align: center;
+    background: var(--kolor-navy);
+    color: var(--inverse);
+  }
+  .hero-eyebrow {
+    font-size: 12px; font-weight: 400; text-transform: uppercase;
+    color: rgba(255,255,255,0.7); margin-bottom: 20px; letter-spacing: 0.14em;
+  }
+  .hero h1 {
+    font-size: 40px; font-weight: 700; line-height: 1.0;
+    color: var(--inverse); margin-bottom: 24px; letter-spacing: 0.01em;
+  }
+  .hero p {
+    font-size: 14px; font-weight: 400; line-height: 1.6;
+    color: rgba(255,255,255,0.82); max-width: 620px; margin: 0 auto 40px;
+  }
+  .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+  /* BUTTONS */
+  .btn-filled {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--kolor-navy); color: var(--inverse);
+    padding: 16px 30px; border: none; border-radius: 0;
+    font-family: var(--font-base); font-size: 14px; font-weight: 400;
+    text-decoration: none; cursor: pointer; transition: opacity 0.2s;
+  }
+  .btn-filled:hover { opacity: 0.85; }
+  .btn-filled.on-navy { background: var(--inverse); color: var(--kolor-navy); }
+  .btn-outlined {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--page-white); color: var(--kolor-navy);
+    padding: 10px 18px; border: 1px solid var(--kolor-navy); border-radius: 0;
+    font-family: var(--font-base); font-size: 13px; font-weight: 400;
+    text-decoration: none; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-outlined:hover { background: var(--kolor-navy); color: var(--inverse); }
+  .btn-outlined.on-navy { background: transparent; color: var(--inverse); border-color: rgba(255,255,255,0.6); }
+  .btn-outlined.on-navy:hover { background: var(--inverse); color: var(--kolor-navy); }
+  .btn-text {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--page-white); color: var(--kolor-navy);
+    padding: 14px 24px; border: none; border-radius: 0;
+    font-family: var(--font-base); font-size: 16px; font-weight: 700;
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-text:hover { opacity: 0.6; }
+
+  /* BADGES */
+  .badge {
+    display: inline-flex; align-items: center;
+    font-size: 8px; font-weight: 700; letter-spacing: 0.06em;
+    padding: 6px 12px 3px; border-radius: 0; text-transform: uppercase;
+  }
+  .badge-limited { background: var(--limited-yellow); color: var(--kolor-navy); }
+  .badge-navy { background: var(--kolor-navy); color: var(--inverse); }
+
+  /* SECTIONS */
+  .section { padding: 80px 32px; max-width: 1120px; margin: 0 auto; }
+  .section-pure { background: var(--page-white); }
+  .section-gray { background: var(--chip-gray); }
+  .section-eyebrow {
+    font-size: 12px; font-weight: 400; text-transform: uppercase;
+    color: var(--text-body); letter-spacing: 0.14em; margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 24px; font-weight: 700; line-height: 1.4;
+    color: var(--kolor-navy); margin-bottom: 48px; letter-spacing: 0.01em;
+  }
+  .section-divider { border: none; height: 1px; background: var(--border); margin: 0; }
+  .section-inner { max-width: 1120px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .color-swatch { background: var(--page-white); border: 1px solid var(--border); overflow: hidden; }
+  .color-swatch-block { height: 84px; width: 100%; }
+  .color-swatch-info { padding: 12px 14px; }
+  .color-swatch-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; color: var(--kolor-navy); }
+  .color-swatch-hex { font-size: 11px; color: var(--text-body); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 11px; color: var(--text-body); margin-top: 6px; line-height: 1.4; }
+  .color-group-label {
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    color: var(--kolor-navy); margin: 24px 0 10px; letter-spacing: 0.1em;
+  }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 30px; padding-bottom: 26px; border-bottom: 1px solid var(--border); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; font-weight: 400; color: var(--text-body); margin-top: 12px; }
+  .type-context {
+    display: inline-block; background: var(--kolor-navy); color: var(--inverse);
+    font-size: 9px; padding: 2px 8px; margin-left: 8px; letter-spacing: 0.04em;
+    text-transform: uppercase; font-family: var(--font-base);
+  }
+  .type-context.navy-bg { background: var(--limited-yellow); color: var(--kolor-navy); }
+
+  /* PRODUCT / ARTICLE */
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; }
+  .product-card { background: transparent; text-decoration: none; color: var(--text-body); display: flex; flex-direction: column; position: relative; }
+  .product-card-image {
+    aspect-ratio: 3/4; background: var(--product-gray);
+    display: flex; align-items: center; justify-content: center;
+    color: #a7adba; font-family: var(--font-base); font-weight: 700; font-size: 13px; letter-spacing: 0.1em;
+  }
+  .product-card-badge { position: absolute; top: 0; left: 0; }
+  .product-card-body { padding: 14px 0 0; }
+  .product-card .brand { font-size: 12px; font-weight: 400; color: var(--text-body); margin-bottom: 4px; }
+  .product-card h3 { font-size: 12px; font-weight: 700; line-height: 1.3; margin-bottom: 6px; color: var(--kolor-navy); }
+  .product-card .price { font-size: 12px; font-weight: 400; color: var(--kolor-navy); }
+
+  .article { max-width: 720px; }
+  .article .brand { font-size: 12px; font-weight: 400; color: var(--text-body); margin-bottom: 6px; }
+  .article h3 { font-size: 22px; font-weight: 700; line-height: 1.4; color: var(--kolor-navy); margin-bottom: 20px; letter-spacing: 0.01em; }
+  .article p { font-size: 16px; font-weight: 400; line-height: 1.4; color: var(--text-body); margin-bottom: 18px; }
+  .article .meta { font-size: 12px; color: var(--text-body); font-family: var(--font-mono); margin-top: 24px; }
+
+  /* BUTTONS section */
+  .button-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+  .button-item { text-align: center; }
+  .button-label { font-family: var(--font-mono); font-size: 11px; font-weight: 400; color: var(--text-body); margin-top: 12px; }
+  .navy-panel { background: var(--kolor-navy); padding: 32px; margin-top: 32px; display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+  .navy-panel .button-label { color: rgba(255,255,255,0.7); }
+  .badge-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-top: 40px; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 24px; max-width: 480px; }
+  .form-label { display: block; font-size: 12px; font-weight: 700; color: var(--kolor-navy); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .form-input {
+    width: 100%; background: var(--field-gray); color: var(--text-input);
+    border: 1px solid var(--border); border-radius: 4px;
+    padding: 10px 12px; font-family: var(--font-base); font-size: 14px; font-weight: 400;
+    outline: none; transition: border-color 0.2s;
+  }
+  .form-input::placeholder { color: #999; }
+  .form-input:focus, .form-input--focus { border-color: var(--kolor-navy); }
+  .form-input--error { border-color: var(--danger); background: #fdf3f2; }
+  .form-state-label { font-size: 11px; color: var(--text-body); margin-top: 6px; font-family: var(--font-mono); }
+  .form-state-label.error { color: var(--danger); }
+
+  /* ELEVATION */
+  .elev-row { display: flex; gap: 32px; flex-wrap: wrap; }
+  .elev-item { background: var(--page-white); border: 1px solid var(--border); padding: 24px; width: 220px; }
+  .elev-0 { box-shadow: none; }
+  .elev-1 { box-shadow: 0 1px 2px rgba(40,50,73,0.08); }
+  .elev-label { font-size: 13px; font-weight: 700; color: var(--kolor-navy); margin-bottom: 6px; }
+  .elev-value { font-family: var(--font-mono); font-size: 11px; color: var(--text-body); }
+
+  /* LAYOUT */
+  .spacing-row { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--kolor-navy); height: 32px; border-radius: 0; margin-bottom: 8px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; color: var(--text-body); }
+  .width-bar { height: 32px; background: var(--border); margin-bottom: 8px; }
+  .width-bar-inner { height: 100%; background: var(--kolor-navy); }
+  .width-bar-label { font-size: 13px; font-weight: 700; color: var(--kolor-navy); margin-bottom: 4px; }
+  .width-bar-value { font-family: var(--font-mono); font-size: 11px; color: var(--text-body); }
+
+  /* FOOTER */
+  .footer {
+    padding: 56px 32px 40px; background: var(--kolor-navy); color: rgba(255,255,255,0.8);
+    text-align: center; font-size: 10px; font-weight: 400; line-height: 1.4; letter-spacing: 0.02em;
+  }
+  .footer h5 { font-size: 10px; font-weight: 400; color: var(--inverse); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.12em; }
+  .footer a { color: var(--inverse); text-decoration: underline; }
+  .footer p { margin-bottom: 4px; }
+
+  @media (max-width: 769px) {
+    .hero h1 { font-size: 30px; }
+    .section-title { font-size: 20px; }
+    .nav-links { display: none; }
+    .section { padding: 56px 20px; }
+    .product-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .navy-panel { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="announce">EU向け配送の一時停止について ｜ Temporary Suspension of Shipping to the EU</div>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">kolor</a>
+  <ul class="nav-links">
+    <li><a href="#colors">MEN</a></li>
+    <li><a href="#typography">WOMEN</a></li>
+    <li><a href="#products">COLLECTION</a></li>
+    <li><a href="#buttons">NEWS</a></li>
+    <li><span class="nav-chip">JA</span></li>
+    <li><span class="nav-chip">JPY</span></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-eyebrow">Design System Preview</div>
+  <h1>2026 AUTUMN / WINTER</h1>
+  <p>kolor（kolor.jp）から抽出したデザイントークンのカタログ。ディープネイビー #283249 を基調に、白と無彩色グレーで組む建築的なモノトーン。差し色はイエロー #fbc02d の一点のみ。computed style 実測値に基づく。</p>
+  <div class="hero-buttons">
+    <a class="btn-filled on-navy" href="#">View Collection</a>
+    <a class="btn-outlined on-navy" href="#">Newsletter</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 01 COLORS -->
+<section class="section" id="colors">
+  <div class="section-eyebrow">01 / colors</div>
+  <h2 class="section-title">Color Palette</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#283249"></div><div class="color-swatch-info"><div class="color-swatch-name">kolor Navy</div><div class="color-swatch-hex">#283249</div><div class="color-swatch-role">支配色。見出し・リンク・価格・CTA</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fbc02d"></div><div class="color-swatch-info"><div class="color-swatch-name">Limited Yellow</div><div class="color-swatch-hex">#fbc02d</div><div class="color-swatch-role">唯一の差し色。Limited バッジ専用</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#666666"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Body</div><div class="color-swatch-hex">#666666</div><div class="color-swatch-role">本文テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#222222"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Input</div><div class="color-swatch-hex">#222222</div><div class="color-swatch-role">入力文字</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e5e5e5"></div><div class="color-swatch-info"><div class="color-swatch-name">Product Gray</div><div class="color-swatch-hex">#e5e5e5</div><div class="color-swatch-role">商品タイル面（一覧は #e7e7e7）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f3f3f6"></div><div class="color-swatch-info"><div class="color-swatch-name">Chip Gray</div><div class="color-swatch-hex">#f3f3f6</div><div class="color-swatch-role">言語・通貨チップ面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f1f1f1"></div><div class="color-swatch-info"><div class="color-swatch-name">Field Gray</div><div class="color-swatch-hex">#f1f1f1</div><div class="color-swatch-role">入力欄の面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e0e0e0"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#e0e0e0</div><div class="color-swatch-role">入力欄の細罫線</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface / Text on Dark</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #eee"></div><div class="color-swatch-info"><div class="color-swatch-name">Page White</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ背景・商品グリッド</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#283249"></div><div class="color-swatch-info"><div class="color-swatch-name">Hero Navy</div><div class="color-swatch-hex">#283249</div><div class="color-swatch-role">ヒーロー・お知らせ・フッター面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(18,17,39,0.72)"></div><div class="color-swatch-info"><div class="color-swatch-name">Overlay</div><div class="color-swatch-hex">rgba(18,17,39,.72)</div><div class="color-swatch-role">翻訳切替オーバーレイ</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section section-gray" style="max-width:none;">
+<div class="section-inner" style="max-width:1120px; margin:0 auto; padding:80px 32px;">
+  <div class="section-eyebrow">02 / typography — 実測値</div>
+  <h2 class="section-title">Typography</h2>
+
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:32px; font-weight:400; line-height:1.0; color:#666666;">kolor official online store</div>
+    <div class="type-meta">LTUnivers → Inter / 32px / 400 / line-height 1.0 / palt / #666666<span class="type-context">h1 Store Title</span></div>
+  </div>
+  <div class="type-sample" style="background:#283249; margin:0 -20px 30px; padding:24px 20px;">
+    <div style="font-family:var(--font-base); font-size:24px; font-weight:700; line-height:1.0; color:#ffffff;">2026 AUTUMN/WINTER</div>
+    <div class="type-meta" style="color:rgba(255,255,255,0.7);">LTUnivers → Inter / 24px / 700 / line-height 1.0 / 白・ネイビー地<span class="type-context navy-bg">h2 Hero</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:24px; font-weight:700; line-height:1.4; color:#283249;">kolor BEACON</div>
+    <div class="type-meta">LTUnivers → Inter / 24px / 700 / line-height 1.4 (33.6px) / #283249<span class="type-context">h2 Section</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:22px; font-weight:400; line-height:1.4; color:#283249;">Accessories</div>
+    <div class="type-meta">LTUnivers → Inter / 22px / 400 / line-height 1.4 (30.8px) / #283249<span class="type-context">h2 Collection Label</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:16px; font-weight:700; line-height:1.4; color:#283249;">MEN — WOMEN — COLLECTION</div>
+    <div class="type-meta">LTUnivers → Inter / 16px / 700 / line-height 1.4 / #283249<span class="type-context">a Nav Label</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:16px; font-weight:400; line-height:1.4; color:#666666; max-width:640px;">kolor は、素材の意外な組み合わせと構築的なテーラリングで知られる、デザイナー・阿部潤一による前衛的なブランドです。異なる生地・パターン・カラーを一着のなかに緻密に同居させ、既視感のあるワードローブに新しい解釈を与えます。</div>
+    <div class="type-meta">LTUnivers → Inter+Noto Sans JP / 16px / 400 / line-height 1.4 (22.4px) / palt / #666666<span class="type-context">Body</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:13px; font-weight:400; line-height:1.5; color:#283249; letter-spacing:0.08em;">すべての検索結果を見る</div>
+    <div class="type-meta">LTUnivers → Inter / 13px / 400 / line-height 1.5 / letter-spacing 1.04px (0.08em) / #283249<span class="type-context">a View All</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:12px; font-weight:700; line-height:1.3; color:#283249;">26SBM-T14237S-08 Tailored Jacket</div>
+    <div class="type-meta">LTUnivers → Inter / 12px / 700 / line-height 1.3 (15.6px) / #283249<span class="type-context">h2 Product Title</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:12px; font-weight:400; line-height:1.5; color:#283249;">¥26,400</div>
+    <div class="type-meta">LTUnivers → Inter / 12px / 400 / line-height 1.5 (18px) / #283249<span class="type-context">p Price</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-base); font-size:10px; font-weight:400; line-height:1.4; color:#666666; text-transform:uppercase; letter-spacing:0.12em;">News Letter</div>
+    <div class="type-meta">LTUnivers → Inter / 10px / 400 / line-height 1.4 (14px)<span class="type-context">h5 Footer Heading</span></div>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 03 ARTICLE / PRODUCT -->
+<section class="section" id="products">
+  <div class="section-eyebrow">03 / collection</div>
+  <h2 class="section-title">Collection</h2>
+
+  <div class="product-grid">
+    <a class="product-card" href="#">
+      <div class="product-card-image">26AW / 01<span class="product-card-badge badge badge-limited">Limited</span></div>
+      <div class="product-card-body">
+        <div class="brand">kolor</div>
+        <h3>Nylon Twill Layered Blouson</h3>
+        <div class="price">¥85,800</div>
+      </div>
+    </a>
+    <a class="product-card" href="#">
+      <div class="product-card-image" style="background:#e7e7e7">26AW / 02</div>
+      <div class="product-card-body">
+        <div class="brand">kolor</div>
+        <h3>Wool Mohair Docking Knit</h3>
+        <div class="price">¥46,200</div>
+      </div>
+    </a>
+    <a class="product-card" href="#">
+      <div class="product-card-image">26AW / 03<span class="product-card-badge badge badge-navy">New</span></div>
+      <div class="product-card-body">
+        <div class="brand">kolor</div>
+        <h3>Cupra Twill Tailored Trousers</h3>
+        <div class="price">¥39,600</div>
+      </div>
+    </a>
+    <a class="product-card" href="#">
+      <div class="product-card-image" style="background:#e7e7e7">26AW / 04</div>
+      <div class="product-card-body">
+        <div class="brand">kolor</div>
+        <h3>26SBM-T14237S-08 Hybrid Coat</h3>
+        <div class="price">¥132,000</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="article" style="margin-top:72px;">
+    <div class="brand">kolor BEACON — Collection Note</div>
+    <h3>異素材のドッキングが生む、緊張感のあるシルエット</h3>
+    <p>2026 Autumn/Winter コレクションは、ナイロンツイルとウールモヘアという相反する素材を一着のなかで衝突させることから始まりました。滑らかな面とざらついた面、光を弾く生地と吸い込む生地。その境界に生まれる緊張感こそが kolor の核心です。</p>
+    <p>テーラリングは徹底して構築的でありながら、袖や裾のディテールで意図的にリズムを崩します。ネイビーを基調としたパレットは、素材同士のコントラストを際立たせるための静かな器として機能します。</p>
+    <div class="meta">Posted 2026.07.21 — kolor BEACON</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 04 BUTTONS -->
+<section class="section section-gray" style="max-width:none;" id="buttons">
+<div class="section-inner" style="max-width:1120px; margin:0 auto; padding:80px 32px;">
+  <div class="section-eyebrow">04 / buttons &amp; badges</div>
+  <h2 class="section-title">Buttons</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-filled" href="#">カートに入れる</a><div class="button-label">Filled Navy / padding 16×30 / radius 0</div></div>
+    <div class="button-item"><a class="btn-outlined" href="#">お気に入りに追加</a><div class="button-label">Outlined Navy / 1px solid #283249</div></div>
+    <div class="button-item"><a class="btn-text" href="#">MORE VIEW</a><div class="button-label">Text Bold / 16px / 700</div></div>
+  </div>
+
+  <div class="navy-panel">
+    <div class="button-item"><a class="btn-filled on-navy" href="#">View Collection</a><div class="button-label">Filled White (on navy)</div></div>
+    <div class="button-item"><a class="btn-outlined on-navy" href="#">Newsletter</a><div class="button-label">Outlined White (on navy)</div></div>
+  </div>
+
+  <div class="badge-row">
+    <span class="badge badge-limited">Limited</span>
+    <span class="badge badge-navy">New Arrival</span>
+    <span class="nav-chip">JA</span>
+    <span class="nav-chip">JPY</span>
+  </div>
+  <div class="button-label" style="text-align:left; margin-top:12px;">Limited バッジ（#fbc02d・唯一の差し色）／ Navy バッジ ／ 言語・通貨チップ（radius 3px）</div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 05 CARDS -->
+<section class="section" id="cards">
+  <div class="section-eyebrow">05 / cards</div>
+  <h2 class="section-title">Cards</h2>
+  <div class="product-grid">
+    <a class="product-card" href="#">
+      <div class="product-card-image">CARD / 01<span class="product-card-badge badge badge-limited">Limited</span></div>
+      <div class="product-card-body">
+        <div class="brand">kolor</div>
+        <h3>Padded Nylon Vest</h3>
+        <div class="price">¥58,300</div>
+      </div>
+    </a>
+    <a class="product-card" href="#">
+      <div class="product-card-image" style="background:#e7e7e7">CARD / 02</div>
+      <div class="product-card-body">
+        <div class="brand">kolor BEACON</div>
+        <h3>Cotton Gabardine Shirt</h3>
+        <div class="price">¥29,700</div>
+      </div>
+    </a>
+    <a class="product-card" href="#">
+      <div class="product-card-image">CARD / 03</div>
+      <div class="product-card-body">
+        <div class="brand">kolor</div>
+        <h3>Leather Combi Sneakers</h3>
+        <div class="price">¥71,500</div>
+      </div>
+    </a>
+  </div>
+  <div class="button-label" style="text-align:left; margin-top:16px;">商品カード: 面色 #e5e5e5／#e7e7e7 の画像プレースホルダ、影なし・radius 0、下にブランド名 / 品番 12px/700 / 価格の 3 段組</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 06 FORMS -->
+<section class="section section-gray" style="max-width:none;" id="forms">
+<div class="section-inner" style="max-width:1120px; margin:0 auto; padding:80px 32px;">
+  <div class="section-eyebrow">06 / forms</div>
+  <h2 class="section-title">Forms</h2>
+  <div class="form-group">
+    <label class="form-label">Search</label>
+    <input class="form-input" type="text" placeholder="商品名・品番で検索...">
+    <div class="form-state-label">Default — bg #f1f1f1 / border 1px solid #e0e0e0 / radius 4px</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Email Address</label>
+    <input class="form-input form-input--focus" type="email" value="reader@example.com">
+    <div class="form-state-label">Focus — border-color #283249</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Postal Code</label>
+    <input class="form-input form-input--error" type="text" value="000">
+    <div class="form-state-label error">Error — 郵便番号の形式が正しくありません（border #c0392b ※実サイトに明示のエラー色はなく近縁色で補完）</div>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 07 ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-eyebrow">07 / elevation</div>
+  <h2 class="section-title">Depth &amp; Elevation</h2>
+  <div class="elev-row">
+    <div class="elev-item elev-0"><div class="elev-label">Level 0 — Flat</div><div class="elev-value">box-shadow: none</div></div>
+    <div class="elev-item elev-1"><div class="elev-label">Level 1 — Subtle</div><div class="elev-value">0 1px 2px rgba(40,50,73,0.08)</div></div>
+  </div>
+  <div class="button-label" style="text-align:left; margin-top:16px;">kolor は原則フラット。奥行きは影ではなく「ネイビー面 / 白面」のコントラストと直線で表現する</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 08 LAYOUT -->
+<section class="section section-gray" style="max-width:none;" id="layout">
+<div class="section-inner" style="max-width:1120px; margin:0 auto; padding:80px 32px;">
+  <div class="section-eyebrow">08 / layout</div>
+  <h2 class="section-title">Spacing &amp; Width</h2>
+  <h3 style="font-size:14px; font-weight:700; margin:16px 0 12px; color:var(--kolor-navy); text-transform:uppercase; letter-spacing:0.06em;">Spacing Scale</h3>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:6px"></div><div class="spacing-value">6px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:18px"></div><div class="spacing-value">18px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:30px"></div><div class="spacing-value">30px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:60px"></div><div class="spacing-value">60px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:120px"></div><div class="spacing-value">120px</div></div>
+  </div>
+
+  <h3 style="font-size:14px; font-weight:700; margin:32px 0 12px; color:var(--kolor-navy); text-transform:uppercase; letter-spacing:0.06em;">Content Widths</h3>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Full Bleed Hero <span class="width-bar-value">100vw</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Section Container <span class="width-bar-value">1120px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:80%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Article Body <span class="width-bar-value">720px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:52%"></div></div></div>
+</div>
+</section>
+
+<footer class="footer">
+  <h5>News Letter</h5>
+  <p>Generated from <a href="https://kolor.jp/">kolor.jp</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-07-21）</p>
+  <p>preview は商用フォント LTUnivers を Google Fonts の Inter + Noto Sans JP で代替 ｜ font-feature-settings: "palt"</p>
+</footer>
+
+</body>
+</html>

@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (396 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (399 sites)</a>
 </p>
 
 <table>
@@ -589,6 +589,11 @@
 <td align="center"><strong>オカムラ</strong><br><img src="design-md/okamura/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>飛騨産業</strong><br><img src="design-md/hida/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>MARKAWARE</strong><br><img src="design-md/markaware/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>SIX</strong><br><img src="design-md/sixinc/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>kolor</strong><br><img src="design-md/kolor/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1045,11 +1050,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [BIOTOP (ビオトープ)](https://www.biotop.jp/) | Select Shop / Lifestyle | [DESIGN.md](design-md/biotop/DESIGN.md) | [preview.html](design-md/biotop/preview.html) |
 | [オカムラ (Okamura)](https://www.okamura.co.jp/) | Office Furniture / Workplace | [DESIGN.md](design-md/okamura/DESIGN.md) | [preview.html](design-md/okamura/preview.html) |
 | [飛騨産業 (HIDA)](https://kitutuki.co.jp/) | Wood Furniture / Manufacturer | [DESIGN.md](design-md/hida/DESIGN.md) | [preview.html](design-md/hida/preview.html) |
+| [MARKAWARE (マーカウェア)](https://www.markaware.jp/) | Fashion / Menswear | [DESIGN.md](design-md/markaware/DESIGN.md) | [preview.html](design-md/markaware/preview.html) |
+| [SIX (シックス)](https://www.sixinc.jp/) | Creative Agency | [DESIGN.md](design-md/sixinc/DESIGN.md) | [preview.html](design-md/sixinc/preview.html) |
+| [kolor (カラー)](https://kolor.jp/) | Fashion / Apparel | [DESIGN.md](design-md/kolor/DESIGN.md) | [preview.html](design-md/kolor/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (396 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (399 sites)</a>
 </p>
 
 <table>
@@ -1603,6 +1611,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <tr>
 <td align="center"><strong>オカムラ</strong><br><img src="design-md/okamura/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>飛騨産業</strong><br><img src="design-md/hida/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>MARKAWARE</strong><br><img src="design-md/markaware/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>SIX</strong><br><img src="design-md/sixinc/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>kolor</strong><br><img src="design-md/kolor/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: SIX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測値（無彩色＋赤1色） === */
+    --white: #ffffff;          /* body 背景 */
+    --bg-cover: #eeeeee;       /* cover_video 帯（rgb 238,238,238） */
+    --surface-tint: #f7f7f7;   /* NEWS 等セクション面（rgb 247,247,247） */
+    --surface-dark: #1a1a1a;   /* WORKS カード地（rgb 26,26,26） */
+    --surface-dark-alt: #262626;/* 暗面 alt（rgb 38,38,38） */
+    --accent: #f23030;         /* 唯一の彩度・赤（rgb 242,48,48） */
+    --ink-strong: #222222;     /* 見出し・ナビ（rgb 34,34,34） */
+    --ink: #404040;            /* 本文（rgb 64,64,64） */
+    --muted: #808080;          /* メタ・ラベル（rgb 128,128,128） */
+    --btn-text: #333333;       /* テキストボタン（rgb 51,51,51） */
+    --on-dark: #ffffff;
+    --border: #dddddd;         /* 入力欄枠（推定） */
+    --divider: #e5e5e5;        /* 区切り線 */
+    /* 影（フラット基調・控えめ） */
+    --shadow-1: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-2: 0 12px 32px rgba(0,0,0,0.16);
+    /* === Fonts（代替: MaisonNeue → Work Sans / 和文 → Noto Sans JP） === */
+    --font-en: "Work Sans", "Helvetica Neue", Arial, sans-serif;
+    --font-jp: "Noto Sans JP", "YakuHanJP", "Yu Gothic", "游ゴシック", "Hiragino Kaku Gothic ProN", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+    /* letter-spacing トークン */
+    --ls-body: 0.04em;         /* 和文本文 0.7px/18px */
+    --ls-ui: 0.05em;           /* ナビ・UI 0.7px/14px */
+    --ls-label: 0.1em;         /* 英字セクションラベル 1.6px/16px */
+    --ls-hero: -0.015em;       /* ヒーロー欧文 -1.2px/80px */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font-jp);
+    font-size: 16px; font-weight: 400; line-height: 2.0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .en { font-family: var(--font-en); }
+  /* 代替フォントでの約物半角詰め近似（見出し・ラベル） */
+  .palt { font-feature-settings: "palt" 1; }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 6vw; height: 68px;
+    background: var(--white);
+    border-bottom: 1px solid var(--divider);
+  }
+  .nav-brand { font-family: var(--font-en); font-size: 20px; font-weight: 700; color: var(--ink-strong); text-decoration: none; letter-spacing: 0.02em; }
+  .nav-links { display: flex; gap: 30px; list-style: none; align-items: center; }
+  .nav-links a { font-family: var(--font-en); font-size: 14px; font-weight: 400; color: var(--ink-strong); text-decoration: none; letter-spacing: var(--ls-ui); transition: opacity 0.2s; }
+  .nav-links a:hover { opacity: 0.5; }
+  .nav-button {
+    display: inline-block; background: var(--surface-dark); color: var(--on-dark);
+    font-family: var(--font-en); padding: 10px 22px; border: none; border-radius: 0;
+    font-size: 14px; font-weight: 500; text-decoration: none; letter-spacing: var(--ls-ui); transition: opacity 0.2s;
+  }
+  .nav-button:hover { opacity: 0.82; }
+
+  /* HERO */
+  .hero { padding: 132px 6vw 116px; background: var(--bg-cover); }
+  .hero .eyebrow { font-family: var(--font-en); font-size: 13px; font-weight: 500; color: var(--accent); letter-spacing: var(--ls-label); text-transform: uppercase; margin-bottom: 30px; }
+  .hero h1 {
+    font-family: var(--font-en); font-size: 80px; font-weight: 700; line-height: 1.1;
+    color: var(--ink); margin-bottom: 26px; letter-spacing: var(--ls-hero);
+  }
+  .hero .jp-title {
+    font-family: var(--font-jp); font-size: 18px; font-weight: 400; line-height: 2.0;
+    color: var(--ink); margin: 0 0 30px; max-width: 640px;
+  }
+  .hero p {
+    font-family: var(--font-jp); font-size: 15px; font-weight: 400; line-height: 2.0;
+    color: var(--muted); max-width: 620px; margin: 0 0 38px;
+  }
+  .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-block; font-family: var(--font-en); font-size: 14px; font-weight: 500;
+    padding: 14px 30px; border: none; border-radius: 0; cursor: pointer;
+    text-decoration: none; letter-spacing: var(--ls-ui); color: var(--on-dark); background: var(--surface-dark);
+    transition: opacity 0.2s, background 0.2s, color 0.2s;
+  }
+  .btn:hover { opacity: 0.82; }
+  .btn--ghost { background: transparent; color: var(--btn-text); border: 1px solid var(--ink-strong); }
+  .btn--ghost:hover { background: var(--ink-strong); color: var(--on-dark); opacity: 1; }
+  .btn--accent { background: var(--accent); color: var(--on-dark); }
+  .btn--text { background: transparent; color: var(--btn-text); border: none; padding: 14px 4px; }
+  .btn--text:hover { color: var(--ink-strong); opacity: 1; }
+  .btn--text::after { content: " →"; }
+
+  /* SECTIONS */
+  .section { padding: 100px 6vw; max-width: 1280px; margin: 0 auto; }
+  .section-eyebrow {
+    font-family: var(--font-en); font-size: 13px; font-weight: 400; color: var(--muted);
+    letter-spacing: var(--ls-label); text-transform: uppercase; margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: var(--font-en); font-size: 44px; font-weight: 700; line-height: 1.1;
+    margin-bottom: 38px; color: var(--ink-strong); letter-spacing: -0.01em;
+  }
+  .section-divider { border: none; border-top: 1px solid var(--divider); margin: 0; }
+  .section-tint { background: var(--surface-tint); }
+  .section-tint .section-inner { max-width: 1280px; margin: 0 auto; padding: 100px 6vw; }
+  .section-lead { font-size: 13px; color: var(--muted); margin: -24px 0 30px; max-width: 640px; line-height: 1.9; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { overflow: hidden; background: var(--white); border: 1px solid var(--divider); }
+  .color-swatch-block { height: 76px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-family: var(--font-en); font-size: 12px; font-weight: 600; margin-bottom: 2px; color: var(--ink-strong); }
+  .color-swatch-hex { font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+  .color-group-label { font-family: var(--font-en); font-size: 13px; font-weight: 500; color: var(--muted); margin: 30px 0 12px; letter-spacing: var(--ls-label); text-transform: uppercase; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 32px; padding-bottom: 28px; border-bottom: 1px solid var(--divider); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 12px; letter-spacing: 0; line-height: 1.6; }
+  .type-context { display: inline-block; background: var(--surface-tint); color: var(--muted); font-size: 11px; padding: 2px 8px; margin-left: 8px; }
+  .type-sample--dark { background: var(--surface-dark); padding: 26px; border-bottom: none; }
+  .type-sample--dark .type-meta { color: #b0b0b0; }
+
+  /* WORKS CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; }
+  .card { background: var(--surface-dark); overflow: hidden; }
+  .card-img { aspect-ratio: 16/10; display: flex; align-items: center; justify-content: center; background: var(--surface-dark-alt); overflow: hidden; position: relative; }
+  .card-img .ph { font-family: var(--font-en); font-size: 20px; font-weight: 400; color: #555; letter-spacing: var(--ls-label); }
+  .card-info { padding: 26px 24px 30px; }
+  .card-client { font-family: var(--font-en); font-size: 22px; font-weight: 400; color: var(--on-dark); letter-spacing: 0.02em; }
+  .card-name { font-family: var(--font-en); font-size: 30px; font-weight: 700; line-height: 1.15; color: var(--on-dark); margin-top: 8px; letter-spacing: -0.01em; }
+  .card-more { font-family: var(--font-en); font-size: 13px; color: var(--on-dark); margin-top: 20px; letter-spacing: var(--ls-ui); opacity: 0.85; }
+  .card-more::after { content: " →"; }
+
+  /* BUTTONS showcase */
+  .button-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 10px; line-height: 1.6; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 22px; max-width: 440px; }
+  .form-label { display: block; font-family: var(--font-jp); font-size: 14px; font-weight: 400; color: var(--ink-strong); margin-bottom: 8px; }
+  .form-input {
+    width: 100%; background: var(--white); color: var(--ink);
+    border: 1px solid var(--border); padding: 12px 14px; border-radius: 0;
+    font-family: var(--font-jp); font-size: 16px; outline: none; letter-spacing: var(--ls-body);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-input::placeholder { color: #b0b0b0; }
+  .form-input:focus, .form-input--focus { border-color: var(--ink-strong); box-shadow: 0 0 0 3px rgba(34,34,34,0.08); }
+  .form-input--error { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(242,48,48,0.14); }
+  .form-state-label { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .form-state-label--error { color: var(--accent); }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .elevation-card { background: var(--white); padding: 26px; text-align: center; border: 1px solid var(--divider); }
+  .elevation-label { font-family: var(--font-en); font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--ink-strong); }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--muted); word-break: break-all; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--ink-strong); margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--muted); }
+
+  /* FOOTER */
+  .footer { padding: 0; background: var(--white); }
+  .footer-address { background: var(--accent); color: var(--on-dark); padding: 40px 6vw; font-family: var(--font-jp); font-size: 14px; line-height: 2.0; letter-spacing: var(--ls-ui); }
+  .footer-address a { color: var(--on-dark); text-decoration: underline; }
+  .footer-note { padding: 40px 6vw; text-align: center; font-family: var(--font-en); font-size: 12px; color: var(--muted); letter-spacing: var(--ls-ui); border-top: 1px solid var(--divider); }
+  .footer-note a { color: var(--ink-strong); text-decoration: underline; }
+
+  @media (max-width: 767px) {
+    .hero { padding: 88px 6vw 72px; }
+    .hero h1 { font-size: 42px; }
+    .section-title { font-size: 30px; }
+    .nav-links { display: none; }
+    .section { padding: 60px 6vw; }
+    .section-tint .section-inner { padding: 60px 6vw; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">SIX</a>
+  <ul class="nav-links">
+    <li><a class="en" href="#colors">WORKS</a></li>
+    <li><a class="en" href="#typography">SERVICE</a></li>
+    <li><a class="en" href="#works">PEOPLE</a></li>
+    <li><a class="en" href="#forms">NEWS</a></li>
+    <li><a class="nav-button en" href="#">CONTACT</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="eyebrow en">Creative Agency — Tokyo</div>
+  <h1 class="en">We inspire<br>the mark.</h1>
+  <div class="jp-title">私たちは、課題解決、ビジネス変革、そして人の心を動かすアイデアで、ブランドに新しい印を刻む。</div>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。純白・ライトグレー・ニアブラックのモノクローム基調に、ただ一点だけ差す赤 #f23030。角丸なしの大胆なエディトリアル。computed style 実測値（2026-07-21）に基づく。</p>
+  <div class="hero-buttons">
+    <a class="btn en" href="#">WORKS を見る</a>
+    <a class="btn btn--ghost en" href="#">CONTACT</a>
+    <a class="btn btn--text en" href="#">DESIGN.md を読む</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-eyebrow en">01 / Colors</div>
+  <h2 class="section-title en">Color Palette</h2>
+  <p class="section-lead">無彩色を基調に、彩度を持つのは赤 #f23030 ただ一色。白・ライトグレー・ニアブラックのコントラストで階層を作り、赤は一点差しに限定する。</p>
+
+  <div class="color-group-label en">Accent（唯一の彩度）</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f23030"></div><div class="color-swatch-info"><div class="color-swatch-name">Accent Red</div><div class="color-swatch-hex">#f23030</div><div class="color-swatch-role">一点差し・住所ラベル等</div></div></div>
+  </div>
+
+  <div class="color-group-label en">Base / Surface</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #ededed"></div><div class="color-swatch-info"><div class="color-swatch-name">White</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ・ヘッダー地</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#eeeeee"></div><div class="color-swatch-info"><div class="color-swatch-name">BG Cover</div><div class="color-swatch-hex">#eeeeee</div><div class="color-swatch-role">ヒーロー / cover 帯</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f7f7f7"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Tint</div><div class="color-swatch-hex">#f7f7f7</div><div class="color-swatch-role">NEWS 等セクション面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1a1a1a"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Dark</div><div class="color-swatch-hex">#1a1a1a</div><div class="color-swatch-role">WORKS カード地</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#262626"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Dark Alt</div><div class="color-swatch-hex">#262626</div><div class="color-swatch-role">暗面 alt</div></div></div>
+  </div>
+
+  <div class="color-group-label en">Text</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#222222"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Strong</div><div class="color-swatch-hex">#222222</div><div class="color-swatch-role">見出し・ナビ</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#404040"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#404040</div><div class="color-swatch-role">本文</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#808080"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Muted</div><div class="color-swatch-hex">#808080</div><div class="color-swatch-role">メタ・ラベル</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#333333"></div><div class="color-swatch-info"><div class="color-swatch-name">Button Text</div><div class="color-swatch-hex">#333333</div><div class="color-swatch-role">テキストボタン</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-eyebrow en">02 / Typography — 実測値</div>
+  <h2 class="section-title en">Typography</h2>
+  <p class="section-lead">原典は欧文＝Maison Neue（Milieu Grotesque）、和文＝YakuHanJP ＋ 游ゴシック。本プレビューは代替の <span class="en">Work Sans / Noto Sans JP</span> で表示。和文本文は line-height 2.0、英字ラベルは letter-spacing 0.1em、ヒーロー欧文だけ -0.015em と詰める。</p>
+
+  <div class="type-sample">
+    <div class="en" style="font-size:64px; font-weight:700; line-height:1.1; color:var(--ink); letter-spacing:-0.015em;">We inspire the mark.</div>
+    <div class="type-meta">Display (Hero, en) — Maison Neue（代替 Work Sans）/ 80px / 700 / lh 1.1 / ls -0.015em<span class="type-context">header.main_copy</span></div>
+  </div>
+  <div class="type-sample--dark">
+    <div class="en" style="font-size:22px; font-weight:400; line-height:1.0; color:var(--on-dark); letter-spacing:0.02em;">TOYOTA</div>
+    <div class="en" style="font-size:40px; font-weight:400; line-height:1.0; color:var(--on-dark); margin-top:10px; letter-spacing:0.015em;">GR Brand Communication</div>
+    <div class="type-meta">Work Title / Client (en, ダーク地) — 48px / 24px / 400 / lh 1.0 / 色 #ffffff<span class="type-context">article.title / .client</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="palt" style="font-family:var(--font-jp); font-size:18px; font-weight:400; line-height:2.0; color:var(--ink); letter-spacing:0.04em;">本文テキスト — 私たちは、課題解決、ビジネス変革、そして人の心を動かすアイデアで、ブランドコミュニケーションを開発します。<span class="en">ABCabc 0123</span></div>
+    <div class="type-meta">Body (和文) — YakuHanJP+游ゴシック（代替 Noto Sans JP）/ 18px / 400 / lh 2.0 / ls 0.04em<span class="type-context">article.text.ja</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="palt" style="font-family:var(--font-jp); font-size:16px; font-weight:400; line-height:2.0; color:var(--muted); letter-spacing:0.04em;">NEWS 本文 — ADFEST 2026 において ENTERTAINMENT 部門ほかで 8つのメダル獲得と 1つのファイナリストに選出されました。</div>
+    <div class="type-meta">Body S / News (和文) — 16px / 400 / lh 2.0 / ls 0.04em / 色 #808080<span class="type-context">article.text.ja</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="en" style="font-family:var(--font-jp); font-size:16px; font-weight:400; line-height:1.0; color:var(--muted); letter-spacing:0.1em;">NEWS</div>
+    <div class="type-meta">Section Label (en) — 16px / 400 / lh 1.0 / ls 1.6px (0.1em) / 色 #808080<span class="type-context">article.title.ja</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="en" style="font-family:var(--font-jp); font-size:14px; font-weight:400; line-height:1.0; color:var(--ink-strong); letter-spacing:0.05em;">WORKS　SERVICE　PEOPLE　NEWS　CONTACT</div>
+    <div class="type-meta">Nav / UI — 14px / 400 / lh 1.0 / ls 0.7px (0.05em) / 色 #222222<span class="type-context">nav.gnav</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- WORKS -->
+<section class="section-tint" id="works">
+<div class="section-inner">
+  <div class="section-eyebrow en">03 / Works — editorial グリッド</div>
+  <h2 class="section-title en">Selected Works</h2>
+  <p class="section-lead">CTA は塗りのカラーボタンではなく、ニアブラック #1a1a1a 地＋白文字の作例カードが担う。作例ビジュアルを大きく主役に置き、その上にクライアント名・作例名・READ MORE を重ねる。角丸なし。</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-img"><span class="ph en">IMAGE</span></div><div class="card-info"><div class="card-client en">TOYOTA</div><div class="card-name en">GR Brand Communication</div><div class="card-more en">READ MORE</div></div></div>
+    <div class="card"><div class="card-img"><span class="ph en">IMAGE</span></div><div class="card-info"><div class="card-client en">SMBC 日興証券</div><div class="card-name en">日興フロッギー</div><div class="card-more en">READ MORE</div></div></div>
+    <div class="card"><div class="card-img"><span class="ph en">IMAGE</span></div><div class="card-info"><div class="card-client en">popIn</div><div class="card-name en">popIn Aladdin</div><div class="card-more en">READ MORE</div></div></div>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-eyebrow en">04 / Buttons</div>
+  <h2 class="section-title en">Buttons</h2>
+  <p class="section-lead">塗りのブランドカラーボタンは持たない。CTA はニアブラック面＋白文字が基本。ゴースト（枠のみ）とテキストリンクを併用し、赤 #f23030 は一点差しの用途に限定。すべて角丸なし（radius 0）。</p>
+  <div class="button-row">
+    <div class="button-item"><a class="btn en" href="#">WORKS を見る</a><div class="button-label">Primary（#1a1a1a 地・白文字）</div></div>
+    <div class="button-item"><a class="btn btn--ghost en" href="#">CONTACT</a><div class="button-label">Ghost（#222 枠・hover 反転）</div></div>
+    <div class="button-item"><a class="btn btn--text en" href="#">READ MORE</a><div class="button-label">Text link（矢印付き）</div></div>
+    <div class="button-item"><a class="btn btn--accent en" href="#">お問い合わせ</a><div class="button-label">Accent（#f23030・限定用途）</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-eyebrow en">05 / Forms</div>
+  <h2 class="section-title en">Forms</h2>
+  <p class="section-lead">フォームの抽出データは取れなかったため、基調トークンからの推定値で表示。角丸なし（radius 0）を踏襲。フォーカスは枠 #222222 ＋薄い墨リング、エラーはアクセントの赤。</p>
+  <div class="form-group"><label class="form-label">お名前</label><input class="form-input" type="text" placeholder="山田 太郎"><div class="form-state-label">デフォルト — border: #dddddd, radius: 0</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--focus en" type="text" value="name@sixinc.jp"><div class="form-state-label">フォーカス — border: #222222 + 薄い墨リング</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error en" type="text" value="invalid@"><div class="form-state-label form-state-label--error">エラー — border: #f23030（アクセントの赤を転用）</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-eyebrow en">06 / Elevation</div>
+  <h2 class="section-title en">Depth &amp; Elevation</h2>
+  <p class="section-lead">影はほぼ使わず、白・ライトグレー・ニアブラックの地色コントラストで階層を作る。作例カードをニアブラックで沈めることで奥行きを出す。フラットが基本。</p>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">影なし、地色のコントラストで階層（基本）</div></div>
+    <div class="elevation-card" style="box-shadow:var(--shadow-1);"><div class="elevation-label">Level 1</div><div class="elevation-desc">0 1px 3px rgba(0,0,0,0.08)</div></div>
+    <div class="elevation-card" style="box-shadow:var(--shadow-2);"><div class="elevation-label">Level 2</div><div class="elevation-desc">0 12px 32px rgba(0,0,0,0.16)</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section" id="spacing">
+  <div class="section-eyebrow en">07 / Layout — Spacing Scale</div>
+  <h2 class="section-title en">Spacing</h2>
+  <p class="section-lead">8px グリッド基準の目安スケール。横余白はビューポートに比例（約 6vw）。広い余白で作例を主役にする。</p>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">XS 8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">S 16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">M 24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">L 40</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:64px"></div><div class="spacing-value">XL 64</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:104px"></div><div class="spacing-value">XXL 104</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-address palt">
+    SIX INC.　2F 6-3-16 Minami-aoyama, Minato-ku, Tokyo<br>
+    <a class="en" href="mailto:info@sixinc.jp">info@sixinc.jp</a>
+  </div>
+  <div class="footer-note">
+    Generated from <a class="en" href="https://www.sixinc.jp/">sixinc.jp</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-07-21）
+  </div>
+</footer>
+
+</body>
+</html>
