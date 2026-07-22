@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (399 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (402 sites)</a>
 </p>
 
 <table>
@@ -594,6 +594,11 @@
 <td align="center"><strong>SIX</strong><br><img src="design-md/sixinc/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>kolor</strong><br><img src="design-md/kolor/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>開化堂</strong><br><img src="design-md/kaikado/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>山と道</strong><br><img src="design-md/yamatomichi/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>SIWA｜紙和</strong><br><img src="design-md/siwa/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1053,11 +1058,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [MARKAWARE (マーカウェア)](https://www.markaware.jp/) | Fashion / Menswear | [DESIGN.md](design-md/markaware/DESIGN.md) | [preview.html](design-md/markaware/preview.html) |
 | [SIX (シックス)](https://www.sixinc.jp/) | Creative Agency | [DESIGN.md](design-md/sixinc/DESIGN.md) | [preview.html](design-md/sixinc/preview.html) |
 | [kolor (カラー)](https://kolor.jp/) | Fashion / Apparel | [DESIGN.md](design-md/kolor/DESIGN.md) | [preview.html](design-md/kolor/preview.html) |
+| [開化堂 (Kaikado)](https://www.kaikado.jp/) | Craft / Tea Caddy (Kyoto) | [DESIGN.md](design-md/kaikado/DESIGN.md) | [preview.html](design-md/kaikado/preview.html) |
+| [山と道 (Yamatomichi)](https://www.yamatomichi.com/) | Outdoor / UL Hiking Gear | [DESIGN.md](design-md/yamatomichi/DESIGN.md) | [preview.html](design-md/yamatomichi/preview.html) |
+| [SIWA｜紙和 (Siwa)](https://siwa.jp/) | Washi Paper Products / Design | [DESIGN.md](design-md/siwa/DESIGN.md) | [preview.html](design-md/siwa/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (399 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (402 sites)</a>
 </p>
 
 <table>
@@ -1616,6 +1624,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>MARKAWARE</strong><br><img src="design-md/markaware/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>SIX</strong><br><img src="design-md/sixinc/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>kolor</strong><br><img src="design-md/kolor/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>開化堂</strong><br><img src="design-md/kaikado/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>山と道</strong><br><img src="design-md/yamatomichi/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>SIWA｜紙和</strong><br><img src="design-md/siwa/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

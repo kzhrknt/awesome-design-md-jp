@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 開化堂 Kaikado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --white: #ffffff;
+    --off-white: #f2efe9;       /* 写真背景の温かいオフホワイト */
+    --copper: #9d805f;          /* 唯一のブランドカラー（銅） */
+    --seal: #a4331f;            /* 落款の朱（ロゴのみ） */
+    --charcoal: #333333;        /* 本文テキスト */
+    --caption: #cccccc;         /* 最小テキスト */
+    --hairline: #eeeeee;
+
+    /* === Fonts === */
+    /* 原典: "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif */
+    /* ヒラギノ明朝はローカル依存のため、Web では Noto Serif JP（weight 200）で代替 */
+    --font-serif: "Noto Serif JP", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-base: 16px;
+    --lh-base: 1.9;
+    --lh-para: 2.2;
+    --ls-base: 0.05em;
+
+    /* === Shape === */
+    --radius: 0px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--white);
+    color: var(--charcoal);
+    font-family: var(--font-serif);
+    font-size: var(--fs-base); font-weight: 200; line-height: var(--lh-base);
+    letter-spacing: var(--ls-base);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 40px; background: rgba(255,255,255,0.92); backdrop-filter: blur(6px); border-bottom: 1px solid var(--hairline); }
+  .header-brand { font-family: var(--font-serif); font-size: 22px; font-weight: 400; color: var(--charcoal); text-decoration: none; letter-spacing: 0.12em; }
+  .header-menu { display: flex; gap: 26px; font-size: 15px; font-weight: 200; }
+  .header-menu a { color: var(--charcoal); text-decoration: none; letter-spacing: var(--ls-base); }
+
+  /* HERO */
+  .hero { min-height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(160deg, #eceae4 0%, #e3ded4 55%, #d8cfc0 100%); padding: 60px 30px; }
+  .hero-eyebrow { font-size: 13px; font-weight: 200; letter-spacing: 0.2em; color: var(--copper); margin-bottom: 20px; }
+  .hero-title { font-family: var(--font-serif); font-size: 40px; font-weight: 400; line-height: 1.5; letter-spacing: 0.12em; color: var(--charcoal); }
+  .hero-sub { font-size: 15px; font-weight: 200; line-height: var(--lh-para); color: var(--charcoal); margin-top: 24px; max-width: 520px; }
+
+  /* SECTIONS */
+  .section { padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+  .section-eyebrow { font-size: 12px; font-weight: 200; letter-spacing: 0.2em; color: var(--copper); margin-bottom: 12px; }
+  .section-title { font-family: var(--font-serif); font-size: 26px; font-weight: 400; line-height: 1.3; letter-spacing: 0.08em; margin-bottom: 16px; }
+  .section-lead { font-size: 16px; font-weight: 200; line-height: var(--lh-para); color: var(--charcoal); max-width: 640px; margin-bottom: 40px; }
+  .divider { border: none; border-top: 1px solid var(--hairline); }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 18px; }
+  .swatch { border: 1px solid var(--hairline); }
+  .swatch-block { height: 96px; }
+  .swatch-info { padding: 14px 16px 18px; }
+  .swatch-name { font-size: 15px; font-weight: 400; letter-spacing: 0.04em; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--copper); margin-top: 4px; }
+  .swatch-role { font-size: 12px; font-weight: 200; color: #888; margin-top: 6px; line-height: 1.7; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 26px 0; border-bottom: 1px solid var(--hairline); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--copper); margin-top: 12px; letter-spacing: 0; }
+
+  /* ARTICLE */
+  .article { max-width: 680px; }
+  .article h2 { font-family: var(--font-serif); font-size: 26px; font-weight: 400; letter-spacing: 0.08em; line-height: 1.4; margin-bottom: 20px; }
+  .article p { font-size: 16px; font-weight: 200; line-height: var(--lh-para); margin-bottom: 24px; }
+  .article a { color: var(--copper); text-decoration: none; border-bottom: 1px solid var(--copper); }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .btn-line { display: inline-block; background: transparent; color: var(--copper); border: 1px solid var(--copper);
+    border-radius: var(--radius); font-family: var(--font-serif); font-size: 16px; font-weight: 200; letter-spacing: var(--ls-base);
+    padding: 12px 40px; text-decoration: none; cursor: pointer; transition: background .25s, color .25s; }
+  .btn-line:hover { background: var(--copper); color: var(--white); }
+  .btn-text { color: var(--copper); font-size: 16px; font-weight: 200; letter-spacing: var(--ls-base); text-decoration: none; border-bottom: 1px solid var(--copper); padding-bottom: 3px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 30px; }
+  .card { background: var(--white); }
+  .card-img { aspect-ratio: 3/4; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 22px; }
+  .card-img .ph { font-size: 11px; letter-spacing: 0.15em; color: rgba(255,255,255,0.85); }
+  .card-img--1 { background: linear-gradient(160deg, #c99a72 0%, #9d805f 100%); }
+  .card-img--2 { background: linear-gradient(160deg, #b98f68 0%, #85643f 100%); }
+  .card-img--3 { background: linear-gradient(160deg, #d8ccbb 0%, #b0a595 100%); }
+  .card-body { padding: 16px 4px 0; }
+  .card-name { font-size: 17px; font-weight: 400; letter-spacing: 0.06em; }
+  .card-price { font-size: 14px; font-weight: 200; color: #888; margin-top: 6px; }
+
+  /* FORMS */
+  .form { max-width: 440px; display: grid; gap: 24px; }
+  .field label { display: block; font-size: 13px; font-weight: 200; letter-spacing: 0.08em; color: #777; margin-bottom: 8px; }
+  .field input { width: 100%; background: var(--white); border: 1px solid var(--caption); border-radius: var(--radius);
+    padding: 12px 14px; font-family: var(--font-serif); font-size: 16px; font-weight: 200; color: var(--charcoal); }
+  .field input:focus { outline: none; border-color: var(--copper); }
+  .field--error input { border-color: var(--seal); }
+  .field--error .msg { font-size: 12px; color: var(--seal); margin-top: 6px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; }
+  .elev { background: var(--white); border: 1px solid var(--hairline); padding: 26px; text-align: center; font-size: 13px; font-weight: 200; }
+  .elev--0 { box-shadow: none; }
+  .elev--1 { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .elev--2 { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--copper); opacity: 0.85; }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: #888; margin-top: 8px; text-align: center; }
+
+  footer { padding: 60px 40px; border-top: 1px solid var(--hairline); text-align: center; font-size: 13px; font-weight: 200; color: #999; letter-spacing: 0.08em; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-brand" href="#">開化堂</a>
+  <nav class="header-menu"><a href="#">茶筒</a><a href="#">道具</a><a href="#">物語</a><a href="#">店舗</a></nav>
+</header>
+
+<section class="hero">
+  <div class="hero-eyebrow">創業明治八年　京都</div>
+  <h1 class="hero-title">手づくり茶筒司の<br>静かな仕事</h1>
+  <p class="hero-sub">銅・真鍮・ブリキを一つひとつ手で仕上げ、時とともに色を深める道具を。余白と明朝で「間」を伝えるデザインシステム。</p>
+</section>
+
+<section class="section">
+  <div class="section-eyebrow">01 — COLORS</div>
+  <h2 class="section-title">カラーパレット</h2>
+  <p class="section-lead">有彩色は銅色ただ一色。あとは白・オフホワイト・柔らかな炭色でまとめる。純黒は使わない。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#9d805f"></div><div class="swatch-info"><div class="swatch-name">Kaikado Copper</div><div class="swatch-hex">#9d805f</div><div class="swatch-role">唯一のブランドカラー。リンク・線ボタン</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#f2efe9"></div><div class="swatch-info"><div class="swatch-name">Warm Off-White</div><div class="swatch-hex">#f2efe9</div><div class="swatch-role">写真背景の温かい地</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#ffffff;outline:1px solid #eee;outline-offset:-1px"></div><div class="swatch-info"><div class="swatch-name">White</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">ページ背景</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#333333"></div><div class="swatch-info"><div class="swatch-name">Text Charcoal</div><div class="swatch-hex">#333333</div><div class="swatch-role">本文・見出し</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#cccccc"></div><div class="swatch-info"><div class="swatch-name">Caption Grey</div><div class="swatch-hex">#cccccc</div><div class="swatch-role">最小テキスト</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#a4331f"></div><div class="swatch-info"><div class="swatch-name">Seal Red</div><div class="swatch-hex">#a4331f</div><div class="swatch-role">落款の朱（ロゴのみ）</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">02 — TYPOGRAPHY</div>
+  <h2 class="section-title">タイポグラフィ</h2>
+  <p class="section-lead">ヒラギノ明朝の単一スタック。極細ウェイト 200・行間 1.9〜2.2・letter-spacing 0.05em が静けさを作る。（Web では Noto Serif JP で代替）</p>
+  <div class="type-sample"><div style="font-size:26px;font-weight:400;letter-spacing:0.08em;line-height:1.3">見出し — 茶筒の開化堂</div><div class="type-meta">h2 · Noto Serif JP · 26px · weight 400 · lh 1.3 · ls 0.08em</div></div>
+  <div class="type-sample"><div style="font-size:24px;font-weight:400;letter-spacing:0.06em">小見出し — 時を重ねる道具</div><div class="type-meta">h3 · 24px · weight 400</div></div>
+  <div class="type-sample"><div style="font-size:16px;font-weight:200;line-height:2.2">本文 — 銅は使い込むほどに色を変え、やがて飴色へと深まっていきます。手のひらに馴染む蓋の重さ、閉じるときの静かな空気。道具は日々の所作とともに育ちます。</div><div class="type-meta">p · 16px · weight 200 · lh 2.2 · ls 0.05em</div></div>
+  <div class="type-sample"><div style="font-size:15px;font-weight:200;color:#9d805f">リンク — さらに詳しく</div><div class="type-meta">a · 15–17px · weight 200 · color #9d805f</div></div>
+  <div class="type-sample"><div style="font-size:13px;font-weight:200;color:#999;letter-spacing:0.06em">キャプション — KAIKADO SINCE 1875</div><div class="type-meta">caption · 13px · weight 200</div></div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">03 — ARTICLE</div>
+  <h2 class="section-title">組版サンプル</h2>
+  <div class="article">
+    <h2>茶筒が育つということ</h2>
+    <p>開化堂の茶筒は、二重の筒がすっと自らの重みで閉じていきます。新しいうちは明るく輝く銅も、手に取るたびに少しずつ酸化し、飴色から茶褐色へと表情を変えていきます。</p>
+    <p>その変化は「劣化」ではなく「経年美化」。使う人の暮らしとともに、世界に一つの色が生まれます。私たちは百三十以上の工程を、いまも手仕事で受け継いでいます。<a href="#">職人の仕事を見る</a>。</p>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">04 — BUTTONS</div>
+  <h2 class="section-title">ボタン</h2>
+  <p class="section-lead">面色なし・角ゼロ・1px の銅線という一種類のみ。ホバーで静かに反転する。</p>
+  <div class="btn-row">
+    <a class="btn-line" href="#">さらに詳しく</a>
+    <a class="btn-line" href="#">商品一覧へ</a>
+    <a class="btn-text" href="#">物語を読む</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">05 — CARDS</div>
+  <h2 class="section-title">製品カード</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-img card-img--1"><span class="ph">COPPER</span></div><div class="card-body"><div class="card-name">銅 茶筒 200g</div><div class="card-price">¥19,800</div></div></div>
+    <div class="card"><div class="card-img card-img--2"><span class="ph">BRASS</span></div><div class="card-body"><div class="card-name">真鍮 茶筒 150g</div><div class="card-price">¥16,500</div></div></div>
+    <div class="card"><div class="card-img card-img--3"><span class="ph">TIN</span></div><div class="card-body"><div class="card-name">ブリキ 茶筒 100g</div><div class="card-price">¥13,200</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">06 — FORMS</div>
+  <h2 class="section-title">フォーム</h2>
+  <p class="section-lead">デフォルト / フォーカス / エラーの3状態。角ゼロ、明朝、フォーカスは銅色。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="山田 太郎"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="tea@example.com" autofocus></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="03-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn-line" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">07 — ELEVATION</div>
+  <h2 class="section-title">奥行き</h2>
+  <p class="section-lead">基本はフラット。奥行きは余白と写真の陰影で表現し、影は限定用途のみ。</p>
+  <div class="elev-grid">
+    <div class="elev elev--0">Level 0 — none</div>
+    <div class="elev elev--1">Level 1 — dropdown</div>
+    <div class="elev elev--2">Level 2 — modal</div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">08 — LAYOUT</div>
+  <h2 class="section-title">スペーシング</h2>
+  <p class="section-lead">8 / 16 / 24 / 40 / 64 / 120px。余白は広めに取り「間」を作る。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:8px;height:8px"></div><div class="space-label">XS 8</div></div>
+    <div><div class="space-bar" style="width:16px;height:16px"></div><div class="space-label">S 16</div></div>
+    <div><div class="space-bar" style="width:24px;height:24px"></div><div class="space-label">M 24</div></div>
+    <div><div class="space-bar" style="width:40px;height:40px"></div><div class="space-label">L 40</div></div>
+    <div><div class="space-bar" style="width:64px;height:64px"></div><div class="space-label">XL 64</div></div>
+    <div><div class="space-bar" style="width:120px;height:120px"></div><div class="space-label">XXL 120</div></div>
+  </div>
+</section>
+
+<footer>開化堂　KAIKADO — Design System Preview　/　実測ベース 2026-07-22</footer>
+
+</body>
+</html>

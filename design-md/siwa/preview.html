@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: SIWA 紙和</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --white: #ffffff;
+    --taupe: #867d6b;          /* 実質唯一のブランドアクセント */
+    --ink: #2b333f;            /* 締め色（フッター・暗色） */
+    --charcoal: #404040;       /* 本文テキスト（純黒不使用） */
+    --charcoal2: #3d3737;      /* 一部リンク */
+    --panel-grey: #efefef;
+    --hairline: #e0e0e0;
+    --error: #9c4a3c;
+
+    /* === Fonts === */
+    /* 原典: "Noto Serif JP", 游明朝, YuMincho, "Hiragino Mincho ProN", serif */
+    --font-serif: "Noto Serif JP", 游明朝, YuMincho, "Hiragino Mincho ProN", "ヒラギノ明朝 ProN", serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-base: 14px;
+    --lh-wide: 2.3;       /* ナビ・単発テキスト */
+    --lh-para: 1.5;       /* 段落本文 */
+    --ls-base: 0.02em;
+
+    /* === Shape === */
+    --radius: 2px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--white); color: var(--charcoal);
+    font-family: var(--font-serif);
+    font-size: var(--fs-base); font-weight: 300; line-height: var(--lh-wide);
+    letter-spacing: var(--ls-base);
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 40px; background: rgba(255,255,255,0.94); backdrop-filter: blur(6px); border-bottom: 1px solid var(--hairline); }
+  .header-brand { font-family: var(--font-serif); font-size: 22px; font-weight: 300; letter-spacing: 0.4em; color: var(--charcoal); text-decoration: none; }
+  .header-menu { display: flex; }
+  .header-menu a { color: var(--charcoal); text-decoration: none; font-size: 16px; font-weight: 300; letter-spacing: 0.1em; padding: 0 28px; border-left: 1px solid var(--hairline); }
+  .header-menu a:first-child { border-left: none; }
+
+  /* HERO */
+  .hero { min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 30px; background: linear-gradient(180deg,#ffffff 0%,#f6f4f0 100%); }
+  .hero-title { font-family: var(--font-serif); font-size: 30px; font-weight: 300; line-height: 1.7; letter-spacing: 0.12em; color: var(--charcoal); }
+  .hero-sub { font-size: 16px; font-weight: 300; line-height: var(--lh-para); color: var(--charcoal); margin-top: 30px; max-width: 520px; }
+
+  /* SECTIONS */
+  .section { padding: 84px 40px; max-width: 1160px; margin: 0 auto; }
+  .section-eyebrow { font-size: 12px; font-weight: 300; letter-spacing: 0.3em; color: var(--taupe); margin-bottom: 14px; }
+  .section-title { font-family: var(--font-serif); font-size: 25px; font-weight: 300; line-height: 1.5; letter-spacing: 0.06em; margin-bottom: 18px; }
+  .section-lead { font-size: 16px; font-weight: 300; line-height: var(--lh-para); color: var(--charcoal); max-width: 640px; margin-bottom: 42px; }
+  .divider { border: none; border-top: 1px solid var(--hairline); }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 20px; }
+  .swatch { border: 1px solid var(--hairline); }
+  .swatch-block { height: 96px; }
+  .swatch-info { padding: 14px 16px 18px; }
+  .swatch-name { font-size: 15px; font-weight: 400; letter-spacing: 0.04em; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--taupe); margin-top: 4px; letter-spacing: 0; }
+  .swatch-role { font-size: 12px; font-weight: 300; color: #999; margin-top: 6px; line-height: 1.7; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 28px 0; border-bottom: 1px solid var(--hairline); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--taupe); margin-top: 12px; letter-spacing: 0; }
+
+  /* ARTICLE */
+  .article { max-width: 680px; }
+  .article h2 { font-family: var(--font-serif); font-size: 25px; font-weight: 300; letter-spacing: 0.06em; line-height: 1.5; margin-bottom: 24px; }
+  .article p { font-size: 16px; font-weight: 300; line-height: var(--lh-para); margin-bottom: 26px; }
+  .article a { color: var(--taupe); text-decoration: none; border-bottom: 1px solid var(--taupe); }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 26px; flex-wrap: wrap; align-items: center; }
+  .btn-text { color: var(--taupe); font-size: 18px; font-weight: 300; letter-spacing: var(--ls-base); text-decoration: none; border-bottom: 1px solid var(--taupe); padding-bottom: 4px; transition: color .25s, border-color .25s; }
+  .btn-text:hover { color: var(--charcoal); border-color: var(--charcoal); }
+  .btn-rect { display: inline-block; background: var(--white); color: var(--ink); border: 1px solid var(--hairline); border-radius: var(--radius); padding: 8px 22px; font-family: var(--font-serif); font-size: 14px; font-weight: 300; text-decoration: none; }
+  .btn-rect:hover { border-color: var(--taupe); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 34px; }
+  .card { background: var(--white); }
+  .card-img { aspect-ratio: 4/5; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 18px; }
+  .card-img .ph { font-size: 11px; letter-spacing: 0.15em; color: rgba(255,255,255,0.9); }
+  .card-img--1 { background: linear-gradient(160deg,#d8d2c4,#9c937f); }
+  .card-img--2 { background: linear-gradient(160deg,#a9a196,#6e675a); }
+  .card-img--3 { background: linear-gradient(160deg,#c7bfb0,#867d6b); }
+  .card-body { padding: 16px 4px 0; border-top: 1px solid var(--hairline); margin-top: 2px; }
+  .card-name { font-size: 16px; font-weight: 400; letter-spacing: 0.04em; }
+  .card-meta { font-size: 13px; font-weight: 300; color: #999; margin-top: 6px; }
+
+  /* FORMS */
+  .form { max-width: 440px; display: grid; gap: 26px; }
+  .field label { display: block; font-size: 13px; font-weight: 300; letter-spacing: 0.08em; color: #888; margin-bottom: 8px; }
+  .field input { width: 100%; background: var(--white); border: 1px solid var(--hairline); border-radius: var(--radius); padding: 11px 14px; font-family: var(--font-serif); font-size: 16px; font-weight: 300; color: var(--charcoal); }
+  .field input:focus { outline: none; border-color: var(--taupe); }
+  .field--error input { border-color: var(--error); }
+  .field--error .msg { font-size: 12px; color: var(--error); margin-top: 6px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 30px; }
+  .elev { background: var(--white); border: 1px solid var(--hairline); padding: 26px; text-align: center; font-size: 13px; font-weight: 300; }
+  .elev--0 { box-shadow: none; }
+  .elev--1 { box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+  .elev--2 { box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--taupe); opacity: .85; }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: #999; margin-top: 8px; text-align: center; }
+
+  footer { padding: 60px 40px; border-top: 1px solid var(--hairline); text-align: center; font-size: 13px; font-weight: 300; color: #999; letter-spacing: 0.1em; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-brand" href="#">SIWA｜紙和</a>
+  <nav class="header-menu"><a href="#">Products</a><a href="#">Shop</a></nav>
+</header>
+
+<section class="hero">
+  <h1 class="hero-title">破れにくい和紙で、<br>使うほどに育つ道具を。</h1>
+  <p class="hero-sub">山梨・大直と深澤直人が生んだ和紙素材「ナオロン」。しわの風合いを愛でる、余白と明朝のデザインシステム。</p>
+</section>
+
+<section class="section">
+  <div class="section-eyebrow">01 — COLORS</div>
+  <h2 class="section-title">カラーパレット</h2>
+  <p class="section-lead">前面に出る有彩色はトープ #867d6b のみ。あとは白と柔らかな炭色。純黒は使わない。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#867d6b"></div><div class="swatch-info"><div class="swatch-name">Washi Taupe</div><div class="swatch-hex">#867d6b</div><div class="swatch-role">実質唯一のアクセント。リンク・小見出し</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#404040"></div><div class="swatch-info"><div class="swatch-name">Text Charcoal</div><div class="swatch-hex">#404040</div><div class="swatch-role">本文・見出し（純黒不使用）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#2b333f"></div><div class="swatch-info"><div class="swatch-name">Slate Ink</div><div class="swatch-hex">#2b333f</div><div class="swatch-role">締め色。フッター・暗色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#ffffff;outline:1px solid #e0e0e0;outline-offset:-1px"></div><div class="swatch-info"><div class="swatch-name">White</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">紙の白。ページ背景</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#efefef"></div><div class="swatch-info"><div class="swatch-name">Panel Grey</div><div class="swatch-hex">#efefef</div><div class="swatch-role">淡い面・サムネイル地</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#e0e0e0"></div><div class="swatch-info"><div class="swatch-name">Hairline</div><div class="swatch-hex">#e0e0e0</div><div class="swatch-role">1px の罫線</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">02 — TYPOGRAPHY</div>
+  <h2 class="section-title">タイポグラフィ</h2>
+  <p class="section-lead">Noto Serif JP の明朝スタック一系統。全編 weight 300、行間はナビ 2.3 / 段落 1.5、letter-spacing 0.02em。</p>
+  <div class="type-sample"><div style="font-size:25px;font-weight:300;letter-spacing:0.06em;line-height:1.5">見出し — 紙和のものづくり</div><div class="type-meta">h3 · Noto Serif JP · 25px · weight 300 · lh 1.4</div></div>
+  <div class="type-sample"><div style="font-size:19.6px;font-weight:300;line-height:1.6">ページ見出し H1 — しわの風合い</div><div class="type-meta">h1 · 19.6px · weight 300 · lh 1.6</div></div>
+  <div class="type-sample"><div style="font-size:16.8px;font-weight:300;line-height:1.5">本文 — ナオロンは、木の繊維と特殊なポリオレフィン繊維を漉き合わせた和紙です。水に強く破れにくく、それでいて紙ならではの軽さと温もりを保ちます。</div><div class="type-meta">p · 16.8px · weight 300 · lh 1.5 · ls 0.02em</div></div>
+  <div class="type-sample"><div style="font-size:14px;font-weight:300;line-height:2.3">ナビ・単発テキスト — 極端に広い行間で、明朝を静かに組む。</div><div class="type-meta">body/nav · 14px · weight 300 · lh 2.3</div></div>
+  <div class="type-sample"><div style="font-size:18px;font-weight:300;color:#867d6b">リンク — 製品を見る</div><div class="type-meta">a · 18px · weight 300 · color #867d6b</div></div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">03 — ARTICLE</div>
+  <h2 class="section-title">組版サンプル</h2>
+  <div class="article">
+    <h2>しわを、味わいに。</h2>
+    <p>使い込むほどに増える皺は、SIWA にとって欠点ではなく魅力です。手に持てば柔らかく沈み、置けば静かに佇む。和紙の軽さと、革のような経年変化を併せ持つ道具です。</p>
+    <p>撥水加工を施したナオロンは、日常のバッグとして十分な強度を備えます。色は生成りを基調に、暮らしに溶け込む静かな彩り。<a href="#">素材について読む</a>。</p>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">04 — BUTTONS</div>
+  <h2 class="section-title">ボタン</h2>
+  <p class="section-lead">テキストリンク（トープの下線）が主役。EC の最小 UI にのみ矩形ボタンが出る（radius 2px）。</p>
+  <div class="btn-row">
+    <a class="btn-text" href="#">製品を見る</a>
+    <a class="btn-text" href="#">オンラインストアへ</a>
+    <a class="btn-rect" href="#">カートに入れる</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">05 — CARDS</div>
+  <h2 class="section-title">製品カード</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-img card-img--1"><span class="ph">TOTE</span></div><div class="card-body"><div class="card-name">SIWA トートバッグ L</div><div class="card-meta">ナオロン / グレー</div></div></div>
+    <div class="card"><div class="card-img card-img--2"><span class="ph">CLUTCH</span></div><div class="card-body"><div class="card-name">クラッチバッグ</div><div class="card-meta">ナオロン / ダークグレー</div></div></div>
+    <div class="card"><div class="card-img card-img--3"><span class="ph">POUCH</span></div><div class="card-body"><div class="card-name">フラットポーチ</div><div class="card-meta">ナオロン / ベージュ</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">06 — FORMS</div>
+  <h2 class="section-title">フォーム</h2>
+  <p class="section-lead">デフォルト / フォーカス / エラーの3状態。明朝、radius 2px、フォーカスはトープ。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="山田 太郎"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="washi@example.com" autofocus></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="03-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn-rect" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">07 — ELEVATION</div>
+  <h2 class="section-title">奥行き</h2>
+  <p class="section-lead">基本はフラット。奥行きは余白・写真・ヘアライン罫で表現し、影は限定用途のみ。</p>
+  <div class="elev-grid">
+    <div class="elev elev--0">Level 0 — none</div>
+    <div class="elev elev--1">Level 1 — dropdown</div>
+    <div class="elev elev--2">Level 2 — modal</div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">08 — LAYOUT</div>
+  <h2 class="section-title">スペーシング</h2>
+  <p class="section-lead">8 / 16 / 24 / 40 / 64 / 120px。余白を広く取り「紙の間」を作る。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:8px;height:8px"></div><div class="space-label">XS 8</div></div>
+    <div><div class="space-bar" style="width:16px;height:16px"></div><div class="space-label">S 16</div></div>
+    <div><div class="space-bar" style="width:24px;height:24px"></div><div class="space-label">M 24</div></div>
+    <div><div class="space-bar" style="width:40px;height:40px"></div><div class="space-label">L 40</div></div>
+    <div><div class="space-bar" style="width:64px;height:64px"></div><div class="space-label">XL 64</div></div>
+    <div><div class="space-bar" style="width:120px;height:120px"></div><div class="space-label">XXL 120</div></div>
+  </div>
+</section>
+
+<footer>SIWA｜紙和 — Design System Preview　/　実測ベース 2026-07-22</footer>
+
+</body>
+</html>

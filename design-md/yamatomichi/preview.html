@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 山と道 Yamatomichi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --white: #ffffff;
+    --blue: #0386f0;            /* プライマリ（主要CTA・リンク） */
+    --blue-link: #0085ee;
+    --beige: #dfceaa;           /* 準ブランドカラー（自然色の地） */
+    --tag-grey: #ebebeb;
+    --panel-grey: #eeeeee;
+    --line-grey: #9d9d9d;
+    --black: #000000;
+    /* 記事カードの多色パレット */
+    --c-olive: #9db033; --c-gold: #d3ac45; --c-sky: #47a2e3; --c-coral: #f25745;
+    --c-pink: #f171c4; --c-slate: #7f8896; --c-mint: #bed387; --c-peach: #fad7b9;
+    --c-cream: #fffaea; --c-lavender: #e3dde1;
+
+    /* === Fonts === */
+    /* 原典: 筑紫ゴシック(TsukuGoPr5-R / TsukuGoPro-B) + Helvetica Now Text */
+    /* 筑紫ゴシックは Fontworks のため Web では humanist な Zen Kaku Gothic New で代替 */
+    --font-body: "Zen Kaku Gothic New", "Helvetica Now Text", "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-base: 16px;
+    --lh-base: 1.4;
+
+    /* === Shape === */
+    --radius-card: 20px;
+    --radius-pill: 28px;
+    --radius-tag: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--white); color: var(--black);
+    font-family: var(--font-body);
+    font-size: var(--fs-base); font-weight: 300; line-height: var(--lh-base);
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 32px; background: var(--white); border-bottom: 1px solid var(--panel-grey); }
+  .header-brand { font-weight: 700; font-size: 20px; letter-spacing: 0.04em; text-decoration: none; color: var(--black); }
+  .header-menu { display: flex; gap: 24px; font-size: 15px; font-weight: 500; }
+  .header-menu a { color: var(--black); text-decoration: none; }
+
+  /* HERO */
+  .hero { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; padding: 24px 32px; }
+  .hero-main { border-radius: var(--radius-card); min-height: 320px; background: linear-gradient(150deg,#7fb2d8 0%,#c9b18a 100%); position: relative; display: flex; align-items: center; justify-content: center; }
+  .hero-main .cap { color: #fff; font-weight: 500; font-size: 22px; letter-spacing: 0.02em; text-shadow: 0 1px 8px rgba(0,0,0,.3); }
+  .hero-side { border-radius: var(--radius-card); background: var(--blue); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 30px; text-align: center; }
+  .hero-side .t { font-weight: 700; font-size: 30px; letter-spacing: 0.02em; }
+  .pill-cta { display: inline-block; background: #fff; color: var(--blue); border-radius: var(--radius-pill); padding: 8px 20px; font-size: 14px; font-weight: 500; text-decoration: none; }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 1200px; margin: 0 auto; }
+  .section-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; color: var(--blue); margin-bottom: 10px; }
+  .section-title { font-size: 26px; font-weight: 700; line-height: 1.4; margin-bottom: 14px; }
+  .section-lead { font-size: 16px; font-weight: 300; line-height: 1.7; color: #444; max-width: 640px; margin-bottom: 36px; }
+  .divider { border: none; border-top: 1px solid var(--panel-grey); }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 16px; }
+  .swatch { border-radius: 12px; overflow: hidden; border: 1px solid var(--panel-grey); }
+  .swatch-block { height: 84px; }
+  .swatch-info { padding: 12px 14px 16px; }
+  .swatch-name { font-size: 14px; font-weight: 500; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: #666; margin-top: 4px; }
+  .swatch-role { font-size: 12px; font-weight: 300; color: #888; margin-top: 6px; line-height: 1.6; }
+  .group-label { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; color: var(--blue); margin: 34px 0 14px; }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { border-radius: 10px; padding: 14px 16px; font-size: 12px; font-weight: 500; min-width: 120px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 24px 0; border-bottom: 1px solid var(--panel-grey); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--blue); margin-top: 12px; }
+
+  /* ARTICLE / JOURNAL CARDS（多色・角ゼロ） */
+  .journal-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 14px; }
+  .jcard { border-radius: 0; padding: 16px; min-height: 150px; display: flex; flex-direction: column; justify-content: space-between; text-decoration: none; }
+  .jcard .cat { font-size: 12px; font-weight: 500; opacity: .85; }
+  .jcard .t { font-size: 20px; font-weight: 700; line-height: 1.4; margin-top: 8px; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+  .btn-primary { display: inline-block; background: var(--blue); color: #fff; border: none; border-radius: var(--radius-pill); padding: 12px 28px; font-family: var(--font-body); font-size: 18px; font-weight: 500; cursor: pointer; text-decoration: none; }
+  .btn-outline { display: inline-block; background: transparent; color: var(--blue-link); border: 1px solid var(--line-grey); border-radius: 10px; padding: 11px 24px; font-size: 16px; font-weight: 500; text-decoration: none; }
+  .tag { display: inline-block; background: var(--tag-grey); color: var(--black); border-radius: var(--radius-tag); padding: 3px 12px; font-size: 14px; font-weight: 400; }
+
+  /* CARDS（角丸フィーチャー） */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 20px; }
+  .card { border-radius: var(--radius-card); overflow: hidden; border: 1px solid var(--panel-grey); background: #fff; }
+  .card-img { aspect-ratio: 4/3; display: flex; align-items: flex-end; padding: 14px; }
+  .card-img--1 { background: linear-gradient(150deg,#9db033,#5f7a2a); }
+  .card-img--2 { background: linear-gradient(150deg,#47a2e3,#1e6fb0); }
+  .card-img--3 { background: linear-gradient(150deg,#dfceaa,#b39c6a); }
+  .card-body { padding: 16px; }
+  .card-name { font-size: 18px; font-weight: 700; }
+  .card-price { font-size: 15px; font-weight: 300; color: #444; margin-top: 6px; }
+
+  /* FORMS */
+  .form { max-width: 440px; display: grid; gap: 22px; }
+  .field label { display: block; font-size: 13px; font-weight: 500; color: #555; margin-bottom: 8px; }
+  .field input { width: 100%; background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 11px 14px; font-family: var(--font-body); font-size: 16px; font-weight: 300; }
+  .field input:focus { outline: none; border-color: var(--blue); }
+  .field--error input { border-color: var(--c-coral); }
+  .field--error .msg { font-size: 12px; color: var(--c-coral); margin-top: 6px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 26px; }
+  .elev { border-radius: var(--radius-card); background: #fff; border: 1px solid var(--panel-grey); padding: 26px; text-align: center; font-size: 13px; font-weight: 300; }
+  .elev--0 { box-shadow: none; }
+  .elev--1 { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  .elev--2 { box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--blue); border-radius: 3px; }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: #888; margin-top: 8px; text-align: center; }
+
+  footer { padding: 56px 32px; border-top: 1px solid var(--panel-grey); text-align: center; font-size: 13px; font-weight: 300; color: #999; }
+
+  @media (max-width: 720px){ .hero { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-brand" href="#">山と道</a>
+  <nav class="header-menu"><a href="#">JOURNAL</a><a href="#">PRODUCTS</a><a href="#">COMMUNITY</a><a href="#">STORES</a></nav>
+</header>
+
+<section class="hero">
+  <div class="hero-main"><span class="cap">ハイキングを通して感じた本当に必要な道具を形にしていく</span></div>
+  <div class="hero-side"><span class="t">私たち山と道のこと</span><a class="pill-cta" href="#">この奇妙な山道具メーカーを知る</a></div>
+</section>
+
+<section class="section">
+  <div class="section-eyebrow">01 — COLORS</div>
+  <h2 class="section-title">カラーパレット</h2>
+  <p class="section-lead">主軸は「青 #0386f0 ＋ ベージュ #dfceaa」。記事カードは多色パレットを巡回させ、明度で黒白文字を切り替える。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#0386f0"></div><div class="swatch-info"><div class="swatch-name">Yamatomichi Blue</div><div class="swatch-hex">#0386f0</div><div class="swatch-role">プライマリ。CTA・リンク</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#dfceaa"></div><div class="swatch-info"><div class="swatch-name">Trail Beige</div><div class="swatch-hex">#dfceaa</div><div class="swatch-role">準ブランド。自然色の地</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#000000"></div><div class="swatch-info"><div class="swatch-name">Text Black</div><div class="swatch-hex">#000000</div><div class="swatch-role">本文・見出し</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#ebebeb"></div><div class="swatch-info"><div class="swatch-name">Tag Grey</div><div class="swatch-hex">#ebebeb</div><div class="swatch-role">カテゴリタグの地</div></div></div>
+  </div>
+  <div class="group-label">EDITORIAL CARD PALETTE — 記事カードの多色</div>
+  <div class="chip-row">
+    <div class="chip" style="background:#9db033;color:#fff">Olive #9db033</div>
+    <div class="chip" style="background:#d3ac45;color:#fff">Gold #d3ac45</div>
+    <div class="chip" style="background:#47a2e3;color:#fff">Sky #47a2e3</div>
+    <div class="chip" style="background:#f25745;color:#fff">Coral #f25745</div>
+    <div class="chip" style="background:#f171c4;color:#fff">Pink #f171c4</div>
+    <div class="chip" style="background:#7f8896;color:#fff">Slate #7f8896</div>
+    <div class="chip" style="background:#bed387;color:#000">Mint #bed387</div>
+    <div class="chip" style="background:#fad7b9;color:#000">Peach #fad7b9</div>
+    <div class="chip" style="background:#fffaea;color:#000;border:1px solid #eee">Cream #fffaea</div>
+    <div class="chip" style="background:#e3dde1;color:#000">Lavender #e3dde1</div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">02 — TYPOGRAPHY</div>
+  <h2 class="section-title">タイポグラフィ</h2>
+  <p class="section-lead">和文 筑紫ゴシック＋欧文 Helvetica Now の混植。本文 weight 300、見出し weight 600–700。（Web では Zen Kaku Gothic New で代替）</p>
+  <div class="type-sample"><div style="font-size:48px;font-weight:700;line-height:1.4">大見出し H1</div><div class="type-meta">h1 · 48px · weight 600 · lh 1.4</div></div>
+  <div class="type-sample"><div style="font-size:24px;font-weight:700">見出し — 山と道の考えるUL</div><div class="type-meta">heading · 24px · weight 600</div></div>
+  <div class="type-sample"><div style="font-size:20px;font-weight:700">カードタイトル 20px</div><div class="type-meta">card title · 20px · weight 600</div></div>
+  <div class="type-sample"><div style="font-size:16px;font-weight:300;line-height:1.7">本文 — ウルトラライトハイキングは、荷物を軽くすることそのものが目的ではありません。軽さがもたらす自由と、山との新しい関わり方を探る営みです。</div><div class="type-meta">body · 16px · weight 300 · lh 1.4（長文は1.7）</div></div>
+  <div class="type-sample"><div style="font-size:16px;font-weight:500;color:#0085ee">強調・リンク — 一覧を見る</div><div class="type-meta">link · 16px · weight 600 · color #0085ee</div></div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">03 — JOURNAL</div>
+  <h2 class="section-title">記事カード（多色・角ゼロ）</h2>
+  <p class="section-lead">記事一覧カードは 1 枚ごとに背景色が変わる。角は 0、明度で文字色を切り替える。</p>
+  <div class="journal-grid">
+    <a class="jcard" style="background:#f25745;color:#fff"><span class="cat">JOURNAL</span><span class="t">UL Hikeって何？</span></a>
+    <a class="jcard" style="background:#d3ac45;color:#fff"><span class="cat">COMMUNITY</span><span class="t">HLCを振り返る</span></a>
+    <a class="jcard" style="background:#bed387;color:#000"><span class="cat">PLAYLIST</span><span class="t">7月の楽曲イメージ</span></a>
+    <a class="jcard" style="background:#e3dde1;color:#000"><span class="cat">INFORMATION</span><span class="t">製品の販売日のお知らせ</span></a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">04 — BUTTONS</div>
+  <h2 class="section-title">ボタン</h2>
+  <p class="section-lead">主要CTAは青のピル、記事バナーはグレー枠の角丸、カテゴリは淡グレーのピルタグ。</p>
+  <div class="btn-row">
+    <a class="btn-primary" href="#">一覧を見る</a>
+    <a class="btn-outline" href="#">山と道の考えるUL</a>
+    <span class="tag">COMMUNITY</span>
+    <span class="tag">PLAYLIST</span>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">05 — CARDS</div>
+  <h2 class="section-title">製品カード（角丸フィーチャー）</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-img card-img--1"></div><div class="card-body"><div class="card-name">MINI2 バックパック</div><div class="card-price">¥28,600</div></div></div>
+    <div class="card"><div class="card-img card-img--2"></div><div class="card-body"><div class="card-name">UL Shirt</div><div class="card-price">¥17,600</div></div></div>
+    <div class="card"><div class="card-img card-img--3"></div><div class="card-body"><div class="card-name">DW 5-Pocket Pants</div><div class="card-price">¥24,200</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">06 — FORMS</div>
+  <h2 class="section-title">フォーム</h2>
+  <p class="section-lead">デフォルト / フォーカス / エラーの3状態。角丸 8px、フォーカスは青。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="山田 太郎"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="hike@example.com" autofocus></div>
+    <div class="field field--error"><label>郵便番号</label><input type="text" value="000"><div class="msg">正しい郵便番号を入力してください。</div></div>
+    <a class="btn-primary" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">07 — ELEVATION</div>
+  <h2 class="section-title">奥行き</h2>
+  <p class="section-lead">基本はフラット。奥行きは色分けと角丸で表現し、影は最小限。</p>
+  <div class="elev-grid">
+    <div class="elev elev--0">Level 0 — none</div>
+    <div class="elev elev--1">Level 1 — card hover</div>
+    <div class="elev elev--2">Level 2 — modal</div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">08 — LAYOUT</div>
+  <h2 class="section-title">スペーシング</h2>
+  <p class="section-lead">4 / 8 / 16 / 24 / 40 / 64px。カード間は 16px 前後。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:4px;height:4px"></div><div class="space-label">XS 4</div></div>
+    <div><div class="space-bar" style="width:8px;height:8px"></div><div class="space-label">S 8</div></div>
+    <div><div class="space-bar" style="width:16px;height:16px"></div><div class="space-label">M 16</div></div>
+    <div><div class="space-bar" style="width:24px;height:24px"></div><div class="space-label">L 24</div></div>
+    <div><div class="space-bar" style="width:40px;height:40px"></div><div class="space-label">XL 40</div></div>
+    <div><div class="space-bar" style="width:64px;height:64px"></div><div class="space-label">XXL 64</div></div>
+  </div>
+</section>
+
+<footer>山と道　YAMATOMICHI — Design System Preview　/　実測ベース 2026-07-22</footer>
+
+</body>
+</html>
