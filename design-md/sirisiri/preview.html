@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: SIRI SIRI シリシリ</title>
+<!--
+  フォント注記（DESIGN.md 3.2 参照）:
+  SIRI SIRI の正規欧文フォントは ABC Diatype（Dinamo のスイス系グロテスク）。
+  Dinamo のドメインライセンスのためローカル／このプレビューでは表示できないため、
+  雰囲気の近い Google Fonts のグロテスク "Inter" を代替として使用する。
+  和文ゴシックは "Noto Sans JP"、詩的コピー用の明朝は "Noto Serif JP"（weight 300）で代替。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Noto+Sans+JP:wght@300;400;700&family=Noto+Serif+JP:wght@300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --white: #ffffff;
+    --black: #000000;          /* 本文・見出し・ロゴ（純黒を積極使用） */
+    --slate-blue: #b2c2c9;     /* 唯一の有彩アクセント / 予約バッジ */
+    --system-blue: #377dff;    /* 稀に出る機能色 */
+    --grey-text: #777777;      /* お知らせ・補足 */
+    --surface-light: #f7f7f7;  /* 最も淡い面 */
+    --surface-grey: #e3e3e3;   /* お知らせ帯・ボタン地 */
+    --hairline: #e3e3e3;
+    --error: #c0392b;
+
+    /* === Fonts === */
+    /* 原典 欧文/主: ABCDiatype-Regular, "Hiragino Kaku Gothic Pro", 游ゴシック, YuGothic, "MS Gothic", Meiryo, sans-serif
+       → プレビューでは ABC Diatype を Inter で代替 */
+    --font-sans: "Inter", "Noto Sans JP", "Hiragino Kaku Gothic Pro", 游ゴシック, YuGothic, "MS Gothic", Meiryo, sans-serif;
+    /* 原典 明朝/差し色: "Hiragino Mincho ProN", YuMincho, "Yu Mincho", serif → Noto Serif JP で代替 */
+    --font-mincho: "Noto Serif JP", "Hiragino Mincho ProN", YuMincho, "Yu Mincho", serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-base: 14px;
+    --lh-heading: 1.44;   /* 見出し */
+    --lh-body: 1.5;       /* 本文（詰まり気味） */
+    --ls-tight: -0.01em;  /* 見出しのタイト字間 */
+    --ls-mincho: 0.025em; /* 明朝リード */
+
+    /* === Shape === */
+    --radius: 0px;        /* 全コンポーネント矩形 */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--white); color: var(--black);
+    font-family: var(--font-sans);
+    font-size: var(--fs-base); font-weight: 300; line-height: var(--lh-body);
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 40px; background: rgba(255,255,255,0.95); backdrop-filter: blur(6px); border-bottom: 1px solid var(--hairline); }
+  .header-brand { font-family: var(--font-sans); font-size: 22px; font-weight: 700; letter-spacing: 0.14em; color: var(--black); text-decoration: none; }
+  .header-menu { display: flex; gap: 32px; }
+  .header-menu a { color: var(--black); text-decoration: none; font-size: 14px; font-weight: 300; letter-spacing: 0.04em; }
+  .header-menu a:hover { border-bottom: 1px solid var(--black); }
+
+  /* HERO */
+  .hero { min-height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 96px 30px; background: var(--white); border-bottom: 1px solid var(--hairline); }
+  .hero-title { font-family: var(--font-sans); font-size: 34px; font-weight: 300; line-height: 1.44; letter-spacing: var(--ls-tight); color: var(--black); }
+  .hero-lead { font-family: var(--font-mincho); font-size: 20px; font-weight: 300; line-height: 1.9; letter-spacing: var(--ls-mincho); color: var(--black); margin-top: 32px; max-width: 560px; }
+  .hero-en { font-family: var(--font-sans); font-size: 12px; font-weight: 400; letter-spacing: 0.3em; color: var(--grey-text); margin-top: 34px; text-transform: uppercase; }
+
+  /* SECTIONS */
+  .section { padding: 88px 40px; max-width: 1160px; margin: 0 auto; }
+  .section-eyebrow { font-family: var(--font-sans); font-size: 12px; font-weight: 400; letter-spacing: 0.3em; color: var(--black); margin-bottom: 16px; }
+  .section-title { font-family: var(--font-sans); font-size: 22px; font-weight: 300; line-height: var(--lh-heading); letter-spacing: var(--ls-tight); margin-bottom: 18px; color: var(--black); }
+  .section-lead { font-size: 14px; font-weight: 300; line-height: 1.8; color: var(--black); max-width: 640px; margin-bottom: 44px; }
+  .divider { border: none; border-top: 1px solid var(--hairline); }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 20px; }
+  .swatch { border: 1px solid var(--hairline); }
+  .swatch-block { height: 96px; }
+  .swatch-info { padding: 14px 16px 18px; }
+  .swatch-name { font-size: 14px; font-weight: 400; letter-spacing: 0.02em; color: var(--black); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--grey-text); margin-top: 4px; letter-spacing: 0; }
+  .swatch-role { font-size: 12px; font-weight: 300; color: var(--grey-text); margin-top: 6px; line-height: 1.7; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 28px 0; border-bottom: 1px solid var(--hairline); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--grey-text); margin-top: 12px; letter-spacing: 0; }
+
+  /* ARTICLE */
+  .article { max-width: 680px; }
+  .article .lead-mincho { font-family: var(--font-mincho); font-size: 20px; font-weight: 300; line-height: 1.95; letter-spacing: var(--ls-mincho); color: var(--black); margin-bottom: 32px; }
+  .article h2 { font-family: var(--font-sans); font-size: 22px; font-weight: 300; letter-spacing: var(--ls-tight); line-height: var(--lh-heading); margin-bottom: 24px; color: var(--black); }
+  .article p { font-size: 15px; font-weight: 300; line-height: 1.9; margin-bottom: 26px; color: var(--black); }
+  .article a { color: var(--black); text-decoration: none; border-bottom: 1px solid var(--black); }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 30px; flex-wrap: wrap; align-items: center; }
+  .btn-text { color: var(--black); font-family: var(--font-sans); font-size: 14px; font-weight: 300; letter-spacing: 0.04em; text-decoration: none; border-bottom: 1px solid var(--black); padding-bottom: 3px; transition: opacity .2s; }
+  .btn-text:hover { opacity: 0.55; }
+  .badge-preorder { display: inline-block; background: var(--slate-blue); color: var(--white); border-radius: var(--radius); padding: 4px 21px 6px; font-family: var(--font-sans); font-size: 13px; font-weight: 300; letter-spacing: 0.04em; }
+  .btn-notice { display: inline-block; background: var(--surface-grey); color: var(--grey-text); border-radius: var(--radius); border: none; padding: 15px 50px 18px; font-family: var(--font-sans); font-size: 13px; font-weight: 300; letter-spacing: 0.1em; text-decoration: none; cursor: pointer; }
+  .btn-notice:hover { background: #d8d8d8; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 34px; }
+  .card { background: var(--white); position: relative; }
+  .card-img { aspect-ratio: 4/5; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 18px; }
+  .card-img .ph { font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.2em; color: rgba(0,0,0,0.5); }
+  .card-img--1 { background: linear-gradient(160deg,#eef1f2,#cdd6da); }
+  .card-img--2 { background: linear-gradient(160deg,#f2f2f2,#d5d5d5); }
+  .card-img--3 { background: linear-gradient(160deg,#e6ecef,#b2c2c9); }
+  .card-badge { position: absolute; top: 12px; left: 12px; background: var(--slate-blue); color: var(--white); font-family: var(--font-sans); font-size: 11px; font-weight: 300; letter-spacing: 0.04em; padding: 4px 14px 5px; border-radius: var(--radius); }
+  .card-body { padding: 16px 2px 0; }
+  .card-name { font-size: 14px; font-weight: 400; letter-spacing: 0.02em; color: var(--black); }
+  .card-meta { font-size: 13px; font-weight: 300; color: var(--grey-text); margin-top: 6px; }
+
+  /* FORMS */
+  .form { max-width: 440px; display: grid; gap: 26px; }
+  .field label { display: block; font-family: var(--font-sans); font-size: 12px; font-weight: 300; letter-spacing: 0.08em; color: var(--grey-text); margin-bottom: 8px; }
+  .field input { width: 100%; background: var(--white); border: 1px solid var(--black); border-radius: var(--radius); padding: 11px 14px; font-family: var(--font-sans); font-size: 16px; font-weight: 400; color: var(--black); }
+  .field input::placeholder { color: #bbbbbb; }
+  .field input:focus { outline: none; border-color: var(--black); border-width: 2px; }
+  .field--focus input { border-width: 2px; }
+  .field--error input { border-color: var(--error); }
+  .field--error .msg { font-size: 12px; color: var(--error); margin-top: 6px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 30px; }
+  .elev { background: var(--white); border: 1px solid var(--hairline); padding: 26px; text-align: center; font-family: var(--font-sans); font-size: 13px; font-weight: 300; color: var(--black); }
+  .elev--0 { box-shadow: none; }
+  .elev--1 { box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  .elev--2 { box-shadow: 0 8px 24px rgba(0,0,0,.10); }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--slate-blue); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: var(--grey-text); margin-top: 8px; text-align: center; }
+
+  footer { padding: 60px 40px; border-top: 1px solid var(--hairline); text-align: center; font-family: var(--font-sans); font-size: 13px; font-weight: 300; color: var(--grey-text); letter-spacing: 0.1em; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-brand" href="#">SIRI SIRI</a>
+  <nav class="header-menu"><a href="#">Collection</a><a href="#">About</a><a href="#">Shop</a></nav>
+</header>
+
+<section class="hero">
+  <h1 class="hero-title">日本の手仕事を、<br>建築のように編む。</h1>
+  <p class="hero-lead">江戸切子のガラス、籐の編み、漆のうつわ。<br>素材の記憶を、身につける構造へ。</p>
+  <p class="hero-en">Scroll Down</p>
+</section>
+
+<section class="section">
+  <div class="section-eyebrow">01 — COLORS</div>
+  <h2 class="section-title">カラーパレット</h2>
+  <p class="section-lead">白地 #ffffff と純黒 #000000 が基調。有彩アクセントはスレートブルー #b2c2c9（"予約 Pre-order" バッジ）のみ。補足は #777777 のグレー。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:var(--slate-blue)"></div><div class="swatch-info"><div class="swatch-name">Slate Blue</div><div class="swatch-hex">#b2c2c9</div><div class="swatch-role">唯一の有彩アクセント。予約バッジ</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--black)"></div><div class="swatch-info"><div class="swatch-name">Black</div><div class="swatch-hex">#000000</div><div class="swatch-role">本文・見出し・ロゴ（純黒を使用）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--grey-text)"></div><div class="swatch-info"><div class="swatch-name">Text Grey</div><div class="swatch-hex">#777777</div><div class="swatch-role">お知らせ・補足テキスト</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--white);outline:1px solid #e3e3e3;outline-offset:-1px"></div><div class="swatch-info"><div class="swatch-name">White</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">ページ背景</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--surface-light)"></div><div class="swatch-info"><div class="swatch-name">Surface Light</div><div class="swatch-hex">#f7f7f7</div><div class="swatch-role">最も淡い面・セクション地</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--surface-grey)"></div><div class="swatch-info"><div class="swatch-name">Surface Grey</div><div class="swatch-hex">#e3e3e3</div><div class="swatch-role">お知らせ帯・ボタン地</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--system-blue)"></div><div class="swatch-info"><div class="swatch-name">System Blue</div><div class="swatch-hex">#377dff</div><div class="swatch-role">稀に出る機能色（リンク等）</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">02 — TYPOGRAPHY</div>
+  <h2 class="section-title">タイポグラフィ</h2>
+  <p class="section-lead">欧文 ABC Diatype ＋ 和文ヒラギノ角ゴ／游ゴシックを weight 300 主体で。詩的なリードにだけ明朝を差す。字間はタイト、行間は詰まり気味。（下記は Inter / Noto Sans JP / Noto Serif JP による代替表示）</p>
+  <div class="type-sample"><div style="font-family:var(--font-sans);font-size:28px;font-weight:700;letter-spacing:normal;color:var(--black)">SIRI SIRI</div><div class="type-meta">h1 logo · ABC Diatype · 28px · weight 700（唯一の太字）</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans);font-size:22px;font-weight:300;letter-spacing:-0.01em;line-height:1.44;color:var(--black)">見出し — 切子ガラスの光を、日常へ</div><div class="type-meta">h2 · ABC Diatype · 22px · weight 300 · lh 1.44 · ls -0.2〜0.4px</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-mincho);font-size:20px;font-weight:300;letter-spacing:0.025em;line-height:1.9;color:var(--black)">KIRIKO — 光を削り出した、透明なかけら。指先で触れると、江戸の職人の手が見える。</div><div class="type-meta">lead(明朝) · Hiragino Mincho ProN · 20px · weight 300 · ls 0.5px</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans);font-size:16px;font-weight:400;letter-spacing:0.3em;color:var(--grey-text);text-transform:uppercase">Scroll Down</div><div class="type-meta">lead(欧字) · ABC Diatype · 16px · weight 400</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans);font-size:14px;font-weight:300;line-height:1.6;color:var(--black)">本文・ナビ — SIRI SIRI は、建築を学んだ岡本菜穂が主宰する現代ジュエリーブランドです。伝統素材を建築的な構造で再構成します。</div><div class="type-meta">body/nav · ABC Diatype · 14px · weight 300 · lh normal〜1.4</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans);font-size:12px;font-weight:300;color:var(--grey-text)">お知らせリンク — 年末年始の発送について</div><div class="type-meta">a · ABC Diatype · 12px · weight 300 · color #777777 / lh 2.5</div></div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">03 — ARTICLE</div>
+  <h2 class="section-title">組版サンプル</h2>
+  <div class="article">
+    <p class="lead-mincho">硬い光と、やわらかな重み。<br>手のひらのなかで、素材がしずかに息をする。</p>
+    <h2>KIRIKO コレクション</h2>
+    <p>江戸切子の職人が一点ずつ削り出したガラスを、真鍮の構造で受け止めました。透明なかけらが光を分け、身につけるたびに違う表情を返します。建築の設計思想を、身体のためのプロダクトへ翻訳しています。</p>
+    <p>素材は江戸切子ガラス、籐編み、漆と多岐にわたります。いずれも日本の手仕事を軸に、現代の造形へ落とし込んだものです。<a href="#">コレクションを見る</a>。</p>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">04 — BUTTONS</div>
+  <h2 class="section-title">ボタン</h2>
+  <p class="section-lead">下線付きテキストリンクが主役。ステータスは #b2c2c9 の予約バッジ、案内は淡いグレーのお知らせボタン。角丸はすべて 0px。</p>
+  <div class="btn-row">
+    <a class="btn-text" href="#">View More</a>
+    <a class="btn-text" href="#">Detail</a>
+    <a class="btn-text" href="#">Shop Event</a>
+    <span class="badge-preorder">予約商品 Pre-order</span>
+    <a class="btn-notice" href="#">お知らせを見る</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">05 — CARDS</div>
+  <h2 class="section-title">製品カード</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-img card-img--1"><span class="ph">KIRIKO</span></div><div class="card-body"><div class="card-name">KIRIKO ピアス</div><div class="card-meta">江戸切子ガラス / クリア</div></div></div>
+    <div class="card"><div class="card-img card-img--2"><span class="ph">RATTAN</span></div><div class="card-body"><div class="card-name">籐編みバングル</div><div class="card-meta">籐 / ナチュラル</div></div></div>
+    <div class="card"><span class="card-badge">予約商品 Pre-order</span><div class="card-img card-img--3"><span class="ph">URUSHI</span></div><div class="card-body"><div class="card-name">漆ネックレス</div><div class="card-meta">漆 / 真鍮</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">06 — FORMS</div>
+  <h2 class="section-title">フォーム</h2>
+  <p class="section-lead">デフォルト / フォーカス / エラーの3状態。矩形（radius 0px）、枠は純黒、フォーカスは枠を太く。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="岡本 菜穂"></div>
+    <div class="field field--focus"><label>メールアドレス（フォーカス）</label><input type="email" value="sirisiri@example.com"></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="03-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn-text" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">07 — ELEVATION</div>
+  <h2 class="section-title">奥行き</h2>
+  <p class="section-lead">基本はフラット。奥行きは余白・写真・矩形の重なりで表現し、影は極力薄い限定用途のみ。切子ガラスの透明感に合わせる。</p>
+  <div class="elev-grid">
+    <div class="elev elev--0">Level 0 — none</div>
+    <div class="elev elev--1">Level 1 — dropdown</div>
+    <div class="elev elev--2">Level 2 — modal</div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">08 — LAYOUT</div>
+  <h2 class="section-title">スペーシング</h2>
+  <p class="section-lead">8 / 16 / 24 / 40 / 64 / 120px。余白を広く取り、矩形とグリッドの整列で建築的な「間」を作る。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:8px;height:8px"></div><div class="space-label">XS 8</div></div>
+    <div><div class="space-bar" style="width:16px;height:16px"></div><div class="space-label">S 16</div></div>
+    <div><div class="space-bar" style="width:24px;height:24px"></div><div class="space-label">M 24</div></div>
+    <div><div class="space-bar" style="width:40px;height:40px"></div><div class="space-label">L 40</div></div>
+    <div><div class="space-bar" style="width:64px;height:64px"></div><div class="space-label">XL 64</div></div>
+    <div><div class="space-bar" style="width:120px;height:120px"></div><div class="space-label">XXL 120</div></div>
+  </div>
+</section>
+
+<footer>SIRI SIRI（シリシリ）— Design System Preview　/　実測ベース 2026-07-23</footer>
+
+</body>
+</html>

@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (402 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (405 sites)</a>
 </p>
 
 <table>
@@ -599,6 +599,11 @@
 <td align="center"><strong>山と道</strong><br><img src="design-md/yamatomichi/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>SIWA｜紙和</strong><br><img src="design-md/siwa/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>DELFONICS</strong><br><img src="design-md/delfonics/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>HASUNA</strong><br><img src="design-md/hasuna/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>SIRI SIRI</strong><br><img src="design-md/sirisiri/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1061,11 +1066,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [開化堂 (Kaikado)](https://www.kaikado.jp/) | Craft / Tea Caddy (Kyoto) | [DESIGN.md](design-md/kaikado/DESIGN.md) | [preview.html](design-md/kaikado/preview.html) |
 | [山と道 (Yamatomichi)](https://www.yamatomichi.com/) | Outdoor / UL Hiking Gear | [DESIGN.md](design-md/yamatomichi/DESIGN.md) | [preview.html](design-md/yamatomichi/preview.html) |
 | [SIWA｜紙和 (Siwa)](https://siwa.jp/) | Washi Paper Products / Design | [DESIGN.md](design-md/siwa/DESIGN.md) | [preview.html](design-md/siwa/preview.html) |
+| [DELFONICS (デルフォニックス)](https://www.delfonics.com/) | Stationery / Design | [DESIGN.md](design-md/delfonics/DESIGN.md) | [preview.html](design-md/delfonics/preview.html) |
+| [HASUNA (ハスナ)](https://www.hasuna.co.jp/) | Ethical Jewelry | [DESIGN.md](design-md/hasuna/DESIGN.md) | [preview.html](design-md/hasuna/preview.html) |
+| [SIRI SIRI (シリシリ)](https://sirisiri.jp/) | Jewelry / Glass Craft | [DESIGN.md](design-md/sirisiri/DESIGN.md) | [preview.html](design-md/sirisiri/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (402 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (405 sites)</a>
 </p>
 
 <table>
@@ -1629,6 +1637,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>開化堂</strong><br><img src="design-md/kaikado/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>山と道</strong><br><img src="design-md/yamatomichi/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>SIWA｜紙和</strong><br><img src="design-md/siwa/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>DELFONICS</strong><br><img src="design-md/delfonics/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>HASUNA</strong><br><img src="design-md/hasuna/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>SIRI SIRI</strong><br><img src="design-md/sirisiri/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

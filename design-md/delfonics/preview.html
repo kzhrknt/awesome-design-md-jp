@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: DELFONICS デルフォニックス</title>
+<!--
+  NOTE: 原典の欧文は Neue Frutiger World（neue-frutiger-world / Adobe Fonts）。
+  Adobe Fonts はドメインライセンスのため、ローカルの preview.html では表示できない。
+  ここではフルティガー系に近い幾何グロテスク "Figtree"（Google Fonts）を代替に使用している。
+  実装時は必ず Adobe Fonts の Neue Frutiger World を読み込むこと。和文は Noto Sans JP。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 + CSS Custom Properties === */
+    --color-red: #ff3700;        /* シグネチャー朱赤 / --theme-primary */
+    --color-black: #000000;      /* 純黒 / --color-base */
+    --color-white: #ffffff;      /* --theme-secondary */
+    --color-ivory: #ffffe6;      /* アイボリー面 */
+    --color-gray: #f3f3f3;       /* 淡いグレー面 */
+    --color-gray-50: #e9eaea;    /* やや濃いグレー・境界 */
+    --color-gray-100: #9a9a9a;   /* 補助テキスト・placeholder */
+    --color-gray-250: #7f7f7f;
+    --color-gray-300: #636363;   /* サブテキスト */
+    --color-gray-400: #525252;
+    --color-cell-border: #d9d9d9;
+    --color-sale: #ff0056;       /* セール・日曜・エラー */
+    --color-sat: #006dc1;        /* 土曜・情報 */
+
+    /* === Fonts === */
+    /* 原典: neue-frutiger-world, "Noto Sans JP", sans-serif（欧文は Adobe Fonts のため Figtree で代替） */
+    --font-sans: "Figtree", "Noto Sans JP", sans-serif;
+    --font-jp: "Noto Sans JP", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-body: 15px;
+    --lh-body: 2.3;     /* 本文（非常に広い） */
+    --lh-head: 1.5;     /* 見出し */
+    --lh-tight: 1.0;    /* ディスプレイ英字 */
+    --ls-body: -0.02em;
+    --ls-nav: 0.04em;
+    --ls-display: -0.03em;
+
+    /* === Shape === */
+    --radius-btn: 8px;
+    --radius-round: 20px;
+    --radius-pill: 100px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-white); color: var(--color-black);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body); font-weight: 500; line-height: var(--lh-body);
+    letter-spacing: var(--ls-body);
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 40px; background: rgba(255,255,255,0.95); backdrop-filter: blur(6px); border-bottom: 1px solid var(--color-gray-50); }
+  .header-brand { font-family: var(--font-sans); font-size: 24px; font-weight: 700; letter-spacing: 0.02em; color: var(--color-black); text-decoration: none; }
+  .header-menu { display: flex; gap: 28px; align-items: center; }
+  .header-menu a { color: var(--color-black); text-decoration: none; font-size: 16px; font-weight: 400; letter-spacing: var(--ls-nav); }
+  .header-search { background: var(--color-black); color: var(--color-white); border: none; border-radius: var(--radius-btn); padding: 12px 18px; font-family: var(--font-sans); font-size: 16px; font-weight: 700; font-feature-settings: "palt"; cursor: pointer; }
+
+  /* HERO — 朱赤全面 */
+  .hero { background: var(--color-red); color: var(--color-white); padding: 84px 40px 96px; }
+  .hero-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 34px; }
+  .hero-tag { border: 1px solid var(--color-white); color: var(--color-white); border-radius: var(--radius-pill); padding: 4px 14px; font-size: 13px; font-weight: 500; font-feature-settings: "palt"; letter-spacing: 0.02em; }
+  .hero-display { font-family: var(--font-sans); font-size: 102px; font-weight: 400; line-height: var(--lh-tight); letter-spacing: var(--ls-display); color: var(--color-white); }
+  .hero-sub { font-family: var(--font-jp); font-size: 15px; font-weight: 500; line-height: var(--lh-body); letter-spacing: var(--ls-body); color: var(--color-white); margin-top: 28px; max-width: 560px; }
+  .hero-cta { display: inline-flex; gap: 14px; margin-top: 34px; flex-wrap: wrap; }
+
+  /* SECTIONS */
+  .section { padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+  .section-eyebrow { font-family: var(--font-sans); font-size: 13px; font-weight: 600; letter-spacing: 0.14em; color: var(--color-red); margin-bottom: 12px; }
+  .section-title { font-family: var(--font-sans); font-size: 40px; font-weight: 700; line-height: var(--lh-head); letter-spacing: normal; margin-bottom: 16px; color: var(--color-black); }
+  .section-lead { font-family: var(--font-jp); font-size: 15px; font-weight: 500; line-height: var(--lh-body); letter-spacing: var(--ls-body); color: var(--color-gray-300); max-width: 660px; margin-bottom: 40px; }
+  .divider { border: none; border-top: 1px solid var(--color-gray-50); }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 18px; }
+  .swatch { border: 1px solid var(--color-gray-50); border-radius: var(--radius-btn); overflow: hidden; }
+  .swatch-block { height: 96px; }
+  .swatch-info { padding: 14px 16px 18px; }
+  .swatch-name { font-family: var(--font-sans); font-size: 15px; font-weight: 600; letter-spacing: 0.01em; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--color-gray-300); margin-top: 4px; letter-spacing: 0; }
+  .swatch-role { font-family: var(--font-jp); font-size: 12px; font-weight: 400; color: var(--color-gray-100); margin-top: 6px; line-height: 1.6; letter-spacing: var(--ls-body); }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 26px 0; border-bottom: 1px solid var(--color-gray-50); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-red); margin-top: 12px; letter-spacing: 0; }
+
+  /* ARTICLE */
+  .article { max-width: 700px; }
+  .article h2 { font-family: var(--font-sans); font-size: 32px; font-weight: 700; line-height: var(--lh-head); margin-bottom: 22px; color: var(--color-black); }
+  .article p { font-family: var(--font-jp); font-size: 15px; font-weight: 500; line-height: var(--lh-body); letter-spacing: var(--ls-body); margin-bottom: 24px; color: var(--color-black); }
+  .article a { color: var(--color-red); text-decoration: none; border-bottom: 2px solid var(--color-red); font-weight: 600; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--font-sans); font-feature-settings: "palt"; text-decoration: none; cursor: pointer; display: inline-block; border: none; }
+  .btn-primary { background: var(--color-black); color: var(--color-white); border-radius: var(--radius-btn); padding: 18px 21px; font-size: 16px; font-weight: 700; }
+  .btn-inverse { background: var(--color-white); color: var(--color-black); border: 1px solid var(--color-black); border-radius: var(--radius-btn); padding: 18px 21px; font-size: 16px; font-weight: 700; }
+  .btn-round { background: var(--color-black); color: var(--color-white); border-radius: var(--radius-round); padding: 15px 22px; font-size: 15px; font-weight: 600; }
+  .btn-pill { background: transparent; color: var(--color-black); border: 1px solid var(--color-black); border-radius: var(--radius-pill); padding: 4px 14px; font-size: 13px; font-weight: 500; }
+  .btn-pill--onred { background: transparent; color: var(--color-white); border: 1px solid var(--color-white); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 28px; }
+  .card { background: var(--color-white); border: 1px solid var(--color-gray-50); border-radius: var(--radius-btn); overflow: hidden; }
+  .card-img { aspect-ratio: 4/5; display: flex; align-items: flex-start; justify-content: flex-start; padding: 14px; position: relative; }
+  .card-img .cat { border: 1px solid var(--color-white); color: var(--color-white); border-radius: var(--radius-pill); padding: 3px 12px; font-family: var(--font-sans); font-size: 12px; font-weight: 500; letter-spacing: 0.02em; }
+  .card-img--1 { background: var(--color-red); }
+  .card-img--2 { background: #1a1a1a; }
+  .card-img--3 { background: linear-gradient(150deg,#ffca3a,#ff8c00); }
+  .card-body { padding: 16px 18px 20px; }
+  .card-name { font-family: var(--font-sans); font-size: 16px; font-weight: 600; letter-spacing: 0.01em; color: var(--color-black); }
+  .card-meta { font-family: var(--font-jp); font-size: 13px; font-weight: 400; color: var(--color-gray-100); margin-top: 6px; letter-spacing: var(--ls-body); }
+  .card-price { font-family: var(--font-sans); font-size: 15px; font-weight: 700; margin-top: 10px; color: var(--color-black); }
+
+  /* FORMS */
+  .form { max-width: 460px; display: grid; gap: 24px; }
+  .field label { font-family: var(--font-jp); display: block; font-size: 13px; font-weight: 500; letter-spacing: var(--ls-body); color: var(--color-gray-400); margin-bottom: 8px; }
+  .field input { width: 100%; background: var(--color-white); border: 1px solid var(--color-gray-50); border-radius: var(--radius-btn); padding: 14px 16px; font-family: var(--font-sans); font-size: 15px; font-weight: 500; color: var(--color-black); }
+  .field input::placeholder { color: var(--color-gray-100); }
+  .field input:focus { outline: none; border-color: var(--color-black); }
+  .field--error input { border-color: var(--color-sale); }
+  .field--error .msg { font-family: var(--font-jp); font-size: 12px; color: var(--color-sale); margin-top: 6px; letter-spacing: var(--ls-body); }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 28px; }
+  .elev { background: var(--color-white); border: 1px solid var(--color-gray-50); border-radius: var(--radius-btn); padding: 26px; text-align: center; font-family: var(--font-sans); font-size: 13px; font-weight: 500; }
+  .elev--0 { box-shadow: none; }
+  .elev--1 { box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .elev--2 { box-shadow: 0 8px 24px rgba(0,0,0,.10); }
+  .elev--3 { box-shadow: 0 16px 40px rgba(0,0,0,.14); }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-red); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: var(--color-gray-300); margin-top: 8px; text-align: center; }
+
+  footer { padding: 60px 40px; border-top: 1px solid var(--color-gray-50); text-align: center; font-family: var(--font-sans); font-size: 13px; font-weight: 500; color: var(--color-gray-300); letter-spacing: 0.06em; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-brand" href="#">DELFONICS</a>
+  <nav class="header-menu">
+    <a href="#">Products</a>
+    <a href="#">Stories</a>
+    <a href="#">Shop</a>
+    <button class="header-search">Search</button>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-tags">
+    <span class="hero-tag">Rollbahn</span>
+    <span class="hero-tag">Diary</span>
+    <span class="hero-tag">Pen Case</span>
+  </div>
+  <div class="hero-display">Stationery</div>
+  <p class="hero-sub">毎日をすこし楽しくする、モダンな文具とデザイン雑貨。ロルバーンから始まる、遊びのある紙面設計のデザインシステム。</p>
+  <div class="hero-cta">
+    <a class="btn btn-inverse" href="#" style="background:var(--color-white);border:none">About Us</a>
+    <a class="btn btn-pill btn-pill--onred" href="#">View More</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-eyebrow">01 — COLORS</div>
+  <h2 class="section-title">カラーパレット</h2>
+  <p class="section-lead">シグネチャーは鮮烈な朱赤 #ff3700。テキスト・ボタン面には純黒 #000000 をあえて使う。面色は白 / アイボリー / グレーで切り替える。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-red)"></div><div class="swatch-info"><div class="swatch-name">Signature Red</div><div class="swatch-hex">#ff3700</div><div class="swatch-role">シグネチャー。ヒーロー・アクセント</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-black)"></div><div class="swatch-info"><div class="swatch-name">Black</div><div class="swatch-hex">#000000</div><div class="swatch-role">本文・ボタン面（純黒を採用）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-white);outline:1px solid var(--color-gray-50);outline-offset:-1px"></div><div class="swatch-info"><div class="swatch-name">White</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">コンテンツ面・白抜き文字</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-ivory)"></div><div class="swatch-info"><div class="swatch-name">Ivory</div><div class="swatch-hex">#ffffe6</div><div class="swatch-role">淡いアイボリーの面色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-gray)"></div><div class="swatch-info"><div class="swatch-name">Gray</div><div class="swatch-hex">#f3f3f3</div><div class="swatch-role">淡いグレー面・カード地</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-gray-50)"></div><div class="swatch-info"><div class="swatch-name">Gray 50</div><div class="swatch-hex">#e9eaea</div><div class="swatch-role">境界・やや濃いグレー面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-gray-300)"></div><div class="swatch-info"><div class="swatch-name">Gray 300</div><div class="swatch-hex">#636363</div><div class="swatch-role">サブテキスト</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-gray-100)"></div><div class="swatch-info"><div class="swatch-name">Gray 100</div><div class="swatch-hex">#9a9a9a</div><div class="swatch-role">補助テキスト・placeholder</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-sale)"></div><div class="swatch-info"><div class="swatch-name">Sale / Sun</div><div class="swatch-hex">#ff0056</div><div class="swatch-role">セール・日曜・エラー</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-sat)"></div><div class="swatch-info"><div class="swatch-name">Sat Blue</div><div class="swatch-hex">#006dc1</div><div class="swatch-role">土曜・情報アクセント</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">02 — TYPOGRAPHY</div>
+  <h2 class="section-title">タイポグラフィ</h2>
+  <p class="section-lead">欧文 Neue Frutiger World ＋ 和文 Noto Sans JP の欧文優先スタック。本文は行間 2.3 と非常に広い。weight 400 / 500 / 600 / 700 を使い分ける。</p>
+  <div class="type-sample"><div style="font-family:var(--font-sans);font-size:72px;font-weight:400;line-height:1.0;letter-spacing:-0.03em">Stationery</div><div class="type-meta">Display (h2) · Frutiger系 · 102px相当 · weight 400 · lh 1.0 · ls -0.03em</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans);font-size:40px;font-weight:700;line-height:1.5">Schedule: 見出し H2</div><div class="type-meta">h2 · 40px · weight 700 · lh 1.5（赤地では白抜き）</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans);font-size:32px;font-weight:400;line-height:1.0">Heading — 白抜き見出し H4</div><div class="type-meta">h4 · 32px · weight 400 · lh 1.0</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans);font-size:20px;font-weight:600;line-height:1.5;color:var(--color-red)">Contact: 小見出し（朱赤）</div><div class="type-meta">h3 · 20px · weight 600 · lh 1.5 · color #ff3700</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans);font-size:16px;font-weight:400;line-height:1.5;letter-spacing:0.04em">Products　Stories　Shop — グローバルナビ</div><div class="type-meta">nav · 16px · weight 400 · lh 1.5 · ls 0.04em</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-jp);font-size:15px;font-weight:500;line-height:2.3;letter-spacing:-0.02em">本文 — ロルバーンは、方眼のポケット付きノート。ミシン目で切り離せるページと、後ろのクリアポケットが特徴です。日本語本文は行間 2.3 でゆったり組みます。</div><div class="type-meta">p · Noto Sans JP · 15px · weight 500 · lh 2.3 · ls -0.02em</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-jp);font-size:12px;font-weight:400;line-height:1.5;letter-spacing:-0.02em;color:var(--color-gray-300)">注記・キャプション — 12px の補助テキスト。</div><div class="type-meta">small · 12px · weight 400 · lh 1.5 · color #636363</div></div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">03 — ARTICLE</div>
+  <h2 class="section-title">組版サンプル</h2>
+  <div class="article">
+    <h2>毎日を、すこし楽しく。</h2>
+    <p>DELFONICS の文具は、機能と遊び心のバランスを大切にしています。定番のロルバーンは、方眼ページ・ミシン目・クリアポケットという三つの工夫で、メモから手帳まで自由に使えます。</p>
+    <p>色とサイズのバリエーションは豊富に。手に取ったときの気分で選べるのが、文具の楽しさです。<a href="#">ロルバーンについて読む</a>。</p>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">04 — BUTTONS</div>
+  <h2 class="section-title">ボタン</h2>
+  <p class="section-lead">黒面＋白抜きを基調に、角丸の大きさ（8px / 20px / 100px）で性格を分ける。CTA には font-feature-settings: "palt" を適用。</p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">About Us</a>
+    <a class="btn btn-inverse" href="#">View More</a>
+    <a class="btn btn-round" href="#">For Businesses</a>
+    <a class="btn btn-pill" href="#">Rollbahn</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">05 — CARDS</div>
+  <h2 class="section-title">製品カード</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-img card-img--1"><span class="cat">Notebook</span></div><div class="card-body"><div class="card-name">ロルバーン ポケット付メモ L</div><div class="card-meta">方眼 / レッド</div><div class="card-price">¥748</div></div></div>
+    <div class="card"><div class="card-img card-img--2"><span class="cat">Diary</span></div><div class="card-body"><div class="card-name">ロルバーン ダイアリー 2026</div><div class="card-meta">A5 / ブラック</div><div class="card-price">¥2,200</div></div></div>
+    <div class="card"><div class="card-img card-img--3"><span class="cat">Pen Case</span></div><div class="card-body"><div class="card-name">インナーキャリング ペンケース</div><div class="card-meta">ナイロン / イエロー</div><div class="card-price">¥1,650</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">06 — FORMS</div>
+  <h2 class="section-title">フォーム</h2>
+  <p class="section-lead">デフォルト / フォーカス / エラーの3状態。radius 8px、フォーカスは黒、エラーはセール赤 #ff0056。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="山田 太郎"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="03-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn btn-primary" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">07 — ELEVATION</div>
+  <h2 class="section-title">奥行き</h2>
+  <p class="section-lead">基本は面色と角丸で構成しフラット。影は控えめに、カード・モーダル等の限定用途で使う。</p>
+  <div class="elev-grid">
+    <div class="elev elev--0">Level 0 — none</div>
+    <div class="elev elev--1">Level 1 — card</div>
+    <div class="elev elev--2">Level 2 — modal</div>
+    <div class="elev elev--3">Level 3 — dialog</div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">08 — LAYOUT</div>
+  <h2 class="section-title">スペーシング</h2>
+  <p class="section-lead">8 / 12 / 20 / 32 / 60 / 100px。面色（朱赤・アイボリー・グレー）でセクションを切り替える。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:8px;height:8px"></div><div class="space-label">XS 8</div></div>
+    <div><div class="space-bar" style="width:12px;height:12px"></div><div class="space-label">S 12</div></div>
+    <div><div class="space-bar" style="width:20px;height:20px"></div><div class="space-label">M 20</div></div>
+    <div><div class="space-bar" style="width:32px;height:32px"></div><div class="space-label">L 32</div></div>
+    <div><div class="space-bar" style="width:60px;height:60px"></div><div class="space-label">XL 60</div></div>
+    <div><div class="space-bar" style="width:100px;height:100px"></div><div class="space-label">XXL 100</div></div>
+  </div>
+</section>
+
+<footer>DELFONICS｜デルフォニックス — Design System Preview　/　実測ベース 2026-07-23</footer>
+
+</body>
+</html>

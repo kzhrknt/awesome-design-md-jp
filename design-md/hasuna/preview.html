@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: HASUNA ハスナ</title>
+<!--
+  NOTE: 実サイトは見出し・本文とも "Times New Roman", Times, serif の一系統で組み、
+  和文は明示指定が無く OS の明朝（游明朝 / ヒラギノ明朝）にフォールバックする。
+  Times New Roman はシステムフォントで Web 配信されないため、このプレビューでは
+  字形の近い Google セリフ（欧文: PT Serif / 和文: Noto Serif JP）で代替している。
+  実装時は必ず "Times New Roman", Times, serif を先頭に置くこと（DESIGN.md 3.2 参照）。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --white: #ffffff;              /* --background */
+    --light-grey: #f6f6f6;         /* --light-background / --secondary-elements-background */
+    --text-grey: #666666;          /* --text-color / --heading-color / --footer-background */
+    --charcoal: #363636;           /* --link-color（ロゴ・ナビ・強調） */
+    --button-grey: #808080;        /* --button-background */
+    --border: #e8e8e8;             /* --border-color */
+    --header-border: #e1e1e1;
+    --footer-border: #7d7d7d;
+    --sale-red: #f94c43;           /* --product-sale-price-color（セール価格のみ） */
+    --link-blue: #486ae4;          /* システムリンク色（稀） */
+    --error: #c0392b;
+
+    /* === Fonts === */
+    /* 原典: "Times New Roman", Times, serif（和文は明示指定なし→OS明朝）
+       プレビュー代替: PT Serif（欧文）/ Noto Serif JP（和文） */
+    --font-serif: "Times New Roman", "PT Serif", "Noto Serif JP", Times, 游明朝, YuMincho, "Hiragino Mincho ProN", serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-base: 14px;
+    --lh-body: 2.4;        /* 本文 */
+    --lh-head: 1.65;       /* 見出し・ナビ */
+    --ls-num: 2.4px;       /* 連番ラベル */
+
+    /* === Shape === */
+    --radius: 0px;         /* 角丸なし・矩形で統一 */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--white); color: var(--text-grey);
+    font-family: var(--font-serif);
+    font-size: var(--fs-base); font-weight: 400; line-height: var(--lh-body);
+    letter-spacing: normal;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between;
+    height: 80px; padding: 0 40px; background: rgba(255,255,255,0.96); backdrop-filter: blur(6px); border-bottom: 1px solid var(--header-border); }
+  .header-brand { font-family: var(--font-serif); font-size: 22px; font-weight: 400; letter-spacing: 0.28em; color: var(--charcoal); text-decoration: none; }
+  .header-menu { display: flex; gap: 32px; }
+  .header-menu a { color: var(--charcoal); text-decoration: none; font-size: 14px; font-weight: 400; line-height: var(--lh-head); letter-spacing: 0.04em; }
+
+  /* HERO */
+  .hero { min-height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 96px 30px; background: linear-gradient(180deg,#ffffff 0%,#f6f6f6 100%); }
+  .hero-eyebrow { font-size: 12px; font-weight: 400; letter-spacing: 0.3em; color: var(--text-grey); margin-bottom: 26px; }
+  .hero-title { font-family: var(--font-serif); font-size: 30px; font-weight: 400; line-height: var(--lh-head); letter-spacing: 0.08em; color: var(--charcoal); }
+  .hero-sub { font-size: 14px; font-weight: 400; line-height: var(--lh-body); color: var(--text-grey); margin-top: 30px; max-width: 560px; }
+
+  /* SECTIONS */
+  .section { padding: 88px 40px; max-width: 1160px; margin: 0 auto; }
+  .section-eyebrow { font-size: 12px; font-weight: 400; letter-spacing: var(--ls-num); color: var(--text-grey); margin-bottom: 14px; }
+  .section-title { font-family: var(--font-serif); font-size: 24px; font-weight: 400; line-height: var(--lh-head); letter-spacing: 0.04em; margin-bottom: 18px; color: var(--text-grey); }
+  .section-lead { font-size: 14px; font-weight: 400; line-height: var(--lh-body); color: var(--text-grey); max-width: 660px; margin-bottom: 44px; }
+  .divider { border: none; border-top: 1px solid var(--border); }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(184px,1fr)); gap: 20px; }
+  .swatch { border: 1px solid var(--border); }
+  .swatch-block { height: 96px; }
+  .swatch-info { padding: 14px 16px 18px; }
+  .swatch-name { font-size: 15px; font-weight: 400; letter-spacing: 0.02em; color: var(--charcoal); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--text-grey); margin-top: 4px; letter-spacing: 0; line-height: 1.6; }
+  .swatch-role { font-size: 12px; font-weight: 400; color: #999; margin-top: 6px; line-height: 1.7; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 28px 0; border-bottom: 1px solid var(--border); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-grey); margin-top: 12px; letter-spacing: 0; }
+
+  /* ARTICLE */
+  .article { max-width: 680px; }
+  .article h2 { font-family: var(--font-serif); font-size: 24px; font-weight: 400; letter-spacing: 0.04em; line-height: var(--lh-head); margin-bottom: 26px; color: var(--charcoal); }
+  .article p { font-size: 14px; font-weight: 400; line-height: var(--lh-body); margin-bottom: 26px; color: var(--text-grey); }
+  .article a { color: var(--charcoal); text-decoration: none; border-bottom: 1px solid var(--text-grey); }
+  .article .emphasis { font-size: 11px; font-weight: 700; line-height: var(--lh-body); color: var(--text-grey); letter-spacing: 0.06em; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 22px; flex-wrap: wrap; align-items: center; }
+  .btn-filled { display: inline-block; background: var(--button-grey); color: var(--white); border: none; border-radius: var(--radius); padding: 14px 28px; font-family: var(--font-serif); font-size: 14px; font-weight: 400; text-decoration: none; letter-spacing: 0.04em; transition: opacity .25s; }
+  .btn-filled:hover { opacity: 0.85; }
+  .btn-outline { display: inline-block; background: transparent; color: var(--text-grey); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 28px; font-family: var(--font-serif); font-size: 14px; font-weight: 400; text-decoration: none; letter-spacing: 0.04em; transition: border-color .25s, color .25s; }
+  .btn-outline:hover { border-color: var(--button-grey); color: var(--charcoal); }
+  .btn-text { background: var(--white); color: var(--charcoal); border: none; border-radius: var(--radius); padding: 0; font-family: var(--font-serif); font-size: 14px; font-weight: 400; text-decoration: none; border-bottom: 1px solid var(--charcoal); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 32px; }
+  .card { background: var(--white); }
+  .card-img { aspect-ratio: 4/5; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 18px; }
+  .card-img .ph { font-size: 11px; letter-spacing: 0.2em; color: rgba(255,255,255,0.92); }
+  .card-img--1 { background: linear-gradient(160deg,#d6d6d6,#9a9a9a); }
+  .card-img--2 { background: linear-gradient(160deg,#c4c4c4,#808080); }
+  .card-img--3 { background: linear-gradient(160deg,#e0e0e0,#a8a8a8); }
+  .card-body { padding: 16px 4px 0; }
+  .card-name { font-size: 14px; font-weight: 400; letter-spacing: 0.02em; line-height: var(--lh-head); color: var(--charcoal); }
+  .card-meta { font-size: 12px; font-weight: 400; color: #999; margin-top: 4px; line-height: var(--lh-head); }
+  .card-price { font-size: 14px; font-weight: 400; color: var(--text-grey); margin-top: 6px; }
+  .card-price .sale { color: var(--sale-red); margin-left: 8px; }
+
+  /* FORMS */
+  .form { max-width: 440px; display: grid; gap: 26px; }
+  .field label { display: block; font-size: 13px; font-weight: 400; letter-spacing: 0.06em; color: #888; margin-bottom: 8px; line-height: var(--lh-head); }
+  .field input { width: 100%; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; font-family: var(--font-serif); font-size: 14px; font-weight: 400; color: var(--text-grey); }
+  .field input:focus { outline: none; border-color: var(--button-grey); }
+  .field--error input { border-color: var(--error); }
+  .field--error .msg { font-size: 12px; color: var(--error); margin-top: 6px; line-height: var(--lh-head); }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 30px; }
+  .elev { background: var(--white); border: 1px solid var(--border); padding: 26px; text-align: center; font-size: 13px; font-weight: 400; color: var(--text-grey); }
+  .elev--0 { box-shadow: none; }
+  .elev--1 { box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  .elev--2 { box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--button-grey); opacity: .85; }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: #999; margin-top: 8px; text-align: center; }
+
+  footer { padding: 60px 40px; background: var(--text-grey); text-align: center; font-size: 13px; font-weight: 400; color: var(--white); letter-spacing: 0.1em; line-height: var(--lh-head); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-brand" href="#">HASUNA</a>
+  <nav class="header-menu"><a href="#">Item</a><a href="#">About</a><a href="#">Store</a></nav>
+</header>
+
+<section class="hero">
+  <div class="hero-eyebrow">ETHICAL JEWELRY</div>
+  <h1 class="hero-title">つくり手にも、地球にも、<br>誠実であるということ。</h1>
+  <p class="hero-sub">素材のトレーサビリティに配慮したエシカルジュエリー。Times New Roman の一系統・無彩色・角丸ゼロ・広い行間でつくる、静かで端正なデザインシステム。</p>
+</section>
+
+<section class="section">
+  <div class="section-eyebrow">01 — COLORS</div>
+  <h2 class="section-title">カラーパレット</h2>
+  <p class="section-lead">前面に出る有彩色はセール価格の朱赤 #f94c43 のみ。あとは白と 2 段階のグレー。純黒は使わない。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#666666"></div><div class="swatch-info"><div class="swatch-name">Text Grey</div><div class="swatch-hex">#666666</div><div class="swatch-role">本文・見出しの標準／フッター地</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#363636"></div><div class="swatch-info"><div class="swatch-name">Charcoal</div><div class="swatch-hex">#363636</div><div class="swatch-role">ロゴ・ナビ・強調・リンク</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#808080"></div><div class="swatch-info"><div class="swatch-name">Button Grey</div><div class="swatch-hex">#808080</div><div class="swatch-role">面色ボタン背景（文字は白）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#ffffff;outline:1px solid #e8e8e8;outline-offset:-1px"></div><div class="swatch-info"><div class="swatch-name">White</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">ページ背景</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#f6f6f6"></div><div class="swatch-info"><div class="swatch-name">Light Grey</div><div class="swatch-hex">#f6f6f6</div><div class="swatch-role">淡い面・カード地・セクション帯</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#e8e8e8"></div><div class="swatch-info"><div class="swatch-name">Border Grey</div><div class="swatch-hex">#e8e8e8</div><div class="swatch-role">1px のヘアライン罫</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#f94c43"></div><div class="swatch-info"><div class="swatch-name">Sale Red</div><div class="swatch-hex">#f94c43</div><div class="swatch-role">セール価格のみのアクセント</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#486ae4"></div><div class="swatch-info"><div class="swatch-name">Link Blue</div><div class="swatch-hex">#486ae4</div><div class="swatch-role">システムリンク色（稀）</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">02 — TYPOGRAPHY</div>
+  <h2 class="section-title">タイポグラフィ</h2>
+  <p class="section-lead">Times New Roman のセリフスタック一系統。全編 weight 400、行間は本文 2.4 / 見出し 1.65、字間は normal。和文は明示指定なしで OS の明朝にフォールバックする。（プレビューは PT Serif / Noto Serif JP で代替）</p>
+  <div class="type-sample"><div style="font-size:24px;font-weight:400;letter-spacing:0.04em;line-height:1.65;color:var(--text-grey)">セクション見出し — Item</div><div class="type-meta">h2 · Times New Roman · 24px · weight 400 · lh 1.65</div></div>
+  <div class="type-sample"><div style="font-size:18px;font-weight:400;line-height:1.65;color:var(--text-grey)">小見出し H2 — Bridal Jewelry</div><div class="type-meta">h2(小) · 18px · weight 400 · lh 1.65</div></div>
+  <div class="type-sample"><div style="font-size:14px;font-weight:400;line-height:2.4;color:var(--text-grey)">本文 — HASUNA は、鉱山採掘から流通までの透明性に配慮した素材でジュエリーをつくるエシカルブランドです。誠実なものづくりを、静かで端正なかたちに託します。</div><div class="type-meta">p · 14px · weight 400 · lh 2.4（本文の署名的な広さ）</div></div>
+  <div class="type-sample"><div style="font-size:11px;font-weight:700;line-height:2.4;letter-spacing:0.06em;color:var(--text-grey)">NEW ARRIVAL：新作コレクション入荷</div><div class="type-meta">p(強調) · 11px · weight 700 · lh 2.4</div></div>
+  <div class="type-sample"><div style="font-size:14px;font-weight:400;line-height:1.65;color:var(--charcoal)">ロゴ / ナビ — HASUNA　About　Store</div><div class="type-meta">h1/nav · 14px · weight 400 · lh 1.65 · color #363636</div></div>
+  <div class="type-sample"><div style="font-size:18px;font-weight:400;letter-spacing:2.4px;color:var(--text-grey)">01 &nbsp; 02 &nbsp; 03</div><div class="type-meta">number label · letter-spacing 2.4px（≒0.15em）</div></div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">03 — ARTICLE</div>
+  <h2 class="section-title">組版サンプル</h2>
+  <div class="article">
+    <p class="emphasis">NEW ARRIVAL：Ethical Collection 2026</p>
+    <h2>身につけるほど、物語が宿る。</h2>
+    <p>HASUNA のジュエリーは、素材がどこで、どのように採られたかを大切にします。作り手の暮らしと自然環境への配慮を、装いの背景に静かに織り込む。派手さではなく、誠実さを纏うためのジュエリーです。</p>
+    <p>一点一点に込めた透明性の物語は、身につけるほどに愛着へと変わります。無彩色を基調とした端正なデザインは、日々の装いに静かに寄り添います。<a href="#">ブランドについて読む</a>。</p>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">04 — BUTTONS</div>
+  <h2 class="section-title">ボタン</h2>
+  <p class="section-lead">面色（#808080）・アウトライン・テキストリンクを使い分ける。角丸は一貫して 0px の矩形。ピル型は使わない。</p>
+  <div class="btn-row">
+    <a class="btn-filled" href="#">カートに入れる</a>
+    <a class="btn-outline" href="#">オンラインストアへ</a>
+    <a class="btn-text" href="#">About HASUNA</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">05 — CARDS</div>
+  <h2 class="section-title">製品カード</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-img card-img--1"><span class="ph">NECKLACE</span></div><div class="card-body"><div class="card-name">エシカル ネックレス</div><div class="card-meta">K18 / ダイヤモンド</div><div class="card-price">¥88,000</div></div></div>
+    <div class="card"><div class="card-img card-img--2"><span class="ph">RING</span></div><div class="card-body"><div class="card-name">フェアマインド リング</div><div class="card-meta">K18 / ゴールド</div><div class="card-price"><s>¥66,000</s><span class="sale">¥52,800</span></div></div></div>
+    <div class="card"><div class="card-img card-img--3"><span class="ph">PIERCE</span></div><div class="card-body"><div class="card-name">トレーサブル ピアス</div><div class="card-meta">K18 / パール</div><div class="card-price">¥44,000</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">06 — FORMS</div>
+  <h2 class="section-title">フォーム</h2>
+  <p class="section-lead">デフォルト / フォーカス / エラーの3状態。セリフ、radius 0px、フォーカスは無彩色 #808080。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="山田 花子"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="ethical@example.com" autofocus></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="03-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn-filled" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">07 — ELEVATION</div>
+  <h2 class="section-title">奥行き</h2>
+  <p class="section-lead">基本はフラット。奥行きは余白・写真・1px のヘアライン罫で表現し、影は限定用途のみ。</p>
+  <div class="elev-grid">
+    <div class="elev elev--0">Level 0 — none</div>
+    <div class="elev elev--1">Level 1 — dropdown</div>
+    <div class="elev elev--2">Level 2 — modal</div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">08 — LAYOUT</div>
+  <h2 class="section-title">スペーシング</h2>
+  <p class="section-lead">8 / 16 / 24 / 40 / 64 / 120px。余白を広く取り、静かな「間」を作る。ヘッダー高は 80px。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:8px;height:8px"></div><div class="space-label">XS 8</div></div>
+    <div><div class="space-bar" style="width:16px;height:16px"></div><div class="space-label">S 16</div></div>
+    <div><div class="space-bar" style="width:24px;height:24px"></div><div class="space-label">M 24</div></div>
+    <div><div class="space-bar" style="width:40px;height:40px"></div><div class="space-label">L 40</div></div>
+    <div><div class="space-bar" style="width:64px;height:64px"></div><div class="space-label">XL 64</div></div>
+    <div><div class="space-bar" style="width:120px;height:120px"></div><div class="space-label">XXL 120</div></div>
+  </div>
+</section>
+
+<footer>HASUNA — Ethical Jewelry　/　Design System Preview　/　実測ベース 2026-07-23</footer>
+
+</body>
+</html>
