@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: KIGI キギ</title>
+<!--
+  NOTE: 原典の和文は FOT-筑紫ゴシック Pr5 L（TsukuGoPr5-L / FONTWORKS）。
+  FONTWORKS の Web フォントはライセンスのため、ローカルの preview.html では表示できない。
+  ここでは字形の近いヒューマニスト・ゴシック "Zen Kaku Gothic New"（Google Fonts / weight 300/400/500）を
+  極小サイズ＋字間調整＋palt で代替に使用している。実装時は必ず FOT-筑紫ゴシック Pr5 L を読み込むこと。
+  欧文はシステムフォントの Helvetica（"Helvetica Neue", Helvetica, Arial, sans-serif）で再現する。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --color-ink: #221815;        /* 暗褐色。テキスト基本色（純黒ではない） */
+    --color-canvas: #e6e6e6;     /* 柔らかいライトグレーの地 */
+    --color-black: #000000;      /* 作品面・ホバー面のみ */
+    --color-white: #ffffff;      /* カード面・反転文字 */
+    --color-teal: #00c69e;       /* アクセント：ナビ/リンクのティール */
+    --color-mint: #00ffcc;       /* アクセント：メニューパネルの鮮烈ミント */
+    --color-teal-muted: #78c2be; /* アクセント：淡ティール */
+    --color-border: #d9d9d9;     /* 罫・入力枠 */
+    --color-sub: #6b6b6b;        /* 補助テキスト */
+    --color-error: #cf2e2e;      /* エラー（WPプリセット vivid-red 流用） */
+
+    /* === Fonts === */
+    /* 原典和文: "FOT-筑紫ゴシック Pr5 L", TsukuGoPr5-L, sans-serif（Zen Kaku Gothic New で代替） */
+    --font-jp: "Zen Kaku Gothic New", sans-serif;
+    /* 欧文: Helvetica はシステムフォント */
+    --font-en: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-jp: 12px;       /* 原典 10px。プレビュー可読性のため 12px を基準に置く */
+    --lh-jp: 1.5;
+    --ls-jp: 0.02em;     /* 代替フォントを筑紫ゴシックに寄せる微字間 */
+
+    /* === Shape === */
+    --radius: 0px;       /* シャープな矩形 */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-canvas); color: var(--color-ink);
+    font-family: var(--font-jp);
+    font-size: var(--fs-jp); font-weight: 400; line-height: var(--lh-jp);
+    letter-spacing: var(--ls-jp);
+    font-feature-settings: "palt";
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 40px; background: rgba(230,230,230,0.92); backdrop-filter: blur(6px); border-bottom: 1px solid var(--color-border); }
+  .header-brand { font-family: var(--font-en); font-size: 22px; font-weight: 700; letter-spacing: 0.04em; color: var(--color-ink); text-decoration: none; }
+  .header-menu { display: flex; gap: 26px; align-items: baseline; }
+  .header-menu a { color: var(--color-teal); text-decoration: none; font-family: var(--font-en); font-size: 18px; font-weight: 700; }
+  .header-menu .jp { font-family: var(--font-jp); font-size: 10px; font-weight: 400; color: var(--color-ink); letter-spacing: 0.04em; }
+
+  /* HERO — 作品面（黒）× 特大 Helvetica × アシッドティール */
+  .hero { background: var(--color-black); color: var(--color-white); padding: 80px 40px 92px; position: relative; overflow: hidden; }
+  .hero-eyebrow { font-family: var(--font-jp); font-size: 11px; font-weight: 400; letter-spacing: 0.24em; color: var(--color-mint); margin-bottom: 26px; }
+  .hero-display { font-family: var(--font-en); font-size: 88px; font-weight: 700; line-height: 1.05; letter-spacing: -0.01em; color: var(--color-white); }
+  .hero-display .accent { color: var(--color-teal); }
+  .hero-sub { font-family: var(--font-jp); font-size: 12px; font-weight: 400; line-height: 1.9; letter-spacing: 0.04em; color: #cfcfcf; margin-top: 28px; max-width: 460px; }
+  .hero-cta { display: inline-flex; gap: 14px; margin-top: 34px; flex-wrap: wrap; }
+
+  /* SECTIONS */
+  .section { padding: 76px 40px; max-width: 1280px; margin: 0 auto; }
+  .section-eyebrow { font-family: var(--font-en); font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--color-teal); margin-bottom: 12px; }
+  .section-title { font-family: var(--font-en); font-size: 40px; font-weight: 700; line-height: 1.1; letter-spacing: 0; margin-bottom: 12px; color: var(--color-ink); }
+  .section-title-jp { font-family: var(--font-jp); font-size: 12px; font-weight: 400; letter-spacing: 0.1em; color: var(--color-sub); margin-bottom: 16px; }
+  .section-lead { font-family: var(--font-jp); font-size: 12px; font-weight: 400; line-height: 1.9; letter-spacing: 0.04em; color: var(--color-sub); max-width: 640px; margin-bottom: 40px; }
+  .divider { border: none; border-top: 1px solid var(--color-border); max-width: 1280px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 18px; }
+  .swatch { border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; background: var(--color-white); }
+  .swatch-block { height: 96px; }
+  .swatch-info { padding: 14px 16px 18px; }
+  .swatch-name { font-family: var(--font-en); font-size: 15px; font-weight: 700; letter-spacing: 0.01em; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--color-sub); margin-top: 4px; letter-spacing: 0; }
+  .swatch-role { font-family: var(--font-jp); font-size: 11px; font-weight: 400; color: var(--color-sub); margin-top: 6px; line-height: 1.7; letter-spacing: 0.02em; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 26px 0; border-bottom: 1px solid var(--color-border); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-teal); margin-top: 12px; letter-spacing: 0; }
+
+  /* ARTICLE */
+  .article { max-width: 680px; }
+  .article h2 { font-family: var(--font-en); font-size: 30px; font-weight: 700; line-height: 1.2; margin-bottom: 8px; color: var(--color-ink); }
+  .article .h2-jp { font-family: var(--font-jp); font-size: 12px; font-weight: 400; color: var(--color-sub); letter-spacing: 0.1em; margin-bottom: 24px; }
+  .article p { font-family: var(--font-jp); font-size: 13px; font-weight: 400; line-height: 2.0; letter-spacing: 0.03em; margin-bottom: 22px; color: var(--color-ink); }
+  .article a { color: var(--color-teal); text-decoration: none; border-bottom: 1px solid var(--color-teal); font-weight: 500; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--font-en); font-feature-settings: "palt"; text-decoration: none; cursor: pointer; display: inline-block; border: none; letter-spacing: 0.02em; transition: all .15s ease; }
+  .btn-primary { background: var(--color-ink); color: var(--color-white); border-radius: var(--radius); padding: 14px 24px; font-size: 14px; font-weight: 700; }
+  .btn-primary:hover { background: var(--color-black); }
+  .btn-accent { background: transparent; color: var(--color-teal); border: 1px solid var(--color-teal); border-radius: var(--radius); padding: 13px 23px; font-size: 14px; font-weight: 700; }
+  .btn-accent:hover { background: var(--color-teal); color: var(--color-white); }
+  .btn-link { color: var(--color-teal); font-size: 18px; font-weight: 700; padding: 4px 0; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 24px; }
+  .card { background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; }
+  .card-img { aspect-ratio: 1/1; display: flex; align-items: flex-end; padding: 20px; position: relative; }
+  .card-img .title { font-family: var(--font-en); font-size: 34px; font-weight: 700; line-height: 1.0; color: var(--color-white); letter-spacing: -0.01em; }
+  .card-img--1 { background: var(--color-black); }
+  .card-img--2 { background: var(--color-black); }
+  .card-img--2 .title { color: var(--color-teal); }
+  .card-img--3 { background: var(--color-teal-muted); }
+  .card-body { padding: 14px 16px 18px; }
+  .card-name { font-family: var(--font-jp); font-size: 12px; font-weight: 500; letter-spacing: 0.04em; color: var(--color-ink); }
+  .card-meta { font-family: var(--font-jp); font-size: 10px; font-weight: 400; color: var(--color-sub); margin-top: 6px; letter-spacing: 0.04em; }
+
+  /* FORMS */
+  .form { max-width: 460px; display: grid; gap: 24px; }
+  .field label { font-family: var(--font-jp); display: block; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; color: var(--color-ink); margin-bottom: 8px; }
+  .field input { width: 100%; background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 12px 14px; font-family: var(--font-jp); font-size: 13px; font-weight: 400; color: var(--color-ink); letter-spacing: 0.02em; }
+  .field input::placeholder { color: #a5a5a5; }
+  .field input:focus { outline: none; border-color: var(--color-teal); }
+  .field--error input { border-color: var(--color-error); }
+  .field--error .msg { font-family: var(--font-jp); font-size: 11px; color: var(--color-error); margin-top: 6px; letter-spacing: 0.02em; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 32px; }
+  .elev { background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 26px; text-align: center; font-family: var(--font-en); font-size: 13px; font-weight: 700; }
+  .elev--0 { box-shadow: none; }
+  .elev--1 { box-shadow: 6px 6px 9px rgba(0,0,0,.2); }
+  .elev--2 { box-shadow: 6px 6px 0px rgba(0,0,0,.2); }
+  .elev--3 { box-shadow: 6px 6px 0px rgba(0,0,0,1); }
+  .elev-cap { font-family: var(--font-jp); font-size: 10px; font-weight: 400; color: var(--color-sub); margin-top: 10px; letter-spacing: 0.04em; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-teal); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: var(--color-sub); margin-top: 8px; text-align: center; }
+
+  footer { padding: 60px 40px; border-top: 1px solid var(--color-border); text-align: center; }
+  footer .fmail { font-family: var(--font-en); font-size: 26px; font-weight: 200; letter-spacing: 0.058em; color: var(--color-ink); text-decoration: none; display: inline-block; }
+  footer .fnote { font-family: var(--font-jp); font-size: 11px; font-weight: 400; color: var(--color-sub); letter-spacing: 0.08em; margin-top: 18px; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-brand" href="#">KIGI</a>
+  <nav class="header-menu">
+    <a href="#">WORKS</a>
+    <a href="#">WE ARE&hellip;</a>
+    <a href="#">NEWS</a>
+    <span class="jp">キギ</span>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-eyebrow">アートディレクション ／ グラフィック ／ プロダクト・アート</div>
+  <div class="hero-display">We are <span class="accent">KIGI</span>.</div>
+  <p class="hero-sub">植原亮輔と渡邉良重による、東京のデザインスタジオ。詩的で、遊びがあって、精度がある。極小の和文と特大の欧文が同居するデザインシステム。</p>
+  <div class="hero-cta">
+    <a class="btn btn-accent" href="#" style="border-color:var(--color-mint);color:var(--color-mint)">VIEW WORKS</a>
+    <a class="btn btn-link" href="#" style="color:var(--color-mint)">WE ARE&hellip;</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-eyebrow">01 — COLORS</div>
+  <h2 class="section-title">Colors</h2>
+  <div class="section-title-jp">カラーパレット</div>
+  <p class="section-lead">地は柔らかいライトグレー #e6e6e6。テキストは暗褐色 #221815（純黒ではない）。作品面・ホバー面にのみ黒 #000000 を使い、アシッドなミント／ティールを点で効かせる。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-ink)"></div><div class="swatch-info"><div class="swatch-name">Warm Near-Black</div><div class="swatch-hex">#221815</div><div class="swatch-role">テキスト基本色（温かみのある黒）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-canvas)"></div><div class="swatch-info"><div class="swatch-name">Light Gray</div><div class="swatch-hex">#e6e6e6</div><div class="swatch-role">地色・キャンバス</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-black)"></div><div class="swatch-info"><div class="swatch-name">Black</div><div class="swatch-hex">#000000</div><div class="swatch-role">作品面・ホバー面のみ</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-teal)"></div><div class="swatch-info"><div class="swatch-name">Accent Teal</div><div class="swatch-hex">#00c69e</div><div class="swatch-role">ナビ・リンクのアクセント</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-mint)"></div><div class="swatch-info"><div class="swatch-name">Vivid Mint</div><div class="swatch-hex">#00ffcc</div><div class="swatch-role">メニューパネルの面色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-teal-muted)"></div><div class="swatch-info"><div class="swatch-name">Muted Teal</div><div class="swatch-hex">#78c2be</div><div class="swatch-role">淡ティール・補助アクセント</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-white);outline:1px solid var(--color-border);outline-offset:-1px"></div><div class="swatch-info"><div class="swatch-name">White</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">カード面・反転文字</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-border)"></div><div class="swatch-info"><div class="swatch-name">Gray Border</div><div class="swatch-hex">#d9d9d9</div><div class="swatch-role">罫・入力枠</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-sub)"></div><div class="swatch-info"><div class="swatch-name">Sub Text</div><div class="swatch-hex">#6b6b6b</div><div class="swatch-role">補助テキスト</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-error)"></div><div class="swatch-info"><div class="swatch-name">Error</div><div class="swatch-hex">#cf2e2e</div><div class="swatch-role">エラー（WPプリセット流用）</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">02 — TYPOGRAPHY</div>
+  <h2 class="section-title">Typography</h2>
+  <div class="section-title-jp">タイポグラフィ</div>
+  <p class="section-lead">和文 FOT-筑紫ゴシック Pr5 L を極小（10px）で、欧文 Helvetica を特大（28〜65px）で使う大小のコントラストが核心。全体に palt を適用。欧文は Bold 700 と Light 200 の二極。</p>
+  <div class="type-sample"><div style="font-family:var(--font-en);font-size:65px;font-weight:700;line-height:1.1;letter-spacing:-0.01em;color:var(--color-ink)">Graphic</div><div class="type-meta">Work Title · Helvetica Bold · 65px · weight 700 · lh 1.1（作品上は白抜き）</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-en);font-size:28px;font-weight:700;line-height:1.0;color:var(--color-teal)">WORKS　WE ARE&hellip;　NEWS</div><div class="type-meta">Nav · Helvetica Bold · 28px · weight 700 · lh 1.0 · color #00c69e</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-en);font-size:30px;font-weight:200;line-height:1.0;letter-spacing:0.058em;color:var(--color-ink)">info@ki-gi.com</div><div class="type-meta">Footer · Helvetica Light · 30px · weight 200 · ls 0.058em（1.75px）</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-jp);font-size:10px;font-weight:400;line-height:1.5;letter-spacing:0.02em;color:var(--color-ink)">和文ナビ・本文 — キギは、植原亮輔と渡邉良重によるデザインスタジオです。極小の筑紫ゴシックを空気のように置き、特大の欧文と落差をつくります。</div><div class="type-meta">Body/Nav (JP) · 筑紫ゴシック Pr5 L · 10px · weight 400 · lh 1.5 · palt</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-jp);font-size:13px;font-weight:400;line-height:2.0;letter-spacing:0.03em;color:var(--color-ink)">本文（読み物用に少し大きめ） — アートディレクション、グラフィックデザイン、プロダクトとアートを横断して、日々の暮らしにそっと寄り添うものをつくっています。</div><div class="type-meta">Article body · 13px · weight 400 · lh 2.0 ※プレビュー可読性のため拡大</div></div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">03 — ARTICLE</div>
+  <h2 class="section-title">Article</h2>
+  <div class="section-title-jp">組版サンプル</div>
+  <div class="article">
+    <h2>We are KIGI.</h2>
+    <div class="h2-jp">わたしたちは、キギ。</div>
+    <p>KIGI は、アートディレクター 植原亮輔とデザイナー 渡邉良重が 2012 年に立ち上げたデザインスタジオです。DRAFT 在籍時に生まれた D-BROS のものづくりを引き継ぎながら、アートディレクション・グラフィック・プロダクト／アートを自由に横断しています。</p>
+    <p>詩のように軽やかで、遊びがあって、けれど手仕事の精度をあきらめない。極小の和文と特大の欧文がひとつの画面に同居する組版は、その姿勢そのものです。<a href="#">WORKS を見る</a>。</p>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">04 — BUTTONS</div>
+  <h2 class="section-title">Buttons</h2>
+  <div class="section-title-jp">ボタン</div>
+  <p class="section-lead">実サイトは塗り CTA を持たない「タイポグラフィがナビを兼ねる」設計。以下は識別性を保った推定・オンブランドの拡張。暗褐色ソリッドとティール・アウトラインを基調に、角丸は 0。</p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">CONTACT</a>
+    <a class="btn btn-accent" href="#">VIEW WORKS</a>
+    <a class="btn btn-link" href="#">WE ARE&hellip;</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">05 — CARDS</div>
+  <h2 class="section-title">Works</h2>
+  <div class="section-title-jp">作品カード（ホバーで黒面に沈み白抜きタイトル）</div>
+  <div class="card-grid">
+    <div class="card"><div class="card-img card-img--1"><span class="title">Graphic</span></div><div class="card-body"><div class="card-name">ブランドのためのグラフィック</div><div class="card-meta">Art Direction ／ 2024</div></div></div>
+    <div class="card"><div class="card-img card-img--2"><span class="title">Product</span></div><div class="card-body"><div class="card-name">暮らしに寄り添うプロダクト</div><div class="card-meta">Product / Art ／ 2023</div></div></div>
+    <div class="card"><div class="card-img card-img--3"><span class="title" style="color:var(--color-ink)">Art</span></div><div class="card-body"><div class="card-name">絵と言葉のためのアートワーク</div><div class="card-meta">Art ／ 2025</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">06 — FORMS</div>
+  <h2 class="section-title">Forms</h2>
+  <div class="section-title-jp">フォーム</div>
+  <p class="section-lead">デフォルト / フォーカス / エラーの3状態。radius 0、フォーカスはアシッドティール #00c69e、エラーは #cf2e2e。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="山田 太郎"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="03-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn btn-primary" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">07 — ELEVATION</div>
+  <h2 class="section-title">Elevation</h2>
+  <div class="section-title-jp">奥行き（WordPress プリセットの実在トークン）</div>
+  <p class="section-lead">基本はライトグレー地と黒面のコントラストでフラットに。影を使うなら natural / sharp / crisp のオフセット影でグラフィカルに。</p>
+  <div class="elev-grid">
+    <div><div class="elev elev--0">Level 0 — none</div><div class="elev-cap">フラット（既定）</div></div>
+    <div><div class="elev elev--1">Level 1 — natural</div><div class="elev-cap">6px 6px 9px rgba(0,0,0,.2)</div></div>
+    <div><div class="elev elev--2">Level 2 — sharp</div><div class="elev-cap">6px 6px 0 rgba(0,0,0,.2)</div></div>
+    <div><div class="elev elev--3">Level 3 — crisp</div><div class="elev-cap">6px 6px 0 rgba(0,0,0,1)</div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">08 — LAYOUT</div>
+  <h2 class="section-title">Layout</h2>
+  <div class="section-title-jp">スペーシング（--wp--preset--spacing 換算）</div>
+  <p class="section-lead">7 / 11 / 16 / 24 / 36 / 54 / 81px。余白を広めに取り、作品グリッドの間にライトグレーの地を効かせる。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:7px;height:7px"></div><div class="space-label">XS 7</div></div>
+    <div><div class="space-bar" style="width:11px;height:11px"></div><div class="space-label">S 11</div></div>
+    <div><div class="space-bar" style="width:16px;height:16px"></div><div class="space-label">M 16</div></div>
+    <div><div class="space-bar" style="width:24px;height:24px"></div><div class="space-label">L 24</div></div>
+    <div><div class="space-bar" style="width:36px;height:36px"></div><div class="space-label">XL 36</div></div>
+    <div><div class="space-bar" style="width:54px;height:54px"></div><div class="space-label">XXL 54</div></div>
+    <div><div class="space-bar" style="width:81px;height:81px"></div><div class="space-label">XXXL 81</div></div>
+  </div>
+</section>
+
+<footer>
+  <a class="fmail" href="#">info@ki-gi.com</a>
+  <div class="fnote">KIGI｜キギ — Design System Preview　/　実測ベース 2026-07-26</div>
+</footer>
+
+</body>
+</html>

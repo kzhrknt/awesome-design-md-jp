@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: groovisions グルーヴィジョンズ</title>
+<!--
+  NOTE: 原典の書体は Helvetica Neue Light（HelveticaNeue-Light を先頭に指定）。
+  Helvetica Neue はシステムフォントのため、環境によっては表示されない。
+  ここでは実スタック "Helvetica Neue", Helvetica, Arial, "Hiragino Kaku Gothic Pro" を維持し、
+  font-weight:300 で Light フェイスを近似する。クロスプラットフォームの保険として
+  Google Fonts の "Inter"（weight 300）をフォールバック先頭に添えているが、
+  実装時は必ず Helvetica Neue（Light フェイス）を優先すること。和文は Hiragino Kaku Gothic Pro。
+  本作はブランドアクセント色を持たないモノクロ設計 — 白 / 中間グレー #9f9f9f / ニアブラック #333333 の3色で完結する。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値（モノクロ 3 色。ブランドアクセント色なし） === */
+    --color-white: #ffffff;      /* ページ背景 */
+    --color-text: #9f9f9f;       /* 既定テキスト（本文・見出し・ナビ）rgb(159,159,159) */
+    --color-emphasis: #333333;   /* リンクホバー・強調・オーバーレイ rgb(51,51,51) */
+    --color-hairline: #e5e5e5;   /* 区切り罫・入力枠 */
+    --color-hairline-2: #eeeeee; /* さらに淡い罫 */
+    --color-placeholder: #bfbfbf;/* placeholder */
+    --color-danger: #c0392b;     /* ※推測で追加（実サイトに意味的な色は無い） */
+
+    /* === Fonts === */
+    /* 原典: HelveticaNeue-Light, "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Hiragino Kaku Gothic Pro", sans-serif */
+    /* Light フェイスは font-weight:300 で近似。Inter はクロスプラットフォームの保険 */
+    --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, "Hiragino Kaku Gothic Pro", "ＭＳ Ｐゴシック", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-body: 16px;
+    --lh-body: 1.5;     /* 本文 */
+    --lh-head: 1.8;     /* ロゴ・ナビ */
+    --lh-loose: 2.0;    /* 注記・フッター */
+    --ls-body: 0.04em;  /* 小さな正の値で統一 */
+    --ls-logo: 0.02em;
+
+    /* === Shape === */
+    --radius: 2px;      /* ほぼ角のまま。丸めない */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-white); color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body); font-weight: 300; line-height: var(--lh-body);
+    letter-spacing: var(--ls-body); font-feature-settings: normal;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 40px; background: rgba(255,255,255,0.94); backdrop-filter: blur(6px); border-bottom: 1px solid var(--color-hairline); }
+  .header-brand { font-family: var(--font-sans); font-size: 20px; font-weight: 300; letter-spacing: var(--ls-logo); line-height: var(--lh-head); color: var(--color-text); text-decoration: none; transition: color .2s; }
+  .header-brand:hover { color: var(--color-emphasis); }
+  .header-menu { display: flex; gap: 32px; align-items: center; }
+  .header-menu a { color: var(--color-text); text-decoration: none; font-size: 20px; font-weight: 300; letter-spacing: var(--ls-body); line-height: var(--lh-head); transition: color .2s; }
+  .header-menu a:hover { color: var(--color-emphasis); }
+
+  /* HERO — 白地。色ではなく余白と静けさで見せる */
+  .hero { background: var(--color-white); color: var(--color-text); padding: 120px 40px 128px; max-width: 1200px; margin: 0 auto; }
+  .hero-nav { display: flex; gap: 24px; margin-bottom: 56px; }
+  .hero-nav a { color: var(--color-text); text-decoration: none; font-size: 16px; font-weight: 300; letter-spacing: var(--ls-body); transition: color .2s; }
+  .hero-nav a:hover { color: var(--color-emphasis); }
+  .hero-display { font-family: var(--font-sans); font-size: 20px; font-weight: 300; line-height: var(--lh-head); letter-spacing: var(--ls-logo); color: var(--color-text); }
+  .hero-sub { font-family: var(--font-sans); font-size: 16px; font-weight: 300; line-height: var(--lh-body); letter-spacing: var(--ls-body); color: var(--color-text); margin-top: 32px; max-width: 560px; }
+  .hero-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-placeholder); margin-top: 40px; letter-spacing: 0; }
+
+  /* SECTIONS */
+  .section { padding: 88px 40px; max-width: 1200px; margin: 0 auto; }
+  .section-eyebrow { font-family: var(--font-mono); font-size: 11px; font-weight: 400; letter-spacing: 0.16em; color: var(--color-text); margin-bottom: 16px; }
+  .section-title { font-family: var(--font-sans); font-size: 20px; font-weight: 300; line-height: var(--lh-head); letter-spacing: var(--ls-logo); margin-bottom: 16px; color: var(--color-emphasis); }
+  .section-lead { font-family: var(--font-sans); font-size: 16px; font-weight: 300; line-height: var(--lh-body); letter-spacing: var(--ls-body); color: var(--color-text); max-width: 660px; margin-bottom: 48px; }
+  .divider { border: none; border-top: 1px solid var(--color-hairline); }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 20px; }
+  .swatch { border: 1px solid var(--color-hairline); border-radius: var(--radius); overflow: hidden; }
+  .swatch-block { height: 100px; }
+  .swatch-info { padding: 16px 18px 20px; }
+  .swatch-name { font-family: var(--font-sans); font-size: 15px; font-weight: 400; letter-spacing: 0.01em; color: var(--color-emphasis); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--color-text); margin-top: 6px; letter-spacing: 0; }
+  .swatch-role { font-family: var(--font-sans); font-size: 12px; font-weight: 300; color: var(--color-text); margin-top: 8px; line-height: 1.7; letter-spacing: var(--ls-body); }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 28px 0; border-bottom: 1px solid var(--color-hairline-2); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-placeholder); margin-top: 14px; letter-spacing: 0; }
+
+  /* ARTICLE */
+  .article { max-width: 700px; }
+  .article h2 { font-family: var(--font-sans); font-size: 20px; font-weight: 300; line-height: var(--lh-head); letter-spacing: var(--ls-logo); margin-bottom: 24px; color: var(--color-emphasis); }
+  .article p { font-family: var(--font-sans); font-size: 16px; font-weight: 300; line-height: var(--lh-body); letter-spacing: var(--ls-body); margin-bottom: 24px; color: var(--color-text); }
+  .article a { color: var(--color-text); text-decoration: none; border-bottom: 1px solid var(--color-hairline); transition: color .2s, border-color .2s; }
+  .article a:hover { color: var(--color-emphasis); border-color: var(--color-emphasis); }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--font-sans); font-feature-settings: normal; text-decoration: none; cursor: pointer; display: inline-block; border: none; font-weight: 300; letter-spacing: var(--ls-body); transition: color .2s, background .2s, border-color .2s; }
+  .btn-link { background: transparent; color: var(--color-text); font-size: 16px; padding: 6px 2px; }
+  .btn-link:hover { color: var(--color-emphasis); }
+  .btn-primary { background: var(--color-emphasis); color: var(--color-white); border-radius: var(--radius); padding: 14px 24px; font-size: 16px; }
+  .btn-primary:hover { background: #1a1a1a; }
+  .btn-outline { background: transparent; color: var(--color-text); border: 1px solid #cccccc; border-radius: var(--radius); padding: 13px 24px; font-size: 16px; }
+  .btn-outline:hover { color: var(--color-emphasis); border-color: var(--color-emphasis); }
+
+  /* CARDS — 作品サムネイル。色は作品側に委ねる（ここではグレースケール見本） */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 4px; }
+  .card { background: var(--color-white); }
+  .card-img { aspect-ratio: 4/3; position: relative; overflow: hidden; }
+  .card-img .overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--color-white); font-family: var(--font-sans); font-size: 14px; font-weight: 300; letter-spacing: var(--ls-body); opacity: 0; background: rgba(51,51,51,0.72); transition: opacity .25s; }
+  .card:hover .overlay { opacity: 1; }
+  .card-img--1 { background: #d9d9d9; }
+  .card-img--2 { background: #9f9f9f; }
+  .card-img--3 { background: #6b6b6b; }
+  .card-img--4 { background: #333333; }
+  .card-body { padding: 14px 2px 0; }
+  .card-name { font-family: var(--font-sans); font-size: 16px; font-weight: 300; letter-spacing: var(--ls-body); color: var(--color-emphasis); }
+  .card-meta { font-family: var(--font-sans); font-size: 14px; font-weight: 300; color: var(--color-text); margin-top: 6px; letter-spacing: var(--ls-body); line-height: var(--lh-loose); }
+
+  /* FORMS */
+  .form { max-width: 460px; display: grid; gap: 28px; }
+  .field label { font-family: var(--font-sans); display: block; font-size: 14px; font-weight: 300; letter-spacing: var(--ls-body); color: var(--color-text); margin-bottom: 10px; }
+  .field input { width: 100%; background: var(--color-white); border: 1px solid var(--color-hairline); border-radius: var(--radius); padding: 12px 14px; font-family: var(--font-sans); font-size: 16px; font-weight: 300; color: var(--color-emphasis); letter-spacing: var(--ls-body); }
+  .field input::placeholder { color: var(--color-placeholder); }
+  .field input:focus { outline: none; border-color: var(--color-emphasis); }
+  .field--error input { border-color: var(--color-danger); }
+  .field--error .msg { font-family: var(--font-sans); font-size: 12px; color: var(--color-danger); margin-top: 8px; letter-spacing: var(--ls-body); }
+  .form-note { font-family: var(--font-mono); font-size: 10px; color: var(--color-placeholder); letter-spacing: 0; margin-top: 4px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 28px; }
+  .elev { background: var(--color-white); border: 1px solid var(--color-hairline); border-radius: var(--radius); padding: 28px; text-align: center; font-family: var(--font-sans); font-size: 13px; font-weight: 300; color: var(--color-text); letter-spacing: var(--ls-body); }
+  .elev--0 { box-shadow: none; }
+  .elev--1 { box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  .elev--2 { box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-text); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: var(--color-text); margin-top: 10px; text-align: center; letter-spacing: 0; }
+
+  footer { padding: 72px 40px; border-top: 1px solid var(--color-hairline); text-align: center; font-family: var(--font-sans); font-size: 14px; font-weight: 300; color: var(--color-text); letter-spacing: var(--ls-body); line-height: var(--lh-loose); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-brand" href="#">groovisions</a>
+  <nav class="header-menu">
+    <a href="#">works</a>
+    <a href="#">news</a>
+    <a href="#">about</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-nav">
+    <a href="#">works</a>
+    <a href="#">#chappie</a>
+    <a href="#">news</a>
+    <a href="#">about</a>
+  </div>
+  <div class="hero-display">groovisions</div>
+  <p class="hero-sub">グラフィック、モーション、Web、アートディレクション。無色で匿名的な器に徹し、色は作品そのものに委ねる。</p>
+  <div class="hero-meta">MONOCHROME SYSTEM — #ffffff / #9f9f9f / #333333 · HELVETICA NEUE LIGHT · WEIGHT 400</div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">01 — COLORS</div>
+  <h2 class="section-title">カラーパレット</h2>
+  <p class="section-lead">ブランドアクセント色を持たないモノクロ設計。純白の面、中間グレー #9f9f9f の文字、ホバー・強調のニアブラック #333333。彩度を持つ色は UI に現れず、色は作品サムネイルが担う。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-white);outline:1px solid var(--color-hairline);outline-offset:-1px"></div><div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">ページ背景（純白）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-text)"></div><div class="swatch-info"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#9f9f9f</div><div class="swatch-role">本文・見出し・ナビの既定（黒ではなく中間グレー）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-emphasis)"></div><div class="swatch-info"><div class="swatch-name">Text Emphasis</div><div class="swatch-hex">#333333</div><div class="swatch-role">リンクホバー・強調・サムネイルオーバーレイ</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-hairline)"></div><div class="swatch-info"><div class="swatch-name">Hairline</div><div class="swatch-hex">#e5e5e5</div><div class="swatch-role">区切り罫・入力枠</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-danger)"></div><div class="swatch-info"><div class="swatch-name">Danger（推測）</div><div class="swatch-hex">#c0392b</div><div class="swatch-role">フォームエラー用に本リポジトリが推測で追加。実サイトに意味的な色は無い</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">02 — TYPOGRAPHY</div>
+  <h2 class="section-title">タイポグラフィ</h2>
+  <p class="section-lead">Helvetica Neue Light 一書体・weight 400 のみで全階層を組む。サイズ差は小さく（20 / 16 / 14px）、階層は色とレイアウトが担う。palt は使わない。letter-spacing は +0.02〜0.04em の小さな正の値で統一。</p>
+  <div class="type-sample"><div style="font-family:var(--font-sans);font-size:20px;font-weight:300;line-height:1.8;letter-spacing:0.02em;color:var(--color-text)">groovisions</div><div class="type-meta">Logo (h1) · 20px · weight 400 · lh 1.8 · ls 0.02em · color #9f9f9f</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans);font-size:20px;font-weight:300;line-height:1.8;letter-spacing:0.04em;color:var(--color-text)">works　news　about — グローバルナビ</div><div class="type-meta">nav · 20px · weight 400 · lh 1.8 · ls 0.04em</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans);font-size:20px;font-weight:300;line-height:1.5;letter-spacing:normal;color:var(--color-text)">#chappie — 作品リスト項目</div><div class="type-meta">li · 20px · weight 400 · lh 1.5</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans);font-size:16px;font-weight:300;line-height:1.5;letter-spacing:0.04em;color:var(--color-text)">本文 — グルーヴィジョンズは、グラフィックからモーション、Web までを横断するデザインスタジオ。UI から表情を削ぎ落とし、単一の書体と単一のグレーだけで画面を成立させる。</div><div class="type-meta">Body · 16px · weight 400 · lh 1.5 · ls 0.04em · color #9f9f9f</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans);font-size:16px;font-weight:300;line-height:1.5;letter-spacing:0.04em;color:var(--color-emphasis)">強調・リンクホバー — 色だけで階層を作る（太字を使わない）</div><div class="type-meta">emphasis · 16px · weight 400 · color #333333（ウェイトは変えない）</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans);font-size:14px;font-weight:300;line-height:2.0;letter-spacing:0.04em;color:var(--color-text)">© 2026 groovisions — 注記・フッターの補助テキスト。</div><div class="type-meta">Caption / Footer · 14px · weight 400 · lh 2.0 · ls 0.04em</div></div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">03 — WORKS / ARTICLE</div>
+  <h2 class="section-title">組版サンプル</h2>
+  <div class="article">
+    <h2>色を、作品に委ねる。</h2>
+    <p>groovisions のデザイン言語は、引き算でできています。UI に彩度を持つ色を足さず、白・中間グレー・ニアブラックの三色だけで構成する。装飾ではなく、余白とヘアラインの罫で秩序を作ります。</p>
+    <p>アバターシステム「chappie（チャッピー）」をはじめ、グラフィック・モーション・Web を横断する仕事は、器そのものを匿名で体系的に保つことで、作品それぞれの色を引き立てます。<a href="#">works を見る</a>。</p>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">04 — BUTTONS</div>
+  <h2 class="section-title">ボタン</h2>
+  <p class="section-lead">実サイトに面ボタンは存在せず、導線はすべてプレーンなテキストリンク（#9f9f9f → hover #333333）。以下の面ボタンはモノクロ設計を壊さない範囲で本リポジトリが設計したもの。実装時はまずテキストリンクを検討する。</p>
+  <div class="btn-row">
+    <a class="btn btn-link" href="#">works →（テキストリンク・実サイトの基本形）</a>
+    <a class="btn btn-primary" href="#">View（ニアブラック面）</a>
+    <a class="btn btn-outline" href="#">Contact（細罫アウトライン）</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">05 — CARDS</div>
+  <h2 class="section-title">作品カード</h2>
+  <p class="section-lead">四角い作品サムネイルを角丸なし・フラットで敷き詰める。ホバーで #333333 のオーバーレイが乗る。ここではグレースケールの見本だが、実際の色は作品側に委ねる。</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-img card-img--1"><div class="overlay">View</div></div><div class="card-body"><div class="card-name">chappie system</div><div class="card-meta">Character / Avatar</div></div></div>
+    <div class="card"><div class="card-img card-img--2"><div class="overlay">View</div></div><div class="card-body"><div class="card-name">Motion Identity</div><div class="card-meta">Motion / Direction</div></div></div>
+    <div class="card"><div class="card-img card-img--3"><div class="overlay">View</div></div><div class="card-body"><div class="card-name">Album Artwork</div><div class="card-meta">Graphic</div></div></div>
+    <div class="card"><div class="card-img card-img--4"><div class="overlay">View</div></div><div class="card-body"><div class="card-name">Website</div><div class="card-meta">Web / Art Direction</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">06 — FORMS</div>
+  <h2 class="section-title">フォーム</h2>
+  <p class="section-lead">デフォルト / フォーカス / エラーの3状態。radius 2px、フォーカスはニアブラック #333333（彩度を持つフォーカスリングは使わない）。エラー色は実サイトに無く、推測で追加した #c0392b。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="山田 太郎"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="03-000"><div class="msg">正しい電話番号を入力してください。</div><div class="form-note">※ 実サイトに意味的な色は無い。エラー色は推測で追加</div></div>
+    <a class="btn btn-primary" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">07 — ELEVATION</div>
+  <h2 class="section-title">奥行き</h2>
+  <p class="section-lead">奥行きはほとんど使わない。区切りは影ではなくヘアライン罫で示し、面はフラットに保つ。影は最小限の限定用途のみ。</p>
+  <div class="elev-grid">
+    <div class="elev elev--0">Level 0 — none（既定）</div>
+    <div class="elev elev--1">Level 1 — dropdown</div>
+    <div class="elev elev--2">Level 2 — modal</div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">08 — LAYOUT</div>
+  <h2 class="section-title">スペーシング</h2>
+  <p class="section-lead">8 / 16 / 24 / 40 / 64 / 96px。余白を大きく取り、ヘアラインの罫と作品グリッドだけで構成する。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:8px;height:8px"></div><div class="space-label">XS 8</div></div>
+    <div><div class="space-bar" style="width:16px;height:16px"></div><div class="space-label">S 16</div></div>
+    <div><div class="space-bar" style="width:24px;height:24px"></div><div class="space-label">M 24</div></div>
+    <div><div class="space-bar" style="width:40px;height:40px"></div><div class="space-label">L 40</div></div>
+    <div><div class="space-bar" style="width:64px;height:64px"></div><div class="space-label">XL 64</div></div>
+    <div><div class="space-bar" style="width:96px;height:96px"></div><div class="space-label">XXL 96</div></div>
+  </div>
+</section>
+
+<footer>groovisions｜グルーヴィジョンズ — Design System Preview　/　実測ベース 2026-07-26</footer>
+
+</body>
+</html>

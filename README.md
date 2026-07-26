@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (405 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (408 sites)</a>
 </p>
 
 <table>
@@ -604,6 +604,11 @@
 <td align="center"><strong>HASUNA</strong><br><img src="design-md/hasuna/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>SIRI SIRI</strong><br><img src="design-md/sirisiri/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>ミナ ペルホネン</strong><br><img src="design-md/minaperhonen/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>KIGI</strong><br><img src="design-md/kigi/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>groovisions</strong><br><img src="design-md/groovisions/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1069,11 +1074,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [DELFONICS (デルフォニックス)](https://www.delfonics.com/) | Stationery / Design | [DESIGN.md](design-md/delfonics/DESIGN.md) | [preview.html](design-md/delfonics/preview.html) |
 | [HASUNA (ハスナ)](https://www.hasuna.co.jp/) | Ethical Jewelry | [DESIGN.md](design-md/hasuna/DESIGN.md) | [preview.html](design-md/hasuna/preview.html) |
 | [SIRI SIRI (シリシリ)](https://sirisiri.jp/) | Jewelry / Glass Craft | [DESIGN.md](design-md/sirisiri/DESIGN.md) | [preview.html](design-md/sirisiri/preview.html) |
+| [mina perhonen (ミナ ペルホネン)](https://www.mina-perhonen.jp/) | Fashion / Textile | [DESIGN.md](design-md/minaperhonen/DESIGN.md) | [preview.html](design-md/minaperhonen/preview.html) |
+| [KIGI (キギ)](https://ki-gi.com/) | Design Studio / Art Direction | [DESIGN.md](design-md/kigi/DESIGN.md) | [preview.html](design-md/kigi/preview.html) |
+| [groovisions (グルーヴィジョンズ)](https://groovisions.com/) | Design Studio / Graphic | [DESIGN.md](design-md/groovisions/DESIGN.md) | [preview.html](design-md/groovisions/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (405 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (408 sites)</a>
 </p>
 
 <table>
@@ -1642,6 +1650,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>DELFONICS</strong><br><img src="design-md/delfonics/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>HASUNA</strong><br><img src="design-md/hasuna/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>SIRI SIRI</strong><br><img src="design-md/sirisiri/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>ミナ ペルホネン</strong><br><img src="design-md/minaperhonen/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>KIGI</strong><br><img src="design-md/kigi/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>groovisions</strong><br><img src="design-md/groovisions/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

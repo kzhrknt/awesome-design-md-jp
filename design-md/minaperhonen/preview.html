@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: mina perhonen ミナ ペルホネン</title>
+<!--
+  NOTE: 原典の和文本文は 游明朝（游明朝, "Yu Mincho" / macOS・Windows のシステム明朝）。
+  Google Fonts に無いため、ここでは "Shippori Mincho"（Google Fonts / 游明朝に近い和文明朝）を代替に使用している。
+  欧文の見出し・ブランド表記は adobe-garamond-pro（Adobe Fonts / ドメインライセンス）で、
+  ローカルの preview.html では表示できないため "EB Garamond"（Google Fonts）を代替に使用している。
+  ラテンのナビ・ラベル・フッターは "Helvetica Neue"（システム）をそのまま使用。
+  実装時は必ず 游明朝（システム）と adobe-garamond-pro（Adobe Fonts）を読み込むこと。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値（CSS 変数は原典に無し。近似モノクロ） === */
+    --color-ink: #212121;      /* インクのようなほぼ黒（本文・見出し） */
+    --color-paper: #ffffff;    /* 紙のような白（背景・余白） */
+    --color-overlay: #333333;  /* 二次暗色（ヘッダーオーバーレイ） */
+    --color-gray: #999999;     /* 最小キャプション・日付 */
+    --color-alert: #ff0000;    /* 警告・欠品のみ */
+    --color-rule: #e2e2e2;     /* 淡い罫（実装用の補助） */
+
+    /* === Fonts === */
+    /* 原典: 游明朝, "Yu Mincho", YuMincho, "Noto Serif JP", serif（Shippori Mincho で代替） */
+    --font-mincho: "Shippori Mincho", 游明朝, "Yu Mincho", YuMincho, "Noto Serif JP", serif;
+    /* 原典: adobe-garamond-pro, serif（EB Garamond で代替） */
+    --font-garamond: "EB Garamond", "Times New Roman", serif;
+    /* 原典: "Helvetica Neue", arial, sans-serif（システムそのまま） */
+    --font-latin: "Helvetica Neue", Arial, sans-serif;
+
+    /* === Type === */
+    --fs-body: 16px;
+    --lh-body: 1.8;    /* 本文 */
+    --lh-head: 1.2;    /* 見出し */
+    --ls-body: 0.05em; /* 記事本文 */
+    --ls-nav: 0.1em;   /* ラテン・ナビ */
+    --ls-label: 0.2em; /* ゴシックラベル */
+    --ls-date: 0.15em; /* 日付 */
+
+    /* === Shape === */
+    --radius: 0px;     /* 角丸を使わない */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-paper); color: var(--color-ink);
+    font-family: var(--font-mincho);
+    font-size: var(--fs-body); font-weight: 400; line-height: var(--lh-body);
+    letter-spacing: normal;
+    font-feature-settings: normal; /* palt は使わない */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 40px; background: rgba(255,255,255,0.94); backdrop-filter: blur(6px); border-bottom: 1px solid var(--color-rule); }
+  .header-brand { font-family: var(--font-garamond); font-size: 22px; font-weight: 400; letter-spacing: 0.02em; color: var(--color-ink); text-decoration: none; }
+  .header-menu { display: flex; gap: 30px; align-items: center; }
+  .header-menu a { color: var(--color-ink); text-decoration: none; font-family: var(--font-latin); font-size: 14px; font-weight: 500; letter-spacing: var(--ls-nav); }
+  .header-signin { font-family: var(--font-mincho); font-size: 13px; font-weight: 400; color: var(--color-ink); text-decoration: none; border-bottom: 1px solid var(--color-ink); padding-bottom: 2px; }
+
+  /* HERO — 白い紙面 */
+  .hero { background: var(--color-paper); padding: 120px 40px 110px; max-width: 1080px; margin: 0 auto; }
+  .hero-season { font-family: var(--font-garamond); font-size: 18px; font-weight: 400; font-style: italic; color: var(--color-ink); margin-bottom: 28px; }
+  .hero-brand { font-family: var(--font-garamond); font-size: 56px; font-weight: 400; line-height: var(--lh-head); letter-spacing: 0.01em; color: var(--color-ink); }
+  .hero-sub { font-family: var(--font-mincho); font-size: 16px; font-weight: 400; line-height: var(--lh-body); letter-spacing: var(--ls-body); color: var(--color-ink); margin-top: 34px; max-width: 560px; }
+  .hero-link { display: inline-block; margin-top: 40px; font-family: var(--font-mincho); font-size: 16px; color: var(--color-ink); text-decoration: none; border-bottom: 1px solid var(--color-ink); padding-bottom: 3px; }
+
+  /* SECTIONS */
+  .section { padding: 90px 40px; max-width: 1080px; margin: 0 auto; }
+  .section-eyebrow { font-family: var(--font-latin); font-size: 11px; font-weight: 500; letter-spacing: var(--ls-date); color: var(--color-gray); margin-bottom: 18px; text-transform: uppercase; }
+  .section-title { font-family: var(--font-mincho); font-size: 36px; font-weight: 400; line-height: var(--lh-head); letter-spacing: 0.02em; margin-bottom: 20px; color: var(--color-ink); }
+  .section-lead { font-family: var(--font-mincho); font-size: 16px; font-weight: 400; line-height: var(--lh-body); letter-spacing: var(--ls-body); color: var(--color-ink); max-width: 660px; margin-bottom: 52px; }
+  .divider { border: none; border-top: 1px solid var(--color-rule); max-width: 1080px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 24px; }
+  .swatch { border: 1px solid var(--color-rule); border-radius: var(--radius); overflow: hidden; }
+  .swatch-block { height: 100px; }
+  .swatch-info { padding: 16px 18px 20px; }
+  .swatch-name { font-family: var(--font-garamond); font-size: 16px; font-weight: 500; letter-spacing: 0.01em; }
+  .swatch-hex { font-family: var(--font-latin); font-size: 11px; color: var(--color-gray); margin-top: 5px; letter-spacing: 0.04em; }
+  .swatch-role { font-family: var(--font-mincho); font-size: 13px; font-weight: 400; color: var(--color-overlay); margin-top: 8px; line-height: 1.7; letter-spacing: var(--ls-body); }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 30px 0; border-bottom: 1px solid var(--color-rule); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-latin); font-size: 11px; color: var(--color-gray); margin-top: 14px; letter-spacing: 0.05em; }
+
+  /* ARTICLE */
+  .article { max-width: 680px; }
+  .article-en { font-family: var(--font-garamond); font-size: 24px; font-weight: 400; line-height: var(--lh-head); color: var(--color-ink); margin-bottom: 10px; }
+  .article h2 { font-family: var(--font-mincho); font-size: 24px; font-weight: 500; line-height: var(--lh-head); letter-spacing: 0.02em; margin-bottom: 30px; color: var(--color-ink); }
+  .article p { font-family: var(--font-mincho); font-size: 16px; font-weight: 400; line-height: var(--lh-body); letter-spacing: var(--ls-body); margin-bottom: 28px; color: var(--color-ink); }
+  .article a { color: var(--color-ink); text-decoration: none; border-bottom: 1px solid var(--color-ink); font-weight: 500; }
+  .article-caption { font-family: var(--font-latin); font-size: 10px; font-weight: 400; color: var(--color-gray); letter-spacing: var(--ls-date); margin-top: 8px; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 30px; flex-wrap: wrap; align-items: center; }
+  .btn { text-decoration: none; cursor: pointer; display: inline-block; border-radius: var(--radius); }
+  .btn-text { font-family: var(--font-mincho); font-size: 16px; font-weight: 400; color: var(--color-ink); border: none; background: transparent; border-bottom: 1px solid var(--color-ink); padding: 0 0 3px; }
+  .btn-outline { font-family: var(--font-mincho); font-size: 15px; font-weight: 400; color: var(--color-ink); background: transparent; border: 1px solid var(--color-ink); padding: 14px 28px; }
+  .btn-dark { font-family: var(--font-mincho); font-size: 16px; font-weight: 500; color: var(--color-paper); background: var(--color-ink); border: 1px solid var(--color-ink); padding: 14px 32px; }
+  .btn-note { font-family: var(--font-latin); font-size: 11px; color: var(--color-gray); margin-top: 20px; letter-spacing: 0.04em; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 40px; }
+  .card { background: var(--color-paper); overflow: hidden; }
+  .card-img { aspect-ratio: 4/5; display: block; }
+  .card-img--1 { background: repeating-linear-gradient(45deg,#dcd7cc,#dcd7cc 14px,#cfc9bb 14px,#cfc9bb 28px); }
+  .card-img--2 { background: repeating-linear-gradient(0deg,#c9d3d6,#c9d3d6 10px,#bcc7cb 10px,#bcc7cb 20px); }
+  .card-img--3 { background: radial-gradient(circle at 30% 35%, #e8ddd0 0 22%, transparent 22%), radial-gradient(circle at 70% 65%, #d9c9b6 0 18%, transparent 18%), #e6ded2; }
+  .card-body { padding: 18px 2px 4px; }
+  .card-en { font-family: var(--font-garamond); font-size: 15px; font-style: italic; color: var(--color-overlay); }
+  .card-name { font-family: var(--font-mincho); font-size: 16px; font-weight: 500; letter-spacing: 0.02em; color: var(--color-ink); margin-top: 4px; }
+  .card-meta { font-family: var(--font-latin); font-size: 10px; font-weight: 400; color: var(--color-gray); margin-top: 10px; letter-spacing: var(--ls-date); }
+
+  /* FORMS */
+  .form { max-width: 460px; display: grid; gap: 30px; }
+  .field label { font-family: var(--font-mincho); display: block; font-size: 14px; font-weight: 400; letter-spacing: var(--ls-body); color: var(--color-ink); margin-bottom: 10px; }
+  .field input { width: 100%; background: var(--color-paper); border: none; border-bottom: 1px solid var(--color-gray); border-radius: var(--radius); padding: 8px 2px; font-family: var(--font-mincho); font-size: 16px; font-weight: 400; color: var(--color-ink); }
+  .field input::placeholder { color: var(--color-gray); }
+  .field input:focus { outline: none; border-bottom-color: var(--color-ink); }
+  .field--error input { border-bottom-color: var(--color-alert); }
+  .field--error .msg { font-family: var(--font-mincho); font-size: 14px; font-weight: 600; color: var(--color-alert); margin-top: 8px; letter-spacing: normal; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 32px; }
+  .elev { background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: var(--radius); padding: 30px; text-align: center; font-family: var(--font-latin); font-size: 12px; font-weight: 400; letter-spacing: 0.06em; color: var(--color-overlay); }
+  .elev--0 { box-shadow: none; }
+  .elev--1 { box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  .elev--2 { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+  .elev--3 { box-shadow: 0 12px 32px rgba(0,0,0,.12); }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 22px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-ink); }
+  .space-label { font-family: var(--font-latin); font-size: 10px; color: var(--color-gray); margin-top: 10px; text-align: center; letter-spacing: 0.06em; }
+
+  footer { padding: 70px 40px; border-top: 1px solid var(--color-rule); text-align: center; font-family: var(--font-latin); font-size: 12px; font-weight: 400; color: var(--color-ink); letter-spacing: 0.05em; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-brand" href="#">minä perhonen</a>
+  <nav class="header-menu">
+    <a href="#">FASHION</a>
+    <a href="#">TEXTILE</a>
+    <a href="#">SHOP</a>
+    <a class="header-signin" href="#">サインイン・登録</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-season">Season</div>
+  <div class="hero-brand">minä perhonen</div>
+  <p class="hero-sub">フィンランド語で「私｜蝶」。オリジナルの手描きテキスタイルと刺繍から生まれる、長く愛される「特別な日常」。色を削ぎ、余白と明朝で静かに語るデザインシステム。</p>
+  <a class="hero-link" href="#">About minä perhonen</a>
+</section>
+
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">01 — Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+  <p class="section-lead">ブランドアクセント色を持たない、意図的な近似モノクロ。紙のような白 #ffffff と、インクのようなほぼ黒 #212121 が基調。彩度を持つのは、警告・欠品にだけ使う赤 #ff0000 のみ。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-ink)"></div><div class="swatch-info"><div class="swatch-name">Ink Black</div><div class="swatch-hex">#212121</div><div class="swatch-role">本文・見出し（純黒は使わない）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-paper);outline:1px solid var(--color-rule);outline-offset:-1px"></div><div class="swatch-info"><div class="swatch-name">Paper White</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">背景・余白（システムの主役）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-overlay)"></div><div class="swatch-info"><div class="swatch-name">Overlay Dark</div><div class="swatch-hex">#333333</div><div class="swatch-role">二次暗色・ヘッダーオーバーレイ</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-gray)"></div><div class="swatch-info"><div class="swatch-name">Gray</div><div class="swatch-hex">#999999</div><div class="swatch-role">日付・最小キャプション</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-alert)"></div><div class="swatch-info"><div class="swatch-name">Alert Red</div><div class="swatch-hex">#ff0000</div><div class="swatch-role">警告・欠品のみ（装飾に使わない）</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">02 — Typography</div>
+  <h2 class="section-title">タイポグラフィ</h2>
+  <p class="section-lead">和文本文に游明朝（明朝体）を据える、この種のブランドでは異例の設計。欧文の見出し・ブランド表記は Adobe Garamond Pro、ラテンのナビ・ラベルは Helvetica Neue。本文は行間 1.8、palt は使わない。</p>
+  <div class="type-sample"><div style="font-family:var(--font-garamond);font-size:48px;font-weight:400;line-height:1.2">minä perhonen</div><div class="type-meta">Brand (h2) · Adobe Garamond Pro · 24px相当 · weight 400 · lh 1.2</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-mincho);font-size:36px;font-weight:400;line-height:1.2;letter-spacing:0.02em">About — 見出し H1</div><div class="type-meta">h1 · 游明朝 · 36px · weight 400 · lh 1.2</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-mincho);font-size:24px;font-weight:500;line-height:1.2;letter-spacing:0.02em">皆川 明（みながわ・あきら）</div><div class="type-meta">h2 · 游明朝 · 24px · weight 500 · lh 1.2</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-garamond);font-size:18px;font-weight:400;font-style:italic">Season</div><div class="type-meta">nav serif · Adobe Garamond Pro · 18px · weight 400</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-latin);font-size:14px;font-weight:500;letter-spacing:0.1em">FASHION　TEXTILE　SHOP</div><div class="type-meta">nav · Helvetica Neue · 14px · weight 500 · ls 0.1em</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-mincho);font-size:16px;font-weight:400;line-height:1.8;letter-spacing:0.05em">本文 — デザイナーで創設者の皆川明が1995年に設立。オリジナルの手描きテキスタイルを核に、世代を超えて受け継がれる「特別な日常着」をつくり続けています。日本語本文は明朝体で、行間 1.8 でゆったりと組みます。</div><div class="type-meta">p · 游明朝 · 16px · weight 400 · lh 1.8 · ls 0.05em · palt off</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-latin);font-size:10px;font-weight:400;letter-spacing:0.15em;color:var(--color-gray)">2026.07.25　ONLINE STORE</div><div class="type-meta">small / date · Helvetica Neue · 10px · weight 400 · ls 0.15em · color #999999</div></div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">03 — Article</div>
+  <h2 class="section-title">組版サンプル</h2>
+  <div class="article">
+    <div class="article-en">About minä perhonen</div>
+    <h2>つくり手の時間を、着る人の時間へ。</h2>
+    <p>デザイナーで創設者の皆川明が、1995年に「minä perhonen」を設立しました。ブランド名はフィンランド語で「私｜蝶」を意味します。すべての生地は、手で描かれた図案から生まれます。</p>
+    <p>流行に左右されず、長く愛される服をつくること。ほどいて、繕って、次の世代へと受け継がれていく——そんな時間の重なりそのものを、一枚の布に織り込みたいと考えています。<a href="#">ブランドについて読む</a>。</p>
+    <p class="article-caption">photograph: Yayoi Arimoto</p>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">04 — Buttons</div>
+  <h2 class="section-title">ボタン</h2>
+  <p class="section-lead">導線は下線付きのテキストリンクが基調。角丸・彩度を持たせず、静かに置く。塗りボタンは本当に必要な箇所に限る。</p>
+  <div class="btn-row">
+    <a class="btn btn-text" href="#">続きを読む</a>
+    <a class="btn btn-outline" href="#">View More</a>
+    <a class="btn btn-dark" href="#">Online Store</a>
+  </div>
+  <p class="btn-note">※ 実サイトには塗りつぶしの CTA が存在せず、導線は下線付きのテキストリンクで構成される。上記の枠線・塗りボタンはブランドの性格に合わせた設計で、実装ではテキストリンクを優先する。</p>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">05 — Cards</div>
+  <h2 class="section-title">テキスタイルカード</h2>
+  <p class="section-lead">枠線・影・角丸に頼らず、写真と余白で区切る。品名は游明朝、補助情報は Helvetica Neue の最小テキストで静かに添える。</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-img card-img--1"></div><div class="card-body"><div class="card-en">tambourine</div><div class="card-name">タンバリン</div><div class="card-meta">EMBROIDERY / WOOL</div></div></div>
+    <div class="card"><div class="card-img card-img--2"></div><div class="card-body"><div class="card-en">chou cho</div><div class="card-name">ちょうちょ</div><div class="card-meta">PRINT / COTTON</div></div></div>
+    <div class="card"><div class="card-img card-img--3"></div><div class="card-body"><div class="card-en">anemone</div><div class="card-name">アネモネ</div><div class="card-meta">JACQUARD / LINEN</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">06 — Forms</div>
+  <h2 class="section-title">フォーム</h2>
+  <p class="section-lead">デフォルト / フォーカス / エラーの3状態。下線のみのフィールドで、角丸を持たせない。フォーカスはインク黒、エラーは意味的な赤 #ff0000。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="山田 花子"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+    <div class="field field--error"><label>お買いものかご</label><input type="text" value="" placeholder="商品を追加してください"><div class="msg">＊かごには何も入っていません。</div></div>
+    <a class="btn btn-dark" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">07 — Elevation</div>
+  <h2 class="section-title">奥行き</h2>
+  <p class="section-lead">奥行きはほぼ使わない。余白と細罫、写真そのもので構成し、影は最小限に。角丸も使わず紙面を端正に保つ。</p>
+  <div class="elev-grid">
+    <div class="elev elev--0">Level 0 — flat</div>
+    <div class="elev elev--1">Level 1 — dropdown</div>
+    <div class="elev elev--2">Level 2 — modal</div>
+    <div class="elev elev--3">Level 3 — dialog</div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">08 — Layout</div>
+  <h2 class="section-title">スペーシング</h2>
+  <p class="section-lead">8 / 16 / 24 / 48 / 80 / 120px。余白がこのシステムの主役。セクション間は XL〜XXL で大きく取り、罫や面色に頼りすぎない。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:8px;height:8px"></div><div class="space-label">XS 8</div></div>
+    <div><div class="space-bar" style="width:16px;height:16px"></div><div class="space-label">S 16</div></div>
+    <div><div class="space-bar" style="width:24px;height:24px"></div><div class="space-label">M 24</div></div>
+    <div><div class="space-bar" style="width:48px;height:48px"></div><div class="space-label">L 48</div></div>
+    <div><div class="space-bar" style="width:80px;height:80px"></div><div class="space-label">XL 80</div></div>
+    <div><div class="space-bar" style="width:120px;height:120px"></div><div class="space-label">XXL 120</div></div>
+  </div>
+</section>
+
+<footer>minä perhonen｜ミナ ペルホネン — Design System Preview　/　実測ベース 2026-07-26</footer>
+
+</body>
+</html>
