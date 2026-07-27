@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: モリサワ Morisawa</title>
+<!--
+  NOTE: 原典の和文は自社 Web フォント MFW-UDShinGoNTPr6N（UD新ゴ NT Pr6N / Light・Reg・Med）。
+  Morisawa Fonts のライセンスフォントのため、ローカルの preview.html では表示できない。
+  ここでは Google Fonts の "BIZ UDPGothic"（weight 400/700）を代替に使用している。
+  BIZ UD ゴシックは【モリサワ自身が Google Fonts に提供している UD 書体】であり、
+  UD新ゴ NT と同じ UD 設計思想・同じ提供元のため、代替として最も印象が近い。
+  実装時は必ず MFW-UDShinGoNTPr6N を読み込むこと。
+
+  原典はウェイトを font-weight ではなく【ファミリー名の切り替え】(-Light / -Reg / -Med) で表現する。
+  BIZ UDPGothic は 400/700 の 2 ウェイトしか無いため、プレビューでは
+  --font-jp-light / --font-jp-reg / --font-jp-med を用意して切り替え箇所を明示している。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --color-bg: #ffffff;         /* ページ地色（純白） */
+    --color-ink: #000000;        /* 見出し・body の基本テキスト色 */
+    --color-ink-soft: #0c0c0c;   /* 段落テキスト。フッターの面色でもある */
+    --color-link: #0086ce;       /* リンク・アイコン・アウトライン文字 */
+    --color-heading: #3071b9;    /* セクション見出し・ピル面 */
+    --color-vivid: #003cff;      /* プロモバー・強調小見出し（点の色） */
+    --color-cyan: #00a3e9;       /* カテゴリ面 */
+    --color-yellow: #ffcc19;     /* カテゴリ面（暖色アクセント） */
+    --color-sky: #8ed8f6;        /* Webフォントカテゴリの淡い面 */
+    --color-pale-blue: #b8cef9;  /* KV 下のリード面 */
+    --color-pale-yellow: #feeea4;/* 注意喚起の淡い黄面 */
+    --color-deep-blue: #137ecb;  /* PASSPORT 製品面 */
+    --color-cta: #4c4c4c;        /* 主要 CTA の面色 */
+    --color-dark: #333333;       /* 製品カードの濃い面 */
+    --color-sub: #666666;        /* 注釈・キャプション */
+    --color-muted: #999999;      /* フッター小文字 */
+    --color-surface: #f7f7f7;    /* カード・セクション面 */
+    --color-surface-2: #f6f7f8;  /* 製品ページの面 */
+    --color-border: #e5e5e5;     /* 罫・トラック */
+    --color-track: #bfbfbf;      /* 非活性ドット */
+    --color-error: #cc3333;      /* エラー（暖色の赤） */
+
+    /* === Fonts === */
+    /* 原典: MFW-UDShinGoNTPr6N-Light / -Reg / -Med（BIZ UDPGothic で代替） */
+    --font-jp-light: "BIZ UDPGothic", sans-serif;
+    --font-jp-reg:   "BIZ UDPGothic", sans-serif;
+    --font-jp-med:   "BIZ UDPGothic", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-body: 14px;
+    --lh-body: 1.5;
+    --lh-read: 2.0;       /* 読み物本文 */
+    --ls: 0.05em;         /* グローバル字間（14px に対し 0.7px） */
+
+    /* === Shape === */
+    --radius-s: 4px;
+    --radius-l: 8px;
+    --radius-pill: 22px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-bg); color: var(--color-ink);
+    font-family: var(--font-jp-light);
+    font-size: var(--fs-body); font-weight: 400; line-height: var(--lh-body);
+    letter-spacing: var(--ls);
+    font-feature-settings: normal;   /* palt を使わない */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 40px; background: rgba(255,255,255,0.94); backdrop-filter: blur(6px); border-bottom: 1px solid var(--color-border); }
+  .header-brand { font-family: var(--font-jp-reg); font-size: 20px; font-weight: 700; color: var(--color-link); text-decoration: none; letter-spacing: 0.08em; }
+  .header-menu { display: flex; gap: 28px; align-items: center; }
+  .header-menu a { color: var(--color-ink-soft); text-decoration: none; font-size: 14px; font-weight: 400; letter-spacing: 0.1em; }
+  .header-menu a:hover { color: var(--color-link); }
+
+  /* HERO */
+  .hero { padding: 76px 40px 88px; background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .hero-inner { max-width: 1200px; margin: 0 auto; }
+  .hero-eyebrow { font-size: 14px; color: var(--color-link); letter-spacing: 0.1em; margin-bottom: 22px; }
+  .hero-display { font-family: var(--font-jp-reg); font-size: 56px; font-weight: 400; line-height: 1.0; letter-spacing: var(--ls); color: var(--color-heading); }
+  .hero-sub { font-size: 20px; font-weight: 400; line-height: 1.8; letter-spacing: var(--ls); color: var(--color-ink); margin-top: 30px; max-width: 620px; }
+  .hero-cta { display: flex; gap: 16px; margin-top: 36px; flex-wrap: wrap; }
+
+  /* SECTIONS */
+  .section { padding: 72px 40px; max-width: 1200px; margin: 0 auto; }
+  .section-eyebrow { font-family: var(--font-jp-med); font-size: 18px; font-weight: 400; line-height: 1.7; letter-spacing: 0.044em; color: var(--color-vivid); margin-bottom: 10px; }
+  .section-title { font-family: var(--font-jp-reg); font-size: 30px; font-weight: 500; line-height: 1.0; letter-spacing: var(--ls); color: var(--color-heading); margin-bottom: 18px; }
+  .section-lead { font-size: 14px; line-height: var(--lh-read); letter-spacing: var(--ls); color: var(--color-sub); max-width: 720px; margin-bottom: 40px; }
+  .divider { border: none; border-top: 1px solid var(--color-border); max-width: 1200px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(184px,1fr)); gap: 18px; }
+  .swatch { border: 1px solid var(--color-border); border-radius: var(--radius-s); overflow: hidden; background: #fff; }
+  .swatch-block { height: 92px; }
+  .swatch-info { padding: 14px 16px 18px; }
+  .swatch-name { font-family: var(--font-jp-reg); font-size: 14px; font-weight: 700; letter-spacing: 0.02em; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--color-sub); margin-top: 4px; letter-spacing: 0; }
+  .swatch-role { font-size: 11px; color: var(--color-sub); margin-top: 6px; line-height: 1.7; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 26px 0; border-bottom: 1px solid var(--color-border); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-link); margin-top: 12px; letter-spacing: 0; }
+
+  /* ARTICLE */
+  .article { max-width: 620px; }
+  .article h2 { font-family: var(--font-jp-light); font-size: 28px; font-weight: 400; line-height: 1.7; letter-spacing: var(--ls); margin-bottom: 6px; color: var(--color-ink); }
+  .article h3 { font-family: var(--font-jp-med); font-size: 18px; font-weight: 400; line-height: 1.7; letter-spacing: 0.044em; color: var(--color-vivid); margin: 30px 0 10px; }
+  .article p { font-size: 14px; font-weight: 400; line-height: var(--lh-read); letter-spacing: var(--ls); margin-bottom: 20px; color: var(--color-ink-soft); }
+  .article a { color: var(--color-link); text-decoration: none; border-bottom: 1px solid var(--color-link); }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--font-jp-light); font-size: 14px; font-weight: 400; letter-spacing: var(--ls);
+    text-decoration: none; cursor: pointer; display: inline-block; border: none; transition: all .15s ease; }
+  .btn-primary { background: var(--color-cta); color: #fff; border-radius: var(--radius-s); padding: 12.6px 18.2px 14px; }
+  .btn-primary:hover { background: #333; }
+  .btn-outline { background: #fff; color: var(--color-link); border: 1px solid var(--color-link); border-radius: var(--radius-l); padding: 12px 48px 12px 16px; position: relative; }
+  .btn-outline::after { content: "›"; position: absolute; right: 18px; top: 50%; transform: translateY(-52%); font-size: 18px; }
+  .btn-outline:hover { background: var(--color-link); color: #fff; }
+  .btn-pill { background: var(--color-heading); color: #fff; border-radius: var(--radius-pill); padding: 4px 20px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(236px,1fr)); gap: 24px; }
+  .card { border-radius: var(--radius-l); overflow: hidden; background: var(--color-surface); }
+  .card-top { height: 116px; display: flex; align-items: flex-end; padding: 18px; }
+  .card-top .t { font-family: var(--font-jp-reg); font-size: 20px; font-weight: 500; letter-spacing: var(--ls); }
+  .card-body { padding: 18px 20px 22px; }
+  .card-name { font-family: var(--font-jp-reg); font-size: 16px; font-weight: 500; letter-spacing: var(--ls); color: var(--color-ink); }
+  .card-meta { font-size: 12px; color: var(--color-sub); margin-top: 8px; line-height: 1.7; letter-spacing: var(--ls); }
+
+  /* FORMS */
+  .form { max-width: 460px; display: grid; gap: 24px; }
+  .field label { display: block; font-size: 12px; font-weight: 400; letter-spacing: 0.08em; color: var(--color-ink-soft); margin-bottom: 8px; }
+  .field input { width: 100%; background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-s); padding: 12px 14px;
+    font-family: var(--font-jp-light); font-size: 14px; color: var(--color-ink-soft); letter-spacing: var(--ls); }
+  .field input::placeholder { color: #7f7f7f; }
+  .field input:focus { outline: none; border-color: var(--color-link); }
+  .field--error input { border-color: var(--color-error); }
+  .field--error .msg { font-size: 12px; color: var(--color-error); margin-top: 6px; letter-spacing: var(--ls); }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 30px; }
+  .elev { background: #fff; border-radius: var(--radius-s); padding: 26px; text-align: center; font-size: 14px; letter-spacing: var(--ls); }
+  .elev--0 { box-shadow: none; border: 1px solid var(--color-border); }
+  .elev--1 { box-shadow: 0 0 0 1px rgba(0,0,0,.15); }
+  .elev--2 { box-shadow: 0 1px 0 0 rgba(0,0,0,.15); }
+  .elev--3 { box-shadow: 0 2px 20px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.07); }
+  .elev-cap { font-family: var(--font-mono); font-size: 11px; color: var(--color-sub); margin-top: 10px; letter-spacing: 0; text-align: center; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-link); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: var(--color-sub); margin-top: 8px; text-align: center; letter-spacing: 0; }
+
+  /* PROMO BAR */
+  .promo { background: var(--color-vivid); color: #fff; padding: 18px 40px; display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; }
+  .promo-text { font-size: 14px; letter-spacing: var(--ls); }
+  .promo-btn { background: #fff; color: var(--color-vivid); border-radius: var(--radius-s); padding: 8px 18px; font-size: 13px; text-decoration: none; letter-spacing: var(--ls); }
+
+  footer { background: var(--color-ink-soft); color: #fff; padding: 56px 40px; }
+  footer .finner { max-width: 1200px; margin: 0 auto; }
+  footer .flinks { display: flex; gap: 28px; flex-wrap: wrap; margin-bottom: 26px; }
+  footer .flinks a { color: #fff; text-decoration: none; font-size: 12px; letter-spacing: var(--ls); }
+  footer .fnote { font-size: 12.5px; line-height: 1.4; letter-spacing: 0.08em; color: var(--color-muted); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-brand" href="#">モリサワ</a>
+  <nav class="header-menu">
+    <a href="#">モリサワのフォント</a>
+    <a href="#">製品／ソリューション</a>
+    <a href="#">文字の手帖</a>
+    <a href="#">サポート</a>
+    <a href="#">企業情報</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">文字を通じて社会に貢献する</div>
+    <div class="hero-display">モリサワのフォント</div>
+    <p class="hero-sub">1924 年の邦文写真植字機の発明から、書体をつくり続けてきました。読みやすさを設計するユニバーサルデザイン書体を、あらゆる画面と印刷物へ。</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#">フォント採用事例を見る</a>
+      <a class="btn btn-outline" href="#">スタンダードプラン</a>
+      <span class="btn btn-pill">FONT SWITCH PROJECT</span>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-eyebrow">01 — COLORS</div>
+  <h2 class="section-title">カラーパレット</h2>
+  <p class="section-lead">地は純白 #ffffff。テキストは純黒 #000000 と段落用の #0c0c0c。青は用途で 3 段に分かれ、リンクは #0086ce、見出しは #3071b9、プロモと強調小見出しだけが鮮烈な #003cff。カテゴリ面にシアンとイエローを添える。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-link)"></div><div class="swatch-info"><div class="swatch-name">Link Blue</div><div class="swatch-hex">#0086ce</div><div class="swatch-role">リンク・アイコン・アウトライン文字</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-heading)"></div><div class="swatch-info"><div class="swatch-name">Heading Blue</div><div class="swatch-hex">#3071b9</div><div class="swatch-role">セクション見出し・ピル面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-vivid)"></div><div class="swatch-info"><div class="swatch-name">Vivid Blue</div><div class="swatch-hex">#003cff</div><div class="swatch-role">プロモバー・強調小見出し（点の色）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-cyan)"></div><div class="swatch-info"><div class="swatch-name">Cyan</div><div class="swatch-hex">#00a3e9</div><div class="swatch-role">製品カテゴリ面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-yellow)"></div><div class="swatch-info"><div class="swatch-name">Yellow</div><div class="swatch-hex">#ffcc19</div><div class="swatch-role">組込み・オリジナルフォント面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-sky)"></div><div class="swatch-info"><div class="swatch-name">Sky</div><div class="swatch-hex">#8ed8f6</div><div class="swatch-role">Webフォントカテゴリの淡い面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-pale-yellow)"></div><div class="swatch-info"><div class="swatch-name">Pale Yellow</div><div class="swatch-hex">#feeea4</div><div class="swatch-role">注意喚起の淡い黄面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-cta)"></div><div class="swatch-info"><div class="swatch-name">CTA Charcoal</div><div class="swatch-hex">#4c4c4c</div><div class="swatch-role">主要 CTA の面色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-ink)"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#000000</div><div class="swatch-role">見出し・body の基本テキスト</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-ink-soft)"></div><div class="swatch-info"><div class="swatch-name">Ink Soft</div><div class="swatch-hex">#0c0c0c</div><div class="swatch-role">段落テキスト／フッター面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-surface)"></div><div class="swatch-info"><div class="swatch-name">Surface</div><div class="swatch-hex">#f7f7f7</div><div class="swatch-role">カード・セクション面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-border)"></div><div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-hex">#e5e5e5</div><div class="swatch-role">罫・ページネーションのトラック</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">02 — TYPOGRAPHY</div>
+  <h2 class="section-title">タイポグラフィ</h2>
+  <p class="section-lead">和文は自社の UD 書体「UD新ゴ NT Pr6N」一系統。太さは font-weight ではなくファミリー名（-Light / -Reg / -Med）の切り替えで作る。letter-spacing 0.05em がグローバルに効き、palt は使わない。</p>
+  <div class="type-sample"><div style="font-family:var(--font-jp-reg);font-size:56px;font-weight:400;line-height:1.0;letter-spacing:.05em;color:var(--color-heading)">モリサワのフォント</div><div class="type-meta">Display (Products) · UD新ゴ NT Reg · 56px · weight 400 · lh 1.0 · ls 0.05em · #3071b9</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-jp-reg);font-size:50px;font-weight:400;line-height:1.4;letter-spacing:.05em;color:var(--color-ink)">文字を通じて社会に貢献する</div><div class="type-meta">Display (Concept) · UD新ゴ NT Reg · 50px · weight 400 · lh 1.4 · ls 0.05em</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-jp-light);font-size:36px;font-weight:400;line-height:1.7;letter-spacing:.05em;color:var(--color-ink)">書体見本・書体見聞</div><div class="type-meta">Page Title · UD新ゴ NT Light · 36px · weight 400 · lh 1.7 · ls 0.05em</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-jp-reg);font-size:30px;font-weight:500;line-height:1.0;letter-spacing:.05em;color:var(--color-heading)">PICK UP</div><div class="type-meta">Section Head · UD新ゴ NT Reg · 30px · weight 500 · lh 1.0 · ls 0.05em</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-jp-med);font-size:18px;font-weight:400;line-height:1.7;letter-spacing:.044em;color:var(--color-vivid)">高品質でバラエティ豊かなフォントを提供する</div><div class="type-meta">Accent Head · UD新ゴ NT <strong>Med</strong> · 18px · weight 400 · lh 1.7 · ls 0.044em · #003cff</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-jp-light);font-size:20px;font-weight:400;line-height:1.8;letter-spacing:.05em;color:var(--color-ink)">美しい書体、読みやすい書体。フォントとつくる無限のアイデア。</div><div class="type-meta">Lead · UD新ゴ NT Light · 20px · weight 400 · lh 1.8 · ls 0.05em</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-jp-light);font-size:14px;font-weight:400;line-height:2.0;letter-spacing:.05em;color:var(--color-ink-soft)">読み物本文 — ユニバーサルデザイン書体は、文字の形をできるだけ判別しやすく設計した書体です。ふところを広く取り、濁点や半濁点を大きく、線の交差部分をすっきりと処理することで、小さな文字サイズでも、限られた明るさの環境でも読み違えにくくなります。</div><div class="type-meta">Body (Article) · UD新ゴ NT Light · 14px · weight 400 · <strong>lh 2.0</strong> · ls 0.05em</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-jp-light);font-size:14px;font-weight:400;line-height:1.5;letter-spacing:.05em;color:var(--color-ink)">本文（既定） — 書体は、読む人のためにあります。組版のリズムをつくるのは、字面と行間と字間の設計です。</div><div class="type-meta">Body · UD新ゴ NT Light · 14px · weight 400 · lh 1.5 · ls 0.05em</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-jp-light);font-size:12.5px;font-weight:400;line-height:1.4;letter-spacing:.08em;color:var(--color-muted)">© Morisawa Inc. — Design System Preview</div><div class="type-meta">Footer Small · 12.5px · weight 400 · lh 1.4 · ls 0.08em · #999999</div></div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">03 — ARTICLE</div>
+  <h2 class="section-title">組版サンプル</h2>
+  <div class="article">
+    <h2>読みやすさを、設計する。</h2>
+    <p>モリサワは 1924 年、邦文写真植字機の発明から始まりました。以来 100 年、活字から写植へ、写植からデジタルフォントへと媒体は変わっても、文字をつくるという仕事の芯は変わっていません。</p>
+    <h3>UD 書体という考え方</h3>
+    <p>ユニバーサルデザイン書体は、見た目の美しさと引き換えに読みやすさを犠牲にしないための設計です。ふところを広く、線の交差をすっきりと。小さな文字でも、暗い場所でも、読み違えにくい字形を目指しています。</p>
+    <p>この考え方は Web でも同じです。行間は 1.5 以上、読み物なら 2.0。字間は 0.05em だけ開く。プロポーショナル詰め（palt）は掛けません。等幅に設計された字面こそが、読みやすさの根拠だからです。<a href="#">書体見本を見る</a>。</p>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">04 — BUTTONS</div>
+  <h2 class="section-title">ボタン</h2>
+  <p class="section-lead">主要 CTA はチャコール #4c4c4c のソリッド（radius 4px）。副次はブルーアウトライン（radius 8px、右に矢印用の余白）。ピルは出典・カテゴリの表示に使う。彩度の高いブルーはボタンではなく見出しと帯へ。</p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">フォント採用事例を見る</a>
+    <a class="btn btn-primary" href="#">ダウンロード</a>
+    <a class="btn btn-outline" href="#">教育機関プラン</a>
+    <a class="btn btn-outline" href="#">Webフォント</a>
+    <span class="btn btn-pill">note</span>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">05 — CARDS</div>
+  <h2 class="section-title">製品カード</h2>
+  <p class="section-lead">面色の差でカテゴリを識別する。シアン・イエロー・スカイをカテゴリ面に、濃色カードは #333333。角丸は 8px。</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-top" style="background:var(--color-cyan)"><span class="t" style="color:#fff">個人・法人向け</span></div><div class="card-body"><div class="card-name">Morisawa Fonts</div><div class="card-meta">サブスクリプションで全書体を利用</div></div></div>
+    <div class="card"><div class="card-top" style="background:var(--color-yellow)"><span class="t" style="color:var(--color-ink)">組込みフォント</span></div><div class="card-body"><div class="card-name">Embedded Fonts</div><div class="card-meta">機器・サービスへの組込みライセンス</div></div></div>
+    <div class="card"><div class="card-top" style="background:var(--color-sky)"><span class="t" style="color:var(--color-ink)">Webフォント</span></div><div class="card-body"><div class="card-name">TypeSquare</div><div class="card-meta">デザイナーの意図した書体を画面に</div></div></div>
+    <div class="card"><div class="card-top" style="background:var(--color-dark)"><span class="t" style="color:#fff">Select Pack</span></div><div class="card-body"><div class="card-name">基本7書体パック</div><div class="card-meta">明朝体・ゴシック体の定番を収録</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">06 — FORMS</div>
+  <h2 class="section-title">フォーム</h2>
+  <p class="section-lead">デフォルト / フォーカス / エラーの3状態。radius 4px、フォーカスはリンクブルー #0086ce、エラーは暖色の赤 #cc3333。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="山田 太郎"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="06-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn btn-primary" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">07 — ELEVATION</div>
+  <h2 class="section-title">奥行き</h2>
+  <p class="section-lead">全体はフラット寄り。影は「細い 1px の輪郭」か「広く薄いぼかし」の二極で、濃い落ち影は使わない。書体の輪郭を邪魔しないことを優先する。</p>
+  <div class="elev-grid">
+    <div><div class="elev elev--0">Level 0</div><div class="elev-cap">none（既定）</div></div>
+    <div><div class="elev elev--1">Level 1</div><div class="elev-cap">0 0 0 1px rgba(0,0,0,.15)</div></div>
+    <div><div class="elev elev--2">Level 2</div><div class="elev-cap">0 1px 0 0 rgba(0,0,0,.15)</div></div>
+    <div><div class="elev elev--3">Level 3</div><div class="elev-cap">0 2px 20px rgba(0,0,0,.07)</div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">08 — LAYOUT</div>
+  <h2 class="section-title">スペーシング</h2>
+  <p class="section-lead">4 / 8 / 16 / 24 / 40 / 64 / 96px。コンテナは最大 1200px（標準 1032〜1100px）、読み物カラムは 620px。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:4px;height:4px"></div><div class="space-label">XS 4</div></div>
+    <div><div class="space-bar" style="width:8px;height:8px"></div><div class="space-label">S 8</div></div>
+    <div><div class="space-bar" style="width:16px;height:16px"></div><div class="space-label">M 16</div></div>
+    <div><div class="space-bar" style="width:24px;height:24px"></div><div class="space-label">L 24</div></div>
+    <div><div class="space-bar" style="width:40px;height:40px"></div><div class="space-label">XL 40</div></div>
+    <div><div class="space-bar" style="width:64px;height:64px"></div><div class="space-label">XXL 64</div></div>
+    <div><div class="space-bar" style="width:96px;height:96px"></div><div class="space-label">XXXL 96</div></div>
+  </div>
+</section>
+
+<div class="promo">
+  <span class="promo-text">高品質でバラエティ豊かなフォントを提供する、モリサワの新しいサブスクリプションサービス</span>
+  <a class="promo-btn" href="#">▶ Morisawa Fonts</a>
+</div>
+
+<footer>
+  <div class="finner">
+    <div class="flinks">
+      <a href="#">モリサワのフォント</a>
+      <a href="#">書体見本</a>
+      <a href="#">UD書体</a>
+      <a href="#">Webフォント</a>
+      <a href="#">フォント用語集</a>
+      <a href="#">会社概要</a>
+      <a href="#">お問合せ</a>
+    </div>
+    <div class="fnote">モリサワ Morisawa — Design System Preview　/　実測ベース 2026-07-27</div>
+  </div>
+</footer>
+
+</body>
+</html>

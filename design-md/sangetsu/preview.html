@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: サンゲツ sangetsu</title>
+<!--
+  NOTE: 原典のコーポレートフォントは "AXIS Std"（タイププロジェクト／鈴木功 設計）。
+  ライセンスフォントのためローカルの preview.html では表示できない。
+  ここでは Google Fonts の "Zen Kaku Gothic New"（weight 400/500/700）を和文の代替に使用している
+  （低コントラストで角の立ったモダンゴシック、という性格が AXIS Std に近い）。
+  欧文の "Hind Madurai" は【実サイトが実際に読み込んでいる Google Fonts】なのでそのまま使用。
+  実装時は必ず "AXIS Std" を読み込むこと。
+
+  ※ 実サイトは Windows の游ゴシック対策として
+      @font-face { font-family:"Yu Gothic"; src: local("Yu Gothic Medium"); font-weight:500; }
+    を定義している。下の @font-face はその実装を再現したもの。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Hind+Madurai:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  /* 実サイトと同じ游ゴシック Medium マッピング（Windows で本文が痩せるのを防ぐ） */
+  @font-face {
+    font-family: "Yu Gothic";
+    src: local("Yu Gothic Medium");
+    font-weight: 500;
+  }
+
+  :root {
+    /* === Colors: 実測値 === */
+    --color-bg: #ffffff;         /* ページ地色 */
+    --color-surface: #f4f4f4;    /* セクション面 */
+    --color-surface-2: #efefef;  /* 薄グレーボタン面 */
+    --color-text: #333333;       /* 本文 */
+    --color-text-deep: #111111;  /* 強調 */
+    --color-text-sub: #666666;   /* 淡い見出し */
+    --color-brand-gray: #727171; /* ブランドの無彩色（温かみのあるグレー） */
+    --color-business: #185f98;   /* BtoB 導線の紺青 */
+    --color-alert: #ff0000;      /* 「重要なお知らせ」専用の純赤 */
+    --color-muted: #9fa0a0;      /* 非活性・検索ボタン面 */
+    --color-dark-gray: #686e6e;  /* フッター導線帯 */
+    --color-border: #cccccc;     /* 罫・アウトライン */
+
+    /* カテゴリタグ（面色＋白抜き） */
+    --tag-topics: #f1a1c4;
+    --tag-notice: #f9c681;
+    --tag-important: #f7b255;
+    --tag-update: #ba7cb9;
+    --tag-showroom: #6e96ce;
+    --tag-tab: #892890;
+
+    /* IR タグ（白地＋同色枠＋同色文字） */
+    --ir-green: #739f4c;
+    --ir-blue: #0d80b0;
+    --ir-violet: #843b7b;
+    --ir-rose: #bb5f89;
+    --ir-brown: #c28c42;
+    --ir-yellow: #c8ab00;
+
+    /* === Fonts === */
+    /* 原典: "AXIS Std", "Yu Gothic", メイリオ, Meiryo, sans-serif（Zen Kaku Gothic New で代替） */
+    --font-jp: "Zen Kaku Gothic New", "Yu Gothic", メイリオ, Meiryo, sans-serif;
+    --font-en: "Hind Madurai", "Zen Kaku Gothic New", "Yu Gothic", メイリオ, Meiryo, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-body: 14px;
+    --lh: 2.0;        /* 本文・見出しの基準行間（かなり広い） */
+    --lh-lead: 1.7;   /* リード文・淡い見出し */
+
+    /* === Shape === */
+    --radius: 0;      /* 原則 0。角丸は KV ページネーションのみ */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-bg); color: var(--color-text);
+    font-family: var(--font-jp);
+    font-size: var(--fs-body); font-weight: 400; line-height: var(--lh);
+    letter-spacing: normal;          /* 字間は触らない */
+    font-feature-settings: normal;   /* palt を使わない */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,.95); backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--color-border); padding: 16px 40px; }
+  .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .brand { font-family: var(--font-en); font-size: 28px; font-weight: 400; line-height: 1.4; color: var(--color-text); text-decoration: none; letter-spacing: .01em; }
+  .header-nav { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; }
+  .header-nav a { color: var(--color-text); text-decoration: none; font-size: 14px; }
+  .header-nav a:hover { color: var(--color-business); }
+  .btn-business { background: var(--color-business); color: #fff; border: 1px solid var(--color-business);
+    border-radius: var(--radius); padding: 8px 16px; font-size: 12px; text-decoration: none; }
+  .btn-ghost-line { background: transparent; color: var(--color-muted); border: 1px solid var(--color-muted);
+    border-radius: var(--radius); padding: 8px 16px; font-size: 12px; text-decoration: none; }
+
+  /* ALERT BAR */
+  .alert { display: flex; align-items: stretch; max-width: 1200px; margin: 0 auto; }
+  .alert-label { background: var(--color-alert); color: #fff; font-size: 16px; font-weight: 700; line-height: 1.6;
+    padding: 12px 26px; border-radius: var(--radius); white-space: nowrap; }
+  .alert-body { padding: 12px 26px; font-size: 14px; }
+  .alert-body a { color: var(--color-alert); text-decoration: none; }
+
+  /* HERO */
+  .hero { background: var(--color-surface); padding: 76px 40px; }
+  .hero-inner { max-width: 1200px; margin: 0 auto; }
+  .hero-en { font-family: var(--font-en); font-size: 16px; font-weight: 700; line-height: var(--lh); color: var(--color-brand-gray); }
+  .hero-title { font-size: 28px; font-weight: 700; line-height: var(--lh); color: var(--color-text); }
+  .hero-lead { font-size: 18px; font-weight: 400; line-height: var(--lh-lead); color: var(--color-text); margin-top: 18px; max-width: 720px; }
+  .hero-cta { display: flex; gap: 16px; margin-top: 30px; flex-wrap: wrap; }
+  .hero-dots { display: flex; gap: 10px; margin-top: 36px; align-items: center; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--color-border); background: transparent; }
+  .dot.is-active { background: #fff; border-color: #fff; box-shadow: 0 0 3px 2px var(--color-border); }
+
+  /* SECTIONS */
+  .section { padding: 68px 40px; max-width: 1200px; margin: 0 auto; }
+  .section-eyebrow { font-family: var(--font-en); font-size: 16px; font-weight: 700; line-height: var(--lh); color: var(--color-brand-gray); }
+  .section-title { font-size: 24px; font-weight: 700; line-height: var(--lh-lead); color: var(--color-text-sub); margin-bottom: 14px; }
+  .section-lead { font-size: 14px; line-height: var(--lh); color: var(--color-text); max-width: 780px; margin-bottom: 36px; }
+  .divider { border: none; border-top: 1px solid var(--color-border); max-width: 1200px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(184px,1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; background: #fff; }
+  .swatch-block { height: 88px; }
+  .swatch-info { padding: 12px 16px 16px; }
+  .swatch-name { font-family: var(--font-en); font-size: 14px; font-weight: 700; line-height: 1.5; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--color-text-sub); margin-top: 2px; line-height: 1.5; }
+  .swatch-role { font-size: 12px; color: var(--color-text-sub); margin-top: 4px; line-height: 1.6; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 24px 0; border-bottom: 1px solid var(--color-border); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-business); margin-top: 10px; line-height: 1.6; }
+
+  /* ARTICLE */
+  .article { max-width: 720px; }
+  .article h2 { font-size: 22px; font-weight: 700; line-height: var(--lh); color: var(--color-text); margin-bottom: 4px; }
+  .article h3 { font-size: 20px; font-weight: 700; line-height: var(--lh-lead); color: var(--color-text-sub); margin: 26px 0 4px; }
+  .article p { font-size: 14px; font-weight: 400; line-height: var(--lh); margin-bottom: 18px; }
+  .article a { color: var(--color-business); text-decoration: none; border-bottom: 1px solid var(--color-business); }
+
+  /* TAGS */
+  .tag-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .tag { display: inline-block; font-size: 12px; line-height: 1.9; padding: 0 10px; border-radius: var(--radius); color: #fff; }
+  .tag-o { display: inline-block; font-size: 12px; font-weight: 700; line-height: 1.9; padding: 0 10px;
+    border-radius: var(--radius); background: #fff; border: 1px solid currentColor; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--font-jp); text-decoration: none; cursor: pointer; display: inline-block;
+    border-radius: var(--radius); transition: all .15s ease; }
+  .btn-primary { background: var(--color-business); color: #fff; border: 1px solid var(--color-business); padding: 10px 20px; font-size: 14px; }
+  .btn-primary:hover { background: #12507f; }
+  .btn-corp { background: var(--color-brand-gray); color: #fff; border: 1px solid var(--color-brand-gray); padding: 10px 20px; font-size: 16px; }
+  .btn-corp:hover { background: #5d5c5c; }
+  .btn-outline { background: #fff; color: var(--color-text); border: 1px solid var(--color-border); padding: 10px 20px; font-size: 14px; }
+  .btn-outline:hover { border-color: var(--color-text); }
+  .btn-ghost { background: var(--color-surface-2); color: var(--color-text); border: none; padding: 10px 20px; font-size: 14px; }
+  .btn-search-nav { background: #fff; color: var(--color-text); border: 1px solid var(--color-border); padding: 15px 10px; font-size: 13px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 24px; }
+  .card { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; }
+  .card-img { height: 150px; background: var(--color-surface); }
+  .card-body { padding: 16px 20px 22px; }
+  .card-name { font-size: 16px; font-weight: 700; line-height: var(--lh-lead); color: var(--color-text); }
+  .card-meta { font-size: 12px; color: var(--color-text-sub); margin-top: 4px; line-height: 1.8; }
+
+  /* NEWS LIST */
+  .news { border-top: 1px solid var(--color-border); }
+  .news-item { display: flex; gap: 20px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--color-border); flex-wrap: wrap; }
+  .news-date { font-family: var(--font-en); font-size: 14px; color: var(--color-text-sub); min-width: 108px; }
+  .news-title { font-size: 14px; flex: 1 1 260px; }
+
+  /* FORMS */
+  .form { max-width: 470px; display: grid; gap: 22px; }
+  .field label { display: block; font-size: 14px; font-weight: 700; line-height: var(--lh); margin-bottom: 4px; }
+  .field input { width: 100%; background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius);
+    padding: 10px 14px; font-family: var(--font-jp); font-size: 14px; color: var(--color-text); }
+  .field input::placeholder { color: var(--color-muted); }
+  .field input:focus { outline: none; border-color: var(--color-business); }
+  .field--error input { border-color: var(--color-alert); }
+  .field--error .msg { font-size: 12px; color: var(--color-alert); margin-top: 4px; line-height: 1.8; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 30px; }
+  .elev { background: #fff; border-radius: var(--radius); padding: 24px; text-align: center; font-size: 14px; }
+  .elev--0 { box-shadow: none; border: 1px solid var(--color-border); }
+  .elev--1 { box-shadow: inset 0 0 4px rgba(0,0,0,.05); border: 1px solid var(--color-border); }
+  .elev--2 { box-shadow: 0 0 3px 2px #cccccc; }
+  .elev--3 { box-shadow: 0 0 5px rgba(0,0,0,.2); }
+  .elev-cap { font-family: var(--font-mono); font-size: 11px; color: var(--color-text-sub); margin-top: 10px; text-align: center; line-height: 1.6; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-brand-gray); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: var(--color-text-sub); margin-top: 8px; text-align: center; line-height: 1.6; }
+
+  footer { background: var(--color-dark-gray); color: #fff; padding: 46px 40px; }
+  footer .finner { max-width: 1200px; margin: 0 auto; }
+  footer .flinks { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 20px; }
+  footer .flinks a { color: #fff; text-decoration: none; font-size: 12px; }
+  footer .fnote { font-size: 12px; color: #d6d6d6; line-height: 1.9; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a class="brand" href="#">sangetsu</a>
+    <nav class="header-nav">
+      <a href="#">住まいをデザインしよう</a>
+      <a href="#">商品を探す</a>
+      <a href="#">デジタルカタログ</a>
+      <a href="#">ショールーム</a>
+      <a class="btn-business" href="#">ビジネス向けはこちら</a>
+      <a class="btn-ghost-line" href="#">一般の方はこちら</a>
+    </nav>
+  </div>
+</header>
+
+<div style="padding:18px 40px 0">
+  <div class="alert">
+    <span class="alert-label">重要なお知らせ</span>
+    <span class="alert-body">2026.04.13　<a href="#">取引価格改定に関するお知らせ</a></span>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-en">Joy of Design</div>
+    <h1 class="hero-title">デザインするよろこびを</h1>
+    <p class="hero-lead">壁はネガティブに語られることがある。その、イメージそのものを変えてみよう。意味を再構築しよう。ひとつの壁が、世界を変えるきっかけになることだってあるのだから。</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#">ビジネス向けはこちら</a>
+      <a class="btn btn-outline" href="#">会社情報トップ</a>
+      <a class="btn btn-ghost" href="#">一覧を見る</a>
+    </div>
+    <div class="hero-dots">
+      <span class="dot is-active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-eyebrow">01 — COLORS</div>
+  <h2 class="section-title">カラーパレット</h2>
+  <p class="section-lead">UI は無彩色に徹し、商品写真とテクスチャに色を譲る。ブランドの無彩色は温かみのあるグレー #727171（純グレーではない）。BtoB 導線だけ紺青 #185f98。多色になるのはお知らせ・IR のカテゴリタグのみで、純赤 #ff0000 は「重要なお知らせ」専用。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-brand-gray)"></div><div class="swatch-info"><div class="swatch-name">Brand Gray</div><div class="swatch-hex">#727171</div><div class="swatch-role">基幹の無彩色。IR・タブ・ナビ</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-business)"></div><div class="swatch-info"><div class="swatch-name">Business Blue</div><div class="swatch-hex">#185f98</div><div class="swatch-role">BtoB 導線の CTA</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-alert)"></div><div class="swatch-info"><div class="swatch-name">Alert Red</div><div class="swatch-hex">#ff0000</div><div class="swatch-role">「重要なお知らせ」専用の純赤</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-text)"></div><div class="swatch-info"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#333333</div><div class="swatch-role">本文</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-text-sub)"></div><div class="swatch-info"><div class="swatch-name">Text Secondary</div><div class="swatch-hex">#666666</div><div class="swatch-role">淡い見出し</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-muted)"></div><div class="swatch-info"><div class="swatch-name">Muted Gray</div><div class="swatch-hex">#9fa0a0</div><div class="swatch-role">検索ボタン面・非活性</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-dark-gray)"></div><div class="swatch-info"><div class="swatch-name">Dark Gray</div><div class="swatch-hex">#686e6e</div><div class="swatch-role">フッターの導線帯</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-surface)"></div><div class="swatch-info"><div class="swatch-name">Surface</div><div class="swatch-hex">#f4f4f4</div><div class="swatch-role">セクション面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-surface-2)"></div><div class="swatch-info"><div class="swatch-name">Surface 2</div><div class="swatch-hex">#efefef</div><div class="swatch-role">薄グレーボタン面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-border)"></div><div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-hex">#cccccc</div><div class="swatch-role">罫・アウトライン</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--tag-topics)"></div><div class="swatch-info"><div class="swatch-name">Topics Pink</div><div class="swatch-hex">#f1a1c4</div><div class="swatch-role">「トピックス」タグ面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--tag-notice)"></div><div class="swatch-info"><div class="swatch-name">Notice Orange</div><div class="swatch-hex">#f9c681</div><div class="swatch-role">「お知らせ」タグ面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--tag-update)"></div><div class="swatch-info"><div class="swatch-name">Update Purple</div><div class="swatch-hex">#ba7cb9</div><div class="swatch-role">「WEBサイト更新情報」タグ面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--tag-showroom)"></div><div class="swatch-info"><div class="swatch-name">Showroom Blue</div><div class="swatch-hex">#6e96ce</div><div class="swatch-role">ショールーム系タグ面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--tag-tab)"></div><div class="swatch-info"><div class="swatch-name">Category Purple</div><div class="swatch-hex">#892890</div><div class="swatch-role">タブのアクティブ面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--ir-green)"></div><div class="swatch-info"><div class="swatch-name">IR Green</div><div class="swatch-hex">#739f4c</div><div class="swatch-role">「サステナビリティ」タグ</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">02 — TYPOGRAPHY</div>
+  <h2 class="section-title">タイポグラフィ</h2>
+  <p class="section-lead">コーポレートフォントは AXIS Std（タイププロジェクト）。行間 2.0 が本文の基準で、見出しにも原則 2.0 が乗る。リード文と淡い見出しのみ 1.7。letter-spacing / font-feature-settings はともに normal、ウェイトは 400 と 700 の二極。</p>
+  <div class="type-sample"><div style="font-size:28px;font-weight:700;line-height:2.0">デザインするよろこびを</div><div class="type-meta">Page Title · AXIS Std · 28px · weight 700 · lh 2.0（56px）</div></div>
+  <div class="type-sample"><div style="font-size:24px;font-weight:700;line-height:1.7;color:var(--color-text-sub)">Room Styling ／ 空間から探す</div><div class="type-meta">Heading 1 · 24px · weight 700 · lh 1.7 · #666666</div></div>
+  <div class="type-sample"><div style="font-size:22px;font-weight:700;line-height:2.0">壁紙・床材・ファブリック</div><div class="type-meta">Heading 2 · 22px · weight 700 · lh 2.0（44px）</div></div>
+  <div class="type-sample"><div style="font-size:21px;font-weight:700;line-height:2.0">商品を探す</div><div class="type-meta">Heading 3 · 21px · weight 700 · lh 2.0（42px）</div></div>
+  <div class="type-sample"><div style="font-size:18px;font-weight:400;line-height:1.7">リード文 — その壁はなにを変えるだろう。立ち塞がる一方で、アイデア次第でだれかを笑顔にしたり、日々を明るく変える力を持っているはず。</div><div class="type-meta">Lead · 18px · weight 400 · lh 1.7（30.6px）</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-en);font-size:16px;font-weight:700;line-height:2.0">Joy of Design</div><div class="type-meta">Sub Head (EN) · Hind Madurai · 16px · weight 700 · lh 2.0</div></div>
+  <div class="type-sample"><div style="font-size:14px;font-weight:400;line-height:2.0">本文 — サンゲツは 1849 年に名古屋で創業した、インテリア内装材のメーカーです。壁紙、床材、カーテン、椅子生地。空間を構成する「面」の素材を企画し、設計者と暮らす人の双方に届けています。行間 2.0 の広さが、余白の上品さを支えています。</div><div class="type-meta">Body · AXIS Std · 14px · weight 400 · <strong>lh 2.0（28px）</strong> · ls normal</div></div>
+  <div class="type-sample"><div style="font-size:14px;font-weight:400;line-height:1.5">詰めた本文（リスト内） — 行間 1.5。リストや密度の高い領域でのみ使う。</div><div class="type-meta">Body Tight · 14px · weight 400 · lh 1.5（21px）</div></div>
+  <div class="type-sample">
+    <div class="tag-row">
+      <span class="tag" style="background:var(--tag-topics)">トピックス</span>
+      <span class="tag" style="background:var(--tag-notice)">お知らせ</span>
+      <span class="tag" style="background:var(--tag-update)">WEBサイト更新情報</span>
+      <span class="tag" style="background:var(--tag-showroom)">大阪ショールーム</span>
+      <span class="tag-o" style="color:var(--ir-green)">サステナビリティ</span>
+      <span class="tag-o" style="color:var(--ir-blue)">株主総会</span>
+      <span class="tag-o" style="color:var(--ir-violet)">適時開示</span>
+      <span class="tag-o" style="color:var(--ir-brown)">商品</span>
+      <span class="tag-o" style="color:var(--ir-yellow)">その他</span>
+    </div>
+    <div class="type-meta">Category Tag · 12px · weight 400／700 · radius 0 · 面色＋白抜き ／ 白地＋同色 1px 枠＋同色文字 の 2 形式</div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">03 — ARTICLE</div>
+  <h2 class="section-title">組版サンプル</h2>
+  <div class="article">
+    <h2>その壁は、なにを変えるだろう。</h2>
+    <p>壁はネガティブに語られることがあります。立ち塞がるもの、隔てるもの、乗り越えるべきもの。けれどその意味は、少しの工夫で組み替えられるはずです。</p>
+    <h3>面の素材が、空間の性格を決める</h3>
+    <p>壁紙、床材、カーテン、椅子生地。空間を構成しているのは、結局のところ「面」です。面の色と手ざわりが変わるだけで、同じ間取りの部屋がまったく違う表情になります。だからこそ素材の選択肢は多い方がいい、と私たちは考えています。</p>
+    <p>行間を広く取り、色数を絞る。UI の側が静かであるほど、素材そのものの色柄が前に出てきます。<a href="#">商品を探す</a>。</p>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">04 — BUTTONS</div>
+  <h2 class="section-title">ボタン</h2>
+  <p class="section-lead">BtoB 導線は紺青 #185f98、企業・IR 導線はブランドグレー #727171。副次は白地＋#cccccc の枠、または薄グレー面 #efefef。border-radius は 0 で、角丸やピルは使わない。</p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">ビジネス向けはこちら</a>
+    <a class="btn btn-corp" href="#">株主・個人投資家の皆さまへ</a>
+    <a class="btn btn-outline" href="#">会社情報トップ</a>
+    <a class="btn btn-ghost" href="#">一覧を見る</a>
+  </div>
+  <div class="btn-row" style="margin-top:20px">
+    <a class="btn btn-search-nav" href="#">カタログから探す</a>
+    <a class="btn btn-search-nav" href="#">機能や色・柄から探す</a>
+    <a class="btn btn-search-nav" href="#">イメージから探す</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">05 — CARDS &amp; LIST</div>
+  <h2 class="section-title">カードとお知らせ</h2>
+  <p class="section-lead">カードは radius 0、罫は #cccccc。お知らせリストは日付・カテゴリタグ・見出しの 3 要素で、タグの色が情報種別を示す。</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-img"></div><div class="card-body"><div class="card-name">Room Styling ／ リビング</div><div class="card-meta">壁紙 × 床材のコーディネート</div></div></div>
+    <div class="card"><div class="card-img"></div><div class="card-body"><div class="card-name">デジタルカタログ</div><div class="card-meta">最新の見本帳をオンラインで</div></div></div>
+    <div class="card"><div class="card-img"></div><div class="card-body"><div class="card-name">ショールーム</div><div class="card-meta">実物の質感を確かめる</div></div></div>
+  </div>
+  <div class="news" style="margin-top:40px">
+    <div class="news-item"><span class="news-date">2026.07.24</span><span class="tag" style="background:var(--tag-topics)">トピックス</span><span class="news-title">SANGETSU DESIGN AWARD 2026 受賞作品・総評を公開しました</span></div>
+    <div class="news-item"><span class="news-date">2026.07.18</span><span class="tag" style="background:var(--tag-notice)">お知らせ</span><span class="news-title">夏季休業期間のご案内</span></div>
+    <div class="news-item"><span class="news-date">2026.07.10</span><span class="tag-o" style="color:var(--ir-blue)">株主総会</span><span class="news-title">定時株主総会 招集ご通知を掲載しました</span></div>
+    <div class="news-item"><span class="news-date">2026.07.02</span><span class="tag-o" style="color:var(--ir-green)">サステナビリティ</span><span class="news-title">統合報告書 2026 を公開しました</span></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">06 — FORMS</div>
+  <h2 class="section-title">フォーム</h2>
+  <p class="section-lead">デフォルト / フォーカス / エラーの3状態。radius 0、フォーカスは紺青 #185f98、エラーは #ff0000。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="山田 太郎"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="052-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn btn-primary" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">07 — ELEVATION</div>
+  <h2 class="section-title">奥行き</h2>
+  <p class="section-lead">オフセットを持たない「全方位に淡く広がる影」が特徴。0 4px 12px のような落ち影は使わない。奥行きは白 × #f4f4f4 / #efefef の面の差で表現する。</p>
+  <div class="elev-grid">
+    <div><div class="elev elev--0">Level 0</div><div class="elev-cap">none（既定）</div></div>
+    <div><div class="elev elev--1">Level 1</div><div class="elev-cap">inset 0 0 4px rgba(0,0,0,.05)</div></div>
+    <div><div class="elev elev--2">Level 2</div><div class="elev-cap">0 0 3px 2px #cccccc</div></div>
+    <div><div class="elev elev--3">Level 3</div><div class="elev-cap">0 0 5px rgba(0,0,0,.2)</div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">08 — LAYOUT</div>
+  <h2 class="section-title">スペーシング</h2>
+  <p class="section-lead">5 / 10 / 16 / 24 / 40 / 64 / 96px。コンテナは最大 1200px、KV と写真セクションは全幅ブリード。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:5px;height:5px"></div><div class="space-label">XS 5</div></div>
+    <div><div class="space-bar" style="width:10px;height:10px"></div><div class="space-label">S 10</div></div>
+    <div><div class="space-bar" style="width:16px;height:16px"></div><div class="space-label">M 16</div></div>
+    <div><div class="space-bar" style="width:24px;height:24px"></div><div class="space-label">L 24</div></div>
+    <div><div class="space-bar" style="width:40px;height:40px"></div><div class="space-label">XL 40</div></div>
+    <div><div class="space-bar" style="width:64px;height:64px"></div><div class="space-label">XXL 64</div></div>
+    <div><div class="space-bar" style="width:96px;height:96px"></div><div class="space-label">XXXL 96</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="finner">
+    <div class="flinks">
+      <a href="#">商品を探す</a>
+      <a href="#">デジタルカタログ</a>
+      <a href="#">ショールーム</a>
+      <a href="#">会社情報</a>
+      <a href="#">空間総合事業</a>
+      <a href="#">採用</a>
+      <a href="#">よくあるご質問／お問い合わせ</a>
+    </div>
+    <div class="fnote">サンゲツ sangetsu — Design System Preview　/　実測ベース 2026-07-27</div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 国立新美術館 The National Art Center, Tokyo</title>
+<!--
+  NOTE: 原典の和文スタックは
+    "ヒラギノ角ゴ Pro W3", "Noto Sans JP", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, sans-serif
+  ヒラギノ角ゴ Pro W3 は macOS 同梱フォントのため Windows / Linux では表示されない。
+  ここでは Google Fonts の "Noto Sans JP"（weight 400/700）を読み込むが、これは
+  【実サイトのフォールバック第 2 候補そのもの】なので、代替ではなく実装どおりの表示になる。
+  UI 欧文の "Roboto" も実サイトと同じものを Google Fonts から読み込んでいる。
+
+  ※ ProN ではなく Pro を指定している点に注意（ProN は JIS2004 字形で別物）。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --color-bg: #ffffff;        /* ページ地色（純白） */
+    --color-ink: #222222;       /* テキスト基本色。ヘッダー黒帯の面色でもある */
+    --color-red: #d7322d;       /* NACT Red。唯一のアクセント */
+    --color-surface: #eeeeee;   /* セクション面・Cookieバナー・パンくず帯 */
+    --color-border: #cccccc;    /* 入力欄・アウトライン・非活性タグの枠 */
+    --color-divider: #dddddd;   /* 区切り線 */
+    --color-sub: #666666;       /* 日付・注釈・カードのメタ */
+    --color-form: #55595c;      /* 検索ウィジェット内テキスト */
+    --color-navy: #000019;      /* カレンダーパネルの面色 */
+    --color-tint: #fceaea;      /* 赤の淡いティント */
+
+    /* === Fonts === */
+    --font-jp: "ヒラギノ角ゴ Pro W3", "Noto Sans JP", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, sans-serif;
+    --font-en: Roboto, sans-serif;
+    --font-form: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-body: 16px;
+    --lh: 1.7;            /* ほぼ全要素に一律で効く行間 */
+
+    /* === Shape: 左右非対称の角丸がこのサイトの署名 === */
+    --radius-tag: 5px 0;    /* タグチップ */
+    --radius-card: 20px 0;  /* カードリンク */
+    --radius-btn: 5px;      /* 赤ボタン */
+    --radius-outline: 8px;  /* アウトラインボタン */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-bg); color: var(--color-ink);
+    font-family: var(--font-jp);
+    font-size: var(--fs-body); font-weight: 400; line-height: var(--lh);
+    letter-spacing: normal;            /* 字間は触らない */
+    font-feature-settings: normal;     /* palt を使わない */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER — 黒帯に白抜き、欧文は Roboto */
+  .topbar { position: sticky; top: 0; z-index: 100; display: flex; justify-content: flex-end; background: var(--color-bg); }
+  .topbar-inner { background: var(--color-ink); color: #fff; display: flex; align-items: center; gap: 0; }
+  .tb-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    padding: 12px 20px; color: #fff; text-decoration: none; border-right: 1px solid rgba(255,255,255,.18); }
+  .tb-item:last-child { border-right: none; }
+  .tb-icon { font-size: 16px; line-height: 1; }
+  .tb-label { font-family: var(--font-en); font-size: 9.6px; line-height: 1.7; }
+  .tb-time { font-family: var(--font-en); font-size: 19.2px; line-height: 1.7; padding: 12px 24px; }
+
+  .brandbar { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; border-bottom: 1px solid var(--color-divider); }
+  .brand { display: flex; align-items: baseline; gap: 14px; text-decoration: none; color: var(--color-ink); }
+  .brand-mark { font-size: 34px; font-weight: 700; line-height: 1.1; letter-spacing: .06em; }
+  .brand-en { font-family: var(--font-en); font-size: 9.6px; line-height: 1.5; color: var(--color-ink); }
+  .gnav { display: flex; gap: 26px; }
+  .gnav a { color: var(--color-ink); text-decoration: none; font-size: 16px; font-weight: 400; line-height: 1.5; }
+  .gnav a.current { font-weight: 700; }
+
+  /* HERO */
+  .hero { padding: 60px 40px 68px; max-width: 1400px; margin: 0 auto; }
+  .hero-visual { background: var(--color-surface); border-radius: var(--radius-card); height: 300px;
+    display: flex; align-items: center; justify-content: center; color: var(--color-sub); font-size: 14.4px; }
+  .hero-title { font-size: 30.4px; font-weight: 700; line-height: 1.26; margin-top: 34px; }
+  .hero-meta { font-size: 14.4px; color: var(--color-sub); margin-top: 10px; }
+  .hero-cta { display: flex; gap: 16px; margin-top: 28px; flex-wrap: wrap; }
+
+  /* SECTIONS */
+  .section { padding: 64px 40px; max-width: 1400px; margin: 0 auto; }
+  .section-eyebrow { font-family: var(--font-en); font-size: 12.8px; letter-spacing: .12em; color: var(--color-red); margin-bottom: 10px; }
+  .section-title { font-size: 28.8px; font-weight: 700; line-height: var(--lh); margin-bottom: 14px; }
+  .section-lead { font-size: 16px; line-height: var(--lh); color: var(--color-sub); max-width: 760px; margin-bottom: 36px; }
+  .divider { border: none; border-top: 1px solid var(--color-divider); max-width: 1400px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px,1fr)); gap: 18px; }
+  .swatch { border: 1px solid var(--color-border); overflow: hidden; background: #fff; border-radius: var(--radius-card); }
+  .swatch-block { height: 92px; }
+  .swatch-info { padding: 14px 18px 20px; }
+  .swatch-name { font-family: var(--font-en); font-size: 14px; font-weight: 700; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--color-sub); margin-top: 4px; }
+  .swatch-role { font-size: 12.8px; color: var(--color-sub); margin-top: 6px; line-height: 1.6; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 26px 0; border-bottom: 1px solid var(--color-divider); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-red); margin-top: 12px; }
+
+  /* ARTICLE */
+  .article { max-width: 760px; }
+  .article h2 { font-size: 24px; font-weight: 700; line-height: var(--lh); margin-bottom: 8px; }
+  .article h3 { font-size: 22.4px; font-weight: 700; line-height: var(--lh); margin: 28px 0 6px; }
+  .article p { font-size: 16px; font-weight: 400; line-height: var(--lh); margin-bottom: 20px; }
+  .article .meta { font-size: 14.4px; color: var(--color-sub); margin-bottom: 22px; }
+  .article a { color: var(--color-red); text-decoration: none; border-bottom: 1px solid var(--color-red); }
+
+  /* TAGS — border-radius: 5px 0 の非対称角丸（署名的コンポーネント） */
+  .tag-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .tag { display: inline-block; font-size: 12.8px; padding: 3.2px 8px; border-radius: var(--radius-tag);
+    text-decoration: none; background: transparent; }
+  .tag--on { color: var(--color-red); border: 1px solid var(--color-red); }
+  .tag--off { color: var(--color-ink); border: 1px solid var(--color-border); }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--font-jp); text-decoration: none; cursor: pointer; display: inline-block; transition: all .15s ease; }
+  .btn-primary { background: var(--color-red); color: #fff; border: none; border-radius: var(--radius-btn);
+    padding: 10px 50px 10px 30px; font-size: 13.3333px; }
+  .btn-primary:hover { background: #bf2b26; }
+  .btn-outline { background: transparent; color: var(--color-ink); border: 1px solid var(--color-border);
+    border-radius: var(--radius-outline); padding: 10px 50px 10px 30px; font-size: 16px; }
+  .btn-outline:hover { border-color: var(--color-ink); }
+  .btn-text { background: transparent; color: var(--color-red); border: none; border-radius: var(--radius-btn); padding: 6px 0; font-size: 13.3333px; }
+  .btn-close { background: transparent; color: var(--color-red); border: 2px solid var(--color-red);
+    border-radius: 10px; padding: 12px 16px 12px 44px; font-size: 16px; }
+
+  /* CARDS — border-radius: 20px 0 */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 24px; }
+  .card { display: block; text-decoration: none; color: var(--color-ink); border-radius: var(--radius-card);
+    padding: 16px; border: 1px solid var(--color-divider); }
+  .card:hover { border-color: var(--color-ink); }
+  .card-thumb { background: var(--color-surface); border-radius: var(--radius-card); height: 150px; margin-bottom: 14px; }
+  .card-title { font-size: 16px; line-height: var(--lh); }
+  .card-meta { font-size: 14.4px; color: var(--color-sub); margin-top: 6px; }
+
+  /* FORMS */
+  .form { max-width: 480px; display: grid; gap: 24px; }
+  .field label { display: block; font-size: 16px; font-weight: 700; line-height: var(--lh); margin-bottom: 8px; }
+  .field input { width: 100%; background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-btn);
+    padding: 8px 16px; font-family: var(--font-jp); font-size: 16px; color: var(--color-ink); }
+  .field input::placeholder { color: var(--color-sub); }
+  .field input:focus { outline: none; border-color: var(--color-red); }
+  .field--error input { border-color: var(--color-red); background: var(--color-tint); }
+  .field--error .msg { font-size: 14.4px; color: var(--color-red); margin-top: 6px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 30px; }
+  .elev { background: #fff; border-radius: var(--radius-card); padding: 26px; text-align: center; font-size: 16px; }
+  .elev--0 { box-shadow: none; border: 1px solid var(--color-divider); }
+  .elev--1 { box-shadow: 0 1px 1px rgba(0,0,0,.1); border: 1px solid var(--color-divider); }
+  .elev--2 { box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+  .elev-cap { font-family: var(--font-mono); font-size: 11px; color: var(--color-sub); margin-top: 10px; text-align: center; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-red); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: var(--color-sub); margin-top: 8px; text-align: center; }
+
+  /* NOTICE */
+  .notice { background: var(--color-surface); padding: 22px 40px; }
+  .notice-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .notice p { font-size: 16px; line-height: var(--lh); }
+
+  footer { background: var(--color-ink); color: #fff; padding: 48px 40px; }
+  footer .finner { max-width: 1400px; margin: 0 auto; }
+  footer .flinks { display: flex; gap: 26px; flex-wrap: wrap; margin-bottom: 22px; }
+  footer .flinks a { color: #fff; text-decoration: none; font-size: 14.4px; }
+  footer .fnote { font-family: var(--font-en); font-size: 12.8px; color: #b5b5b5; line-height: var(--lh); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="tb-item" href="#"><span class="tb-icon">▦</span><span class="tb-label">カレンダー</span></a>
+    <span class="tb-time">7 / 27　10:00 – 18:00</span>
+    <a class="tb-item" href="#"><span class="tb-icon">▭</span><span class="tb-label">チケット</span></a>
+    <a class="tb-item" href="#"><span class="tb-icon">◎</span><span class="tb-label">アクセス</span></a>
+    <a class="tb-item" href="#"><span class="tb-icon">⌕</span><span class="tb-label">検索</span></a>
+    <a class="tb-item" href="#"><span class="tb-icon">⊕</span><span class="tb-label">Language</span></a>
+  </div>
+</div>
+
+<div class="brandbar">
+  <a class="brand" href="#">
+    <span class="brand-mark">新</span>
+    <span class="brand-en">THE NATIONAL<br>ART CENTER, TOKYO<br>国立新美術館</span>
+  </a>
+  <nav class="gnav">
+    <a class="current" href="#">展覧会・イベント</a>
+    <a href="#">来館案内</a>
+    <a href="#">アートライブラリー</a>
+    <a href="#">館について</a>
+    <a href="#">支援・協力</a>
+  </nav>
+</div>
+
+<section class="hero">
+  <div class="hero-visual">波打つガラスのカーテンウォール（建築ビジュアル）</div>
+  <h1 class="hero-title">休館日、何してる？<br>展示室で生まれる、まだ誰も見ていない展覧会</h1>
+  <div class="hero-meta">2026.7.31（金） - 8.6（木）　企画展示室 1E</div>
+  <div class="hero-cta">
+    <a class="btn btn-primary" href="#">検索</a>
+    <a class="btn btn-outline" href="#">展覧会・イベントをもっと見る</a>
+  </div>
+</section>
+
+<div class="notice">
+  <div class="notice-inner">
+    <p>当サイトはお客様の利便性の向上等のため、Cookie を使用しております。詳しくはプライバシーポリシーをご確認ください。</p>
+    <a class="btn btn-outline" href="#" style="border-radius:0;padding:8px 16px;font-size:13.3333px">同意する</a>
+  </div>
+</div>
+
+<section class="section">
+  <div class="section-eyebrow">01 — COLORS</div>
+  <h2 class="section-title">カラーパレット</h2>
+  <p class="section-lead">色は実質 2 色。墨 #222222 がテキストとヘッダー黒帯を兼ね、朱赤 #d7322d が唯一のアクセントとして検索ボタンとアクティブ状態にだけ現れる。面は #eeeeee、罫は #cccccc。純黒 #000000 は使わない。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-ink)"></div><div class="swatch-info"><div class="swatch-name">Sumi / Ink</div><div class="swatch-hex">#222222</div><div class="swatch-role">テキスト基本色／ヘッダー黒帯の面色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-red)"></div><div class="swatch-info"><div class="swatch-name">NACT Red</div><div class="swatch-hex">#d7322d</div><div class="swatch-role">唯一のアクセント。検索・アクティブ状態</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-surface)"></div><div class="swatch-info"><div class="swatch-name">Surface Gray</div><div class="swatch-hex">#eeeeee</div><div class="swatch-role">セクション面・パンくず帯</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-border)"></div><div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-hex">#cccccc</div><div class="swatch-role">入力欄・アウトライン・非活性タグの枠</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-divider)"></div><div class="swatch-info"><div class="swatch-name">Divider</div><div class="swatch-hex">#dddddd</div><div class="swatch-role">区切り線</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-sub)"></div><div class="swatch-info"><div class="swatch-name">Sub Text</div><div class="swatch-hex">#666666</div><div class="swatch-role">日付・注釈・カードのメタ情報</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-navy)"></div><div class="swatch-info"><div class="swatch-name">Calendar Navy</div><div class="swatch-hex">#000019</div><div class="swatch-role">カレンダーパネルの面色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-tint)"></div><div class="swatch-info"><div class="swatch-name">Pale Red Tint</div><div class="swatch-hex">#fceaea</div><div class="swatch-role">選択状態・ハイライト行の面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#fff;outline:1px solid var(--color-border);outline-offset:-1px"></div><div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">ページ地色（純白）</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">02 — TYPOGRAPHY</div>
+  <h2 class="section-title">タイポグラフィ</h2>
+  <p class="section-lead">和文は「ヒラギノ角ゴ Pro W3 → Noto Sans JP」（ProN ではなく Pro）。UI 欧文だけ Roboto。行間 1.7 が見出しにも本文にも一律で効き、letter-spacing と font-feature-settings はともに normal。ウェイトは 400 / 700 の二極。</p>
+  <div class="type-sample"><div style="font-size:32px;font-weight:700;line-height:1.7">国立新美術館</div><div class="type-meta">Site Title · 32px · weight 700 · lh 1.7 · ls normal</div></div>
+  <div class="type-sample"><div style="font-size:30.4px;font-weight:700;line-height:1.26">休館日、何してる？　展示室で生まれる展覧会</div><div class="type-meta">Page Title · 30.4px（1.9rem） · weight 700 · lh 1.26 ※唯一 1.7 でない見出し</div></div>
+  <div class="type-sample"><div style="font-size:28.8px;font-weight:700;line-height:1.7">展覧会・イベント</div><div class="type-meta">Heading 1 · 28.8px（1.8rem） · weight 700 · lh 1.7</div></div>
+  <div class="type-sample"><div style="font-size:24px;font-weight:700;line-height:1.7">開催中の企画展</div><div class="type-meta">Heading 2 · 24px（1.5rem） · weight 700 · lh 1.7</div></div>
+  <div class="type-sample"><div style="font-size:22.4px;font-weight:700;line-height:1.7">アートライブラリーのご案内</div><div class="type-meta">Heading 3 · 22.4px（1.4rem） · weight 700 · lh 1.7</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-en);font-size:19.2px;font-weight:400;line-height:1.7">10:00 – 18:00</div><div class="type-meta">Header Nav (EN) · Roboto · 19.2px（1.2rem） · weight 400 · lh 1.7</div></div>
+  <div class="type-sample"><div style="font-size:16px;font-weight:400;line-height:1.7">本文 — 国立新美術館は、コレクションを持たず、国内最大級の展示スペースを生かして多彩な展覧会を開催する「アートセンター」です。黒川紀章が設計した波打つガラスのカーテンウォールが、六本木の緑に溶けています。</div><div class="type-meta">Body · 16px · weight 400 · <strong>lh 1.7（27.2px）</strong> · ls normal</div></div>
+  <div class="type-sample"><div style="font-size:14.4px;font-weight:400;line-height:1.7;color:var(--color-sub)">2026.7.31（金） - 8.6（木）　企画展示室 1E</div><div class="type-meta">Caption · 14.4px（0.9rem） · weight 400 · lh 1.7 · #666666</div></div>
+  <div class="type-sample"><div class="tag-row"><span class="tag tag--on">#開催中</span><span class="tag tag--on">#開催予定</span><span class="tag tag--off">#すべて</span><span class="tag tag--off">#終了</span></div><div class="type-meta">Tag Chip · 12.8px（0.8rem） · padding 3.2px 8px · <strong>border-radius: 5px 0</strong></div></div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">03 — ARTICLE</div>
+  <h2 class="section-title">組版サンプル</h2>
+  <div class="article">
+    <h2>建築のヒミツは CONIC に聞く。</h2>
+    <div class="meta">2026.7.27　コラム</div>
+    <p>逆円錐（コーン）の上にレストランが載っている——館内でいちばん写真を撮られている場所は、たぶんここです。展示室でも、ロビーでもなく、天井の高いガラスの内側にそびえる 2 つの巨大な円錐。</p>
+    <h3>波打つガラスと、光のこと</h3>
+    <p>黒川紀章が設計したカーテンウォールは、朝と夕方で表情がまったく違います。晴れた日の午前は外の緑が映り込み、日が傾くとガラス自体が発光しているように見える。建築を見にくるだけでも十分に価値がある、と言われるゆえんです。</p>
+    <p>休館日には、展示室の照明を落として次の展覧会の設営が進んでいます。<a href="#">展覧会・イベントをもっと見る</a>。</p>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">04 — BUTTONS</div>
+  <h2 class="section-title">ボタン</h2>
+  <p class="section-lead">赤ソリッド（radius 5px）／グレーアウトライン（radius 8px）／赤のテキストボタン／赤の太枠クローズ。右パディングが広いのはアイコン用の余白。タグは border-radius: 5px 0 の左右非対称角丸で、単純な角丸やピルに置き換えないこと。</p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">検索</a>
+    <a class="btn btn-outline" href="#">もっと見る</a>
+    <a class="btn btn-text" href="#">クリア</a>
+    <a class="btn btn-close" href="#">閉じる</a>
+  </div>
+  <div class="tag-row" style="margin-top:26px">
+    <span class="tag tag--on">#開催中</span>
+    <span class="tag tag--on">#開催予定</span>
+    <span class="tag tag--off">#すべて</span>
+    <span class="tag tag--off">#終了</span>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">05 — CARDS</div>
+  <h2 class="section-title">展覧会カード</h2>
+  <p class="section-lead">カードは border-radius: 20px 0 の非対称角丸。padding 16px、タイトル 16px / lh 1.7、日付は 14.4px の #666666。</p>
+  <div class="card-grid">
+    <a class="card" href="#"><div class="card-thumb"></div><div class="card-title">ライブラリーで新たな一冊と出会う。</div><div class="card-meta">2026.1.15　コラム</div></a>
+    <a class="card" href="#"><div class="card-thumb"></div><div class="card-title">森の中の美術館を体感する。</div><div class="card-meta">2026.4.21　コラム</div></a>
+    <a class="card" href="#"><div class="card-thumb"></div><div class="card-title">昼夜を彩る、光を楽しむ。</div><div class="card-meta">2026.8.21　コラム</div></a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">06 — FORMS</div>
+  <h2 class="section-title">フォーム</h2>
+  <p class="section-lead">デフォルト / フォーカス / エラーの3状態。radius 5px、フォーカスとエラーはともに #d7322d。ブランド色と警告色が同一のため、エラーは文言でも明示する。入力欄は 16px を下回らない。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="山田 太郎"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="03-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn btn-primary" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">07 — ELEVATION</div>
+  <h2 class="section-title">奥行き</h2>
+  <p class="section-lead">サイト本体は実質フラット。奥行きは白 × 薄グレー #eeeeee × 黒帯 #222222 の面の差と 1px の罫で表現し、影を足すより非対称角丸で領域を切る。</p>
+  <div class="elev-grid">
+    <div><div class="elev elev--0">Level 0</div><div class="elev-cap">none（既定・ほぼ全要素）</div></div>
+    <div><div class="elev elev--1">Level 1</div><div class="elev-cap">0 1px 1px rgba(0,0,0,.1)</div></div>
+    <div><div class="elev elev--2">Level 2</div><div class="elev-cap">0 4px 12px rgba(0,0,0,.12)</div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">08 — LAYOUT</div>
+  <h2 class="section-title">スペーシング</h2>
+  <p class="section-lead">16px 基準の rem 刻み。3.2 / 8 / 16 / 24 / 40 / 64px。コンテナは最大 1400px、サイドナビ列は 192px。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:3.2px;height:3.2px"></div><div class="space-label">XS 3.2</div></div>
+    <div><div class="space-bar" style="width:8px;height:8px"></div><div class="space-label">S 8</div></div>
+    <div><div class="space-bar" style="width:16px;height:16px"></div><div class="space-label">M 16</div></div>
+    <div><div class="space-bar" style="width:24px;height:24px"></div><div class="space-label">L 24</div></div>
+    <div><div class="space-bar" style="width:40px;height:40px"></div><div class="space-label">XL 40</div></div>
+    <div><div class="space-bar" style="width:64px;height:64px"></div><div class="space-label">XXL 64</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="finner">
+    <div class="flinks">
+      <a href="#">展覧会・イベント</a>
+      <a href="#">来館案内</a>
+      <a href="#">アートライブラリー</a>
+      <a href="#">館について</a>
+      <a href="#">支援・協力</a>
+      <a href="#">プライバシーポリシー</a>
+    </div>
+    <div class="fnote">THE NATIONAL ART CENTER, TOKYO 国立新美術館 — Design System Preview　/　実測ベース 2026-07-27</div>
+  </div>
+</footer>
+
+</body>
+</html>

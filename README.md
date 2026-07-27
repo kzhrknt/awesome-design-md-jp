@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (408 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (411 sites)</a>
 </p>
 
 <table>
@@ -609,6 +609,11 @@
 <td align="center"><strong>KIGI</strong><br><img src="design-md/kigi/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>groovisions</strong><br><img src="design-md/groovisions/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>モリサワ</strong><br><img src="design-md/morisawa/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>国立新美術館</strong><br><img src="design-md/nact/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>サンゲツ</strong><br><img src="design-md/sangetsu/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1077,11 +1082,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [mina perhonen (ミナ ペルホネン)](https://www.mina-perhonen.jp/) | Fashion / Textile | [DESIGN.md](design-md/minaperhonen/DESIGN.md) | [preview.html](design-md/minaperhonen/preview.html) |
 | [KIGI (キギ)](https://ki-gi.com/) | Design Studio / Art Direction | [DESIGN.md](design-md/kigi/DESIGN.md) | [preview.html](design-md/kigi/preview.html) |
 | [groovisions (グルーヴィジョンズ)](https://groovisions.com/) | Design Studio / Graphic | [DESIGN.md](design-md/groovisions/DESIGN.md) | [preview.html](design-md/groovisions/preview.html) |
+| [Morisawa (モリサワ)](https://www.morisawa.co.jp/) | Type Foundry / UD Fonts | [DESIGN.md](design-md/morisawa/DESIGN.md) | [preview.html](design-md/morisawa/preview.html) |
+| [The National Art Center, Tokyo (国立新美術館)](https://www.nact.jp/) | Museum / Culture | [DESIGN.md](design-md/nact/DESIGN.md) | [preview.html](design-md/nact/preview.html) |
+| [Sangetsu (サンゲツ)](https://www.sangetsu.co.jp/) | Interior Materials / Manufacturer | [DESIGN.md](design-md/sangetsu/DESIGN.md) | [preview.html](design-md/sangetsu/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (408 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (411 sites)</a>
 </p>
 
 <table>
@@ -1655,6 +1663,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>ミナ ペルホネン</strong><br><img src="design-md/minaperhonen/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>KIGI</strong><br><img src="design-md/kigi/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>groovisions</strong><br><img src="design-md/groovisions/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>モリサワ</strong><br><img src="design-md/morisawa/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>国立新美術館</strong><br><img src="design-md/nact/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>サンゲツ</strong><br><img src="design-md/sangetsu/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
