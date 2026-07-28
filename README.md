@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (411 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (414 sites)</a>
 </p>
 
 <table>
@@ -614,6 +614,11 @@
 <td align="center"><strong>国立新美術館</strong><br><img src="design-md/nact/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>サンゲツ</strong><br><img src="design-md/sangetsu/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>東京都現代美術館</strong><br><img src="design-md/mot-art-museum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>金子眼鏡</strong><br><img src="design-md/kaneko-optical/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>玉川堂</strong><br><img src="design-md/gyokusendo/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1085,11 +1090,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [Morisawa (モリサワ)](https://www.morisawa.co.jp/) | Type Foundry / UD Fonts | [DESIGN.md](design-md/morisawa/DESIGN.md) | [preview.html](design-md/morisawa/preview.html) |
 | [The National Art Center, Tokyo (国立新美術館)](https://www.nact.jp/) | Museum / Culture | [DESIGN.md](design-md/nact/DESIGN.md) | [preview.html](design-md/nact/preview.html) |
 | [Sangetsu (サンゲツ)](https://www.sangetsu.co.jp/) | Interior Materials / Manufacturer | [DESIGN.md](design-md/sangetsu/DESIGN.md) | [preview.html](design-md/sangetsu/preview.html) |
+| [Museum of Contemporary Art Tokyo (東京都現代美術館)](https://www.mot-art-museum.jp/) | Museum / Contemporary Art | [DESIGN.md](design-md/mot-art-museum/DESIGN.md) | [preview.html](design-md/mot-art-museum/preview.html) |
+| [KANEKO OPTICAL (金子眼鏡)](https://www.kaneko-optical.co.jp/) | Eyewear / Craft | [DESIGN.md](design-md/kaneko-optical/DESIGN.md) | [preview.html](design-md/kaneko-optical/preview.html) |
+| [GYOKUSENDO (玉川堂)](https://www.gyokusendo.com/) | Metalwork / Traditional Craft | [DESIGN.md](design-md/gyokusendo/DESIGN.md) | [preview.html](design-md/gyokusendo/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (411 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (414 sites)</a>
 </p>
 
 <table>
@@ -1668,6 +1676,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>モリサワ</strong><br><img src="design-md/morisawa/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>国立新美術館</strong><br><img src="design-md/nact/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>サンゲツ</strong><br><img src="design-md/sangetsu/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>東京都現代美術館</strong><br><img src="design-md/mot-art-museum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>金子眼鏡</strong><br><img src="design-md/kaneko-optical/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>玉川堂</strong><br><img src="design-md/gyokusendo/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

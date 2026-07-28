@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 東京都現代美術館 MOT</title>
+<!--
+  NOTE: 原典の欧文は Graphik Web（Commercial Type）、和文見出しは
+  TazuganeGothicStdN-Bold（Morisawa 田中ゴシック StdN Bold）。
+  いずれも商用ライセンスフォントのため、ローカルの preview.html では表示できない。
+  ここでは欧文に "Inter"、和文見出しに "Zen Kaku Gothic New"(700)、
+  和文本文に "Noto Sans JP" を代替として使用している。
+  Zen Kaku Gothic New は Tazugane Gothic と同じヒューマニスト系ゴシックで、
+  ふところの広さと字面の性格が近い。実装時は必ず Graphik / Tazugane Gothic StdN を読み込むこと。
+
+  原典は【見出し・ナビ】と【本文】で組版設定を切り替える:
+    見出し・ナビ … YakuHanJP  + font-feature-settings: "lnum","palt"
+    本文・日付   … YakuHanJPs + font-feature-settings: normal
+  このプレビューでも --font-head / --font-body の 2 系統でその境界を明示している。
+
+  原典の line-height は【グローバルに 1.15】。実測値がすべて基準サイズ ×1.15 で揃う。
+  短いラベル・見出しに最適化された値であり、長文には使わない（DESIGN.md の Don't 参照）。
+  比較のため、本プレビューの「読み物」だけは 1.8 で組んでいる。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Zen+Kaku+Gothic+New:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --color-bg: #ffffff;          /* ページ地色 */
+    --color-ink: #000000;         /* 見出し・本文・ラベル面（純黒） */
+    --color-blue: #356eb0;        /* MOT Blue。唯一の恒常的な有彩色 */
+    --color-cream: #f9ede0;       /* 「MOTからのお知らせ」帯 */
+    --color-cream-light: #fcf6ef; /* 「これまでの展覧会をみる」 */
+    --color-gray-100: #f1f1f1;    /* 開館ステータスバー */
+    --color-gray-200: #eeeff0;    /* コレクション展示・ページ上部へ戻る */
+    --color-gray-300: #dddddd;    /* ページ見出し帯 */
+    --color-gray-400: #cccccc;    /* 区切り・非活性 */
+    --color-overlay: rgba(0,0,0,0.75); /* ナビモーダル */
+    --color-error: #c0392b;       /* エラー（フォーム用途のみ） */
+
+    /* === Fonts === */
+    /* 原典: 見出し = Graphik Web + YakuHanJP + TazuganeGothicStdN-Bold */
+    --font-head: "Inter", "Zen Kaku Gothic New", sans-serif;
+    /* 原典: 本文 = Graphik Web + YakuHanJPs + YuGothic/Noto Sans JP/Hiragino Sans */
+    --font-body: "Inter", "Noto Sans JP", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-body: 16px;
+    --lh: 1.15;        /* グローバル。原典の実測値はすべて ×1.15 */
+    --lh-read: 1.8;    /* 長文にはこちらを使う（原典の 1.15 は長文に不可） */
+
+    /* === Shape === */
+    --radius-0: 0px;   /* ステータスチップ・カード・画像 */
+    --radius-5: 5px;   /* ボタン・カテゴリチップ */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-bg); color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--fs-body); font-weight: 400;
+    line-height: var(--lh);
+    letter-spacing: normal;              /* 原典は全域 normal */
+    font-feature-settings: normal;       /* 本文は normal */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  .head { font-family: var(--font-head); font-feature-settings: "lnum","palt"; }
+
+  /* STATUS BAR（開館状況。ページ最上部に常設） */
+  .statusbar { background: var(--color-ink); color: #fff; display: flex; align-items: center; gap: 10px;
+    padding: 10px 20px; font-family: var(--font-head); font-feature-settings: "lnum","palt"; }
+  .statusbar .today { font-size: 20px; font-weight: 700; line-height: var(--lh); }
+  .statusbar .hours { font-size: 16px; font-weight: 700; line-height: var(--lh); padding-left: 10px; border-left: 1px solid rgba(255,255,255,.4); }
+  .statusbar .spacer { flex: 1; }
+  .statusbar .lang { font-size: 14px; font-weight: 700; padding: 0 40px 0 10px; }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 20px; background: #fff; border-bottom: 1px solid var(--color-gray-300); }
+  .header-brand { font-family: var(--font-head); font-feature-settings: "lnum","palt";
+    font-size: 28px; font-weight: 700; letter-spacing: .02em; color: var(--color-ink); text-decoration: none; line-height: var(--lh); }
+  .header-brand small { display: block; font-size: 10px; font-weight: 400; letter-spacing: .08em; }
+  .header-menu { display: flex; gap: 8px; align-items: center; }
+  .header-menu a { font-family: var(--font-head); font-feature-settings: "lnum","palt";
+    color: var(--color-ink); text-decoration: none; font-size: 16px; font-weight: 700; padding: 11.2px 8px; line-height: var(--lh); }
+  .header-menu a:hover { color: var(--color-blue); }
+  .header-menu .menu-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-left: 12px; }
+  .header-menu .menu-btn span { display: block; width: 26px; height: 2px; background: var(--color-ink); }
+  .header-menu .menu-btn em { font-size: 12px; font-weight: 700; font-style: normal; line-height: var(--lh); }
+
+  /* PAGE HEAD BAND */
+  .pagehead { background: var(--color-gray-300); padding: 40px 20px; }
+  .pagehead-inner { max-width: 1200px; margin: 0 auto; }
+  .pagehead h1 { font-family: var(--font-head); font-feature-settings: "lnum","palt";
+    font-size: 44px; font-weight: 700; line-height: var(--lh); }
+  .pagehead .crumb { font-size: 14px; font-weight: 700; margin-bottom: 14px; line-height: var(--lh); }
+
+  /* HERO（展覧会ギャラリー） */
+  .hero { position: relative; background: var(--color-gray-200); padding: 0; }
+  .hero-visual { position: relative; height: 320px; background: linear-gradient(120deg, #cfd6d9 0%, #e6e0d6 55%, #d5dbcf 100%); }
+  .hero-chip { position: absolute; top: 0; right: 0; background: var(--color-ink); color: #fff;
+    font-family: var(--font-head); font-feature-settings: normal;
+    font-size: 20px; font-weight: 700; line-height: var(--lh); padding: 20px 83px; border-radius: var(--radius-0); }
+  .hero-caption { padding: 26px 20px 40px; max-width: 1200px; margin: 0 auto; }
+  .hero-caption h2 { font-family: var(--font-head); font-feature-settings: "lnum","palt";
+    font-size: 28px; font-weight: 700; line-height: var(--lh); }
+  .hero-caption .date { font-size: 14px; font-weight: 700; line-height: var(--lh); margin-top: 14px; }
+  .hero-cta { display: flex; gap: 16px; margin-top: 24px; flex-wrap: wrap; align-items: center; }
+
+  /* SECTIONS */
+  .section { padding: 64px 20px; max-width: 1200px; margin: 0 auto; }
+  .section-eyebrow { font-family: var(--font-head); font-feature-settings: "lnum","palt";
+    font-size: 14px; font-weight: 700; color: var(--color-blue); margin-bottom: 12px; line-height: var(--lh); }
+  .section-title { font-family: var(--font-head); font-feature-settings: "lnum","palt";
+    font-size: 48px; font-weight: 700; line-height: var(--lh); margin-bottom: 20px; }
+  .section-lead { font-size: 16px; line-height: var(--lh-read); color: var(--color-ink); max-width: 760px; margin-bottom: 40px; }
+  .divider { border: none; border-top: 1px solid var(--color-gray-300); max-width: 1200px; margin: 0 auto; }
+  .band-cream { background: var(--color-cream); }
+  .band-cream .section { max-width: 1200px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px,1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--color-gray-300); border-radius: var(--radius-0); overflow: hidden; background: #fff; }
+  .swatch-block { height: 92px; }
+  .swatch-info { padding: 14px 16px 18px; }
+  .swatch-name { font-family: var(--font-head); font-size: 14px; font-weight: 700; line-height: var(--lh); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: #555; margin-top: 5px; }
+  .swatch-role { font-size: 11px; color: #555; margin-top: 6px; line-height: 1.6; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 24px 0; border-bottom: 1px solid var(--color-gray-300); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-blue); margin-top: 12px; line-height: 1.5; }
+
+  /* ARTICLE */
+  .article { max-width: 680px; }
+  .article h2 { font-family: var(--font-head); font-feature-settings: "lnum","palt";
+    font-size: 32px; font-weight: 700; line-height: var(--lh); margin-bottom: 20px; }
+  .article h3 { font-family: var(--font-head); font-feature-settings: "lnum","palt";
+    font-size: 20px; font-weight: 700; line-height: var(--lh); color: var(--color-blue); margin: 34px 0 12px; }
+  .article p { font-size: 16px; font-weight: 400; line-height: var(--lh-read); margin-bottom: 20px; }
+  .article a { color: var(--color-blue); text-decoration: underline; }
+  .article .note { font-size: 14px; font-weight: 700; line-height: var(--lh); color: #555; }
+
+  /* BUTTONS & CHIPS */
+  .btn-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--font-head); font-feature-settings: "lnum","palt";
+    font-size: 16px; font-weight: 700; line-height: var(--lh); text-decoration: none; cursor: pointer;
+    display: inline-block; border: none; transition: opacity .15s ease; }
+  .btn-primary { background: var(--color-ink); color: #fff; border-radius: var(--radius-5); padding: 8px 16px; }
+  .btn-primary:hover { opacity: .78; }
+  .btn-arrow { background: var(--color-ink); color: #fff; border-radius: var(--radius-5); padding: 5px 30px 5px 10px; font-size: 14px; position: relative; }
+  .btn-arrow::after { content: "›"; position: absolute; right: 12px; top: 50%; transform: translateY(-52%); font-size: 16px; }
+  .btn-link { background: transparent; color: var(--color-blue); border-radius: var(--radius-0); padding: 14px 40px 14px 0; }
+  .btn-link:hover { text-decoration: underline; }
+  .chip { display: inline-block; font-family: var(--font-head); font-feature-settings: normal;
+    font-size: 14px; font-weight: 700; line-height: var(--lh); }
+  .chip-status { background: var(--color-ink); color: #fff; border-radius: var(--radius-0); padding: 8px 20px; }
+  .chip-category { background: #fff; color: var(--color-ink); border: 1px solid var(--color-ink); border-radius: var(--radius-5); padding: 4px 32px; }
+  .chip-news { background: #fff; color: var(--color-ink); border-radius: var(--radius-5); padding: 3px 8px; }
+
+  /* LINK LIST（ブルーの文字リンクを行で並べる） */
+  .linklist { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 0 24px; }
+  .linklist a { display: block; color: var(--color-blue); text-decoration: none;
+    font-family: var(--font-head); font-feature-settings: "lnum","palt";
+    font-size: 16px; font-weight: 700; line-height: var(--lh); padding: 14px 40px 14px 0;
+    border-bottom: 1px solid var(--color-gray-300); }
+  .linklist a:hover { text-decoration: underline; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 24px; }
+  .card { background: #fff; border-radius: var(--radius-0); overflow: hidden; }
+  .card-visual { position: relative; height: 150px; border-radius: var(--radius-0); }
+  .card-visual .chip-status { position: absolute; left: 0; bottom: 0; }
+  .card-body { padding: 16px 0 0; }
+  .card-title { font-family: var(--font-head); font-feature-settings: "lnum","palt";
+    font-size: 20px; font-weight: 700; line-height: var(--lh); }
+  .card-date { font-size: 14px; font-weight: 700; line-height: var(--lh); margin-top: 10px; }
+
+  /* FORMS */
+  .form { max-width: 460px; display: grid; gap: 24px; }
+  .field label { display: block; font-family: var(--font-head); font-feature-settings: "lnum","palt";
+    font-size: 14px; font-weight: 700; line-height: var(--lh); margin-bottom: 8px; }
+  .field input { width: 100%; background: #fff; border: 1px solid var(--color-gray-400); border-radius: var(--radius-0);
+    padding: 12px 14px; font-family: var(--font-body); font-size: 16px; line-height: var(--lh); color: var(--color-ink); }
+  .field input::placeholder { color: #8a8a8a; }
+  .field input:focus { outline: none; border-color: var(--color-ink); }
+  .field--error input { border-color: var(--color-error); }
+  .field--error .msg { font-size: 14px; font-weight: 700; color: var(--color-error); margin-top: 6px; line-height: var(--lh); }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 24px; }
+  .elev { border-radius: var(--radius-0); padding: 28px; text-align: center; font-size: 16px; font-weight: 700; line-height: var(--lh); }
+  .elev--0 { background: #fff; border: 1px solid var(--color-gray-300); }
+  .elev--1 { background: var(--color-gray-200); }
+  .elev--2 { background: var(--color-gray-300); }
+  .elev--3 { background: var(--color-ink); color: #fff; }
+  .elev-cap { font-family: var(--font-mono); font-size: 11px; color: #555; margin-top: 10px; text-align: center; line-height: 1.5; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-blue); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: #555; margin-top: 8px; text-align: center; }
+
+  /* MODAL OVERLAY サンプル */
+  .modal-demo { position: relative; background: linear-gradient(120deg,#e6e0d6,#cfd6d9); height: 220px; border-radius: var(--radius-0); overflow: hidden; }
+  .modal-demo .veil { position: absolute; inset: 0; background: var(--color-overlay); display: flex; flex-direction: column; justify-content: center; padding: 0 40px; }
+  .modal-demo .veil .t { font-family: var(--font-head); font-feature-settings: "lnum","palt";
+    color: #fff; font-size: 24px; font-weight: 700; line-height: var(--lh); margin-bottom: 16px; }
+  .modal-demo .veil .i { color: #fff; font-family: var(--font-head); font-feature-settings: "lnum","palt";
+    font-size: 18px; font-weight: 700; line-height: var(--lh); padding: 4px 0; }
+
+  footer { background: var(--color-gray-200); padding: 48px 20px; }
+  footer .finner { max-width: 1200px; margin: 0 auto; }
+  footer .flinks { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 22px; }
+  footer .flinks a { color: var(--color-ink); text-decoration: none; font-family: var(--font-head);
+    font-feature-settings: "lnum","palt"; font-size: 14px; font-weight: 700; line-height: var(--lh); }
+  footer .fnote { font-size: 14px; line-height: var(--lh-read); color: #555; }
+</style>
+</head>
+<body>
+
+<div class="statusbar">
+  <span class="today">本日は開館日です</span>
+  <span class="hours">開館時間 10:00-18:00</span>
+  <span class="spacer"></span>
+  <span class="lang">Language ▾</span>
+</div>
+
+<header class="header">
+  <a class="header-brand" href="#">MOT<small>MUSEUM OF CONTEMPORARY ART TOKYO</small></a>
+  <nav class="header-menu">
+    <a href="#">ご利用案内</a>
+    <a href="#">展覧会</a>
+    <a href="#">収蔵作品</a>
+    <a href="#">美術図書室</a>
+    <a href="#">教育普及</a>
+    <a href="#">イベント</a>
+    <span class="menu-btn"><span></span><span></span><em>メニュー</em></span>
+  </nav>
+</header>
+
+<section class="pagehead">
+  <div class="pagehead-inner">
+    <div class="crumb">展覧会</div>
+    <h1>開催中・これからの展覧会</h1>
+  </div>
+</section>
+
+<section class="hero">
+  <div class="hero-visual"><span class="hero-chip">開催中</span></div>
+  <div class="hero-caption">
+    <h2>はじめて、びじゅつ ― MOT コレクション</h2>
+    <div class="date">2026年4月28日（火）― 8月16日（日）</div>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#">MOT について詳しくみる</a>
+      <a class="btn btn-arrow" href="#">お知らせ一覧をみる</a>
+      <span class="chip chip-category">ギャラリートーク</span>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-eyebrow">01 — COLORS</div>
+  <h2 class="section-title">カラーパレット</h2>
+  <p class="section-lead">地は白、文字は純黒。恒常的な有彩色はリンクブルー #356eb0 だけで、残りはグレー 4 段とクリーム 2 段の面色。色は展覧会のキービジュアルが持ち込むため、UI 側は意図的に彩度を抑えている。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-ink)"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#000000</div><div class="swatch-role">文字・ステータスチップ・ボタン面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-blue)"></div><div class="swatch-info"><div class="swatch-name">MOT Blue</div><div class="swatch-hex">#356eb0</div><div class="swatch-role">リンク・サブ見出し（唯一の有彩色）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-cream)"></div><div class="swatch-info"><div class="swatch-name">Cream</div><div class="swatch-hex">#f9ede0</div><div class="swatch-role">「MOTからのお知らせ」帯</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-cream-light)"></div><div class="swatch-info"><div class="swatch-name">Cream Light</div><div class="swatch-hex">#fcf6ef</div><div class="swatch-role">これまでの展覧会ブロック</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-gray-100)"></div><div class="swatch-info"><div class="swatch-name">Gray 100</div><div class="swatch-hex">#f1f1f1</div><div class="swatch-role">開館ステータスバー</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-gray-200)"></div><div class="swatch-info"><div class="swatch-name">Gray 200</div><div class="swatch-hex">#eeeff0</div><div class="swatch-role">コレクション展示・ページ上部へ戻る</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-gray-300)"></div><div class="swatch-info"><div class="swatch-name">Gray 300</div><div class="swatch-hex">#dddddd</div><div class="swatch-role">ページ見出し帯・罫</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-gray-400)"></div><div class="swatch-info"><div class="swatch-name">Gray 400</div><div class="swatch-hex">#cccccc</div><div class="swatch-role">区切り・非活性・入力欄の枠</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-bg);box-shadow:inset 0 0 0 1px #ddd"></div><div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">ページ地色・ヘッダー・ナビ</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:rgba(0,0,0,0.75)"></div><div class="swatch-info"><div class="swatch-name">Overlay</div><div class="swatch-hex">rgba(0,0,0,.75)</div><div class="swatch-role">ナビゲーションモーダルの暗幕</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">02 — TYPOGRAPHY</div>
+  <h2 class="section-title">タイポグラフィ</h2>
+  <p class="section-lead">和文見出しは Tazugane Gothic StdN Bold、欧文は Graphik。line-height はグローバルに 1.15 で、実測値がすべて基準サイズ ×1.15 で揃う。letter-spacing は全域 normal。見出し・ナビだけ "lnum","palt" を効かせ、本文は normal に戻す。</p>
+
+  <div class="type-sample"><div class="head" style="font-size:48px;font-weight:700;line-height:1.15">イベント</div><div class="type-meta">Section Display · Tazugane Bold · 48px · weight 600 · lh 1.15 (55.2px) · ls normal · "lnum","palt"</div></div>
+  <div class="type-sample"><div class="head" style="font-size:44px;font-weight:700;line-height:1.15">開催中・これからの展覧会</div><div class="type-meta">Page Title · Tazugane Bold · 44px · weight 600 · lh 1.15 (50.6px) · "lnum","palt"</div></div>
+  <div class="type-sample"><div class="head" style="font-size:32px;font-weight:700;line-height:1.15">施設案内</div><div class="type-meta">Heading 2 · Tazugane Bold · 32px · weight 600 · lh 1.15 (36.8px) · "lnum","palt"</div></div>
+  <div class="type-sample"><div class="head" style="font-size:28px;font-weight:700;line-height:1.15">多田美波 ― 光、凛とゆれる</div><div class="type-meta">Exhibition Title · Tazugane Bold · 28px · weight 600 · lh 1.15 (32.2px) · "lnum","palt"</div></div>
+  <div class="type-sample"><div class="head" style="font-size:20px;font-weight:700;line-height:1.15;color:var(--color-blue)">ガイドスタッフによるギャラリートーク</div><div class="type-meta">Sub Heading · Tazugane Bold · 20px · weight 600 · lh 1.15 (23px) · #356eb0</div></div>
+  <div class="type-sample"><div class="head" style="font-size:18px;font-weight:700;line-height:1.15">来館のご案内</div><div class="type-meta">Nav Item · Tazugane Bold · 18px · weight 600 · lh 1.15 (20.7px) · "lnum","palt"</div></div>
+  <div class="type-sample"><div style="font-size:16px;font-weight:400;line-height:1.15">本文（既定）— 東京都現代美術館は、現代美術の展示と収集を通じて、いまの表現に出会う場をひらいています。</div><div class="type-meta">Body · Graphik + 游ゴシック/Noto Sans JP · 16px · weight 400 · lh 1.15 (18.4px) · ffs normal</div></div>
+  <div class="type-sample"><div style="font-size:14px;font-weight:700;line-height:1.15">2026年5月16日（土）～8月16日（日）</div><div class="type-meta">Label / Date · 14px · weight 600 · lh 1.15 (16.1px) · ffs normal（見出し側では "lnum" で数字の高さを揃える）</div></div>
+  <div class="type-sample"><div class="head" style="font-size:12px;font-weight:700;line-height:1.15">メニュー</div><div class="type-meta">Menu Caption · Tazugane Bold · 12px · weight 700 · lh 1.15 (13.8px)</div></div>
+  <div class="type-sample"><div style="font-size:16px;font-weight:400;line-height:1.8">長文の比較 — 本展は、当館のコレクションから初めて美術にふれる人に向けた作品を選び、見ることそのものを主題にした展覧会です。原典の line-height 1.15 は短いラベルと 1〜2 行の見出しに最適化された値であり、3 行以上続く日本語本文には 1.7〜1.9 を使うこと。</div><div class="type-meta">Body (長文) · 16px · <strong>lh 1.8</strong> — 原典の 1.15 を長文に流用しないための比較サンプル</div></div>
+</section>
+<hr class="divider">
+
+<div class="band-cream">
+  <section class="section">
+    <div class="section-eyebrow">03 — ARTICLE</div>
+    <h2 class="section-title">組版サンプル</h2>
+    <div class="article">
+      <h2>はじめて、びじゅつ</h2>
+      <p class="note">MOT コレクション ／ 2026年4月28日（火）― 8月16日（日）</p>
+      <h3>展覧会について</h3>
+      <p>美術館に来たことがない人、来たけれどよくわからなかった人へ。本展は、当館の収蔵作品のなかから「見ること」そのものを楽しめる作品を選び、絵画・彫刻・写真・映像といったジャンルを横断して構成します。</p>
+      <p>作品には、材料や大きさ、つくられた年といった情報のほかに、どこを見ればいいのかという手がかりを添えました。展示室の途中には、座って眺められる場所も用意しています。<a href="#">開館時間・観覧料はこちら</a>。</p>
+      <h3>関連イベント</h3>
+      <p>会期中の毎週土曜日、ガイドスタッフによるギャラリートークを行います。申込は不要で、当日展示室にお集まりください。所要時間は約 45 分です。</p>
+    </div>
+  </section>
+</div>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">04 — BUTTONS &amp; LABELS</div>
+  <h2 class="section-title">ボタンとラベル</h2>
+  <p class="section-lead">主要 CTA は黒ソリッド・角丸 5px。ステータスラベルは黒ベタ・角丸 0、イベント種別ラベルは白地＋黒 1px アウトライン・角丸 5px と、形で意味を分ける。一覧リンクはボタン化せず、ブルーの文字リンクを行として並べる。</p>
+  <div class="btn-row" style="margin-bottom:32px">
+    <a class="btn btn-primary" href="#">MOT について詳しくみる</a>
+    <a class="btn btn-arrow" href="#">お知らせ一覧をみる</a>
+    <span class="chip chip-status">開催中</span>
+    <span class="chip chip-status">開催予定</span>
+    <span class="chip chip-status">コレクション展示</span>
+    <span class="chip chip-category">ギャラリートーク</span>
+    <span class="chip chip-category">ギャラリークルーズ</span>
+    <span class="chip chip-news">お知らせ</span>
+    <span class="chip chip-news">募集</span>
+  </div>
+  <div class="linklist">
+    <a href="#">開館時間・休館日／観覧料</a>
+    <a href="#">ショップ・レストラン等</a>
+    <a href="#">フロアマップ</a>
+    <a href="#">アクセス</a>
+    <a href="#">バリアフリー／アクセシビリティ</a>
+    <a href="#">収蔵作品検索</a>
+    <a href="#">美術図書室</a>
+    <a href="#">こどもとしょしつ</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">05 — CARDS</div>
+  <h2 class="section-title">展覧会カード</h2>
+  <p class="section-lead">画像 → 黒ベタのステータスチップ → タイトル → 会期の順に積む。角丸は 0px で、画像も角を落とさない。影は使わない。</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-visual" style="background:linear-gradient(140deg,#dfe4e6,#c9d2cf)"><span class="chip chip-status">開催中</span></div><div class="card-body"><div class="card-title">はじめて、びじゅつ</div><div class="card-date">2026年4月28日（火）― 8月16日（日）</div></div></div>
+    <div class="card"><div class="card-visual" style="background:linear-gradient(140deg,#e8e0d4,#d6cbbb)"><span class="chip chip-status">開催予定</span></div><div class="card-body"><div class="card-title">サマーナイトミュージアム</div><div class="card-date">2026年8月7日（金）・8月14日（金）</div></div></div>
+    <div class="card"><div class="card-visual" style="background:linear-gradient(140deg,#d8d5e2,#c4c6d8)"><span class="chip chip-status">開催中</span></div><div class="card-body"><div class="card-title">多田美波 ― 光、凛とゆれる</div><div class="card-date">2026年5月16日（土）― 8月16日（日）</div></div></div>
+    <div class="card"><div class="card-visual" style="background:linear-gradient(140deg,#cfe0dc,#b9cfca)"><span class="chip chip-status">コレクション展示</span></div><div class="card-body"><div class="card-title">MOT コレクション</div><div class="card-date">通年（展示替えあり）</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">06 — FORMS</div>
+  <h2 class="section-title">フォーム</h2>
+  <p class="section-lead">デフォルト / フォーカス / エラーの3状態。角丸 0px、枠は #cccccc、フォーカスは純黒。エラーは面ではなく文字と 1px 罫で示し、無彩色の基調を壊さない。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="東京 花子"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="03-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn btn-primary" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">07 — ELEVATION</div>
+  <h2 class="section-title">奥行き</h2>
+  <p class="section-lead">実測ではほぼ全要素が box-shadow: none。奥行きは「白 → 薄グレー → グレー → 黒」の 4 段の面で表現する。例外はナビゲーションモーダルの黒 75% オーバーレイのみ。</p>
+  <div class="elev-grid">
+    <div><div class="elev elev--0">Level 0</div><div class="elev-cap">#ffffff（既定・罫線のみ）</div></div>
+    <div><div class="elev elev--1">Level 1</div><div class="elev-cap">#eeeff0（面色差で分離）</div></div>
+    <div><div class="elev elev--2">Level 2</div><div class="elev-cap">#dddddd（ページ見出し帯）</div></div>
+    <div><div class="elev elev--3">Level 3</div><div class="elev-cap">#000000（チップ・ボタン）</div></div>
+  </div>
+  <div style="margin-top:32px">
+    <div class="modal-demo">
+      <div class="veil">
+        <div class="t">ご利用案内</div>
+        <div class="i">来館のご案内</div>
+        <div class="i">開館時間・休館日／観覧料</div>
+        <div class="i">アクセス</div>
+      </div>
+    </div>
+    <div class="elev-cap" style="text-align:left">Modal · rgba(0,0,0,0.75) の全画面オーバーレイ。影ではなく暗幕で階層を作る</div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">08 — LAYOUT</div>
+  <h2 class="section-title">スペーシング</h2>
+  <p class="section-lead">4 / 8 / 16 / 24 / 40 / 64px。実測のパディングは 8px・10px・20px・24px・40px に集中する。コンテナは概ね 1200px、展覧会ギャラリーのみ全幅ブリード。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:4px;height:4px"></div><div class="space-label">XS 4</div></div>
+    <div><div class="space-bar" style="width:8px;height:8px"></div><div class="space-label">S 8</div></div>
+    <div><div class="space-bar" style="width:16px;height:16px"></div><div class="space-label">M 16</div></div>
+    <div><div class="space-bar" style="width:24px;height:24px"></div><div class="space-label">L 24</div></div>
+    <div><div class="space-bar" style="width:40px;height:40px"></div><div class="space-label">XL 40</div></div>
+    <div><div class="space-bar" style="width:64px;height:64px"></div><div class="space-label">XXL 64</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="finner">
+    <div class="flinks">
+      <a href="#">ご利用案内</a>
+      <a href="#">展覧会</a>
+      <a href="#">収蔵作品</a>
+      <a href="#">美術図書室</a>
+      <a href="#">教育普及</a>
+      <a href="#">バリアフリー／アクセシビリティ</a>
+      <a href="#">ページ上部へ戻る</a>
+    </div>
+    <div class="fnote">東京都現代美術館 MOT — Design System Preview　/　実測ベース 2026-07-28</div>
+  </div>
+</footer>
+
+</body>
+</html>

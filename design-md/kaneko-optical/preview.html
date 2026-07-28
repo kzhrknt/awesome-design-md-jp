@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 金子眼鏡 KANEKO OPTICAL</title>
+<!--
+  NOTE: 原典の書体は
+    欧文セリフ … adobe-garamond-pro（Adobe Fonts）
+    和文明朝   … FOT-筑紫Aオールド明朝 Pr6 R（Fontworks）
+    和文ゴシック … a-otf-gothic-bbb-pr6n（Morisawa 中ゴシックBBB Pr6N）
+    欧文サンセリフ … Lato（Google Fonts）
+  Lato 以外は商用ライセンスフォントのため、ローカルの preview.html では表示できない。
+  ここでは
+    欧文セリフ → "EB Garamond"（Garamond 系。Adobe Garamond と同系統の骨格）
+    和文明朝   → "Shippori Mincho"（オールド明朝寄りの字形で筑紫Aオールド明朝に近い）
+    和文ゴシック → "Noto Sans JP"
+  を代替に使用し、Lato は原典どおり読み込んでいる。
+  実装時は必ず原典の書体を読み込むこと。
+
+  原典の設計の核は【書体系統で役割を分ける】こと:
+    ナビ・大見出し … セリフ／明朝
+    本文・記事     … サンセリフ／ゴシック
+  および【letter-spacing を段階的に開く】こと:
+    本文 0.06em → ナビ 0.09em → ボタン 0.1em → 大見出し 0.18em
+  font-feature-settings は normal。palt は使わない（詰めるのではなく開く）。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Lato:wght@400;700&family=Shippori+Mincho:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --color-black: #000000;      /* トップの地色（純黒） */
+    --color-offblack: #151515;   /* 下層ページの地色 */
+    --color-charcoal: #1f2529;   /* PHILOSOPHY ブロック */
+    --color-deepslate: #242b2f;  /* NEWS ブロック */
+    --color-slate: #545e64;      /* ブランドカード（最頻出の面色） */
+    --color-grayslate: #74787a;  /* BRAND セクション */
+    --color-midgray: #8a8a8a;    /* 関連記事ブロック */
+    --color-paleblue: #d7dcde;   /* CULTURE 記事ページの地色 */
+    --color-surface: #f0f0f0;    /* 記事タグの面 */
+    --color-consent: #eaeaea;    /* Cookie 同意ボタン */
+    --color-gray500: #525252;    /* SHOP バッジ */
+    --color-muted: #c2c7cb;      /* SCROLL・補助テキスト */
+    --color-link: #1890ad;       /* 本文リンク。サイト唯一の有彩色 */
+    --color-error: #b03a3a;      /* エラー（フォーム用途のみ） */
+
+    /* === Fonts === */
+    /* 原典: adobe-garamond-pro + "FOT-筑紫Aオールド明朝 Pr6 R", serif */
+    --font-serif: "EB Garamond", "Shippori Mincho", serif;
+    /* 原典: Lato, a-otf-gothic-bbb-pr6n, sans-serif */
+    --font-sans: "Lato", "Noto Sans JP", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-body: 14px;
+    --lh-read: 2.0;    /* 記事本文 */
+    --lh-head: 1.8;    /* 記事見出し */
+    --ls-body: 0.06em; /* 本文・キャプション */
+    --ls-nav: 0.09em;  /* ナビ・英語小見出し・著作権 */
+    --ls-btn: 0.1em;   /* セカンダリボタン・SCROLL */
+    --ls-display: 0.18em; /* 大見出し */
+
+    /* === Shape === */
+    --radius-0: 0px;   /* 基本 */
+    --radius-tag: 4px; /* 記事タグ */
+    --radius-btn: 3px; /* Cookie 同意 */
+    --radius-badge: 2px; /* SHOP バッジ */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-black); color: #ffffff;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body); font-weight: 400; line-height: 1.5;
+    letter-spacing: var(--ls-body);
+    font-feature-settings: normal;   /* palt は使わない */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  .serif { font-family: var(--font-serif); }
+
+  /* HEADER（純黒の上に明朝ナビ） */
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 26px 40px; background: var(--color-black); }
+  .header-brand { font-family: var(--font-serif); color: #fff; text-decoration: none; text-align: center; line-height: 1.3; }
+  .header-brand .jp { display: block; font-size: 20px; font-weight: 500; letter-spacing: 0.18em; }
+  .header-brand .en { display: block; font-size: 8px; font-weight: 400; letter-spacing: 0.2em; margin-top: 4px; }
+  .header-menu { display: flex; gap: 30px; align-items: center; }
+  .header-menu a { font-family: var(--font-serif); color: #fff; text-decoration: none;
+    font-size: 14px; font-weight: 600; letter-spacing: var(--ls-nav); }
+  .header-menu a:hover { color: var(--color-muted); }
+
+  /* HERO（全画面の黒） */
+  .hero { background: var(--color-black); padding: 110px 40px 90px; text-align: center; }
+  .hero-title { font-family: var(--font-serif); font-size: 30px; font-weight: 400; color: #fff; letter-spacing: var(--ls-display); }
+  .hero-sub { font-family: var(--font-serif); font-size: 12px; font-weight: 400; color: #fff; letter-spacing: var(--ls-btn); margin-top: 14px; }
+  .hero-glass { width: 300px; height: 96px; margin: 54px auto 0; border-radius: 50% / 60%;
+    background: radial-gradient(ellipse at 30% 30%, #3a3f42 0%, #16181a 60%, #0b0c0d 100%);
+    box-shadow: inset 0 -12px 24px rgba(0,0,0,.8); }
+  .hero-scroll { font-family: var(--font-sans); font-size: 12px; color: var(--color-muted); letter-spacing: var(--ls-btn); margin-top: 46px; }
+  .hero-cta { margin-top: 40px; }
+
+  /* SECTIONS */
+  .section { padding: 88px 40px; }
+  .section-inner { max-width: 1200px; margin: 0 auto; }
+  .section-eyebrow { font-family: var(--font-sans); font-size: 12px; letter-spacing: var(--ls-btn); color: var(--color-muted); margin-bottom: 14px; }
+  .section-title { font-family: var(--font-serif); font-size: 30px; font-weight: 400; letter-spacing: var(--ls-display); margin-bottom: 26px; }
+  .section-lead { font-size: 14px; line-height: var(--lh-read); letter-spacing: var(--ls-body); max-width: 720px; margin-bottom: 44px; }
+  .on-dark { background: var(--color-offblack); color: #fff; }
+  .on-light { background: var(--color-paleblue); color: var(--color-black); }
+  .on-white { background: #ffffff; color: var(--color-black); }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px,1fr)); gap: 16px; }
+  .swatch { border: 1px solid rgba(255,255,255,.18); border-radius: var(--radius-0); overflow: hidden; }
+  .on-light .swatch, .on-white .swatch { border-color: rgba(0,0,0,.18); }
+  .swatch-block { height: 90px; }
+  .swatch-info { padding: 14px 14px 18px; }
+  .swatch-name { font-family: var(--font-serif); font-size: 14px; font-weight: 600; letter-spacing: var(--ls-nav); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; opacity: .68; margin-top: 5px; letter-spacing: 0; }
+  .swatch-role { font-size: 11px; opacity: .68; margin-top: 6px; line-height: 1.7; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 26px 0; border-bottom: 1px solid rgba(255,255,255,.16); }
+  .on-light .type-sample { border-bottom-color: rgba(0,0,0,.16); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-link); margin-top: 12px; letter-spacing: 0; line-height: 1.6; }
+
+  /* ARTICLE */
+  .article { max-width: 680px; }
+  .article h1 { font-family: var(--font-sans); font-size: 24px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-body); margin-bottom: 8px; }
+  .article h2 { font-family: var(--font-sans); font-size: 18px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-body); margin: 36px 0 12px; }
+  .article p { font-size: 14px; font-weight: 400; line-height: var(--lh-read); letter-spacing: var(--ls-body); margin-bottom: 22px; }
+  .article a { color: var(--color-link); text-decoration: underline; }
+  .article .byline { font-size: 14px; opacity: .7; margin-bottom: 26px; }
+  .tag-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 26px; }
+
+  /* BUTTONS / BADGES */
+  .btn-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .btn-outline { display: inline-flex; align-items: center; justify-content: center;
+    min-height: 48px; padding: 0 34px; background: transparent;
+    font-family: var(--font-sans); font-size: 14px; font-weight: 400; letter-spacing: var(--ls-btn);
+    border: 1px solid currentColor; border-radius: var(--radius-0); color: inherit; text-decoration: none;
+    transition: background .15s ease, color .15s ease; }
+  .on-dark .btn-outline:hover, body > .hero .btn-outline:hover { background: #fff; color: var(--color-black); }
+  .on-light .btn-outline:hover, .on-white .btn-outline:hover { background: var(--color-black); color: #fff; }
+  .btn-consent { display: inline-block; background: var(--color-consent); color: var(--color-black);
+    padding: 7px 21px; border-radius: var(--radius-btn); font-size: 14px; letter-spacing: normal;
+    text-decoration: none; border: none; }
+  .badge-shop { display: inline-block; background: var(--color-gray500); color: var(--color-muted);
+    font-family: var(--font-serif); font-size: 10px; font-weight: 600; letter-spacing: var(--ls-nav);
+    line-height: 2.0; padding: 1px 8px 0; border-radius: var(--radius-badge); }
+  .tag { display: inline-block; background: var(--color-surface); color: var(--color-black);
+    font-size: 14px; font-weight: 400; letter-spacing: var(--ls-body);
+    padding: 3px 9px; border-radius: var(--radius-tag); text-decoration: none; }
+
+  /* CARDS（濃灰の明度階段） */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 40px; }
+  .card { border-radius: var(--radius-0); overflow: hidden; }
+  .card-top { height: 132px; }
+  .card-body { padding: 24px 22px 30px; }
+  .card-en { font-family: var(--font-serif); font-size: 18px; font-weight: 600; letter-spacing: var(--ls-nav); color: #fff; }
+  .card-jp { font-size: 13px; font-weight: 400; letter-spacing: var(--ls-body); line-height: var(--lh-read); color: #fff; margin-top: 10px; }
+
+  /* FORMS */
+  .form { max-width: 460px; display: grid; gap: 24px; }
+  .field label { display: block; font-family: var(--font-serif); font-size: 12px; font-weight: 600;
+    letter-spacing: var(--ls-nav); margin-bottom: 8px; }
+  .field input { width: 100%; background: #fff; color: #383838; border: 1px solid #cccccc; border-radius: var(--radius-0);
+    padding: 11px 10px; font-family: var(--font-sans); font-size: 14px; letter-spacing: var(--ls-body); }
+  .field input::placeholder { color: var(--color-midgray); }
+  .field input:focus { outline: none; border-color: var(--color-link); }
+  .field--error input { border-color: var(--color-error); }
+  .field--error .msg { font-size: 12px; color: var(--color-error); margin-top: 6px; letter-spacing: var(--ls-body); }
+
+  /* ELEVATION（明度の階段） */
+  .elev-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 0; border: 1px solid rgba(0,0,0,.2); }
+  @media (max-width: 900px) { .elev-grid { grid-template-columns: repeat(4, 1fr); } }
+  .elev { padding: 34px 12px; text-align: center; font-family: var(--font-serif); font-size: 13px;
+    font-weight: 600; letter-spacing: var(--ls-nav); }
+  .elev-cap { font-family: var(--font-mono); font-size: 10px; margin-top: 8px; letter-spacing: 0; opacity: .75; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-link); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; opacity: .7; margin-top: 8px; text-align: center; letter-spacing: 0; }
+
+  /* COOKIE BAR */
+  .cookiebar { background: var(--color-black); color: #fff; padding: 22px 40px; display: flex;
+    align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap;
+    border-top: 1px solid rgba(255,255,255,.16); }
+  .cookiebar p { font-size: 14px; line-height: 1.5; letter-spacing: var(--ls-body); max-width: 640px; }
+  .cookiebar a { color: #fff; }
+
+  footer { background: var(--color-black); color: #fff; padding: 56px 40px; }
+  footer .finner { max-width: 1200px; margin: 0 auto; }
+  footer .flinks { display: flex; gap: 30px; flex-wrap: wrap; margin-bottom: 26px; }
+  footer .flinks a { font-family: var(--font-serif); color: #fff; text-decoration: none; font-size: 13px; font-weight: 600; letter-spacing: var(--ls-nav); }
+  footer .fnote { font-family: var(--font-serif); font-size: 10px; font-weight: 600; letter-spacing: var(--ls-nav); color: var(--color-muted); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-brand" href="#"><span class="jp">金子眼鏡</span><span class="en">ESTABLISHED 1958</span></a>
+  <nav class="header-menu">
+    <a href="#">FEATURE</a>
+    <a href="#">STORY</a>
+    <a href="#">FACTORY</a>
+    <a href="#">BRAND</a>
+    <a href="#">SHOP LIST</a>
+    <a href="#">CULTURE</a>
+    <a href="#">COMPANY</a>
+    <a href="#">NEWS</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-title">KANEKO OPTICAL</div>
+  <div class="hero-sub">ESTABLISHED 1958</div>
+  <div class="hero-glass"></div>
+  <div class="hero-cta"><a class="btn-outline" href="#" style="color:#fff">VIEW MORE</a></div>
+  <div class="hero-scroll">SCROLL</div>
+</section>
+
+<section class="section on-dark">
+  <div class="section-inner">
+    <div class="section-eyebrow">01 — COLORS</div>
+    <h2 class="section-title">COLORS</h2>
+    <p class="section-lead">彩度を持つ色は本文リンクのティール #1890ad だけ。ほかはすべて黒・濃灰・グレーの無彩色で、色は製品写真（べっ甲・金無垢・セルロイド）が担当する。地色はセクションごとに黒からペールグレーへ降りていく。</p>
+    <div class="color-grid">
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-black)"></div><div class="swatch-info"><div class="swatch-name">Ink Black</div><div class="swatch-hex">#000000</div><div class="swatch-role">トップの地色・ヘッダー・フッター</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-offblack)"></div><div class="swatch-info"><div class="swatch-name">Off Black</div><div class="swatch-hex">#151515</div><div class="swatch-role">STORY など下層ページの地色</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-charcoal)"></div><div class="swatch-info"><div class="swatch-name">Charcoal</div><div class="swatch-hex">#1f2529</div><div class="swatch-role">PHILOSOPHY ブロック</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-deepslate)"></div><div class="swatch-info"><div class="swatch-name">Deep Slate</div><div class="swatch-hex">#242b2f</div><div class="swatch-role">NEWS ブロック</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-slate)"></div><div class="swatch-info"><div class="swatch-name">Slate</div><div class="swatch-hex">#545e64</div><div class="swatch-role">ブランドカード（最頻出の面色）</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-grayslate)"></div><div class="swatch-info"><div class="swatch-name">Gray Slate</div><div class="swatch-hex">#74787a</div><div class="swatch-role">BRAND セクション</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-midgray)"></div><div class="swatch-info"><div class="swatch-name">Mid Gray</div><div class="swatch-hex">#8a8a8a</div><div class="swatch-role">関連記事ブロック</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-paleblue)"></div><div class="swatch-info"><div class="swatch-name">Pale Blue Gray</div><div class="swatch-hex">#d7dcde</div><div class="swatch-role">CULTURE 記事ページの地色</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-surface)"></div><div class="swatch-info"><div class="swatch-name">Surface Gray</div><div class="swatch-hex">#f0f0f0</div><div class="swatch-role">記事タグの面</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-muted)"></div><div class="swatch-info"><div class="swatch-name">Muted</div><div class="swatch-hex">#c2c7cb</div><div class="swatch-role">SCROLL・補助テキスト</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-link)"></div><div class="swatch-info"><div class="swatch-name">Link Teal</div><div class="swatch-hex">#1890ad</div><div class="swatch-role">本文リンク。サイト唯一の有彩色</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-gray500)"></div><div class="swatch-info"><div class="swatch-name">Gray 500</div><div class="swatch-hex">#525252</div><div class="swatch-role">SHOP バッジの面</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section on-dark" style="padding-top:0">
+  <div class="section-inner">
+    <div class="section-eyebrow">02 — TYPOGRAPHY</div>
+    <h2 class="section-title">TYPOGRAPHY</h2>
+    <p class="section-lead">ナビと大見出しはセリフ／明朝、本文と記事はサンセリフ／ゴシック。書体の系統そのものが役割の境界になる。letter-spacing は本文 0.06em → ナビ 0.09em → ボタン 0.1em → 大見出し 0.18em と段階的に開き、palt は使わない。</p>
+
+    <div class="type-sample"><div class="serif" style="font-size:30px;font-weight:400;letter-spacing:.18em">STORY</div><div class="type-meta">Page Title · Adobe Garamond Pro · 30px · weight 400 · lh normal · <strong>ls 0.18em (5.4px)</strong></div></div>
+    <div class="type-sample"><div class="serif" style="font-size:18px;font-weight:600;letter-spacing:.09em">PHILOSOPHY</div><div class="type-meta">Section Head · Adobe Garamond Pro · 18px · weight 600 · ls 0.09em (1.62px)</div></div>
+    <div class="type-sample"><div class="serif" style="font-size:14px;font-weight:600;letter-spacing:.09em">FEATURE　STORY　FACTORY　BRAND　金子眼鏡</div><div class="type-meta">Nav Item · Adobe Garamond Pro + 筑紫Aオールド明朝 · 14px · weight 600 · ls 0.09em (1.26px)</div></div>
+    <div class="type-sample"><div style="font-size:24px;font-weight:700;line-height:1.8;letter-spacing:.06em">金子眼鏡と 仕事と 人と</div><div class="type-meta">Article Title · Lato + 中ゴシックBBB · 24px · weight 700 · <strong>lh 1.8 (43.2px)</strong> · ls 0.06em</div></div>
+    <div class="type-sample"><div style="font-size:18px;font-weight:700;line-height:1.8;letter-spacing:.06em">軽いノリで始めた眼鏡店の仕事</div><div class="type-meta">Article Sub · Lato + 中ゴシックBBB · 18px · weight 700 · lh 1.8 (32.4px) · ls 0.06em</div></div>
+    <div class="type-sample"><div style="font-size:14px;font-weight:400;line-height:2.0;letter-spacing:.06em">本文 — 私たちは、アイウェアを通して、掛ける人の暮らしに寄り添いたいと考えています。鯖江の工房で、職人がひとつずつ手をかけてつくる眼鏡です。</div><div class="type-meta">Body · Lato + 中ゴシックBBB · 14px · weight 400 · <strong>lh 2.0 (28px)</strong> · ls 0.06em (0.84px)</div></div>
+    <div class="type-sample"><div style="font-size:14px;font-weight:400;line-height:1.5;letter-spacing:.06em">UI テキスト — 当センターのウェブサイトは、ユーザーの皆様の利便性向上を目的に Cookie を使用しております。</div><div class="type-meta">Body (UI) · 14px · weight 400 · lh 1.5 (21px) · ls 0.06em</div></div>
+    <div class="type-sample"><div style="font-size:12px;font-weight:400;letter-spacing:.1em;color:var(--color-muted)">SCROLL</div><div class="type-meta">Micro · 12px · weight 400 · <strong>ls 0.1em (1.2px)</strong> · #c2c7cb</div></div>
+    <div class="type-sample"><div class="serif" style="font-size:10px;font-weight:600;letter-spacing:.09em">© KANEKO OPTICAL CO., LTD. ALL RIGHTS RESERVED.</div><div class="type-meta">Copyright · Adobe Garamond Pro · 10px · weight 600 · ls 0.09em (0.9px) — 小さい文字でも字間を緩めない</div></div>
+  </div>
+</section>
+
+<section class="section on-light">
+  <div class="section-inner">
+    <div class="section-eyebrow">03 — ARTICLE</div>
+    <h2 class="section-title">CULTURE</h2>
+    <p class="section-lead">読み物だけが明るい面（#d7dcde）に置かれる。本文はゴシック 14px・行間 2.0・字間 0.06em。タグは #f0f0f0 の面に角丸 4px で、名前の先頭に # を付ける。</p>
+    <div class="article">
+      <div class="tag-row">
+        <a class="tag" href="#"># 金子眼鏡と 仕事と 人と</a>
+        <a class="tag" href="#"># 店舗</a>
+        <a class="tag" href="#"># 販売スタッフ</a>
+      </div>
+      <h1>金子眼鏡と 仕事と 人と</h1>
+      <div class="byline">金子眼鏡店 青山店 店長　／　2026.07.28</div>
+      <h2>軽いノリで始めた眼鏡店の仕事</h2>
+      <p>眼鏡の仕事に就いたきっかけは、そう大きな理由ではありませんでした。学生の頃から人と話すのが好きで、接客の仕事なら続けられるだろうと思っていた程度です。</p>
+      <p>けれど働きはじめて驚いたのは、眼鏡が「顔の一部になる道具」だということでした。フレームを 1mm 変えるだけで、その人の印象がまるごと変わる。<a href="#">鯖江の工房</a>で職人がどこまで手をかけているのかを知ってから、売り場での言葉が変わったように思います。</p>
+      <h2>使い込んで、育てる</h2>
+      <p>セルロイドは磨けば艶が戻り、金無垢は使うほどに角が丸くなります。買って終わりではなく、直しながら長く使う。それを前提につくられているのが、この会社の眼鏡です。</p>
+      <div class="btn-row" style="margin-top:36px">
+        <a class="btn-outline" href="#">前の記事</a>
+        <a class="btn-outline" href="#">BACK TO LIST</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section on-dark">
+  <div class="section-inner">
+    <div class="section-eyebrow">04 — BUTTONS &amp; BADGES</div>
+    <h2 class="section-title">BUTTONS</h2>
+    <p class="section-lead">塗りつぶしの主要 CTA が存在しない。1px の細い罫線と広い字間（0.1em）だけでボタンを成立させる。ベタ塗りは Cookie 同意ボタンの #eaeaea のみ。角丸は 0 が基本で、タグ 4px / Cookie 3px / バッジ 2px という極小値だけが例外。</p>
+    <div class="btn-row">
+      <a class="btn-outline" href="#" style="color:#fff">VIEW MORE</a>
+      <a class="btn-outline" href="#" style="color:#fff">店舗一覧へ</a>
+      <a class="btn-outline" href="#" style="color:#fff">店舗体験の勧め</a>
+      <a class="btn-consent" href="#">✓ 同意する</a>
+      <span class="badge-shop">SHOP</span>
+      <a class="tag" href="#"># 店舗</a>
+    </div>
+  </div>
+</section>
+
+<section class="section on-dark" style="padding-top:0">
+  <div class="section-inner">
+    <div class="section-eyebrow">05 — CARDS</div>
+    <h2 class="section-title">BRAND</h2>
+    <p class="section-lead">カード面は濃灰の明度階段（#1f2529 → #242b2f → #545e64 → #74787a）。角丸も影も持たず、明度差だけでセクションを区切る。見出しは英語のセリフ、説明は和文ゴシック。</p>
+    <div class="card-grid">
+      <div class="card" style="background:var(--color-slate)"><div class="card-top" style="background:linear-gradient(150deg,#6b757b,#3e474c)"></div><div class="card-body"><div class="card-en">KANEKO OPTICAL</div><div class="card-jp">金子眼鏡 ― 職人の手仕事を、日常の道具として</div></div></div>
+      <div class="card" style="background:var(--color-slate)"><div class="card-top" style="background:linear-gradient(150deg,#5f696f,#343c41)"></div><div class="card-body"><div class="card-en">SPIVVY</div><div class="card-jp">スピビー ― 遊びのある造形と色</div></div></div>
+      <div class="card" style="background:var(--color-charcoal)"><div class="card-top" style="background:linear-gradient(150deg,#2c343a,#171c20)"></div><div class="card-body"><div class="card-en">PHILOSOPHY</div><div class="card-jp">職人シリーズ ― 名を刻む眼鏡</div></div></div>
+      <div class="card" style="background:var(--color-grayslate)"><div class="card-top" style="background:linear-gradient(150deg,#8b8f91,#5c6062)"></div><div class="card-body"><div class="card-en">FACTORY</div><div class="card-jp">鯖江の自社工房と、そこで働く人たち</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section on-white">
+  <div class="section-inner">
+    <div class="section-eyebrow">06 — FORMS</div>
+    <h2 class="section-title">FORMS</h2>
+    <p class="section-lead">デフォルト / フォーカス / エラーの3状態。角丸 0px、枠は #cccccc、フォーカスはティール #1890ad。エラーは面ではなく文字と 1px 罫で示す。</p>
+    <div class="form">
+      <div class="field"><label>NAME</label><input type="text" placeholder="山田 太郎"></div>
+      <div class="field"><label>EMAIL（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+      <div class="field field--error"><label>TEL</label><input type="tel" value="0778-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+      <a class="btn-outline" href="#" style="color:var(--color-black);justify-self:start">SUBMIT</a>
+    </div>
+  </div>
+</section>
+
+<section class="section on-white" style="padding-top:0">
+  <div class="section-inner">
+    <div class="section-eyebrow">07 — ELEVATION</div>
+    <h2 class="section-title">ELEVATION</h2>
+    <p class="section-lead">実測ではすべての要素が box-shadow: none。奥行きは純黒からペールグレーまでの 8 段の明度階段で表現し、ボタン・入力欄は影の代わりに 1px の罫線で輪郭を与える。</p>
+    <div class="elev-grid">
+      <div class="elev" style="background:#000000;color:#fff">#000000<div class="elev-cap">Ink Black</div></div>
+      <div class="elev" style="background:#151515;color:#fff">#151515<div class="elev-cap">Off Black</div></div>
+      <div class="elev" style="background:#1f2529;color:#fff">#1f2529<div class="elev-cap">Charcoal</div></div>
+      <div class="elev" style="background:#545e64;color:#fff">#545e64<div class="elev-cap">Slate</div></div>
+      <div class="elev" style="background:#74787a;color:#fff">#74787a<div class="elev-cap">Gray Slate</div></div>
+      <div class="elev" style="background:#8a8a8a;color:#fff">#8a8a8a<div class="elev-cap">Mid Gray</div></div>
+      <div class="elev" style="background:#d7dcde;color:#000">#d7dcde<div class="elev-cap">Pale Blue Gray</div></div>
+      <div class="elev" style="background:#ffffff;color:#000">#ffffff<div class="elev-cap">White</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section on-white" style="padding-top:0">
+  <div class="section-inner">
+    <div class="section-eyebrow">08 — LAYOUT</div>
+    <h2 class="section-title">SPACING</h2>
+    <p class="section-lead">4 / 9 / 21 / 40 / 80 / 120px。実測のパディングは 7px 21px・0 9px・11px 10px に集中し、セクション間は 80〜120px の大きな余白を取る。記事カラムは 680px 前後。</p>
+    <div class="space-row">
+      <div><div class="space-bar" style="width:4px;height:4px"></div><div class="space-label">XS 4</div></div>
+      <div><div class="space-bar" style="width:9px;height:9px"></div><div class="space-label">S 9</div></div>
+      <div><div class="space-bar" style="width:21px;height:21px"></div><div class="space-label">M 21</div></div>
+      <div><div class="space-bar" style="width:40px;height:40px"></div><div class="space-label">L 40</div></div>
+      <div><div class="space-bar" style="width:80px;height:80px"></div><div class="space-label">XL 80</div></div>
+      <div><div class="space-bar" style="width:120px;height:120px"></div><div class="space-label">XXL 120</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="cookiebar">
+  <p>⚠ 当センターのウェブサイトは、ユーザーの皆様の利便性向上、ウェブサイトの改善等を目的に、Cookie を使用しております。詳しくは<a href="#">Cookieポリシー</a>をご覧ください。</p>
+  <a class="btn-consent" href="#">✓ 同意する</a>
+</div>
+
+<footer>
+  <div class="finner">
+    <div class="flinks">
+      <a href="#">FEATURE</a>
+      <a href="#">STORY</a>
+      <a href="#">FACTORY</a>
+      <a href="#">BRAND</a>
+      <a href="#">SHOP LIST</a>
+      <a href="#">CULTURE</a>
+      <a href="#">COMPANY</a>
+      <a href="#">NEWS</a>
+    </div>
+    <div class="fnote">© KANEKO OPTICAL — Design System Preview　/　実測ベース 2026-07-28</div>
+  </div>
+</footer>
+
+</body>
+</html>

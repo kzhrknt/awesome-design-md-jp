@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 玉川堂 GYOKUSENDO</title>
+<!--
+  NOTE: 原典の書体は ryo-display-plusn（Morisawa りょう Display PlusN／Adobe Fonts 配信）。
+  和文も欧文もこの 1 書体だけでサイト全体が組まれている。
+  ライセンスフォントのためローカルの preview.html では表示できない。
+  ここでは Google Fonts の "Noto Serif JP"（weight 300 / 500）を代替に使用している。
+
+  【weight 300 が使えることが代替選定の決め手】。
+  玉川堂の設計の核は「見出しを Light(300)、本文を Medium(500)」というウェイトの逆転で、
+  Shippori Mincho / Zen Old Mincho は 400 以上しか持たないためこれを再現できない。
+  実装時は必ず ryo-display-plusn を読み込むこと。
+
+  原典はグローバルに次の 3 つを効かせる:
+    font-feature-settings: "palt"   … 本文にも掛ける
+    letter-spacing: 0.96px          … px 固定（16px で 0.06em、12px で 0.08em、48px で 0.02em）
+    line-height: 2.0                … 本文系すべて。見出しだけ 1.1
+  「palt で詰めてから letter-spacing で均一に開き直す」という二段構えが字面の作り方。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --color-bg: #ffffff;      /* ページ地色（純白） */
+    --color-ink: #000000;     /* 文字・黒タイル・フッターの面 */
+    --color-overlay: rgba(0,0,0,0.3); /* KV の暗幕 */
+    --color-sub: #333333;     /* サブメニュー */
+    --color-caption: #666666; /* 著作権・日付・入力文字 */
+    --color-muted: #999999;   /* アウトラインボタンの文字 */
+    --color-border: #cccccc;  /* 罫・ボタンの枠 */
+    --color-gray: #aaaaaa;    /* スライダーの非活性インジケータ */
+    --color-error: #a83a2e;   /* エラー（銅の赤に近い落ち着いた赤） */
+
+    /* === Font === */
+    /* 原典: ryo-display-plusn, serif ― 和文・欧文ともこれ 1 書体のみ */
+    --font: "Noto Serif JP", serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-body: 16px;
+    --lh: 2.0;      /* 本文系すべて */
+    --lh-head: 1.1; /* 見出しのみ */
+    --ls: 0.96px;   /* px 固定。サイズが小さいほど em 換算で広くなる */
+
+    /* === Shape === */
+    --radius: 0px;  /* 全域 0 */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-bg); color: var(--color-ink);
+    font-family: var(--font);
+    font-size: var(--fs-body); font-weight: 500;   /* 本文は Medium */
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+    font-feature-settings: "palt";                  /* グローバル。本文にも掛ける */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* KV（工房写真＋30% の暗幕） */
+  .kv { position: relative; height: 520px; overflow: hidden;
+    background: linear-gradient(160deg, #6b5942 0%, #3c3227 42%, #241d16 100%); }
+  .kv::after { content: ""; position: absolute; inset: 0; background: var(--color-overlay); }
+  .kv-header { position: absolute; top: 0; left: 0; right: 0; z-index: 2; display: flex;
+    align-items: center; justify-content: space-between; padding: 22px 32px; }
+  .kv-logo { color: #fff; text-decoration: none; font-size: 16px; font-weight: 300; line-height: 1.0; letter-spacing: 0.1em; }
+  .kv-nav { display: flex; gap: 22px; align-items: center; }
+  .kv-nav a { color: #fff; text-decoration: none; font-size: 16px; font-weight: 500; line-height: 1.25; letter-spacing: var(--ls); }
+  .kv-nav a:hover { opacity: .72; }
+  .kv-center { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; color: #fff; }
+  .kv-mark { width: 128px; height: 128px; border: 2px solid #fff; border-radius: 50%; }
+  .kv-name { font-size: 30px; font-weight: 300; line-height: 1.1; letter-spacing: 0.06em; margin-top: 22px; }
+  .kv-year { font-size: 24px; font-weight: 300; line-height: 1.1; letter-spacing: 0.1em; margin-top: 6px; }
+
+  /* SECTIONS */
+  .section { padding: 96px 32px; }
+  .section-inner { max-width: 1200px; margin: 0 auto; }
+  .section-eyebrow { font-size: 12px; font-weight: 500; line-height: var(--lh); color: var(--color-caption); margin-bottom: 8px; }
+  .section-title { font-size: 48px; font-weight: 300; line-height: var(--lh-head); letter-spacing: var(--ls); margin-bottom: 28px; }
+  .section-sub { font-size: 24px; font-weight: 300; line-height: var(--lh-head); letter-spacing: var(--ls); margin-bottom: 20px; }
+  .section-lead { font-size: 14px; font-weight: 500; line-height: var(--lh); letter-spacing: var(--ls); max-width: 720px; margin-bottom: 48px; }
+  .divider { border: none; border-top: 1px solid var(--color-border); max-width: 1200px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px,1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; }
+  .swatch-block { height: 90px; }
+  .swatch-info { padding: 14px 16px 18px; }
+  .swatch-name { font-size: 14px; font-weight: 500; line-height: 1.6; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--color-caption); margin-top: 4px; letter-spacing: 0; line-height: 1.5; }
+  .swatch-role { font-size: 11px; color: var(--color-caption); margin-top: 6px; line-height: 1.7; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 26px 0; border-bottom: 1px solid var(--color-border); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-caption); margin-top: 12px; letter-spacing: 0; line-height: 1.6; }
+
+  /* ARTICLE */
+  .article { max-width: 720px; }
+  .article h2 { font-size: 48px; font-weight: 300; line-height: var(--lh-head); letter-spacing: var(--ls); margin-bottom: 34px; }
+  .article h3 { font-size: 24px; font-weight: 300; line-height: var(--lh-head); letter-spacing: var(--ls); margin: 44px 0 18px; }
+  .article p { font-size: 14px; font-weight: 500; line-height: var(--lh); letter-spacing: var(--ls); margin-bottom: 24px; }
+  .article a { color: var(--color-ink); text-decoration: underline; text-underline-offset: 4px; }
+  .article .date { font-size: 14px; font-weight: 500; color: var(--color-caption); line-height: var(--lh); }
+
+  /* MENU TILES（黒ベタのタイル。ナビゲーションの主役） */
+  .tile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 24px; }
+  .tile { position: relative; display: block; text-decoration: none; overflow: hidden; border-radius: var(--radius); min-height: 240px; }
+  .tile-photo { position: absolute; inset: 0; }
+  .tile-veil { position: absolute; inset: 0; background: var(--color-ink); opacity: .62; }
+  .tile-body { position: relative; z-index: 2; padding: 34px 30px; color: #fff; }
+  .tile-name { font-size: 28px; font-weight: 500; line-height: var(--lh); letter-spacing: var(--ls); }
+  .tile-desc { font-size: 14px; font-weight: 500; line-height: 1.5; letter-spacing: var(--ls); margin-top: 10px; }
+  .tile:hover .tile-veil { opacity: .48; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+  .btn-outline { display: inline-flex; align-items: center; justify-content: center;
+    background: transparent; color: var(--color-muted); border: 1px solid var(--color-border);
+    border-radius: var(--radius); padding: 15px 44px;
+    font-family: var(--font); font-size: 16px; font-weight: 700; letter-spacing: var(--ls);
+    text-decoration: none; transition: color .15s ease, border-color .15s ease; }
+  .btn-outline:hover { color: var(--color-ink); border-color: var(--color-ink); }
+  .btn-submit { display: inline-block; background: var(--color-ink); color: #fff; border: none;
+    border-radius: var(--radius); padding: 0 24px; line-height: 32px;
+    font-family: var(--font); font-size: 13px; font-weight: 500; letter-spacing: 0.39px;
+    text-decoration: none; cursor: pointer; }
+  .btn-submit:hover { opacity: .8; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 24px; }
+  .card { background: #fff; border-radius: var(--radius); }
+  .card-photo { height: 170px; border-radius: var(--radius); }
+  .card-body { padding: 16px 0 0; }
+  .card-date { font-size: 14px; font-weight: 500; color: var(--color-caption); line-height: var(--lh); }
+  .card-title { font-size: 16px; font-weight: 500; line-height: var(--lh); letter-spacing: var(--ls); }
+
+  /* FORMS */
+  .form { max-width: 460px; display: grid; gap: 24px; }
+  .field label { display: block; font-size: 14px; font-weight: 500; line-height: var(--lh); margin-bottom: 6px; }
+  .field input { width: 100%; background: #fff; color: #343434; border: 1px solid var(--color-border);
+    border-radius: var(--radius); padding: 12px 14px;
+    font-family: var(--font); font-size: 15px; font-weight: 500; letter-spacing: var(--ls); }
+  .field input::placeholder { color: var(--color-muted); }
+  .field input:focus { outline: none; border-color: var(--color-ink); }
+  .field--error input { border-color: var(--color-error); }
+  .field--error .msg { font-size: 14px; color: var(--color-error); margin-top: 4px; line-height: 1.6; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 24px; }
+  .elev { border-radius: var(--radius); padding: 30px; text-align: center;
+    font-size: 16px; font-weight: 500; line-height: var(--lh); letter-spacing: var(--ls); }
+  .elev--0 { background: #fff; }
+  .elev--1 { background: #fff; border: 1px solid var(--color-border); }
+  .elev--2 { background: var(--color-ink); color: #fff; }
+  .elev--3 { position: relative; background: linear-gradient(160deg,#6b5942,#241d16); color: #fff; }
+  .elev--3 span { position: relative; z-index: 2; }
+  .elev--3::before { content: ""; position: absolute; inset: 0; background: var(--color-overlay); }
+  .elev-cap { font-family: var(--font-mono); font-size: 11px; color: var(--color-caption); margin-top: 10px; text-align: center; letter-spacing: 0; line-height: 1.5; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-ink); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: var(--color-caption); margin-top: 8px; text-align: center; letter-spacing: 0; }
+
+  /* COPPER（銅の色は写真と説明の中でのみ示す） */
+  .copper-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 16px; }
+  .copper { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--color-border); }
+  .copper-block { height: 100px; }
+  .copper-info { padding: 12px 14px 16px; }
+  .copper-name { font-size: 14px; font-weight: 500; line-height: 1.6; }
+  .copper-note { font-size: 11px; color: var(--color-caption); margin-top: 6px; line-height: 1.7; }
+
+  footer { background: var(--color-ink); color: #fff; padding: 64px 32px; }
+  footer .finner { max-width: 1200px; margin: 0 auto; }
+  footer h4 { font-size: 18px; font-weight: 300; line-height: var(--lh-head); letter-spacing: var(--ls); margin-bottom: 12px; }
+  footer p { font-size: 14px; font-weight: 500; line-height: var(--lh); letter-spacing: var(--ls); margin-bottom: 28px; }
+  footer .flinks { display: flex; gap: 28px; flex-wrap: wrap; margin-bottom: 26px; }
+  footer .flinks a { color: #fff; text-decoration: none; font-size: 14px; font-weight: 500; line-height: var(--lh); letter-spacing: var(--ls); }
+  footer .fnote { font-size: 12px; font-weight: 500; line-height: var(--lh); letter-spacing: var(--ls); color: var(--color-caption); }
+</style>
+</head>
+<body>
+
+<section class="kv">
+  <div class="kv-header">
+    <a class="kv-logo" href="#">鎚起銅器 玉川堂 - GYOKUSENDO</a>
+    <nav class="kv-nav">
+      <a href="#">English</a>
+      <a href="#">簡体中文</a>
+      <a href="#">繁體中文</a>
+      <a href="#">オンラインショップ</a>
+    </nav>
+  </div>
+  <div class="kv-center">
+    <div class="kv-mark"></div>
+    <div class="kv-name">玉川堂</div>
+    <div class="kv-year">1816</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-inner">
+    <div class="section-eyebrow">01 — COLORS</div>
+    <h2 class="section-title">色</h2>
+    <p class="section-lead">UI に使う色は白・黒とグレー 4 段だけ。ブランドカラーと呼べる有彩色を持たず、銅の色は写真と商品説明が担当する。中間グレーの面（カード面など）は作らず、白と黒の二値を崩さない。</p>
+    <div class="color-grid">
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-bg);box-shadow:inset 0 0 0 1px #eee"></div><div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">ページ地色（純白）</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-ink)"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#000000</div><div class="swatch-role">文字・黒タイル・フッターの面</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-sub)"></div><div class="swatch-info"><div class="swatch-name">Sub Text</div><div class="swatch-hex">#333333</div><div class="swatch-role">サブメニューのリンク</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-caption)"></div><div class="swatch-info"><div class="swatch-name">Caption</div><div class="swatch-hex">#666666</div><div class="swatch-role">著作権・日付・入力欄の文字</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-muted)"></div><div class="swatch-info"><div class="swatch-name">Muted</div><div class="swatch-hex">#999999</div><div class="swatch-role">アウトラインボタンの文字</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-gray)"></div><div class="swatch-info"><div class="swatch-name">Gray</div><div class="swatch-hex">#aaaaaa</div><div class="swatch-role">スライダーの非活性インジケータ</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-border)"></div><div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-hex">#cccccc</div><div class="swatch-role">罫・ボタンの枠</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:rgba(0,0,0,0.3)"></div><div class="swatch-info"><div class="swatch-name">KV Overlay</div><div class="swatch-hex">rgba(0,0,0,.3)</div><div class="swatch-role">工房写真に重ねる暗幕</div></div></div>
+    </div>
+
+    <h3 class="section-sub" style="margin-top:56px">銅の色（UI には使わない）</h3>
+    <p class="section-lead">赤銅・紫金・黒味銅・栗色は玉川堂の着色技法による経年色。<strong>写真と商品説明の中でのみ示すものであり、UI の面色や罫には使わない</strong>。参考として掲載する。</p>
+    <div class="copper-grid">
+      <div class="copper"><div class="copper-block" style="background:#7b3f2e"></div><div class="copper-info"><div class="copper-name">赤銅（しゃくどう）</div><div class="copper-note">#7b3f2e 目安・写真内の参考色</div></div></div>
+      <div class="copper"><div class="copper-block" style="background:#4a2a2a"></div><div class="copper-info"><div class="copper-name">紫金（しきん）</div><div class="copper-note">#4a2a2a 目安・写真内の参考色</div></div></div>
+      <div class="copper"><div class="copper-block" style="background:#2b2320"></div><div class="copper-info"><div class="copper-name">黒味銅（くろみどう）</div><div class="copper-note">#2b2320 目安・写真内の参考色</div></div></div>
+      <div class="copper"><div class="copper-block" style="background:#5c3a25"></div><div class="copper-info"><div class="copper-name">栗色（くりいろ）</div><div class="copper-note">#5c3a25 目安・写真内の参考色</div></div></div>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-inner">
+    <div class="section-eyebrow">02 — TYPOGRAPHY</div>
+    <h2 class="section-title">組版</h2>
+    <p class="section-lead">和文も欧文も「りょう Display PlusN」1 書体のみ。palt と letter-spacing 0.96px と line-height 2.0 がグローバルに効き、見出しだけ行間 1.1 に締まる。見出しは weight 300、本文は weight 500 と、太さの関係が逆転する。</p>
+
+    <div class="type-sample"><div style="font-size:48px;font-weight:300;line-height:1.1;letter-spacing:.96px">打つ。時を打つ。</div><div class="type-meta">Display · 48px · <strong>weight 300</strong> · lh 1.1 (52.8px) · ls 0.96px (0.02em)</div></div>
+    <div class="type-sample"><div style="font-size:28px;font-weight:500;line-height:2.0;letter-spacing:.96px">玉川堂について</div><div class="type-meta">Menu Title · 28px · weight 500 · <strong>lh 2.0 (56px)</strong> · ls 0.96px (0.034em)</div></div>
+    <div class="type-sample"><div style="font-size:24px;font-weight:300;line-height:1.1;letter-spacing:.96px">お知らせ・催事情報</div><div class="type-meta">Heading 2 · 24px · <strong>weight 300</strong> · lh 1.1 (26.4px) · ls 0.96px (0.04em)</div></div>
+    <div class="type-sample"><div style="font-size:18px;font-weight:300;line-height:1.1;letter-spacing:.96px">玉川堂メールマガジン お申込</div><div class="type-meta">Heading 3 · 18px · <strong>weight 300</strong> · lh 1.1 (19.8px) · ls 0.96px (0.053em)</div></div>
+    <div class="type-sample"><div style="font-size:16px;font-weight:500;line-height:2.0;letter-spacing:.96px">本文（既定）— 一枚の銅板を鎚で叩き縮め、継ぎ目のない器に成形する。玉川堂の鎚起銅器は、この一点においてほかに例を見ない技法でつくられています。</div><div class="type-meta">Body · 16px · weight 500 · <strong>lh 2.0 (32px)</strong> · ls 0.96px (<strong>0.06em</strong>)</div></div>
+    <div class="type-sample"><div style="font-size:16px;font-weight:300;line-height:1.0;letter-spacing:1.6px">鎚起銅器 玉川堂 - GYOKUSENDO</div><div class="type-meta">Logo Link · 16px · weight 300 · lh 1.0 · <strong>ls 1.6px (0.1em)</strong> — ロゴリンクのみ字間が別扱い</div></div>
+    <div class="type-sample"><div style="font-size:14px;font-weight:500;line-height:2.0;letter-spacing:.96px">段落 — 銅は使い込むほどに色を深めます。手の脂と時間が、赤銅から紫金へ、紫金から黒味銅へと表情を移していきます。</div><div class="type-meta">Body Small · 14px · weight 500 · lh 2.0 (28px) · ls 0.96px (0.069em)</div></div>
+    <div class="type-sample"><div style="font-size:14px;font-weight:400;line-height:1.43;letter-spacing:.96px;color:var(--color-sub)">玉川堂について　玉川堂の歴史　玉川堂の技術</div><div class="type-meta">Submenu · 14px · weight 400 · lh 1.43 (20px) · #333333</div></div>
+    <div class="type-sample"><div style="font-size:12px;font-weight:500;line-height:2.0;letter-spacing:.96px;color:var(--color-caption)">Copyright © GYOKUSENDO. All Rights Reserved.</div><div class="type-meta">Caption · 12px · weight 500 · lh 2.0 (24px) · ls 0.96px (<strong>0.08em</strong>) · #666666 — px 固定なので小さい文字ほど広く見える</div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-inner">
+    <div class="section-eyebrow">03 — ARTICLE</div>
+    <h2 class="section-title">組版サンプル</h2>
+    <div class="article">
+      <h2>打つ。時を打つ。</h2>
+      <div class="date">2026.07.28　お知らせ・催事情報</div>
+      <h3>玉川堂について</h3>
+      <p>文化十三年、越後国燕にて創業。以来二百余年、一枚の銅板を鎚で叩き縮めて器に成形する「鎚起銅器」をつくり続けてきました。継ぎ目のない一体の器は、金属を延ばすのではなく縮めることで生まれます。</p>
+      <p>叩けば銅は硬くなり、焼けばまた柔らかくなる。この繰り返しを何千回と重ねて、湯沸ひとつが仕上がります。<a href="#">工房の見学</a>では、その音を間近で聞いていただけます。</p>
+      <h3>玉川堂の技術</h3>
+      <p>器の口を締めるほど鎚の跡は細かくなり、胴の張りには大きな鎚目を残します。同じ形は二つとなく、使い手の手のなかで色を深めていくことを前提につくられています。</p>
+      <p>銅は熱を素早く伝え、水を柔らかくすると言われます。道具として毎日使われ、修理を重ねながら次の代へ渡っていく。それが私たちの考える器のあり方です。</p>
+      <div class="btn-row" style="margin-top:40px">
+        <a class="btn-outline" href="#">一覧を見る</a>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-inner">
+    <div class="section-eyebrow">04 — MENU TILES</div>
+    <h2 class="section-title">黒タイル</h2>
+    <p class="section-lead">ヘッダーのメニューではなく、写真の上に #000000 のベタ面を重ねた黒タイルの一覧がサイトの導線になる。見出し 28px（行間 2.0）＋ 説明 14px（行間 1.5）。角丸も影も持たない。</p>
+    <div class="tile-grid">
+      <a class="tile" href="#"><div class="tile-photo" style="background:linear-gradient(150deg,#7a6448,#2c241b)"></div><div class="tile-veil"></div><div class="tile-body"><div class="tile-name">玉川堂について</div><div class="tile-desc">玉川堂の魅力は、その歴史や技術だけではありません。玉川堂の真の魅力は、つくり手と使い手の距離の近さにあります。</div></div></a>
+      <a class="tile" href="#"><div class="tile-photo" style="background:linear-gradient(150deg,#6b5942,#241d16)"></div><div class="tile-veil"></div><div class="tile-body"><div class="tile-name">玉川堂の歴史</div><div class="tile-desc">玉川堂は 1816 年に創業。以来、200 年に渡り、鎚起銅器製作一筋に歩んでまいりました。</div></div></a>
+      <a class="tile" href="#"><div class="tile-photo" style="background:linear-gradient(150deg,#5d4c3a,#1e1913)"></div><div class="tile-veil"></div><div class="tile-body"><div class="tile-name">玉川堂の技術</div><div class="tile-desc">玉川堂の鎚起銅器は、一枚の銅板を叩き縮めることで器状へと成形し、世界にも類を見ない技法でつくられます。</div></div></a>
+      <a class="tile" href="#"><div class="tile-photo" style="background:linear-gradient(150deg,#836b4d,#332a20)"></div><div class="tile-veil"></div><div class="tile-body"><div class="tile-name">商品一覧</div><div class="tile-desc">湯沸・急須・ぐい呑・花器。用途と着色から器をお選びいただけます。</div></div></a>
+      <a class="tile" href="#"><div class="tile-photo" style="background:linear-gradient(150deg,#6f5c46,#282018)"></div><div class="tile-veil"></div><div class="tile-body"><div class="tile-name">お手入れ</div><div class="tile-desc">日々の扱いと、修理のご相談について。使い込むほどに色は深まります。</div></div></a>
+      <a class="tile" href="#"><div class="tile-photo" style="background:linear-gradient(150deg,#5a4b39,#221c15)"></div><div class="tile-veil"></div><div class="tile-body"><div class="tile-name">人間国宝　玉川宣夫</div><div class="tile-desc">木目金の技法により重要無形文化財保持者に認定された作家の仕事。</div></div></a>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-inner">
+    <div class="section-eyebrow">05 — BUTTONS</div>
+    <h2 class="section-title">ボタン</h2>
+    <p class="section-lead">CTA は主張しない。文字色まで灰（#999999）に落とし、罫線も薄い #cccccc。角丸は 0px。目立たせたいときも色ではなく余白と位置で解決する。</p>
+    <div class="btn-row">
+      <a class="btn-outline" href="#">一覧を見る</a>
+      <a class="btn-outline" href="#">工房見学のご案内</a>
+      <a class="btn-submit" href="#">送信</a>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-inner">
+    <div class="section-eyebrow">06 — CARDS</div>
+    <h2 class="section-title">お知らせ</h2>
+    <p class="section-lead">写真 → 日付（14px / #666666）→ タイトル（16px / weight 500 / 行間 2.0）の順に積む。角丸 0px、影なし。</p>
+    <div class="card-grid">
+      <div class="card"><div class="card-photo" style="background:linear-gradient(150deg,#8a7357,#3a3025)"></div><div class="card-body"><div class="card-date">2026.07.20</div><div class="card-title">燕本店 夏季休業のお知らせ</div></div></div>
+      <div class="card"><div class="card-photo" style="background:linear-gradient(150deg,#7d684f,#332a20)"></div><div class="card-body"><div class="card-date">2026.07.08</div><div class="card-title">銀座店 鎚起銅器展を開催いたします</div></div></div>
+      <div class="card"><div class="card-photo" style="background:linear-gradient(150deg,#6f5c46,#2a221a)"></div><div class="card-body"><div class="card-date">2026.06.28</div><div class="card-title">工房見学のご予約について</div></div></div>
+      <div class="card"><div class="card-photo" style="background:linear-gradient(150deg,#63523e,#241d16)"></div><div class="card-body"><div class="card-date">2026.06.12</div><div class="card-title">湯沸の修理・再着色を承ります</div></div></div>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-inner">
+    <div class="section-eyebrow">07 — FORMS</div>
+    <h2 class="section-title">フォーム</h2>
+    <p class="section-lead">デフォルト / フォーカス / エラーの3状態。角丸 0px、枠は #cccccc、フォーカスは純黒。入力欄も明朝で組む（実サイトの input[type=email] は Open Sans に落ちているが、これは実装の取り残しであり再現しない）。</p>
+    <div class="form">
+      <div class="field"><label>お名前</label><input type="text" placeholder="山田 太郎"></div>
+      <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+      <div class="field field--error"><label>お電話番号</label><input type="tel" value="0256-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+      <a class="btn-submit" href="#" style="justify-self:start">送信</a>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-inner">
+    <div class="section-eyebrow">08 — ELEVATION</div>
+    <h2 class="section-title">奥行き</h2>
+    <p class="section-lead">実測ではすべての要素が box-shadow: none。奥行きは白と黒の二値でつくり、中間のグレー面を持たない。影の代わりに 1px の罫線を使い、重ね合わせは KV の 30% の暗幕だけ。</p>
+    <div class="elev-grid">
+      <div><div class="elev elev--0">Level 0</div><div class="elev-cap">none（既定・純白）</div></div>
+      <div><div class="elev elev--1">Level 1</div><div class="elev-cap">1px solid #cccccc（罫線で輪郭）</div></div>
+      <div><div class="elev elev--2">Level 2</div><div class="elev-cap">#000000（黒タイル・フッター）</div></div>
+      <div><div class="elev elev--3"><span>Level 3</span></div><div class="elev-cap">rgba(0,0,0,.3)（KV の暗幕）</div></div>
+    </div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-inner">
+    <div class="section-eyebrow">09 — LAYOUT</div>
+    <h2 class="section-title">スペーシング</h2>
+    <p class="section-lead">8 / 15 / 24 / 40 / 80 / 120px。行間 2.0 が空間の基本単位で、16px 本文なら 1 行 = 32px。余白もこの倍数に寄せると縦のリズムが揃う。読み物カラムは 720px 前後。</p>
+    <div class="space-row">
+      <div><div class="space-bar" style="width:8px;height:8px"></div><div class="space-label">XS 8</div></div>
+      <div><div class="space-bar" style="width:15px;height:15px"></div><div class="space-label">S 15</div></div>
+      <div><div class="space-bar" style="width:24px;height:24px"></div><div class="space-label">M 24</div></div>
+      <div><div class="space-bar" style="width:40px;height:40px"></div><div class="space-label">L 40</div></div>
+      <div><div class="space-bar" style="width:80px;height:80px"></div><div class="space-label">XL 80</div></div>
+      <div><div class="space-bar" style="width:120px;height:120px"></div><div class="space-label">XXL 120</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="finner">
+    <h4>玉川堂メールマガジン お申込</h4>
+    <p>毎月１日に配信いたします。催事のご案内や、工房の日々をお届けします。</p>
+    <div class="flinks">
+      <a href="#">玉川堂について</a>
+      <a href="#">玉川堂の歴史</a>
+      <a href="#">玉川堂の技術</a>
+      <a href="#">商品一覧</a>
+      <a href="#">お手入れ</a>
+      <a href="#">店舗案内</a>
+      <a href="#">オンラインショップ</a>
+    </div>
+    <div class="fnote">Copyright © GYOKUSENDO. All Rights Reserved. — Design System Preview　/　実測ベース 2026-07-28</div>
+  </div>
+</footer>
+
+</body>
+</html>
