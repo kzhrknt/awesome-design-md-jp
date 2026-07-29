@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: コンセント CONCENT</title>
+<!--
+  NOTE: 原典の和文は MFW-HiraginoUDSansStdN-W3 / -W6（ヒラギノ UD 角ゴ StdN、
+  Morisawa Fonts Web 経由）。ライセンスフォントのため、ローカルの preview.html では
+  表示できない。ここでは "BIZ UDPGothic"(400 / 700) を代替として使用している。
+  BIZ UDPGothic はモリサワが開発した UD 書体で Google Fonts から利用でき、
+  ヒラギノ UD 角ゴと同じ「UD 設計」の思想（濁点の拡大・均一な字面・広いふところ）を
+  共有する。実装時は必ずヒラギノ UD 角ゴ StdN を読み込むこと。
+
+  原典の組版設定 ―― このコレクションの中でも異例:
+    font-feature-settings: normal   全域。palt を「意図的に」使わない
+    letter-spacing: normal          全域
+    line-height: 1.8                全域の既定（42px キーコピーと 18px リードのみ 1.6）
+    font-weight: 400                太さは W3 ↔ W6 のファミリ切替で表現する
+
+  UD 書体は「読み間違えにくさ」を優先して字面を大きく均一に設計しているため、
+  palt で詰めると設計意図が損なわれる。日本語 UI で palt を掛けないことに
+  明確な理由があるサイト。
+
+  その代わり、キーコピーだけ 1 文字ずつ <span class="u-kerning-0NN"> に包み、
+  字の組み合わせごとに個別の letter-spacing を与える（光学的カーニングの手実装）。
+  本プレビューでも同じ構造で再現している。本文には展開しないこと。
+
+  原典は欧文専用書体を持たず、和欧を同じ UD 角ゴで組む。
+  CONCENT のロゴタイプは斜体のカスタムレタリング（画像／SVG）で、CSS では再現しない。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --color-ink: #000000;        /* 文字・罫・ロゴブロック・フッター */
+    --color-paper: #ffffff;      /* ページ地色 */
+    --color-nav: #d4dde1;        /* グローバルナビ帯。唯一の面色 */
+    --color-subnav: #eeeff0;     /* サブナビ帯 */
+    --color-muted: #777777;      /* 補助テキスト */
+    --color-bluegray: #616f75;   /* サブナビの文字色 */
+    --color-overlay: rgba(0,0,0,0.54);      /* ヒーロー動画の暗幕 */
+    --color-overlay-strong: rgba(0,0,0,0.8);
+    --color-error: #c0392b;      /* エラー（フォーム用途のみ） */
+
+    /* === Fonts === */
+    /* 原典: MFW-HiraginoUDSansStdN-W3 / -W6, Verdana, "ヒラギノUD角ゴ W3 JIS2004", … */
+    --font: "BIZ UDPGothic", Verdana, "ヒラギノUD角ゴ W3 JIS2004",
+            "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-body: 16px;
+    --lh: 1.8;        /* 全域の既定 */
+    --lh-tight: 1.6;  /* 42px キーコピー・18px リード */
+
+    /* === Shape === */
+    --radius: 0px;         /* 全要素 */
+    --rule-thin: 1px;      /* ボタン枠・入力欄・区切り */
+    --rule-card: 4px;      /* カード上辺 */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-paper); color: var(--color-ink);
+    font-family: var(--font);
+    font-size: var(--fs-body); font-weight: 400;
+    line-height: var(--lh);
+    letter-spacing: normal;            /* 原典は全域 normal */
+    font-feature-settings: normal;     /* 原典は全域 normal（palt を使わない） */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  .w6 { font-weight: 700; }   /* 原典の MFW-HiraginoUDSansStdN-W6 相当 */
+  .container { max-width: 1366px; margin: 0 auto; padding: 0 30px; }
+
+  /* ===== HEADER ===== */
+  .siteheader { display: flex; align-items: stretch; }
+  .logoblock { width: 140px; min-height: 87px; background: var(--color-ink); color: #fff;
+    display: flex; align-items: center; justify-content: center; flex: none; }
+  .logoblock .mark { font-weight: 700; font-style: italic; font-size: 22px; letter-spacing: .02em; }
+  .headercols { flex: 1; display: flex; flex-direction: column; }
+  .subnav { background: var(--color-subnav); display: flex; align-items: center; justify-content: flex-end;
+    gap: 20px; padding: 0 20px; min-height: 38px; }
+  .subnav a { color: var(--color-bluegray); text-decoration: none; font-size: 11px; line-height: 1; }
+  .subnav a:hover { color: var(--color-ink); }
+  .subnav .sep { color: var(--color-bluegray); font-size: 11px; }
+  .subnav .search { display: flex; align-items: center; gap: 6px; background: #fff;
+    border: 1px solid var(--color-ink); border-radius: var(--radius); padding: 4px 8px; }
+  .subnav .search input { border: none; outline: none; font-family: var(--font); font-size: 11px;
+    line-height: 1.6; width: 180px; }
+  .gnav { background: var(--color-nav); display: flex; align-items: center; justify-content: flex-end;
+    gap: 6px; padding: 0 20px; flex: 1; min-height: 49px; }
+  .gnav a { color: var(--color-ink); text-decoration: none; font-size: 14px; line-height: 1.8;
+    padding: 10px 12px; border-radius: var(--radius); }
+  .gnav a:hover { background: rgba(255,255,255,.5); }
+
+  /* ===== HERO ===== */
+  .hero { position: relative; height: 460px;
+    background: linear-gradient(120deg,#8f9aa1 0%, #6f7b83 45%, #98a2a8 100%); }
+  .hero .veil { position: absolute; inset: 0; background: var(--color-overlay);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 44px; }
+  .c-headingCopy { font-size: 42px; font-weight: 700; line-height: var(--lh-tight); color: #fff; text-align: center; }
+  /* --- 1 文字単位のカーニング（原典の u-kerning-0NN を再現）--- */
+  .u-kerning-031 { letter-spacing: -5.21px; }  /* -0.124em */
+  .u-kerning-032 { letter-spacing: -5.21px; }  /* -0.124em */
+  .u-kerning-033 { letter-spacing: -4.05px; }  /* -0.096em */
+  .u-kerning-034 { letter-spacing:  0.01px; }  /*  0em     */
+  .u-kerning-035 { letter-spacing:  0.01px; }  /*  0em     */
+  .u-kerning-036 { letter-spacing: -1.15px; }  /* -0.027em */
+  .btn-ghost { width: 270px; height: 70.8px; border: 1px solid #fff; border-radius: var(--radius);
+    background: transparent; color: #fff; font-family: var(--font); font-size: 16px;
+    display: flex; align-items: center; justify-content: center; text-decoration: none; position: relative; }
+  .btn-ghost::after { content: "›"; position: absolute; right: 24px; font-size: 20px; }
+  .btn-ghost:hover { background: rgba(255,255,255,.12); }
+  .videoctl { position: absolute; right: 30px; bottom: -34px; background: #fff; color: var(--color-ink);
+    font-size: 12px; line-height: 1.6; border: none; border-radius: var(--radius); cursor: pointer; }
+
+  /* ===== SECTIONS ===== */
+  .section { padding: 80px 0; }
+  .c-headingLv1 { font-size: 34px; font-weight: 700; line-height: var(--lh); margin-bottom: 20px; }
+  .c-headingLv2 { font-size: 20px; font-weight: 700; line-height: var(--lh);
+    display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
+  .c-headingLv2::after { content: "／"; color: var(--color-ink); font-weight: 400; }
+  .rule { border: none; border-top: 1px solid var(--color-ink); margin-bottom: 30px; }
+  .lead { font-size: 16px; line-height: var(--lh); max-width: 780px; margin-bottom: 44px; }
+  .divider { border: none; border-top: 1px solid var(--color-ink); }
+  .eyebrow { font-size: 12px; line-height: 1.8; color: var(--color-muted); margin-bottom: 10px; }
+
+  /* ===== COLORS ===== */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px,1fr)); gap: 20px; }
+  .swatch { border: 1px solid var(--color-ink); border-radius: var(--radius); overflow: hidden; background: #fff; }
+  .swatch-block { height: 92px; }
+  .swatch-info { padding: 14px 16px 18px; }
+  .swatch-name { font-size: 14px; font-weight: 700; line-height: 1.6; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--color-muted); margin-top: 5px; }
+  .swatch-role { font-size: 11px; color: var(--color-muted); margin-top: 6px; line-height: 1.6; }
+
+  /* ===== TYPOGRAPHY ===== */
+  .type-sample { padding: 26px 0; border-bottom: 1px solid #d8d8d8; }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-muted); margin-top: 12px; line-height: 1.6; }
+  .kern-demo { background: var(--color-ink); color: #fff; padding: 30px; }
+  .kern-demo .row { font-size: 42px; font-weight: 700; line-height: var(--lh-tight); }
+
+  /* ===== ARTICLE ===== */
+  .article { max-width: 700px; }
+  .article h2 { font-size: 20px; font-weight: 700; line-height: var(--lh); margin-bottom: 16px; }
+  .article h3 { font-size: 16px; font-weight: 700; line-height: var(--lh); margin: 34px 0 8px; }
+  .article p { font-size: 16px; line-height: var(--lh); margin-bottom: 20px; }
+  .article a { color: var(--color-ink); text-decoration: underline; }
+  .article .cap { font-size: 14px; line-height: var(--lh); color: var(--color-muted); }
+
+  /* ===== BUTTONS ===== */
+  .btn-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--font); font-weight: 400; line-height: var(--lh);
+    text-decoration: none; cursor: pointer; display: inline-block;
+    border-radius: var(--radius); position: relative; }
+  .btn-outline { background: #fff; color: var(--color-ink); border: 1px solid var(--color-ink);
+    padding: 10px 44px 10px 10.5px; font-size: 14px; }
+  .btn-outline::after { content: "›"; position: absolute; right: 16px; top: 50%; transform: translateY(-55%); font-size: 16px; }
+  .btn-outline:hover { background: var(--color-ink); color: #fff; }
+  .btn-outline-blank::after { content: "↗"; font-size: 13px; }
+  .btn-solid { background: var(--color-ink); color: #fff; border: 1px solid #fff;
+    padding: 13px 30px; font-size: 14px; }
+  .btn-solid:hover { opacity: .82; }
+  .btn-text { background: #fff; color: var(--color-ink); border: none; padding: 1px 6px; font-size: 16px; }
+  .btn-text:hover { text-decoration: underline; }
+  .btn-ghost-demo { background: var(--color-ink); padding: 40px; display: flex; justify-content: center; }
+
+  .linklist { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 0 30px; }
+  .linklist a { display: block; color: var(--color-ink); text-decoration: none; font-size: 14px;
+    line-height: var(--lh); padding: 12px 0; border-bottom: 1px solid #d8d8d8; position: relative; }
+  .linklist a::after { content: "›"; position: absolute; right: 6px; }
+  .linklist a:hover { text-decoration: underline; }
+
+  /* ===== CARDS ===== */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 30px; }
+  .card { background: #fff; border-top: var(--rule-card) solid var(--color-ink);
+    border-radius: var(--radius); box-shadow: none; padding-top: 20px; }
+  .card-visual { height: 150px; background: linear-gradient(140deg,#dfe4e6,#c9d2cf); border-radius: var(--radius); }
+  .card-label { font-size: 14px; line-height: var(--lh); margin-top: 16px; }
+  .card-title { font-size: 18px; line-height: var(--lh-tight); margin-top: 6px; }
+  .card-date { font-size: 14px; line-height: var(--lh); color: var(--color-muted); margin-top: 10px; }
+
+  /* ===== FORMS ===== */
+  .form { max-width: 460px; display: grid; gap: 26px; }
+  .field label { display: block; font-size: 14px; font-weight: 700; line-height: var(--lh); margin-bottom: 8px; }
+  .field input { width: 100%; background: #fff; border: 1px solid var(--color-ink); border-radius: var(--radius);
+    padding: 10px; font-family: var(--font); font-size: 16px; line-height: var(--lh); color: var(--color-ink);
+    font-feature-settings: normal; }
+  .field input::placeholder { color: var(--color-muted); }
+  .field input:focus { outline: none; border-width: 2px; }
+  .field--error input { border-color: var(--color-error); }
+  .field--error .msg { font-size: 14px; color: var(--color-error); margin-top: 6px; line-height: var(--lh); }
+
+  /* ===== ELEVATION ===== */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 30px; }
+  .elev { border-radius: var(--radius); padding: 28px; text-align: center; font-size: 16px; line-height: var(--lh); }
+  .elev--0 { background: #fff; }
+  .elev--1 { background: #fff; border: 1px solid var(--color-ink); }
+  .elev--2 { background: #fff; border-top: 4px solid var(--color-ink); }
+  .elev--3 { background: var(--color-nav); }
+  .elev--4 { background: var(--color-ink); color: #fff; }
+  .elev-cap { font-family: var(--font-mono); font-size: 11px; color: var(--color-muted); margin-top: 10px;
+    text-align: center; line-height: 1.6; }
+
+  /* ===== LAYOUT ===== */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-ink); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: var(--color-muted); margin-top: 8px; text-align: center; }
+
+  footer { background: var(--color-ink); color: #fff; padding: 60px 0; margin-top: 60px; }
+  footer .flinks { display: flex; gap: 30px; flex-wrap: wrap; margin-bottom: 26px; }
+  footer .flinks a { color: #fff; text-decoration: none; font-size: 14px; line-height: var(--lh); }
+  footer .flinks a:hover { text-decoration: underline; }
+  footer .ftext { font-size: 14px; line-height: var(--lh); margin-bottom: 20px; max-width: 640px; }
+  footer .fnote { font-size: 12px; line-height: var(--lh); color: #b7c0c4; margin-top: 30px; }
+</style>
+</head>
+<body>
+
+<header class="siteheader">
+  <div class="logoblock"><span class="mark">CONCENT</span></div>
+  <div class="headercols">
+    <div class="subnav">
+      <a href="#">ニュース・イベント</a>
+      <a href="#">採用情報</a>
+      <a href="#">アクセス</a>
+      <span class="sep">|</span>
+      <a href="#">ENGLISH</a>
+      <span class="search"><span>⌕</span><input type="text" placeholder="キーワードを入力してください"></span>
+    </div>
+    <nav class="gnav">
+      <a href="#">コンセントについて</a>
+      <a href="#">事例紹介</a>
+      <a href="#">ソリューション</a>
+      <a href="#">ひらくデザイン</a>
+      <a href="#">資料ダウンロード</a>
+      <a href="#">お問い合わせ</a>
+      <a href="#">メルマガ登録</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="veil">
+    <h1 class="c-headingCopy">伴走するデザイン</h1>
+    <a class="btn-ghost" href="#">コンセントについて</a>
+  </div>
+  <button class="videoctl">動画を停止する ⏸</button>
+</section>
+
+<div class="container">
+
+<section class="section">
+  <div class="eyebrow">01 — COLORS</div>
+  <h2 class="c-headingLv2">カラーパレット</h2>
+  <hr class="rule">
+  <p class="lead">黒と白の 2 色が骨格。有彩色は存在せず、面色を持つのはグローバルナビ帯のペールブルーグレー #d4dde1 とサブナビ帯の #eeeff0 だけ。リンクも色を変えず、黒のまま下線か矢印で示す。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-ink)"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#000000</div><div class="swatch-role">文字・罫・ロゴブロック・フッター</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-paper);box-shadow:inset 0 0 0 1px #000"></div><div class="swatch-info"><div class="swatch-name">Paper</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">ページ地色・ロゴの白抜き</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-nav)"></div><div class="swatch-info"><div class="swatch-name">Nav Blue Gray</div><div class="swatch-hex">#d4dde1</div><div class="swatch-role">グローバルナビ帯。唯一の面色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-subnav)"></div><div class="swatch-info"><div class="swatch-name">Sub Nav Gray</div><div class="swatch-hex">#eeeff0</div><div class="swatch-role">サブナビ帯</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-bluegray)"></div><div class="swatch-info"><div class="swatch-name">Text Blue Gray</div><div class="swatch-hex">#616f75</div><div class="swatch-role">サブナビの文字色（面と同色相）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-muted)"></div><div class="swatch-info"><div class="swatch-name">Text Muted</div><div class="swatch-hex">#777777</div><div class="swatch-role">補助テキスト・小見出しラベル</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-overlay)"></div><div class="swatch-info"><div class="swatch-name">Overlay</div><div class="swatch-hex">rgba(0,0,0,.54)</div><div class="swatch-role">ヒーロー動画の暗幕</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-error)"></div><div class="swatch-info"><div class="swatch-name">Error</div><div class="swatch-hex">#c0392b</div><div class="swatch-role">フォーム用途のみ。面で塗らない</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="eyebrow">02 — TYPOGRAPHY</div>
+  <h2 class="c-headingLv2">タイポグラフィ</h2>
+  <hr class="rule">
+  <p class="lead">和文はヒラギノ UD 角ゴ StdN（W3 / W6）。font-feature-settings は全域 normal で、日本語サイトの主流である palt を意図的に使わない。UD 書体は「読み間違えにくさ」を優先して字面を大きく均一に設計しているため、詰めると設計意図が損なわれる。letter-spacing も全域 normal、行間は 1.8。</p>
+
+  <div class="type-sample"><div class="w6" style="font-size:34px;line-height:1.8">事例紹介</div><div class="type-meta">Page Display · UD 角ゴ W6 · 34px · lh 1.8 (61.2px) · ls normal · ffs normal</div></div>
+  <div class="type-sample"><div class="w6" style="font-size:20px;line-height:1.8">ピックアップ</div><div class="type-meta">Heading 2 · UD 角ゴ W6 · 20px · lh 1.8 (36px) · c-headingLv2。見出しの右にスラッシュ状の罫を添える</div></div>
+  <div class="type-sample"><div style="font-size:18px;line-height:1.6">AI フェムテックサービス「つきのかたち」導入検証</div><div class="type-meta">Lead · UD 角ゴ W3 · 18px · <strong>lh 1.6 (28.8px)</strong> · c-linkarea_textDescription</div></div>
+  <div class="type-sample"><div style="font-size:16px;line-height:1.8">本文（既定）— コンセントは、事業と組織にデザインを実装する会社です。リサーチから設計、運用の伴走までを一続きの仕事として引き受けています。</div><div class="type-meta">Body · UD 角ゴ W3 · 16px · <strong>lh 1.8 (28.8px)</strong> · ls normal · ffs normal</div></div>
+  <div class="type-sample"><div style="font-size:14px;line-height:1.8">[ セミナー・イベント ]　<span class="w6">開催日：2026.8.2（日）</span></div><div class="type-meta">Sub / Nav · 14px · lh 1.8 (25.2px)。強調のみ weight 700（原典は W6 へファミリ切替）</div></div>
+  <div class="type-sample"><div style="font-size:12px;line-height:1.8;color:var(--color-muted)">ソリューションから探す：</div><div class="type-meta">Small · 12px · lh 1.8 (21.6px) · #767676</div></div>
+  <div class="type-sample"><div style="font-size:11px;line-height:1;color:var(--color-bluegray)">TOP ＞ 事例紹介</div><div class="type-meta">Micro · 11px · <strong>lh 1.0</strong> · #616f75（サブナビ・パンくず）</div></div>
+
+  <div class="type-sample">
+    <div class="kern-demo">
+      <div class="row"><span class="u-kerning-031">ナ</span><span class="u-kerning-032">レ</span><span class="u-kerning-033">ッ</span><span class="u-kerning-034">ジ</span><span class="u-kerning-035">を</span><span class="u-kerning-036">ひ</span>らく</div>
+      <div class="row" style="letter-spacing:normal;margin-top:10px;opacity:.55">ナレッジをひらく</div>
+    </div>
+    <div class="type-meta">Key Copy · UD 角ゴ W6 · 42px · lh 1.6 — <strong>上が 1 文字単位のカーニング、下が letter-spacing: normal のまま</strong>。<br>
+      .u-kerning-031「ナ」-5.21px (-0.124em) ／ -032「レ」-5.21px ／ -033「ッ」-4.05px (-0.096em) ／ -034「ジ」0.01px (0em) ／ -035「を」0.01px ／ -036「ひ」-1.15px (-0.027em)。<br>
+      <strong>値は字の組み合わせごとに違う。直線的で余白の大きい仮名は強く詰め、字面の詰まった字は動かさない。本文には展開しないこと</strong></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="eyebrow">03 — ARTICLE</div>
+  <h2 class="c-headingLv2">組版サンプル</h2>
+  <hr class="rule">
+  <div class="article">
+    <h2>ユーザーへの深い理解と「ストーリー」がビジネスを動かす</h2>
+    <p class="cap">ひらくデザイン ／ 2026.7.15 ／ サービスデザイン</p>
+    <h3>調査から設計へ、途切れさせない</h3>
+    <p>ユーザー調査の結果を、そのまま施策の一覧に落としてしまうと、なぜそれをやるのかという理由が抜け落ちます。私たちは、調査で得た事実を一度「その人の物語」として組み直したうえで、設計の判断基準に変換します。</p>
+    <p>行間を 1.8 と広く取っているのは、読み物としての可読性を優先しているためです。UD 書体は字面が大きいぶん行が詰まって見えやすく、詰めると窮屈になります。<a href="#">サービスデザインの支援内容はこちら</a>。</p>
+    <h3>伴走という関わり方</h3>
+    <p>納品して終わりではなく、運用のなかで仮説を確かめ、必要なら設計に戻る。その往復に付き合うことを、私たちは「伴走」と呼んでいます。</p>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="eyebrow">04 — BUTTONS</div>
+  <h2 class="c-headingLv2">ボタン</h2>
+  <hr class="rule">
+  <p class="lead">CTA は 3 系統。本文中は白地＋黒 1px アウトライン、フッターは黒ベタ＋白文字＋白 1px 罫、画像・動画の上は透明＋白 1px 罫。いずれも角丸 0px で、右端に 44px の余白を取ってシェブロン › か外部リンクアイコンを絶対配置する。</p>
+  <div class="btn-row" style="margin-bottom:30px">
+    <a class="btn btn-outline" href="#">事例の詳細をみる</a>
+    <a class="btn btn-outline btn-outline-blank" href="#">Googleマップを開く</a>
+    <a class="btn btn-solid" href="#">お問い合わせ</a>
+    <a class="btn btn-text" href="#">もっと見る</a>
+    <a class="btn btn-text" href="#">事例を絞り込む</a>
+  </div>
+  <div class="btn-ghost-demo" style="margin-bottom:30px">
+    <a class="btn-ghost" href="#">コンセントについて</a>
+  </div>
+  <div class="linklist">
+    <a href="#">デザイン経営支援</a>
+    <a href="#">サービスデザイン</a>
+    <a href="#">UX / UI デザイン</a>
+    <a href="#">コンテンツデザイン</a>
+    <a href="#">ブランドデザイン</a>
+    <a href="#">組織づくり支援</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="eyebrow">05 — CARDS</div>
+  <h2 class="c-headingLv2">カード</h2>
+  <hr class="rule">
+  <p class="lead">カードは上辺に 4px solid #000000 の罫だけを持つ。他辺の罫なし、角丸 0px、影なし。誌面の「柱」に相当するこの罫がカードの帰属を示す。</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-visual"></div><div class="card-label">[ セミナー・イベント ]</div><div class="card-title">CONCENT DESIGN SCHOOL ライブ講義</div><div class="card-date">開催日：2026.7.28（火）</div></div>
+    <div class="card"><div class="card-visual"></div><div class="card-label">[ 事例紹介 ]</div><div class="card-title">AI フェムテックサービス「つきのかたち」導入検証</div><div class="card-date">2026.7.15</div></div>
+    <div class="card"><div class="card-visual"></div><div class="card-label">[ ひらくデザイン ]</div><div class="card-title">Service Design Network 日本支部の活動から</div><div class="card-date">2026.7.4</div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="eyebrow">06 — FORMS</div>
+  <h2 class="c-headingLv2">フォーム</h2>
+  <hr class="rule">
+  <p class="lead">デフォルト / フォーカス / エラーの3状態。角丸 0px、枠は黒 1px。フォーカスは色を変えず罫を 2px に太らせる。エラーは文字と 1px 罫だけで示し、面では塗らない。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="山田 花子"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="03-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn btn-solid" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="eyebrow">07 — ELEVATION</div>
+  <h2 class="c-headingLv2">奥行き</h2>
+  <hr class="rule">
+  <p class="lead">実測では全要素が box-shadow: none。奥行きは「罫の太さ」（1px → 4px）と面色（#d4dde1 / #eeeff0）、そしてヒーローの暗幕だけで作る。#d4dde1 は影の代わりに、ヘッダーが本文より手前にあることを示す。</p>
+  <div class="elev-grid">
+    <div><div class="elev elev--0">Level 0</div><div class="elev-cap">none（既定）</div></div>
+    <div><div class="elev elev--1">Level 1</div><div class="elev-cap">1px solid #000（ボタン・入力欄）</div></div>
+    <div><div class="elev elev--2">Level 2</div><div class="elev-cap"><strong>4px solid #000（カード上辺）</strong></div></div>
+    <div><div class="elev elev--3">Level 3</div><div class="elev-cap">#d4dde1（ヘッダー帯）</div></div>
+    <div><div class="elev elev--4">Level 4</div><div class="elev-cap">rgba(0,0,0,.54)（ヒーローの暗幕）</div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="eyebrow">08 — LAYOUT</div>
+  <h2 class="c-headingLv2">スペーシング</h2>
+  <hr class="rule">
+  <p class="lead">6 / 10 / 20 / 30 / 44 / 80px。44px は「アイコン用の右余白」として繰り返し現れる。コンテナは 1366px、事例カードは 3 カラム・ガター 30px。ヒーローの動画グリッドだけ全幅ブリードする。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:6px;height:6px"></div><div class="space-label">XS 6</div></div>
+    <div><div class="space-bar" style="width:10px;height:10px"></div><div class="space-label">S 10</div></div>
+    <div><div class="space-bar" style="width:20px;height:20px"></div><div class="space-label">M 20</div></div>
+    <div><div class="space-bar" style="width:30px;height:30px"></div><div class="space-label">L 30</div></div>
+    <div><div class="space-bar" style="width:44px;height:44px"></div><div class="space-label">XL 44</div></div>
+    <div><div class="space-bar" style="width:80px;height:80px"></div><div class="space-label">XXL 80</div></div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <div class="container">
+    <div class="ftext">お仕事のご相談やお見積もり、ご不明な点など、お気軽にお問い合わせください。</div>
+    <a class="btn btn-solid" href="#">お問い合わせ</a>
+    <div class="flinks" style="margin-top:36px">
+      <a href="#">コンセントについて</a>
+      <a href="#">事例紹介</a>
+      <a href="#">ソリューション</a>
+      <a href="#">ひらくデザイン</a>
+      <a href="#">資料ダウンロード</a>
+      <a href="#">採用情報</a>
+      <a href="#">アクセス</a>
+    </div>
+    <div class="fnote">株式会社コンセント CONCENT, Inc. — Design System Preview　/　実測ベース 2026-07-29</div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 東京都写真美術館 TOP MUSEUM</title>
+<!--
+  NOTE: 原典の欧文は Univers Next W04（Monotype）、和文は游ゴシック体 Pr6N（M / D）を
+  Web フォント配信サービス経由で読み込んでいる。いずれもライセンスフォントのため、
+  ローカルの preview.html では表示できない。
+  ここでは欧文に "Archivo"、和文に "Zen Kaku Gothic New"(400 / 500) を代替として使用している。
+  Archivo は Univers と同じグロテスク系、Zen Kaku Gothic New は游ゴシックに近い
+  モダンな骨格を持つ。実装時は必ず Univers Next / 游ゴシック Pr6N を読み込むこと。
+
+  原典の組版設定:
+    html { font-size: 10px }        1rem = 10px。文字サイズ切替はここを動かす
+    letter-spacing: -0.05em         全域。36px のセクション見出しのみ +1px に反転
+    font-feature-settings: "palt"   全域。フォーム要素のみ normal
+    font-weight: 400                全域。太さは 游ゴ M ↔ D のファミリ切替で表現する
+
+  日本語サイトで全域マイナス字間は珍しく、これが TOP MUSEUM の字面を決めている。
+  本プレビューでは代替フォント（Zen Kaku Gothic New 400 / 500）で
+  M / D の 2 段を再現している。
+
+  余白は --s0 〜 --s19 = calc(0.5em * n) のトークン。em 基準なので
+  文字サイズ切替（大 / 小）に連動して余白も伸縮する。
+
+  ヘッダーのアクセシビリティ切替（配色 青/黒/黄・文字サイズ 大/小）は
+  このサイトの中核。UI に有彩色が無いことがこの切替を成立させている。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --k:  #000000;    /* 文字・罫（--k: #111 が定義されているが描画は純黒） */
+    --k2: #333333;
+    --k3: #555555;
+    --w:  #ffffff;
+    --g1: #f5f5f5;
+    --g2: #ededed;
+    --g3: #cccccc;
+    --g4: #aaaaaa;
+    --g5: #777777;
+    --g6: #666666;
+    --calendar-closed: #d9d9d9;  /* カレンダーの休館日セル */
+    --toolbar-active:  #5c5c5c;  /* a11y ボタンのアクティブ */
+    --cCaution: #e20c0c;         /* 唯一の意味を持つ有彩色 */
+    /* 下層用の予約トークン。トップレベルの UI には出さない */
+    --c1: #1678bf; --c2: #66caf2; --c3: #d8695d;
+    --c4: #50cc85; --c5: #b277e0; --c6: #e0c332;
+
+    /* === Fonts === */
+    /* 原典: "Univers Next W04 Regular", "游ゴシック体 Pr6N M" */
+    --font:   "Archivo", "Zen Kaku Gothic New", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fzS: 1.4rem;   /* 14px */
+    --fz:  1.6rem;   /* 16px */
+    --fzM: 1.8rem;   /* 18px */
+    --fzL: 2rem;     /* 20px */
+    --lhS: 1.4;
+    --lh:  1.8;      /* 本文の既定 */
+    --lhL: 2.4;
+    --ls:  -0.05em;  /* 全域 */
+
+    /* === Spacing: 0.5em 刻み === */
+    --s1: calc(0.5em * 1);  --s2: calc(0.5em * 2);  --s3: calc(0.5em * 3);
+    --s4: calc(0.5em * 4);  --s6: calc(0.5em * 6);  --s8: calc(0.5em * 8);
+    --s10: calc(0.5em * 10); --s13: calc(0.5em * 13);
+    --spa: 15px;            /* コンテナの左右パディング */
+
+    /* === Shape === */
+    --bdrs0: 0px;    /* 原則 */
+    --bdrs-a11y: 2px;/* アクセシビリティボタンのみ */
+    --bxs1: 0px 0px 10px 0px rgba(0,0,0,0.2);  /* ドロップダウン等の例外用 */
+  }
+  html { font-size: 10px; }   /* 1rem = 10px */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--w); color: var(--k);
+    font-family: var(--font);
+    font-size: var(--fz); font-weight: 400;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);           /* 原典は全域 -0.05em */
+    font-feature-settings: "palt";       /* 原典は全域 */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  .d { font-weight: 500; }   /* 原典の 游ゴシック Pr6N D 相当 */
+  .en { font-family: "Archivo", sans-serif; }
+
+  .container { max-width: 1130px; margin: 0 auto; padding: 0 var(--spa); }
+
+  /* ===== HEADER ===== */
+  .header { border-bottom: 1px solid var(--g3); padding: var(--s4) 0 0; }
+  .header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s4); flex-wrap: wrap; }
+  .logo { font-family: "Archivo", sans-serif; font-size: 4.2rem; font-weight: 400; letter-spacing: .06em; line-height: 1; }
+  .logo-ja { text-align: right; }
+  .logo-ja .jp { font-size: 2.6rem; letter-spacing: var(--ls); line-height: 1.2; }
+  .logo-ja .en2 { font-family:"Archivo",sans-serif; font-size: 1.2rem; letter-spacing: .04em; margin-top: 4px; }
+  .status { display: flex; align-items: center; gap: 8px; margin-top: var(--s2); }
+  .status .mark { width: 18px; height: 18px; border-radius: 50%; background: #2a9d4a; color: #fff;
+    font-size: 1.1rem; display: flex; align-items: center; justify-content: center; letter-spacing: normal; }
+  .status .txt { font-size: 2.4rem; font-weight: 500; line-height: 1.2; letter-spacing: var(--ls); }
+
+  /* a11y toolbar */
+  .a11y { display: flex; align-items: center; gap: var(--s2); }
+  .a11y-group { display: flex; gap: 6px; }
+  .a11y-btn { width: 30px; height: 30px; border: 1px solid var(--k); border-radius: var(--bdrs-a11y);
+    background: transparent; color: var(--k); font-family: var(--font); font-size: 1.4rem;
+    letter-spacing: normal; font-feature-settings: normal; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; }
+  .a11y-btn.is-active { background: var(--toolbar-active); color: var(--w); }
+  .a11y-search { display: flex; align-items: center; border: 1px solid var(--g3); border-radius: var(--bdrs0);
+    padding: 6px 10px; gap: 6px; }
+  .a11y-search input { border: none; outline: none; font-family: var(--font); font-size: 1.5rem;
+    letter-spacing: var(--ls); font-feature-settings: normal; width: 150px; }
+  .a11y-lang { border: 1px solid var(--k); border-radius: var(--bdrs0); padding: 4px 10px;
+    font-size: 1.2rem; letter-spacing: normal; font-feature-settings: normal; }
+
+  .mainnav { display: flex; justify-content: space-between; border-top: 1px solid var(--g3);
+    margin-top: var(--s3); }
+  .mainnav a { text-decoration: none; color: var(--k); font-size: 1.5rem; letter-spacing: var(--ls);
+    padding: var(--s3) var(--s4); line-height: 1; }
+  .mainnav a:hover { background: var(--g1); }
+
+  /* ===== SECTIONS ===== */
+  .section { padding: var(--s13) 0; }
+  .h01 { margin-bottom: var(--s6); }
+  .h01 .en { display: block; font-size: 3.6rem; letter-spacing: 1px; line-height: 1; }
+  .h01 .ja { display: block; font-size: 1.8rem; font-weight: 500; letter-spacing: var(--ls); margin-top: 10px; }
+  .lead { font-size: var(--fzM); line-height: 1.6; letter-spacing: var(--ls); max-width: 760px; margin-bottom: var(--s6); }
+  .divider { border: none; border-top: 1px solid var(--g3); }
+
+  /* NOTICE BOX（黒 2px の囲み） */
+  .notice { border: 2px solid var(--k); border-radius: var(--bdrs0); padding: 10px;
+    font-size: var(--fzM); line-height: 1.6; letter-spacing: var(--ls); text-align: center; }
+  .notice a { color: var(--k); text-decoration: underline; }
+
+  /* ===== COLORS ===== */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: var(--s3); }
+  .swatch { border: 1px solid var(--g3); border-radius: var(--bdrs0); overflow: hidden; background: var(--w); }
+  .swatch-block { height: 88px; }
+  .swatch-info { padding: 12px 14px 16px; }
+  .swatch-name { font-size: 1.4rem; font-weight: 500; letter-spacing: var(--ls); line-height: 1.4; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 1.1rem; color: var(--g5); margin-top: 5px; letter-spacing: normal; }
+  .swatch-role { font-size: 1.1rem; color: var(--g5); margin-top: 6px; line-height: 1.6; }
+
+  /* ===== TYPOGRAPHY ===== */
+  .type-sample { padding: var(--s4) 0; border-bottom: 1px solid var(--g3); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 1.1rem; color: var(--g5); margin-top: 12px;
+    line-height: 1.5; letter-spacing: normal; }
+  .ls-demo { display: grid; gap: 10px; }
+
+  /* ===== ARTICLE ===== */
+  .article { max-width: 680px; }
+  .article h2 { font-size: var(--fzL); font-weight: 500; line-height: 1.4; letter-spacing: var(--ls); margin-bottom: var(--s3); }
+  .article h3 { font-size: var(--fzM); font-weight: 500; line-height: 1.4; letter-spacing: var(--ls); margin: var(--s6) 0 var(--s2); }
+  .article p { font-size: var(--fz); line-height: var(--lh); letter-spacing: var(--ls); margin-bottom: var(--s3); }
+  .article p.wide { line-height: var(--lhL); }
+  .article a { color: var(--k); text-decoration: underline; }
+  .article .meta { font-family: "Archivo", sans-serif; font-size: 2.2rem; letter-spacing: -0.032em; line-height: 1; margin-bottom: var(--s3); }
+
+  /* ===== BUTTONS ===== */
+  .btn-row { display: flex; gap: var(--s3); flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--font); font-size: var(--fz); font-weight: 400; letter-spacing: var(--ls);
+    line-height: 1.4; text-decoration: none; cursor: pointer; display: inline-block; }
+  .btn-outline { background: transparent; color: var(--k); border: 1px solid var(--k);
+    border-radius: var(--bdrs0); padding: var(--s2) var(--s4); }
+  .btn-outline:hover { background: var(--k); color: var(--w); }
+  .btn-link { background: transparent; color: var(--k); text-decoration: underline; padding: var(--s2) 0; }
+  .linklist { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 0 var(--s4); }
+  .linklist a { display: block; color: var(--k); text-decoration: underline; font-size: var(--fz);
+    letter-spacing: var(--ls); line-height: 1.6; padding: var(--s2) 0; border-bottom: 1px solid var(--g3); }
+
+  /* ===== CARDS ===== */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: var(--s4); }
+  .card { background: var(--w); border-radius: var(--bdrs0); }
+  .card-visual { height: 220px; background: var(--g1); border-radius: var(--bdrs0); }
+  .card-body { padding: var(--s3) 0 0; }
+  .card-title { font-size: var(--fzM); font-weight: 500; line-height: 1.5; letter-spacing: var(--ls); }
+  .card-date { font-family: "Archivo", sans-serif; font-size: 2.2rem; letter-spacing: -0.032em; line-height: 1; margin-top: 10px; }
+
+  /* ===== CALENDAR ===== */
+  .clndr { border-collapse: collapse; font-size: var(--fzM); letter-spacing: var(--ls); color: #212121; }
+  .clndr th, .clndr td { width: 46px; height: 46px; text-align: center; border: 1px solid var(--g3);
+    border-radius: var(--bdrs0); line-height: 1; }
+  .clndr td.closed { background: var(--calendar-closed); }
+  .clndr-legend { display: flex; gap: var(--s3); margin-top: var(--s2); font-size: 1.3rem; letter-spacing: var(--ls); align-items: center; }
+  .clndr-legend i { display: inline-block; width: 18px; height: 18px; border: 1px solid var(--g3); vertical-align: middle; margin-right: 6px; }
+  .clndr-legend i.closed { background: var(--calendar-closed); }
+
+  /* ===== FORMS ===== */
+  .form { max-width: 460px; display: grid; gap: var(--s4); }
+  .field label { display: block; font-size: var(--fzS); font-weight: 500; letter-spacing: var(--ls); margin-bottom: 8px; }
+  .field input { width: 100%; background: var(--w); border: 1px solid var(--g3); border-radius: var(--bdrs0);
+    padding: var(--s1) var(--s2); font-family: var(--font); font-size: 1.5rem; line-height: 1.6;
+    letter-spacing: var(--ls); color: var(--k); font-feature-settings: normal; }
+  .field input::placeholder { color: var(--g4); }
+  .field input:focus { outline: none; border-color: var(--k); }
+  .field--error input { border-color: var(--cCaution); }
+  .field--error .msg { font-size: var(--fzS); color: var(--cCaution); margin-top: 6px; letter-spacing: var(--ls); }
+
+  /* ===== ELEVATION ===== */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: var(--s4); }
+  .elev { border-radius: var(--bdrs0); padding: var(--s5, 28px); text-align: center; font-size: var(--fz); letter-spacing: var(--ls); }
+  .elev--0 { background: var(--w); }
+  .elev--1 { background: var(--w); border: 1px solid var(--g3); }
+  .elev--2 { background: var(--w); border: 2px solid var(--k); }
+  .elev--3 { background: var(--w); box-shadow: var(--bxs1); }
+  .elev-cap { font-family: var(--font-mono); font-size: 1.1rem; color: var(--g5); margin-top: 10px;
+    text-align: center; line-height: 1.5; letter-spacing: normal; }
+
+  /* ===== LAYOUT ===== */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--k); }
+  .space-label { font-family: var(--font-mono); font-size: 1.1rem; color: var(--g5); margin-top: 8px;
+    text-align: center; letter-spacing: normal; }
+
+  footer { border-top: 1px solid var(--g3); padding: var(--s10) 0; margin-top: var(--s8); }
+  footer .flinks { display: flex; gap: var(--s4); flex-wrap: wrap; margin-bottom: var(--s3); }
+  footer .flinks a { color: var(--k); text-decoration: none; font-size: var(--fzS); letter-spacing: var(--ls); }
+  footer .flinks a:hover { text-decoration: underline; }
+  footer .fnote { font-size: 1.2rem; line-height: 1.5; letter-spacing: -0.03em; color: var(--k3); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container">
+    <div class="header-top">
+      <div>
+        <div class="logo">TOP MUSEUM</div>
+        <div class="status">
+          <span class="mark">✓</span>
+          <span class="txt">本日は開館しております(10:00−18:00)</span>
+        </div>
+      </div>
+      <div>
+        <div class="a11y" style="justify-content:flex-end;margin-bottom:10px">
+          <div class="a11y-group">
+            <button class="a11y-btn">青</button>
+            <button class="a11y-btn">黒</button>
+            <button class="a11y-btn">黄</button>
+          </div>
+          <div class="a11y-group">
+            <button class="a11y-btn">大</button>
+            <button class="a11y-btn is-active">小</button>
+          </div>
+        </div>
+        <div class="logo-ja">
+          <div class="jp">東京都写真美術館</div>
+          <div class="en2">TOKYO PHOTOGRAPHIC ART MUSEUM</div>
+        </div>
+        <div class="a11y" style="justify-content:flex-end;margin-top:10px">
+          <span class="a11y-search"><span>⌕</span><input type="text" placeholder="サイト内検索"></span>
+          <span class="a11y-lang">language</span>
+        </div>
+      </div>
+    </div>
+    <nav class="mainnav">
+      <a href="#">ご利用案内</a>
+      <a href="#">展覧会と上映</a>
+      <a href="#">教育普及</a>
+      <a href="#">コレクション</a>
+      <a href="#">図書室</a>
+      <a href="#">支援会員</a>
+      <a href="#">館について</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container" style="margin-top:var(--s6)">
+  <div class="notice">ご来館のお客様は、<a href="#">こちら</a>をご確認ください。</div>
+</div>
+
+<div class="container">
+
+<section class="section">
+  <h2 class="h01"><span class="en">COLORS</span><span class="ja d">カラーパレット</span></h2>
+  <p class="lead">地は白、文字は純黒。トップページの UI に有彩色は存在しない。--c1〜--c6 は下層のカテゴリ分類用に予約されたトークンで、ここに持ち込むとアクセシビリティ配色切替（青 / 黒 / 黄）が破綻する。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:var(--k)"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#000000</div><div class="swatch-role">文字・罫・囲みのすべて</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--w);box-shadow:inset 0 0 0 1px #ccc"></div><div class="swatch-info"><div class="swatch-name">Paper</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">ページ地色・全ての面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--g1)"></div><div class="swatch-info"><div class="swatch-name">Gray 1</div><div class="swatch-hex">#f5f5f5</div><div class="swatch-role">--g1 ホバー・非活性</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--g2)"></div><div class="swatch-info"><div class="swatch-name">Gray 2</div><div class="swatch-hex">#ededed</div><div class="swatch-role">--g2 区切りの面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--calendar-closed)"></div><div class="swatch-info"><div class="swatch-name">Calendar Closed</div><div class="swatch-hex">#d9d9d9</div><div class="swatch-role">カレンダーの休館日セル</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--toolbar-active)"></div><div class="swatch-info"><div class="swatch-name">Toolbar Active</div><div class="swatch-hex">#5c5c5c</div><div class="swatch-role">a11y ボタンのアクティブ</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--g3)"></div><div class="swatch-info"><div class="swatch-name">Gray 3</div><div class="swatch-hex">#cccccc</div><div class="swatch-role">--g3 一般の罫</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--g5)"></div><div class="swatch-info"><div class="swatch-name">Gray 5</div><div class="swatch-hex">#777777</div><div class="swatch-role">--g5 補助テキスト</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--cCaution)"></div><div class="swatch-info"><div class="swatch-name">Caution</div><div class="swatch-hex">#e20c0c</div><div class="swatch-role">唯一の意味を持つ有彩色</div></div></div>
+  </div>
+  <p class="lead" style="margin-top:var(--s6);font-size:var(--fzS)">下層用の予約トークン（トップレベルの UI には出さない）</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="height:56px;background:var(--c1)"></div><div class="swatch-info"><div class="swatch-hex">--c1 #1678bf</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="height:56px;background:var(--c2)"></div><div class="swatch-info"><div class="swatch-hex">--c2 #66caf2</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="height:56px;background:var(--c3)"></div><div class="swatch-info"><div class="swatch-hex">--c3 #d8695d</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="height:56px;background:var(--c4)"></div><div class="swatch-info"><div class="swatch-hex">--c4 #50cc85</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="height:56px;background:var(--c5)"></div><div class="swatch-info"><div class="swatch-hex">--c5 #b277e0</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="height:56px;background:var(--c6)"></div><div class="swatch-info"><div class="swatch-hex">--c6 #e0c332</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <h2 class="h01"><span class="en">TYPOGRAPHY</span><span class="ja d">タイポグラフィ</span></h2>
+  <p class="lead">和文は游ゴシック体 Pr6N（M / D）、欧文は Univers Next W04。letter-spacing は全域 −0.05em で、実測値がすべて基準サイズ × −0.05 で揃う。例外は 36px のセクション見出しの +1px だけ。太さは font-weight ではなくファミリ（M ↔ D）の切り替えで作る。</p>
+
+  <div class="type-sample">
+    <div><span class="en" style="font-size:3.6rem;letter-spacing:1px;line-height:1">CURRENT</span></div>
+    <div class="d" style="font-size:1.8rem;letter-spacing:var(--ls);margin-top:10px">開催中の展覧会・上映</div>
+    <div class="type-meta">Section Heading · Univers 36px · <strong>ls +1px（唯一の正の字間）</strong> · lh 1.0 ＋ 游ゴ D 18px · ls −0.05em</div>
+  </div>
+  <div class="type-sample"><div class="d" style="font-size:2.4rem;line-height:1.2">本日は開館しております(10:00−18:00)</div><div class="type-meta">Status · 游ゴ D · 24px · weight 400 · lh 1.2 (28.8px) · ls −0.05em</div></div>
+  <div class="type-sample"><div class="en" style="font-size:2.2rem;letter-spacing:-0.032em;line-height:1">2026.6.18 — 2026.9.21</div><div class="type-meta">Date Display · Univers · 22px · lh 1.0 · ls −0.032em</div></div>
+  <div class="type-sample"><div style="font-size:var(--fzM);line-height:1.6">ご来館のお客様は、こちらをご確認ください。</div><div class="type-meta">Lead · 游ゴ M · 18px · lh 1.6 (28.8px) · ls −0.05em</div></div>
+  <div class="type-sample"><div style="font-size:var(--fz);line-height:var(--lh)">本文（既定）— 東京都写真美術館は、「写真・映像」を専門とする世界でも数少ない総合的な美術館です。収蔵作品は 3 万 7 千点を超えます。</div><div class="type-meta">Body · 游ゴ M · --fz 1.6rem (16px) · <strong>--lh 1.8</strong> · ls −0.05em</div></div>
+  <div class="type-sample"><div style="font-size:var(--fz);line-height:var(--lhL)">ゆったり組む場合 — 東京都写真美術館は、「写真・映像」を専門とする世界でも数少ない総合的な美術館です。展示・収集・保存・研究、そして教育普及を柱としています。</div><div class="type-meta">Body (--lhL) · 16px · <strong>lh 2.4</strong> — 解説文など特に読ませたい箇所に使う</div></div>
+  <div class="type-sample"><div style="font-size:1.5rem;line-height:1.9">ご利用案内　展覧会と上映　教育普及　コレクション</div><div class="type-meta">Nav Item · 游ゴ M · 15px · ls −0.05em · padding 0 20px</div></div>
+  <div class="type-sample">
+    <div class="ls-demo">
+      <div style="font-size:var(--fzM);letter-spacing:normal">字間 normal ― 写真と映像を専門とする美術館</div>
+      <div style="font-size:var(--fzM);letter-spacing:-0.05em">字間 −0.05em ― 写真と映像を専門とする美術館</div>
+    </div>
+    <div class="type-meta">Letter Spacing 比較 · 上が normal、下が原典の −0.05em。<strong>palt と重ねて掛けるのが TOP MUSEUM の組み方</strong>。ただし 10〜12px の小さい文字は −0.03em に緩めること</div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <h2 class="h01"><span class="en">EXHIBITION</span><span class="ja d">組版サンプル</span></h2>
+  <div class="article">
+    <div class="meta">2026.6.18 — 2026.9.21</div>
+    <h2>出光真子 おんなのさくひん ―ある映像作家の自伝</h2>
+    <h3>展覧会について</h3>
+    <p>1970 年代から映像による表現を続けてきた出光真子の、国内では初となる大規模な回顧展です。初期の 8mm 作品から近年の映像インスタレーションまで、約 40 点を一堂に展示します。</p>
+    <p class="wide">作家は、家庭という私的な場に置かれた女性の時間を主題に据え、既存の映画文法から離れた語り口を選び取ってきました。本展では、上映プログラムとあわせて、制作ノートや絵コンテもご覧いただけます。<a href="#">開館時間・観覧料はこちら</a>。</p>
+    <h3>関連イベント</h3>
+    <p>会期中の毎週土曜日、担当学芸員によるギャラリートークを行います。申込は不要です。所要時間は約 45 分です。</p>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <h2 class="h01"><span class="en">COMPONENTS</span><span class="ja d">ボタンと囲み</span></h2>
+  <p class="lead">囲みは黒 2px の罫。ボタンは黒 1px アウトラインで角丸 0px。一覧リンクはボタン化せず、下線付きの黒文字リンクで並べる。実際に角丸が付くのは a11y ボタンの 2px だけ。</p>
+  <div class="notice" style="text-align:left;margin-bottom:var(--s6)">お知らせ囲み — border: 2px solid #000000 / border-radius: 0px / padding: 10px</div>
+  <div class="btn-row" style="margin-bottom:var(--s6)">
+    <a class="btn btn-outline" href="#">展覧会の詳細をみる</a>
+    <a class="btn btn-link" href="#">お知らせ一覧</a>
+    <span class="a11y-group">
+      <button class="a11y-btn">青</button>
+      <button class="a11y-btn">黒</button>
+      <button class="a11y-btn">黄</button>
+      <button class="a11y-btn">大</button>
+      <button class="a11y-btn is-active">小</button>
+    </span>
+  </div>
+  <div class="linklist">
+    <a href="#">開館時間・休館日</a>
+    <a href="#">観覧料</a>
+    <a href="#">アクセス</a>
+    <a href="#">バリアフリー</a>
+    <a href="#">図書室</a>
+    <a href="#">支援会員</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <h2 class="h01"><span class="en">CARDS &amp; CALENDAR</span><span class="ja d">カードとカレンダー</span></h2>
+  <p class="lead">ポスター画像 → 展覧会名 → 会期（Univers 22px）の順に積む。角丸 0px、影なし、罫なし。カレンダーの休館日は面色 #d9d9d9 で示し、凡例を必ず併記する。</p>
+  <div class="card-grid" style="margin-bottom:var(--s8)">
+    <div class="card"><div class="card-visual"></div><div class="card-body"><div class="card-title">出光真子 おんなのさくひん</div><div class="card-date">2026.6.18 —</div></div></div>
+    <div class="card"><div class="card-visual"></div><div class="card-body"><div class="card-title">コレクション展 光と時間</div><div class="card-date">2026.7.4 —</div></div></div>
+    <div class="card"><div class="card-visual"></div><div class="card-body"><div class="card-title">恵比寿映像祭</div><div class="card-date">2027.2.5 —</div></div></div>
+  </div>
+  <table class="clndr">
+    <tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>
+    <tr><td></td><td class="closed">1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr>
+    <tr><td>7</td><td class="closed">8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td></tr>
+    <tr><td>14</td><td class="closed">15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td></tr>
+    <tr><td>21</td><td class="closed">22</td><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td></tr>
+  </table>
+  <div class="clndr-legend"><span><i></i>開館日</span><span><i class="closed"></i>休館日（毎週月曜）</span></div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <h2 class="h01"><span class="en">FORMS</span><span class="ja d">フォーム</span></h2>
+  <p class="lead">デフォルト / フォーカス / エラーの3状態。角丸 0px、枠は #cccccc、フォーカスは純黒。エラーは --cCaution を文字と 1px 罫に使い、面では塗らない。入力欄は font-feature-settings を normal に戻す。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="東京 花子"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="03-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn btn-outline" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <h2 class="h01"><span class="en">ELEVATION</span><span class="ja d">奥行き</span></h2>
+  <p class="lead">実測ではほぼ全要素が box-shadow: none。--bxs1 等のトークンは定義されているが使われていない。奥行きは「罫の太さ」で表現し、1px → 2px の 2 段しかない。</p>
+  <div class="elev-grid">
+    <div><div class="elev elev--0">Level 0</div><div class="elev-cap">none（既定）</div></div>
+    <div><div class="elev elev--1">Level 1</div><div class="elev-cap">1px solid #cccccc（一般の罫）</div></div>
+    <div><div class="elev elev--2">Level 2</div><div class="elev-cap"><strong>2px solid #000000</strong>（囲み）</div></div>
+    <div><div class="elev elev--3">Level 3</div><div class="elev-cap">--bxs1（ドロップダウン等の例外用）</div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <h2 class="h01"><span class="en">LAYOUT</span><span class="ja d">スペーシング</span></h2>
+  <p class="lead">--s0 〜 --s19 = calc(0.5em * n)。em 基準なので、文字サイズ切替（大 / 小）で余白も一緒に伸縮する。任意の px 値を書かず、必ずトークンから選ぶ。コンテナは 1130px、左右パディング 15px（--spa）。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:5px;height:5px"></div><div class="space-label">--s1 0.5em</div></div>
+    <div><div class="space-bar" style="width:10px;height:10px"></div><div class="space-label">--s2 1em</div></div>
+    <div><div class="space-bar" style="width:15px;height:15px"></div><div class="space-label">--s3 1.5em</div></div>
+    <div><div class="space-bar" style="width:20px;height:20px"></div><div class="space-label">--s4 2em</div></div>
+    <div><div class="space-bar" style="width:30px;height:30px"></div><div class="space-label">--s6 3em</div></div>
+    <div><div class="space-bar" style="width:40px;height:40px"></div><div class="space-label">--s8 4em</div></div>
+    <div><div class="space-bar" style="width:65px;height:65px"></div><div class="space-label">--s13 6.5em</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="flinks">
+    <a href="#">ご利用案内</a>
+    <a href="#">展覧会と上映</a>
+    <a href="#">教育普及</a>
+    <a href="#">コレクション</a>
+    <a href="#">図書室</a>
+    <a href="#">支援会員</a>
+    <a href="#">館について</a>
+  </div>
+  <div class="fnote">〒153-0062 東京都目黒区三田1-13-3 恵比寿ガーデンプレイス内 ／ 東京都写真美術館 TOP MUSEUM — Design System Preview　/　実測ベース 2026-07-29</div>
+</footer>
+
+</div>
+
+</body>
+</html>

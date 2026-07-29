@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 十和田市現代美術館 Towada Art Center</title>
+<!--
+  NOTE: 原典の欧文は Plain（Optimo）、和文は A-OTF 中ゴシック BBB Pr6N（Adobe Fonts）。
+  いずれもライセンスフォントのため、ローカルの preview.html では表示できない。
+  ここでは欧文に "Archivo"、和文に "Zen Kaku Gothic Antique"(400) を代替として使用している。
+  Zen Kaku Gothic Antique は中ゴシック BBB と同じく「線幅が均一で、かなのふところが
+  やや狭い」古典的ゴシックの性格を持ち、単一ウェイト運用時の印象が近い。
+  実装時は必ず Plain / A-OTF 中ゴシック BBB Pr6N を読み込むこと。
+
+  原典の組版設定は全域でひとつ:
+    font-weight: 400（サイト全域。太字を一切使わない）
+    font-feature-settings: "palt"（body から全域。見出し／本文で切り替えない）
+    letter-spacing: normal（全域）
+  文字サイズは 12 / 14.4 / 16.8 / 21.6 / 31.2px の 1.2 倍等比階層。
+  中ゴシック BBB は単一ウェイト書体であり、weight 400 固定はその設計に忠実な選択。
+
+  最大の特徴はページ全体を囲むスカイブルー #53c1e4 の 12px の枠。
+  原典は body 直下に 4 本の <span> を置き、
+  上辺 position:absolute / 左右・下辺 position:fixed / z-index:9 で、
+  ビューポートそのものを「展示室の額縁」に見立てている（正確な CSS は DESIGN.md §4 参照）。
+
+  このプレビューでは、ドキュメント全体を通して枠が見えるように
+  body の 12px border で額縁を表現している（fixed 要素は
+  ページ全体のスクリーンショットに写らないため）。
+  実装時は DESIGN.md §4 の 4 本 span 方式を使うこと。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Zen+Kaku+Gothic+Antique:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --color-bg: #ffffff;         /* ページ地色 */
+    --color-ink: #565656;        /* 本文・見出し（純黒ではない） */
+    --color-sky: #53c1e4;        /* Towada Sky。枠・ナビ現在地・ページトップ */
+    --color-sky-pale: #c1e9f5;   /* ヒーロー地・フッター */
+    --color-coral: #ff7e74;      /* 開館バッジ専用。唯一の暖色 */
+    --color-gray-50: #f1f1f1;    /* 画像プレースホルダ */
+    --color-gray-100: #ededed;   /* セクション区切りの薄面 */
+    --color-error: #c0392b;      /* エラー（フォーム用途のみ） */
+
+    /* === Fonts === */
+    /* 原典: Plain, a-otf-gothic-bbb-pr6n, -apple-system, "Yu Gothic", … */
+    --font: "Archivo", "Zen Kaku Gothic Antique", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type: 1.2 倍の等比階層 === */
+    --fs-12: 12px;
+    --fs-14: 14.4px;
+    --fs-16: 16.8px;   /* body 既定 */
+    --fs-21: 21.6px;
+    --fs-31: 31.2px;
+    --lh-body: 1.64;   /* 本文 */
+    --lh-head: 1.35;   /* 見出し */
+
+    /* === Shape === */
+    --radius: 0px;     /* 全要素 */
+    --frame: 12px;     /* 額縁の幅 */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-bg); color: var(--color-ink);
+    font-family: var(--font);
+    font-size: var(--fs-16); font-weight: 400;
+    line-height: var(--lh-body);
+    letter-spacing: normal;             /* 原典は全域 normal */
+    font-feature-settings: "palt";      /* 原典は body から全域 */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+
+    /* ===== FRAME（十和田で最も特徴的な要素）=====
+       原典は body 直下の 4 本の span（上辺 absolute / 左右・下辺 fixed / z-index 9）。
+       プレビューではページ全体で枠が見えるよう border で代替している。
+       実装時は DESIGN.md §4 の span 方式を使うこと。 */
+    border: var(--frame) solid var(--color-sky);
+  }
+  .page { padding: 0; }
+
+  /* ===== HEADER ===== */
+  .topbar { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+  .badge-open { background: var(--color-coral); color: #fff; font-size: var(--fs-12); line-height: 36px; padding: 0 12px; border-radius: var(--radius); text-decoration: none; }
+  .badge-closed { background: var(--color-ink); color: #fff; font-size: var(--fs-12); line-height: 36px; padding: 0 12px; border-radius: var(--radius); text-decoration: none; }
+  .topbar .addr { font-size: var(--fs-12); line-height: 36px; padding: 0 12px; }
+  .topbar .spacer { flex: 1; }
+  .langs { display: flex; }
+  .langs a { font-size: var(--fs-14); line-height: 36px; padding: 0 12px; text-decoration: none; color: var(--color-ink); border-radius: var(--radius); }
+  .langs a.is-current { background: var(--color-sky); color: #fff; }
+
+  .gnav { display: flex; flex-wrap: wrap; border-top: 1px solid var(--color-gray-100); }
+  .gnav a { font-size: var(--fs-14); line-height: 17.28px; padding: 15px 14.4px; text-decoration: none; color: var(--color-ink); border-radius: var(--radius); }
+  .gnav a.is-current { background: var(--color-sky); color: #fff; }
+  .gnav a:hover { color: var(--color-sky); }
+  .gnav a.is-current:hover { color: #fff; }
+
+  /* ===== HERO ===== */
+  /* 原典のヒーローは全画面の写真スライダー。地色（画像読込前に見える色）が #c1e9f5。
+     ここでは写真の代わりに空のグラデーションを置き、白のロックアップを読ませる */
+  .hero { background: linear-gradient(180deg, #4aa8d8 0%, #7fc8e6 55%, var(--color-sky-pale) 100%);
+    height: 340px; position: relative; display: flex; align-items: center; justify-content: center; }
+  .hero .lockup { text-align: center; color: #fff; }
+  .hero .lockup .en { font-size: var(--fs-21); letter-spacing: .12em; }
+  .hero .lockup .ja { font-size: var(--fs-31); letter-spacing: .12em; margin-top: 8px; }
+  .hero .dots { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
+  .hero .dots i { width: 8px; height: 8px; background: rgba(255,255,255,.55); display: block; }
+  .hero .dots i.on { background: #fff; }
+
+  /* ===== SECTIONS ===== */
+  .section { padding: 72px 24px; }
+  .section-eyebrow { font-size: var(--fs-12); color: var(--color-sky); margin-bottom: 12px; }
+  .section-title { font-size: var(--fs-31); font-weight: 400; line-height: var(--lh-head); margin-bottom: 16px; }
+  .section-lead { font-size: var(--fs-16); line-height: var(--lh-body); max-width: 760px; margin-bottom: 40px; }
+  .divider { border: none; border-top: 1px solid var(--color-gray-100); }
+
+  /* ===== COLORS ===== */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px,1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--color-gray-100); border-radius: var(--radius); overflow: hidden; background: #fff; }
+  .swatch-block { height: 92px; }
+  .swatch-info { padding: 14px 16px 18px; }
+  .swatch-name { font-size: var(--fs-14); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: #8a8a8a; margin-top: 5px; }
+  .swatch-role { font-size: 11px; color: #8a8a8a; margin-top: 6px; line-height: 1.6; }
+
+  /* ===== TYPOGRAPHY ===== */
+  .type-sample { padding: 24px 0; border-bottom: 1px solid var(--color-gray-100); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-sky); margin-top: 12px; line-height: 1.5; }
+  .scale-row { display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+  .scale-row div { text-align: center; }
+  .scale-row .n { font-family: var(--font-mono); font-size: 10px; color: #8a8a8a; margin-top: 6px; }
+
+  /* ===== ARTICLE ===== */
+  .article { max-width: 680px; }
+  .article h2 { font-size: var(--fs-21); font-weight: 400; line-height: var(--lh-head); margin-bottom: 16px; }
+  .article h3 { font-size: var(--fs-16); font-weight: 400; line-height: var(--lh-body); color: var(--color-sky); margin: 30px 0 10px; }
+  .article p { font-size: var(--fs-16); line-height: var(--lh-body); margin-bottom: 18px; }
+  .article a { color: var(--color-sky); text-decoration: underline; }
+  .article .meta { font-size: var(--fs-14); color: #8a8a8a; line-height: var(--lh-body); }
+
+  /* ===== BUTTONS ===== */
+  .btn-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .btn { font-size: var(--fs-16); font-weight: 400; line-height: 1.64; text-decoration: none; cursor: pointer;
+    display: inline-block; border: none; border-radius: var(--radius); transition: opacity .15s ease; }
+  .btn-primary { background: var(--color-sky); color: #fff; padding: 10px 24px; }
+  .btn-primary:hover { opacity: .82; }
+  .btn-text { background: transparent; color: var(--color-ink); padding: 10px 0; }
+  .btn-text:hover { color: var(--color-sky); }
+  .linklist { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 0 24px; }
+  .linklist a { display: block; color: var(--color-ink); text-decoration: none; font-size: var(--fs-16);
+    line-height: var(--lh-body); padding: 12px 0; border-bottom: 1px solid var(--color-gray-100); }
+  .linklist a:hover { color: var(--color-sky); }
+
+  /* ===== CARDS ===== */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 24px; }
+  .card { background: #fff; border-radius: var(--radius); }
+  .card-visual { height: 160px; background: var(--color-gray-50); border-radius: var(--radius); }
+  .card-body { padding: 14px 0 0; }
+  .card-title { font-size: var(--fs-21); line-height: 1.39; }
+  .card-date { font-size: var(--fs-16); line-height: var(--lh-body); margin-top: 8px; color: #8a8a8a; }
+
+  /* ===== FORMS ===== */
+  .form { max-width: 460px; display: grid; gap: 24px; }
+  .field label { display: block; font-size: var(--fs-14); margin-bottom: 8px; }
+  .field input { width: 100%; background: #fff; border: 1px solid #cfcfcf; border-radius: var(--radius);
+    padding: 12px 14px; font-family: var(--font); font-size: var(--fs-16); line-height: var(--lh-body); color: var(--color-ink);
+    font-feature-settings: normal; }
+  .field input::placeholder { color: #b0b0b0; }
+  .field input:focus { outline: none; border-color: var(--color-sky); box-shadow: none; }
+  .field--error input { border-color: var(--color-error); }
+  .field--error .msg { font-size: var(--fs-14); color: var(--color-error); margin-top: 6px; }
+
+  /* ===== ELEVATION ===== */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 24px; }
+  .elev { border-radius: var(--radius); padding: 28px; text-align: center; font-size: var(--fs-16); }
+  .elev--0 { background: #fff; border: 1px solid var(--color-gray-100); }
+  .elev--1 { background: var(--color-gray-50); }
+  .elev--2 { background: var(--color-sky-pale); }
+  .elev--3 { background: var(--color-sky); color: #fff; }
+  .elev-cap { font-family: var(--font-mono); font-size: 11px; color: #8a8a8a; margin-top: 10px; text-align: center; line-height: 1.5; }
+
+  /* ===== LAYOUT ===== */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-sky); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: #8a8a8a; margin-top: 8px; text-align: center; }
+  .frame-demo { position: relative; height: 200px; background: #fff; border: 12px solid var(--color-sky); display: flex; align-items: center; justify-content: center; font-size: var(--fs-14); color: #8a8a8a; }
+
+  footer { background: var(--color-sky-pale); padding: 48px 24px; }
+  footer .flinks { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 20px; }
+  footer .flinks a { color: var(--color-ink); text-decoration: none; font-size: var(--fs-14); }
+  footer .flinks a:hover { color: #fff; }
+  footer .fnote { font-size: var(--fs-14); line-height: var(--lh-body); color: var(--color-ink); }
+  footer .pagetop { display: inline-block; background: var(--color-sky); color: #fff; font-size: var(--fs-16);
+    line-height: 36px; padding: 0 16px; text-decoration: none; border-radius: var(--radius); margin-bottom: 24px; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<header>
+  <div class="topbar">
+    <a class="badge-open" href="#">7月29日(水) ◎ 本日開館 9:00 - 17:00</a>
+    <span class="addr">青森県十和田市西二番町10-9</span>
+    <span class="spacer"></span>
+    <span class="langs">
+      <a class="is-current" href="#">Ja</a>
+      <a href="#">En</a>
+      <a href="#">Cn</a>
+      <a href="#">Tw</a>
+      <a href="#">Ko</a>
+    </span>
+  </div>
+  <nav class="gnav">
+    <a href="#">ご利用案内</a>
+    <a href="#">美術館について</a>
+    <a href="#">コレクション</a>
+    <a class="is-current" href="#">企画展・プロジェクト</a>
+    <a href="#">イベント</a>
+    <a href="#">ラーニング・支援</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="lockup">
+    <div class="en">Arts Towada</div>
+    <div class="ja">十和田市現代美術館</div>
+    <div class="en">Towada Art Center</div>
+  </div>
+  <div class="dots"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+</section>
+
+<section class="section">
+  <div class="section-eyebrow">01 — COLORS</div>
+  <h2 class="section-title">カラーパレット</h2>
+  <p class="section-lead">十和田の空から引いたスカイブルー 2 段と、開館バッジ専用のコーラル 1 色。本文は純黒ではなく #565656。ページ全体を囲む 12px の枠はつねに #53c1e4 で固定し、コンテンツに合わせて色を変えない。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-sky)"></div><div class="swatch-info"><div class="swatch-name">Towada Sky</div><div class="swatch-hex">#53c1e4</div><div class="swatch-role">額縁・ナビ現在地・ページトップ</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-sky-pale)"></div><div class="swatch-info"><div class="swatch-name">Towada Sky Pale</div><div class="swatch-hex">#c1e9f5</div><div class="swatch-role">ヒーロー地・フッター</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-coral)"></div><div class="swatch-info"><div class="swatch-name">Coral</div><div class="swatch-hex">#ff7e74</div><div class="swatch-role">開館バッジ専用。唯一の暖色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-ink)"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#565656</div><div class="swatch-role">本文・見出し（純黒ではない）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-gray-50)"></div><div class="swatch-info"><div class="swatch-name">Gray 50</div><div class="swatch-hex">#f1f1f1</div><div class="swatch-role">画像プレースホルダ</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-gray-100)"></div><div class="swatch-info"><div class="swatch-name">Gray 100</div><div class="swatch-hex">#ededed</div><div class="swatch-role">区切りの薄面・罫</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-bg);box-shadow:inset 0 0 0 1px #ededed"></div><div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">ページ地色</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">02 — TYPOGRAPHY</div>
+  <h2 class="section-title">タイポグラフィ</h2>
+  <p class="section-lead">和文は A-OTF 中ゴシック BBB Pr6N、欧文は Plain。font-weight はサイト全域で 400、font-feature-settings は "palt" が全域、letter-spacing は全域 normal。階層はサイズだけで作る。</p>
+
+  <div class="type-sample"><div style="font-size:31.2px;line-height:1.35">開催中・今後の企画展</div><div class="type-meta">Section Title · 中ゴ BBB · 31.2px · weight 400 · lh 1.35 (42px) · ls normal · "palt"</div></div>
+  <div class="type-sample"><div style="font-size:21.6px;line-height:1.39">椿昇 フリーダム ― 像（ゾウ）と生きる</div><div class="type-meta">Exhibition Title · 中ゴ BBB · 21.6px · weight 400 · lh 1.39 (30px) · ls normal · "palt"</div></div>
+  <div class="type-sample"><div style="font-size:16.8px;line-height:1.64">本文（既定）— 十和田市現代美術館は、アートが日常のなかにある風景をつくる美術館です。館内外に常設された作品は、まちの通りへと連続しています。</div><div class="type-meta">Body · 中ゴ BBB · 16.8px · weight 400 · <strong>lh 1.64 (27.6px)</strong> · ls normal · "palt"</div></div>
+  <div class="type-sample"><div style="font-size:14.4px;line-height:1.2">ご利用案内　美術館について　コレクション</div><div class="type-meta">Nav Item · 中ゴ BBB · 14.4px · weight 400 · lh 1.2 (17.28px) · padding 0 14.4px</div></div>
+  <div class="type-sample"><div style="font-size:12px;line-height:3">7月29日(水) ◎ 本日開館 9:00 - 17:00</div><div class="type-meta">Meta / Badge · 12px · weight 400 · lh 36px — <strong>これは高さ指定であって行送りではない。本文に流用しないこと</strong></div></div>
+  <div class="type-sample">
+    <div class="scale-row">
+      <div><div style="font-size:12px">Aa</div><div class="n">12</div></div>
+      <div><div style="font-size:14.4px">Aa</div><div class="n">14.4</div></div>
+      <div><div style="font-size:16.8px">Aa</div><div class="n">16.8</div></div>
+      <div><div style="font-size:21.6px">Aa</div><div class="n">21.6</div></div>
+      <div><div style="font-size:31.2px">Aa</div><div class="n">31.2</div></div>
+    </div>
+    <div class="type-meta">Size Scale · <strong>1.2 倍の等比階層</strong>（12 × 1.2 = 14.4、14.4 × 1.2 = 16.8 …）。半端な実測値はこの掛け算から出ている</div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">03 — EXHIBITION</div>
+  <h2 class="section-title">組版サンプル</h2>
+  <div class="article">
+    <h2>椿昇 フリーダム ― 像（ゾウ）と生きる</h2>
+    <p class="meta">企画展 ／ 2026年4月18日（土）― 9月23日（水・祝）／ 企画展示室</p>
+    <h3>展覧会について</h3>
+    <p>十和田市現代美術館では、社会と美術の関係を問い続けてきた作家・椿昇の個展を開催します。本展では、巨大なバルーン作品を中心に、まちの通りと美術館をつなぐ新作を発表します。</p>
+    <p>会場は、常設作品の並ぶ展示室群と屋外の芝生を行き来しながら巡る構成です。屋外の作品は開館時間外もご覧いただけます。<a href="#">開館時間・観覧料はこちら</a>。</p>
+    <h3>関連イベント</h3>
+    <p>会期中の毎週土曜日、作家によるアーティストトークを行います。参加は無料ですが、事前のお申し込みが必要です。所要時間は約 60 分です。</p>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">04 — BUTTONS &amp; BADGES</div>
+  <h2 class="section-title">ボタンとバッジ</h2>
+  <p class="section-lead">角丸は全要素 0px。CTA はスカイブルーのベタか、面を持たない文字リンクの 2 択。開館状況バッジは開館時コーラル、休館時グレーで、記号（◎ / ×）を必ず文言に含める。</p>
+  <div class="btn-row" style="margin-bottom:28px">
+    <a class="btn btn-primary" href="#">企画展をみる</a>
+    <a class="btn btn-text" href="#">すべてのイベントをみる ›</a>
+    <a class="badge-open" href="#">7月29日(水) ◎ 本日開館 9:00 - 17:00</a>
+    <a class="badge-closed" href="#">7月30日(木) × 本日休館</a>
+  </div>
+  <div class="btn-row" style="margin-bottom:28px">
+    <span class="langs" style="border:1px solid var(--color-gray-100)">
+      <a class="is-current" href="#">Ja</a><a href="#">En</a><a href="#">Cn</a><a href="#">Tw</a><a href="#">Ko</a>
+    </span>
+  </div>
+  <div class="linklist">
+    <a href="#">開館時間・休館日</a>
+    <a href="#">観覧料</a>
+    <a href="#">アクセス</a>
+    <a href="#">バリアフリー・設備</a>
+    <a href="#">カフェ＆ショップ</a>
+    <a href="#">アート広場</a>
+    <a href="#">官庁街通り</a>
+    <a href="#">お問い合わせ</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">05 — CARDS</div>
+  <h2 class="section-title">展覧会カード</h2>
+  <p class="section-lead">画像 → 展覧会名（21.6px）→ 会期（16.8px）の順に積む。角丸は 0px で、画像も角を落とさない。影は使わない。</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-visual"></div><div class="card-body"><div class="card-title">椿昇 フリーダム</div><div class="card-date">2026年4月18日（土）― 9月23日（水・祝）</div></div></div>
+    <div class="card"><div class="card-visual"></div><div class="card-body"><div class="card-title">ティーチャーズ・ウィーク</div><div class="card-date">2026年8月5日（水）― 8月12日（水）</div></div></div>
+    <div class="card"><div class="card-visual"></div><div class="card-body"><div class="card-title">コレクション展</div><div class="card-date">通年（展示替えあり）</div></div></div>
+    <div class="card"><div class="card-visual"></div><div class="card-body"><div class="card-title">アート広場のあそび方</div><div class="card-date">通年・屋外</div></div></div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">06 — FORMS</div>
+  <h2 class="section-title">フォーム</h2>
+  <p class="section-lead">デフォルト / フォーカス / エラーの3状態。角丸 0px、フォーカスはスカイブルーの罫。入力欄だけ font-feature-settings を normal に戻す（palt が入力値の字送りに干渉するため）。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="十和田 花子"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="0176-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn btn-primary" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">07 — ELEVATION</div>
+  <h2 class="section-title">奥行き</h2>
+  <p class="section-lead">実測ではほぼ全要素が box-shadow: none。奥行きは「白 → #f1f1f1 → #c1e9f5 → #53c1e4」の 4 段の面と、額縁の z-index: 9 で表現する。</p>
+  <div class="elev-grid">
+    <div><div class="elev elev--0">Level 0</div><div class="elev-cap">#ffffff（既定・罫線のみ）</div></div>
+    <div><div class="elev elev--1">Level 1</div><div class="elev-cap">#f1f1f1（面色差で分離）</div></div>
+    <div><div class="elev elev--2">Level 2</div><div class="elev-cap">#c1e9f5（ヒーロー・フッター）</div></div>
+    <div><div class="elev elev--3">Level 3</div><div class="elev-cap">#53c1e4（額縁・CTA・現在地）</div></div>
+  </div>
+  <div style="margin-top:32px">
+    <div class="frame-demo">額縁の内側にすべてのコンテンツが収まる</div>
+    <div class="elev-cap" style="text-align:left">Frame · #53c1e4 / 12px / z-index 9（上辺 absolute・左右下辺 fixed）。ヘッダーより前面に置く</div>
+  </div>
+</section>
+<hr class="divider">
+
+<section class="section">
+  <div class="section-eyebrow">08 — LAYOUT</div>
+  <h2 class="section-title">スペーシング</h2>
+  <p class="section-lead">枠 12px を最小単位に、12 / 14.4 / 24 / 36 / 48 / 72px。タイポの 1.2 倍階層（12 × 1.2 = 14.4）が余白側にも効いている。コンテナは固定の最大幅を持たず、ヒーローと画像は全幅ブリードする。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:12px;height:12px"></div><div class="space-label">Frame 12</div></div>
+    <div><div class="space-bar" style="width:14.4px;height:14.4px"></div><div class="space-label">S 14.4</div></div>
+    <div><div class="space-bar" style="width:24px;height:24px"></div><div class="space-label">M 24</div></div>
+    <div><div class="space-bar" style="width:36px;height:36px"></div><div class="space-label">L 36</div></div>
+    <div><div class="space-bar" style="width:48px;height:48px"></div><div class="space-label">XL 48</div></div>
+    <div><div class="space-bar" style="width:72px;height:72px"></div><div class="space-label">XXL 72</div></div>
+  </div>
+</section>
+
+<footer>
+  <a class="pagetop" href="#">ページトップ</a>
+  <div class="flinks">
+    <a href="#">ご利用案内</a>
+    <a href="#">美術館について</a>
+    <a href="#">コレクション</a>
+    <a href="#">企画展・プロジェクト</a>
+    <a href="#">イベント</a>
+    <a href="#">ラーニング・支援</a>
+    <a href="#">お問い合わせ</a>
+    <a href="#">プライバシーポリシー</a>
+  </div>
+  <div class="fnote">〒034-0082 青森県十和田市西二番町10-9 ／ 十和田市現代美術館 Towada Art Center — Design System Preview　/　実測ベース 2026-07-29</div>
+</footer>
+
+</div>
+
+</body>
+</html>

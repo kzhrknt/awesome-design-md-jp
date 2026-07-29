@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (414 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (417 sites)</a>
 </p>
 
 <table>
@@ -619,6 +619,11 @@
 <td align="center"><strong>金子眼鏡</strong><br><img src="design-md/kaneko-optical/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>玉川堂</strong><br><img src="design-md/gyokusendo/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>十和田市現代美術館</strong><br><img src="design-md/towada-art-center/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>東京都写真美術館</strong><br><img src="design-md/topmuseum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>コンセント</strong><br><img src="design-md/concent/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1093,11 +1098,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [Museum of Contemporary Art Tokyo (東京都現代美術館)](https://www.mot-art-museum.jp/) | Museum / Contemporary Art | [DESIGN.md](design-md/mot-art-museum/DESIGN.md) | [preview.html](design-md/mot-art-museum/preview.html) |
 | [KANEKO OPTICAL (金子眼鏡)](https://www.kaneko-optical.co.jp/) | Eyewear / Craft | [DESIGN.md](design-md/kaneko-optical/DESIGN.md) | [preview.html](design-md/kaneko-optical/preview.html) |
 | [GYOKUSENDO (玉川堂)](https://www.gyokusendo.com/) | Metalwork / Traditional Craft | [DESIGN.md](design-md/gyokusendo/DESIGN.md) | [preview.html](design-md/gyokusendo/preview.html) |
+| [Towada Art Center (十和田市現代美術館)](https://towadaartcenter.com/) | Museum / Contemporary Art | [DESIGN.md](design-md/towada-art-center/DESIGN.md) | [preview.html](design-md/towada-art-center/preview.html) |
+| [TOP MUSEUM (東京都写真美術館)](https://topmuseum.jp/) | Museum / Photography | [DESIGN.md](design-md/topmuseum/DESIGN.md) | [preview.html](design-md/topmuseum/preview.html) |
+| [CONCENT (コンセント)](https://www.concentinc.jp/) | Design Firm / Service Design | [DESIGN.md](design-md/concent/DESIGN.md) | [preview.html](design-md/concent/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (414 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (417 sites)</a>
 </p>
 
 <table>
@@ -1681,6 +1689,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>東京都現代美術館</strong><br><img src="design-md/mot-art-museum/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>金子眼鏡</strong><br><img src="design-md/kaneko-optical/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>玉川堂</strong><br><img src="design-md/gyokusendo/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>十和田市現代美術館</strong><br><img src="design-md/towada-art-center/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>東京都写真美術館</strong><br><img src="design-md/topmuseum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>コンセント</strong><br><img src="design-md/concent/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
