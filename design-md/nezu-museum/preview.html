@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 根津美術館 Nezu Museum</title>
+<!--
+  原典は Noto Serif JP / Noto Sans JP の可変フォントを自己ホストしている。
+  どちらも Google Fonts で配信されているため代替は不要。ウェイトは原典と同じ
+  100 / 300 / 400 / 500 / 600 / 700 を読み込む。
+
+    @font-face { font-family:"Noto Serif JP";
+                 src:url("/common/fonts/NotoSerifJP-VariableFont_wght.woff2");
+                 font-weight:200 900; font-display:swap; }
+    @font-face { font-family:"Noto Sans JP";
+                 src:url("/common/fonts/NotoSansJP-VariableFont_wght.woff2");
+                 font-weight:100 900; font-display:swap; }
+
+  原典の組版設定:
+    body { font-family:"Noto Serif JP",serif; font-weight:600; line-height:1.7; color:#333 }
+    font-feature-settings: normal      全域。palt は一切使っていない
+    letter-spacing: normal             全域。h1 / h2 のみ 3px
+
+  明朝が既定、ゴシックが例外。
+  "Noto Sans JP" に切り替わるのは ①グローバルナビ ②会期の日付 ③カレンダーの表組み
+  ④開館情報のリスト だけ。「数字と操作はゴシック、言葉は明朝」。
+
+  文字サイズは 13px 基準の % で積む（YUI Fonts 系の古典的な手法）。
+  リセット CSS の body { font:13px/1.231 arial... } が基準を作り、
+  サイト側は font-size を上書きしない。
+    124% = 16.12px / 139% = 18.07px / 154% = 20.02px / 170% = 22.1px
+    185% = 24.05px / 216% = 28.08px / 247% = 32.11px / 293% = 38.09px
+    372% = 48.36px / 404% = 52.52px
+  16.12px のような端数は事故ではなく % × 13px の計算結果。丸めると字面が変わる。
+  このプレビューでは html { font-size:13px } を敷き、em で同じ比率を再現している。
+
+  可変フォントの重みを両方向に振るのが特徴。本文の既定が 600 で、
+  大きな見出しは 300、特大の作品名は 100 へ「細く」なる。
+
+  box-shadow はサイト全体で 1 つも使われていない。
+  奥行きはスクリム・半透明の白パネル・黒帯で作る。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300;400;500;600;700&family=Noto+Sans+JP:wght@100;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ===== Colors: 実測値 ===== */
+    --kincha:        #aa855a;   /* 唯一のブランドカラー。CTA / 現在地 / 展示室 / フォーカス */
+    --ink:           #333333;   /* 文字・黒帯・フッター */
+    --paper:         #ffffff;
+    --nav-active:    #fff8f1;   /* サイドナビの現在地。金茶をごく薄めた生成り */
+    --panel-light:   #f7f7f7;
+    --panel:         #f2f2f2;
+    --tag:           #eeeeee;
+    --border:        #999999;
+    --text-muted:    #aaaaaa;   /* 非選択の言語（EN） */
+    --scrim:         rgba(0,0,0,.35);
+    --scrim-strong:  rgba(0,0,0,.5);
+    --attention:     rgba(255,255,255,.8);   /* 休館告知の半透明白パネル */
+    /* カレンダー */
+    --cal-open:      #9bb8dc;   /* 開館日セル（淡い藍） */
+    --cal-closed:    #dddddd;   /* 休館日セル。トップで最多の面色 */
+    --cal-today:     #ffd46e;   /* 本日マーカー（radius 50%） */
+    --cal-sat:       #003f8c;   /* 土曜の文字（紺） */
+    --cal-sun:       #a60000;   /* 日曜・祝日の文字（臙脂） */
+    /* バッジ */
+    --news-bg:       #c2e3f7;   --news-fg: #1e2d59;
+    --bunkazai:      #597d52;   /* 重要文化財ラベルの緑。UI の成功色ではない */
+
+    /* ===== Fonts ===== */
+    --mincho:  "Noto Serif JP", serif;      /* 既定 */
+    --gothic:  "Noto Sans JP", sans-serif;  /* 日付・ナビ・表組みのみ */
+    --mono:    SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* ===== Type: 13px 基準の % ラダー（em で再現） ===== */
+    --fz-108: 1.08em;  /* 14.04px */
+    --fz-116: 1.16em;  /* 15.08px */
+    --fz-124: 1.24em;  /* 16.12px  小見出し・リンク・サイドナビ */
+    --fz-139: 1.39em;  /* 18.07px  本文・リード・会期の日付 */
+    --fz-154: 1.54em;  /* 20.02px  h4 / h5 */
+    --fz-170: 1.70em;  /* 22.10px  h4（大） */
+    --fz-185: 1.85em;  /* 24.05px  h4（特大）・カレンダーの月 */
+    --fz-208: 2.08em;  /* 27.04px */
+    --fz-216: 2.16em;  /* 28.08px  h3 */
+    --fz-247: 2.47em;  /* 32.11px  h1 */
+    --fz-262: 2.62em;  /* 34.06px */
+    --fz-293: 2.93em;  /* 38.09px  h2 */
+    --fz-372: 3.72em;  /* 48.36px */
+    --fz-404: 4.04em;  /* 52.52px  トップのセクション見出し */
+
+    --lh:      1.7;    /* body の既定 */
+    --lh-tight: 1.0;
+    --lh-mid:  1.5;
+    --ls-title: 3px;   /* h1 / h2 のみ。px 固定 */
+
+    /* ===== Spacing: 5px 刻み ===== */
+    --s-xs: 2px;  --s-s: 5px;  --s-m: 10px; --s-l: 15px;
+    --s-xl: 20px; --s-2xl: 25px; --s-3xl: 50px; --s-sec: 80px;
+
+    /* ===== Shape ===== */
+    --r-btn:  3px;
+    --r-link: 4px;
+    --r-none: 0;
+  }
+
+  html { font-size: 13px; }   /* 原典のリセット CSS が敷く基準。% ラダーの分母 */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--mincho);
+    font-weight: 600;              /* 明朝なので太めが既定 */
+    font-size: 1em;                /* = 13px。実際の文字は子要素で % を当てる */
+    line-height: var(--lh);
+    letter-spacing: normal;
+    font-feature-settings: normal;  /* palt は使わない */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  .gothic { font-family: var(--gothic); font-weight: 400; }
+  .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 var(--s-l); }
+  .narrow { max-width: 860px; }
+
+  /* ===== Hero（写真 + スクリム） ===== */
+  .hero { position: relative; min-height: 520px; display: flex; flex-direction: column;
+    justify-content: space-between;
+    background-image:
+      linear-gradient(90deg, rgba(38,52,34,.55) 0 34%, rgba(120,86,42,0) 34%),
+      repeating-linear-gradient(90deg, #c9963f 0 9px, #a97b2e 9px 12px, #e0b25c 12px 18px),
+      linear-gradient(#7d5a26, #5d4119); }
+  .hero::before { content:""; position: absolute; inset: 0; background: var(--scrim); }
+  .hero-inner { position: relative; padding: var(--s-2xl) 0; }
+  .hero-nav { display: flex; align-items: center; justify-content: center; gap: var(--s-2xl); flex-wrap: wrap; }
+  .hero-nav a { font-family: var(--gothic); font-weight: 500; font-size: var(--fz-139);
+    color: #fff; text-decoration: none; }
+  .hero-nav a:hover { text-decoration: underline; }
+  .lang { font-family: var(--gothic); font-weight: 500; font-size: var(--fz-139); color: #fff;
+    background: var(--scrim-strong); padding: var(--s-s) var(--s-m); }
+  .lang .cur { color: var(--kincha); }
+  .lang .off { color: var(--text-muted); }
+  .hero-logo { position: relative; text-align: center; padding: var(--s-3xl) 0; }
+  .hero-logo .jp { font-size: var(--fz-293); font-weight: 300; letter-spacing: .28em; color: #fff; line-height: 1.3; }
+  .hero-logo .en { font-family: var(--gothic); font-weight: 400; font-size: var(--fz-124);
+    letter-spacing: .3em; color: #fff; }
+
+  .hero-bottom { position: relative; display: flex; align-items: stretch; gap: var(--s-l);
+    padding: 0 var(--s-l) var(--s-2xl); flex-wrap: wrap; }
+  .attention { background: var(--attention); padding: var(--s-xl) var(--s-2xl); max-width: 500px; }
+  .attention .ttl { font-family: var(--gothic); font-weight: 500; font-size: var(--fz-124); }
+  .attention .ttl::after { content:""; display:block; width: 40px; height:1px; background: var(--kincha); margin: var(--s-s) 0 var(--s-m); }
+  .attention p { font-size: var(--fz-139); font-weight: 300; line-height: var(--lh); }
+  .datebar { display: flex; align-items: stretch; margin-left: auto; }
+  .datebar .d { background: var(--ink); color: #fff; padding: var(--s-l) var(--s-xl); text-align: center; line-height: 1; }
+  .datebar .d .y { font-size: var(--fz-170); font-weight: 600; }
+  .datebar .d .md { font-size: var(--fz-208); font-weight: 600; display:block; margin-top: 4px; }
+  .datebar .st { background: var(--ink); color: #fff; display:flex; align-items:center;
+    padding: var(--s-l) var(--s-xl); font-size: var(--fz-139); font-weight: 600;
+    border-left: 1px solid rgba(255,255,255,.35); }
+  .datebar .tk { background: var(--kincha); color: #fff; display:flex; align-items:center;
+    padding: var(--s-l) var(--s-xl); font-size: var(--fz-124); font-weight: 600;
+    border-radius: 0 var(--r-btn) var(--r-btn) 0; text-decoration: none; }
+  .datebar .tk:focus-visible { opacity: .8; }
+
+  /* ===== Section ===== */
+  .section { padding: var(--s-sec) 0; }
+  .section + .section { border-top: 1px solid var(--cal-closed); }
+  .sec-h { font-size: var(--fz-404); font-weight: 300; line-height: var(--lh-tight);
+    margin-bottom: var(--s-xl); }
+  .note { font-size: var(--fz-124); font-weight: 300; line-height: var(--lh);
+    margin-top: var(--s-m); }
+  .mono { font-family: var(--mono); font-size: var(--fz-108); font-weight: 400; }
+
+  /* ===== Grid ===== */
+  .grid { display: grid; gap: var(--s-xl); }
+  .g2 { grid-template-columns: repeat(2,1fr); }
+  .g3 { grid-template-columns: repeat(3,1fr); }
+  .g4 { grid-template-columns: repeat(4,1fr); }
+  @media (max-width: 768px){ .g3,.g4 { grid-template-columns: repeat(2,1fr); } .g2 { grid-template-columns:1fr; } }
+
+  /* ===== Swatch ===== */
+  .swatch { border: 1px solid var(--cal-closed); }
+  .swatch-block { height: 82px; }
+  .swatch-info { padding: var(--s-m) var(--s-l) var(--s-l); }
+  .swatch-name { font-size: var(--fz-124); font-weight: 700; line-height: 1.4; }
+  .swatch-hex { font-family: var(--mono); font-size: var(--fz-108); font-weight: 400;
+    margin-top: 4px; }
+  .swatch-role { font-size: var(--fz-108); font-weight: 300; margin-top: 5px; line-height: 1.6; }
+
+  /* ===== Type rows ===== */
+  .type-row { display: grid; grid-template-columns: 190px 1fr; gap: var(--s-xl);
+    padding: var(--s-xl) 0; border-bottom: 1px solid var(--cal-closed); align-items: baseline; }
+  .type-meta { font-family: var(--mono); font-size: var(--fz-108); font-weight: 400; line-height: 1.7; }
+  @media (max-width: 768px){ .type-row { grid-template-columns: 1fr; gap: var(--s-s); } }
+
+  .t-top   { font-size: var(--fz-404); font-weight: 300; line-height: var(--lh-tight); }
+  .t-h2    { font-size: var(--fz-293); font-weight: 700; line-height: var(--lh); letter-spacing: var(--ls-title); }
+  .t-h1    { font-size: var(--fz-247); font-weight: 600; line-height: var(--lh); letter-spacing: var(--ls-title); }
+  .t-h3    { font-size: var(--fz-216); font-weight: 700; line-height: var(--lh-tight); }
+  .t-h4    { font-size: var(--fz-185); font-weight: 700; line-height: var(--lh); }
+  .t-h5    { font-size: var(--fz-154); font-weight: 700; line-height: var(--lh-mid); }
+  .t-body  { font-size: var(--fz-139); font-weight: 600; line-height: var(--lh); }
+  .t-link  { font-size: var(--fz-124); font-weight: 600; line-height: var(--lh); }
+  .t-thin  { font-size: var(--fz-154); font-weight: 100; line-height: var(--lh-mid); }
+  .t-fact  { font-family: var(--gothic); font-size: var(--fz-139); font-weight: 400; line-height: var(--lh); }
+  .t-nav   { font-family: var(--gothic); font-size: var(--fz-139); font-weight: 500; line-height: var(--lh); }
+
+  /* ===== Buttons ===== */
+  .btn { display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--mincho); text-decoration: none; cursor: pointer; border: none; }
+  .btn-primary { background: var(--kincha); color: #fff; font-size: var(--fz-124);
+    font-weight: 600; padding: var(--s-l) var(--s-xl); border-radius: var(--r-btn); }
+  .btn-primary:focus-visible { opacity: .8; }
+  .btn-secondary { background: var(--ink); color: #fff; font-size: var(--fz-139);
+    font-weight: 600; padding: var(--s-l) var(--s-xl); border-radius: var(--r-link); }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--border);
+    font-size: var(--fz-124); font-weight: 600; padding: var(--s-m); border-radius: var(--r-btn); }
+  .btn-ghost:focus-visible { border-color: var(--kincha); background: var(--kincha); color: #fff; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: var(--s-l); align-items: center; }
+  a.tlink { color: var(--ink); text-decoration: none; font-size: var(--fz-124); font-weight: 600; }
+  a.tlink:hover, a.tlink:focus-visible { color: var(--kincha); text-decoration: underline; }
+
+  /* ===== Badges ===== */
+  .badge { display: inline-flex; align-items: center; border-radius: var(--r-none);
+    font-size: var(--fz-139); font-weight: 600; line-height: 2; }
+  .b-yokoku { background: var(--kincha); color:#fff; padding: 0 var(--s-xl); }
+  .b-owari   { background: var(--ink); color:#fff; padding: 0 var(--s-m) 2px; }
+  .b-tag     { background: var(--tag); color: var(--ink); padding: 0 var(--s-m) 2px; }
+  .b-shitei  { background: var(--panel-light); color: var(--bunkazai); padding: 0 var(--s-m) 2px; }
+  .b-news    { background: var(--news-bg); color: var(--news-fg); padding: 0 var(--s-l); font-size: var(--fz-108); font-weight: 400; }
+  .badge-row { display: flex; flex-wrap: wrap; gap: var(--s-m); align-items: center; }
+
+  /* ===== Cards ===== */
+  .card { background: var(--paper); border-radius: var(--r-none); box-shadow: none; }
+  .card .thumb { height: 170px; background-image:
+      repeating-linear-gradient(115deg, #d9cdb4 0 14px, #cbbb9c 14px 22px),
+      linear-gradient(#e3d8c2, #c9b997); }
+  .card .body { padding: var(--s-l) 0 0; }
+  .card .ttl { font-size: var(--fz-170); font-weight: 700; line-height: var(--lh-mid); }
+  .card .term { font-family: var(--gothic); font-weight: 400; font-size: var(--fz-124);
+    margin-top: var(--s-s); }
+
+  /* ===== Side nav ===== */
+  .sidenav { border-top: 1px solid var(--cal-closed); }
+  .sidenav a { display: block; padding: var(--s-l) var(--s-m); font-size: var(--fz-124);
+    font-weight: 600; color: var(--ink); text-decoration: none;
+    border-bottom: 1px solid var(--cal-closed); }
+  .sidenav a[aria-current="page"] { background: var(--nav-active); }
+  .sidenav a:focus-visible { color: var(--kincha); text-decoration: underline; }
+
+  /* ===== Calendar ===== */
+  table.cal { width: 100%; border-collapse: collapse; font-family: var(--gothic); font-weight: 400; }
+  table.cal caption { font-family: var(--mincho); font-size: var(--fz-185); font-weight: 600;
+    text-align: left; padding-bottom: var(--s-m); }
+  table.cal th { font-size: var(--fz-139); font-weight: 400; padding: var(--s-l) 0; }
+  table.cal th:nth-child(1) { color: var(--cal-sun); }
+  table.cal th:nth-child(7) { color: var(--cal-sat); }
+  table.cal td { font-size: var(--fz-139); text-align: center; padding: var(--s-s) 0;
+    border: 1px solid var(--paper); }
+  table.cal td.open   { background: var(--cal-open); }
+  table.cal td.closed { background: var(--cal-closed); }
+  table.cal td.sat { color: var(--cal-sat); }
+  table.cal td.sun { color: var(--cal-sun); }
+  table.cal td .today { display:inline-flex; align-items:center; justify-content:center;
+    width: 30px; height: 30px; border-radius: 50%; background: var(--cal-today); color: var(--ink); }
+  .legend { display:flex; gap: var(--s-xl); margin-top: var(--s-l); flex-wrap: wrap;
+    font-family: var(--gothic); font-weight: 400; font-size: var(--fz-124); }
+  .legend span { display:flex; align-items:center; gap: var(--s-s); }
+  .legend i { width: 18px; height: 18px; display:inline-block; }
+
+  /* ===== 会期テーブル ===== */
+  table.spec { width: 100%; border-collapse: collapse; }
+  table.spec th { text-align: left; font-size: var(--fz-139); font-weight: 700;
+    padding: var(--s-2xl) var(--s-m); border-bottom: 1px solid var(--border); white-space: nowrap;
+    vertical-align: top; }
+  table.spec td { font-family: var(--gothic); font-weight: 400; font-size: var(--fz-139);
+    padding: var(--s-2xl) var(--s-m); border-bottom: 1px solid var(--border); }
+
+  /* ===== Forms ===== */
+  .field { margin-bottom: var(--s-xl); }
+  .field label { display:block; font-size: var(--fz-124); font-weight: 700; margin-bottom: var(--s-s); }
+  .field input, .field textarea, .field select { width:100%; background: var(--paper);
+    border: 1px solid var(--border); border-radius: var(--r-btn);
+    padding: var(--s-m) var(--s-l); font-family: var(--mincho); font-size: var(--fz-124);
+    font-weight: 600; color: var(--ink); line-height: var(--lh); font-feature-settings: normal; }
+  .field.is-focus input { border-color: var(--kincha); box-shadow: none; outline: none; }
+  .field.is-focus label { color: var(--kincha); }
+  .field.is-error input { border-color: var(--cal-sun); }
+  .field .msg { margin-top: var(--s-s); font-size: var(--fz-124); font-weight: 600; color: var(--cal-sun); }
+  .field .hint { margin-top: var(--s-s); font-size: var(--fz-108); font-weight: 300; }
+
+  /* ===== Elevation ===== */
+  .elev { padding: var(--s-xl); border: 1px solid var(--cal-closed); box-shadow: none; }
+  .elev-name { font-size: var(--fz-124); font-weight: 700; }
+  .photo-demo { position: relative; height: 190px; display:flex; align-items:flex-end;
+    background-image: repeating-linear-gradient(115deg, #d9cdb4 0 14px, #cbbb9c 14px 22px),
+      linear-gradient(#e3d8c2,#c9b997); }
+  .photo-demo .layer { position: relative; width: 100%; padding: var(--s-l); }
+
+  /* ===== Spacing bars ===== */
+  .sp-row { display:flex; align-items:center; gap: var(--s-l); margin-bottom: var(--s-s); }
+  .sp-bar { background: var(--kincha); height: 14px; }
+  .sp-label { font-family: var(--mono); font-size: var(--fz-108); font-weight: 400; white-space: nowrap; }
+
+  .footer { background: var(--ink); color: #fff; padding: var(--s-sec) 0 var(--s-3xl); margin-top: var(--s-sec); }
+  .footer .ttl { font-size: var(--fz-154); font-weight: 700; }
+  .footer p { font-size: var(--fz-139); font-weight: 600; margin-top: var(--s-m); line-height: var(--lh); }
+  .footer .copy { font-size: var(--fz-124); font-weight: 400; margin-top: var(--s-3xl); }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <div class="hero-inner container">
+    <div class="hero-nav">
+      <a href="#">展覧会</a><a href="#">イベント</a><a href="#">利用案内</a>
+      <a href="#">アクセス</a><a href="#">庭園</a><a href="#">コレクション</a>
+      <span class="lang"><span class="cur">JP</span> / <span class="off">EN</span></span>
+    </div>
+    <div class="hero-logo">
+      <div class="jp">根津美術館</div>
+      <div class="en">NEZU MUSEUM</div>
+    </div>
+  </div>
+  <div class="hero-bottom container">
+    <div class="attention">
+      <div class="ttl">Attention</div>
+      <p>施設整備と展示替えのため、7月13日（月）から8月14日（金）まで、全館休館しております。</p>
+    </div>
+    <div class="datebar">
+      <div class="d"><span class="y">2026</span><span class="md">07 / 30</span></div>
+      <div class="st">本日は休館日です。</div>
+      <a href="#" class="tk">チケット購入</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============ COLORS ============ -->
+<section class="section">
+  <div class="container">
+    <h2 class="sec-h">Colors</h2>
+    <p class="note">地は白 <code class="mono">#ffffff</code>、文字は <code class="mono">#333333</code>。<strong>有彩色はブランドの金茶 1 色 ＋ カレンダーの曜日色 ＋ お知らせバッジの水色</strong>に限られる。</p>
+
+    <div class="grid g4" style="margin-top:var(--s-xl)">
+      <div class="swatch"><div class="swatch-block" style="background:var(--kincha)"></div>
+        <div class="swatch-info"><div class="swatch-name">金茶 / Kincha</div><div class="swatch-hex">#aa855a</div>
+        <div class="swatch-role">唯一のブランドカラー。CTA・現在言語・展示室ラベル・フォーカスリング</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--ink)"></div>
+        <div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#333333</div>
+        <div class="swatch-role">見出し・本文・日付パネル・フッター。純黒は使わない</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--paper);box-shadow:inset 0 0 0 1px #ddd"></div>
+        <div class="swatch-info"><div class="swatch-name">Paper</div><div class="swatch-hex">#ffffff</div>
+        <div class="swatch-role">ページ地色（下層ページ）</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--nav-active)"></div>
+        <div class="swatch-info"><div class="swatch-name">Nav Active</div><div class="swatch-hex">#fff8f1</div>
+        <div class="swatch-role">サイドナビの現在地。金茶をごく薄めた生成り</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--panel-light)"></div>
+        <div class="swatch-info"><div class="swatch-name">Panel Light</div><div class="swatch-hex">#f7f7f7</div>
+        <div class="swatch-role">お知らせ・指定区分ラベルの面</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--panel)"></div>
+        <div class="swatch-info"><div class="swatch-name">Panel</div><div class="swatch-hex">#f2f2f2</div>
+        <div class="swatch-role">区切りブロックの面</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--tag)"></div>
+        <div class="swatch-info"><div class="swatch-name">Tag</div><div class="swatch-hex">#eeeeee</div>
+        <div class="swatch-role">作品分類タグの面</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--border)"></div>
+        <div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-hex">#999999</div>
+        <div class="swatch-role">一般の罫（1px solid）</div></div></div>
+    </div>
+
+    <p class="note" style="margin-top:var(--s-3xl)"><strong>カレンダーの配色</strong>は和暦カレンダーの慣習をそのまま持ち込んでいる。土曜が紺、日曜・祝日が臙脂。</p>
+    <div class="grid g4" style="margin-top:var(--s-l)">
+      <div class="swatch"><div class="swatch-block" style="height:56px;background:var(--cal-open)"></div>
+        <div class="swatch-info"><div class="swatch-hex">開館日 #9bb8dc</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="height:56px;background:var(--cal-closed)"></div>
+        <div class="swatch-info"><div class="swatch-hex">休館日 #dddddd</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="height:56px;background:var(--cal-today)"></div>
+        <div class="swatch-info"><div class="swatch-hex">本日 #ffd46e</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="height:56px;background:linear-gradient(90deg,var(--cal-sat) 50%,var(--cal-sun) 50%)"></div>
+        <div class="swatch-info"><div class="swatch-hex">土 #003f8c / 日祝 #a60000</div></div></div>
+    </div>
+
+    <p class="note" style="margin-top:var(--s-3xl)">バッジ。<strong>角丸は持たない（radius 0）</strong>。丸いのは「本日」マーカーだけ。</p>
+    <div class="badge-row" style="margin-top:var(--s-l)">
+      <span class="badge b-yokoku">予告</span>
+      <span class="badge b-owari">終了</span>
+      <span class="badge b-tag">漆工</span>
+      <span class="badge b-tag">陶磁</span>
+      <span class="badge b-tag">考古・鏡</span>
+      <span class="badge b-shitei">重要文化財</span>
+      <span class="badge b-shitei">国宝</span>
+      <span class="badge b-news">お知らせ</span>
+    </div>
+    <p class="note">緑 <code class="mono">#597d52</code> は作品の指定区分専用。UI の成功色ではない。</p>
+  </div>
+</section>
+
+<!-- ============ TYPOGRAPHY ============ -->
+<section class="section">
+  <div class="container">
+    <h2 class="sec-h">Typography</h2>
+    <p class="note"><strong>明朝（Noto Serif JP）が既定、ゴシック（Noto Sans JP）は日付・ナビ・表組みだけ。</strong>文字サイズは 13px 基準の % で積む（<code class="mono">124%</code> = 16.12px … <code class="mono">404%</code> = 52.52px）。行間は全域 <code class="mono">1.7</code>。字間は <code class="mono">normal</code> で、h1 / h2 のみ <code class="mono">3px</code>。<code class="mono">font-feature-settings</code> は <code class="mono">normal</code>（palt を使わない）。</p>
+
+    <div class="type-row"><div class="type-meta">404% = 52.52px<br>明朝 w300 / lh 1.0</div>
+      <div class="t-top">展覧会</div></div>
+    <div class="type-row"><div class="type-meta">293% = 38.09px<br>明朝 w700 / lh 1.7<br>ls 3px（0.079em）</div>
+      <div class="t-h2">はじめての古美術鑑賞</div></div>
+    <div class="type-row"><div class="type-meta">247% = 32.11px<br>明朝 w600 / lh 1.7<br>ls 3px（0.093em）</div>
+      <div class="t-h1">美術館について</div></div>
+    <div class="type-row"><div class="type-meta">216% = 28.08px<br>明朝 w700 / lh 1.0</div>
+      <div class="t-h3">概要</div></div>
+    <div class="type-row"><div class="type-meta">185% = 24.05px<br>明朝 w700 / lh 1.7</div>
+      <div class="t-h4">本館建物と設備・施設について</div></div>
+    <div class="type-row"><div class="type-meta">154% = 20.02px<br>明朝 w700 / lh 1.5</div>
+      <div class="t-h5">NEZUCAFÉ</div></div>
+    <div class="type-row"><div class="type-meta">154% = 20.02px<br>明朝 <strong>w100</strong> / lh 1.5</div>
+      <div class="t-thin">国宝 燕子花図屏風</div></div>
+    <div class="type-row"><div class="type-meta">139% = 18.07px<br>明朝 w600 / lh 1.7<br>（body の既定）</div>
+      <div class="t-body">根津美術館は、東武鉄道の社長などを務めた実業家・初代根津嘉一郎の日本・東洋古美術のコレクションを保存・展示するために、1941 年に開館しました。青山の地に六千坪の庭園を抱え、四季それぞれの姿を見せます。</div></div>
+    <div class="type-row"><div class="type-meta">139% = 18.07px<br><strong>ゴシック</strong> w400 / lh 1.7</div>
+      <div class="t-fact">2026年8月15日（土）〜10月12日（月・祝）</div></div>
+    <div class="type-row"><div class="type-meta">139% = 18.07px<br><strong>ゴシック</strong> w500 / lh 1.7</div>
+      <div class="t-nav">展覧会　イベント　利用案内</div></div>
+    <div class="type-row"><div class="type-meta">124% = 16.12px<br>明朝 w600 / lh 1.7</div>
+      <div class="t-link">開催中の展覧会</div></div>
+
+    <p class="note" style="margin-top:var(--s-xl)"><strong>「大きい字ほど細く、小さい字ほど太く」</strong>が原則。52.52px は w300、18.07px は w600、特大の作品名は w100。可変フォントの軸を 100〜700 までフルに使う。</p>
+  </div>
+</section>
+
+<!-- ============ EXHIBITION ============ -->
+<section class="section">
+  <div class="container narrow">
+    <h2 class="sec-h">Exhibition</h2>
+    <div class="badge-row" style="margin-bottom:var(--s-l)">
+      <span class="badge b-yokoku">予告</span>
+      <span class="badge b-tag">絵画</span>
+    </div>
+    <h3 class="t-h2">やきもの名品紀行</h3>
+    <p class="t-h2" style="font-size:var(--fz-185)">— 中国・日本・朝鮮半島 —</p>
+    <p class="t-fact" style="margin-top:var(--s-l)">2026年8月15日（土）〜10月12日（月・祝）</p>
+
+    <h4 class="t-h3" style="margin-top:var(--s-3xl)">概要</h4>
+    <p class="t-body" style="margin-top:var(--s-l)">やきものは、土と火と人の手が出会うところに生まれます。中国の青磁、日本の茶陶、朝鮮半島の白磁——同じ「やきもの」という言葉でくくられながら、三つの地域はまったく違う美意識を育てました。本展では館蔵の陶磁作品から名品を選び、その差異と往還をたどります。</p>
+    <p class="t-body" style="margin-top:var(--s-xl)">展示室 2 では、茶人たちが「見立て」によって価値を与えた器を並べます。もともと日常の雑器だったものが、床に据えられ、名を与えられ、伝来を持つ。その転換の瞬間を、作品そのものから読み取っていただければと思います。</p>
+
+    <h4 class="t-h3" style="margin-top:var(--s-3xl)">展示作品</h4>
+    <div class="grid g3" style="margin-top:var(--s-xl)">
+      <div class="card"><div class="thumb"></div><div class="body">
+        <div class="badge-row" style="margin-bottom:6px"><span class="badge b-shitei">重要文化財</span></div>
+        <div class="ttl">青磁 鳳凰耳花生</div>
+        <div class="term">中国・南宋時代　13世紀</div></div></div>
+      <div class="card"><div class="thumb"></div><div class="body">
+        <div class="badge-row" style="margin-bottom:6px"><span class="badge b-shitei">国宝</span></div>
+        <div class="ttl">燕子花図屏風</div>
+        <div class="term">尾形光琳筆　江戸時代　18世紀</div></div></div>
+      <div class="card"><div class="thumb"></div><div class="body">
+        <div class="badge-row" style="margin-bottom:6px"><span class="badge b-tag">陶磁</span></div>
+        <div class="ttl">白磁 壺</div>
+        <div class="term">朝鮮・朝鮮時代　17世紀</div></div></div>
+    </div>
+
+    <table class="spec" style="margin-top:var(--s-3xl)">
+      <tr><th>会期</th><td>2026年8月15日（土）〜10月12日（月・祝）</td></tr>
+      <tr><th>休館日</th><td>毎週月曜日（ただし9月21日、10月12日は開館し、9月24日は休館）</td></tr>
+      <tr><th>開館時間</th><td>午前10時〜午後5時（入館は午後4時30分まで）</td></tr>
+      <tr><th>入場料</th><td>一般 1,300円／学生 1,000円／中学生以下は無料</td></tr>
+      <tr><th>会場</th><td>根津美術館 展示室1・2</td></tr>
+    </table>
+
+    <div class="btn-row" style="margin-top:var(--s-xl)">
+      <a href="#" class="btn btn-primary">チケット購入</a>
+      <a href="#" class="btn btn-secondary">詳細はこちら</a>
+      <a href="#" class="tlink">同時開催展を見る</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BUTTONS ============ -->
+<section class="section">
+  <div class="container">
+    <h2 class="sec-h">Buttons</h2>
+    <p class="note">角丸は <strong>3px（ボタン）と 4px（リンク）の 2 段</strong>だけ。日付パネルに隣接する版は片側だけ丸める（<code class="mono">border-radius: 0 3px 3px 0</code>）。<strong>影は使わない。</strong></p>
+    <div class="btn-row" style="margin-top:var(--s-xl)">
+      <a href="#" class="btn btn-primary">チケット購入</a>
+      <a href="#" class="btn btn-secondary">詳細はこちら</a>
+      <a href="#" class="btn btn-ghost">メールでのお問い合わせ</a>
+      <a href="#" class="tlink">コレクション一覧 →</a>
+    </div>
+    <p class="note"><strong>フォーカスは <code class="mono">outline</code> を使わない。</strong>テキストリンクは <code class="mono">color: #aa855a</code> ＋ 下線、面を持つ要素は面ごと <code class="mono">#aa855a</code> に反転、すでに金茶の要素は <code class="mono">opacity: .8</code>。Tab キーで確認できる。</p>
+
+    <p class="note" style="margin-top:var(--s-3xl)">サイドナビ。現在地は <code class="mono">#fff8f1</code> の面で示す。</p>
+    <nav class="sidenav" style="max-width:320px;margin-top:var(--s-l)">
+      <a href="#" aria-current="page">開催中の展覧会</a>
+      <a href="#">次の展覧会</a>
+      <a href="#">年間スケジュール</a>
+      <a href="#">これまでの展覧会</a>
+    </nav>
+  </div>
+</section>
+
+<!-- ============ CARDS & CALENDAR ============ -->
+<section class="section">
+  <div class="container">
+    <h2 class="sec-h">Calendar</h2>
+    <p class="note">開館カレンダー。<strong>色だけに頼らず凡例を併記する。</strong>曜日の文字色は土曜が紺、日曜・祝日が臙脂。表組みはゴシック。</p>
+    <div style="max-width:640px;margin-top:var(--s-xl)">
+      <table class="cal">
+        <caption>7月</caption>
+        <tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>
+        <tr><td class="closed sun">&nbsp;</td><td class="closed">&nbsp;</td><td class="closed">&nbsp;</td>
+            <td class="open">1</td><td class="open">2</td><td class="open">3</td><td class="open sat">4</td></tr>
+        <tr><td class="open sun">5</td><td class="closed">6</td><td class="open">7</td><td class="open">8</td>
+            <td class="open">9</td><td class="open">10</td><td class="open sat">11</td></tr>
+        <tr><td class="open sun">12</td><td class="closed">13</td><td class="closed">14</td><td class="closed">15</td>
+            <td class="closed">16</td><td class="closed">17</td><td class="closed sat">18</td></tr>
+        <tr><td class="closed sun">19</td><td class="closed">20</td><td class="closed">21</td><td class="closed">22</td>
+            <td class="closed">23</td><td class="closed">24</td><td class="closed sat">25</td></tr>
+        <tr><td class="closed sun">26</td><td class="closed">27</td><td class="closed">28</td><td class="closed">29</td>
+            <td class="closed"><span class="today">30</span></td><td class="closed">31</td><td class="sat">&nbsp;</td></tr>
+      </table>
+      <div class="legend">
+        <span><i style="background:var(--cal-open)"></i>開館日</span>
+        <span><i style="background:var(--cal-closed)"></i>休館日</span>
+        <span><i style="background:var(--cal-today);border-radius:50%"></i>本日</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FORMS ============ -->
+<section class="section">
+  <div class="container narrow">
+    <h2 class="sec-h">Forms</h2>
+    <div class="grid g3">
+      <div>
+        <p class="note" style="margin:0 0 var(--s-m)">Default</p>
+        <div class="field"><label for="n1">お名前</label><input id="n1" type="text" value="葛原 健太">
+          <div class="hint">全角で入力してください</div></div>
+      </div>
+      <div>
+        <p class="note" style="margin:0 0 var(--s-m)">Focus</p>
+        <div class="field is-focus"><label for="n2">メールアドレス</label><input id="n2" type="email" value="hello@example.com">
+          <div class="hint">罫とラベルが金茶に変わる</div></div>
+      </div>
+      <div>
+        <p class="note" style="margin:0 0 var(--s-m)">Error</p>
+        <div class="field is-error"><label for="n3">ご来館予定日</label><input id="n3" type="text" value="2026/07/30">
+          <div class="msg">休館日です。別の日をお選びください。</div></div>
+      </div>
+    </div>
+    <p class="note">入力欄は明朝 <code class="mono">16.12px / w600</code>、罫 <code class="mono">1px solid #999999</code>、radius <code class="mono">3px</code>。<code class="mono">font-feature-settings</code> は <code class="mono">normal</code>。</p>
+  </div>
+</section>
+
+<!-- ============ ELEVATION ============ -->
+<section class="section">
+  <div class="container">
+    <h2 class="sec-h">Elevation</h2>
+    <p class="note"><strong><code class="mono">box-shadow</code> はサイト全体で 1 つも使われていない。</strong>「浮かせる」のではなく「透かす」。古美術館らしい、紙や障子に近い階層表現。</p>
+    <div class="grid g2" style="margin-top:var(--s-xl)">
+      <div class="elev"><div class="elev-name">Level 0 — none</div>
+        <div class="note">すべての要素。カードもボタンも影を持たない</div></div>
+      <div>
+        <div class="photo-demo">
+          <div class="layer" style="background:var(--scrim)">
+            <span style="color:#fff;font-size:var(--fz-124);font-weight:600">scrim rgba(0,0,0,.35) — 写真上の白文字</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="photo-demo">
+          <div class="layer" style="background:var(--attention)">
+            <span style="font-size:var(--fz-124);font-weight:600">半透明の白パネル rgba(255,255,255,.8) — 休館告知</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="photo-demo">
+          <div class="layer" style="background:var(--ink)">
+            <span style="color:#fff;font-size:var(--fz-124);font-weight:600">黒帯 #333333 — 日付パネル・フッター</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LAYOUT ============ -->
+<section class="section">
+  <div class="container">
+    <h2 class="sec-h">Layout</h2>
+    <p class="note">CSS 変数を持たないため、実測から読み取れる刻みは <strong>5px 基準</strong>（4px グリッドではない）。</p>
+    <div style="margin-top:var(--s-xl)">
+      <div class="sp-row"><div class="sp-bar" style="width:2px"></div><span class="sp-label">2px — バッジの下パディング</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:5px"></div><span class="sp-label">5px</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:10px"></div><span class="sp-label">10px — Ghost ボタン</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:15px"></div><span class="sp-label">15px — 標準ボタンの縦・コンテナの左右</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:20px"></div><span class="sp-label">20px — ボタンの横</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:25px"></div><span class="sp-label">25px — 会期テーブルのセル</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:50px"></div><span class="sp-label">50px — 見出しの前後</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:80px"></div><span class="sp-label">80px — セクション間・フッター</span></div>
+    </div>
+
+    <p class="note" style="margin-top:var(--s-3xl)">角丸。<code class="mono">3px</code>（ボタン） / <code class="mono">4px</code>（リンク） / <code class="mono">50%</code>（本日マーカー）。<strong>ピル（9999px）は使わない。</strong></p>
+    <div class="btn-row" style="margin-top:var(--s-m)">
+      <div style="width:96px;height:56px;background:var(--tag);border-radius:3px"></div>
+      <div style="width:96px;height:56px;background:var(--tag);border-radius:4px"></div>
+      <div style="width:96px;height:56px;background:var(--tag);border-radius:0 3px 3px 0"></div>
+      <div style="width:56px;height:56px;background:var(--cal-today);border-radius:50%"></div>
+    </div>
+
+    <p class="note" style="margin-top:var(--s-3xl)">ブレークポイントは <code class="mono">max-width</code> ベース（デスクトップファースト）で段が多い: <code class="mono">1600 / 1400 / 1200 / 1024 / 940 / 768 / 650 / 640 / 520px</code>。<strong>見出しだけを % の段で落とし、本文 16.12px は動かさない。</strong><code class="mono">clamp()</code> / <code class="mono">vw</code> は使わない。</p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="ttl">根津美術館</div>
+    <p>〒107-0062　東京都港区南青山6-5-1<br>Tel. 03-3400-2536</p>
+    <div class="copy">© The Nezu Museum all rights reserved.</div>
+  </div>
+</footer>
+
+</body>
+</html>

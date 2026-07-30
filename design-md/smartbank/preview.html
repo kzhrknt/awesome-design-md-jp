@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: スマートバンク SmartBank</title>
+<!--
+  原典のフォントはどちらも Google Fonts で配信されているため、代替は不要。
+    和文: Noto Sans JP        (--font-family-web-japanese)
+    欧文: Poppins             (--font-family-web-corporate-accent)  見出し・ナビ
+    欧文: Open Sans           (--font-family-web-latin)             本文フォールバック
+
+  原典の組版設定:
+    font-feature-settings: "palt"   全域（アイコンフォントの Arial のみ normal）
+    letter-spacing: normal          全域。--letter-spacing-comfort: 2px は未使用
+    font-weight                     和文 400 / 700、欧文(Poppins) 600 の 3 段
+
+  文字サイズは 128 ÷ n（n = 1〜12）の調和数列。
+  隣り合う段の比が 2/1, 3/2, 4/3, 5/4, 6/5, 7/6, 8/7, 9/8, 10/9, 11/10, 12/11 で並ぶ。
+  割り切れる 6 段（128 / 64 / 32 / 25.6 / 16 / 12.8）は厳密値、
+  割り切れない 6 段は小数第 4 位で丸められている（14.2224 = 128/9 ≒ 14.2222）。
+
+  line-height は「comfort / normal / dense」の 3 密度 × 12 段。すべて px 指定で 4 の倍数。
+  サイトは comfort を既定に使う（本文 16px → 28px = 1.75）。
+
+  面色の実装に注意:
+  原典の黒ピルボタンは background-image: linear-gradient(#000, #000) で塗られている
+  （matte / gradient の appearance を 1 プロパティで切り替えるため）。
+  background-color は rgba(0,0,0,0) のまま。このプレビューでは原典に合わせて
+  background-image で塗っている。
+
+  ページ背景色は原典では未指定（html / body ともに transparent で、
+  ブラウザ既定のキャンバスが白として出ている）。実装では #ffffff を明示すること。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&family=Poppins:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ===== Color: スケール層（直接参照しない） ===== */
+    --color-scale-mint-50:  #0fbea0;  --color-scale-mint-60:  #1dd0b0;
+    --color-scale-mint-95:  #cff4ed;  --color-scale-mint-20:  #176256;
+    --color-scale-coral-50: #ee3b1c;  --color-scale-coral-60: #ff5c4d;
+    --color-scale-coral-99: #ffe6e3;  --color-scale-coral-20: #763831;
+    --color-scale-carrot-50:#dc8935;  --color-scale-carrot-60:#eb923c;
+    --color-scale-carrot-95:#f9e1d1;  --color-scale-carrot-20:#684525;
+    --color-scale-sun-50:   #e9b700;  --color-scale-sun-60:   #ffc919;
+    --color-scale-sun-95:   #fff1cf;  --color-scale-sun-20:   #705918;
+    --color-scale-sky-60:   #80cbef;  --color-scale-sky-95:   #d9f1fd;
+    --color-scale-marine-60:#6489ff;  --color-scale-grape-60: #a97ee1;
+    --color-scale-grape-95: #efe2ff;  --color-scale-grape-20: #3e275a;
+    --color-scale-peach-50: #ea62a0;
+    --color-scale-wood-50:  #a9a089;  --color-scale-wood-99:  #f9f6f2;
+    --color-scale-stone-10: #141816;  --color-scale-stone-30: #424645;
+    --color-scale-stone-50: #8e908f;  --color-scale-stone-99: #f5f5f5;
+
+    /* ===== Color: セマンティック層（実装はこちらを参照する） ===== */
+    --color-interactive-base:          #1dd0b0;
+    --color-interactive-base-variant:  #0fbea0;
+    --color-interactive-container:     #cff4ed;
+    --color-interactive-on-container:  #176256;
+
+    --color-impression-positive-base:         #1dd0b0;
+    --color-impression-positive-container:    #cff4ed;
+    --color-impression-positive-on-container: #176256;
+    --color-impression-attention-base:         #eb923c;
+    --color-impression-attention-container:    #f9e1d1;
+    --color-impression-attention-on-container: #684525;
+    --color-impression-negative-base:         #ff5c4d;
+    --color-impression-negative-container:    #ffe6e3;
+    --color-impression-negative-on-container: #763831;
+    --color-message-promotion-container:      #fff1cf;
+    --color-message-promotion-on-container:   #705918;
+    --color-message-ai-base:                  #a97ee1;
+    --color-message-ai-container:             #efe2ff;
+    --color-message-ai-on-container:          #3e275a;
+
+    --color-background-default-base:   #ffffff;
+    --color-background-default-accent: #f9f6f2;
+    --color-background-inverse-base:   #141816;
+    --color-background-inverse-accent: #424645;
+    --color-surface-list:              #f5f5f5;   /* stone 99 */
+    --color-scrim:                     rgba(0,0,0,.5);
+
+    --color-text-default-high: rgba(0,0,0,.87);
+    --color-text-default-mid:  rgba(0,0,0,.6);
+    --color-text-default-low:  rgba(0,0,0,.38);
+    --color-text-inverse-high: #ffffff;
+    --color-text-inverse-mid:  rgba(255,255,255,.7);
+
+    --color-border-default-high: rgba(0,0,0,.4);
+    --color-border-default-mid:  rgba(0,0,0,.2);
+    --color-border-default-low:  rgba(0,0,0,.1);
+
+    --color-state-default-hover:    rgba(0,0,0,.12);
+    --color-state-default-focused:  rgba(0,0,0,.12);
+    --color-state-default-selected: rgba(29,208,176,.08);
+    --opacity-state-disabled: .38;
+
+    /* ===== Gradient（角度もトークンの一部。変えない） ===== */
+    --gradient-scale-coral-100: linear-gradient(68.49deg, #ff5c4d 25%, #ffbe18 100%);
+    --gradient-scale-coral-20:  linear-gradient(68.49deg, #ff5c4d33 25%, #ffbe1833 100%);
+    --gradient-scale-mint-100:  linear-gradient(59.54deg, #1dd0b0 30%, #89dc65 100%);
+    --gradient-scale-mint-20:   linear-gradient(59.54deg, #1dd0b033 30%, #89dc6533 100%);
+    --gradient-scale-sky-100:   linear-gradient(90deg, #54c8e8 30%, #afe2e3 100%);
+    --gradient-scale-sky-20:    linear-gradient(90deg, #54c8e833 30%, #afe2e333 100%);
+
+    /* ===== Font ===== */
+    --font-ja: "Noto Sans JP", "Open Sans", apple-system, "system-ui", Roboto, "Lucida Grande", Helvetica, Arial, sans-serif;
+    --font-en: Poppins, "Open Sans", apple-system, "system-ui", Roboto, "Lucida Grande", Helvetica, Arial, sans-serif;
+    --font-en-ja: Poppins, "Noto Sans JP", "Open Sans", apple-system, "system-ui", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* ===== Font size: 128 ÷ n ===== */
+    --font-size-six-extra-large:   128px;      /* 128/1  */
+    --font-size-five-extra-large:  64px;       /* 128/2  */
+    --font-size-four-extra-large:  42.6672px;  /* 128/3  */
+    --font-size-three-extra-large: 32px;       /* 128/4  */
+    --font-size-two-extra-large:   25.6px;     /* 128/5  */
+    --font-size-extra-large:       21.332px;   /* 128/6  */
+    --font-size-large:             18.2864px;  /* 128/7  */
+    --font-size-medium:            16px;       /* 128/8  */
+    --font-size-small:             14.2224px;  /* 128/9  */
+    --font-size-extra-small:       12.8px;     /* 128/10 */
+    --font-size-two-extra-small:   11.6368px;  /* 128/11 */
+    --font-size-three-extra-small: 10.6672px;  /* 128/12 */
+
+    /* ===== Line height: comfort（サイトの既定）===== */
+    --line-height-comfort-five-extra-large:  112px;
+    --line-height-comfort-three-extra-large: 64px;
+    --line-height-comfort-two-extra-large:   48px;
+    --line-height-comfort-extra-large:       40px;
+    --line-height-comfort-large:             32px;
+    --line-height-comfort-medium:            28px;
+    --line-height-comfort-small:             28px;
+    --line-height-comfort-extra-small:       24px;
+    --line-height-comfort-two-extra-small:   20px;
+
+    --font-weight-normal: 400;
+    --font-weight-semi-bold: 600;
+    --font-weight-bold: 700;
+    --letter-spacing-normal: 0px;
+
+    /* ===== Dimension ===== */
+    --dimension-scale-2: 2px;   --dimension-scale-4: 4px;
+    --dimension-scale-8: 8px;   --dimension-scale-312: 312px;
+    --dimension-border-medium: 1px;
+    --dimension-border-large: 2px;
+    --dimension-radius-medium: 8px;
+    --dimension-radius-extra-large: 16px;
+    --dimension-radius-two-extra-large: 32px;
+
+    --dimension-spacing-three-extra-small: 2px;
+    --dimension-spacing-two-extra-small: 4px;
+    --dimension-spacing-extra-small: 8px;
+    --dimension-spacing-small: 12px;
+    --dimension-spacing-medium: 16px;
+    --dimension-spacing-large: 24px;
+    --dimension-spacing-extra-large: 32px;
+    --dimension-spacing-two-extra-large: 48px;
+    --dimension-spacing-three-extra-large: 56px;
+    --dimension-spacing-four-extra-large: 72px;
+    --dimension-spacing-five-extra-large: 96px;
+    --dimension-spacing-six-extra-large: 128px;
+
+    /* ===== Motion ===== */
+    --duration-scale-200: .2s;
+    --duration-scale-300: .3s;
+    --cubic-bezier-motion-enter: cubic-bezier(.24, 1, .32, 1);
+    --cubic-bezier-motion-exit:  cubic-bezier(.64, 0, .78, 0);
+
+    /* ===== Elevation（トークンは存在しない。実測の 1 段のみ） ===== */
+    --shadow-1: var(--dimension-scale-2) var(--dimension-scale-2) var(--dimension-scale-8) var(--dimension-scale-2) rgba(0,0,0,.1);
+    --shadow-sticky: 0 -4px 24px rgba(0,0,0,.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-background-default-base);   /* 原典は未指定。実装では明示する */
+    color: var(--color-text-default-high);
+    font-family: var(--font-ja);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-comfort-small);
+    letter-spacing: var(--letter-spacing-normal);
+    font-feature-settings: "palt";
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  .en { font-family: var(--font-en); font-weight: var(--font-weight-semi-bold); }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--dimension-spacing-large); }
+  .narrow { max-width: 960px; }
+
+  /* ===== Header ===== */
+  .header { border-bottom: var(--dimension-border-medium) solid var(--color-border-default-low); }
+  .header-inner { display: flex; align-items: center; justify-content: space-between;
+    gap: var(--dimension-spacing-large); padding: var(--dimension-spacing-large) 0; flex-wrap: wrap; }
+  .logo { display: flex; align-items: center; gap: var(--dimension-spacing-small); }
+  .logo-mark { width: 26px; height: 26px; background: var(--color-text-default-high);
+    clip-path: polygon(0 22%, 30% 0, 62% 46%, 100% 22%, 100% 78%, 68% 100%, 36% 54%, 0 78%); }
+  .logo-type { font-family: var(--font-en); font-size: var(--font-size-extra-large);
+    font-weight: var(--font-weight-bold); letter-spacing: .18em; line-height: 1; }
+  .nav { display: flex; align-items: center; gap: var(--dimension-spacing-large); flex-wrap: wrap; }
+  .nav a { font-family: var(--font-en); font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semi-bold); color: var(--color-text-default-high);
+    text-decoration: none; padding: var(--dimension-spacing-extra-small) var(--dimension-spacing-small); }
+  .nav a:hover { background: var(--color-state-default-hover); border-radius: var(--dimension-radius-medium); }
+  /* ナビ内のピルは .nav a より詳細度を上げて .btn の指定を通す */
+  .nav a.btn-matte-neutral { color: var(--color-text-inverse-high); }
+  .nav a.btn-s { font-size: var(--font-size-two-extra-small); font-weight: var(--font-weight-bold); }
+  .nav a.btn:hover { background: none; }
+
+  /* ===== Section ===== */
+  .section { padding: var(--dimension-spacing-five-extra-large) 0; }
+  .section + .section { border-top: var(--dimension-border-medium) solid var(--color-border-default-low); }
+  .sec-label { margin-bottom: var(--dimension-spacing-large); }
+  .sec-label .lbl-en { display: block; font-family: var(--font-en);
+    font-size: var(--font-size-two-extra-large); font-weight: var(--font-weight-semi-bold);
+    line-height: var(--line-height-comfort-two-extra-large); }
+  .sec-label .lbl-ja { display: block; font-size: var(--font-size-extra-small);
+    font-weight: var(--font-weight-bold); color: var(--color-text-default-mid);
+    line-height: var(--line-height-comfort-extra-small); }
+  .note { font-size: var(--font-size-extra-small); color: var(--color-text-default-mid);
+    line-height: var(--line-height-comfort-extra-small); margin-top: var(--dimension-spacing-small); }
+  .mono { font-family: var(--font-mono); font-size: var(--font-size-three-extra-small);
+    color: var(--color-text-default-mid); }
+
+  /* ===== Hero ===== */
+  .hero { padding: var(--dimension-spacing-five-extra-large) 0 var(--dimension-spacing-four-extra-large); }
+  .hero h1 { font-size: var(--font-size-five-extra-large); font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-comfort-five-extra-large); }
+  .grad-text { background-image: var(--gradient-scale-coral-100);
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero .sub { font-family: var(--font-en); font-size: var(--font-size-extra-large);
+    font-weight: var(--font-weight-semi-bold); line-height: var(--line-height-comfort-extra-large);
+    margin-top: var(--dimension-spacing-medium); }
+
+  /* ===== Grid ===== */
+  .grid { display: grid; gap: var(--dimension-spacing-medium); }
+  .g2 { grid-template-columns: repeat(2, 1fr); }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .g4 { grid-template-columns: repeat(4, 1fr); }
+  .g6 { grid-template-columns: repeat(6, 1fr); }
+  @media (max-width: 767px) { .g3, .g4, .g6 { grid-template-columns: repeat(2, 1fr); } .g2 { grid-template-columns: 1fr; } }
+
+  /* ===== Swatch ===== */
+  .swatch { border-radius: var(--dimension-radius-medium); overflow: hidden;
+    background: var(--color-background-default-base); border: var(--dimension-border-medium) solid var(--color-border-default-low); }
+  .swatch-block { height: 80px; }
+  .swatch-info { padding: var(--dimension-spacing-small) var(--dimension-spacing-medium) var(--dimension-spacing-medium); }
+  .swatch-name { font-size: var(--font-size-small); font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-comfort-two-extra-small); }
+  .swatch-hex { font-family: var(--font-mono); font-size: var(--font-size-three-extra-small);
+    color: var(--color-text-default-mid); margin-top: var(--dimension-spacing-two-extra-small); }
+  .swatch-role { font-size: var(--font-size-three-extra-small); color: var(--color-text-default-mid);
+    margin-top: var(--dimension-spacing-two-extra-small); line-height: var(--line-height-comfort-two-extra-small); }
+  .ramp { display: grid; grid-template-columns: repeat(11, 1fr); border-radius: var(--dimension-radius-medium); overflow: hidden; }
+  .ramp div { height: 40px; }
+  .ramp-name { font-size: var(--font-size-extra-small); font-weight: var(--font-weight-bold);
+    margin: var(--dimension-spacing-small) 0 var(--dimension-spacing-two-extra-small); }
+
+  /* ===== Type spec rows ===== */
+  .type-row { display: grid; grid-template-columns: 200px 1fr; gap: var(--dimension-spacing-large);
+    padding: var(--dimension-spacing-large) 0;
+    border-bottom: var(--dimension-border-medium) solid var(--color-border-default-low); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: var(--font-size-three-extra-small);
+    color: var(--color-text-default-mid); line-height: 1.7; }
+  @media (max-width: 767px) { .type-row { grid-template-columns: 1fr; gap: var(--dimension-spacing-extra-small); } }
+
+  .t-hero   { font-size: var(--font-size-five-extra-large);  font-weight: 700; line-height: 112px; }
+  .t-disp   { font-size: var(--font-size-four-extra-large);  font-weight: 700; line-height: 72px; }
+  .t-h3     { font-size: var(--font-size-three-extra-large); font-weight: 700; line-height: 64px; }
+  .t-seclbl { font-family: var(--font-en); font-size: var(--font-size-two-extra-large); font-weight: 600; line-height: 48px; }
+  .t-lead   { font-size: var(--font-size-extra-large);       font-weight: 400; line-height: 40px; }
+  .t-lg     { font-size: var(--font-size-large);             font-weight: 400; line-height: 32px; }
+  .t-body   { font-size: var(--font-size-medium);            font-weight: 400; line-height: 28px; }
+  .t-small  { font-size: var(--font-size-small);             font-weight: 400; line-height: 28px; }
+  .t-cap    { font-size: var(--font-size-extra-small);       font-weight: 400; line-height: 24px; }
+  .t-xs     { font-size: var(--font-size-two-extra-small);   font-weight: 700; line-height: 20px; }
+  .t-xxs    { font-size: var(--font-size-three-extra-small); font-weight: 400; line-height: 20px; }
+
+  /* ===== Buttons: _rounded-button ===== */
+  .btn { display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-ja); font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-normal); font-feature-settings: "palt";
+    border: none; border-radius: var(--dimension-scale-312); cursor: pointer;
+    text-decoration: none; transition: opacity var(--duration-scale-200) var(--cubic-bezier-motion-enter); }
+  .btn:hover { opacity: .84; }
+  /* 原典は面色を background-image のグラデーションで持つ（matte / gradient の切り替え用） */
+  .btn-matte-neutral { background-image: linear-gradient(rgb(0,0,0), rgb(0,0,0)); color: #ffffff; }
+  .btn-matte-inverse { background-image: linear-gradient(#ffffff, #ffffff); color: var(--color-text-default-high);
+    box-shadow: inset 0 0 0 1px var(--color-border-default-low); }
+  .btn-gradient-mint  { background-image: var(--gradient-scale-mint-100);  color: #ffffff; }
+  .btn-gradient-coral { background-image: var(--gradient-scale-coral-100); color: #ffffff; }
+  .btn-s { padding: 8px 24px;  font-size: var(--font-size-two-extra-small); line-height: 20px; }
+  .btn-m { padding: 12px 32px; font-size: var(--font-size-medium);          line-height: 28px; }
+  .btn-l { padding: 16px 48px; font-size: var(--font-size-medium);          line-height: 28px; }
+  .btn:disabled, .btn[aria-disabled="true"] { opacity: var(--opacity-state-disabled); cursor: not-allowed; }
+  .btn:focus-visible { outline: var(--dimension-border-large) solid var(--color-border-default-high);
+    outline-offset: var(--dimension-border-large); }
+  .btn-row { display: flex; flex-wrap: wrap; gap: var(--dimension-spacing-medium); align-items: center; }
+
+  /* ===== Cards ===== */
+  .card { background: var(--color-surface-list); border-radius: var(--dimension-radius-medium);
+    padding: var(--dimension-spacing-large); text-decoration: none; color: var(--color-text-default-high);
+    display: block; transition: background var(--duration-scale-200) var(--cubic-bezier-motion-enter); }
+  .card:hover { background: #eeeeee; }
+  .card-title { font-size: var(--font-size-medium); font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-comfort-medium); }
+  .card-meta { font-size: var(--font-size-extra-small); color: var(--color-text-default-mid);
+    line-height: var(--line-height-comfort-extra-small); margin-top: var(--dimension-spacing-extra-small); }
+  .card-warm { background: var(--color-background-default-accent); }
+  .card-inverse { background: var(--color-background-inverse-base); color: var(--color-text-inverse-high); }
+  .card-inverse .card-meta { color: var(--color-text-inverse-mid); }
+
+  .job { background: var(--color-surface-list); border-radius: var(--dimension-radius-medium);
+    padding: var(--dimension-spacing-medium) var(--dimension-spacing-large);
+    display: flex; align-items: center; gap: var(--dimension-spacing-small);
+    text-decoration: none; color: var(--color-text-default-high);
+    font-size: var(--font-size-small); line-height: var(--line-height-comfort-small); }
+  .job:hover { background: #eeeeee; }
+  .job-tag { font-size: var(--font-size-three-extra-small); font-weight: var(--font-weight-bold);
+    color: var(--color-text-default-mid); }
+
+  /* ===== Prepaid cards（プロダクト固有のトークン） ===== */
+  .pcard { border-radius: var(--dimension-radius-extra-large); padding: var(--dimension-spacing-large);
+    color: #ffffff; min-height: 132px; display: flex; flex-direction: column; justify-content: space-between; }
+  .pcard-name { font-size: var(--font-size-extra-small); font-weight: var(--font-weight-bold); }
+  .pcard-num { font-family: var(--font-en); font-size: var(--font-size-large);
+    font-weight: var(--font-weight-semi-bold); letter-spacing: .08em; }
+
+  /* ===== Badges ===== */
+  .badge { display: inline-flex; align-items: center; border-radius: var(--dimension-scale-312);
+    padding: var(--dimension-spacing-two-extra-small) var(--dimension-spacing-small);
+    font-size: var(--font-size-extra-small); font-weight: var(--font-weight-bold); line-height: 20px; }
+  .badge-row { display: flex; flex-wrap: wrap; gap: var(--dimension-spacing-extra-small); }
+
+  /* ===== Forms ===== */
+  .field { margin-bottom: var(--dimension-spacing-large); }
+  .field label { display: block; font-size: var(--font-size-extra-small);
+    font-weight: var(--font-weight-bold); margin-bottom: var(--dimension-spacing-extra-small);
+    line-height: var(--line-height-comfort-extra-small); }
+  .field input, .field select, .field textarea {
+    width: 100%; background: var(--color-background-default-base);
+    border: var(--dimension-border-medium) solid var(--color-border-default-mid);
+    border-radius: var(--dimension-radius-medium);
+    padding: var(--dimension-spacing-small) var(--dimension-spacing-medium);
+    font-family: var(--font-ja); font-size: var(--font-size-medium);
+    line-height: var(--line-height-comfort-medium); color: var(--color-text-default-high);
+    font-feature-settings: "palt"; }
+  .field input:focus, .field textarea:focus { outline: var(--dimension-border-large) solid var(--color-border-default-high);
+    outline-offset: var(--dimension-border-large); }
+  .field.is-focus input { outline: var(--dimension-border-large) solid var(--color-border-default-high);
+    outline-offset: var(--dimension-border-large); }
+  .field.is-error input { border-color: var(--color-impression-negative-base); }
+  .field .msg { display: inline-block; margin-top: var(--dimension-spacing-extra-small);
+    font-size: var(--font-size-extra-small); line-height: var(--line-height-comfort-extra-small);
+    background: var(--color-impression-negative-container);
+    color: var(--color-impression-negative-on-container);
+    border-radius: var(--dimension-radius-medium);
+    padding: var(--dimension-spacing-two-extra-small) var(--dimension-spacing-small); }
+  .field .hint { margin-top: var(--dimension-spacing-two-extra-small);
+    font-size: var(--font-size-extra-small); color: var(--color-text-default-mid); }
+
+  /* ===== Elevation ===== */
+  .elev { background: var(--color-background-default-base); border-radius: var(--dimension-radius-medium);
+    padding: var(--dimension-spacing-large); border: var(--dimension-border-medium) solid var(--color-border-default-low); }
+  .elev-0 { box-shadow: none; }
+  .elev-1 { box-shadow: var(--shadow-1); border-color: transparent; }
+  .elev-sticky { box-shadow: var(--shadow-sticky); border-color: transparent; }
+  .elev-name { font-size: var(--font-size-small); font-weight: var(--font-weight-bold); }
+
+  /* ===== Layout / spacing ===== */
+  .sp-row { display: flex; align-items: center; gap: var(--dimension-spacing-medium);
+    margin-bottom: var(--dimension-spacing-extra-small); }
+  .sp-bar { background: var(--color-interactive-base); height: 14px; border-radius: 2px; }
+  .sp-label { font-family: var(--font-mono); font-size: var(--font-size-three-extra-small);
+    color: var(--color-text-default-mid); white-space: nowrap; }
+
+  .footer { background: var(--color-background-inverse-base); color: var(--color-text-inverse-high);
+    padding: var(--dimension-spacing-three-extra-large) 0 var(--dimension-spacing-five-extra-large);
+    margin-top: var(--dimension-spacing-five-extra-large); }
+  .footer .copy { font-family: var(--font-en); font-size: var(--font-size-extra-small);
+    font-weight: var(--font-weight-semi-bold); color: var(--color-text-inverse-mid);
+    margin-top: var(--dimension-spacing-large); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container header-inner">
+    <div class="logo">
+      <div class="logo-mark"></div>
+      <div class="logo-type">SMART BANK</div>
+    </div>
+    <nav class="nav">
+      <a href="#">Company</a>
+      <a href="#">Product</a>
+      <a href="#">News</a>
+      <a href="#">Media</a>
+      <a href="#" class="btn btn-matte-neutral btn-s">Recruit</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container hero">
+  <h1>人々が<span class="grad-text">本当に欲しかったもの</span>をつくる。</h1>
+  <p class="sub">Make things people truly wanted.</p>
+  <div class="btn-row" style="margin-top:32px">
+    <a href="#" class="btn btn-matte-neutral btn-m">App Store</a>
+    <a href="#" class="btn btn-matte-neutral btn-m">Google Play</a>
+  </div>
+</div>
+
+<!-- ============ COLORS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="lbl-en">Colors</span><span class="lbl-ja">カラーパレット</span></div>
+
+    <div class="grid g4">
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-text-default-high)"></div>
+        <div class="swatch-info"><div class="swatch-name">Ink（CTA）</div><div class="swatch-hex">rgba(0,0,0,.87)</div>
+        <div class="swatch-role">文字・黒ピルの面。面積で見た実質のブランド色</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-interactive-base)"></div>
+        <div class="swatch-info"><div class="swatch-name">Interactive Base</div><div class="swatch-hex">#1dd0b0</div>
+        <div class="swatch-role">--color-interactive-base（mint 60）アプリのプライマリ</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-background-default-base);box-shadow:inset 0 0 0 1px rgba(0,0,0,.1)"></div>
+        <div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div>
+        <div class="swatch-role">ページ地色（原典は未指定。実装では明示する）</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-surface-list)"></div>
+        <div class="swatch-info"><div class="swatch-name">Surface（list）</div><div class="swatch-hex">#f5f5f5</div>
+        <div class="swatch-role">stone 99。求人・記事カードの面</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-background-default-accent)"></div>
+        <div class="swatch-info"><div class="swatch-name">Background Accent</div><div class="swatch-hex">#f9f6f2</div>
+        <div class="swatch-role">wood 99。温かみのある生成りの面</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-background-inverse-base)"></div>
+        <div class="swatch-info"><div class="swatch-name">Background Inverse</div><div class="swatch-hex">#141816</div>
+        <div class="swatch-role">stone 10。反転セクションの地</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-background-inverse-accent)"></div>
+        <div class="swatch-info"><div class="swatch-name">Inverse Accent</div><div class="swatch-hex">#424645</div>
+        <div class="swatch-role">stone 30。反転面の中の面</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-border-default-mid)"></div>
+        <div class="swatch-info"><div class="swatch-name">Border Mid</div><div class="swatch-hex">rgba(0,0,0,.2)</div>
+        <div class="swatch-role">入力欄の罫。High は rgba(0,0,0,.4) でフォーカスリング</div></div></div>
+    </div>
+
+    <p class="note"><strong>差し色はグラデーション 3 本だけ。</strong>角度もトークンの一部なので変えない（コーラル 68.49deg / ミント 59.54deg / スカイ 90deg）。</p>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="swatch"><div class="swatch-block" style="background-image:var(--gradient-scale-coral-100)"></div>
+        <div class="swatch-info"><div class="swatch-name">coral 100</div><div class="swatch-hex">68.49deg #ff5c4d 25% → #ffbe18</div>
+        <div class="swatch-role">ヒーロー見出しのグラデーション文字／マイカード</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background-image:var(--gradient-scale-mint-100)"></div>
+        <div class="swatch-info"><div class="swatch-name">mint 100</div><div class="swatch-hex">59.54deg #1dd0b0 30% → #89dc65</div>
+        <div class="swatch-role">ペアカード</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background-image:var(--gradient-scale-sky-100)"></div>
+        <div class="swatch-info"><div class="swatch-name">sky 100</div><div class="swatch-hex">90deg #54c8e8 30% → #afe2e3</div>
+        <div class="swatch-role">ジュニアカード</div></div></div>
+    </div>
+
+    <p class="note" style="margin-top:32px"><strong>スケール層は 10 色 × 11 段（10 / 20 / 30 / 40 / 50 / 60 / 70 / 80 / 90 / 95 / 99）。</strong>実装では直接参照せず、必ずセマンティック層を経由する。</p>
+    <div class="grid g2" style="margin-top:8px">
+      <div>
+        <div class="ramp-name">mint</div>
+        <div class="ramp"><div style="background:#173a34"></div><div style="background:#176256"></div><div style="background:#0c8771"></div><div style="background:#09a68c"></div><div style="background:#0fbea0"></div><div style="background:#1dd0b0"></div><div style="background:#59e0ca"></div><div style="background:#81e9d8"></div><div style="background:#9eefe1"></div><div style="background:#cff4ed"></div><div style="background:#eef8f7"></div></div>
+      </div>
+      <div>
+        <div class="ramp-name">coral</div>
+        <div class="ramp"><div style="background:#422926"></div><div style="background:#763831"></div><div style="background:#a4362b"></div><div style="background:#ca3826"></div><div style="background:#ee3b1c"></div><div style="background:#ff5c4d"></div><div style="background:#ff7f74"></div><div style="background:#ff9e96"></div><div style="background:#ffbab4"></div><div style="background:#ffd1ce"></div><div style="background:#ffe6e3"></div></div>
+      </div>
+      <div>
+        <div class="ramp-name">sun</div>
+        <div class="ramp"><div style="background:#3d3319"></div><div style="background:#705918"></div><div style="background:#a27e00"></div><div style="background:#cca000"></div><div style="background:#e9b700"></div><div style="background:#ffc919"></div><div style="background:#ffd86d"></div><div style="background:#ffe29f"></div><div style="background:#ffebbc"></div><div style="background:#fff1cf"></div><div style="background:#fff9ec"></div></div>
+      </div>
+      <div>
+        <div class="ramp-name">wood（温かみのある面）</div>
+        <div class="ramp"><div style="background:#24231f"></div><div style="background:#49453c"></div><div style="background:#70695c"></div><div style="background:#908876"></div><div style="background:#a9a089"></div><div style="background:#c6b99d"></div><div style="background:#e3d2b4"></div><div style="background:#eadec9"></div><div style="background:#eee5d5"></div><div style="background:#f2ece1"></div><div style="background:#f9f6f2"></div></div>
+      </div>
+      <div>
+        <div class="ramp-name">stone（無彩色）</div>
+        <div class="ramp"><div style="background:#141816"></div><div style="background:#252a28"></div><div style="background:#424645"></div><div style="background:#6f7170"></div><div style="background:#8e908f"></div><div style="background:#a6a8a7"></div><div style="background:#c1c1c1"></div><div style="background:#d1d1d1"></div><div style="background:#dfdfdf"></div><div style="background:#eaeaea"></div><div style="background:#f5f5f5"></div></div>
+      </div>
+      <div>
+        <div class="ramp-name">grape（AI）</div>
+        <div class="ramp"><div style="background:#281b38"></div><div style="background:#3e275a"></div><div style="background:#4e3274"></div><div style="background:#663e95"></div><div style="background:#8b54c9"></div><div style="background:#a97ee1"></div><div style="background:#bd99ee"></div><div style="background:#ceb1f9"></div><div style="background:#e4d0fe"></div><div style="background:#efe2ff"></div><div style="background:#faf7ff"></div></div>
+      </div>
+    </div>
+
+    <p class="note" style="margin-top:32px"><strong>セマンティック色は base / base-variant / container / on-container の 4 点セットで使う。</strong></p>
+    <div class="badge-row" style="margin-top:12px">
+      <span class="badge" style="background:var(--color-impression-positive-container);color:var(--color-impression-positive-on-container)">口座を連携しました</span>
+      <span class="badge" style="background:var(--color-impression-attention-container);color:var(--color-impression-attention-on-container)">今月の予算を超えそうです</span>
+      <span class="badge" style="background:var(--color-impression-negative-container);color:var(--color-impression-negative-on-container)">カードの有効期限切れ</span>
+      <span class="badge" style="background:var(--color-message-promotion-container);color:var(--color-message-promotion-on-container)">キャンペーン中</span>
+      <span class="badge" style="background:var(--color-message-ai-container);color:var(--color-message-ai-on-container)">AI が支出を分類しました</span>
+      <span class="badge" style="background:var(--color-interactive-container);color:var(--color-interactive-on-container)">選択中</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TYPOGRAPHY ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="lbl-en">Typography</span><span class="lbl-ja">タイポグラフィ</span></div>
+    <p class="note"><strong>文字サイズは 128 ÷ n（n = 1〜12）の調和数列。</strong>隣の段との比が 2/1, 3/2, 4/3, 5/4, 6/5, 7/6, 8/7, 9/8, 10/9, 11/10, 12/11 で並ぶ。line-height は px 指定・4 の倍数（comfort を既定に使う）。<code class="mono">letter-spacing: normal</code>、<code class="mono">font-feature-settings: "palt"</code> は全域。</p>
+
+    <div class="type-row"><div class="type-meta">five-extra-large<br>64px = 128/2<br>w700 / lh 112px</div>
+      <div class="t-hero">お金が整う。</div></div>
+    <div class="type-row"><div class="type-meta">four-extra-large<br>42.6672px ≒ 128/3<br>w700 / lh 72px</div>
+      <div class="t-disp">がんばらなくても</div></div>
+    <div class="type-row"><div class="type-meta">three-extra-large<br>32px = 128/4<br>w700 / lh 64px</div>
+      <div class="t-h3">ワンバンク</div></div>
+    <div class="type-row"><div class="type-meta">two-extra-large（Poppins）<br>25.6px = 128/5<br>w600 / lh 48px</div>
+      <div class="t-seclbl">Product</div></div>
+    <div class="type-row"><div class="type-meta">extra-small（和文サブ）<br>12.8px = 128/10<br>w700 / lh 24px / mid</div>
+      <div class="t-cap" style="font-weight:700;color:var(--color-text-default-mid)">プロダクト情報</div></div>
+    <div class="type-row"><div class="type-meta">extra-large<br>21.332px ≒ 128/6<br>w400 / lh 40px</div>
+      <div class="t-lead">次世代型の AI 家計管理アプリ。</div></div>
+    <div class="type-row"><div class="type-meta">large<br>18.2864px ≒ 128/7<br>w400 / lh 32px</div>
+      <div class="t-lg">収支を自動で分類し、使っていい金額だけを見せます。</div></div>
+    <div class="type-row"><div class="type-meta">medium（本文）<br>16px = 128/8<br>w400 / lh 28px</div>
+      <div class="t-body">ワンバンクは、がんばらなくても自然とお金が整う、次世代型の AI 家計管理アプリです。銀行口座やカードをつなぐだけで、日々の支出が自動で整理されていきます。</div></div>
+    <div class="type-row"><div class="type-meta">small（body 既定）<br>14.2224px ≒ 128/9<br>w400 / lh 28px</div>
+      <div class="t-small">「スマートバンクのことを全体的に知りたい」という方に、事業・組織・カルチャーをまとめた資料をご用意しています。</div></div>
+    <div class="type-row"><div class="type-meta">extra-small<br>12.8px = 128/10<br>w400 / lh 24px</div>
+      <div class="t-cap">※ 一部の金融機関は連携に対応していません。</div></div>
+    <div class="type-row"><div class="type-meta">two-extra-small<br>11.6368px ≒ 128/11<br>w700 / lh 20px</div>
+      <div class="t-xs">小ピルボタンのラベル</div></div>
+    <div class="type-row"><div class="type-meta">three-extra-small<br>10.6672px ≒ 128/12<br>w400 / lh 20px</div>
+      <div class="t-xxs">最小テキスト（注記・単位）</div></div>
+  </div>
+</section>
+
+<!-- ============ PRODUCT ============ -->
+<section class="section">
+  <div class="container narrow">
+    <div class="sec-label"><span class="lbl-en">Product</span><span class="lbl-ja">プロダクト情報</span></div>
+    <h3 class="t-h3">ワンバンク</h3>
+    <p class="t-body" style="margin-top:16px">ワンバンクは、がんばらなくても自然とお金が整う、次世代型の AI 家計管理アプリです。銀行口座とカードをつなぐと、支出が自動で分類され、「今月あといくら使えるか」だけが画面に残ります。家計簿を「つける」作業をなくすことが設計の出発点でした。</p>
+    <p class="t-body" style="margin-top:28px">カードは 3 種類。自分用の<strong>マイカード</strong>、パートナーと共有する<strong>ペアカード</strong>、子ども向けの<strong>ジュニアカード</strong>。それぞれに色とグラデーションが割り当てられていて、アプリを開いた瞬間にどのカードの話かが分かるようになっています。</p>
+
+    <div class="grid g3" style="margin-top:32px">
+      <div class="pcard" style="background-image:var(--gradient-scale-coral-100)">
+        <div class="pcard-name">マイカード</div><div class="pcard-num">•••• 4321</div></div>
+      <div class="pcard" style="background-image:var(--gradient-scale-mint-100)">
+        <div class="pcard-name">ペアカード</div><div class="pcard-num">•••• 8765</div></div>
+      <div class="pcard" style="background-image:var(--gradient-scale-sky-100)">
+        <div class="pcard-name">ジュニアカード</div><div class="pcard-num">•••• 2109</div></div>
+    </div>
+    <p class="note">プロダクト固有の概念がトークン層にそのまま入っている（<code class="mono">--color-prepaid-card-my-card-*</code> / <code class="mono">--gradient-prepaid-card-pair-card-base</code> ほか）。</p>
+  </div>
+</section>
+
+<!-- ============ BUTTONS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="lbl-en">Buttons</span><span class="lbl-ja">ボタン</span></div>
+    <p class="note"><strong>radius は 312px（<code class="mono">--dimension-scale-312</code>）の完全なピル。</strong>面色は原典どおり <code class="mono">background-image: linear-gradient(#000, #000)</code> で塗っている（matte / gradient を 1 プロパティで切り替えるため）。</p>
+
+    <div class="btn-row" style="margin-top:24px">
+      <button class="btn btn-matte-neutral btn-s">Small</button>
+      <button class="btn btn-matte-neutral btn-m">Medium</button>
+      <button class="btn btn-matte-neutral btn-l">もっと見る</button>
+    </div>
+    <p class="note">matte / neutral — Small <code class="mono">8px 24px</code> / Medium <code class="mono">12px 32px</code> / Large <code class="mono">16px 48px</code></p>
+
+    <div class="btn-row" style="margin-top:24px">
+      <button class="btn btn-matte-inverse btn-l">採用情報へ</button>
+      <button class="btn btn-gradient-mint btn-l">口座を連携する</button>
+      <button class="btn btn-gradient-coral btn-l">カードを発行する</button>
+      <button class="btn btn-matte-neutral btn-l" aria-disabled="true">送信できません</button>
+    </div>
+    <p class="note">matte / inverse ・ gradient（mint / coral）・ disabled（<code class="mono">opacity: .38</code>）。フォーカスは <code class="mono">outline: 2px solid rgba(0,0,0,.4); outline-offset: 2px</code> でブランド色を使わない。</p>
+  </div>
+</section>
+
+<!-- ============ CARDS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="lbl-en">Cards</span><span class="lbl-ja">カード</span></div>
+    <div class="grid g3">
+      <a href="#" class="card">
+        <div class="card-title">シリーズ B ファーストクローズで 40.8 億円を調達しました</div>
+        <div class="card-meta">2026.07.30 ／ News</div>
+      </a>
+      <a href="#" class="card card-warm">
+        <div class="card-title">デザイン組織のこれまでとこれから</div>
+        <div class="card-meta">2026.07.22 ／ Blog</div>
+      </a>
+      <a href="#" class="card card-inverse">
+        <div class="card-title">Podcast「つくるをつくる」第 12 回</div>
+        <div class="card-meta">2026.07.15 ／ Podcast</div>
+      </a>
+    </div>
+
+    <p class="note" style="margin-top:24px">求人リスト（面 <code class="mono">#f5f5f5</code> / radius 8px / 影なし）。トップページで最も出現回数の多い面色。</p>
+    <div class="grid g2" style="margin-top:12px">
+      <a href="#" class="job"><span class="job-tag">正社員</span>プロダクトデザイナー</a>
+      <a href="#" class="job"><span class="job-tag">正社員</span>リードデザイナー</a>
+      <a href="#" class="job"><span class="job-tag">正社員</span>サーバサイドエンジニア</a>
+      <a href="#" class="job"><span class="job-tag">正社員</span>エンジニアリングマネージャー</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FORMS ============ -->
+<section class="section">
+  <div class="container narrow">
+    <div class="sec-label"><span class="lbl-en">Forms</span><span class="lbl-ja">フォーム</span></div>
+    <div class="grid g3">
+      <div>
+        <p class="note" style="margin:0 0 12px">Default</p>
+        <div class="field">
+          <label for="f1">お名前</label>
+          <input id="f1" type="text" value="葛原 健太">
+          <div class="hint">全角で入力してください</div>
+        </div>
+      </div>
+      <div>
+        <p class="note" style="margin:0 0 12px">Focus</p>
+        <div class="field is-focus">
+          <label for="f2">メールアドレス</label>
+          <input id="f2" type="email" value="hello@example.com">
+          <div class="hint">outline 2px / offset 2px</div>
+        </div>
+      </div>
+      <div>
+        <p class="note" style="margin:0 0 12px">Error</p>
+        <div class="field is-error">
+          <label for="f3">電話番号</label>
+          <input id="f3" type="tel" value="090-1234">
+          <div class="msg">正しい電話番号を入力してください</div>
+        </div>
+      </div>
+    </div>
+    <p class="note">入力欄は <code class="mono">16px</code>（iOS の自動ズーム回避）。エラーメッセージは <code class="mono">negative-container</code> の面に <code class="mono">negative-on-container</code> の文字。</p>
+  </div>
+</section>
+
+<!-- ============ ELEVATION ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="lbl-en">Elevation</span><span class="lbl-ja">奥行き</span></div>
+    <p class="note"><strong>影のトークンは存在しない。</strong>奥行きは面色（<code class="mono">#ffffff</code> / <code class="mono">#f5f5f5</code> / <code class="mono">#141816</code>）で作る。実サイトで使われている影は下の 2 つだけで、値も寸法トークンから組む。</p>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="elev elev-0"><div class="elev-name">Level 0 — none</div><div class="note">既定。カード・ボタンはすべてこれ</div></div>
+      <div class="elev elev-1"><div class="elev-name">Level 1</div><div class="note mono">2px 2px 8px 2px rgba(0,0,0,.1)</div></div>
+      <div class="elev elev-sticky"><div class="elev-name">Sticky</div><div class="note mono">0 -4px 24px rgba(0,0,0,.12)</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LAYOUT ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="lbl-en">Layout</span><span class="lbl-ja">スペーシング</span></div>
+    <p class="note">4px グリッド。<code class="mono">--dimension-scale-*</code> が原資、<code class="mono">--dimension-spacing-*</code> が意味づけ。最大値 <code class="mono">312</code> はピルの radius にも使われる。</p>
+    <div style="margin-top:20px">
+      <div class="sp-row"><div class="sp-bar" style="width:2px"></div><span class="sp-label">2px — three-extra-small</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:4px"></div><span class="sp-label">4px — two-extra-small</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:8px"></div><span class="sp-label">8px — extra-small</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:12px"></div><span class="sp-label">12px — small</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:16px"></div><span class="sp-label">16px — medium</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:24px"></div><span class="sp-label">24px — large</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:32px"></div><span class="sp-label">32px — extra-large</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:48px"></div><span class="sp-label">48px — two-extra-large</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:56px"></div><span class="sp-label">56px — three-extra-large</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:72px"></div><span class="sp-label">72px — four-extra-large</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:96px"></div><span class="sp-label">96px — five-extra-large</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:128px"></div><span class="sp-label">128px — six-extra-large</span></div>
+    </div>
+
+    <p class="note" style="margin-top:32px">角丸はトークンに 2 / 4 / 8 / 12 / 16 / 32px があるが、<strong>実際に見えるのは 8px（カード）と 312px（ピル）だけ</strong>。</p>
+    <div class="btn-row" style="margin-top:12px">
+      <div style="width:96px;height:64px;background:var(--color-surface-list);border-radius:8px"></div>
+      <div style="width:96px;height:64px;background:var(--color-surface-list);border-radius:16px"></div>
+      <div style="width:96px;height:64px;background:var(--color-surface-list);border-radius:32px"></div>
+      <div style="width:160px;height:64px;background:var(--color-surface-list);border-radius:312px"></div>
+    </div>
+    <p class="note">8px（カード） ／ 16px・32px（画像ブロック） ／ 312px（ピル）</p>
+
+    <p class="note" style="margin-top:32px">コンテナは <code class="mono">1200px</code>（既定）／ <code class="mono">960px</code>（読み物）。ブレークポイントはモバイルファーストの <code class="mono">min-width: 640 / 768 / 1024 / 1400px</code>。</p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="t-body" style="font-weight:700">人々が本当に欲しかったものをつくる。</div>
+    <div class="copy">© SmartBank, Inc.</div>
+  </div>
+</footer>
+
+</body>
+</html>

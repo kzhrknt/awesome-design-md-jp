@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (417 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (420 sites)</a>
 </p>
 
 <table>
@@ -624,6 +624,11 @@
 <td align="center"><strong>東京都写真美術館</strong><br><img src="design-md/topmuseum/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>コンセント</strong><br><img src="design-md/concent/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>スマートバンク</strong><br><img src="design-md/smartbank/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>根津美術館</strong><br><img src="design-md/nezu-museum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>中村藤吉本店</strong><br><img src="design-md/tokichi/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1101,11 +1106,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [Towada Art Center (十和田市現代美術館)](https://towadaartcenter.com/) | Museum / Contemporary Art | [DESIGN.md](design-md/towada-art-center/DESIGN.md) | [preview.html](design-md/towada-art-center/preview.html) |
 | [TOP MUSEUM (東京都写真美術館)](https://topmuseum.jp/) | Museum / Photography | [DESIGN.md](design-md/topmuseum/DESIGN.md) | [preview.html](design-md/topmuseum/preview.html) |
 | [CONCENT (コンセント)](https://www.concentinc.jp/) | Design Firm / Service Design | [DESIGN.md](design-md/concent/DESIGN.md) | [preview.html](design-md/concent/preview.html) |
+| [SmartBank (スマートバンク)](https://smartbank.co.jp/) | Fintech / Startup | [DESIGN.md](design-md/smartbank/DESIGN.md) | [preview.html](design-md/smartbank/preview.html) |
+| [Nezu Museum (根津美術館)](https://www.nezu-muse.or.jp/) | Museum / Japanese & East Asian Art | [DESIGN.md](design-md/nezu-museum/DESIGN.md) | [preview.html](design-md/nezu-museum/preview.html) |
+| [NAKAMURA TOKICHI (中村藤吉本店)](https://www.tokichi.jp/) | Tea / Uji Kyoto | [DESIGN.md](design-md/tokichi/DESIGN.md) | [preview.html](design-md/tokichi/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (417 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (420 sites)</a>
 </p>
 
 <table>
@@ -1694,6 +1702,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>十和田市現代美術館</strong><br><img src="design-md/towada-art-center/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>東京都写真美術館</strong><br><img src="design-md/topmuseum/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>コンセント</strong><br><img src="design-md/concent/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>スマートバンク</strong><br><img src="design-md/smartbank/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>根津美術館</strong><br><img src="design-md/nezu-museum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>中村藤吉本店</strong><br><img src="design-md/tokichi/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

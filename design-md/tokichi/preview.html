@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 中村藤吉本店 NAKAMURA TOKICHI</title>
+<!--
+  原典は Noto Serif JP を自己ホストしている。Google Fonts で配信されているため代替は不要。
+  ただしウェイトの制約が重要:
+
+    @font-face { font-family:"Noto Serif JP"; src:url(".../NotoSerifJP-Light.woff");
+                 font-weight:300; font-display:swap; }
+    @font-face { font-family:"Noto Serif JP"; src:url(".../NotoSerifJP-Medium.woff");
+                 font-weight:500; font-display:swap; }
+
+  自己ホストされているのは Light(300) と Medium(500) の 2 ウェイトだけ。
+  400 / 700 は載っていないので、font-weight:700 を指定した箇所（ナビの親項目・電話番号）は
+  合成太字か Medium への丸めになる。実装では 300 / 500 の 2 段で設計すること。
+  このプレビューでは原典に合わせて 300 / 500 のみ読み込む。
+
+  原典には serif ファミリが 2 つ混在する:
+    "Noto Serif JP"       … 自己ホスト。本文・見出し・ナビのほぼ全部
+    "Noto Serif Japanese" … Shopify のテーマ設定（--font-body-family）が配信。
+                            検索入力・言語セレクタ・一部フォームラベルのみ
+  移植時は前者に一本化するのが望ましい。ここでは "Noto Serif JP" に統一している。
+
+  原典の組版設定:
+    html { font-size: calc(var(--font-body-scale) * 62.5%) }   1rem = 10px
+    body { font-size:15px; font-weight:300; line-height:1.8; letter-spacing:0.6px; color:#333 }
+    font-feature-settings: normal    全域。palt は一切使っていない
+
+  この設計の核心は letter-spacing。
+    小見出し「中村銘茶」   18px に 18px  = 1.0em
+    セクション見出し       28px に 14px  = 0.5em
+    ナビ（カテゴリ）       14px に  2px  = 0.143em
+    本文                   15px に 0.6px = 0.04em
+  詰めるのではなく「開ける」方向に振る。palt を足すとこの設計と喧嘩する。
+
+  角丸と影は Shopify のテーマ変数レベルでゼロにされている
+  （--buttons-radius:0 / --*-shadow-opacity:0.0）。
+  例外は検索フィールドの 100px、ランキングバッジの 50%、バリアントピルの 40px だけ。
+
+  第三者アプリの色（#0f571e / #72a95a / #222222 / #0000ee）はテーマの一部ではないので
+  このプレビューには含めない。テーマのボタン色は #333333 の墨。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ===== Colors: Shopify の color-scheme として定義される ===== */
+    --color-foreground:   #333333;  /* 墨。文字・ボタン面・罫のすべて */
+    --color-background:   #ffffff;  /* scheme-1。トップ・ヘッダー */
+    --color-background-3: #fffef8;  /* scheme-3。商品一覧・商品詳細の生成り */
+    --color-button:       #333333;
+    --color-button-text:  #ffffff;
+
+    --kincha:        #c7b385;  /* 金茶。ランキングバッジのみ。サイト唯一の差し色 */
+    --text-secondary: rgba(51,51,51,.75);
+    --text-muted:     #4d4d4d;
+    --nav-parent:     #666666;
+    --panel:          #f8f8f8;
+    --overlay-light:  rgba(0,0,0,.04);
+    --scrim:          rgba(0,0,0,.4);
+    --scrim-light:    rgba(255,255,255,.5);
+
+    --border:         #dddddd;
+    --border-strong:  #aaaaaa;
+    --border-card:    rgba(51,51,51,.1);   /* --product-card-border-opacity: 0.1 */
+    --border-media:   rgba(51,51,51,.05);  /* --media-border-opacity: 0.05 */
+    --border-input:   rgba(51,51,51,.55);  /* --inputs-border-opacity: 0.55 */
+    --error:          #e83737;
+    --soldout:        rgba(56,56,56,.5);
+
+    /* ===== Fonts ===== */
+    --font: "Noto Serif JP", serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* ===== Weights: 実質 300 / 500 の 2 段 ===== */
+    --w-light: 300;
+    --w-medium: 500;
+
+    /* ===== Letter spacing: この設計の核心 ===== */
+    --ls-body:      .04em;   /* 15px に 0.6px */
+    --ls-sub:      1.0em;    /* 小見出し「中村銘茶」 */
+    --ls-section:   .5em;    /* セクション見出し「季節を味わう」 */
+    --ls-section-2: .15em;   /* 生成り面のセクション見出し */
+    --ls-nav:       .143em;  /* ナビ（カテゴリ） */
+    --ls-onphoto:   .125em;  /* 写真上の商品名 */
+    --ls-caption:   .077em;
+
+    /* ===== Line height ===== */
+    --lh-body: 1.8;
+    --lh-head: 1.3;
+
+    /* ===== Shape: すべて 0。例外 3 つのみ ===== */
+    --buttons-radius: 0px;
+    --inputs-radius: 0px;
+    --media-radius: 0px;
+    --product-card-corner-radius: 0px;
+    --popup-corner-radius: 0px;
+    --r-search: 100px;         /* 検索フィールド（サイト唯一のピル） */
+    --r-rank: 50%;             /* ランキングバッジ */
+    --variant-pills-radius: 40px;
+    --badge-corner-radius: 40px;
+
+    /* ===== Layout ===== */
+    --page-width: 130rem;      /* = 1300px */
+    --grid-desktop: 8px;
+    --grid-mobile: 4px;
+    --spacing-sections: 0px;
+
+    /* ===== Motion ===== */
+    --duration-short: .1s;
+    --duration-default: .2s;
+    --duration-medium: .3s;
+    --duration-long: .5s;
+    --alpha-link: .85;
+  }
+
+  html { font-size: 62.5%; }   /* 1rem = 10px */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font);
+    font-size: 1.5rem;                 /* 15px */
+    font-weight: var(--w-light);
+    line-height: var(--lh-body);
+    letter-spacing: var(--ls-body);
+    font-feature-settings: normal;     /* palt は使わない */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  .container { width: 100%; max-width: var(--page-width); margin: 0 auto; padding: 0 2rem; }
+  .narrow { max-width: 80rem; }
+  .kinari { background: var(--color-background-3); }
+
+  /* ===== Announcement ===== */
+  .announce { text-align: center; padding: 1.2rem 2rem; font-size: 1.3rem;
+    letter-spacing: var(--ls-caption); color: var(--text-muted);
+    border-bottom: 1px solid var(--border); }
+
+  /* ===== Header ===== */
+  .header { border-bottom: 1px solid var(--border); }
+  .header-top { display: flex; align-items: center; justify-content: space-between;
+    gap: 2rem; padding: 1.6rem 0; flex-wrap: wrap; }
+  .logo { display: flex; align-items: center; gap: 1rem; }
+  .logo-mark { width: 42px; height: 42px; border-radius: 50%;
+    background: var(--color-foreground); color: #fff; display: flex; align-items: center;
+    justify-content: center; font-size: 2rem; letter-spacing: normal; }
+  .logo-jp { font-size: 2.4rem; font-weight: var(--w-medium); letter-spacing: .04em; line-height: 1.2; }
+  .logo-en { font-size: 1.1rem; letter-spacing: .18em; color: var(--text-secondary); }
+  .header-tools { display: flex; align-items: center; gap: 1.6rem; }
+  .search { display: flex; align-items: center; gap: .8rem;
+    border: 1px solid var(--border-input); border-radius: var(--r-search);
+    padding: 1.2rem 1.6rem; min-width: 240px; }
+  .search input { border: none; outline: none; background: transparent; width: 100%;
+    font-family: var(--font); font-size: 1.3rem; font-weight: 400;
+    letter-spacing: .031em; color: var(--color-foreground); }
+  .icon-btn { font-size: 1.2rem; text-align: center; color: var(--text-secondary);
+    letter-spacing: var(--ls-caption); text-decoration: none; }
+
+  .gnav { display: flex; justify-content: center; gap: 4rem; padding: 1.4rem 0 2rem; flex-wrap: wrap; }
+  .gnav a { font-size: 1.4rem; font-weight: var(--w-light);
+    letter-spacing: var(--ls-nav); color: var(--color-foreground); text-decoration: none; }
+  .gnav a:hover { opacity: var(--alpha-link); }
+
+  /* ===== Hero ===== */
+  .hero { height: 420px; position: relative; display: flex; align-items: flex-end;
+    background-image:
+      linear-gradient(0deg, rgba(60,48,30,.35), rgba(60,48,30,0) 60%),
+      repeating-linear-gradient(88deg, #6d5636 0 26px, #5c4729 26px 30px),
+      linear-gradient(#7b6540, #4d3c22); }
+  .hero-cap { padding: 3rem; color: #fff; }
+  .hero-cap .ttl { font-size: 1.6rem; letter-spacing: var(--ls-onphoto); line-height: 1.5; }
+
+  /* ===== Section ===== */
+  .section { padding: 8rem 0; }               /* --spacing-sections は 0。余白は内側で取る */
+  .section + .section { border-top: 1px solid var(--border); }
+  .sec-h { font-size: 2.8rem; font-weight: var(--w-light); line-height: var(--lh-head);
+    letter-spacing: var(--ls-section); margin-right: -.5em; text-align: center;
+    margin-bottom: 1rem; }
+  .sec-h-left { text-align: left; margin-right: 0; }
+  .sub-h { font-size: 1.8rem; font-weight: var(--w-light); line-height: var(--lh-head);
+    letter-spacing: var(--ls-sub); margin-right: -1em; text-align: center; }
+  .note { font-size: 1.3rem; letter-spacing: var(--ls-caption); color: var(--text-muted);
+    line-height: 1.8; margin-top: 1.2rem; }
+  .mono { font-family: var(--font-mono); font-size: 1.2rem; letter-spacing: normal;
+    font-weight: 400; }
+
+  /* ===== Grid ===== */
+  .grid { display: grid; gap: var(--grid-desktop); }
+  .g2 { grid-template-columns: repeat(2,1fr); }
+  .g3 { grid-template-columns: repeat(3,1fr); }
+  .g4 { grid-template-columns: repeat(4,1fr); }
+  .gap-l { gap: 2.4rem; }
+  @media (max-width: 989px){ .g4 { grid-template-columns: repeat(3,1fr); } }
+  @media (max-width: 749px){ .g3,.g4 { grid-template-columns: repeat(2,1fr); } .g2 { grid-template-columns:1fr; }
+    .grid { gap: var(--grid-mobile); } }
+
+  /* ===== Swatch ===== */
+  .swatch { border: 1px solid var(--border-card); }
+  .swatch-block { height: 84px; }
+  .swatch-info { padding: 1.2rem 1.4rem 1.6rem; }
+  .swatch-name { font-size: 1.4rem; font-weight: var(--w-medium); letter-spacing: var(--ls-body); line-height: 1.4; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 1.1rem; letter-spacing: normal;
+    color: var(--text-muted); margin-top: .5rem; }
+  .swatch-role { font-size: 1.1rem; color: var(--text-muted); margin-top: .6rem; line-height: 1.7; }
+
+  /* ===== Type rows ===== */
+  .type-row { display: grid; grid-template-columns: 210px 1fr; gap: 2.4rem;
+    padding: 2.4rem 0; border-bottom: 1px solid var(--border); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 1.1rem; letter-spacing: normal;
+    color: var(--text-muted); line-height: 1.7; }
+  @media (max-width: 749px){ .type-row { grid-template-columns: 1fr; gap: .8rem; } }
+
+  .t-sec   { font-size: 2.8rem; font-weight: 300; line-height: 1.3; letter-spacing: .5em; }
+  .t-sec2  { font-size: 2.8rem; font-weight: 300; line-height: 1.8; letter-spacing: .15em; }
+  .t-sub   { font-size: 1.8rem; font-weight: 300; line-height: 1.3; letter-spacing: 1em; }
+  .t-lg    { font-size: 2.4rem; font-weight: 300; line-height: 1.3; letter-spacing: var(--ls-body); }
+  .t-pt    { font-size: 1.6rem; font-weight: 300; line-height: 1.3; letter-spacing: var(--ls-body); }
+  .t-body  { font-size: 1.5rem; font-weight: 300; line-height: 1.8; letter-spacing: var(--ls-body); }
+  .t-nav   { font-size: 1.4rem; font-weight: 300; line-height: 1.3; letter-spacing: var(--ls-nav); }
+  .t-cap   { font-size: 1.3rem; font-weight: 300; line-height: 1.3; letter-spacing: var(--ls-caption); color: var(--text-muted); }
+  .t-legal { font-size: 1.2rem; font-weight: 300; line-height: 1.8; letter-spacing: var(--ls-body); }
+  .t-med   { font-size: 1.6rem; font-weight: 500; line-height: 1.25; letter-spacing: var(--ls-body); }
+  .t-tel   { font-size: 3rem; font-weight: 500; line-height: 1.2; letter-spacing: var(--ls-body); }
+
+  /* ===== Buttons ===== */
+  .btn { display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font); font-weight: var(--w-light); letter-spacing: var(--ls-body);
+    font-feature-settings: normal; cursor: pointer; text-decoration: none;
+    border-radius: var(--buttons-radius); box-shadow: none;
+    transition: opacity var(--duration-default); }
+  .btn:hover { opacity: var(--alpha-link); }
+  .btn-primary { background: var(--color-button); color: var(--color-button-text);
+    border: 1px solid var(--color-button); font-size: 1.5rem; padding: 1.2rem 2.4rem; }
+  .btn-secondary { background: transparent; color: var(--color-foreground);
+    border: 1px solid var(--color-foreground); font-size: 1.5rem; padding: 1.2rem 2.4rem; }
+  .btn-inverse { background: transparent; color: #fff; border: 1px solid #fff;
+    font-size: 1.5rem; padding: 1.2rem 2.4rem; }
+  .btn-wide { background: var(--color-button); color: var(--color-button-text);
+    border: none; border-radius: 2px; font-size: 1.5rem; padding: .8rem 4rem; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 1.6rem; align-items: center; }
+  .btn:disabled { background: var(--soldout); border-color: transparent; cursor: not-allowed; }
+
+  /* ===== Badges ===== */
+  .rank { width: 30px; height: 30px; border-radius: var(--r-rank); background: var(--kincha);
+    color: #fff; display: inline-flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; font-weight: var(--w-medium); letter-spacing: normal; }
+  .vpill { display: inline-flex; align-items: center; border-radius: var(--variant-pills-radius);
+    border: 1px solid var(--border-input); background: #fff; color: var(--color-foreground);
+    padding: 0 1.6rem; height: 34px; font-size: 1.4rem; font-weight: 400; letter-spacing: var(--ls-body); }
+  .vpill[aria-pressed="true"] { border-color: var(--color-foreground); }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 1.2rem; align-items: center; }
+
+  /* ===== Product cards ===== */
+  .pcard { border: 0; border-radius: var(--product-card-corner-radius); box-shadow: none;
+    text-align: left; text-decoration: none; color: var(--color-foreground); display: block; }
+  .pcard .media { position: relative; aspect-ratio: 1 / 1;
+    border: 1px solid var(--border-media); border-radius: var(--media-radius);
+    background-image: repeating-linear-gradient(120deg, #e6e2d2 0 18px, #dcd7c3 18px 28px),
+      linear-gradient(#efece0, #ddd8c6); }
+  .pcard .media .rank { position: absolute; top: 1rem; left: 1rem; }
+  .pcard .ttl { font-size: 1.5rem; font-weight: var(--w-light); line-height: 1.3;
+    letter-spacing: var(--ls-body); margin-top: 1.2rem; }
+  .pcard .price { font-size: 1.4rem; font-weight: var(--w-light); letter-spacing: var(--ls-body);
+    color: var(--text-secondary); margin-top: .4rem; }
+  .pcard:hover .media { opacity: var(--alpha-link); }
+
+  /* ===== News ===== */
+  .news { border-top: 1px solid var(--border); }
+  .news a { display: block; padding: 2rem .4rem; border-bottom: 1px solid var(--border);
+    text-decoration: none; color: var(--color-foreground); }
+  .news a:hover { opacity: var(--alpha-link); }
+  .news .date { font-size: 1.3rem; letter-spacing: var(--ls-caption); color: var(--text-muted); }
+  .news .ttl { font-size: 1.4rem; font-weight: var(--w-light); line-height: 1.4;
+    letter-spacing: .071em; margin-top: .4rem; }
+
+  /* ===== Forms ===== */
+  .field { margin-bottom: 2.4rem; }
+  .field label { display: block; font-size: 1.6rem; font-weight: var(--w-light);
+    letter-spacing: .063em; color: var(--text-secondary); margin-bottom: .8rem; }
+  .field input, .field textarea, .field select { width: 100%; background: #fff;
+    border: 1px solid var(--border-input); border-radius: var(--inputs-radius);
+    box-shadow: none; padding: 1.5rem;
+    font-family: var(--font); font-size: 1.6rem; font-weight: 400;
+    letter-spacing: .025em; color: var(--color-foreground); line-height: 1.5;
+    font-feature-settings: normal; }
+  .field input:focus, .field textarea:focus { outline: none; border-color: var(--color-foreground); }
+  .field.is-focus input { border-color: var(--color-foreground); }
+  .field.is-error input { border-color: var(--error); }
+  .field .msg { margin-top: .8rem; font-size: 1.3rem; letter-spacing: var(--ls-caption); color: var(--error); }
+  .field .hint { margin-top: .8rem; font-size: 1.3rem; letter-spacing: var(--ls-caption); color: var(--text-muted); }
+
+  /* ===== Elevation ===== */
+  .elev { padding: 2.4rem; box-shadow: none; }
+  .e-media { border: 1px solid var(--border-media); }
+  .e-card  { border: 1px solid var(--border-card); }
+  .e-rule  { border: 1px solid var(--border); }
+  .elev-name { font-size: 1.4rem; font-weight: var(--w-medium); letter-spacing: var(--ls-body); }
+
+  /* ===== Spacing bars ===== */
+  .sp-row { display: flex; align-items: center; gap: 1.6rem; margin-bottom: .8rem; }
+  .sp-bar { background: var(--kincha); height: 14px; }
+  .sp-label { font-family: var(--font-mono); font-size: 1.1rem; letter-spacing: normal;
+    color: var(--text-muted); white-space: nowrap; }
+
+  .footer { border-top: 1px solid var(--border); padding: 8rem 0 2rem; margin-top: 8rem; }
+  .footer .copy { font-size: 1.2rem; font-weight: var(--w-light); letter-spacing: var(--ls-body);
+    color: var(--text-secondary); margin-top: 4rem; }
+</style>
+</head>
+<body>
+
+<div class="announce">熊本県熊本地方で発生した地震に伴う配送への影響について →</div>
+
+<header class="header">
+  <div class="container">
+    <div class="header-top">
+      <div class="logo">
+        <div class="logo-mark">丸</div>
+        <div>
+          <div class="logo-jp">中村藤吉本店</div>
+          <div class="logo-en">NAKAMURA TOKICHI</div>
+        </div>
+      </div>
+      <div class="header-tools">
+        <div class="search"><span aria-hidden="true">⌕</span><input type="search" placeholder="商品を探す"></div>
+        <a href="#" class="icon-btn">ログイン</a>
+        <a href="#" class="icon-btn">カート</a>
+        <a href="#" class="icon-btn">global</a>
+      </div>
+    </div>
+    <nav class="gnav">
+      <a href="#">お買いもの</a><a href="#">ギフト・定期購買</a><a href="#">お店のこと</a>
+      <a href="#">読みもの</a><a href="#">お知らせ</a><a href="#">中村銘茶のご紹介</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-cap"><div class="ttl">水出し煎茶と、宇治の夏</div></div>
+</div>
+
+<!-- ============ COLORS ============ -->
+<section class="section">
+  <div class="container">
+    <h2 class="sec-h sec-h-left">Colors</h2>
+    <p class="note">面色は <strong>墨 <code class="mono">#333333</code> と生成り <code class="mono">#fffef8</code> だけ</strong>。差し色はランキングバッジの金茶のみ。</p>
+
+    <div class="grid g4 gap-l" style="margin-top:2.4rem">
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-foreground)"></div>
+        <div class="swatch-info"><div class="swatch-name">墨 / Sumi</div><div class="swatch-hex">#333333</div>
+        <div class="swatch-role">--color-foreground / --color-button。文字・ボタン面・罫のすべて</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-background-3)"></div>
+        <div class="swatch-info"><div class="swatch-name">生成り / Kinari</div><div class="swatch-hex">#fffef8</div>
+        <div class="swatch-role">scheme-3。商品一覧・商品詳細の地色</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--color-background);box-shadow:inset 0 0 0 1px #ddd"></div>
+        <div class="swatch-info"><div class="swatch-name">Paper</div><div class="swatch-hex">#ffffff</div>
+        <div class="swatch-role">scheme-1。トップ・ヘッダーの地色</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--kincha)"></div>
+        <div class="swatch-info"><div class="swatch-name">金茶 / Kincha</div><div class="swatch-hex">#c7b385</div>
+        <div class="swatch-role">ランキングバッジのみ。サイト唯一の差し色</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--text-secondary)"></div>
+        <div class="swatch-info"><div class="swatch-name">Text Secondary</div><div class="swatch-hex">rgba(51,51,51,.75)</div>
+        <div class="swatch-role">補助テキスト・ナビの下層項目・フォームラベル</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--nav-parent)"></div>
+        <div class="swatch-info"><div class="swatch-name">Nav Parent</div><div class="swatch-hex">#666666</div>
+        <div class="swatch-role">グローバルナビの親項目</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--panel)"></div>
+        <div class="swatch-info"><div class="swatch-name">Panel</div><div class="swatch-hex">#f8f8f8</div>
+        <div class="swatch-role">お知らせブロックの面</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:var(--border)"></div>
+        <div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-hex">#dddddd</div>
+        <div class="swatch-role">一般の罫。カードは rgba(51,51,51,.1)、メディアは .05</div></div></div>
+    </div>
+
+    <p class="note" style="margin-top:4rem"><strong>色スキームは 3 つだけ。</strong>1 と 3 の違いは地色（<code class="mono">#ffffff</code> ↔ <code class="mono">#fffef8</code>）のみ。</p>
+    <div class="grid g3 gap-l" style="margin-top:1.6rem">
+      <div class="swatch"><div class="swatch-block" style="background:#ffffff;box-shadow:inset 0 0 0 1px #ddd;display:flex;align-items:center;justify-content:center;color:#333">scheme-1</div>
+        <div class="swatch-info"><div class="swatch-hex">fg #333333 / bg #ffffff</div><div class="swatch-role">既定。トップ・ヘッダー</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:#fffef8;box-shadow:inset 0 0 0 1px #ddd;display:flex;align-items:center;justify-content:center;color:#333">scheme-3</div>
+        <div class="swatch-info"><div class="swatch-hex">fg #333333 / bg #fffef8</div><div class="swatch-role">商品一覧・商品詳細</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:#000000;display:flex;align-items:center;justify-content:center;color:#fff">scheme-4</div>
+        <div class="swatch-info"><div class="swatch-hex">fg #ffffff / bg #000000</div><div class="swatch-role">反転ブロック（写真上の帯）</div></div></div>
+    </div>
+
+    <p class="note" style="margin-top:4rem"><strong>実サイトに現れる緑（<code class="mono">#0f571e</code> / <code class="mono">#72a95a</code>）と <code class="mono">#222222</code> は Shopify アプリの既定色</strong>で、テーマには存在しない。「茶商だから緑がブランド色」と推測せず、ボタンは墨 <code class="mono">#333333</code> を使う。</p>
+  </div>
+</section>
+
+<!-- ============ TYPOGRAPHY ============ -->
+<section class="section">
+  <div class="container">
+    <h2 class="sec-h sec-h-left">Typography</h2>
+    <p class="note"><strong>明朝 Light(300) が既定。</strong>自己ホストは 300 / 500 の 2 ウェイトだけ。階層は太さではなく<strong>「大きさ ＋ 字間」</strong>で作る。行間は本文 <code class="mono">1.8</code>、見出し <code class="mono">1.3</code>。<code class="mono">font-feature-settings</code> は <code class="mono">normal</code>（palt を使わない）。<code class="mono">1rem = 10px</code>。</p>
+
+    <div class="type-row"><div class="type-meta">28px / w300 / lh 1.3<br><strong>ls 14px = 0.5em</strong></div>
+      <div class="t-sec">季節を味わう</div></div>
+    <div class="type-row"><div class="type-meta">18px / w300 / lh 1.3<br><strong>ls 18px = 1.0em</strong></div>
+      <div class="t-sub">中村銘茶</div></div>
+    <div class="type-row"><div class="type-meta">28px / w300 / lh 1.8<br>ls 4.2px = 0.15em<br>（生成り面の見出し）</div>
+      <div class="t-sec2">おすすめ商品</div></div>
+    <div class="type-row"><div class="type-meta">24px / w300 / lh 1.3<br>ls 0.6px</div>
+      <div class="t-lg">I n s t a g r a m</div></div>
+    <div class="type-row"><div class="type-meta">16px / w300 / lh 1.3<br>ls 0.6px</div>
+      <div class="t-pt">濃いめの抹茶チョコレート</div></div>
+    <div class="type-row"><div class="type-meta">15px / w300 / lh 1.8<br>ls 0.6px = 0.04em<br>（body の既定）</div>
+      <div class="t-body">宇治の地で茶を扱ってきた百七十年のあいだに、私たちが学んだことはひとつです。茶は、飲む人の時間に合わせて姿を変える——そのために、摘む時期も、火の入れ方も、包み方も変えていきます。</div></div>
+    <div class="type-row"><div class="type-meta">14px / w300 / lh 1.3<br>ls 2px = 0.143em</div>
+      <div class="t-nav">お買いもの</div></div>
+    <div class="type-row"><div class="type-meta">13px / w300 / lh 1.3<br>ls 1px = 0.077em</div>
+      <div class="t-cap">2026.07.30　お知らせ（オンラインストア）</div></div>
+    <div class="type-row"><div class="type-meta">16px / <strong>w500</strong> / lh 1.25<br>ls 0.6px</div>
+      <div class="t-med">再入荷通知を受け取る</div></div>
+    <div class="type-row"><div class="type-meta">30px / w500 / lh 1.2<br>（原典は 700 指定 → 合成 / 500）</div>
+      <div class="t-tel">0120-137-555</div></div>
+    <div class="type-row"><div class="type-meta">12px / w300 / lh 1.8<br>ls 0.6px</div>
+      <div class="t-legal">まるとは株式会社中村藤吉本店の登録商標です。</div></div>
+
+    <p class="note" style="margin-top:2.4rem"><strong><code class="mono">0.5em</code> 以上の字間は最後の 1 文字の後ろにもアキが付く。</strong>中央揃えにするときは <code class="mono">margin-right: -0.5em</code>（<code class="mono">1.0em</code> なら <code class="mono">-1em</code>）で補正する。このプレビューの見出しはその補正を入れている。</p>
+  </div>
+</section>
+
+<!-- ============ PRODUCT ============ -->
+<section class="section kinari">
+  <div class="container">
+    <h2 class="sec-h">おすすめ商品</h2>
+    <p class="note" style="text-align:center">地色は生成り <code class="mono">#fffef8</code>（scheme-3）。カードは罫なし・radius 0・影なし・テキスト左揃え。グリッドのガターは 8px。</p>
+
+    <div class="grid g4" style="margin-top:3.2rem">
+      <a href="#" class="pcard"><div class="media"><span class="rank">1</span></div>
+        <div class="ttl">生茶ゼリイ詰合せ［抹茶・ほうじ茶］</div><div class="price">￥3,240（税込）</div></a>
+      <a href="#" class="pcard"><div class="media"><span class="rank">2</span></div>
+        <div class="ttl">マッチャスターター／100g</div><div class="price">￥2,160（税込）</div></a>
+      <a href="#" class="pcard"><div class="media"><span class="rank">3</span></div>
+        <div class="ttl">水出し煎茶ティーバッグ</div><div class="price">￥1,296（税込）</div></a>
+      <a href="#" class="pcard"><div class="media"><span class="rank">4</span></div>
+        <div class="ttl">濃いめの抹茶チョコレート</div><div class="price">￥1,080（税込）</div></a>
+    </div>
+
+    <div style="text-align:center;margin-top:3.2rem">
+      <a href="#" class="btn btn-wide">すべてを表示する</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ READING ============ -->
+<section class="section">
+  <div class="container narrow">
+    <h2 class="sec-h">お茶のはなし</h2>
+    <p class="sub-h" style="margin-bottom:3.2rem">中村銘茶</p>
+    <p class="t-body">宇治の茶畑は、朝の霧が引いていく時間がいちばん美しい。摘み手の背より低く仕立てられた木の列が、斜面に沿ってゆるやかに折れていくのを、初代はきっと同じ角度から見ていたはずです。</p>
+    <p class="t-body" style="margin-top:2.4rem">茶を売るという仕事は、畑と湯呑みのあいだに立つことだと思っています。畑の側には気候があり、土があり、摘む手があります。湯呑みの側には、その日の気分と、隣に座っている人がいます。どちらにも寄りすぎないところに、商いの居場所があります。</p>
+    <p class="t-body" style="margin-top:2.4rem">だから私たちは、味の説明を長く書きません。かわりに、湯の温度と待つ時間だけをお伝えします。あとは、飲む方の側で決まることです。</p>
+    <div class="btn-row" style="margin-top:3.2rem">
+      <a href="#" class="btn btn-primary">お茶を選ぶ</a>
+      <a href="#" class="btn btn-secondary">お店のことを読む</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BUTTONS ============ -->
+<section class="section">
+  <div class="container">
+    <h2 class="sec-h sec-h-left">Buttons</h2>
+    <p class="note"><strong>radius は 0</strong>（<code class="mono">--buttons-radius: 0px</code>）、<strong>影なし</strong>（<code class="mono">--buttons-shadow-opacity: 0.0</code>）。ウェイトは 300。</p>
+    <div class="btn-row" style="margin-top:2.4rem">
+      <button class="btn btn-primary">カートに追加</button>
+      <button class="btn btn-secondary">お気に入りに追加</button>
+      <button class="btn btn-wide">すべてを表示する</button>
+      <button class="btn btn-primary" disabled>売り切れ</button>
+    </div>
+
+    <p class="note" style="margin-top:3.2rem">写真の上（scheme-4 相当）。</p>
+    <div style="background-image:repeating-linear-gradient(120deg,#6d5636 0 26px,#5c4729 26px 30px);padding:3.2rem;margin-top:1.2rem">
+      <a href="#" class="btn btn-inverse">詳しく見る →</a>
+    </div>
+
+    <p class="note" style="margin-top:3.2rem"><strong>角丸を持つのは例外の 3 つだけ。</strong>検索フィールド（<code class="mono">100px</code>）・ランキングバッジ（<code class="mono">50%</code>）・バリアントピル（<code class="mono">40px</code>）。</p>
+    <div class="badge-row" style="margin-top:1.6rem">
+      <span class="rank">1</span>
+      <button class="vpill" aria-pressed="true">100g</button>
+      <button class="vpill">200g</button>
+      <button class="vpill">缶入り</button>
+      <div class="search" style="min-width:220px"><span aria-hidden="true">⌕</span><input type="search" placeholder="商品を探す"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NEWS ============ -->
+<section class="section">
+  <div class="container narrow">
+    <h2 class="sec-h sec-h-left">お知らせ</h2>
+    <nav class="news" style="margin-top:2.4rem">
+      <a href="#"><div class="date">2026.07.28</div><div class="ttl">夏季休業と配送スケジュールについて</div></a>
+      <a href="#"><div class="date">2026.07.14</div><div class="ttl">「生茶ゼリイ」季節限定 白桃の販売を開始しました</div></a>
+      <a href="#"><div class="date">2026.06.30</div><div class="ttl">宇治本店　茶房の営業時間変更のお知らせ</div></a>
+    </nav>
+  </div>
+</section>
+
+<!-- ============ FORMS ============ -->
+<section class="section">
+  <div class="container narrow">
+    <h2 class="sec-h sec-h-left">Forms</h2>
+    <div class="grid g3 gap-l">
+      <div>
+        <p class="note" style="margin:0 0 1.2rem">Default</p>
+        <div class="field"><label for="t1">お名前</label><input id="t1" type="text" value="葛原 健太">
+          <div class="hint">全角でご入力ください</div></div>
+      </div>
+      <div>
+        <p class="note" style="margin:0 0 1.2rem">Focus</p>
+        <div class="field is-focus"><label for="t2">メール</label><input id="t2" type="email" value="hello@example.com">
+          <div class="hint">罫が墨に変わる（radius 0・影なし）</div></div>
+      </div>
+      <div>
+        <p class="note" style="margin:0 0 1.2rem">Error</p>
+        <div class="field is-error"><label for="t3">郵便番号</label><input id="t3" type="text" value="611-00">
+          <div class="msg">郵便番号を 7 桁でご入力ください</div></div>
+      </div>
+    </div>
+    <p class="note">入力欄は <code class="mono">16px / w400</code>（iOS の自動ズーム回避）、罫 <code class="mono">1px solid rgba(51,51,51,.55)</code>、radius <code class="mono">0</code>。ラベルは <code class="mono">16px / w300 / rgba(51,51,51,.75) / ls 1px</code>。</p>
+  </div>
+</section>
+
+<!-- ============ ELEVATION ============ -->
+<section class="section">
+  <div class="container">
+    <h2 class="sec-h sec-h-left">Elevation</h2>
+    <p class="note"><strong>テーマ変数レベルで影を全部切っている</strong>（<code class="mono">--buttons- / --inputs- / --media- / --product-card- / --popup- / --drawer- / --variant-pills-shadow-opacity</code> がすべて <code class="mono">0.0</code>）。階層は罫の濃度差と地色の差で作る。</p>
+    <div class="grid g4 gap-l" style="margin-top:2.4rem">
+      <div class="elev e-media"><div class="elev-name">media</div><div class="note mono">1px rgba(51,51,51,.05)</div></div>
+      <div class="elev e-card"><div class="elev-name">card / popup</div><div class="note mono">1px rgba(51,51,51,.1)</div></div>
+      <div class="elev e-rule"><div class="elev-name">rule</div><div class="note mono">1px #dddddd</div></div>
+      <div class="elev" style="background:var(--color-background-3);border:1px solid var(--border-media)">
+        <div class="elev-name">地色の差</div><div class="note mono">#ffffff ↔ #fffef8</div></div>
+    </div>
+    <p class="note">実サイトで観測される影（<code class="mono">0 0 25px rgba(0,0,0,.2)</code> 等）はすべて第三者アプリが持ち込んだもの。テーマの設計は影ゼロ。</p>
+  </div>
+</section>
+
+<!-- ============ LAYOUT ============ -->
+<section class="section">
+  <div class="container">
+    <h2 class="sec-h sec-h-left">Layout</h2>
+    <p class="note">コンテナは <code class="mono">--page-width: 130rem</code> = <strong>1300px</strong>。<strong>セクション間の隙間は 0</strong>（<code class="mono">--spacing-sections-desktop: 0px</code>）で、余白は各ブロックの内側で取る。</p>
+    <div style="margin-top:2.4rem">
+      <div class="sp-row"><div class="sp-bar" style="width:4px"></div><span class="sp-label">4px — グリッド（モバイル）</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:8px"></div><span class="sp-label">8px — グリッド（デスクトップ）</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:10px"></div><span class="sp-label">10px — ヘッダーの左右</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:15px"></div><span class="sp-label">15px — 入力欄</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:20px"></div><span class="sp-label">20px — お知らせの行</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:40px"></div><span class="sp-label">40px — ナビの項目間</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:72px"></div><span class="sp-label">72px — フッターの左右</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:120px"></div><span class="sp-label">120px — フッターの上</span></div>
+    </div>
+
+    <p class="note" style="margin-top:4rem">角丸。<strong>全域 0</strong>。例外は <code class="mono">100px</code>（検索）/ <code class="mono">50%</code>（ランキング）/ <code class="mono">40px</code>（バリアントピル・バッジ）。</p>
+    <div class="btn-row" style="margin-top:1.2rem">
+      <div style="width:96px;height:56px;background:var(--overlay-light);border:1px solid var(--border-card);border-radius:0"></div>
+      <div style="width:120px;height:40px;background:#fff;border:1px solid var(--border-input);border-radius:40px"></div>
+      <div style="width:180px;height:48px;background:#fff;border:1px solid var(--border-input);border-radius:100px"></div>
+      <div style="width:40px;height:40px;background:var(--kincha);border-radius:50%"></div>
+    </div>
+
+    <p class="note" style="margin-top:4rem">ブレークポイントは Shopify Dawn 由来の <code class="mono">min-width: 750px / 990px</code> が主軸。独自追加（<code class="mono">768 / 960 / 600 / 480 / 400px</code>）が併存するので、移植時は 750 / 990 に寄せるのが素直。h1 のみ <code class="mono">clamp(56px, 14vw, 72px)</code> の流体で、他は段切り。本文 15px は変えない。</p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="t-med">中村藤吉本店</div>
+    <p class="t-body" style="margin-top:1.2rem">〒611-0021　京都府宇治市宇治壱番十番地<br>0120-137-555</p>
+    <div class="copy">まるとは株式会社中村藤吉本店の登録商標です。<br>© NAKAMURA TOKICHI HONTEN</div>
+  </div>
+</footer>
+
+</body>
+</html>
