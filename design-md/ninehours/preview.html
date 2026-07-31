@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 9h ナインアワーズ nine hours</title>
+<!--
+  原典のフォントはどちらも無償配信されているため、代替は不要。
+    約物: YakuHanJP   (jsDelivr CDN)   ← 約物グリフのみを持つ Web フォント
+    和文: Noto Sans JP (Google Fonts)  ← 約物以外のすべて
+
+  font-family: YakuHanJP, "Noto Sans JP", sans-serif;
+  YakuHanJP は 、。「」（）等の約物グリフしか持たないため、
+  先頭に置くだけで「約物は半角字形／その他は Noto Sans JP」という混植になる。
+
+  原典の組版設定:
+    font-feature-settings: normal   全域。palt は使わない
+                                    （約物の詰めは YakuHanJP が担当するため、
+                                      palt を併用すると二重にかかって食い込む）
+    font-weight                     和文の地の文が 700。予約ウィジェットのみ 600
+    letter-spacing                  本文以下は 0.96px 固定（継承される）
+                                    見出しだけ px を上書きして 0.08em に揃える
+                                    → 16px で 0.06em、11px まで落ちると 0.087em に膨らむ
+
+  ボタンの実装に注意:
+  すべてのボタンが border: 2px solid を「塗りと同色」で持つ。
+  黒ボタン = background #000 + border 2px solid #000
+  枠線ボタン = background transparent + border 2px solid #060606
+  → 外形が完全に一致するので、入れ替えてもレイアウトが 1px も動かない。
+
+  影は 1 つも使われていない（全要素 box-shadow: none）。
+  奥行きは黒地（#000000）と白地（#ffffff）の切り替えだけで作る。
+
+  グレーは --gray1〜--gray9 が 25 → 220 の完全な等間隔 9 段（1 段 24.375）。
+  --gray10（233）だけが数列から外れており、入力欄の面色専用に足されている。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/yakuhanjp@4.1.1/dist/css/yakuhanjp.min.css" rel="stylesheet">
+<style>
+  :root {
+    /* ===== Color: 原典の CSS Custom Properties（20 個）===== */
+    --main:  #000000;
+    --body:  #000000;
+    --link:  #000000;
+    --white: #ffffff;
+    --key:    #e93a28;   /* セクション見出しの文字色。塗りに使わない */
+    --yellow: #fdd22b;   /* 注意喚起 */
+
+    /* グレー: gray1〜gray9 は 25 + 24.375 × (n-1) の等間隔 9 段 */
+    --gray1:  #191919;   /*  25 */
+    --gray2:  #313131;   /*  49 */
+    --gray3:  #4a4a4a;   /*  74 */
+    --gray4:  #626262;   /*  98 */
+    --gray5:  #7a7a7a;   /* 122 */
+    --gray6:  #939393;   /* 147 */
+    --gray7:  #ababab;   /* 171 — プレースホルダ・無効 */
+    --gray8:  #c4c4c4;   /* 196 — 罫 */
+    --gray9:  #dcdcdc;   /* 220 — 薄い罫 */
+    --gray10: #e9e9e9;   /* 233 — 数列から外れた特例。入力欄の面 */
+
+    /* 小サイズのボタンだけ純黒・純白から 6 ずらす */
+    --ink-soft:  #060606;
+    --snow-soft: #f9f9f9;
+
+    --scrim-white: rgba(255, 255, 255, .3);   /* 写真の上のゴーストボタン */
+
+    /* ===== Font ===== */
+    --fontFamily: YakuHanJP, "Noto Sans JP", sans-serif;
+    --fontWeight: 400;   /* 定義はされているが実描画にはほぼ出ない */
+
+    /* ===== Type scale（実測）===== */
+    --fs-hero:     34px;  --lh-hero:     54.4px;  --ls-hero:     2.72px;  /* 0.08em */
+    --fs-display:  30px;  --lh-display:  48px;    --ls-display:  2.4px;   /* 0.08em */
+    --fs-heading:  26px;  --lh-heading:  36.4px;  --ls-heading:  2.08px;  /* 0.08em */
+    --fs-label:    18px;  --lh-label:    32.4px;
+    --fs-lead:     18px;  --lh-lead:     34.2px;
+    --fs-body:     16px;  --lh-body:     31.68px;                          /* 1.98 */
+    --fs-nav:      16px;  --lh-nav:      24px;
+    --fs-small:    14px;  --lh-small:    23.8px;
+    --fs-small-in: 14px;  --lh-small-in: 28px;    /* 反転面の本文 2.0 */
+    --fs-caption:  11px;  --lh-caption:  22px;    /* 2.0 */
+    --ls-base:     0.96px;   /* 本文以下は px 固定で継承される */
+
+    /* 予約ウィジェット系（600 / 字間 normal / 行間 1.5） */
+    --fs-widget:    16px; --lh-widget:    24px;
+    --fs-widget-s:  14px; --lh-widget-s:  21px;
+    --fs-widget-xs: 12px; --lh-widget-xs: 18px;
+
+    /* ===== Shape ===== */
+    --radius: 8px;        /* 押せるもの */
+    --radius-flat: 0px;   /* 札・検索欄 */
+    --border-w: 2px;      /* ボタンは塗りと同色でこれを必ず持つ */
+
+    /* ===== Layout ===== */
+    --container: 960px;
+    --container-narrow: 823px;
+    --container-wide: 1200px;
+
+    /* ===== Motion ===== */
+    --duration: .4s;
+    --easing: cubic-bezier(.33, 1, .68, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--body);
+    font-family: var(--fontFamily);
+    font-size: var(--fs-body);
+    font-weight: 700;                    /* 地の文が 700 */
+    line-height: var(--lh-body);         /* 1.98 */
+    letter-spacing: var(--ls-base);      /* 0.96px 固定 */
+    font-feature-settings: normal;       /* palt は使わない */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+
+  .container { max-width: var(--container); margin: 0 auto; padding: 0 20px; }
+  .narrow { max-width: var(--container-narrow); }
+
+  /* ===== Header ===== */
+  .header { border-bottom: 1px solid var(--gray9); }
+  .header-inner { display: flex; align-items: center; justify-content: space-between;
+    gap: 20px; padding: 20px 0; flex-wrap: wrap; }
+  .logo { display: flex; align-items: baseline; gap: 10px; }
+  .logo-mark { width: 34px; height: 34px; border-radius: 50%; background: var(--main);
+    position: relative; align-self: center; }
+  .logo-mark::after { content: ""; position: absolute; right: 4px; top: 6px;
+    width: 7px; height: 15px; background: var(--white); border-radius: 4px;
+    transform: rotate(20deg); }
+  .logo-type { font-size: 20px; font-weight: 700; line-height: 1.05; letter-spacing: .04em; }
+  .logo-type small { display: block; font-size: 20px; }
+  .nav { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+  .nav a { color: var(--link); text-decoration: none; font-size: var(--fs-nav);
+    font-weight: 700; line-height: var(--lh-nav); }
+  .nav a:hover { opacity: .55; transition: opacity var(--duration) var(--easing); }
+
+  /* ===== Hero（黒地）===== */
+  .hero { background: var(--main); color: var(--white); padding: 72px 0 64px; }
+  .hero h1 { font-size: var(--fs-hero); line-height: var(--lh-hero);
+    letter-spacing: var(--ls-hero); font-weight: 700; }
+  .hero .sub { font-size: var(--fs-small-in); line-height: var(--lh-small-in);
+    margin-top: 20px; max-width: 640px; }
+  .hero .hours { display: flex; gap: 40px; margin-top: 32px; flex-wrap: wrap; }
+  .hero .hours div { font-size: var(--fs-caption); line-height: var(--lh-caption); }
+  .hero .hours strong { display: block; font-size: var(--fs-heading);
+    line-height: var(--lh-heading); letter-spacing: var(--ls-heading); }
+
+  /* ===== Section ===== */
+  .section { padding: 64px 0; border-bottom: 1px solid var(--gray9); }
+  .sec-label { font-size: var(--fs-label); line-height: var(--lh-label);
+    font-weight: 700; color: var(--key); margin-bottom: 24px; }
+  .note { font-size: var(--fs-small); line-height: var(--lh-small);
+    color: var(--gray3); margin-top: 16px; }
+  .mono { font-family: SFMono-Regular, Consolas, Menlo, monospace;
+    font-size: 12px; letter-spacing: 0; }
+
+  /* ===== Grid ===== */
+  .grid { display: grid; gap: 20px; }
+  .g2 { grid-template-columns: repeat(2, 1fr); }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .g4 { grid-template-columns: repeat(4, 1fr); }
+  .g5 { grid-template-columns: repeat(5, 1fr); }
+
+  /* ===== Swatch ===== */
+  .swatch-block { height: 76px; border-radius: var(--radius); }
+  .swatch-name { font-size: var(--fs-small); line-height: 1.5; margin-top: 8px; }
+  .swatch-hex { font-family: SFMono-Regular, Consolas, Menlo, monospace;
+    font-size: 12px; letter-spacing: 0; color: var(--gray4); font-weight: 400; }
+  .swatch-role { font-size: var(--fs-caption); line-height: 1.7; color: var(--gray4);
+    margin-top: 2px; }
+
+  .ramp { display: flex; height: 44px; border-radius: var(--radius); overflow: hidden; }
+  .ramp div { flex: 1; }
+  .ramp-tick { display: flex; margin-top: 4px; }
+  .ramp-tick span { flex: 1; font-family: SFMono-Regular, Consolas, Menlo, monospace;
+    font-size: 10px; letter-spacing: 0; color: var(--gray5); font-weight: 400;
+    text-align: center; }
+
+  /* ===== Typography specimen ===== */
+  .type-row { display: grid; grid-template-columns: 190px 1fr; gap: 24px;
+    padding: 18px 0; border-top: 1px solid var(--gray9); align-items: baseline; }
+  .type-meta { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 11px;
+    line-height: 1.6; letter-spacing: 0; color: var(--gray5); font-weight: 400; }
+  .t-hero    { font-size: var(--fs-hero);    line-height: var(--lh-hero);    letter-spacing: var(--ls-hero); }
+  .t-display { font-size: var(--fs-display); line-height: var(--lh-display); letter-spacing: var(--ls-display); }
+  .t-heading { font-size: var(--fs-heading); line-height: var(--lh-heading); letter-spacing: var(--ls-heading); }
+  .t-label   { font-size: var(--fs-label);   line-height: var(--lh-label);   color: var(--key); }
+  .t-lead    { font-size: var(--fs-lead);    line-height: var(--lh-lead); }
+  .t-body    { font-size: var(--fs-body);    line-height: var(--lh-body); }
+  .t-small   { font-size: var(--fs-small);   line-height: var(--lh-small); }
+  .t-caption { font-size: var(--fs-caption); line-height: var(--lh-caption); }
+  .t-widget  { font-size: var(--fs-widget);  line-height: var(--lh-widget);
+               font-weight: 600; letter-spacing: normal; }
+
+  /* ===== Buttons =====
+     すべて border: 2px solid を塗りと同色で持つ。
+     塗り／枠線を入れ替えても外形が一致する。 */
+  .btn { display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--fontFamily); border-radius: var(--radius);
+    border: var(--border-w) solid transparent; cursor: pointer; text-decoration: none;
+    transition: opacity var(--duration) var(--easing); }
+  .btn:hover { opacity: .7; }
+  .btn-l { padding: 13px 20px; font-size: 16px; line-height: 24px; font-weight: 700; }
+  .btn-s { padding: 5px 10px;  font-size: 14px; line-height: 21px; font-weight: 600;
+    letter-spacing: normal; }
+
+  .btn-primary   { background: var(--main); color: var(--white); border-color: var(--main); }
+  .btn-primary-s { background: var(--ink-soft); color: var(--snow-soft); border-color: var(--ink-soft); }
+  .btn-outline   { background: transparent; color: var(--ink-soft); border-color: var(--ink-soft); }
+  .btn-inverse   { background: var(--white); color: var(--main); border-color: var(--white);
+    font-weight: 600; }
+  .btn-ghost     { background: var(--scrim-white); color: var(--white); border-color: transparent;
+    padding: 13px 20px; font-size: 12px; line-height: 18px; font-weight: 600; letter-spacing: normal; }
+  .btn[aria-disabled="true"] { color: var(--gray7); border-color: var(--gray8);
+    background: transparent; cursor: not-allowed; }
+  .btn:focus-visible { outline: var(--border-w) solid var(--main); outline-offset: 2px; }
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+  /* ===== Tag（radius 0。押せない札）===== */
+  .tag { display: inline-block; background: transparent; color: var(--main);
+    border: var(--border-w) solid var(--main); border-radius: var(--radius-flat);
+    padding: .5px 5px; font-size: 11px; line-height: 19.8px; font-weight: 700; }
+  .tag-key { color: var(--key); border-color: var(--key); }
+
+  /* ===== Cards ===== */
+  .card { background: var(--white); border: 1px solid var(--gray9);
+    border-radius: var(--radius); padding: 24px; text-decoration: none; color: var(--body);
+    display: block; transition: opacity var(--duration) var(--easing); }
+  .card:hover { opacity: .7; }
+  .card-photo { height: 120px; border-radius: var(--radius); margin-bottom: 16px; }
+  .card-title { font-size: 16px; line-height: 24px; }
+  .card-meta { font-size: 11px; line-height: 22px; color: var(--gray4); margin-top: 6px; }
+  .card-price { font-size: 26px; line-height: 36.4px; letter-spacing: var(--ls-heading);
+    margin-top: 8px; }
+
+  /* ===== Forms ===== */
+  .field { display: block; }
+  .field label { display: block; font-size: 16px; line-height: 31.68px; font-weight: 700; }
+  .field input, .field select { width: 100%; font-family: var(--fontFamily);
+    font-size: 16px; line-height: 24px; font-weight: 600; letter-spacing: normal;
+    color: var(--main); background: var(--white); border: 2px solid var(--gray8);
+    border-radius: var(--radius); padding: 11px 20px; }
+  .field select { padding: 9px 35px 9px 13px; appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--main) 50%),
+                      linear-gradient(135deg, var(--main) 50%, transparent 50%);
+    background-position: calc(100% - 20px) 50%, calc(100% - 14px) 50%;
+    background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; }
+  .field input::placeholder { color: var(--gray7); }
+  .field .hint { font-size: 11px; line-height: 22px; color: var(--gray4); }
+  .field.is-focus input { border-color: var(--main); outline: 2px solid var(--main);
+    outline-offset: 2px; }
+  .field.is-error input { border-color: var(--key); }
+  .field.is-error .msg { font-size: 11px; line-height: 22px; color: var(--key); }
+  /* 検索欄だけ radius 0 ＋ --gray10 の面 */
+  .search { width: 100%; font-family: var(--fontFamily); font-size: 14px; line-height: 21px;
+    font-weight: 600; letter-spacing: normal; color: var(--main); background: var(--gray10);
+    border: none; border-radius: var(--radius-flat); padding: 12px 27px; }
+
+  /* ===== Elevation ===== */
+  .elev { border-radius: var(--radius); padding: 24px; min-height: 108px; }
+  .elev-flat { background: var(--white); border: 1px solid var(--gray9); }
+  .elev-rule { background: var(--white); border: 2px solid var(--main); }
+  .elev-inv  { background: var(--main); color: var(--white); }
+  .elev-name { font-size: 14px; line-height: 23.8px; }
+
+  /* ===== Spacing scale ===== */
+  .sp-row { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+  .sp-bar { height: 14px; background: var(--main); border-radius: 2px; }
+  .sp-label { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 11px;
+    letter-spacing: 0; color: var(--gray4); font-weight: 400; }
+
+  /* ===== Yakuhan demo ===== */
+  .yaku-demo { display: grid; grid-template-columns: 120px 1fr; gap: 20px;
+    padding: 16px 0; border-top: 1px solid var(--gray9); align-items: baseline; }
+  .yaku-off { font-family: "Noto Sans JP", sans-serif; }   /* YakuHanJP を外す */
+
+  /* ===== Footer ===== */
+  .footer { background: var(--main); color: var(--white); padding: 48px 0 64px;
+    margin-top: 0; }
+  .footer .copy { font-size: 11px; line-height: 22px; color: var(--gray7); margin-top: 16px; }
+
+  @media only screen and (max-width: 960px) {
+    .g3, .g4, .g5 { grid-template-columns: repeat(2, 1fr); }
+    .type-row, .yaku-demo { grid-template-columns: 1fr; gap: 8px; }
+    .hero h1 { font-size: 26px; line-height: 36.4px; letter-spacing: 2.08px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container header-inner">
+    <div class="logo">
+      <div class="logo-mark"></div>
+      <div class="logo-type">nine<small>hours</small></div>
+    </div>
+    <nav class="nav">
+      <a href="#">店舗一覧</a>
+      <a href="#">コンセプト</a>
+      <a href="#">設備・アメニティ</a>
+      <a href="#">よくあるご質問</a>
+      <a href="#" class="btn btn-primary-s">予約する</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="container">
+    <h1>「1h の汗を洗い流す」、<br>「7h の眠り」、「1h の身支度」。</h1>
+    <p class="sub">都市に泊まるという行為を、9 時間ぶんの時間に分解しました。ナインアワーズは、宿泊に必要な機能だけを残したカプセルホテルです。</p>
+    <div class="hours">
+      <div><strong>1h</strong>汗を洗い流す</div>
+      <div><strong>7h</strong>眠る</div>
+      <div><strong>1h</strong>身支度する</div>
+    </div>
+    <div class="btn-row" style="margin-top:36px">
+      <a href="#" class="btn btn-inverse btn-l">最安値で検索</a>
+      <a href="#" class="btn btn-ghost">ご利用案内（写真の上のゴースト）</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============ COLORS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label">Colors ／ カラーパレット</div>
+
+    <div class="grid g4">
+      <div><div class="swatch-block" style="background:var(--main)"></div>
+        <div class="swatch-name">Main / Body / Link</div><div class="swatch-hex">#000000</div>
+        <div class="swatch-role">3 つとも同値。面積で見た実質のブランド色</div></div>
+      <div><div class="swatch-block" style="background:var(--white);box-shadow:inset 0 0 0 1px var(--gray9)"></div>
+        <div class="swatch-name">White</div><div class="swatch-hex">#ffffff</div>
+        <div class="swatch-role">コンテンツページの地・反転 CTA の塗り</div></div>
+      <div><div class="swatch-block" style="background:var(--key)"></div>
+        <div class="swatch-name">Key</div><div class="swatch-hex">#e93a28</div>
+        <div class="swatch-role">セクション見出しの文字色。<strong>塗りに使わない</strong></div></div>
+      <div><div class="swatch-block" style="background:var(--yellow)"></div>
+        <div class="swatch-name">Yellow</div><div class="swatch-hex">#fdd22b</div>
+        <div class="swatch-role">注意喚起・キャンペーンの下地</div></div>
+    </div>
+
+    <p class="note" style="margin-top:32px"><strong>グレーは <code class="mono">--gray1</code> 〜 <code class="mono">--gray9</code> が 25 → 220 の完全な等間隔 9 段（1 段 24.375）。</strong><code class="mono">--gray10</code>（233）だけがこの数列から外れており、<strong>入力欄の面色専用</strong>に足されている。</p>
+    <div class="ramp" style="margin-top:12px">
+      <div style="background:#191919"></div><div style="background:#313131"></div>
+      <div style="background:#4a4a4a"></div><div style="background:#626262"></div>
+      <div style="background:#7a7a7a"></div><div style="background:#939393"></div>
+      <div style="background:#ababab"></div><div style="background:#c4c4c4"></div>
+      <div style="background:#dcdcdc"></div><div style="background:#e9e9e9"></div>
+    </div>
+    <div class="ramp-tick">
+      <span>1 / 25</span><span>2 / 49</span><span>3 / 74</span><span>4 / 98</span><span>5 / 122</span>
+      <span>6 / 147</span><span>7 / 171</span><span>8 / 196</span><span>9 / 220</span><span>10 / 233*</span>
+    </div>
+    <p class="note">* <code class="mono">--gray10 #e9e9e9</code> は等間隔なら 244 のはずの位置に 233 が入っている。検索フォームの面色。</p>
+
+    <div class="btn-row" style="margin-top:32px">
+      <span class="tag">満室</span>
+      <span class="tag">禁煙</span>
+      <span class="tag tag-key">受付終了</span>
+      <span class="tag">女性専用</span>
+    </div>
+    <p class="note">札（タグ）は <strong><code class="mono">border-radius: 0</code></strong>。ボタン（8px）と形で役割を分けている。</p>
+  </div>
+</section>
+
+<!-- ============ TYPOGRAPHY ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label">Typography ／ タイポグラフィ</div>
+    <p class="note"><strong>和文の地の文が <code class="mono">font-weight: 700</code>。</strong>そのぶん行間 1.98・字間 0.06em で緩める（3 点セット）。<code class="mono">letter-spacing</code> は本文以下が <code class="mono">0.96px</code> の px 固定で継承され、見出しだけ px を上書きして <code class="mono">0.08em</code> に揃える。</p>
+
+    <div class="type-row"><div class="type-meta">Hero / h2<br>34px w700<br>lh 54.4px (1.6)<br>ls 2.72px = 0.08em</div>
+      <div class="t-hero">眠りに、必要なものだけを。</div></div>
+    <div class="type-row"><div class="type-meta">Display / h2<br>30px w700<br>lh 48px (1.6)<br>ls 2.4px = 0.08em</div>
+      <div class="t-display">9h のある街</div></div>
+    <div class="type-row"><div class="type-meta">Heading / h3<br>26px w700<br>lh 36.4px (1.4)<br>ls 2.08px = 0.08em</div>
+      <div class="t-heading">スリープポッド</div></div>
+    <div class="type-row"><div class="type-meta">Section Label / h2<br>18px w700 / --key<br>lh 32.4px (1.8)<br>ls 0.96px</div>
+      <div class="t-label">設備・アメニティ</div></div>
+    <div class="type-row"><div class="type-meta">Lead / p<br>18px w700<br>lh 34.2px (1.9)<br>ls 0.96px</div>
+      <div class="t-lead">シャワー、ポッド、ロッカー。必要なものだけを、必要なだけ。</div></div>
+    <div class="type-row"><div class="type-meta">Body / p（既定）<br>16px w700<br>lh 31.68px (1.98)<br>ls 0.96px = 0.06em</div>
+      <div class="t-body">ナインアワーズは、「汗を洗い流す（1h）」「眠る（7h）」「身支度する（1h）」という 9 時間の行為に、宿泊という体験を分解しました。客室にテレビはありません。その代わり、眠るための環境だけに手を尽くしています。</div></div>
+    <div class="type-row"><div class="type-meta">Body Small / p<br>14px w700<br>lh 23.8px (1.7)<br>ls 0.96px</div>
+      <div class="t-small">チェックインは 14:00 から、チェックアウトは 10:00 まで。仮眠のみのご利用（デイユース）も承っています。</div></div>
+    <div class="type-row"><div class="type-meta">Caption<br>11px w700<br>lh 22px (2.0)<br>ls 0.96px = 0.087em</div>
+      <div class="t-caption">※ 料金は時期により変動します。表示は税込価格です。</div></div>
+    <div class="type-row"><div class="type-meta">Widget（別系統）<br>16px <strong>w600</strong><br>lh 24px (1.5)<br>ls <strong>normal</strong></div>
+      <div class="t-widget">予約ウィジェットだけが 600 / 字間 normal / 行間 1.5。新規ページの基準にしない。</div></div>
+  </div>
+</section>
+
+<!-- ============ YAKUHANJP ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label">YakuHanJP ／ 約物半角</div>
+    <p class="note"><code class="mono">YakuHanJP, "Noto Sans JP", sans-serif</code> の 1 行で、<strong>約物（<code class="mono">、。「」（）</code>）だけが半角字形</strong>になる。YakuHanJP は約物のグリフしか持たないため、それ以外は自動的に Noto Sans JP へ落ちる。<strong><code class="mono">palt</code> とは効かせる範囲が違う</strong>（palt は数字・欧文を含む全字を詰める）ので、<strong>併用しない</strong>。</p>
+
+    <div class="yaku-demo">
+      <div class="type-meta">YakuHanJP あり<br>（原典）</div>
+      <div class="t-lead">「眠る」ということ、そして（1h ＋ 7h ＋ 1h）という設計。</div>
+    </div>
+    <div class="yaku-demo">
+      <div class="type-meta">YakuHanJP なし<br>（Noto Sans JP のみ）</div>
+      <div class="t-lead yaku-off">「眠る」ということ、そして（1h ＋ 7h ＋ 1h）という設計。</div>
+    </div>
+    <p class="note">上下で <code class="mono">「</code> の前、<code class="mono">、</code> の後ろ、<code class="mono">（ ）</code> の内外のアキが変わる。行が詰まるぶん、同じ幅により多くの文字が収まる。</p>
+  </div>
+</section>
+
+<!-- ============ HOTEL / PRODUCT ============ -->
+<section class="section">
+  <div class="container narrow">
+    <div class="sec-label">Concept ／ コンセプト</div>
+    <h3 class="t-display" style="margin-bottom:20px">1h ＋ 7h ＋ 1h</h3>
+    <p class="t-body">ホテルに泊まるという行為から、装飾と過剰なもてなしを引きました。残ったのは、汗を洗い流すための 1 時間、眠るための 7 時間、身支度をするための 1 時間——合わせて 9 時間です。</p>
+    <p class="t-body" style="margin-top:28px">スリープポッドは、寝具メーカーと共同で開発しました。遮音、遮光、空調。眠りの質を決める要素だけを、ひとつずつ詰めています。館内のサインは、館内図を見なくても迷わないことを目標に設計されました。<span class="tag" style="margin-left:8px">禁煙</span></p>
+    <p class="t-caption" style="margin-top:20px">※ 一部の店舗では、デイユース（仮眠のみ）のご利用はお受けしておりません。</p>
+  </div>
+</section>
+
+<!-- ============ BUTTONS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label">Buttons ／ ボタン</div>
+    <p class="note"><strong>すべてのボタンが <code class="mono">border: 2px solid</code> を「塗りと同色」で持つ。</strong>黒ボタンは <code class="mono">background #000 + border 2px solid #000</code>、枠線ボタンは <code class="mono">transparent + border 2px solid #060606</code>。<strong>外形が完全に一致する</strong>ので、入れ替えてもレイアウトが 1px も動かない。</p>
+
+    <div class="btn-row" style="margin-top:24px">
+      <button class="btn btn-primary btn-l">最安値で検索</button>
+      <button class="btn btn-outline btn-l">空室を確認する</button>
+    </div>
+    <p class="note">Large — <code class="mono">padding 13px 20px / 16px / 700</code>。上下の外形が一致していることを確認できる。</p>
+
+    <div class="btn-row" style="margin-top:28px">
+      <button class="btn btn-primary-s">予約する</button>
+      <button class="btn btn-outline btn-s">ログイン</button>
+      <button class="btn btn-outline btn-s" aria-disabled="true">満室のため予約できません</button>
+    </div>
+    <p class="note">Small — <code class="mono">padding 5px 10px / 14px / 600</code>。小サイズだけ <code class="mono">#060606</code> / <code class="mono">#f9f9f9</code> という<strong>純黒・純白から 6 ずらした値</strong>を使う。タッチターゲットは 35px で 44px 基準に届かないため、<strong>主要 CTA には使わない</strong>。</p>
+
+    <div style="background:var(--main);border-radius:var(--radius);padding:28px;margin-top:28px">
+      <div class="btn-row">
+        <button class="btn btn-inverse btn-l">会員登録する</button>
+        <button class="btn btn-ghost">ご利用案内</button>
+      </div>
+      <p class="note" style="color:var(--gray7)">黒地の上 — Inverse（<code class="mono">#ffffff</code> ＋ <code class="mono">border 2px solid #ffffff</code>）と Ghost（<code class="mono">rgba(255,255,255,.3)</code>）。<strong>写真・黒地の上では白を透かす</strong>（黒を敷かない）。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CARDS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label">Cards ／ カード</div>
+    <div class="grid g3">
+      <a href="#" class="card">
+        <div class="card-photo" style="background:var(--gray2)"></div>
+        <span class="tag">女性専用</span>
+        <div class="card-title" style="margin-top:10px">9h ナインアワーズ 赤坂</div>
+        <div class="card-meta">東京都港区赤坂 ／ 徒歩 2 分</div>
+        <div class="card-price">¥4,900<span style="font-size:14px;letter-spacing:.96px">〜</span></div>
+      </a>
+      <a href="#" class="card">
+        <div class="card-photo" style="background:var(--gray4)"></div>
+        <span class="tag">禁煙</span>
+        <div class="card-title" style="margin-top:10px">9h ナインアワーズ 北新地</div>
+        <div class="card-meta">大阪府大阪市北区 ／ 徒歩 4 分</div>
+        <div class="card-price">¥3,800<span style="font-size:14px;letter-spacing:.96px">〜</span></div>
+      </a>
+      <a href="#" class="card">
+        <div class="card-photo" style="background:var(--gray6)"></div>
+        <span class="tag tag-key">満室</span>
+        <div class="card-title" style="margin-top:10px">9h ナインアワーズ 成田空港</div>
+        <div class="card-meta">千葉県成田市 ／ 第 2 ターミナル直結</div>
+        <div class="card-price">¥5,400<span style="font-size:14px;letter-spacing:.96px">〜</span></div>
+      </a>
+    </div>
+    <p class="note">カードは <code class="mono">background #ffffff / border 1px solid --gray9 / radius 8px / 影なし</code>。<strong>面をグレーで塗らず、罫だけで分ける</strong>。</p>
+  </div>
+</section>
+
+<!-- ============ FORMS ============ -->
+<section class="section">
+  <div class="container narrow">
+    <div class="sec-label">Forms ／ フォーム</div>
+    <div class="grid g3">
+      <div>
+        <p class="note" style="margin:0 0 10px">Default</p>
+        <div class="field">
+          <label for="f1">お名前</label>
+          <input id="f1" type="text" value="葛原 健太">
+          <div class="hint">全角でご入力ください。</div>
+        </div>
+      </div>
+      <div>
+        <p class="note" style="margin:0 0 10px">Focus</p>
+        <div class="field is-focus">
+          <label for="f2">メールアドレス</label>
+          <input id="f2" type="email" value="hello@example.com">
+          <div class="hint">outline 2px solid #000000 / offset 2px</div>
+        </div>
+      </div>
+      <div>
+        <p class="note" style="margin:0 0 10px">Error</p>
+        <div class="field is-error">
+          <label for="f3">電話番号</label>
+          <input id="f3" type="tel" value="090-1234">
+          <div class="msg">正しい電話番号をご入力ください。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:28px">
+      <div class="field">
+        <label for="f4">ホテルを選択</label>
+        <select id="f4">
+          <option>9h ナインアワーズ 赤坂</option>
+          <option>9h ナインアワーズ 北新地</option>
+        </select>
+      </div>
+      <div>
+        <label class="t-body" style="display:block" for="f5">館内を検索</label>
+        <input class="search" id="f5" type="search" placeholder="アメニティ、設備、店舗名で検索">
+      </div>
+    </div>
+    <p class="note"><strong>検索欄だけ <code class="mono">radius 0</code> ＋ <code class="mono">--gray10 (#e9e9e9)</code> の面</strong>。予約フォームは <code class="mono">radius 8px</code> ＋ 白地。入力欄の文字は <code class="mono">16px</code>（iOS の自動ズーム回避）、プレースホルダは <code class="mono">--gray7 (#ababab)</code>。</p>
+  </div>
+</section>
+
+<!-- ============ ELEVATION ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label">Elevation ／ 奥行き</div>
+    <p class="note"><strong>影が 1 つも使われていない。</strong>トップ・店舗一覧の全要素で <code class="mono">box-shadow: none</code>。奥行きは<strong>黒地と白地の切り替え</strong>だけで作り、カードを分けたいときは罫を引く。</p>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="elev elev-flat"><div class="elev-name">白地 ＋ 1px 罫</div>
+        <div class="note" style="margin-top:4px">カードの既定。<code class="mono">1px solid --gray9</code></div></div>
+      <div class="elev elev-rule"><div class="elev-name">白地 ＋ 2px 罫</div>
+        <div class="note" style="margin-top:4px">強調したいブロック。<code class="mono">2px solid #000000</code></div></div>
+      <div class="elev elev-inv"><div class="elev-name">黒地</div>
+        <div class="note" style="margin-top:4px;color:var(--gray7)">反転セクション。<code class="mono">#000000</code></div></div>
+    </div>
+    <p class="note" style="margin-top:20px">モーションは全域 <code class="mono">.4s cubic-bezier(.33, 1, .68, 1)</code>（easeOutCubic）。速度差でヒエラルキーを作らない（ヒーローの写真だけ <code class="mono">2s</code>）。</p>
+  </div>
+</section>
+
+<!-- ============ LAYOUT ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label">Layout ／ レイアウト</div>
+    <p class="note">寸法トークンは存在しない。刻みは <strong>5 と 10 を基準</strong>にしており、4px グリッドではない。</p>
+    <div style="margin-top:18px">
+      <div class="sp-row"><div class="sp-bar" style="width:5px"></div><span class="sp-label">5px — 小ボタンの上下 padding</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:10px"></div><span class="sp-label">10px — 小ボタンの左右 padding</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:13px"></div><span class="sp-label">13px — 大ボタンの上下 padding</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:20px"></div><span class="sp-label">20px — 大ボタンの左右 padding</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:27px"></div><span class="sp-label">27px — 検索欄の左右（アイコン分）</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:35px"></div><span class="sp-label">35px — select の右（矢印分）</span></div>
+    </div>
+
+    <p class="note" style="margin-top:28px">角丸は <strong>8px（押せるもの）と 0px（札・検索欄）の 2 択</strong>。</p>
+    <div class="btn-row" style="margin-top:12px">
+      <div style="width:120px;height:64px;background:var(--gray9);border-radius:8px"></div>
+      <div style="width:120px;height:64px;background:var(--gray9);border-radius:0"></div>
+    </div>
+    <p class="note">8px（ボタン・入力欄・カード） ／ 0px（タグ・検索欄）</p>
+
+    <p class="note" style="margin-top:28px">コンテナは <code class="mono">960px</code>（基準・CSS 中 143 箇所） ／ <code class="mono">823px</code>（読み物） ／ <code class="mono">1200px</code>（ワイドな写真ブロック）。ブレークポイントは <code class="mono">max-width: 960px</code> と <code class="mono">min-width: 961px</code> で穴なく分ける 1 本。ヘッダーだけ <code class="mono">1037px</code> で先に畳む。</p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="t-heading">1h ＋ 7h ＋ 1h</div>
+    <div class="t-small" style="margin-top:12px;color:var(--gray8)">汗を洗い流す、眠る、身支度する。</div>
+    <div class="copy">© nine hours Inc.</div>
+  </div>
+</footer>
+
+</body>
+</html>

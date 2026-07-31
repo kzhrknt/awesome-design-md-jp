@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (420 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (423 sites)</a>
 </p>
 
 <table>
@@ -629,6 +629,11 @@
 <td align="center"><strong>根津美術館</strong><br><img src="design-md/nezu-museum/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>中村藤吉本店</strong><br><img src="design-md/tokichi/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>9h ナインアワーズ</strong><br><img src="design-md/ninehours/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ポーラ美術館</strong><br><img src="design-md/pola-museum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>石見銀山 群言堂</strong><br><img src="design-md/gungendo/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1109,11 +1114,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [SmartBank (スマートバンク)](https://smartbank.co.jp/) | Fintech / Startup | [DESIGN.md](design-md/smartbank/DESIGN.md) | [preview.html](design-md/smartbank/preview.html) |
 | [Nezu Museum (根津美術館)](https://www.nezu-muse.or.jp/) | Museum / Japanese & East Asian Art | [DESIGN.md](design-md/nezu-museum/DESIGN.md) | [preview.html](design-md/nezu-museum/preview.html) |
 | [NAKAMURA TOKICHI (中村藤吉本店)](https://www.tokichi.jp/) | Tea / Uji Kyoto | [DESIGN.md](design-md/tokichi/DESIGN.md) | [preview.html](design-md/tokichi/preview.html) |
+| [nine hours (9h ナインアワーズ)](https://ninehours.co.jp/) | Hotel / Capsule Hotel | [DESIGN.md](design-md/ninehours/DESIGN.md) | [preview.html](design-md/ninehours/preview.html) |
+| [POLA MUSEUM OF ART (ポーラ美術館)](https://www.polamuseum.or.jp/) | Museum / Art | [DESIGN.md](design-md/pola-museum/DESIGN.md) | [preview.html](design-md/pola-museum/preview.html) |
+| [Iwamiginzan Gungendo (石見銀山 群言堂)](https://www.gungendo.co.jp/) | Apparel / Lifestyle EC | [DESIGN.md](design-md/gungendo/DESIGN.md) | [preview.html](design-md/gungendo/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (420 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (423 sites)</a>
 </p>
 
 <table>
@@ -1707,6 +1715,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>スマートバンク</strong><br><img src="design-md/smartbank/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>根津美術館</strong><br><img src="design-md/nezu-museum/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>中村藤吉本店</strong><br><img src="design-md/tokichi/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>9h ナインアワーズ</strong><br><img src="design-md/ninehours/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ポーラ美術館</strong><br><img src="design-md/pola-museum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>石見銀山 群言堂</strong><br><img src="design-md/gungendo/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

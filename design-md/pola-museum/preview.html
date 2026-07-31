@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ポーラ美術館 POLA MUSEUM OF ART</title>
+<!--
+  ■ フォントの代替について
+
+  原典の 3 書体はすべて Adobe Fonts（ドメインライセンス）のため、
+  ローカルでは表示できない。Google Fonts で最も近いものに差し替えている。
+
+    原典                                          代替（このプレビュー）
+    ─────────────────────────────────────────────────────────────────────
+    太ゴ B101 Pr6N (a-otf-futo-go-b101-pr6n)  →  Zen Kaku Gothic New 700
+      本文・見出し。モリサワ／写研由来の太ゴシック            字面幅が太ゴに近い。
+      B101 は書体自体が太く、weight 400 でも太く出る          weight を 700 に上げないと
+                                                              太ゴにならない点に注意
+    中ゴシック BBB Pr6N (a-otf-gothic-bbb-pr6n) →  Noto Sans JP 400
+      セクション見出し・キャプション。                        標準ゴシックとして最も素直
+      日本の DTP の標準ゴシック
+    Futura PT (futura-pt)                      →  Jost 400 / 600
+      ロゴタイプ・欧文ラベル。                                Futura を範にした
+      ジオメトリックサンセリフ                                ジオメトリックサンセリフ
+
+  ※ 原典では和文の font-weight が全域 400。太ゴ B101 が書体として既に太いため。
+     代替では Zen Kaku Gothic New の 700 を当てて、その太さを再現している。
+     Adobe Fonts が使えない環境で 400 のまま実装すると、別物のように軽くなる。
+
+  ■ 原典の組版設定
+
+    font-feature-settings: normal    全域。palt は使わない
+                                     （太ゴ B101 / 中ゴ BBB はもともと字面が詰まっており、
+                                       字間は「開ける」方向で設計されている）
+    letter-spacing: 1.5px            px 固定。em ではない
+                                     → 24px の本文で 0.0625em、
+                                       11px のキャプションでは 0.136em に膨らむ
+                                     欧文（Futura PT）だけ 4px = 0.167em と 3 倍近く広い
+    line-height: 40px                px 固定。font-size 側（20px / 24px）を動かすことで
+                                     行間比を変える。ベースラインが 40px グリッドに乗る
+    font-weight                      和文 400 のみ／欧文 600。太さでヒエラルキーを作らない
+
+  ■ 形
+
+    border-radius: 0     全要素。作品画像にも角丸を付けない
+    box-shadow: none     全要素。奥行きという概念を持たない
+    色は 5 つだけ        #000000 / #333333 / #f9f9f9 / #e6e6e6 / #043d8a
+
+  ■ CSS Custom Properties
+
+    原典には 1 つも定義されていない（旧来型の WordPress テーマ）。
+    以下の :root は、実測値をこちらでトークン化したもの。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Noto+Sans+JP:wght@400;500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ===== Color（実測 5 色）===== */
+    --museum-blue: #043d8a;   /* ブランド色。文字・アイコン専用。面を塗らない */
+    --ink:         #000000;   /* 純黒。薄めない */
+    --ink-sub:     #333333;
+    --paper:       #f9f9f9;   /* ページ地色。純白ではない */
+    --surface:     #e6e6e6;   /* 面付きナビブロック */
+    --on-blue:     #f9f9f9;   /* 濃紺の上の文字。白ではなく地色と同じ値 */
+
+    /* ===== Font =====
+       原典: a-otf-futo-go-b101-pr6n / a-otf-gothic-bbb-pr6n / futura-pt
+       代替: Zen Kaku Gothic New / Noto Sans JP / Jost                      */
+    --font-futo: "Zen Kaku Gothic New", 游ゴシック体, "Yu Gothic", YuGothic,
+                 "Hiragino Kaku Gothic ProN", Osaka, "ＭＳ Ｐゴシック", sans-serif;
+    --font-bbb:  "Noto Sans JP", 游ゴシック体, "Yu Gothic", YuGothic,
+                 "Hiragino Kaku Gothic ProN", Osaka, "ＭＳ Ｐゴシック", sans-serif;
+    --font-en:   Jost, sans-serif;
+
+    /* 太ゴ B101 の太さを代替書体で再現するためのウェイト */
+    --w-futo: 700;   /* 原典は 400（書体自体が太い） */
+    --w-bbb:  400;
+    --w-en:   600;
+
+    /* ===== Type scale（実測）===== */
+    --fs-logo:      35.3px;
+    --fs-display-en: 30px;  --ls-display-en: 1.4px;   /* 0.047em */
+    --fs-label-en:   24px;  --ls-label-en:   4px;     /* 0.167em ← 和文の 3 倍近く */
+    --fs-nav-en:     16px;
+
+    --fs-heading:  24px;   /* 見出し */
+    --fs-body:     24px;   /* 本文。大きい */
+    --fs-lead:     20px;
+    --fs-sechead:  18px;   /* セクション見出し（中ゴ BBB） */
+    --fs-small:    15px;
+    --fs-caption:  11px;   /* 作品キャプション（中ゴ BBB） */
+
+    --lh-40: 40px;         /* 本文・見出し・リードが共有する行送り */
+    --lh-sechead: 34px;
+    --lh-caption: 20px;
+    --lh-tight:   1.0;     /* 欧文は行送り 1.0 */
+
+    --ls-base: 1.5px;      /* px 固定。em にしない */
+    --ls-wide: 3.8px;      /* 見出し的に組むリード */
+    --ls-small: 1px;
+
+    /* ===== Shape ===== */
+    --radius: 0px;         /* 全要素 */
+    --rule: 2px;           /* ボタンの罫 */
+
+    /* ===== Layout ===== */
+    --container: 850px;    /* CSS 中 2795 箇所 */
+    --rhythm: 40px;        /* 縦の余白は 40 の倍数で取る（本文の行送りと一致） */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-futo);
+    font-size: var(--fs-body);
+    font-weight: var(--w-futo);
+    line-height: var(--lh-40);
+    letter-spacing: var(--ls-base);
+    font-feature-settings: normal;     /* palt を足さない */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+
+  .container { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+  .en { font-family: var(--font-en); font-weight: var(--w-en); letter-spacing: var(--ls-label-en); }
+  .bbb { font-family: var(--font-bbb); font-weight: var(--w-bbb); }
+
+  /* ===== Header ===== */
+  .header { padding: 28px 0; }
+  .header-inner { display: flex; align-items: center; justify-content: space-between;
+    gap: 24px; flex-wrap: wrap; }
+  .logo { font-family: var(--font-en); font-weight: 600; font-size: 26px;
+    letter-spacing: 1.4px; color: var(--ink); line-height: var(--lh-tight); }
+  .header-utils { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .park { display: flex; align-items: center; gap: 8px; color: var(--museum-blue);
+    font-size: var(--fs-small); line-height: var(--lh-tight); letter-spacing: var(--ls-small); }
+  .park-mark { width: 22px; height: 22px; background: var(--museum-blue); color: var(--paper);
+    border-radius: 50%; display: grid; place-items: center;
+    font-family: var(--font-en); font-weight: 600; font-size: 14px; letter-spacing: 0; }
+  .ticket { font-family: var(--font-en); font-weight: 600; font-size: 20px;
+    letter-spacing: 2px; line-height: var(--lh-tight); color: var(--ink);
+    border-bottom: var(--rule) solid var(--ink); padding-bottom: 4px; text-decoration: none; }
+
+  /* ===== 額縁ヒーロー =====
+     四辺を Futura PT のロゴタイプが取り囲む、原典トップページの構成 */
+  .frame { position: relative; padding: 64px 72px; margin-bottom: var(--rhythm); }
+  .frame-top, .frame-bottom { position: absolute; left: 72px; right: 72px;
+    font-family: var(--font-en); font-weight: 600; font-size: var(--fs-display-en);
+    letter-spacing: var(--ls-display-en); line-height: var(--lh-tight);
+    display: flex; justify-content: space-between; }
+  .frame-top { top: 10px; }
+  .frame-bottom { bottom: 10px; transform: scale(-1, -1); }
+  .frame-left, .frame-right { position: absolute; top: 72px; bottom: 72px; width: 30px;
+    font-family: var(--font-en); font-weight: 600; font-size: var(--fs-display-en);
+    letter-spacing: var(--ls-display-en); line-height: var(--lh-tight);
+    display: flex; align-items: center; }
+  .frame-left { left: 14px; }
+  .frame-right { right: 14px; }
+  .frame-left span  { transform: rotate(180deg); writing-mode: vertical-rl; }
+  .frame-right span { writing-mode: vertical-rl; }
+  .outline { color: transparent; -webkit-text-stroke: 1px var(--ink); }
+  .frame-art { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .frame-art div { aspect-ratio: 4 / 5; }
+
+  /* ===== Section ===== */
+  .section { padding: var(--rhythm) 0 calc(var(--rhythm) * 2); }
+  .sec-label { display: flex; align-items: baseline; gap: 20px; flex-wrap: wrap;
+    margin-bottom: var(--rhythm); }
+  .sec-label .lbl-en { font-family: var(--font-en); font-weight: var(--w-en);
+    font-size: var(--fs-label-en); letter-spacing: var(--ls-label-en);
+    line-height: var(--lh-tight); }
+  .sec-label .lbl-ja { font-family: var(--font-bbb); font-weight: var(--w-bbb);
+    font-size: var(--fs-sechead); line-height: var(--lh-sechead);
+    letter-spacing: var(--ls-base); }
+  .note { font-family: var(--font-bbb); font-weight: var(--w-bbb);
+    font-size: var(--fs-caption); line-height: var(--lh-caption);
+    letter-spacing: var(--ls-base); color: var(--ink-sub); margin-top: 16px; }
+  .mono { font-family: SFMono-Regular, Consolas, Menlo, monospace;
+    font-size: 12px; letter-spacing: 0; }
+
+  /* ===== Grid ===== */
+  .grid { display: grid; gap: 24px; }
+  .g2 { grid-template-columns: repeat(2, 1fr); }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .g5 { grid-template-columns: repeat(5, 1fr); }
+
+  /* ===== Swatch ===== */
+  .swatch-block { height: 88px; }
+  .swatch-name { font-family: var(--font-bbb); font-weight: 500; font-size: 13px;
+    line-height: 1.6; letter-spacing: var(--ls-base); margin-top: 8px; }
+  .swatch-hex { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 11px;
+    letter-spacing: 0; color: var(--ink-sub); }
+  .swatch-role { font-family: var(--font-bbb); font-weight: 400; font-size: var(--fs-caption);
+    line-height: var(--lh-caption); letter-spacing: var(--ls-base); color: var(--ink-sub);
+    margin-top: 2px; }
+
+  /* ===== Typography specimen ===== */
+  .type-row { display: grid; grid-template-columns: 210px 1fr; gap: 28px;
+    padding: 20px 0; border-top: 1px solid var(--surface); align-items: baseline; }
+  .type-meta { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 11px;
+    line-height: 1.7; letter-spacing: 0; color: var(--ink-sub); }
+  .t-display-en { font-family: var(--font-en); font-weight: var(--w-en);
+    font-size: var(--fs-display-en); letter-spacing: var(--ls-display-en); line-height: var(--lh-tight); }
+  .t-label-en { font-family: var(--font-en); font-weight: var(--w-en);
+    font-size: var(--fs-label-en); letter-spacing: var(--ls-label-en); line-height: var(--lh-tight); }
+  .t-heading { font-size: var(--fs-heading); line-height: var(--lh-40); letter-spacing: var(--ls-base); }
+  .t-body    { font-size: var(--fs-body);    line-height: var(--lh-40); letter-spacing: var(--ls-base); }
+  .t-lead    { font-size: var(--fs-lead);    line-height: var(--lh-40); letter-spacing: var(--ls-base); }
+  .t-lead-wide { font-size: var(--fs-lead);  line-height: var(--lh-40); letter-spacing: var(--ls-wide); }
+  .t-sechead { font-family: var(--font-bbb); font-weight: var(--w-bbb);
+    font-size: var(--fs-sechead); line-height: var(--lh-sechead); letter-spacing: var(--ls-base); }
+  .t-small   { font-size: var(--fs-small); line-height: var(--lh-tight); letter-spacing: var(--ls-small); }
+  .t-caption { font-family: var(--font-bbb); font-weight: var(--w-bbb);
+    font-size: var(--fs-caption); line-height: var(--lh-caption); letter-spacing: var(--ls-base); }
+
+  /* ===== Buttons（サイト唯一のボタン形）===== */
+  .btn { display: inline-block; background: transparent; color: var(--ink);
+    border: var(--rule) solid var(--ink); border-radius: var(--radius);
+    padding: 10px 7px 11px 10px;      /* 上 10 / 下 11 の非対称は原典どおり */
+    font-family: var(--font-futo); font-weight: var(--w-futo);
+    font-size: var(--fs-small); line-height: var(--lh-tight);
+    letter-spacing: var(--ls-small); text-decoration: none; cursor: pointer; }
+  .btn:hover { background: var(--ink); color: var(--paper); }
+  .btn:focus-visible { outline: var(--rule) solid var(--museum-blue); outline-offset: 3px; }
+  .btn-blue { background: var(--museum-blue); color: var(--on-blue); border-color: var(--museum-blue); }
+  .btn-blue:hover { background: var(--ink); border-color: var(--ink); }
+  .btn-touch { padding: 12px 14px; }   /* 44px を確保する実装向けの調整版 */
+  .btn-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+
+  /* ===== Surface block（面付きナビ）===== */
+  .surface-block { background: var(--surface); padding: 28px 24px; text-decoration: none;
+    color: var(--ink); display: block; }
+  .surface-block:hover { background: var(--ink); color: var(--paper); }
+  .surface-block .en-s { font-family: var(--font-en); font-weight: var(--w-en);
+    font-size: 14px; letter-spacing: 2px; line-height: var(--lh-tight); display: block; }
+  .surface-block .ja-s { font-size: var(--fs-lead); line-height: var(--lh-40);
+    letter-spacing: var(--ls-base); display: block; margin-top: 8px; }
+
+  /* ===== Work（作品。カード部品を作らない）===== */
+  .work img, .work .ph { display: block; width: 100%; aspect-ratio: 4 / 3; border-radius: 0; }
+  .work-title { font-size: var(--fs-lead); line-height: var(--lh-40);
+    letter-spacing: var(--ls-base); margin-top: 12px; }
+  .work-cap { font-family: var(--font-bbb); font-weight: var(--w-bbb);
+    font-size: var(--fs-caption); line-height: var(--lh-caption);
+    letter-spacing: var(--ls-base); color: var(--ink-sub); }
+
+  /* ===== Forms ===== */
+  .field label { display: block; font-family: var(--font-bbb); font-weight: 500;
+    font-size: 13px; line-height: 1.8; letter-spacing: var(--ls-base); }
+  .field input { width: 100%; background: #ffffff; color: var(--ink);
+    border: 1px solid var(--ink); border-radius: var(--radius); padding: 12px 14px;
+    font-family: var(--font-futo); font-weight: 400; font-size: 16px; line-height: 1.5;
+    letter-spacing: var(--ls-small); }
+  .field input::placeholder { color: var(--ink-sub); opacity: .6; }
+  .field .hint, .field .msg { font-family: var(--font-bbb); font-weight: 400;
+    font-size: var(--fs-caption); line-height: var(--lh-caption);
+    letter-spacing: var(--ls-base); color: var(--ink-sub); }
+  .field.is-focus input { outline: var(--rule) solid var(--museum-blue); outline-offset: 2px; }
+  .field.is-error input { border-width: var(--rule); }
+  .field.is-error .msg { color: var(--ink); border-left: var(--rule) solid var(--ink);
+    padding-left: 8px; margin-top: 6px; }
+
+  /* ===== Elevation ===== */
+  .elev { padding: 24px; min-height: 116px; }
+  .elev-paper { background: var(--paper); border: 1px solid var(--surface); }
+  .elev-surface { background: var(--surface); }
+  .elev-rule { background: var(--paper); border: var(--rule) solid var(--ink); }
+  .elev-name { font-size: var(--fs-lead); line-height: var(--lh-40); letter-spacing: var(--ls-base); }
+
+  /* ===== Rhythm demo ===== */
+  .rhythm-demo { position: relative; padding: 0; }
+  .rhythm-demo .lines { position: absolute; inset: 0;
+    background: repeating-linear-gradient(to bottom,
+      rgba(4,61,138,.14) 0, rgba(4,61,138,.14) 1px, transparent 1px, transparent 40px); }
+  .rhythm-demo .txt { position: relative; }
+
+  .sp-row { display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
+  .sp-bar { height: 12px; background: var(--ink); }
+  .sp-label { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 11px;
+    letter-spacing: 0; color: var(--ink-sub); }
+
+  /* ===== Footer ===== */
+  .footer { border-top: var(--rule) solid var(--ink); padding: var(--rhythm) 0; }
+  .footer .mark { font-family: var(--font-en); font-weight: 600; font-size: var(--fs-label-en);
+    letter-spacing: var(--ls-label-en); line-height: var(--lh-tight); }
+  .footer .copy { font-family: var(--font-bbb); font-weight: 400; font-size: var(--fs-caption);
+    line-height: var(--lh-caption); letter-spacing: var(--ls-base);
+    color: var(--ink-sub); margin-top: 16px; }
+
+  @media all and (max-width: 850px) {
+    :root { --fs-body: 17px; --fs-heading: 19px; --fs-lead: 16px;
+            --fs-label-en: 18px; --ls-label-en: 3px; --lh-40: 30px; }
+    .g3, .g5 { grid-template-columns: repeat(2, 1fr); }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .frame { padding: 44px 44px; }
+    .frame-top, .frame-bottom { left: 44px; right: 44px; font-size: 18px; }
+    .frame-left, .frame-right { top: 44px; bottom: 44px; font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container header-inner">
+    <div class="header-utils">
+      <span class="park"><span class="park-mark">P</span>空 113 台</span>
+      <a href="#" class="ticket">TICKET</a>
+    </div>
+    <div class="logo">POLA MUSEUM OF ART</div>
+  </div>
+</header>
+
+<!-- ============ 額縁ヒーロー ============ -->
+<div class="container">
+  <div class="frame">
+    <div class="frame-top"><span>POLA MUSEUM</span><span>OF ART</span></div>
+    <div class="frame-bottom"><span class="outline">POLA MUSEUM</span><span class="outline">OF ART</span></div>
+    <div class="frame-left"><span class="outline">OF ART</span></div>
+    <div class="frame-right"><span>OF ART</span></div>
+    <div class="frame-art">
+      <div style="background:linear-gradient(170deg,#b9c7cf 0%,#8fa88c 42%,#c8a86a 74%,#9c6f4a 100%)"></div>
+      <div style="background:linear-gradient(200deg,#2f4a2c 0%,#5b7a4a 46%,#8fa06b 78%,#d5d8cc 100%)"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ COLORS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="lbl-en">Colors</span><span class="lbl-ja">カラーパレット</span></div>
+
+    <div class="grid g5">
+      <div><div class="swatch-block" style="background:var(--ink)"></div>
+        <div class="swatch-name">Ink</div><div class="swatch-hex">#000000</div>
+        <div class="swatch-role">見出し・本文。<strong>純黒をそのまま使う</strong></div></div>
+      <div><div class="swatch-block" style="background:var(--ink-sub)"></div>
+        <div class="swatch-name">Ink Sub</div><div class="swatch-hex">#333333</div>
+        <div class="swatch-role">補助テキスト</div></div>
+      <div><div class="swatch-block" style="background:var(--paper);box-shadow:inset 0 0 0 1px var(--surface)"></div>
+        <div class="swatch-name">Paper</div><div class="swatch-hex">#f9f9f9</div>
+        <div class="swatch-role">ページ地色。純白ではない</div></div>
+      <div><div class="swatch-block" style="background:var(--surface)"></div>
+        <div class="swatch-name">Surface</div><div class="swatch-hex">#e6e6e6</div>
+        <div class="swatch-role">面付きナビブロック</div></div>
+      <div><div class="swatch-block" style="background:var(--museum-blue)"></div>
+        <div class="swatch-name">Museum Blue</div><div class="swatch-hex">#043d8a</div>
+        <div class="swatch-role">ブランド色。<strong>文字とアイコン専用</strong>。面を塗らない</div></div>
+    </div>
+
+    <p class="note"><strong>サイト全体で使われている色は実質この 5 つだけ。</strong>彩度はすべて作品写真が担当する。セマンティック色（エラー・成功・警告）は定義されていない——必要なら <code class="mono">#043d8a</code> を「情報・強調」として流用し、赤や緑を新規に持ち込まない。</p>
+    <p class="note">反転文字には <code class="mono">#ffffff</code> ではなく<strong>地色と同じ <code class="mono">#f9f9f9</code></strong> を使う。紙 1 枚の中で色数を増やさないため。</p>
+  </div>
+</section>
+
+<!-- ============ TYPOGRAPHY ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="lbl-en">Typography</span><span class="lbl-ja">タイポグラフィ</span></div>
+    <p class="note"><strong><code class="mono">letter-spacing</code> は <code class="mono">1.5px</code> の px 固定で、em ではない。</strong>本文（24px）では 0.0625em だが、キャプション（11px）まで落ちると <strong>0.136em</strong> に膨らむ——<strong>小さい文字ほど字間が開く</strong>。<code class="mono">line-height</code> も <code class="mono">40px</code> の px 固定で、font-size 側を動かして行間比を変える。和文の <code class="mono">font-weight</code> は全域 400（太ゴ B101 が書体として既に太いため）。</p>
+
+    <div class="type-row"><div class="type-meta">Display (EN) / Futura PT<br>30px w600<br>lh 30px (1.0)<br>ls 1.4px = 0.047em</div>
+      <div class="t-display-en">POLA MUSEUM OF ART</div></div>
+    <div class="type-row"><div class="type-meta">Section Label (EN)<br>24px w600<br>lh 24px (1.0)<br>ls <strong>4px = 0.167em</strong></div>
+      <div class="t-label-en">EXHIBITION</div></div>
+    <div class="type-row"><div class="type-meta">Heading / 太ゴ B101<br>24px w400<br>lh 40px (1.667)<br>ls 1.5px = 0.0625em</div>
+      <div class="t-heading">モネからリヒターへ</div></div>
+    <div class="type-row"><div class="type-meta">Body / 太ゴ B101<br><strong>24px</strong> w400<br>lh 40px (1.667)<br>ls 1.5px = 0.0625em</div>
+      <div class="t-body">ポーラ美術館は、箱根・仙石原の森の中にあります。建物の八割は地下に埋められ、外から見えるのは森のスカイラインを越えない高さだけです。</div></div>
+    <div class="type-row"><div class="type-meta">Lead / 太ゴ B101<br>20px w400<br>lh 40px (<strong>2.0</strong>)<br>ls 1.5px = 0.075em</div>
+      <div class="t-lead">箱根の自然と美術の共生。同じ 40px の行送りに、24px と 20px の両方が乗る。</div></div>
+    <div class="type-row"><div class="type-meta">Lead（広字間）<br>20px w400<br>lh 40px (2.0)<br>ls <strong>3.8px = 0.19em</strong></div>
+      <div class="t-lead-wide">見出しとして組むリード</div></div>
+    <div class="type-row"><div class="type-meta">Section Head / 中ゴ BBB<br>18px w400<br>lh 34px (1.889)<br>ls 1.5px = 0.083em</div>
+      <div class="t-sechead">開館時間とアクセス</div></div>
+    <div class="type-row"><div class="type-meta">Small / 太ゴ B101<br>15px w400<br>lh 15px (1.0)<br>ls 0.8〜1px</div>
+      <div class="t-small">ミュージアムショップ</div></div>
+    <div class="type-row"><div class="type-meta">Caption / 中ゴ BBB<br>11px w400<br>lh 20px (1.818)<br>ls <strong>1.5px = 0.136em</strong></div>
+      <div class="t-caption">クロード・モネ《ジヴェルニーの積みわら》1884 年 油彩・カンヴァス ポーラ美術館蔵</div></div>
+
+    <p class="note" style="margin-top:24px"><strong>和文は 2 書体を役割で分ける。</strong>本文と見出しが太ゴ B101、セクション見出しとキャプションが中ゴシック BBB——<strong>太ゴが「本文」で中ゴが「小見出し」</strong>という、一般的な感覚とは逆の配分。</p>
+    <p class="note"><strong>欧文だけ字間を 3 倍近く開ける</strong>（和文 0.0625em に対し欧文 0.167em）。和欧を同じ字間で組まない。欧文の <code class="mono">line-height</code> はすべて <code class="mono">1.0</code> で、字面がそのまま矩形になる——額縁レイアウトで辺に沿わせるのに都合がいい。</p>
+  </div>
+</section>
+
+<!-- ============ RHYTHM ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="lbl-en">Rhythm</span><span class="lbl-ja">縦のリズム</span></div>
+    <p class="note"><code class="mono">line-height: 40px</code> を固定して <code class="mono">font-size</code> 側を動かすため、<strong>20px のリードと 24px の本文が同じベースライン上に乗る</strong>。縦の余白も 40 の倍数で取ると、2 段組にしたときに行が揃う。</p>
+    <div class="rhythm-demo" style="margin-top:24px">
+      <div class="lines"></div>
+      <div class="txt">
+        <p class="t-lead">同じ 40px の行送りに、20px のリードが乗る。</p>
+        <p class="t-body">そして 24px の本文も、まったく同じ 40px の行送りの上に乗ります。文字の大きさが変わっても、行の位置は動きません。青い線が 40px グリッドです。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXHIBITION ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="lbl-en">Exhibition</span><span class="lbl-ja">展覧会</span></div>
+    <p class="t-body">開館以来、ポーラ美術館は「箱根の自然と美術の共生」を掲げてきました。西洋絵画、日本の洋画、日本画、東洋磁器、化粧道具、ガラス工芸——約一万点のコレクションは、一人の実業家が四十余年をかけて集めたものです。</p>
+    <p class="t-body" style="margin-top:var(--rhythm)">森の遊歩道には現代美術の作品が点在しています。展示室を出てからも、鑑賞は続きます。</p>
+
+    <div class="grid g3" style="margin-top:var(--rhythm)">
+      <div class="work">
+        <div class="ph" style="background:linear-gradient(165deg,#b6c6d2 0%,#93ad8d 40%,#c9a96b 72%,#8f6544 100%)"></div>
+        <div class="work-title">睡蓮の池</div>
+        <div class="work-cap">クロード・モネ 1899 年<br>油彩・カンヴァス</div>
+      </div>
+      <div class="work">
+        <div class="ph" style="background:linear-gradient(200deg,#33482c 0%,#5f7d4d 44%,#93a46f 76%,#d7dacd 100%)"></div>
+        <div class="work-title">森の遊歩道</div>
+        <div class="work-cap">仙石原・ヒメシャラの林<br>屋外展示</div>
+      </div>
+      <div class="work">
+        <div class="ph" style="background:linear-gradient(140deg,#d8d3c6 0%,#b9ae97 45%,#8d8069 78%,#4f4638 100%)"></div>
+        <div class="work-title">東洋磁器</div>
+        <div class="work-cap">コレクション展<br>常設展示室</div>
+      </div>
+    </div>
+    <p class="note"><strong>カードという部品を作らない。</strong>作品は「画像の矩形」＋「その下のキャプション」だけで並ぶ。画像に <code class="mono">border-radius</code> を付けない（額装の矩形を壊さない）。</p>
+  </div>
+</section>
+
+<!-- ============ BUTTONS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="lbl-en">Buttons</span><span class="lbl-ja">ボタン</span></div>
+    <p class="note"><strong>ボタンの形は 1 種類しかない。</strong><code class="mono">transparent + border 2px solid #000000 + radius 0</code>。padding が <code class="mono">10px 7px 11px 10px</code> と上下左右で不揃いなのは、<strong>和文の字面が上に寄る分を下で 1px 補正</strong>しているため。</p>
+
+    <div class="btn-row" style="margin-top:24px">
+      <a href="#" class="btn">チケットを購入する</a>
+      <a href="#" class="btn">開館カレンダー</a>
+      <a href="#" class="btn btn-blue">TOP</a>
+    </div>
+
+    <div class="btn-row" style="margin-top:24px">
+      <a href="#" class="btn btn-touch">上下 padding を 12px にした実装版</a>
+    </div>
+    <p class="note">原典の padding では <code class="mono">15px + 10px + 11px + 2px × 2 = 40px</code> で <strong>44px 基準にわずかに足りない</strong>。実装では上下を <code class="mono">12px</code> に上げて 45px を確保する。</p>
+
+    <div class="grid g3" style="margin-top:var(--rhythm)">
+      <a href="#" class="surface-block"><span class="en-s">COLLECTION</span><span class="ja-s">コレクション</span></a>
+      <a href="#" class="surface-block"><span class="en-s">VISIT</span><span class="ja-s">利用案内</span></a>
+      <a href="#" class="surface-block"><span class="en-s">ABOUT</span><span class="ja-s">美術館について</span></a>
+    </div>
+    <p class="note">面付きナビブロックは <code class="mono">#e6e6e6</code> ／ <code class="mono">radius 0</code> ／ 罫なし。</p>
+  </div>
+</section>
+
+<!-- ============ FORMS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="lbl-en">Forms</span><span class="lbl-ja">フォーム</span></div>
+    <p class="note">原典のフォームは検索欄程度で専用の意匠を持たない。以下は<strong>このデザインシステムの原則（角丸 0・影なし・罫で切る）に従って起こした実装案</strong>。</p>
+    <div class="grid g3" style="margin-top:24px">
+      <div>
+        <p class="note" style="margin:0 0 10px">Default</p>
+        <div class="field">
+          <label for="f1">お名前</label>
+          <input id="f1" type="text" value="葛原 健太">
+          <div class="hint">全角でご記入ください。</div>
+        </div>
+      </div>
+      <div>
+        <p class="note" style="margin:0 0 10px">Focus</p>
+        <div class="field is-focus">
+          <label for="f2">メールアドレス</label>
+          <input id="f2" type="email" value="hello@example.com">
+          <div class="hint">outline 2px solid #043d8a / offset 2px</div>
+        </div>
+      </div>
+      <div>
+        <p class="note" style="margin:0 0 10px">Error</p>
+        <div class="field is-error">
+          <label for="f3">ご来館予定日</label>
+          <input id="f3" type="text" value="2026/13/01">
+          <div class="msg">正しい日付をご記入ください。</div>
+        </div>
+      </div>
+    </div>
+    <p class="note"><strong>エラーを赤で示さない</strong>（サイトに赤が存在しない）。罫を 2px に太らせ、メッセージの左に <code class="mono">2px solid #000000</code> の罫を立てて示す。入力欄の文字は <code class="mono">16px</code>（iOS の自動ズーム回避）。</p>
+  </div>
+</section>
+
+<!-- ============ ELEVATION ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="lbl-en">Elevation</span><span class="lbl-ja">奥行き</span></div>
+    <p class="note"><strong>影が 1 つも使われていない。全要素が <code class="mono">box-shadow: none</code> かつ <code class="mono">border-radius: 0</code>。</strong>奥行きという概念を持たず、<code class="mono">#f9f9f9</code>（地）と <code class="mono">#e6e6e6</code>（面）の 2 段も「浮いている」ではなく「別の紙」として扱う。モーダルが必要な場合も、影ではなく <code class="mono">2px solid #000000</code> の罫で切る。</p>
+    <div class="grid g3" style="margin-top:20px">
+      <div class="elev elev-paper"><div class="elev-name">地（#f9f9f9）</div>
+        <div class="note" style="margin-top:4px">ページの地色</div></div>
+      <div class="elev elev-surface"><div class="elev-name">面（#e6e6e6）</div>
+        <div class="note" style="margin-top:4px">別の紙。浮いているのではない</div></div>
+      <div class="elev elev-rule"><div class="elev-name">罫（2px）</div>
+        <div class="note" style="margin-top:4px">影の代わりに切る</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LAYOUT ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="lbl-en">Layout</span><span class="lbl-ja">レイアウト</span></div>
+    <p class="note">寸法トークンは存在しない。縦のリズムの単位は <strong><code class="mono">40px</code>（本文の行送りと一致）</strong>。</p>
+    <div style="margin-top:18px">
+      <div class="sp-row"><div class="sp-bar" style="width:7px"></div><span class="sp-label">7px — ボタン右 padding</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:10px"></div><span class="sp-label">10px — ボタン上・左 padding</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:11px"></div><span class="sp-label">11px — ボタン下 padding（和文の字面補正）</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:35px"></div><span class="sp-label">35px — 見出しの下マージン</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:40px"></div><span class="sp-label">40px — 縦のリズムの基準（行送りと一致）</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:80px"></div><span class="sp-label">80px — 40 × 2</span></div>
+    </div>
+
+    <p class="note" style="margin-top:28px">角丸は <strong>全要素 <code class="mono">0px</code></strong>。作品画像にも付けない。</p>
+    <div class="btn-row" style="margin-top:12px">
+      <div style="width:120px;height:64px;background:var(--surface)"></div>
+      <div style="width:120px;height:64px;background:transparent;border:2px solid var(--ink)"></div>
+    </div>
+
+    <p class="note" style="margin-top:28px">コンテナは <code class="mono">850px</code>（CSS 中 <strong>2795 箇所</strong>で使われる実質唯一の基準幅）。ブレークポイントは <code class="mono">max-width: 850px</code> が主分岐で、以下 <code class="mono">700 / 640 / 379 / 370px</code>。特徴的なのは <strong><code class="mono">min-width: 1590px</code> と <code class="mono">min-width: 2120px</code> のワイド拡張が 2 段あること</strong>——大画面でコンテナを固定して余白だけ増やすのではなく、<strong>文字と画像を積極的に大きくする</strong>。</p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="mark">POLA MUSEUM OF ART</div>
+    <p class="t-sechead" style="margin-top:16px">神奈川県足柄下郡箱根町仙石原小塚山 1285</p>
+    <div class="copy">© Pola Museum of Art</div>
+  </div>
+</footer>
+
+</body>
+</html>

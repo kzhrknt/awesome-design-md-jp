@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 石見銀山 群言堂 Iwamiginzan Gungendo</title>
+<!--
+  ■ フォント
+
+  原典の書体は Zen Old Mincho（Google Fonts）。ドメイン制限がないため、
+  このプレビューでも原典とまったく同じ書体が表示される。代替は不要。
+
+    font-family: "Zen Old Mincho", serif;   ← 全域。これ 1 行だけ
+
+  このサイトの唯一最大の個性は「UI の全部が明朝」であること。
+  ヘッダー、ナビ、商品名、価格、ボタンのラベル、カートの個数バッジ（8px）まで、
+  すべて明朝で組む。「読み物は明朝、ボタンはゴシック」という分業を採らない。
+  例外は SNS アイコン等の極小ラベル（10px）だけで、ここはヒラギノ角ゴに落ちる。
+
+  実装で中間の和文明朝を足しておくと安全:
+    font-family: "Zen Old Mincho", "Hiragino Mincho ProN", "游明朝", YuMincho,
+                 "MS PMincho", serif;
+
+  ■ 原典の組版設定
+
+    letter-spacing: normal          全域。明朝サイトでも字間を一切開けない
+                                    （Zen Old Mincho は字面が広めなので、
+                                      追加の字送りを入れると間延びする）
+    font-feature-settings: normal   全域。palt を足さない
+                                    （明朝の仮名が寄って印象が変わる）
+    font-weight                     400 / 500 / 700 の 3 段。
+                                    500（Medium）を見出しに積極的に使い、
+                                    700 は特集の大見出しとユーティリティだけ
+    line-height                     本文 1.5 / 読み物 1.8 / 見出し 1.2〜1.4
+                                    見出しは 1.2 まで詰める（明朝の縦画が揃う）
+
+  ■ 色
+
+    ページ地色が #e2dfdd（温かみのある薄いグレージュ）。白ではない。
+    白 #ffffff は「カードの色」として取ってあり、地の上に紙として浮く。
+    白を地色にすると「布の上に置いた」質感が消えて、ただの EC になる。
+
+    彩度を持つのは 5 色だけ。うち 2 つはリンク色なので、
+    面として塗られるのは実質 3 色（#875d45 / #667895 / #862800）。
+
+    セールの色 #862800 はブランド茶 #875d45 の「彩度を上げて暗くした」隣。
+    原色の赤を持ち込まず、ブランド茶の系統の中でセールを表現している。
+
+    「買う」は暖色（#875d45）、「待つ・知らせを受け取る」は寒色（#667895）で分ける。
+
+  ■ 形
+
+    影はほぼ使わない（実測で見つかったのは 0 0 2px rgb(178,178,178) の 1 種類だけ）。
+    奥行きは面色の 5 段（#e2dfdd → #ebe9e8 → #f6f5f5 → #f7f7f7 → #ffffff）で作る。
+    隣との差が 3〜9 しかない浅い階段なので、罫を引かずに区切りが成立する。
+
+    もう 1 つの手段が border: 7px solid #e8e8e8 の額縁ボーダー。
+    1px の罫ではなく「面としてのボーダー」で、写真の周りに余白代わりの縁を作る。
+
+  ■ CSS Custom Properties
+
+    原典には定義されていない（FutureShop テンプレート ＋ 独自 CSS）。
+    以下の :root は、実測値をこちらでトークン化したもの。
+    原典の border-radius は 0/2/3/5/9/15px と散っているが（テンプレート由来の継ぎ足し）、
+    このプレビューでは 0 / 2 / 3px の 3 択に寄せている。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ===== Color: Brand ===== */
+    --brown:        #875d45;   /* ブランド色。サイトで唯一の主要彩度 */
+    --brown-border: #925e33;   /* 商品リスト内ボタンの縁だけ一段黄みに寄せる */
+    --blue-gray:    #667895;   /* 副次アクション（入荷お知らせ）。寒色 */
+    --sale:         #862800;   /* セール。ブランド茶の系統。原色の赤にしない */
+    --neutral:      #646464;
+    --link:         #3572b0;
+    --link-product: #1e5d9b;
+
+    /* ===== Color: Ink / Surface ===== */
+    --ink:      #3a4145;   /* 青みのあるチャコール。純黒を使わない */
+    --paper:    #e2dfdd;   /* ページ地色。グレージュ。白ではない */
+    --card:     #ffffff;   /* カード・モーダル。地の上に浮く「紙」 */
+    --sec:      #ebe9e8;   /* セクション帯 */
+    --drawer:   #f6f5f5;   /* ドロワー */
+    --list:     #f7f7f7;   /* 商品グリッドの帯 */
+    --frame:    #e8e8e8;   /* 7px の額縁ボーダー */
+    --swatch-overlay: rgba(30, 30, 30, .7);
+
+    /* ===== Font ===== */
+    --font: "Zen Old Mincho", "Hiragino Mincho ProN", "游明朝", YuMincho,
+            "MS PMincho", serif;
+    --font-icon: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3", Meiryo, メイリオ,
+                 Osaka, "MS PGothic", arial, helvetica, sans-serif;
+
+    /* ===== Type scale（実測）===== */
+    --fs-display:  36px;  --lh-display:  43.2px;   /* 1.2 */
+    --fs-heading:  24px;  --lh-heading:  28.8px;   /* 1.2 */
+    --fs-sub:      19px;  --lh-sub:      26.6px;   /* 1.4 */
+    --fs-sub-t:    19px;  --lh-sub-t:    22.8px;   /* 1.2 */
+    --fs-nav:      19px;  --lh-nav:      28.5px;   /* 1.5 */
+    --fs-body:     16px;  --lh-body:     24px;     /* 1.5 */
+    --fs-read:     16px;  --lh-read:     28.8px;   /* 1.8 読み物 */
+    --fs-product:  16px;  --lh-product:  20.8px;   /* 1.3 商品名 */
+    --fs-small:    14px;  --lh-small:    23.8px;   /* 1.7 */
+    --fs-util:     13px;  --lh-util:     19.5px;   /* 1.5 */
+    --fs-badge:    12px;  --lh-badge:    18px;     /* 1.5 */
+    --fs-tag:      10px;
+    --fs-count:     8px;  --lh-count:    17px;
+
+    /* ===== Shape ===== */
+    --r-flat:  0px;   /* 入力欄・リスト内ボタン */
+    --r-badge: 2px;
+    --r-btn:   3px;   /* ボタン・カード */
+    --frame-w: 7px;   /* 額縁ボーダー */
+
+    --shadow-1: 0 0 2px rgb(178, 178, 178);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font);            /* 全域。UI も明朝 */
+    font-size: var(--fs-body);
+    font-weight: 400;
+    line-height: var(--lh-body);
+    letter-spacing: normal;              /* 明朝でも開けない */
+    font-feature-settings: normal;       /* palt を足さない */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  .narrow { max-width: 760px; }
+
+  /* ===== Header ===== */
+  .header { background: var(--paper); }
+  .header-top { display: flex; align-items: center; gap: 28px; padding: 20px 0 14px;
+    flex-wrap: wrap; }
+  .brand-mark { width: 96px; height: 96px; background: #3d2b20; color: #efe7dc;
+    display: grid; place-items: center; text-align: center; line-height: 1.3;
+    font-size: 22px; font-weight: 700; flex: none; }
+  .brand-mark small { display: block; font-size: 9px; font-weight: 400; letter-spacing: .06em; }
+  .header-utils { display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
+  .util { display: inline-flex; align-items: center; gap: 6px; color: var(--ink);
+    text-decoration: none; font-size: var(--fs-util); font-weight: 700;
+    line-height: var(--lh-util); }
+  .util:hover { color: var(--link); }
+  .count { display: inline-grid; place-items: center; min-width: 17px; height: 17px;
+    padding: 0 5px; background: var(--brown); color: #fff; border-radius: 9px;
+    font-size: var(--fs-count); font-weight: 700; line-height: var(--lh-count); }
+  .tel { margin-left: auto; text-align: right; }
+  .tel .num { font-size: 26px; line-height: 1.2; font-weight: 500; }
+  .tel .hours { font-size: var(--fs-util); line-height: var(--lh-util); }
+  .catnav { display: flex; align-items: center; gap: 40px; padding: 10px 0 22px;
+    flex-wrap: wrap; }
+  .catnav a { color: var(--ink); text-decoration: none; font-size: var(--fs-nav);
+    line-height: var(--lh-nav); }
+  .catnav a:hover { color: var(--brown); }
+
+  /* ===== Hero ===== */
+  .hero { background: var(--sec); padding: 56px 0; margin-bottom: 8px; }
+  .hero-art { aspect-ratio: 16 / 7; display: grid; place-items: center;
+    background: linear-gradient(115deg, #1c3f7e 0%, #2f56a0 26%, #b8a68f 52%, #6d5b45 78%, #3d3227 100%); }
+  .hero-art span { color: #fff; font-size: var(--fs-heading); line-height: var(--lh-heading);
+    letter-spacing: .4em; }
+
+  /* ===== Section ===== */
+  .section { padding: 56px 0; }
+  .sec-label { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+    margin-bottom: 28px; }
+  .sec-label .ja { font-size: var(--fs-heading); line-height: var(--lh-heading);
+    font-weight: 500; }
+  .sec-label .en { font-size: var(--fs-util); line-height: var(--lh-util);
+    color: var(--brown); letter-spacing: .16em; }
+  .note { font-size: var(--fs-small); line-height: var(--lh-small); color: var(--ink);
+    opacity: .85; margin-top: 14px; }
+  .mono { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 12px; }
+
+  /* ===== Grid ===== */
+  .grid { display: grid; gap: 20px; }
+  .g2 { grid-template-columns: repeat(2, 1fr); }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .g4 { grid-template-columns: repeat(4, 1fr); }
+  .g5 { grid-template-columns: repeat(5, 1fr); }
+
+  /* ===== Swatch ===== */
+  .swatch-block { height: 80px; border-radius: var(--r-btn); }
+  .swatch-name { font-size: var(--fs-small); line-height: 1.6; font-weight: 500; margin-top: 8px; }
+  .swatch-hex { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 11px;
+    color: var(--ink); opacity: .7; }
+  .swatch-role { font-size: var(--fs-badge); line-height: 1.7; opacity: .8; margin-top: 2px; }
+
+  .stair { display: flex; border-radius: var(--r-btn); overflow: hidden; }
+  .stair div { flex: 1; height: 64px; display: grid; place-items: end center; padding-bottom: 6px;
+    font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 10px; color: var(--ink); }
+
+  /* ===== Typography specimen ===== */
+  .type-row { display: grid; grid-template-columns: 190px 1fr; gap: 24px; padding: 16px 0;
+    border-top: 1px solid var(--frame); align-items: baseline; }
+  .type-meta { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 11px;
+    line-height: 1.7; color: var(--ink); opacity: .7; }
+  .t-display { font-size: var(--fs-display); line-height: var(--lh-display); font-weight: 700; }
+  .t-heading { font-size: var(--fs-heading); line-height: var(--lh-heading); font-weight: 500; }
+  .t-sub     { font-size: var(--fs-sub);     line-height: var(--lh-sub);     font-weight: 700; }
+  .t-nav     { font-size: var(--fs-nav);     line-height: var(--lh-nav); }
+  .t-body    { font-size: var(--fs-body);    line-height: var(--lh-body); }
+  .t-read    { font-size: var(--fs-read);    line-height: var(--lh-read); }
+  .t-product { font-size: var(--fs-product); line-height: var(--lh-product); font-weight: 500; }
+  .t-small   { font-size: var(--fs-small);   line-height: var(--lh-small); }
+  .t-util    { font-size: var(--fs-util);    line-height: var(--lh-util);    font-weight: 700; }
+  .t-badge   { font-size: var(--fs-badge);   line-height: var(--lh-badge); }
+  .t-icon    { font-family: var(--font-icon); font-size: 10px; line-height: 1; }
+
+  /* ===== Buttons ===== */
+  .btn { display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font); font-weight: 400; letter-spacing: normal;
+    cursor: pointer; text-decoration: none; border: 1px solid transparent; }
+  .btn:hover { opacity: .82; }
+  .btn:focus-visible { outline: 2px solid var(--brown); outline-offset: 2px; }
+  .btn-primary { background: var(--brown); color: #fff; border-color: var(--brown);
+    border-radius: var(--r-btn); padding: 12px 18px; font-size: var(--fs-badge);
+    line-height: var(--lh-badge); }
+  .btn-list { background: var(--brown); color: #fff; border-color: var(--brown-border);
+    border-radius: var(--r-flat); padding: 5px 10px; font-size: var(--fs-body);
+    line-height: var(--lh-body); }
+  .btn-list-secondary { background: var(--blue-gray); color: #fff; border-color: var(--blue-gray);
+    border-radius: var(--r-flat); padding: 5px 10px; font-size: var(--fs-body);
+    line-height: var(--lh-body); }
+  .btn-secondary { background: var(--blue-gray); color: #fff; border-color: var(--blue-gray);
+    border-radius: var(--r-btn); padding: 12px 18px; font-size: var(--fs-badge);
+    line-height: var(--lh-badge); }
+  .btn-neutral { background: var(--neutral); color: #fff; border-color: var(--neutral);
+    border-radius: var(--r-flat); padding: 8px 16px; font-size: var(--fs-body);
+    line-height: var(--lh-body); }
+  .btn-outline { background: transparent; color: var(--ink); border-color: var(--ink);
+    border-radius: var(--r-flat); padding: 4px 8px; font-size: var(--fs-badge);
+    line-height: var(--lh-badge); }
+  .btn[aria-disabled="true"] { background: transparent; color: var(--ink);
+    border-color: var(--frame); opacity: .55; cursor: not-allowed; }
+  .btn-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+
+  /* ===== Badges ===== */
+  .badge { display: inline-block; border-radius: var(--r-badge); padding: 5px 7px;
+    font-size: var(--fs-tag); line-height: 1.4; }
+  .badge-sale { background: var(--sale); color: #fff; }
+  .badge-outline { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+
+  /* ===== Frame card（額縁ボーダー）===== */
+  .frame-card { background: var(--card); border: var(--frame-w) solid var(--frame);
+    border-radius: 5px; padding: 24px; }
+  .frame-card .ttl { font-size: var(--fs-body); line-height: var(--lh-body); font-weight: 700; }
+
+  /* ===== Product ===== */
+  .product { background: var(--card); border-radius: var(--r-btn); overflow: hidden;
+    text-decoration: none; color: var(--ink); display: block; }
+  .product:hover { opacity: .88; }
+  .product .ph { aspect-ratio: 3 / 4; position: relative; }
+  .product .ph .sw { position: absolute; left: 0; right: 0; bottom: 0;
+    background: var(--swatch-overlay); color: #fff; font-size: var(--fs-tag);
+    line-height: 1.6; padding: 4px 8px; }
+  .product .ph .badges { position: absolute; top: 8px; left: 8px; display: flex; gap: 5px; }
+  /* 写真の上に置く枠バッジは白を敷く（暗い商品写真でも読めるようにする） */
+  .product .ph .badges .badge-outline { background: var(--card); }
+  .product .meta { padding: 12px 14px 16px; }
+  .product .name { font-size: var(--fs-product); line-height: var(--lh-product);
+    font-weight: 500; color: var(--link-product); }
+  .product .price { font-size: var(--fs-body); line-height: var(--lh-body); margin-top: 6px; }
+  .product .price s { opacity: .55; margin-right: 6px; }
+
+  /* ===== Cards ===== */
+  .card { background: var(--card); border-radius: var(--r-btn);
+    padding: 20px 20px 20px 30px;   /* 左だけ広い非対称は原典どおり */
+    text-decoration: none; color: var(--ink); display: block; }
+  .card:hover { opacity: .88; }
+  .card .ttl { font-size: var(--fs-body); line-height: var(--lh-body); font-weight: 700; }
+  .card .meta { font-size: var(--fs-badge); line-height: var(--lh-badge); opacity: .75;
+    margin-top: 6px; }
+
+  /* ===== Forms ===== */
+  .field label { display: block; font-size: var(--fs-small); line-height: var(--lh-small);
+    font-weight: 500; }
+  .field input, .field select { width: 100%; font-family: var(--font); font-weight: 400;
+    font-size: 16px; line-height: 1.5; letter-spacing: normal; color: var(--ink);
+    background: var(--card); border: 1px solid var(--frame); border-radius: var(--r-flat);
+    padding: 10px 12px; }
+  .field input::placeholder { color: var(--ink); opacity: .45; }
+  .field .hint, .field .msg { font-size: var(--fs-badge); line-height: var(--lh-badge);
+    opacity: .8; }
+  .field.is-focus input { border-color: var(--brown); outline: 2px solid var(--brown);
+    outline-offset: 2px; }
+  .field.is-error input { border-color: var(--sale); }
+  .field.is-error .msg { color: var(--sale); opacity: 1; }
+  .search { width: 100%; font-family: var(--font); font-size: var(--fs-util);
+    line-height: 1.4; color: var(--ink); background: var(--card); border: 1px solid var(--frame);
+    border-radius: var(--r-flat); padding: 8px 10px 8px 30px; }
+
+  /* ===== Elevation ===== */
+  .elev { border-radius: var(--r-btn); padding: 20px; min-height: 104px; }
+  .elev-name { font-size: var(--fs-body); line-height: var(--lh-body); font-weight: 500; }
+
+  .sp-row { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+  .sp-bar { height: 12px; background: var(--brown); border-radius: 2px; }
+  .sp-label { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 11px;
+    color: var(--ink); opacity: .75; }
+
+  /* ===== Footer ===== */
+  .footer { background: var(--sec); padding: 48px 0; margin-top: 40px; }
+  .footer .ttl { font-size: var(--fs-product); line-height: 22.4px; font-weight: 500; }
+  .footer .copy { font-size: var(--fs-badge); line-height: var(--lh-badge); opacity: .75;
+    margin-top: 20px; }
+
+  @media screen and (max-width: 767px) {
+    .g3, .g4, .g5 { grid-template-columns: repeat(2, 1fr); }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .t-display { font-size: 24px; line-height: 28.8px; }
+    .tel { margin-left: 0; text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container">
+    <div class="header-top">
+      <div class="brand-mark">群言堂<small>IWAMIGINZAN</small></div>
+      <div class="header-utils">
+        <a href="#" class="util">ログイン／新規会員登録</a>
+        <a href="#" class="util">カート <span class="count">3</span></a>
+        <a href="#" class="util">店舗一覧</a>
+        <a href="#" class="util">はじめての方へ</a>
+      </div>
+      <div class="tel">
+        <div class="num">050-3503-1906</div>
+        <div class="hours">受付時間：平日 10〜17 時（12〜13 時を除く）</div>
+      </div>
+    </div>
+    <nav class="catnav">
+      <a href="#">服</a><a href="#">布</a><a href="#">暮らし</a>
+      <a href="#">シリーズ</a><a href="#">読みもの</a><a href="#">石見銀山 群言堂について</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-art"><span>布 ： すべてをみる</span></div>
+  </div>
+</div>
+
+<!-- ============ COLORS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="ja">カラーパレット</span><span class="en">COLORS</span></div>
+
+    <div class="grid g5">
+      <div><div class="swatch-block" style="background:var(--brown)"></div>
+        <div class="swatch-name">Gungendo Brown</div><div class="swatch-hex">#875d45</div>
+        <div class="swatch-role">ブランド色。<strong>サイトで唯一の主要彩度</strong>。革・土・染めの茶</div></div>
+      <div><div class="swatch-block" style="background:var(--blue-gray)"></div>
+        <div class="swatch-name">Secondary</div><div class="swatch-hex">#667895</div>
+        <div class="swatch-role">「入荷お知らせ」等。<strong>寒色で「買う」と区別</strong></div></div>
+      <div><div class="swatch-block" style="background:var(--sale)"></div>
+        <div class="swatch-name">Sale</div><div class="swatch-hex">#862800</div>
+        <div class="swatch-role"><strong>ブランド茶の系統</strong>。原色の赤にしない</div></div>
+      <div><div class="swatch-block" style="background:var(--ink)"></div>
+        <div class="swatch-name">Ink</div><div class="swatch-hex">#3a4145</div>
+        <div class="swatch-role">青みのあるチャコール。純黒を使わない</div></div>
+      <div><div class="swatch-block" style="background:var(--paper);box-shadow:inset 0 0 0 1px var(--frame)"></div>
+        <div class="swatch-name">Paper（地色）</div><div class="swatch-hex">#e2dfdd</div>
+        <div class="swatch-role"><strong>ページ地色。白ではない</strong></div></div>
+    </div>
+
+    <p class="note" style="margin-top:28px"><strong>面は 5 段でごく浅く上がる。</strong>隣との差が 3〜9 しかないので、罫を引かずに面だけで区切りが成立する。<strong>白（<code class="mono">#ffffff</code>）は地色ではなく「カードの色」</strong>——地の上に紙として浮く。</p>
+    <div class="stair" style="margin-top:12px">
+      <div style="background:#e2dfdd">#e2dfdd 地</div>
+      <div style="background:#ebe9e8">#ebe9e8 帯</div>
+      <div style="background:#f6f5f5">#f6f5f5 ドロワー</div>
+      <div style="background:#f7f7f7">#f7f7f7 リスト</div>
+      <div style="background:#ffffff">#ffffff カード</div>
+    </div>
+
+    <p class="note" style="margin-top:28px">彩度を持つ色は 5 つだけ（<code class="mono">#875d45</code> / <code class="mono">#667895</code> / <code class="mono">#862800</code> / <code class="mono">#3572b0</code> / <code class="mono">#1e5d9b</code>）。うち 2 つはリンク色なので、<strong>面として塗られるのは実質 3 色</strong>。</p>
+    <div class="btn-row" style="margin-top:14px">
+      <span class="badge badge-sale">50%OFF</span>
+      <span class="badge badge-outline">NEW</span>
+      <span class="badge badge-outline">再入荷</span>
+      <span class="badge badge-outline">予約商品</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TYPOGRAPHY ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="ja">タイポグラフィ</span><span class="en">TYPOGRAPHY</span></div>
+    <p class="note"><strong><code class="mono">font-family: "Zen Old Mincho", serif</code> の 1 行が全域。</strong>ヘッダー、ナビ、商品名、価格、ボタンのラベル、カートの個数バッジ（8px）まで、<strong>UI の全部が明朝</strong>。「読み物は明朝、ボタンはゴシック」という分業を採らないのが、このサイトの唯一最大の個性。<code class="mono">letter-spacing</code> は<strong>全域 <code class="mono">normal</code></strong>——明朝サイトでも字間を一切開けない。</p>
+
+    <div class="type-row"><div class="type-meta">Display / h3<br>36px <strong>w700</strong><br>lh 43.2px (1.2)</div>
+      <div class="t-display">根のある暮らし</div></div>
+    <div class="type-row"><div class="type-meta">Heading / h2<br>24px <strong>w500</strong><br>lh 28.8px (1.2)</div>
+      <div class="t-heading">特集いろいろ</div></div>
+    <div class="type-row"><div class="type-meta">Subheading / h3<br>19px w700<br>lh 26.6px (1.4)</div>
+      <div class="t-sub">石見銀山 大森町のこと</div></div>
+    <div class="type-row"><div class="type-meta">Nav / a<br>19px w400<br>lh 28.5px (1.5)</div>
+      <div class="t-nav">服　布　暮らし　シリーズ</div></div>
+    <div class="type-row"><div class="type-meta">Body / p（既定）<br>16px w400<br>lh 24px (1.5)</div>
+      <div class="t-body">島根県大田市大森町。世界遺産・石見銀山の麓にある、人口四百人ほどの集落です。群言堂の本社は、いまもこの町にあります。</div></div>
+    <div class="type-row"><div class="type-meta">読み物 / p<br>16px w400<br>lh 28.8px (<strong>1.8</strong>)</div>
+      <div class="t-read">かつて銀を掘る人々でにぎわった町は、鉱山が閉じたあと静かになりました。私たちはそこに残り、土地の暮らしから生まれるものをつくり続けています。用途で行間を切り替える——商品情報は 1.5、読みものは 1.8。</div></div>
+    <div class="type-row"><div class="type-meta">Product Name / h2<br>16px <strong>w500</strong><br>lh 20.8px (1.3)</div>
+      <div class="t-product">楊柳ショートパンツ</div></div>
+    <div class="type-row"><div class="type-meta">Body Small<br>14px w400<br>lh 23.8px (1.7)</div>
+      <div class="t-small">お届けは通常 3〜5 日ほどいただいております。</div></div>
+    <div class="type-row"><div class="type-meta">Utility<br>13px <strong>w700</strong><br>lh 19.5px (1.5)</div>
+      <div class="t-util">ログイン／新規会員登録</div></div>
+    <div class="type-row"><div class="type-meta">Badge<br>12px w400<br>lh 18px (1.5)</div>
+      <div class="t-badge">カートに入れる</div></div>
+    <div class="type-row"><div class="type-meta">Cart Count<br><strong>8px w700</strong><br>lh 17px</div>
+      <div><span class="count">3</span> <span class="t-badge" style="margin-left:8px">この極小サイズでも明朝を貫く</span></div></div>
+    <div class="type-row"><div class="type-meta">例外: 極小ラベル<br>10px / ヒラギノ角ゴ<br>唯一のゴシック</div>
+      <div class="t-icon">SNS アイコンのラベルだけがゴシックに落ちる</div></div>
+
+    <p class="note" style="margin-top:24px"><strong>ウェイトは 400 / 500 / 700 の 3 段。</strong><code class="mono">500</code>（Medium）を見出しに積極的に使い、<code class="mono">700</code> は特集の大見出しとヘッダーのユーティリティだけ。<strong>見出しの行間は 1.2 まで詰める</strong>——明朝の縦画が揃うので、ゴシックより詰めても崩れない。</p>
+  </div>
+</section>
+
+<!-- ============ PRODUCT ============ -->
+<section class="section" style="background:var(--list)">
+  <div class="container">
+    <div class="sec-label"><span class="ja">新着商品</span><span class="en">NEW ARRIVALS</span></div>
+    <div class="grid g4">
+      <a href="#" class="product">
+        <div class="ph" style="background:linear-gradient(160deg,#20407c 0%,#3a5f9e 42%,#a08a6d 74%,#5d4a35 100%)">
+          <div class="badges"><span class="badge badge-outline">NEW</span></div>
+          <div class="sw">ぎんねず（B）</div>
+        </div>
+        <div class="meta">
+          <div class="name">楊柳ショートパンツ</div>
+          <div class="price">¥19,800</div>
+          <div style="margin-top:10px"><span class="btn btn-list">カートに入れる</span></div>
+        </div>
+      </a>
+      <a href="#" class="product">
+        <div class="ph" style="background:linear-gradient(200deg,#4a4038 0%,#6d6154 44%,#a99a86 76%,#ded6c8 100%)">
+          <div class="badges"><span class="badge badge-sale">50%OFF</span></div>
+          <div class="sw">くろ</div>
+        </div>
+        <div class="meta">
+          <div class="name">綿麻 リネンワンピース</div>
+          <div class="price"><s>¥28,600</s>¥14,300</div>
+          <div style="margin-top:10px"><span class="btn btn-list">カートに入れる</span></div>
+        </div>
+      </a>
+      <a href="#" class="product">
+        <div class="ph" style="background:linear-gradient(140deg,#cfc7b6 0%,#a89b83 46%,#7a6d58 78%,#453c2e 100%)">
+          <div class="badges"><span class="badge badge-outline">再入荷</span></div>
+          <div class="sw">きなり</div>
+        </div>
+        <div class="meta">
+          <div class="name">草木染め 手ぬぐい</div>
+          <div class="price">¥2,420</div>
+          <div style="margin-top:10px"><span class="btn btn-list">カートに入れる</span></div>
+        </div>
+      </a>
+      <a href="#" class="product">
+        <div class="ph" style="background:linear-gradient(180deg,#2c3a46 0%,#41586a 42%,#7d8f96 74%,#c3c9c3 100%)">
+          <div class="badges"><span class="badge badge-outline">予約商品</span></div>
+          <div class="sw">あい</div>
+        </div>
+        <div class="meta">
+          <div class="name">藍染め 半纏</div>
+          <div class="price">¥42,900</div>
+          <div style="margin-top:10px"><span class="btn btn-list-secondary">入荷お知らせ</span></div>
+        </div>
+      </a>
+    </div>
+    <p class="note"><strong>「買う」は暖色（<code class="mono">#875d45</code>）、「待つ・知らせを受け取る」は寒色（<code class="mono">#667895</code>）</strong>で分ける。色番のラベルは商品画像の上に <code class="mono">rgba(30,30,30,.7)</code> の下地で重ねる。<strong>価格も明朝の数字で出す</strong>——ここに欧文サンセリフを混ぜない。<br>※ 枠バッジ（NEW・再入荷・予約商品）を<strong>写真の上に重ねるときは白（<code class="mono">#ffffff</code>）を敷く</strong>。文字色も罫も <code class="mono">#3a4145</code> なので、暗い商品写真の上ではそのままだと読めない。</p>
+  </div>
+</section>
+
+<!-- ============ READING ============ -->
+<section class="section">
+  <div class="container narrow">
+    <div class="sec-label"><span class="ja">読みもの</span><span class="en">JOURNAL</span></div>
+    <h3 class="t-display" style="margin-bottom:20px">根のある暮らし</h3>
+    <p class="t-read">島根県大田市大森町。世界遺産・石見銀山の麓にある、人口四百人ほどの集落です。かつて銀を掘る人々でにぎわったこの町は、鉱山が閉じたあと静かになりました。</p>
+    <p class="t-read" style="margin-top:24px">私たちは一九八九年、この町で会社をはじめました。都市に出ていくのではなく、ここに残る。そう決めたことが、そのままブランドの主題になりました。服も、布も、暮らしの道具も、すべてこの土地の時間の中から生まれています。</p>
+    <p class="t-read" style="margin-top:24px">古い家を直して住み、畑を耕し、藍を建てる。特別なことは何もしていません。ただ、根を張るということを、続けているだけです。</p>
+  </div>
+</section>
+
+<!-- ============ BUTTONS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="ja">ボタン</span><span class="en">BUTTONS</span></div>
+    <p class="note"><strong>ボタンのラベルも明朝で組む。</strong>ここをゴシックに切り替えると、サイトの個性が丸ごと消える。</p>
+
+    <div class="btn-row" style="margin-top:22px">
+      <button class="btn btn-primary">カートに入れる</button>
+      <button class="btn btn-secondary">入荷お知らせを受け取る</button>
+      <button class="btn btn-neutral">絞り込む</button>
+      <button class="btn btn-outline">サイズを見る</button>
+      <button class="btn btn-primary" aria-disabled="true">品切れ</button>
+    </div>
+    <p class="note">Primary <code class="mono">#875d45 / radius 3px / padding 12px 18px / 12px</code>（<code class="mono">18 + 12×2 + 1×2 = 44px</code> で<strong>タッチターゲット基準をちょうど満たす</strong>）。Secondary <code class="mono">#667895</code>。Neutral <code class="mono">#646464 / radius 0</code>。Outline <code class="mono">1px solid #3a4145 / radius 0</code>。</p>
+
+    <div class="btn-row" style="margin-top:24px">
+      <button class="btn btn-list">カートに入れる（商品リスト内）</button>
+    </div>
+    <p class="note">商品リスト内のボタンだけ <code class="mono">radius 0</code> で、<strong>縁が <code class="mono">#925e33</code> と一段黄みに寄る</strong>。高さは 36px で 44px 基準に届かないため、<strong>主要 CTA には使わない</strong>。</p>
+  </div>
+</section>
+
+<!-- ============ CARDS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="ja">カード</span><span class="en">CARDS</span></div>
+    <div class="grid g3">
+      <a href="#" class="card"><div class="ttl">はじめての方へ</div>
+        <div class="meta">群言堂の服の選び方、サイズのこと</div></a>
+      <a href="#" class="card"><div class="ttl">店舗一覧</div>
+        <div class="meta">全国 22 店舗のご案内</div></a>
+      <a href="#" class="card"><div class="ttl">お直しと修理</div>
+        <div class="meta">長く着ていただくために</div></a>
+    </div>
+    <p class="note">カードは <code class="mono">#ffffff / radius 3px / 影なし</code>。padding は <code class="mono">20px 20px 20px 30px</code> と<strong>左だけ広い非対称</strong>（原典どおり）。</p>
+
+    <div class="grid g2" style="margin-top:28px">
+      <div class="frame-card">
+        <div class="ttl">額縁ボーダー</div>
+        <p class="t-small" style="margin-top:8px"><code class="mono">border: 7px solid #e8e8e8</code> ＋ <code class="mono">radius 5px</code>。1px の罫ではなく<strong>面としてのボーダー</strong>で、写真やコンテンツの周りに余白代わりの縁を作る。</p>
+      </div>
+      <div class="frame-card">
+        <div class="ttl">影の代わりに使う</div>
+        <p class="t-small" style="margin-top:8px">枠の色 <code class="mono">#e8e8e8</code> は地色 <code class="mono">#e2dfdd</code> より 6 だけ明るいので、地の上でごく浅く浮く。<strong>影を使わずに「別の層」を表現する手段</strong>。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FORMS ============ -->
+<section class="section">
+  <div class="container narrow">
+    <div class="sec-label"><span class="ja">フォーム</span><span class="en">FORMS</span></div>
+    <div class="grid g3">
+      <div>
+        <p class="note" style="margin:0 0 8px">Default</p>
+        <div class="field">
+          <label for="f1">お名前</label>
+          <input id="f1" type="text" value="葛原 健太">
+          <div class="hint">全角でご記入ください</div>
+        </div>
+      </div>
+      <div>
+        <p class="note" style="margin:0 0 8px">Focus</p>
+        <div class="field is-focus">
+          <label for="f2">メールアドレス</label>
+          <input id="f2" type="email" value="hello@example.com">
+          <div class="hint">outline 2px solid #875d45</div>
+        </div>
+      </div>
+      <div>
+        <p class="note" style="margin:0 0 8px">Error</p>
+        <div class="field is-error">
+          <label for="f3">郵便番号</label>
+          <input id="f3" type="text" value="694-03">
+          <div class="msg">正しい郵便番号をご記入ください</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:24px">
+      <input class="search" type="search" placeholder="商品名・シリーズ名で検索">
+    </div>
+    <p class="note"><strong>入力欄の文字も明朝。</strong>文字サイズは <code class="mono">16px</code>（iOS の自動ズーム回避）、<code class="mono">radius 0</code>。エラーはブランド茶の系統の <code class="mono">#862800</code> で示す（原色の赤を持ち込まない）。<br>※ 原典は入力欄の文字色だけ <code class="mono">#333333</code> でテンプレート由来の揺れがある。ここでは <code class="mono">#3a4145</code> に揃えている。</p>
+  </div>
+</section>
+
+<!-- ============ ELEVATION ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="ja">奥行き</span><span class="en">ELEVATION</span></div>
+    <p class="note"><strong>影はほぼ使わない。</strong>実測で見つかったのは <code class="mono">0 0 2px rgb(178,178,178)</code> の 1 種類だけ。奥行きは<strong>面色の 5 段</strong>と<strong>額縁ボーダー</strong>で作る。</p>
+    <div class="grid g3" style="margin-top:18px">
+      <div class="elev" style="background:var(--card)"><div class="elev-name">Level 0 — 面色</div>
+        <div class="note" style="margin-top:4px">既定。<code class="mono">#ffffff</code> のカードが <code class="mono">#e2dfdd</code> の地に浮く</div></div>
+      <div class="elev" style="background:var(--card);border:var(--frame-w) solid var(--frame);border-radius:5px">
+        <div class="elev-name">額縁ボーダー</div>
+        <div class="note" style="margin-top:4px"><code class="mono">7px solid #e8e8e8</code></div></div>
+      <div class="elev" style="background:var(--card);box-shadow:var(--shadow-1)">
+        <div class="elev-name">Level 1 — 例外</div>
+        <div class="note" style="margin-top:4px"><code class="mono">0 0 2px rgb(178,178,178)</code>。ドロップダウン等</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LAYOUT ============ -->
+<section class="section">
+  <div class="container">
+    <div class="sec-label"><span class="ja">レイアウト</span><span class="en">LAYOUT</span></div>
+    <p class="note">寸法トークンは存在しない。実測から読み取れる刻み。</p>
+    <div style="margin-top:16px">
+      <div class="sp-row"><div class="sp-bar" style="width:5px"></div><span class="sp-label">5px — バッジの上下 padding</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:7px"></div><span class="sp-label">7px — バッジの左右 padding</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:8px"></div><span class="sp-label">8px — Neutral ボタン</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:12px"></div><span class="sp-label">12px — 主要ボタンの上下</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:18px"></div><span class="sp-label">18px — 主要ボタンの左右</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:20px"></div><span class="sp-label">20px — カードの padding</span></div>
+      <div class="sp-row"><div class="sp-bar" style="width:30px"></div><span class="sp-label">30px — カードの左 padding（非対称）</span></div>
+    </div>
+
+    <p class="note" style="margin-top:28px">原典の角丸は <code class="mono">0 / 2 / 3 / 5 / 9 / 15px</code> と散っている（FutureShop テンプレートと独自実装の混在）。<strong>新規実装では <code class="mono">0px</code>（入力欄・リスト内ボタン）と <code class="mono">3px</code>（ボタン・カード）の 2 択に寄せ、バッジは <code class="mono">2px</code></strong>。</p>
+    <div class="btn-row" style="margin-top:12px">
+      <div style="width:110px;height:60px;background:var(--card);border-radius:0"></div>
+      <div style="width:110px;height:60px;background:var(--card);border-radius:2px"></div>
+      <div style="width:110px;height:60px;background:var(--card);border-radius:3px"></div>
+      <div style="width:110px;height:60px;background:var(--card);border:7px solid var(--frame);border-radius:5px"></div>
+    </div>
+    <p class="note">0px（入力欄・リスト内ボタン） ／ 2px（バッジ） ／ 3px（ボタン・カード） ／ 5px ＋ 7px 罫（額縁）</p>
+
+    <p class="note" style="margin-top:28px">ブレークポイントは <code class="mono">max-width: 767px</code> が主分岐（CSS 中 32 箇所）。ここで 1 カラム＋ <code class="mono">#f6f5f5</code> の全画面ドロワーに切り替わる。以下 <code class="mono">600px</code>、上に <code class="mono">min-width: 768px / 960px</code>。<strong>原典は <code class="mono">max-width: 767px</code> と <code class="mono">min-width: 767px</code> が両方あって 767px ちょうどが二重に当たる</strong>ので、新規実装では <code class="mono">767 / 768px</code> で分ける。</p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="ttl">石見銀山 群言堂</div>
+    <p class="t-read" style="margin-top:10px">島根県大田市大森町ハ 183</p>
+    <div class="copy">© 石見銀山生活文化研究所</div>
+  </div>
+</footer>
+
+</body>
+</html>
