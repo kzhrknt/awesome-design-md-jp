@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>八海山 — Design System Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&family=Zen+Kaku+Gothic+New:wght@300;500;700&display=swap" rel="stylesheet">
+<!--
+  八海山（八海醸造）DESIGN.md のプレビュー。
+  実測日 2026-08-01 / https://www.hakkaisan.co.jp/
+
+  このサイトの要点は4つ。
+  1. 見出しは明朝（筑紫Aオールド明朝 Pr6N）、本文はゴシック Light（秀英角ゴシック金 L）。
+     和文2書体を役割で厳密に分けている。
+  2. セクション見出しは letter-spacing: 0.2em ＋ line-height: 1.0。
+     字間を大きく空け、行は詰めて塊に見せる。
+  3. border-radius は実質 0。角丸は円形（50%）の「札」だけ。
+  4. 塗りボタンが存在しない。ボタンは 1px solid #000 の枠線1本。
+
+  ■ フォント代替について
+  筑紫Aオールド明朝（Fontworks）と秀英角ゴシック金（DNP）はいずれも商用ライセンスの
+  Webフォントで、ドメインライセンスのためローカルでは表示できない。ここでは
+    筑紫Aオールド明朝 → Shippori Mincho（オールド系明朝。仮名の抑揚が近い）
+    秀英角ゴシック金 L → Zen Kaku Gothic New 300（ヒューマニストなゴシックの Light）
+  で代替している。字面の広さと重心が実サイトとは僅かに異なる。
+-->
+<style>
+  :root {
+    /* --- Base：差し色は3色だけ --- */
+    --bg:        #ffffff;   /* 実サイトは html/body に塗り指定が無く UA 既定のキャンバス */
+    --ink:       #000000;
+    --ink-sub:   #7f7f7f;
+
+    --mizu:   #9cb7be;   /* 酒類カテゴリの札・カルーセル選択中 */
+    --fuji:   #7c82a3;   /* 製品情報の種別 */
+    --fuji-2: #7e85a6;   /* 季節限定。1段階だけ明度が違う値が併存する */
+    --kin:    #e4ba61;   /* イベント・数量限定 */
+
+    --border:       #000000;   /* ボタンの枠は本文色と同じ純黒 */
+    --border-light: #979797;
+
+    /* --- Type：ウェイトはファミリ名で切り替える設計 --- */
+    /* 実サイト: TsukuAOldMinPr6N-R / -M（明朝）, DNPShueiGoKinStd-L / -B（ゴシック） */
+    --font-mincho: "Shippori Mincho", serif;
+    --font-gothic: "Zen Kaku Gothic New", sans-serif;
+
+    --lh-body:    1.6;    /* 本文・リード・ボタン */
+    --lh-heading: 1.26;   /* 大見出し。明朝の縦の流れを出す */
+    --lh-tight:   1.0;    /* セクション見出し・ナビ */
+    --ls-wide:    0.2em;  /* セクション見出し・MORE */
+
+    --radius: 0px;        /* 角丸は付けない */
+    --container: 1280px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-gothic);
+    font-weight: 300;                  /* 秀英角ゴシック金 L 相当 */
+    font-size: 14px;
+    line-height: var(--lh-body);
+    letter-spacing: normal;            /* 本文に字間を入れない */
+    font-feature-settings: normal;     /* palt は使わない */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: var(--container); margin: 0 auto; padding: 0 40px; }
+
+  /* 字間を空けた見出しは末尾の余白を必ず相殺する */
+  .tracked { letter-spacing: var(--ls-wide); margin-right: calc(var(--ls-wide) * -1); }
+
+  /* ---------- NAV ---------- */
+  .nav {
+    display: flex; align-items: center; gap: 40px;
+    padding: 28px 40px; flex-wrap: wrap;
+    border-bottom: 1px solid #eee;
+  }
+  .nav-brand {
+    font-family: var(--font-mincho); font-size: 22px; font-weight: 500;
+    letter-spacing: 0.08em; text-decoration: none; color: var(--ink);
+  }
+  .nav-links { display: flex; gap: 30px; list-style: none; margin-left: auto; }
+  .nav-links a {
+    font-family: var(--font-mincho);          /* ナビは明朝。第一印象を決めている */
+    font-size: 14px; font-weight: 400;
+    line-height: var(--lh-tight);
+    color: var(--ink); text-decoration: none;
+  }
+  .nav-links a:hover { color: var(--mizu); }
+  .nav-sub { display: flex; gap: 20px; list-style: none; }
+  .nav-sub a { font-size: 12px; color: var(--ink); text-decoration: none; }
+
+  /* ---------- HERO ---------- */
+  .hero { padding: 96px 40px 0; max-width: var(--container); margin: 0 auto; }
+  .hero-visual {
+    height: 300px;
+    background: linear-gradient(180deg, #dfe7ea 0%, #eef1ee 60%, #ffffff 100%);
+  }
+  .hero-text { padding: 72px 0 0; }
+  .hero-text h1 {
+    font-family: var(--font-mincho); font-size: 42px; font-weight: 400;
+    line-height: var(--lh-heading); letter-spacing: normal;
+    margin-bottom: 24px;
+  }
+  .hero-text p {
+    font-family: var(--font-mincho); font-size: 20px; font-weight: 400;
+    line-height: var(--lh-body); max-width: 760px;
+  }
+  .hero-buttons { display: flex; gap: 16px; margin-top: 40px; flex-wrap: wrap; }
+
+  /* ---------- SECTION ---------- */
+  .section { padding: 100px 0; }
+  .section-label {
+    font-family: var(--font-mincho); font-size: 30px; font-weight: 500;
+    line-height: var(--lh-tight);
+    text-align: center; margin-bottom: 12px;
+  }
+  .section-no {
+    font-family: var(--font-mincho); font-size: 10px;
+    line-height: var(--lh-body); text-align: center;
+    color: var(--ink-sub); margin-bottom: 40px;
+  }
+  .section-divider { border: 0; border-top: 1px solid #e6e6e6; }
+  .group-label {
+    font-family: var(--font-mincho); font-size: 16px; font-weight: 500;
+    margin: 40px 0 16px; letter-spacing: 0.06em;
+  }
+
+  /* ---------- COLORS ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 20px; }
+  .swatch { border: 1px solid #ececec; }
+  .swatch-block { height: 80px; }
+  .swatch-info { padding: 12px 14px 14px; }
+  .swatch-name { font-size: 13px; font-weight: 500; }
+  .swatch-hex { font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: var(--ink-sub); margin-top: 3px; }
+  .swatch-role { font-size: 12px; color: var(--ink-sub); margin-top: 5px; line-height: 1.5; }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  .type-sample { padding: 22px 0; border-bottom: 1px solid #ececec; }
+  .type-meta {
+    font-family: ui-monospace, Menlo, monospace; font-size: 11px;
+    color: var(--ink-sub); margin-top: 10px; letter-spacing: normal;
+  }
+  .type-context {
+    display: inline-block; margin-left: 8px; padding: 1px 8px;
+    background: #f4f6f7; font-family: var(--font-gothic); font-size: 11px;
+  }
+
+  /* ---------- BUTTONS：塗りボタンは存在しない ---------- */
+  .btn {
+    display: inline-block;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: var(--font-mincho);
+    font-size: 16px; font-weight: 400; line-height: var(--lh-body);
+    padding: 16px 56px;
+    text-decoration: none; cursor: pointer;
+    transition: background .3s, color .3s;
+  }
+  .btn:hover { background: var(--ink); color: #fff; }
+  .btn.small { padding: 12px 36px; font-size: 14px; }
+  .btn-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+
+  .more {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: var(--font-mincho); font-size: 10px;
+    line-height: var(--lh-body);
+    color: var(--ink); text-decoration: none;
+  }
+  .more .rule { display: block; width: 44px; height: 1px; background: var(--ink); }
+
+  /* ---------- LABELS ---------- */
+  .chip {
+    display: inline-block; border-radius: var(--radius);
+    background: var(--mizu); color: #fff;
+    font-family: var(--font-gothic); font-weight: 700;
+    font-size: 14px; padding: 2px 10px;
+  }
+  .news-cat {
+    display: inline-block; border-radius: var(--radius);
+    color: #fff; font-family: var(--font-gothic); font-weight: 700;
+    font-size: 12px; padding: 4px 8px;
+  }
+  .news-cat.product { background: var(--fuji); }
+  .news-cat.info    { background: var(--mizu); }
+  .news-cat.event   { background: var(--kin); }
+
+  .round-label {   /* 唯一の円形 */
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 62px; height: 62px; border-radius: 50%;
+    color: #fff; font-family: var(--font-mincho); font-size: 10px;
+    letter-spacing: 0.1em; text-indent: 0.1em; text-align: center;
+  }
+  .round-label.limited  { background: var(--kin); }
+  .round-label.seasonal { background: var(--fuji-2); }
+  .chip-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+
+  /* ---------- PRODUCT（組版サンプル） ---------- */
+  .product-lead {
+    font-family: var(--font-mincho); font-size: 18px; font-weight: 400;
+    line-height: 1.94;                       /* 下層のリードだけ大きく空ける */
+    max-width: 820px; margin: 0 auto 72px; text-align: center;
+  }
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 40px; }
+  .product-visual {
+    position: relative; height: 240px;
+    background: linear-gradient(180deg, #f7f8f8 0%, #eef1f0 100%);
+    display: flex; align-items: flex-end; justify-content: center;
+  }
+  .bottle { width: 46px; height: 190px; background: linear-gradient(180deg, #c8912f, #8d6420); }
+  .bottle.green { background: linear-gradient(180deg, #6f8a4e, #47582f); }
+  .product-visual .round-label { position: absolute; top: 10px; left: 10px; }
+  .product-name {
+    font-family: var(--font-mincho); font-size: 20px; font-weight: 400;
+    line-height: 1.5; margin: 14px 0 10px;
+  }
+  .product-desc { font-size: 14px; line-height: var(--lh-body); }
+  .product-chip { margin-top: 16px; }
+
+  /* ---------- NEWS ---------- */
+  .news-item {
+    display: flex; gap: 24px; align-items: center;
+    padding: 22px 0; border-bottom: 1px solid #ececec;
+    text-decoration: none; color: var(--ink);
+  }
+  .news-date { font-size: 13px; color: var(--ink-sub); min-width: 96px; }
+  .news-title { font-family: var(--font-mincho); font-size: 16px; line-height: var(--lh-body); }
+
+  /* ---------- FORMS ---------- */
+  .form-group { margin-bottom: 24px; max-width: 420px; }
+  .form-label { display: block; font-family: var(--font-mincho); font-size: 14px; margin-bottom: 8px; }
+  .form-input {
+    width: 100%; background: #fff; color: var(--ink);
+    border: 1px solid var(--border-light); border-radius: var(--radius);
+    padding: 12px 14px; font-family: var(--font-gothic); font-weight: 300;
+    font-size: 14px; outline: none;
+  }
+  .form-input::placeholder { color: #b0b0b0; }
+  .form-input--focus { border-color: var(--ink); }
+  .form-input--error { border-color: #b23a2e; }
+  .form-state { font-size: 12px; color: var(--ink-sub); margin-top: 6px; }
+  .form-state.error { color: #b23a2e; }
+
+  /* ---------- ELEVATION / LAYOUT ---------- */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+  .elev-card { background: #fff; border: 1px solid #ececec; padding: 28px; text-align: center; }
+  .elev-1 { box-shadow: 0 0 5px #808080; border-color: transparent; }
+  .elev-name { font-family: var(--font-mincho); font-size: 15px; margin-bottom: 6px; }
+  .elev-desc { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--ink-sub); }
+
+  .spacing-row { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--mizu); height: 30px; }
+  .spacing-value { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--ink-sub); margin-top: 6px; }
+
+  .width-label { font-family: var(--font-mincho); font-size: 15px; margin-bottom: 6px; }
+  .width-bar { height: 30px; background: #f4f6f7; margin-bottom: 6px; }
+  .width-inner { height: 100%; background: var(--mizu); opacity: .5; }
+  .width-value { font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: var(--ink-sub); margin-bottom: 22px; }
+
+  /* ---------- FOOTER ---------- */
+  .footer {
+    padding: 56px 40px; text-align: center;
+    font-size: 13px; line-height: 1.62; color: var(--ink-sub);
+    border-top: 1px solid #ececec;
+  }
+  .footer .note { margin-bottom: 10px; }
+  .footer .cr { font-size: 14px; margin-top: 12px; }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .container { padding: 0 20px; }
+    .hero { padding: 48px 20px 0; }
+    .hero-text h1 { font-size: 28px; }
+    .hero-text p { font-size: 16px; }
+    .section { padding: 64px 0; }
+    .section-label { font-size: 20px; }   /* letter-spacing 0.2em は維持する */
+    .btn { display: block; text-align: center; padding: 16px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">Hakkaisan</a>
+  <ul class="nav-links">
+    <li><a href="#colors">八海山のこだわり</a></li>
+    <li><a href="#typography">製品情報</a></li>
+    <li><a href="#product">研究開発</a></li>
+    <li><a href="#news">お知らせ</a></li>
+    <li><a href="#forms">お問い合わせ</a></li>
+  </ul>
+  <ul class="nav-sub">
+    <li><a href="#">Q＆A</a></li>
+    <li><a href="#">Global</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-visual"></div>
+  <div class="hero-text">
+    <h1>Design System Preview — 八海山</h1>
+    <p>DESIGN.md から抽出したデザイントークンのカタログ。書体の役割分担、0.2em の字間、角丸ゼロの造形まで、computed style の実測値に基づく。</p>
+    <div class="hero-buttons">
+      <a class="btn" href="#">製品情報を見る</a>
+      <a class="btn" href="#">DESIGN.md を読む</a>
+    </div>
+  </div>
+</div>
+
+<div class="container"><hr class="section-divider" style="margin-top:96px"></div>
+
+<!-- COLORS -->
+<section class="section container" id="colors">
+  <div class="section-label"><span class="tracked">色</span></div>
+  <div class="section-no">01 / Colors</div>
+
+  <div class="group-label">Base — 面色を持つのは札だけ</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#ffffff; border-bottom:1px solid #ececec"></div><div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">CSSで指定されず UA 既定のキャンバスに依存</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#000000"></div><div class="swatch-info"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#000000</div><div class="swatch-role">本文・見出し。純黒</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#7f7f7f"></div><div class="swatch-info"><div class="swatch-name">Text Secondary</div><div class="swatch-hex">#7f7f7f</div><div class="swatch-role">フッター・注記</div></div></div>
+  </div>
+
+  <div class="group-label">Accent — 差し色は3色だけ</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#9cb7be"></div><div class="swatch-info"><div class="swatch-name">Mizu Blue-Gray</div><div class="swatch-hex">#9cb7be</div><div class="swatch-role">酒類カテゴリの札。最頻出</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#7c82a3"></div><div class="swatch-info"><div class="swatch-name">Fuji Purple</div><div class="swatch-hex">#7c82a3</div><div class="swatch-role">製品情報の種別</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#7e85a6"></div><div class="swatch-info"><div class="swatch-name">Fuji Purple 2</div><div class="swatch-hex">#7e85a6</div><div class="swatch-role">季節限定。近似値が併存する</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#e4ba61"></div><div class="swatch-info"><div class="swatch-name">Kin Gold</div><div class="swatch-hex">#e4ba61</div><div class="swatch-role">イベント・数量限定</div></div></div>
+  </div>
+
+  <div class="group-label">Border</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#000000"></div><div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-hex">#000000</div><div class="swatch-role">ボタンの枠。本文と同じ純黒</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#979797"></div><div class="swatch-info"><div class="swatch-name">Border Light</div><div class="swatch-hex">#979797</div><div class="swatch-role">非選択のインジケータ</div></div></div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- TYPOGRAPHY -->
+<section class="section container" id="typography">
+  <div class="section-label"><span class="tracked">組版</span></div>
+  <div class="section-no">02 / Typography — 実測値</div>
+
+  <p style="font-size:15px; max-width:800px; margin:0 auto 40px; line-height:1.9; text-align:center;">
+    見出し・リード・ボタン・ナビは<strong>明朝</strong>、本文・注記・札は<strong>ゴシック Light</strong>。<br>
+    字間は原則 0 で、空けるときは一気に 0.2em。<code>font-feature-settings</code> は normal（palt を使わない）。
+  </p>
+
+  <div class="type-sample">
+    <div style="font-family:var(--font-mincho); font-size:42px; font-weight:400; line-height:1.26;">八海山の日本酒 — Page Heading</div>
+    <div class="type-meta">明朝 R / 42px / 400 / line-height: 1.26 / letter-spacing: 0<span class="type-context">大見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-mincho); font-size:28px; font-weight:400; line-height:1.26;">浩和蔵仕込 — Sub Heading</div>
+    <div class="type-meta">明朝 R / 28px / 400 / line-height: 1.26 / letter-spacing: 0<span class="type-context">サブ見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-mincho); font-size:30px; font-weight:500; line-height:1.0; letter-spacing:0.2em; margin-right:-0.2em;">製品情報 — Section Label</div>
+    <div class="type-meta">明朝 M / 30px / 500 / line-height: 1.0 / letter-spacing: 0.2em<span class="type-context">字間を空け、行は詰める</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-mincho); font-size:20px; font-weight:400; line-height:1.6;">南魚沼の豊かな自然と雪国の文化が育んできた、淡麗な酒。 — Lead (top)</div>
+    <div class="type-meta">明朝 M / 20px / 400 / line-height: 1.6 / letter-spacing: 0<span class="type-context">トップのリード</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-mincho); font-size:18px; font-weight:400; line-height:1.94;">八海山のお酒は料理の味をひきたてるような淡麗な酒質を目標としております。 — Lead (sub)</div>
+    <div class="type-meta">明朝 R / 18px / 400 / line-height: 1.94 / letter-spacing: 0<span class="type-context">下層のリードだけ行間が広い</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-mincho); font-size:16px; font-weight:400; line-height:1.6;">お知らせ一覧ページへ — Button Label</div>
+    <div class="type-meta">明朝 M / 16px / 400 / line-height: 1.6<span class="type-context">ボタンの文字</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-mincho); font-size:14px; font-weight:400; line-height:1.0;">八海山のこだわり — Navigation</div>
+    <div class="type-meta">明朝 M / 14px / 400 / line-height: 1.0<span class="type-context">ナビも明朝</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:300; line-height:1.6;">本文 — 「いい酒をより多くの人に」をかたちにした、八海醸造の真髄の酒です。雪深い南魚沼の風土が、淡麗な酒質を育てています。</div>
+    <div class="type-meta">ゴシック L / 14px / 400 / line-height: 1.6 / letter-spacing: 0<span class="type-context">本文の基準</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:700; line-height:1.6;">純米大吟醸酒 — Category Chip</div>
+    <div class="type-meta">ゴシック B / 14px<span class="type-context">札の文字</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:13px; font-weight:300; line-height:1.62; color:#7f7f7f;">飲酒は20歳になってから。飲酒運転は法律で禁止されています。 — Caption</div>
+    <div class="type-meta">ゴシック L / 13px / line-height: 1.62 / color: #7f7f7f<span class="type-context">注記・フッター</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-mincho); font-size:10px; font-weight:500; line-height:1.6; letter-spacing:0.2em;">MORE</div>
+    <div class="type-meta">明朝 M / 10px / line-height: 1.6 / letter-spacing: 0.2em<span class="type-context">テキストリンク</span></div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- PRODUCT -->
+<section class="section container" id="product">
+  <div class="section-label"><span class="tracked">製品情報</span></div>
+  <div class="section-no">03 / Product — 組版サンプル</div>
+
+  <p class="product-lead">八海山のお酒は料理の味をひきたてるような淡麗な酒質を目標としております。</p>
+
+  <div class="product-grid">
+    <div>
+      <div class="product-visual"><span class="bottle"></span></div>
+      <div class="product-chip"><span class="chip">普通酒</span></div>
+      <div class="product-name">清酒 八海山</div>
+      <p class="product-desc">「いい酒をより多くの人に」をかたちにした、八海醸造の真髄の酒です。</p>
+    </div>
+    <div>
+      <div class="product-visual"><span class="bottle"></span></div>
+      <div class="product-chip"><span class="chip">特別本醸造酒</span></div>
+      <div class="product-name">特別本醸造 八海山</div>
+      <p class="product-desc">やわらかな口当たりと淡麗な味わい。</p>
+    </div>
+    <div>
+      <div class="product-visual">
+        <span class="round-label limited">数量<br>限定</span>
+        <span class="bottle"></span>
+      </div>
+      <div class="product-chip"><span class="chip">大吟醸酒</span></div>
+      <div class="product-name">大吟醸 八海山</div>
+      <p class="product-desc">細かくまろやかで綺麗な味わいと、ほのかに感じる上品な甘やかさ。</p>
+    </div>
+    <div>
+      <div class="product-visual">
+        <span class="round-label seasonal">季節<br>限定</span>
+        <span class="bottle green"></span>
+      </div>
+      <div class="product-chip"><span class="chip">純米大吟醸酒</span></div>
+      <div class="product-name">純米大吟醸 八海山</div>
+      <p class="product-desc">透明感のある綺麗な味わいと、ふわっと広がる上品な甘やかさ。</p>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top:64px">
+    <a class="more" href="#"><span class="rule"></span>MORE</a>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- BUTTONS -->
+<section class="section container" id="buttons">
+  <div class="section-label"><span class="tracked">部品</span></div>
+  <div class="section-no">04 / Buttons &amp; Labels</div>
+
+  <div class="group-label">Buttons — 塗りボタンは存在しない。枠線1本だけ</div>
+  <div class="btn-row">
+    <a class="btn" href="#">お知らせ一覧ページへ</a>
+    <a class="btn small" href="#">八海山ストーリー</a>
+    <a class="more" href="#"><span class="rule"></span>MORE</a>
+  </div>
+
+  <div class="group-label">Category Chip — 角丸ゼロの矩形</div>
+  <div class="chip-row">
+    <span class="chip">普通酒</span>
+    <span class="chip">特別本醸造酒</span>
+    <span class="chip">大吟醸酒</span>
+    <span class="chip">純米大吟醸酒</span>
+    <span class="chip">雪室貯蔵酒</span>
+  </div>
+
+  <div class="group-label">News Category</div>
+  <div class="chip-row">
+    <span class="news-cat product">製品情報</span>
+    <span class="news-cat info">八海山情報</span>
+    <span class="news-cat event">イベント</span>
+  </div>
+
+  <div class="group-label">Round Label — 唯一の円形（border-radius: 50%）</div>
+  <div class="chip-row">
+    <span class="round-label limited">数量<br>限定</span>
+    <span class="round-label seasonal">季節<br>限定</span>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- NEWS -->
+<section class="section container" id="news">
+  <div class="section-label"><span class="tracked">お知らせ</span></div>
+  <div class="section-no">05 / News</div>
+
+  <a class="news-item" href="#">
+    <span class="news-date">2026.07.28</span>
+    <span class="news-cat info">八海山情報</span>
+    <span class="news-title">「魚沼の里」だけで出会える限定大吟醸を新発売します</span>
+  </a>
+  <a class="news-item" href="#">
+    <span class="news-date">2026.07.14</span>
+    <span class="news-cat product">製品情報</span>
+    <span class="news-title">純米大吟醸 八海山 のラベルをリニューアルいたしました</span>
+  </a>
+  <a class="news-item" href="#">
+    <span class="news-date">2026.06.30</span>
+    <span class="news-cat event">イベント</span>
+    <span class="news-title">酒蔵見学の夏季受付を開始しました</span>
+  </a>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- FORMS -->
+<section class="section container" id="forms">
+  <div class="section-label"><span class="tracked">入力</span></div>
+  <div class="section-no">06 / Forms — 3状態</div>
+
+  <div style="max-width:420px; margin:0 auto">
+    <div class="form-group">
+      <label class="form-label">お名前</label>
+      <input class="form-input" type="text" placeholder="山田 太郎">
+      <div class="form-state">Default — 枠 1px solid #979797 / 角丸 0</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">メールアドレス</label>
+      <input class="form-input form-input--focus" type="text" value="hakkaisan@example.jp">
+      <div class="form-state">Focus — 枠を #000000 に締める（リングは使わない）</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">ご希望の見学日</label>
+      <input class="form-input form-input--error" type="text" value="2026-13-45">
+      <div class="form-state error">Error — 枠 #b23a2e</div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- ELEVATION -->
+<section class="section container" id="elevation">
+  <div class="section-label"><span class="tracked">影</span></div>
+  <div class="section-no">07 / Elevation — 原則として使わない</div>
+  <div class="elev-grid">
+    <div class="elev-card">
+      <div class="elev-name">Level 0</div>
+      <div class="elev-desc">none — 既定。ほぼすべての要素</div>
+    </div>
+    <div class="elev-card elev-1">
+      <div class="elev-name">Level 1</div>
+      <div class="elev-desc">0 0 5px #808080 — 例外的な浮きもの</div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- LAYOUT -->
+<section class="section container" id="layout">
+  <div class="section-label"><span class="tracked">配置</span></div>
+  <div class="section-no">08 / Layout</div>
+
+  <div class="group-label">Spacing Scale — セクション間は 80〜120px</div>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">40</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:80px"></div><div class="spacing-value">80</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:120px"></div><div class="spacing-value">120</div></div>
+  </div>
+
+  <div class="group-label">Container</div>
+  <div class="width-label">Content</div>
+  <div class="width-bar"><div class="width-inner" style="width:100%"></div></div>
+  <div class="width-value">max-width: 1280px</div>
+
+  <div class="group-label">Border Radius — 実質 0。円形の札だけが例外</div>
+  <div class="chip-row">
+    <span style="display:inline-block; padding:12px 24px; border:1px solid #000; border-radius:0; font-size:13px;">0px — すべての面と枠</span>
+    <span class="round-label limited">50%</span>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="note">飲酒は20歳になってから。飲酒運転は法律で禁止されています。</div>
+  <div>妊娠中や授乳期の飲酒は、胎児・乳児の発育に影響するおそれがあります。</div>
+  <div class="cr">Copyright © HAKKAISAN BREWERY CO., LTD.<br>
+  このページは DESIGN.md の内容を可視化した非公式のプレビューです。<br>
+  実サイトの筑紫Aオールド明朝・秀英角ゴシック金は Shippori Mincho / Zen Kaku Gothic New で代替しています。</div>
+</footer>
+
+</body>
+</html>

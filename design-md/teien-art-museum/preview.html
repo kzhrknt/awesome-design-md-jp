@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>東京都庭園美術館 — Design System Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Josefin+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<!--
+  東京都庭園美術館 DESIGN.md のプレビュー。
+  実測日 2026-08-01 / https://www.teien-art-museum.ne.jp/
+
+  このサイトの要点は3つ。
+  1. ページ地色が白ではなく #ede8e2（温かいグレージュ）。白はカード面にだけ使う。
+  2. letter-spacing が全要素 0.07em で統一されている。
+     例外はページ見出しの 0.12em と、Josefin Sans の欧文ラベルの 0.05em だけ。
+  3. font-feature-settings は normal。palt を使わず、字間は「空ける」方向で設計している。
+
+  フォントは Noto Sans JP / Josefin Sans ともに Google Fonts で実サイトと同一。
+  代替フォントによる読み替えは発生していない。
+-->
+<style>
+  :root {
+    /* --- Brand --- */
+    --teien-green: #00695b;   /* ロゴ・セカンダリの文字・タブ選択・募集中 */
+    --teien-mint:  #7fbaaa;   /* フッター手前の帯 */
+    --ink:         #000000;   /* 本文・主要CTAの面 */
+
+    /* --- Surface --- */
+    --bg:            #ede8e2; /* ページ地色。最重要 */
+    --surface-white: #ffffff;
+    --surface-warm:  #f9f7f3;
+    --surface-mint:  #f2f7f7;
+    --surface-pink:  #f7f1f0;
+    --surface-gray:  #c6d3d5;
+
+    /* --- Category chips --- */
+    --cat-exhibition: #f0df9d;
+    --cat-topics:     #b5cbed;
+    --cat-important:  #d82112;
+    --label-event:    #efbecd;
+    --status-open:    #d8d065;
+
+    /* --- Semantic --- */
+    --attention: #b25300;   /* 開催中。線と文字だけ、面は塗らない */
+    --heading-gold: #9b8821;
+
+    /* --- Border --- */
+    --border:       #707070;
+    --border-light: #d9d9d9;
+    --divider:      #c6c6c6;
+
+    /* --- Type --- */
+    --font-jp: "Noto Sans JP", sans-serif;
+    --font-en: "Josefin Sans", sans-serif;
+
+    --ls-base: 0.07em;   /* 全要素の基準 */
+    --ls-page: 0.12em;   /* ページ見出しだけの例外 */
+    --ls-en:   0.05em;   /* Josefin Sans だけの例外 */
+
+    /* --- Radius: 5 / 3 / 50 の3系統しかない --- */
+    --r-button: 5px;
+    --r-label:  3px;
+    --r-pill:   50px;
+    --r-tab:    60px;
+    --r-utility: 50px 2px 2px 50px;   /* 左端だけ丸い特殊形状 */
+
+    --elevation-1: 0 0 12px rgba(0,0,0,.1);
+    --container: 1248px;
+    --container-wide: 1366px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);              /* 白地にしない */
+    color: var(--ink);
+    font-family: var(--font-jp);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: var(--ls-base);
+    font-feature-settings: normal;      /* palt は使わない */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: var(--container); margin: 0 auto; padding: 0 40px; }
+
+  /* ---------- NAV ---------- */
+  .nav {
+    background: var(--bg);
+    padding: 16px 40px;
+    display: flex; align-items: center; gap: 32px;
+    border-bottom: 1px solid var(--border-light);
+    flex-wrap: wrap;
+  }
+  .nav-brand {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--teien-green); text-decoration: none;
+    font-size: 13px; font-weight: 500; line-height: 1.3;
+  }
+  .nav-mark {
+    width: 34px; height: 34px; border: 1.5px solid var(--teien-green);
+    border-radius: 50% 50% 0 0; display: block;
+  }
+  .nav-links { display: flex; gap: 24px; list-style: none; margin-left: auto; }
+  .nav-links a {
+    color: var(--ink); text-decoration: none;
+    font-size: 16px; font-weight: 500; line-height: 1.31;
+    letter-spacing: var(--ls-base);
+  }
+  .nav-links a:hover { color: var(--teien-green); }
+  .nav-utility { display: flex; gap: 8px; align-items: center; }
+  .btn-utility {
+    border-radius: var(--r-utility);
+    font-size: 13px; font-weight: 500; line-height: 1.25;
+    letter-spacing: var(--ls-base);
+    padding: 2px 10px 2px 24px;
+    background: rgba(255,255,255,.27);
+    color: var(--teien-green);
+    border: 1px solid var(--border);
+    text-decoration: none;
+  }
+  .btn-utility.lang {
+    background: var(--ink); color: #fff; border-color: var(--ink);
+    font-family: var(--font-en); font-size: 12px; letter-spacing: var(--ls-en);
+    padding: 3px 20px 2px 24px;
+  }
+
+  /* ---------- HERO（アーチ） ---------- */
+  .hero { padding: 56px 40px 0; max-width: var(--container-wide); margin: 0 auto; }
+  .hero-arch {
+    background: linear-gradient(180deg, #a9cfe4 0%, #cfe3d6 55%, #dfe4d2 100%);
+    border-radius: 50% 50% 0 0 / 40% 40% 0 0;   /* アール・デコの開口部の引用 */
+    height: 320px;
+    display: flex; align-items: flex-end; justify-content: center;
+    padding-bottom: 40px;
+    position: relative;
+  }
+  .hero-arch::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -28px;
+    height: 28px; background: var(--teien-mint);
+  }
+  .hero-caption {
+    background: var(--surface-warm); padding: 14px 28px;
+    display: flex; align-items: center; gap: 18px;
+  }
+  .hero-caption .lbl { font-size: 15px; }
+  .hero-caption .time { font-size: 26px; letter-spacing: var(--ls-base); }
+  .hero-text { padding: 64px 0 0; }
+  .hero-text h1 {
+    font-size: 32px; font-weight: 500; line-height: 1.43;
+    letter-spacing: var(--ls-page);          /* ここだけ 0.12em */
+    margin-bottom: 16px;
+  }
+  .hero-text p { font-size: 17px; line-height: 1.5; max-width: 720px; }
+  .hero-buttons { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+
+  /* ---------- SECTION ---------- */
+  .section { padding: 72px 0; }
+  .section-label {
+    font-family: var(--font-en); font-size: 13px; font-weight: 600;
+    letter-spacing: var(--ls-en); color: var(--teien-green); margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 24px; font-weight: 500; line-height: 1.5;
+    letter-spacing: var(--ls-base); margin-bottom: 32px;
+  }
+  .section-divider { border: 0; border-top: 1px solid var(--border-light); }
+  .group-label {
+    font-size: 13px; font-weight: 500; color: var(--teien-green);
+    margin: 28px 0 12px; letter-spacing: var(--ls-base);
+  }
+
+  /* ---------- COLORS ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; }
+  .swatch { background: var(--surface-white); overflow: hidden; }
+  .swatch-block { height: 76px; }
+  .swatch-info { padding: 10px 12px 12px; }
+  .swatch-name { font-size: 13px; font-weight: 500; }
+  .swatch-hex { font-family: ui-monospace, Menlo, monospace; font-size: 12px; letter-spacing: 0; color: #555; margin-top: 2px; }
+  .swatch-role { font-size: 12px; color: #666; margin-top: 4px; }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  .type-sample { padding: 18px 0; border-bottom: 1px solid var(--border-light); }
+  .type-meta {
+    font-family: ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: 0;
+    color: #666; margin-top: 8px;
+  }
+  .type-context {
+    display: inline-block; margin-left: 8px; padding: 1px 8px;
+    background: var(--surface-mint); border-radius: var(--r-label);
+    font-family: var(--font-jp); font-size: 11px; letter-spacing: var(--ls-base);
+  }
+
+  /* ---------- BUTTONS ---------- */
+  .btn-primary {
+    display: inline-block; background: var(--ink); color: #fff;
+    border: none; border-radius: var(--r-button);
+    padding: 11px 30px 12px;
+    font-family: var(--font-jp); font-size: 16px; font-weight: 500;
+    line-height: 1.5; letter-spacing: var(--ls-base);
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-secondary {
+    display: inline-block; background: transparent; color: var(--teien-green);
+    border: 1px solid var(--border); border-radius: var(--r-button);
+    padding: 11px 30px 12px;
+    font-family: var(--font-jp); font-size: 16px; font-weight: 500;
+    line-height: 1.5; letter-spacing: var(--ls-base);
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-secondary.small { padding: 10px 23px 11px; font-size: 15px; }
+  .btn-reset {
+    display: inline-block; background: var(--divider); color: var(--ink);
+    border: none; border-radius: var(--r-button); padding: 10px 23px 11px;
+    font-family: var(--font-jp); font-size: 15px; font-weight: 500;
+    letter-spacing: var(--ls-base); text-decoration: none; cursor: pointer;
+  }
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+  /* ---------- TABS ---------- */
+  .tab-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .tab {
+    border-radius: var(--r-tab); padding: 7px 30px 8px;
+    font-size: 18px; font-weight: 500; line-height: 1.5;
+    letter-spacing: var(--ls-base); text-decoration: none;
+    border: 1px solid var(--border); color: var(--ink); background: transparent;
+  }
+  .tab.active { background: var(--teien-green); color: #fff; border-color: var(--teien-green); }
+
+  /* ---------- CHIPS / LABELS / TAGS ---------- */
+  .chip {
+    display: inline-block; border-radius: var(--r-pill);
+    padding: 5px 12px 6px; font-size: 12px; font-weight: 500;
+    line-height: 1.5; letter-spacing: var(--ls-base);
+  }
+  .chip-exhibition { background: var(--cat-exhibition); color: var(--ink); }
+  .chip-topics     { background: var(--cat-topics);     color: var(--ink); }
+  .chip-important  { background: var(--cat-important);  color: #fff; }
+  .chip-meta       { background: var(--bg); color: var(--ink); padding: 2px 18px; font-size: 13px; }
+
+  .label {
+    display: inline-block; border-radius: var(--r-label);
+    padding: 2px 10px 3px; font-size: 13px; font-weight: 500;
+    line-height: 1.5; letter-spacing: var(--ls-base);
+    background: var(--label-event); color: var(--ink);
+  }
+  .status {
+    display: inline-block; border-radius: var(--r-label);
+    padding: 7px 12px 8px; font-size: 13px; font-weight: 500;
+    letter-spacing: var(--ls-base); background: var(--status-open); color: var(--ink);
+  }
+  .tag {
+    display: inline-block; border-radius: var(--r-label);
+    padding: 5px 9px 6px; font-size: 12px; font-weight: 400;
+    line-height: 1.5; letter-spacing: var(--ls-base);
+    background: transparent;                       /* 面は塗らない */
+  }
+  .tag-open   { color: var(--attention);   border: 1px solid var(--attention); }
+  .tag-recruit{ color: var(--teien-green); border: 1px solid var(--teien-green); }
+  .tag-future { color: var(--ink);         border: 1px solid var(--ink); }
+  .chip-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+  /* ---------- EXHIBITION（組版サンプル） ---------- */
+  .exhibition { display: grid; grid-template-columns: 340px 1fr; gap: 40px; align-items: start; }
+  .exhibition-visual {
+    background: linear-gradient(160deg, #cfe3d6, #a9cfe4);
+    aspect-ratio: 3 / 4; border-radius: 0;
+  }
+  .exhibition h3 {
+    font-size: 22px; font-weight: 500; line-height: 1.5;
+    letter-spacing: var(--ls-base); margin: 12px 0 18px;
+  }
+  .desc-row { display: flex; gap: 14px; align-items: baseline; margin-bottom: 10px; }
+  .desc-body { font-size: 17px; font-weight: 400; line-height: 1.5; }
+  .exhibition-lead { font-size: 16px; line-height: 1.5; margin-top: 18px; }
+
+  /* ---------- CARDS ---------- */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+  .card { background: var(--surface-white); border-radius: 0; overflow: hidden; }  /* カードは角丸にしない */
+  .card-visual { height: 150px; background: var(--surface-mint); }
+  .card-body { padding: 18px 20px 24px; }
+  .card-date { font-size: 13px; line-height: 1.5; color: #444; margin: 10px 0 6px; }
+  .card h4 { font-size: 18px; font-weight: 500; line-height: 1.5; letter-spacing: var(--ls-base); }
+  .card.elevated { box-shadow: var(--elevation-1); }
+
+  .link-card {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    border: 1px solid var(--border-light); border-radius: var(--r-button);
+    padding: 6px 50px 6px 6px; text-decoration: none; background: transparent;
+    max-width: 420px;
+  }
+  .link-card .lc-visual { width: 84px; height: 60px; background: var(--surface-pink); }
+  .link-card .lc-text { font-size: 16px; font-weight: 500; color: var(--teien-green); letter-spacing: var(--ls-base); }
+
+  /* ---------- FORMS ---------- */
+  .form-group { margin-bottom: 20px; max-width: 420px; }
+  .form-label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; letter-spacing: var(--ls-base); }
+  .form-input {
+    width: 100%; background: var(--surface-white); color: var(--ink);
+    border: 1px solid var(--border); border-radius: var(--r-button);
+    padding: 10px 14px; font-family: var(--font-jp); font-size: 16px;
+    letter-spacing: var(--ls-base); outline: none;
+  }
+  .form-input::placeholder { color: #8a8a8a; }
+  .form-input--focus { border-color: var(--teien-green); box-shadow: 0 0 0 3px rgba(0,105,91,.18); }
+  .form-input--error { border-color: var(--cat-important); box-shadow: 0 0 0 3px rgba(216,33,18,.15); }
+  .form-state { font-size: 12px; color: #666; margin-top: 4px; }
+  .form-state.error { color: var(--cat-important); }
+
+  /* ---------- ELEVATION / LAYOUT ---------- */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .elev-card { background: var(--surface-white); padding: 24px; text-align: center; }
+  .elev-1 { box-shadow: var(--elevation-1); }
+  .elev-name { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .elev-desc { font-family: ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: 0; color: #666; }
+
+  .spacing-row { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--teien-mint); height: 30px; }
+  .spacing-value { font-family: ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: 0; color: #555; margin-top: 6px; }
+
+  .width-label { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .width-bar { height: 30px; background: var(--surface-white); margin-bottom: 6px; }
+  .width-inner { height: 100%; background: var(--teien-mint); opacity: .55; }
+  .width-value { font-family: ui-monospace, Menlo, monospace; font-size: 12px; letter-spacing: 0; color: #555; margin-bottom: 18px; }
+
+  /* ---------- BAND / FOOTER ---------- */
+  .band { background: var(--teien-mint); height: 44px; }
+  .footer {
+    background: var(--surface-gray); padding: 32px 40px; text-align: center;
+    font-size: 13px; line-height: 1.5; letter-spacing: var(--ls-base);
+  }
+  .footer .cr { font-size: 10px; line-height: 1.8; margin-top: 10px; }
+  .footer .follow { font-family: var(--font-en); font-size: 13px; font-weight: 500; letter-spacing: var(--ls-en); margin-bottom: 6px; }
+
+  @media (max-width: 900px) {
+    .exhibition { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .container { padding: 0 20px; }
+    .hero { padding: 32px 20px 0; }
+    .hero-text h1 { font-size: 24px; letter-spacing: var(--ls-page); }
+    .section { padding: 48px 0; }
+    .btn-primary, .btn-secondary { display: block; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">
+    <span class="nav-mark"></span>
+    <span>東京都庭園美術館<br>TOKYO METROPOLITAN TEIEN ART MUSEUM</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#colors">展覧会</a></li>
+    <li><a href="#typography">美術館・建物</a></li>
+    <li><a href="#exhibition">庭園・茶室</a></li>
+    <li><a href="#buttons">イベント</a></li>
+    <li><a href="#cards">コレクション</a></li>
+    <li><a href="#forms">来館のご案内</a></li>
+  </ul>
+  <div class="nav-utility">
+    <a class="btn-utility" href="#">サイト内検索</a>
+    <a class="btn-utility lang" href="#">Language</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-arch">
+    <div class="hero-caption">
+      <span class="lbl">本日は</span>
+      <span class="status">開館日</span>
+      <span class="time">10:00 – 18:00</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="hero-text">
+    <h1>Design System Preview — 東京都庭園美術館</h1>
+    <p>DESIGN.md から抽出したデザイントークンのカタログ。ページ地色・字間・角丸・札の面色まで、computed style の実測値に基づく。</p>
+    <div class="hero-buttons">
+      <a class="btn-primary" href="#">チケットのご購入</a>
+      <a class="btn-secondary" href="#">DESIGN.md を読む</a>
+    </div>
+  </div>
+</div>
+
+<div class="container"><hr class="section-divider" style="margin-top:64px"></div>
+
+<!-- COLORS -->
+<section class="section container" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="group-label">Brand</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#00695b"></div><div class="swatch-info"><div class="swatch-name">Teien Green</div><div class="swatch-hex">#00695b</div><div class="swatch-role">ロゴ・文字・線・小さな面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#7fbaaa"></div><div class="swatch-info"><div class="swatch-name">Teien Mint</div><div class="swatch-hex">#7fbaaa</div><div class="swatch-role">帯・区切りの面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#000000"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#000000</div><div class="swatch-role">本文・主要CTAの面</div></div></div>
+  </div>
+
+  <div class="group-label">Surface — ページ地色は白ではない</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#ede8e2"></div><div class="swatch-info"><div class="swatch-name">Page Background</div><div class="swatch-hex">#ede8e2</div><div class="swatch-role">ページ地色。最重要</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#ffffff; border-bottom:1px solid #d9d9d9"></div><div class="swatch-info"><div class="swatch-name">Surface White</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">カード面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#f9f7f3"></div><div class="swatch-info"><div class="swatch-name">Surface Warm</div><div class="swatch-hex">#f9f7f3</div><div class="swatch-role">開館情報の面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#f2f7f7"></div><div class="swatch-info"><div class="swatch-name">Surface Mint</div><div class="swatch-hex">#f2f7f7</div><div class="swatch-role">トピックス系の面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#f7f1f0"></div><div class="swatch-info"><div class="swatch-name">Surface Pink</div><div class="swatch-hex">#f7f1f0</div><div class="swatch-role">展覧会系の面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#c6d3d5"></div><div class="swatch-info"><div class="swatch-name">Surface Gray</div><div class="swatch-hex">#c6d3d5</div><div class="swatch-role">フッターの面</div></div></div>
+  </div>
+
+  <div class="group-label">Category / Label — 展示種別の札</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#f0df9d"></div><div class="swatch-info"><div class="swatch-name">展覧会</div><div class="swatch-hex">#f0df9d</div><div class="swatch-role">文字は #000</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#b5cbed"></div><div class="swatch-info"><div class="swatch-name">トピックス</div><div class="swatch-hex">#b5cbed</div><div class="swatch-role">文字は #000</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#d82112"></div><div class="swatch-info"><div class="swatch-name">重要なお知らせ</div><div class="swatch-hex">#d82112</div><div class="swatch-role">文字は #fff</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#efbecd"></div><div class="swatch-info"><div class="swatch-name">イベント</div><div class="swatch-hex">#efbecd</div><div class="swatch-role">角丸3pxの札</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#d8d065"></div><div class="swatch-info"><div class="swatch-name">開館日</div><div class="swatch-hex">#d8d065</div><div class="swatch-role">開館ステータス</div></div></div>
+  </div>
+
+  <div class="group-label">Semantic & Border</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#b25300"></div><div class="swatch-info"><div class="swatch-name">Attention</div><div class="swatch-hex">#b25300</div><div class="swatch-role">開催中。線と文字のみ</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#9b8821"></div><div class="swatch-info"><div class="swatch-name">Heading Gold</div><div class="swatch-hex">#9b8821</div><div class="swatch-role">セクション見出しの金</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#707070"></div><div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-hex">#707070</div><div class="swatch-role">ボタン・入力の枠</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#d9d9d9"></div><div class="swatch-info"><div class="swatch-name">Border Light</div><div class="swatch-hex">#d9d9d9</div><div class="swatch-role">カードの枠</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#c6c6c6"></div><div class="swatch-info"><div class="swatch-name">Divider</div><div class="swatch-hex">#c6c6c6</div><div class="swatch-role">リセットボタンの面</div></div></div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- TYPOGRAPHY -->
+<section class="section container" id="typography">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+  <p style="font-size:15px; margin-bottom:28px; max-width:760px;">
+    letter-spacing は全要素 <strong>0.07em</strong> で統一されている。例外は下層ページの見出し（0.12em）と、
+    Josefin Sans の欧文ラベル（0.05em）の2つだけ。<code style="letter-spacing:0">font-feature-settings</code> は
+    <strong>normal</strong>（palt を使わない）。
+  </p>
+
+  <div class="type-sample">
+    <div style="font-size:32px; font-weight:500; line-height:1.43; letter-spacing:0.12em;">展覧会 — Page Heading</div>
+    <div class="type-meta">32px / 500 / line-height: 1.43 / letter-spacing: 0.12em<span class="type-context">下層ページのタイトル。字間の例外</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:24px; font-weight:500; line-height:1.5; letter-spacing:0.07em;">ルーシー・リー展 — Section Heading</div>
+    <div class="type-meta">24px / 500 / line-height: 1.5 / letter-spacing: 0.07em<span class="type-context">一覧の展覧会名</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:22px; font-weight:500; line-height:1.5; letter-spacing:0.07em;">東西をつなぐ優美のうつわ — Feature Heading</div>
+    <div class="type-meta">22px / 500 / line-height: 1.5 / letter-spacing: 0.07em<span class="type-context">トップの主展覧会名</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:18px; font-weight:500; line-height:1.5; letter-spacing:0.07em;">正門横スペースにおける特別展示 — Card Title</div>
+    <div class="type-meta">18px / 500 / line-height: 1.5 / letter-spacing: 0.07em<span class="type-context">カード見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:17px; font-weight:400; line-height:1.5; letter-spacing:0.07em;">東京都庭園美術館（本館＋新館） — Lead / Description</div>
+    <div class="type-meta">17px / 400 / line-height: 1.5 / letter-spacing: 0.07em<span class="type-context">会場名などの説明</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.5; letter-spacing:0.07em;">本文 — 旧朝香宮邸として建てられたアール・デコ建築を、そのまま美術館として公開しています。</div>
+    <div class="type-meta">16px / 400 / line-height: 1.5 / letter-spacing: 0.07em<span class="type-context">本文の基準</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:500; line-height:1.31; letter-spacing:0.07em;">展覧会・美術館・建物 — Navigation</div>
+    <div class="type-meta">16px / 500 / line-height: 1.31 / letter-spacing: 0.07em<span class="type-context">グローバルナビ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:15px; font-weight:500; line-height:1.53; letter-spacing:0.07em;">「フラットデー」実施に伴う入館者数の制限について — List Title</div>
+    <div class="type-meta">15px / 500 / line-height: 1.53 / letter-spacing: 0.07em<span class="type-context">お知らせの見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:13px; font-weight:400; line-height:1.5; letter-spacing:0.07em;">2026年7月4日土曜日 — Caption</div>
+    <div class="type-meta">13px / 400 / line-height: 1.5 / letter-spacing: 0.07em<span class="type-context">日付・住所</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:500; line-height:1.5; letter-spacing:0.07em;">開催中 — Tag</div>
+    <div class="type-meta">12px / 400–500 / line-height: 1.5 / letter-spacing: 0.07em<span class="type-context">札・タグ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:10px; font-weight:400; line-height:1.8; letter-spacing:0.07em;">Copyright © Tokyo Metropolitan Teien Art Museum — Copyright</div>
+    <div class="type-meta">10px / 400 / line-height: 1.8 / letter-spacing: 0.07em<span class="type-context">最小テキスト</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:'Josefin Sans',sans-serif; font-size:12px; font-weight:500; line-height:1.25; letter-spacing:0.05em;">Language / Follow Us — Latin Label</div>
+    <div class="type-meta">Josefin Sans / 12px / 500 / line-height: 1.25 / letter-spacing: 0.05em<span class="type-context">欧文だけのUIラベル</span></div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- EXHIBITION -->
+<section class="section container" id="exhibition">
+  <div class="section-label">03 / Exhibition</div>
+  <h2 class="section-title">組版サンプル — 展覧会詳細</h2>
+
+  <div class="exhibition">
+    <div class="exhibition-visual"></div>
+    <div>
+      <div class="chip-row">
+        <span class="chip chip-exhibition">展覧会</span>
+        <span class="tag tag-open">開催中</span>
+      </div>
+      <h3>ルーシー・リー展―東西をつなぐ優美のうつわ―</h3>
+
+      <div class="desc-row">
+        <span class="chip chip-meta">会期</span>
+        <span class="desc-body">2026年7月4日（土）– 9月13日（日）</span>
+      </div>
+      <div class="desc-row">
+        <span class="chip chip-meta">会場</span>
+        <span class="desc-body">東京都庭園美術館（本館＋新館）</span>
+      </div>
+
+      <p class="exhibition-lead">
+        ウィーンに生まれ、ロンドンで独自の陶芸を確立したルーシー・リー。<br>
+        東西の造形感覚が溶け合ったうつわを、アール・デコの空間で展観します。
+        旧朝香宮邸の各室が持つ光と、薄手のフォルムが響き合う構成としました。
+      </p>
+
+      <div class="btn-row" style="margin-top:24px">
+        <a class="btn-primary" href="#">チケットのご購入</a>
+        <a class="btn-secondary small" href="#">展覧会一覧</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- BUTTONS -->
+<section class="section container" id="buttons">
+  <div class="section-label">04 / Buttons &amp; Tabs</div>
+  <h2 class="section-title">ボタン・タブ・札</h2>
+
+  <div class="group-label">Buttons — 角丸 5px</div>
+  <div class="btn-row">
+    <a class="btn-primary" href="#">チケットのご購入</a>
+    <a class="btn-secondary" href="#">お知らせ一覧</a>
+    <a class="btn-secondary small" href="#">東京都庭園美術館とは</a>
+    <a class="btn-reset" href="#">リセット</a>
+  </div>
+
+  <div class="group-label">Utility — 左端だけ丸い特殊形状（50px 2px 2px 50px）</div>
+  <div class="btn-row">
+    <a class="btn-utility" href="#">サイト内検索</a>
+    <a class="btn-utility lang" href="#">Language</a>
+  </div>
+
+  <div class="group-label">Tabs — 角丸 60px</div>
+  <div class="tab-row">
+    <a class="tab active" href="#">開催中・開催予定</a>
+    <a class="tab" href="#">これまでの展覧会</a>
+  </div>
+
+  <div class="group-label">Category Chips — ピル（角丸 50px）</div>
+  <div class="chip-row">
+    <span class="chip chip-exhibition">展覧会</span>
+    <span class="chip chip-topics">トピックス</span>
+    <span class="chip chip-important">重要なお知らせ</span>
+    <span class="chip chip-meta">会期</span>
+  </div>
+
+  <div class="group-label">Labels &amp; Status — 角丸 3px</div>
+  <div class="chip-row">
+    <span class="label">イベント</span>
+    <span class="label">展覧会関連プログラム</span>
+    <span class="label">茶室行事</span>
+    <span class="status">開館日</span>
+  </div>
+
+  <div class="group-label">Status Tags — 面を塗らず、文字と枠を同色に</div>
+  <div class="chip-row">
+    <span class="tag tag-open">開催中</span>
+    <span class="tag tag-recruit">募集中</span>
+    <span class="tag tag-future">開催予定</span>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- CARDS -->
+<section class="section container" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">カード</h2>
+  <p style="font-size:15px; margin-bottom:24px;">カードは角丸を付けない。面の分離は地色（#ede8e2）と白の差でつける。</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-visual"></div>
+      <div class="card-body">
+        <span class="chip chip-topics">トピックス</span>
+        <div class="card-date">2026年7月28日</div>
+        <h4>庭園の芝生養生に伴う立入制限のお知らせ</h4>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-visual" style="background:var(--surface-pink)"></div>
+      <div class="card-body">
+        <span class="chip chip-exhibition">展覧会</span>
+        <div class="card-date">2026年7月4日</div>
+        <h4>正門横スペースにおける特別展示「ランドスケープ」</h4>
+      </div>
+    </div>
+    <div class="card elevated">
+      <div class="card-visual" style="background:var(--surface-warm)"></div>
+      <div class="card-body">
+        <span class="chip chip-important">重要なお知らせ</span>
+        <div class="card-date">2026年6月20日</div>
+        <h4>「フラットデー」実施に伴う入館者数の制限について</h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-label">Link Card — 角丸 5px / 枠 1px #d9d9d9</div>
+  <a class="link-card" href="#">
+    <span class="lc-visual"></span>
+    <span class="lc-text">次回の展覧会</span>
+  </a>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- FORMS -->
+<section class="section container" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">フォーム — 3状態</h2>
+
+  <div class="form-group">
+    <label class="form-label">お名前</label>
+    <input class="form-input" type="text" placeholder="山田 太郎">
+    <div class="form-state">Default — 枠 1px solid #707070 / 角丸 5px</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">メールアドレス</label>
+    <input class="form-input form-input--focus" type="text" value="teien@example.jp">
+    <div class="form-state">Focus — 枠 #00695b ＋ リング rgba(0,105,91,.18)</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">参加希望日</label>
+    <input class="form-input form-input--error" type="text" value="2026-13-45">
+    <div class="form-state error">Error — 枠 #d82112 ＋ リング rgba(216,33,18,.15)</div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- ELEVATION -->
+<section class="section container" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">影 — 2段しかない</h2>
+  <div class="elev-grid">
+    <div class="elev-card">
+      <div class="elev-name">Level 0</div>
+      <div class="elev-desc">none</div>
+    </div>
+    <div class="elev-card elev-1">
+      <div class="elev-name">Level 1</div>
+      <div class="elev-desc">0 0 12px rgba(0,0,0,.1)</div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- LAYOUT -->
+<section class="section container" id="layout">
+  <div class="section-label">08 / Layout</div>
+  <h2 class="section-title">レイアウト</h2>
+
+  <div class="group-label">Spacing Scale</div>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:5px"></div><div class="spacing-value">5</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:10px"></div><div class="spacing-value">10</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:20px"></div><div class="spacing-value">20</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:30px"></div><div class="spacing-value">30</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:50px"></div><div class="spacing-value">50</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:80px"></div><div class="spacing-value">80</div></div>
+  </div>
+
+  <div class="group-label">Container</div>
+  <div class="width-label">Content</div>
+  <div class="width-bar"><div class="width-inner" style="width:91.4%"></div></div>
+  <div class="width-value">max-width: 1248px</div>
+  <div class="width-label">Wide（メインビジュアル）</div>
+  <div class="width-bar"><div class="width-inner" style="width:100%"></div></div>
+  <div class="width-value">max-width: 1366px</div>
+
+  <div class="group-label">Border Radius — 3系統だけ</div>
+  <div class="chip-row">
+    <span style="display:inline-block; padding:10px 20px; background:var(--surface-white); border-radius:5px; font-size:13px;">5px — ボタン</span>
+    <span style="display:inline-block; padding:10px 20px; background:var(--surface-white); border-radius:3px; font-size:13px;">3px — 札</span>
+    <span style="display:inline-block; padding:10px 20px; background:var(--surface-white); border-radius:50px; font-size:13px;">50–60px — ピル・タブ</span>
+  </div>
+</section>
+
+<div class="band"></div>
+<footer class="footer">
+  <div class="follow">Follow Us</div>
+  <div>〒108-0071 東京都港区白金台5-21-9</div>
+  <div class="cr">Copyright © Tokyo Metropolitan Teien Art Museum. All rights reserved.<br>
+  このページは DESIGN.md の内容を可視化した非公式のプレビューです。</div>
+</footer>
+
+</body>
+</html>

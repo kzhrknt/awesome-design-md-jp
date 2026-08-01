@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>カミナシ — Design System Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&family=Lato:wght@400;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<!--
+  カミナシ DESIGN.md のプレビュー。
+  実測日 2026-08-01 / https://kaminashi.jp/
+
+  このLPの要点は4つ。
+  1. 見出しの標準ウェイトが 900（Black）。700 は「やや軽い」扱い。
+  2. line-height が全域 1.4。日本語本文の推奨（1.7〜2.0）よりかなり詰まっている。
+     長い段落をこの行間で組むと読みにくいので、本文主体の画面では緩めること。
+  3. 巨大な見出しだけ letter-spacing が負。しかも かな と 漢字 で値を変えている
+     （漢字は 0、かなは -0.04〜-0.05em）。かなの間延びを詰めて密度を揃える手法。
+  4. CTA の黄色に近似2値（#ffdb22 / #ffdf24）が併存する。実サイトのトークン整理が
+     追いついていないもので、実装では #ffdb22 に寄せてよい。
+
+  フォントは Noto Sans JP / Lato / Poppins ともに Google Fonts で実サイトと同一。
+  アイコンは Material Symbols を使わず、テキストで代替している。
+-->
+<style>
+  :root {
+    /* --- Brand --- */
+    --blue:       #0360e5;
+    --blue-deep:  #0046a9;
+    --blue-deep2: #004fbf;
+    --cyan:       #00afea;
+
+    /* --- CTA --- */
+    --yellow:      #ffdb22;
+    --yellow-alt:  #ffdf24;
+    --cta-text:    #333333;   /* 黄色の上は白ではなく濃いグレー */
+
+    /* --- Surface --- */
+    --bg:            #ffffff;
+    --surface-blue:  #e8f2ff;
+    --surface-blue2: #ebf4ff;
+    --surface-gray:  #f5f5f5;
+    --surface-gray2: #eeeff0;
+    --surface-beige: #f6f2ed;
+    --border:        #d9d9d9;
+
+    /* --- Service accent（面には塗らない。見出しの文字色専用） --- */
+    --svc-report:  #3b5bdb;
+    --svc-maint:   #5130b0;
+    --svc-train:   #e86c00;
+    --svc-comm:    #ab3400;
+
+    /* --- Text --- */
+    --text:         #333333;
+    --text-heading: #000000;
+    --text-muted:   #888787;
+    --danger:       #e5412b;
+
+    --font-jp: "Noto Sans JP", sans-serif;
+    --font-en: Lato, sans-serif;
+    --font-display: Poppins, sans-serif;
+
+    --lh: 1.4;          /* 全域で 1.4 */
+    --ls: 0.08em;       /* 全域で 0.08em */
+
+    /* --- Radius scale --- */
+    --r-card:  8px;
+    --r-chip:  24px;
+    --r-btn:   32px;
+    --r-hero:  60px;
+    --r-pill:  100px;
+
+    --elev-card: 0 0 24px rgba(0,0,0,.08);
+    --elev-cta:  0 6px 15px rgba(0,0,0,.2);
+    --container: 1200px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-jp);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+    font-feature-settings: normal;    /* palt は使わない */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: var(--container); margin: 0 auto; padding: 0 40px; }
+
+  /* ---------- NAV ---------- */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 40px; font-size: 12px; font-weight: 500;
+    color: var(--text-muted);
+  }
+  .topbar a { color: var(--text); text-decoration: none; margin-left: 24px; }
+  .nav {
+    display: flex; align-items: center; gap: 28px;
+    padding: 12px 40px 20px; flex-wrap: wrap;
+  }
+  .nav-brand {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-display); font-size: 22px; font-weight: 700;
+    color: var(--blue); text-decoration: none; letter-spacing: 0.02em;
+  }
+  .nav-mark { width: 26px; height: 26px; background: var(--blue); border-radius: 6px 12px 6px 12px; }
+  .nav-links { display: flex; gap: 24px; list-style: none; margin-left: auto; }
+  .nav-links a {
+    color: var(--text); text-decoration: none;
+    font-size: 13px; font-weight: 700; line-height: var(--lh); letter-spacing: var(--ls);
+  }
+  .nav-links a:hover { color: var(--blue); }
+  .nav-cta { display: flex; gap: 10px; }
+
+  /* ---------- BUTTONS ---------- */
+  .btn-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--yellow); color: var(--cta-text);
+    border: none; border-radius: var(--r-btn);
+    padding: 14px 24px; font-family: var(--font-jp);
+    font-size: 15px; font-weight: 700; line-height: var(--lh); letter-spacing: var(--ls);
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-cta.btn-hero {
+    border-radius: var(--r-hero); padding: 22px 40px; font-size: 22px; font-weight: 900;
+    box-shadow: var(--elev-cta);
+  }
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #fff; color: var(--cta-text);
+    border: 1px solid var(--border); border-radius: var(--r-btn);
+    padding: 14px 24px; font-family: var(--font-jp);
+    font-size: 15px; font-weight: 700; line-height: var(--lh); letter-spacing: var(--ls);
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-blue {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(#0360e5 0%, #004fbf 100%);
+    color: #fff; border: none; border-radius: var(--r-pill);
+    padding: 16px 24px 16px 28px; font-family: var(--font-jp);
+    font-size: 16px; font-weight: 700; letter-spacing: var(--ls);
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    background: linear-gradient(#0360e5 0%, #0046a9 100%);
+    color: #fff; padding: 72px 40px 88px;
+    border-radius: 0 0 32px 32px;      /* 下端だけ丸めるこのLP固有の造形 */
+  }
+  .hero-inner { max-width: var(--container); margin: 0 auto; }
+  .hero-copy { font-weight: 700; line-height: var(--lh); }
+  /* 漢字は 0、かなは負のトラッキングで詰める */
+  .hero-kanji { font-size: 72px; letter-spacing: 0; }
+  .hero-kana  { font-size: 70px; letter-spacing: -0.04em; }
+  .hero-kana-s{ font-size: 46px; letter-spacing: -0.05em; }
+  .hero-sub   { font-size: 32px; letter-spacing: -0.05em; }
+  .hero-lead { margin-top: 28px; font-size: 17px; font-weight: 500; line-height: 1.7; max-width: 620px; }
+  .hero-cta-wrap { margin-top: 40px; }
+
+  /* ---------- SECTION ---------- */
+  .section { padding: 88px 0; }
+  .section-band { background: var(--surface-blue); }
+  .section-label {
+    font-family: var(--font-en); font-size: 13px; font-weight: 700;
+    letter-spacing: 0.12em; color: var(--blue); margin-bottom: 10px;
+  }
+  .section-title {
+    font-size: 48px; font-weight: 700; line-height: var(--lh);
+    letter-spacing: var(--ls); color: var(--text-heading); margin-bottom: 40px;
+  }
+  .section-divider { border: 0; border-top: 1px solid var(--border); }
+  .group-label {
+    font-size: 14px; font-weight: 900; color: var(--blue);
+    margin: 32px 0 14px; letter-spacing: var(--ls);
+  }
+
+  /* ---------- COLORS ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
+  .swatch { background: #fff; border-radius: var(--r-card); overflow: hidden; box-shadow: var(--elev-card); }
+  .swatch-block { height: 78px; }
+  .swatch-info { padding: 12px 14px 14px; }
+  .swatch-name { font-size: 13px; font-weight: 700; }
+  .swatch-hex { font-family: ui-monospace, Menlo, monospace; font-size: 12px; letter-spacing: 0; color: #666; margin-top: 3px; }
+  .swatch-role { font-size: 12px; color: #666; margin-top: 5px; line-height: 1.5; }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  .type-sample { padding: 20px 0; border-bottom: 1px solid var(--border); }
+  .type-meta {
+    font-family: ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: 0;
+    color: #666; margin-top: 10px;
+  }
+  .type-context {
+    display: inline-block; margin-left: 8px; padding: 2px 10px;
+    background: var(--surface-blue); border-radius: var(--r-chip);
+    font-family: var(--font-jp); font-size: 11px; letter-spacing: var(--ls);
+  }
+
+  /* ---------- CHIPS ---------- */
+  .chip {
+    display: inline-block; background: #fff; color: var(--blue);
+    border: 1px solid var(--blue); border-radius: var(--r-chip);
+    padding: 4px 16px; font-size: 14px; font-weight: 900;
+    line-height: var(--lh); letter-spacing: var(--ls);
+  }
+  .industry {
+    display: inline-block; background: var(--surface-blue); color: var(--text);
+    border-radius: 0; padding: 8px 18px; font-size: 14px; font-weight: 700;
+    text-decoration: none;
+  }
+  .chip-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+  /* ---------- SERVICE ---------- */
+  .svc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px; }
+  .svc-card {
+    background: #fff; border-radius: var(--r-card); box-shadow: var(--elev-card);
+    padding: 28px 24px 32px;
+  }
+  .svc-card h3 { font-size: 20px; font-weight: 900; line-height: var(--lh); letter-spacing: var(--ls); margin-bottom: 12px; }
+  .svc-card p { font-size: 14px; font-weight: 500; line-height: 1.7; color: var(--text); }
+  .svc-report h3 { color: var(--svc-report); }
+  .svc-maint  h3 { color: var(--svc-maint); }
+  .svc-train  h3 { color: var(--svc-train); }
+  .svc-comm   h3 { color: var(--svc-comm); }
+
+  /* ---------- ISSUE CARDS ---------- */
+  .issue-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+  .issue {
+    background: var(--surface-blue2); color: var(--blue);
+    border-radius: var(--r-card); padding: 20px 22px;
+    font-size: 15px; font-weight: 700; line-height: 1.6;
+  }
+
+  /* ---------- STATS ---------- */
+  .stats { display: flex; gap: 48px; flex-wrap: wrap; justify-content: center; }
+  .stat { text-align: center; }
+  .stat .label { font-size: 15px; font-weight: 700; }
+  .stat .num {
+    font-size: 48px; font-weight: 900; color: var(--blue);
+    line-height: var(--lh); letter-spacing: var(--ls);
+  }
+
+  /* ---------- FAQ ---------- */
+  .faq {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    background: var(--blue); color: #fff; border: none;
+    border-radius: var(--r-btn); padding: 16px 32px; width: 100%;
+    font-family: var(--font-jp); font-size: 16px; font-weight: 700;
+    letter-spacing: var(--ls); text-align: left; cursor: pointer;
+    margin-bottom: 12px;
+  }
+  .faq-body { background: var(--surface-gray); border-radius: var(--r-card); padding: 20px 32px; font-size: 15px; line-height: 1.8; margin-bottom: 24px; }
+
+  /* ---------- FORMS ---------- */
+  .form-group { margin-bottom: 22px; max-width: 420px; }
+  .form-label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; letter-spacing: var(--ls); }
+  .form-input {
+    width: 100%; background: #fff; color: var(--text);
+    border: 1px solid var(--border); border-radius: var(--r-card);
+    padding: 12px 16px; font-family: var(--font-jp); font-weight: 500;
+    font-size: 15px; letter-spacing: var(--ls); outline: none;
+  }
+  .form-input::placeholder { color: #a5a5a5; }
+  .form-input--focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(3,96,229,.18); }
+  .form-input--error { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(229,65,43,.15); }
+  .form-state { font-size: 12px; color: #666; margin-top: 6px; }
+  .form-state.error { color: var(--danger); }
+
+  /* ---------- ELEVATION / LAYOUT ---------- */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+  .elev-card { background: #fff; border-radius: var(--r-card); padding: 28px; text-align: center; border: 1px solid var(--border); }
+  .elev-1 { box-shadow: var(--elev-card); border-color: transparent; }
+  .elev-2 { box-shadow: var(--elev-cta); border-color: transparent; }
+  .elev-name { font-size: 14px; font-weight: 900; margin-bottom: 6px; }
+  .elev-desc { font-family: ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: 0; color: #666; }
+
+  .spacing-row { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--blue); height: 30px; border-radius: 2px; }
+  .spacing-value { font-family: ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: 0; color: #666; margin-top: 6px; }
+
+  .radius-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .radius-item {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--surface-blue); color: var(--blue);
+    font-size: 13px; font-weight: 700; padding: 14px 22px;
+  }
+
+  .width-label { font-size: 14px; font-weight: 900; margin-bottom: 6px; }
+  .width-bar { height: 30px; background: var(--surface-gray); border-radius: var(--r-card); }
+  .width-inner { height: 100%; background: var(--blue); opacity: .35; border-radius: var(--r-card); }
+  .width-value { font-family: ui-monospace, Menlo, monospace; font-size: 12px; letter-spacing: 0; color: #666; margin: 6px 0 20px; }
+
+  /* ---------- CTA BAND / FOOTER ---------- */
+  .cta-band {
+    background: linear-gradient(169deg, #0060e5 0%, #004fbf 100%);
+    color: #fff; text-align: center; padding: 72px 40px;
+    border-radius: 32px 32px 0 0;
+  }
+  .cta-band h2 { font-size: 32px; font-weight: 900; line-height: var(--lh); letter-spacing: var(--ls); margin-bottom: 12px; }
+  .cta-band .yellow-text { color: var(--yellow); font-size: 38px; font-weight: 900; letter-spacing: var(--ls); }
+  .cta-band p { font-size: 16px; font-weight: 500; margin: 16px 0 32px; }
+
+  .footer {
+    background: #fff; padding: 40px; text-align: center;
+    font-size: 12px; font-weight: 500; color: var(--text-muted); line-height: 1.7;
+  }
+
+  @media (max-width: 768px) {
+    .nav-links, .topbar { display: none; }
+    .container { padding: 0 20px; }
+    .hero { padding: 48px 20px 64px; }
+    .hero-kanji { font-size: 40px; }
+    .hero-kana  { font-size: 38px; letter-spacing: -0.04em; }  /* 負のトラッキングは維持 */
+    .hero-kana-s{ font-size: 28px; }
+    .hero-sub   { font-size: 22px; }
+    .section { padding: 56px 0; }
+    .section-title { font-size: 28px; }
+    .btn-cta.btn-hero { display: flex; justify-content: center; font-size: 17px; padding: 18px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span>現場DXプラットフォーム「カミナシ」</span>
+  <span><a href="#">お知らせ</a><a href="#">「パートナー制度」について</a></span>
+</div>
+
+<nav class="nav">
+  <a class="nav-brand" href="#"><span class="nav-mark"></span>KAMINASHI</a>
+  <ul class="nav-links">
+    <li><a href="#colors">カミナシとは</a></li>
+    <li><a href="#typography">サービス一覧</a></li>
+    <li><a href="#service">導入事例</a></li>
+    <li><a href="#components">活用シーン</a></li>
+    <li><a href="#forms">お役立ち情報</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a class="btn-outline" href="#">お問い合わせ ✉</a>
+    <a class="btn-cta" href="#">資料ダウンロード ↓</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <div><span class="hero-kanji">現場DX</span><span class="hero-sub">なら</span></div>
+      <div><span class="hero-kana-s">まるっと</span></div>
+      <div><span class="hero-kana">カミナシ</span><span class="hero-sub">で</span></div>
+    </div>
+    <p class="hero-lead">DESIGN.md から抽出したデザイントークンのカタログ。ウェイト・行間・負のトラッキング・角丸スケールまで、computed style の実測値に基づく。</p>
+    <div class="hero-cta-wrap">
+      <a class="btn-cta btn-hero" href="#">資料を無料ダウンロード ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- COLORS -->
+<section class="section container" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット</h2>
+
+  <div class="group-label">Brand</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#0360e5"></div><div class="swatch-info"><div class="swatch-name">Kaminashi Blue</div><div class="swatch-hex">#0360e5</div><div class="swatch-role">面にも文字にも使う唯一の色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#0046a9"></div><div class="swatch-info"><div class="swatch-name">Blue Deep</div><div class="swatch-hex">#0046a9</div><div class="swatch-role">グラデーションの終端</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#004fbf"></div><div class="swatch-info"><div class="swatch-name">Blue Deep 2</div><div class="swatch-hex">#004fbf</div><div class="swatch-role">CTA帯のグラデーション終端</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#00afea"></div><div class="swatch-info"><div class="swatch-name">Cyan</div><div class="swatch-hex">#00afea</div><div class="swatch-role">補助アクセント</div></div></div>
+  </div>
+
+  <div class="group-label">CTA — 黄色の上は白文字にしない</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#ffdb22"></div><div class="swatch-info"><div class="swatch-name">Kaminashi Yellow</div><div class="swatch-hex">#ffdb22</div><div class="swatch-role">主要CTAの面色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#ffdf24"></div><div class="swatch-info"><div class="swatch-name">Yellow Alt</div><div class="swatch-hex">#ffdf24</div><div class="swatch-role">同用途で併存する近似値</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#333333"></div><div class="swatch-info"><div class="swatch-name">CTA Text</div><div class="swatch-hex">#333333</div><div class="swatch-role">黄色の上に載る文字</div></div></div>
+  </div>
+
+  <div class="group-label">Surface</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#ffffff; border-bottom:1px solid #d9d9d9"></div><div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">ページ地色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#e8f2ff"></div><div class="swatch-info"><div class="swatch-name">Surface Blue Pale</div><div class="swatch-hex">#e8f2ff</div><div class="swatch-role">最頻出のセクション背景</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#ebf4ff"></div><div class="swatch-info"><div class="swatch-name">Surface Blue Pale 2</div><div class="swatch-hex">#ebf4ff</div><div class="swatch-role">課題リストの面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#f5f5f5"></div><div class="swatch-info"><div class="swatch-name">Surface Gray</div><div class="swatch-hex">#f5f5f5</div><div class="swatch-role">FAQ・導入フロー</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#eeeff0"></div><div class="swatch-info"><div class="swatch-name">Surface Gray 2</div><div class="swatch-hex">#eeeff0</div><div class="swatch-role">区切りの面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#f6f2ed"></div><div class="swatch-info"><div class="swatch-name">Surface Beige</div><div class="swatch-hex">#f6f2ed</div><div class="swatch-role">温かい面</div></div></div>
+  </div>
+
+  <div class="group-label">Service Accent — 面には塗らない。見出しの文字色専用</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#3b5bdb"></div><div class="swatch-info"><div class="swatch-name">現場帳票システム</div><div class="swatch-hex">#3b5bdb</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#5130b0"></div><div class="swatch-info"><div class="swatch-name">設備保全</div><div class="swatch-hex">#5130b0</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#e86c00"></div><div class="swatch-info"><div class="swatch-name">研修・マニュアル</div><div class="swatch-hex">#e86c00</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#ab3400"></div><div class="swatch-info"><div class="swatch-name">コミュニケーション</div><div class="swatch-hex">#ab3400</div></div></div>
+  </div>
+
+  <div class="group-label">Text &amp; Border</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#333333"></div><div class="swatch-info"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#333333</div><div class="swatch-role">本文・ナビ</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#000000"></div><div class="swatch-info"><div class="swatch-name">Text Heading</div><div class="swatch-hex">#000000</div><div class="swatch-role">セクション見出し</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#888787"></div><div class="swatch-info"><div class="swatch-name">Text Muted</div><div class="swatch-hex">#888787</div><div class="swatch-role">補助ラベル</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#e5412b"></div><div class="swatch-info"><div class="swatch-name">Danger</div><div class="swatch-hex">#e5412b</div><div class="swatch-role">警告・注意</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#d9d9d9"></div><div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-hex">#d9d9d9</div><div class="swatch-role">罫・枠</div></div></div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- TYPOGRAPHY -->
+<section class="section container" id="typography">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <h2 class="section-title">タイポグラフィ階層</h2>
+  <p style="font-size:15px; margin-bottom:28px; max-width:820px; line-height:1.8;">
+    見出しの標準ウェイトは <strong>900（Black）</strong>。line-height は全域 <strong>1.4</strong>、
+    letter-spacing は <strong>0.08em</strong>。巨大な見出しだけ負のトラッキングになり、
+    <strong>かなと漢字で値が違う</strong>。
+  </p>
+
+  <div class="type-sample">
+    <div style="font-size:72px; font-weight:700; line-height:1.4; letter-spacing:0;">現場DX</div>
+    <div class="type-meta">72–89px / 700 / line-height: 1.4 / letter-spacing: 0<span class="type-context">ヒーローの漢字は詰めない</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:70px; font-weight:700; line-height:1.4; letter-spacing:-0.04em;">カミナシ</div>
+    <div class="type-meta">44–70px / 700 / line-height: 1.4 / letter-spacing: -0.04〜-0.05em<span class="type-context">ヒーローのかなだけ詰める</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:48px; font-weight:700; line-height:1.4; letter-spacing:0.08em; color:#000;">カミナシの特徴 — Section Heading</div>
+    <div class="type-meta">48px / 700 / line-height: 1.4 / letter-spacing: 0.08em<span class="type-context">セクション見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:38px; font-weight:900; line-height:1.4; letter-spacing:0.08em; color:#000;">現場DXプラットフォーム — Heading</div>
+    <div class="type-meta">38px / 900 / line-height: 1.4 / letter-spacing: 0.08em<span class="type-context">強調（青地では黄文字）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:32px; font-weight:900; line-height:1.4; letter-spacing:0.08em; color:#000;">導入事例 — Heading 2</div>
+    <div class="type-meta">32px / 900 / line-height: 1.4 / letter-spacing: 0.08em<span class="type-context">セクション見出し（小）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:20px; font-weight:900; line-height:1.4; letter-spacing:0.08em; color:var(--svc-report);">現場帳票システム — Sub Heading</div>
+    <div class="type-meta">20px / 900 / line-height: 1.4 / letter-spacing: 0.08em<span class="type-context">サービス名。色で識別</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:700; line-height:1.4; letter-spacing:0.08em;">カミナシとは・サービス一覧・導入事例 — Navigation</div>
+    <div class="type-meta">13–14px / 700 / line-height: 1.4 / letter-spacing: 0.08em<span class="type-context">グローバルナビ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:900; line-height:1.4; letter-spacing:0.08em; color:var(--blue);">レポート・教育・従業員 — Chip</div>
+    <div class="type-meta">14px / 900 / letter-spacing: 0.08em<span class="type-context">機能タグ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:500; line-height:1.4; letter-spacing:0.08em; color:var(--text-muted);">現場DXプラットフォーム — Small / Label</div>
+    <div class="type-meta">12px / 500 / line-height: 1.4 / letter-spacing: 0.08em<span class="type-context">補助ラベル</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:15px; font-weight:500; line-height:1.7;">本文 — 紙の帳票をタブレットに置き換えるだけでなく、記録の集計・分析までを一気通貫で行えます。長い段落は line-height を 1.7 以上に緩めること。</div>
+    <div class="type-meta">15px / 500 / line-height: <strong>1.7（本文主体の画面での推奨）</strong><span class="type-context">実サイト既定の 1.4 は長文に向かない</span></div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- SERVICE -->
+<section class="section section-band" id="service">
+  <div class="container">
+    <div class="section-label">03 / Service</div>
+    <h2 class="section-title">サービスカード</h2>
+    <div class="svc-grid">
+      <div class="svc-card svc-report"><h3>現場帳票システム</h3><p>紙の書類の転記・チェック・集計をタブレットで完結。記録がそのままデータになります。</p></div>
+      <div class="svc-card svc-maint"><h3>設備保全</h3><p>機械の突発故障を防ぎ、メンテナンス履歴を一元管理します。</p></div>
+      <div class="svc-card svc-train"><h3>研修・マニュアル</h3><p>新人や外国人スタッフへの教育を、動画と手順書で標準化します。</p></div>
+      <div class="svc-card svc-comm"><h3>コミュニケーション</h3><p>現場スタッフへの連絡を確実に届け、既読まで把握できます。</p></div>
+    </div>
+
+    <div class="group-label">現場の課題（Surface Blue Pale 2 の面）</div>
+    <div class="issue-grid">
+      <div class="issue">紙の書類の転記／チェック／集計が手間</div>
+      <div class="issue">トラブル時に過去の記録の確認が大変</div>
+      <div class="issue">認証や審査の書類対応が厳格</div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- STATS -->
+<section class="section container">
+  <div class="section-label">04 / Numbers</div>
+  <h2 class="section-title">実績の見せ方</h2>
+  <div class="stats">
+    <div class="stat"><div class="label">導入現場数</div><div class="num">17,000</div><div class="label">以上</div></div>
+    <div class="stat"><div class="label">レビューサイト</div><div class="num">3</div><div class="label">部門受賞</div></div>
+    <div class="stat"><div class="label">業界数</div><div class="num">30</div><div class="label">突破</div></div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- COMPONENTS -->
+<section class="section container" id="components">
+  <div class="section-label">05 / Components</div>
+  <h2 class="section-title">ボタン・タグ</h2>
+
+  <div class="group-label">Buttons</div>
+  <div class="btn-row">
+    <a class="btn-cta btn-hero" href="#">資料を無料ダウンロード ↓</a>
+  </div>
+  <div class="btn-row" style="margin-top:18px">
+    <a class="btn-cta" href="#">資料ダウンロード ↓</a>
+    <a class="btn-outline" href="#">お問い合わせ ✉</a>
+    <a class="btn-blue" href="#">導入事例集をみる →</a>
+  </div>
+
+  <div class="group-label">Chips — 枠線のピル（radius 24px / weight 900）</div>
+  <div class="chip-row">
+    <span class="chip">レポート</span>
+    <span class="chip">教育</span>
+    <span class="chip">従業員</span>
+    <span class="chip">法令・制度対応</span>
+  </div>
+
+  <div class="group-label">業種リンク — 面のみ、角丸なし</div>
+  <div class="chip-row">
+    <a class="industry" href="#">食品製造</a>
+    <a class="industry" href="#">機械製造・素材</a>
+    <a class="industry" href="#">物流</a>
+    <a class="industry" href="#">ビルメンテナンス</a>
+    <a class="industry" href="#">ホテル・宿泊</a>
+  </div>
+
+  <div class="group-label">FAQ</div>
+  <button class="faq"><span>Q. どういった業界でカミナシが導入されていますか？</span><span>⌄</span></button>
+  <div class="faq-body">A. 30を超える業界でカミナシをご利用いただいています。食品製造、機械製造、物流、ビルメンテナンス、ホテル・宿泊などが代表的です。</div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- FORMS -->
+<section class="section container" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">フォーム — 3状態</h2>
+
+  <div class="form-group">
+    <label class="form-label">会社名</label>
+    <input class="form-input" type="text" placeholder="株式会社カミナシ">
+    <div class="form-state">Default — 枠 1px solid #d9d9d9 / 角丸 8px</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">メールアドレス</label>
+    <input class="form-input form-input--focus" type="text" value="kaminashi@example.jp">
+    <div class="form-state">Focus — 枠 #0360e5 ＋ リング rgba(3,96,229,.18)</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">電話番号</label>
+    <input class="form-input form-input--error" type="text" value="03-0000">
+    <div class="form-state error">Error — 枠 #e5412b ＋ リング rgba(229,65,43,.15)</div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- ELEVATION -->
+<section class="section container" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">影 — カードとボタンで方向を変える</h2>
+  <div class="elev-grid">
+    <div class="elev-card"><div class="elev-name">Level 0</div><div class="elev-desc">none</div></div>
+    <div class="elev-card elev-1"><div class="elev-name">Level 1 — カード</div><div class="elev-desc">0 0 24px rgba(0,0,0,.08)</div></div>
+    <div class="elev-card elev-2"><div class="elev-name">Level 2 — 主要CTA</div><div class="elev-desc">0 6px 15px rgba(0,0,0,.2)</div></div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- LAYOUT -->
+<section class="section container" id="layout">
+  <div class="section-label">08 / Layout</div>
+  <h2 class="section-title">レイアウト</h2>
+
+  <div class="group-label">Spacing Scale</div>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:64px"></div><div class="spacing-value">64</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:120px"></div><div class="spacing-value">120</div></div>
+  </div>
+
+  <div class="group-label">Border Radius Scale</div>
+  <div class="radius-row">
+    <span class="radius-item" style="border-radius:8px">8px — カード</span>
+    <span class="radius-item" style="border-radius:24px">24px — チップ</span>
+    <span class="radius-item" style="border-radius:32px">32px — ボタン</span>
+    <span class="radius-item" style="border-radius:60px">60px — ヒーローCTA</span>
+    <span class="radius-item" style="border-radius:100px">100px — 帯のCTA</span>
+    <span class="radius-item" style="border-radius:50%; width:64px; height:64px; padding:0">50%</span>
+  </div>
+
+  <div class="group-label">Container</div>
+  <div class="width-label">Content</div>
+  <div class="width-bar"><div class="width-inner" style="width:100%"></div></div>
+  <div class="width-value">max-width: 1200px</div>
+</section>
+
+<section class="cta-band">
+  <h2>現場DXなら<br><span class="yellow-text">「カミナシ」</span>にお任せ！</h2>
+  <p>まずは現場DXについて情報収集から始めませんか？</p>
+  <a class="btn-cta btn-hero" href="#">資料を無料ダウンロード ↓</a>
+</section>
+
+<footer class="footer">
+  現場DXプラットフォーム「カミナシ」<br>
+  このページは DESIGN.md の内容を可視化した非公式のプレビューです。
+</footer>
+
+</body>
+</html>

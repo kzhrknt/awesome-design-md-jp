@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (423 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (426 sites)</a>
 </p>
 
 <table>
@@ -634,6 +634,11 @@
 <td align="center"><strong>ポーラ美術館</strong><br><img src="design-md/pola-museum/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>石見銀山 群言堂</strong><br><img src="design-md/gungendo/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>東京都庭園美術館</strong><br><img src="design-md/teien-art-museum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>八海山</strong><br><img src="design-md/hakkaisan/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>カミナシ</strong><br><img src="design-md/kaminashi/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1117,11 +1122,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [nine hours (9h ナインアワーズ)](https://ninehours.co.jp/) | Hotel / Capsule Hotel | [DESIGN.md](design-md/ninehours/DESIGN.md) | [preview.html](design-md/ninehours/preview.html) |
 | [POLA MUSEUM OF ART (ポーラ美術館)](https://www.polamuseum.or.jp/) | Museum / Art | [DESIGN.md](design-md/pola-museum/DESIGN.md) | [preview.html](design-md/pola-museum/preview.html) |
 | [Iwamiginzan Gungendo (石見銀山 群言堂)](https://www.gungendo.co.jp/) | Apparel / Lifestyle EC | [DESIGN.md](design-md/gungendo/DESIGN.md) | [preview.html](design-md/gungendo/preview.html) |
+| [Tokyo Metropolitan Teien Art Museum (東京都庭園美術館)](https://www.teien-art-museum.ne.jp/) | Museum / Art Deco | [DESIGN.md](design-md/teien-art-museum/DESIGN.md) | [preview.html](design-md/teien-art-museum/preview.html) |
+| [HAKKAISAN (八海山)](https://www.hakkaisan.co.jp/) | Sake Brewery / Food & Beverage | [DESIGN.md](design-md/hakkaisan/DESIGN.md) | [preview.html](design-md/hakkaisan/preview.html) |
+| [KAMINASHI (カミナシ)](https://kaminashi.jp/) | SaaS / Frontline DX | [DESIGN.md](design-md/kaminashi/DESIGN.md) | [preview.html](design-md/kaminashi/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (423 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (426 sites)</a>
 </p>
 
 <table>
@@ -1720,6 +1728,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>9h ナインアワーズ</strong><br><img src="design-md/ninehours/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>ポーラ美術館</strong><br><img src="design-md/pola-museum/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>石見銀山 群言堂</strong><br><img src="design-md/gungendo/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>東京都庭園美術館</strong><br><img src="design-md/teien-art-museum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>八海山</strong><br><img src="design-md/hakkaisan/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>カミナシ</strong><br><img src="design-md/kaminashi/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
