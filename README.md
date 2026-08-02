@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (426 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (429 sites)</a>
 </p>
 
 <table>
@@ -639,6 +639,11 @@
 <td align="center"><strong>八海山</strong><br><img src="design-md/hakkaisan/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>カミナシ</strong><br><img src="design-md/kaminashi/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>諏訪田製作所</strong><br><img src="design-md/suwada/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>final</strong><br><img src="design-md/final-audio/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ぺんてる</strong><br><img src="design-md/pentel/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1125,11 +1130,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [Tokyo Metropolitan Teien Art Museum (東京都庭園美術館)](https://www.teien-art-museum.ne.jp/) | Museum / Art Deco | [DESIGN.md](design-md/teien-art-museum/DESIGN.md) | [preview.html](design-md/teien-art-museum/preview.html) |
 | [HAKKAISAN (八海山)](https://www.hakkaisan.co.jp/) | Sake Brewery / Food & Beverage | [DESIGN.md](design-md/hakkaisan/DESIGN.md) | [preview.html](design-md/hakkaisan/preview.html) |
 | [KAMINASHI (カミナシ)](https://kaminashi.jp/) | SaaS / Frontline DX | [DESIGN.md](design-md/kaminashi/DESIGN.md) | [preview.html](design-md/kaminashi/preview.html) |
+| [SUWADA (諏訪田製作所)](https://www.suwada.co.jp/) | Cutlery / Manufacturing | [DESIGN.md](design-md/suwada/DESIGN.md) | [preview.html](design-md/suwada/preview.html) |
+| [final (ファイナル)](https://final-inc.com/) | Audio / Earphones EC | [DESIGN.md](design-md/final-audio/DESIGN.md) | [preview.html](design-md/final-audio/preview.html) |
+| [Pentel (ぺんてる)](https://www.pentel.co.jp/) | Stationery / Manufacturing | [DESIGN.md](design-md/pentel/DESIGN.md) | [preview.html](design-md/pentel/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (426 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (429 sites)</a>
 </p>
 
 <table>
@@ -1733,6 +1741,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>東京都庭園美術館</strong><br><img src="design-md/teien-art-museum/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>八海山</strong><br><img src="design-md/hakkaisan/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>カミナシ</strong><br><img src="design-md/kaminashi/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>諏訪田製作所</strong><br><img src="design-md/suwada/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>final</strong><br><img src="design-md/final-audio/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ぺんてる</strong><br><img src="design-md/pentel/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ぺんてる（Pentel） — Design System Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap" rel="stylesheet">
+<!--
+  ぺんてる（Pentel）DESIGN.md のプレビュー。
+  実測日 2026-08-02 / https://www.pentel.co.jp/
+
+  このサイトの要点は6つ。
+  1. font-family の先頭が YakuHanJP。約物（括弧・句読点）だけを半角化する
+     サブセットフォントを本体書体の前に置く、日本語Web特有のテクニック。
+  2. 和文は Ryo Gothic PlusN（モリサワ）、欧文は Paralucent。英字は必ず切り替わる。
+  3. letter-spacing が和文で一律 0.03em（font-size × 0.03）。
+     超大見出し（124px）だけ 0.01em に絞る。
+  4. 和文の line-height が 1.16〜1.4 と詰まっている（日本語の標準 1.7〜2.0 より狭い）。
+     欧文はさらに詰めて 0.8〜1.0。
+  5. ピルは一律 border-radius: 20px。カードは 0px。
+  6. 影を使わない。画像の上のUIは「白い面」で浮かせる。
+
+  ■ フォント代替について
+  Ryo Gothic PlusN も Paralucent も Adobe Fonts のドメインライセンスのため、
+  ローカルでは表示できない。
+    Ryo Gothic PlusN → Zen Kaku Gothic New（同系のヒューマニストなゴシック）
+    Paralucent       → Poppins（ジオメトリックサンス。900 があり印象が近い）
+    YakuHanJP        → 代替なし。font-feature-settings: "palt" で近似する
+  実装時は YakuHanJP を CDN から読み込み、ryo-gothic-plusn の「前」に置くこと。
+-->
+<style>
+  :root {
+    /* --- Brand：純赤。中間色に丸めない --- */
+    --red:       #ff0000;
+    --red-deep:  #a4000f;
+
+    /* --- Neutral --- */
+    --ink:       #212121;   /* 純黒ではなく1段浅い黒 */
+    --ink-sub:   #888888;
+    --bg:        #ffffff;
+    --surface:   #f6f6f6;
+    --surface-tab:  #eaeaea;
+    --surface-chip: #dddddd;
+    --scrim:     rgba(33, 33, 33, 0.4);
+
+    /* --- Accent：記事カードのパステル4色。出現順にローテーション --- */
+    --sky:   #b5ebff;
+    --lemon: #ffe890;
+    --lilac: #e5c7ff;
+    --mint:  #bbffbe;
+
+    /* --- Type：和文と欧文でファミリを完全に切り替える --- */
+    /* 実サイト: YakuHanJP, ryo-gothic-plusn, sans-serif / paralucent, sans-serif */
+    --font-jp: "Zen Kaku Gothic New", sans-serif;
+    --font-en: "Poppins", sans-serif;
+    --font-input: "Helvetica Neue", Arial, Meiryo, sans-serif;
+
+    --ls:       0.03em;   /* 和文は全要素でこれ */
+    --ls-huge:  0.01em;   /* 100px 超の見出しだけ絞る */
+
+    --radius-pill: 20px;
+    --radius-bar:  40px;
+    --radius-card: 0px;
+
+    --container: 1440px;
+
+    /* このサイトが唯一トークン化しているのがイージング */
+    --ease01: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease02: cubic-bezier(0.6, 0.25, 0, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-jp);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: var(--ls);
+    font-feature-settings: "palt";   /* body から全体に効かせる */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: var(--container); margin: 0 auto; padding: 0 30px; }
+  .section { padding-block: 104px; }
+
+  /* セクション見出し：番号 → 英語ラベル → 和文ラベルの3層 */
+  .sec-no {
+    font-family: var(--font-en); font-weight: 700; font-size: 15px;
+    line-height: 1; letter-spacing: normal; color: var(--ink-sub);
+    margin-bottom: 10px;
+  }
+  .sec-en {
+    font-family: var(--font-en); font-weight: 900; font-size: 44px;
+    line-height: 0.8; letter-spacing: normal;   /* 行高が font-size より小さい */
+    margin-bottom: 12px;
+  }
+  .sec-jp {
+    font-size: 12px; font-weight: 500; line-height: 2.2; letter-spacing: var(--ls);
+    margin-bottom: 44px;
+  }
+  .group-label {
+    font-size: 14px; font-weight: 700; line-height: 1.3; letter-spacing: var(--ls);
+    margin: 44px 0 20px; padding-bottom: 10px; border-bottom: 1px solid #e5e5e5;
+  }
+  .group-label:first-of-type { margin-top: 0; }
+  .section-divider { border: 0; border-top: 1px solid #e5e5e5; }
+
+  /* ---------- HEADER：白いピル型バーが画像の上に浮く ---------- */
+  .hero { position: relative; min-height: 560px; }
+  .hero-photo {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(720px 380px at 74% 18%, rgba(127,210,138,0.85) 0%, transparent 55%),
+      radial-gradient(560px 300px at 18% 40%, rgba(255,215,106,0.55) 0%, transparent 55%),
+      linear-gradient(178deg, #c8102e 0%, #c8102e 34%, #8f6a52 34%, #4a3a30 100%);
+  }
+  /* 実サイト同様、超大見出しは暗い写真の上に乗る。下端にスクリムを敷いて白文字を読ませる */
+  .hero-scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(rgba(0,0,0,0) 40%, rgba(33,33,33,0.55) 100%);
+  }
+  .hero-bar {
+    position: absolute; top: 34px; left: 0; right: 0;
+    display: flex; align-items: center; gap: 24px; padding: 0 40px;
+  }
+  .brand {
+    font-family: var(--font-en); font-weight: 900; font-size: 30px;
+    line-height: 1; letter-spacing: normal; color: #fff; text-decoration: none;
+  }
+  /* バー自体もピル。影ではなく白い面で浮かせる */
+  .navbar {
+    display: flex; align-items: center; gap: 6px;
+    background: #fff; border-radius: var(--radius-bar);
+    padding: 8px; margin: 0 auto;
+  }
+  .pill {
+    display: inline-block; border: 0; border-radius: var(--radius-pill);
+    padding: 8px 17px; font-family: var(--font-jp);
+    font-size: 14px; line-height: 1; letter-spacing: var(--ls);
+    text-decoration: none; cursor: pointer;
+    transition: background .4s var(--ease02);
+  }
+  .pill--active   { background: var(--red); color: #fff; font-weight: 700; }
+  .pill--nav      { background: transparent; color: var(--ink); font-weight: 700; }
+  .pill--inactive { background: var(--surface-tab); color: var(--ink-sub); font-weight: 500; }
+  .pill--chip     { background: var(--surface-chip); color: var(--ink); font-weight: 700; font-size: 16px; padding: 10px 20px; }
+  .circle-btn {
+    width: 46px; height: 46px; border-radius: 50%; background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-en); font-weight: 700; font-size: 13px;
+    letter-spacing: normal; color: var(--ink); text-decoration: none;
+  }
+
+  .hero-inner {
+    position: absolute; left: 0; right: 0; bottom: 72px;
+    max-width: var(--container); margin: 0 auto; padding: 0 40px;
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; flex-wrap: wrap;
+  }
+  /* 超大見出し。字間だけ 1/3 に絞る */
+  .hero-display {
+    font-size: 96px; font-weight: 700; line-height: 1.0;
+    letter-spacing: var(--ls-huge); color: #fff;
+  }
+  .hero-en {
+    font-family: var(--font-en); font-weight: 700; font-size: 26px;
+    line-height: 0.9; letter-spacing: normal; color: #fff;
+  }
+  .hero-counter {
+    display: inline-flex; align-items: center; gap: 16px;
+    border: 1px solid rgba(255,255,255,0.7); border-radius: var(--radius-bar);
+    padding: 14px 26px; margin-top: 28px;
+    font-family: var(--font-en); font-weight: 700; font-size: 13px;
+    letter-spacing: normal; color: #fff;
+  }
+
+  /* ---------- COLORS ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+  .swatch { border: 1px solid #e5e5e5; border-radius: var(--radius-card); overflow: hidden; }
+  .swatch-block { height: 84px; }
+  .swatch-info { padding: 14px; }
+  .swatch-name { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+  .swatch-hex { font-family: var(--font-en); font-weight: 700; font-size: 12px; letter-spacing: normal; color: var(--ink-sub); margin-bottom: 8px; }
+  .swatch-role { font-size: 12px; line-height: 1.5; color: var(--ink-sub); }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  .type-sample { padding: 22px 0; border-bottom: 1px solid #eee; }
+  .type-meta { font-size: 12px; line-height: 1.5; color: var(--ink-sub); margin-top: 12px; }
+  .type-context { color: #b5b5b5; margin-left: 12px; }
+
+  /* ---------- ARTICLE CARDS：パステル4色ローテーション ---------- */
+  .article-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  /* カードは角丸ゼロ。下だけ極端に厚い padding */
+  .article-card {
+    border-radius: var(--radius-card);
+    padding: 44px 30px 104px;
+    color: var(--ink); text-decoration: none; display: block;
+    transition: transform .6s var(--ease01);
+  }
+  .article-card:hover { transform: translateY(-6px); }
+  .article-role { font-size: 11px; font-weight: 500; line-height: 1; margin-bottom: 10px; }
+  .article-name { font-size: 22px; font-weight: 700; line-height: 1.18; margin-bottom: 14px; }
+  .article-quote { font-size: 14px; font-weight: 500; line-height: 1.5; }
+
+  /* ---------- PRODUCTS ---------- */
+  .product-section { background: var(--surface); }
+  .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+  .product-card { background: transparent; border-radius: var(--radius-card); }
+  .product-visual {
+    height: 200px; background: #fff; border-radius: var(--radius-card);
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+  }
+  .pen { width: 9px; height: 118px; border-radius: 4px 4px 1px 1px; }
+  .pen--red   { background: var(--red); }
+  .pen--sky   { background: #3aa6d6; }
+  .pen--mint  { background: #3fbf6a; }
+  .product-cat { font-size: 12px; font-weight: 500; line-height: 1; color: var(--ink-sub); margin: 16px 0 6px; }
+  .product-name { font-size: 14px; font-weight: 700; line-height: 1.3; }
+
+  /* ---------- ALERT：面色を敷かず赤い文字だけ ---------- */
+  .alert { font-size: 15px; font-weight: 700; line-height: 1.4; color: var(--red); }
+
+  /* ---------- FORMS ---------- */
+  .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+  .form-label { display: block; font-size: 14px; font-weight: 700; line-height: 1.3; margin-bottom: 10px; }
+  /* 入力欄だけ和文チェーンから外れる */
+  .form-input {
+    width: 100%; background: #fff; color: var(--ink);
+    border: 1px solid #d5d5d5; border-radius: var(--radius-pill);
+    padding: 13px 20px; font-family: var(--font-input);
+    font-size: 17px; font-weight: 500; letter-spacing: var(--ls);
+    font-feature-settings: normal;
+  }
+  .form-input::placeholder { color: #b5b5b5; }
+  .form-input--focus { border-color: var(--ink); }
+  .form-input--error { border-color: var(--red); }
+  .form-note { font-size: 12px; line-height: 1.5; color: var(--ink-sub); margin-top: 8px; }
+  .form-note--error { color: var(--red); }
+
+  /* ---------- SCRIM ---------- */
+  .scrim-demo { position: relative; height: 180px; overflow: hidden; border-radius: var(--radius-card); }
+  .scrim-photo { position: absolute; inset: 0; background: linear-gradient(140deg, #f0b429 0%, #de3618 100%); }
+  .scrim-layer { position: absolute; inset: 0; background: var(--scrim); }
+  .scrim-text {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 22px; font-weight: 700; line-height: 1.3;
+  }
+
+  /* ---------- LAYOUT ---------- */
+  .spec-table { width: 100%; border-collapse: collapse; }
+  .spec-table th, .spec-table td {
+    text-align: left; padding: 14px 12px; border-bottom: 1px solid #eee;
+    font-size: 14px; line-height: 1.5; vertical-align: top;
+  }
+  .spec-table th { color: var(--ink-sub); font-weight: 500; width: 200px; }
+
+  /* ---------- FOOTER ---------- */
+  .footer { background: var(--ink); color: #fff; padding: 64px 0; }
+  .footer-en { font-family: var(--font-en); font-weight: 900; font-size: 28px; line-height: 1; letter-spacing: normal; margin-bottom: 20px; }
+  .footer p { font-size: 13px; line-height: 1.5; color: #b5b5b5; }
+  .footer-group {
+    display: inline-block; background: var(--red-deep); color: #fff;
+    border-radius: var(--radius-pill); padding: 8px 17px;
+    font-size: 14px; font-weight: 700; line-height: 1; text-decoration: none; margin-top: 24px;
+  }
+
+  @media (max-width: 1100px) {
+    .article-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 767px) {
+    .navbar { display: none; }
+    .hero { min-height: 440px; }
+    .hero-display { font-size: 48px; }   /* letter-spacing: 0.01em は維持する */
+    .hero-en { font-size: 18px; }
+    .section { padding-block: 64px; }
+    .sec-en { font-size: 32px; }
+    .article-grid, .product-grid, .form-grid { grid-template-columns: 1fr; }
+    .article-card { padding: 32px 20px 64px; }
+    .pill { padding: 14px 20px; }   /* モバイルは 44px を確保する */
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-photo"></div>
+  <div class="hero-scrim"></div>
+  <div class="hero-bar">
+    <a class="brand" href="#">Pentel</a>
+    <nav class="navbar">
+      <a class="pill pill--active" href="#">ホーム</a>
+      <a class="pill pill--nav" href="#colors">商品を探す</a>
+      <a class="pill pill--nav" href="#typography">マガジン</a>
+      <a class="pill pill--nav" href="#products">サポート</a>
+      <a class="pill pill--nav" href="#forms">ぺんてるについて</a>
+      <a class="pill pill--nav" href="#layout">お問い合わせ</a>
+    </nav>
+    <a class="circle-btn" href="#">Q</a>
+    <a class="circle-btn" href="#">≡</a>
+  </div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-display">表現する<br>よろこびを。</div>
+      <div class="hero-counter">← &nbsp; 1 / 5 &nbsp; →</div>
+    </div>
+    <div class="hero-en">The Joy of Expression.</div>
+  </div>
+</div>
+
+<!-- COLORS -->
+<section class="section container" id="colors">
+  <div class="sec-no">01</div>
+  <div class="sec-en">Colors</div>
+  <div class="sec-jp">ぺんてるの色</div>
+
+  <div class="group-label">Brand — 純赤。#e60012 等の「企業赤」に置き換えない</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#ff0000"></div><div class="swatch-info"><div class="swatch-name">Pentel Red</div><div class="swatch-hex">#ff0000</div><div class="swatch-role">ロゴ・選択中ピル・重要なお知らせ・VIEW</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#a4000f"></div><div class="swatch-info"><div class="swatch-name">Deep Red</div><div class="swatch-hex">#a4000f</div><div class="swatch-role">グループ会社リンクの面色</div></div></div>
+  </div>
+
+  <div class="group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#212121"></div><div class="swatch-info"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#212121</div><div class="swatch-role">本文・見出し。純黒ではない</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#888888"></div><div class="swatch-info"><div class="swatch-name">Text Secondary</div><div class="swatch-hex">#888888</div><div class="swatch-role">日付・カテゴリ・非選択タブ</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#f6f6f6"></div><div class="swatch-info"><div class="swatch-name">Surface</div><div class="swatch-hex">#f6f6f6</div><div class="swatch-role">セクションの面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#eaeaea"></div><div class="swatch-info"><div class="swatch-name">Surface Tab</div><div class="swatch-hex">#eaeaea</div><div class="swatch-role">非選択のピル・カード面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#dddddd"></div><div class="swatch-info"><div class="swatch-name">Surface Chip</div><div class="swatch-hex">#dddddd</div><div class="swatch-role">商品カテゴリのピル</div></div></div>
+  </div>
+
+  <div class="group-label">Accent — 記事カードのパステル4色。出現順にローテーションする</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#b5ebff"></div><div class="swatch-info"><div class="swatch-name">Sky</div><div class="swatch-hex">#b5ebff</div><div class="swatch-role">1番目・5番目…</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#ffe890"></div><div class="swatch-info"><div class="swatch-name">Lemon</div><div class="swatch-hex">#ffe890</div><div class="swatch-role">2番目・6番目…</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#e5c7ff"></div><div class="swatch-info"><div class="swatch-name">Lilac</div><div class="swatch-hex">#e5c7ff</div><div class="swatch-role">3番目・7番目…</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#bbffbe"></div><div class="swatch-info"><div class="swatch-name">Mint</div><div class="swatch-hex">#bbffbe</div><div class="swatch-role">4番目・8番目…</div></div></div>
+  </div>
+
+  <div class="group-label">Scrim — 画像の上に文字を置くとき</div>
+  <div class="scrim-demo">
+    <div class="scrim-photo"></div><div class="scrim-layer"></div>
+    <div class="scrim-text">rgba(33, 33, 33, 0.4)</div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- TYPOGRAPHY -->
+<section class="section container" id="typography">
+  <div class="sec-no">02</div>
+  <div class="sec-en">Typography</div>
+  <div class="sec-jp">和文と欧文でファミリを完全に切り替える</div>
+
+  <div class="group-label">Japanese — Ryo Gothic PlusN。字間は一律 0.03em、行間は詰める</div>
+  <div class="type-sample">
+    <div style="font-size:72px; font-weight:700; line-height:1.0; letter-spacing:0.01em;">表現するよろこびを。</div>
+    <div class="type-meta">Ryo Gothic PlusN / <strong>124px</strong>（ここでは 72px で表示）/ 700 / line-height: 1.0 / letter-spacing: <strong>0.01em</strong><span class="type-context">超大見出しだけ字間を 1/3 に絞る</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:54px; font-weight:700; line-height:1.16; letter-spacing:0.03em;">8色を1本で。</div>
+    <div class="type-meta">Ryo Gothic PlusN / 54px / 700 / line-height: 1.16 / letter-spacing: 0.03em<span class="type-context">セクションのキャッチ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:38px; font-weight:700; line-height:1.376; letter-spacing:0.03em;">手描きが生み出すよろこびで、日々の生活をより豊かなものに。</div>
+    <div class="type-meta">Ryo Gothic PlusN / 38px / 700 / line-height: 1.376 / letter-spacing: 0.03em<span class="type-context">Heading 1</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:26px; font-weight:700; line-height:1.23; letter-spacing:0.03em;">ボールペン</div>
+    <div class="type-meta">Ryo Gothic PlusN / 26px / 700 / line-height: 1.23<span class="type-context">Heading 2</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:22px; font-weight:700; line-height:1.18; letter-spacing:0.03em;">アートマルチ8シャープペン</div>
+    <div class="type-meta">Ryo Gothic PlusN / 22px / 700 / line-height: 1.18<span class="type-context">カード見出し・商品名</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:500; line-height:1.4; letter-spacing:0.03em; max-width:760px;">本文 — ふわっと書ける摩擦レスボールペン。書き味の抵抗を減らし、筆記の速度と正確さを両立させました。日本語の line-height としては意図的に詰めています。</div>
+    <div class="type-meta">Ryo Gothic PlusN / 16px / <strong>500</strong> / line-height: 1.4 / letter-spacing: 0.03em<span class="type-context">本文の基準。標準の 1.7〜2.0 より狭い</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:15px; font-weight:700; line-height:1.4; letter-spacing:0.03em; color:var(--red);">重要なお知らせ ：</div>
+    <div class="type-meta">Ryo Gothic PlusN / 15px / 700 / color: #ff0000<span class="type-context">面色を敷かず、赤い文字だけで示す</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:500; line-height:2.2; letter-spacing:0.03em;">ぺんてるの新商品 — Section Label</div>
+    <div class="type-meta">Ryo Gothic PlusN / 12px / 500 / line-height: <strong>2.2</strong><span class="type-context">ここだけ行間が広い</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:11px; font-weight:500; line-height:1.0; letter-spacing:0.03em; color:var(--ink-sub);">表現する人々 — Micro</div>
+    <div class="type-meta">Ryo Gothic PlusN / 11px / 500 / line-height: 1.0 / color: #888888<span class="type-context">最小サイズ</span></div>
+  </div>
+
+  <div class="group-label">English — Paralucent。字間は normal、行高は font-size より小さい</div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-en); font-weight:900; font-size:44px; line-height:0.8; letter-spacing:normal;">New Products</div>
+    <div class="type-meta">Paralucent / 44px / <strong>900</strong> / line-height: <strong>0.8</strong> / letter-spacing: normal<span class="type-context">大文字主体なのでディセンダが不要</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-en); font-weight:900; font-size:28px; line-height:1.0; letter-spacing:normal;">Keywords</div>
+    <div class="type-meta">Paralucent / 28px / 900 / line-height: 1.0<span class="type-context">見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-en); font-weight:700; font-size:12px; line-height:1.0; letter-spacing:normal; color:var(--ink-sub);">2025.07.30</div>
+    <div class="type-meta">Paralucent / 12px / 700 / line-height: 1.0<span class="type-context">日付も欧文フォントに切り替える</span></div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- ARTICLES -->
+<section class="section container" id="articles">
+  <div class="sec-no">03</div>
+  <div class="sec-en">Magazine</div>
+  <div class="sec-jp">表現するよろこびに出会えるウェブマガジン</div>
+
+  <div class="article-grid">
+    <a class="article-card" href="#" style="background:var(--sky)">
+      <div class="article-role">アーティスト</div>
+      <div class="article-name">吉田夏奈さん</div>
+      <p class="article-quote">将来、宇宙から地球を描いてみたい。</p>
+    </a>
+    <a class="article-card" href="#" style="background:var(--lemon)">
+      <div class="article-role">AR三兄弟</div>
+      <div class="article-name">川田十夢さん</div>
+      <p class="article-quote">もしこの世に一本しか持てないとしたら。</p>
+    </a>
+    <a class="article-card" href="#" style="background:var(--lilac)">
+      <div class="article-role">能楽師</div>
+      <div class="article-name">田邊恭資さん</div>
+      <p class="article-quote">使い込んで自分の形になっていく道具が好きです。</p>
+    </a>
+    <a class="article-card" href="#" style="background:var(--mint)">
+      <div class="article-role">プロデューサー</div>
+      <div class="article-name">鈴木敏夫さん</div>
+      <p class="article-quote">使い始めたのは、ずいぶん昔のことになります。</p>
+    </a>
+  </div>
+  <p style="font-size:13px; line-height:1.6; color:var(--ink-sub); margin-top:24px;">
+    面色は内容に応じて選ばない。<strong>出現順に Sky → Lemon → Lilac → Mint を機械的に割り当てる</strong>。<br>
+    カードは <code>border-radius: 0</code>、padding は <code>44px 30px 104px</code> と下だけ厚い。
+  </p>
+</section>
+
+<!-- PRODUCTS -->
+<section class="product-section">
+  <div class="section container" id="products">
+    <div class="sec-no">04</div>
+    <div class="sec-en">Products</div>
+    <div class="sec-jp">ぺんてるの新商品</div>
+
+    <p class="alert" style="margin-bottom:36px;">重要なお知らせ ： 一部商品の出荷につきまして</p>
+
+    <div class="group-label">Category Pills — 一律 border-radius: 20px</div>
+    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+      <a class="pill pill--chip" href="#">ボールペン</a>
+      <a class="pill pill--chip" href="#">シャープペン</a>
+      <a class="pill pill--chip" href="#">マーカー</a>
+      <a class="pill pill--chip" href="#">消し具</a>
+      <a class="pill pill--chip" href="#">ブラッシュ（筆）</a>
+      <a class="pill pill--chip" href="#">画材</a>
+    </div>
+
+    <div class="group-label">Product Cards — カードは角丸ゼロ</div>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="product-visual"><span class="pen pen--red"></span><span class="pen pen--sky" style="height:96px"></span></div>
+        <div class="product-cat">ボールペン</div>
+        <div class="product-name">フローチューン 限定 Skyly Design</div>
+      </div>
+      <div class="product-card">
+        <div class="product-visual"><span class="pen pen--mint"></span><span class="pen pen--red" style="height:96px"></span></div>
+        <div class="product-cat">シャープペン</div>
+        <div class="product-name">アートマルチ8シャープペン</div>
+      </div>
+      <div class="product-card">
+        <div class="product-visual"><span class="pen pen--sky"></span><span class="pen pen--mint" style="height:96px"></span></div>
+        <div class="product-cat">画材</div>
+        <div class="product-name">ぺんてるくれよん 12色</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUTTONS -->
+<section class="section container" id="buttons">
+  <div class="sec-no">05</div>
+  <div class="sec-en">Buttons</div>
+  <div class="sec-jp">ボタンはすべてピル。値は一律 20px</div>
+
+  <div class="group-label">Nav Pills — 選択中は純赤 + weight 700、非選択は #eaeaea + weight 500</div>
+  <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+    <a class="pill pill--active" href="#">すべて</a>
+    <a class="pill pill--inactive" href="#">製品情報</a>
+    <a class="pill pill--inactive" href="#">ぺんてるについて</a>
+    <a class="pill pill--inactive" href="#">キャンペーン情報</a>
+    <a class="pill pill--inactive" href="#">イベント情報</a>
+  </div>
+
+  <div class="group-label">Nav Bar — 影ではなく「白い面」で画像の上に浮かせる</div>
+  <div style="position:relative; height:120px; border-radius:0; overflow:hidden;">
+    <div style="position:absolute; inset:0; background:linear-gradient(135deg,#c8102e,#f0b429);"></div>
+    <nav class="navbar" style="position:absolute; top:37px; left:50%; transform:translateX(-50%);">
+      <a class="pill pill--active" href="#">ホーム</a>
+      <a class="pill pill--nav" href="#">商品を探す</a>
+      <a class="pill pill--nav" href="#">マガジン</a>
+    </nav>
+  </div>
+  <p style="font-size:13px; line-height:1.6; color:var(--ink-sub); margin-top:16px;">
+    バー自体も <code>border-radius: 40px</code> のピル。<code>box-shadow</code> は全要素で <code>none</code>。
+  </p>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- FORMS -->
+<section class="section container" id="forms">
+  <div class="sec-no">06</div>
+  <div class="sec-en">Forms</div>
+  <div class="sec-jp">入力欄だけ和文チェーンから外れる</div>
+
+  <div class="form-grid">
+    <div>
+      <label class="form-label">お名前 — Default</label>
+      <input class="form-input" placeholder="ぺんてる 太郎">
+      <p class="form-note">"Helvetica Neue", Arial, Meiryo, sans-serif / 17px</p>
+    </div>
+    <div>
+      <label class="form-label">メールアドレス — Focus</label>
+      <input class="form-input form-input--focus" value="info@example.com">
+      <p class="form-note">フォーカス時は本文色 #212121 まで濃くする</p>
+    </div>
+    <div>
+      <label class="form-label">電話番号 — Error</label>
+      <input class="form-input form-input--error" value="09012345">
+      <p class="form-note form-note--error">エラーはブランドカラーの純赤 #ff0000</p>
+    </div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- LAYOUT -->
+<section class="section container" id="layout">
+  <div class="sec-no">07</div>
+  <div class="sec-en">Layout</div>
+  <div class="sec-jp">レイアウトと動き</div>
+
+  <table class="spec-table">
+    <tr><th>Container</th><td>1440px 相当 / 左右 30px。ヒーローは全幅 100vw</td></tr>
+    <tr><th>Spacing Scale</th><td>8 / 17 / 30 / 44 / 104 / 160px</td></tr>
+    <tr><th>Article Grid</th><td>4カラム（パステル4色が1行に並ぶ）</td></tr>
+    <tr><th>Card Padding</th><td>44px 30px <strong>104px</strong> — 下だけ突出して厚い</td></tr>
+    <tr><th>Border Radius</th><td>ピル 20px / ナビバー 40px / カード 0px</td></tr>
+    <tr><th>Elevation</th><td>影は使わない。画像の上のUIは白い面で浮かせる</td></tr>
+    <tr><th>Easing（唯一の CSS 変数）</th><td><code>--ease01: cubic-bezier(0.16, 1, 0.3, 1)</code>（強い減速）<br><code>--ease02: cubic-bezier(0.6, 0.25, 0, 1)</code>（溜めてから走る）</td></tr>
+    <tr><th>palt</th><td>body から全体に <code>font-feature-settings: "palt"</code>。入力欄のみ normal</td></tr>
+  </table>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-en">Pentel</div>
+    <p>表現するよろこびを。 The Joy of Expression.</p>
+    <a class="footer-group" href="#">アストラム株式会社 コーポレートサイト</a>
+    <p style="margin-top:24px;">Design System Preview — DESIGN.md の実測値に基づくカタログ。実在サイトの再現ではありません。</p>
+  </div>
+</footer>
+
+</body>
+</html>

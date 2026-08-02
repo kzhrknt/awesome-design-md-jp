@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUWADA（諏訪田製作所） — Design System Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;1,400&family=Noto+Serif+JP:wght@400;600&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<!--
+  SUWADA（諏訪田製作所）DESIGN.md のプレビュー。
+  実測日 2026-08-02 / https://www.suwada.co.jp/
+
+  このサイトの要点は5つ。
+  1. body の背景が #000000。白地に黒ではなく、黒地に白が既定。
+  2. 読ませる和文は明朝（Noto Serif JP / line-height 2.0）、
+     ナビ・フッターのUIだけがゴシック。
+  3. 欧文見出しは Libre Baskerville の font-weight: 300。
+  4. border-radius が px ではなく 2em。実測値が font-size のちょうど2倍
+     （12px→24px、15.4px→30.8px、16.94px→33.88px）。
+  5. 写真の上の文字は必ず黒のスクリム越し。0.2 / 0.4 / 0.5 / 0.7 の4段階。
+
+  ■ フォント代替について
+  このサイトは商用Webフォントを使っていないため、代替がほぼ不要。
+    Libre Baskerville → そのまま（Google Fonts）
+    Noto Serif JP    → そのまま（Google Fonts）
+    Source Sans Pro  → Source Sans 3（後継版。字形はほぼ同一）
+  Libre Baskerville は 400 までしか無いので、実サイトの weight 300 は
+  400 をそのまま使っている（実サイトも合成的に細く見せている）。
+
+  ■ font-size の小数について
+  実測に 15.4px / 16.94px / 30.8px / 33.88px が現れるのは、
+  font-size を 1.1em の入れ子で積んでいるため（14 × 1.1 = 15.4、× 1.1 = 16.94）。
+  ここでも em で書いてリズムを再現している。
+-->
+<style>
+  :root {
+    /* --- Base：有彩色を1色も持たない --- */
+    --bg:          #000000;   /* body に明示指定されたページ地色 */
+    --surface:     #f2f2f2;   /* 白地セクション・ドロップダウン */
+    --on-dark:     #ffffff;
+    --on-light:    #000000;
+
+    --chip:        #222222;   /* カテゴリ札 */
+    --divider:     #cccccc;
+    --muted:       #888888;   /* 言語切替 */
+    --caption:     #999999;
+    --hover:       #333333;
+
+    /* --- Scrim：奥行きは影ではなく黒の濃度でつくる --- */
+    --scrim-hero:   rgba(0, 0, 0, 0.2);
+    --scrim-card:   rgba(0, 0, 0, 0.4);
+    --scrim-header: rgba(0, 0, 0, 0.5);
+    --scrim-footer: rgba(0, 0, 0, 0.7);
+    --scrim-grad:   linear-gradient(rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0) 100%);
+
+    /* --- Type：欧文セリフ／和文明朝／UIゴシックの3系統 --- */
+    --font-en:     "Libre Baskerville", serif;
+    --font-jp:     "Noto Serif JP", serif;
+    --font-ui:     "Source Sans 3", "Source Sans Pro", 游ゴシック, YuGothic,
+                   "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN",
+                   メイリオ, Meiryo, sans-serif;
+
+    --lh-read:    2.0;    /* 和文本文・ナビ */
+    --lh-heading: 1.5;    /* 欧文見出し・フッター */
+    --lh-tight:   1.0;    /* 下層ページの見出し帯 */
+    --ls-body:    0.05em; /* 和文本文・フッター */
+    --ls-wide:    0.1em;  /* 下層英語見出し・ヒーロー和文 */
+
+    --radius-pill: 2em;   /* px で書かない。font-size に追従する */
+    --container:   1170px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--on-dark);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    font-feature-settings: normal;   /* body だけ normal。子要素で palt を当てる */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: var(--container); margin: 0 auto; padding: 0 15px; }
+  .section { padding-block: 90px; }
+
+  /* 字間を空けた見出しは末尾の余白を相殺する */
+  .tracked { letter-spacing: var(--ls-wide); margin-right: calc(var(--ls-wide) * -1); }
+
+  .section-title {
+    font-family: var(--font-en); font-weight: 400; font-size: 36px;
+    line-height: var(--lh-heading); color: var(--on-dark);
+    margin-bottom: 6px;
+  }
+  .section-no {
+    font-family: var(--font-ui); font-size: 12px; color: var(--muted);
+    letter-spacing: 0.05em; margin-bottom: 48px;
+  }
+  .group-label {
+    font-family: var(--font-jp); font-size: 14px; font-weight: 600;
+    letter-spacing: var(--ls-body); font-feature-settings: "palt";
+    color: var(--on-dark); margin: 48px 0 20px;
+    padding-bottom: 10px; border-bottom: 1px solid #333;
+  }
+  .group-label:first-of-type { margin-top: 0; }
+  .section-divider { border: 0; border-top: 1px solid #222; }
+
+  /* ---------- NAV ---------- */
+  .nav {
+    display: flex; align-items: center; gap: 30px; flex-wrap: wrap;
+    padding: 22px 30px; border-bottom: 1px solid #1c1c1c;
+  }
+  .nav-brand {
+    font-family: var(--font-en); font-size: 18px; font-weight: 400;
+    letter-spacing: var(--ls-wide); color: var(--on-dark); text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 26px; list-style: none; margin-left: auto; }
+  .nav-links a {
+    font-size: 14px; line-height: var(--lh-read);
+    color: var(--on-dark); text-decoration: none;
+    font-feature-settings: "palt";
+  }
+  .nav-links a:hover { color: var(--muted); }
+  .nav-lang { font-size: 14px; color: var(--muted); }
+  .nav-lang b { color: var(--on-dark); font-weight: 400; }
+  /* ヘッダーの唯一の塗りボタン。枠線ボタンと構造を揃えて border も持つ */
+  .nav-cta {
+    background: #fff; color: #000; text-decoration: none;
+    border: 2px solid #fff; border-radius: var(--radius-pill);
+    font-size: 12px; line-height: 1; padding: 11px 10px;
+    font-feature-settings: "palt";
+  }
+
+  /* ---------- HERO ---------- */
+  .hero { position: relative; min-height: 460px; display: flex; align-items: center; }
+  .hero-photo {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(900px 300px at 78% 46%, rgba(255,214,150,0.42), transparent 60%),
+      radial-gradient(600px 220px at 22% 30%, rgba(190,215,255,0.20), transparent 60%),
+      linear-gradient(160deg, #101215 0%, #05070a 55%, #0b0d10 100%);
+  }
+  .hero-scrim { position: absolute; inset: 0; background: var(--scrim-hero); }
+  .hero-inner { position: relative; max-width: var(--container); margin: 0 auto;
+                padding: 96px 15px; width: 100%; }
+  .hero h1 {
+    font-family: var(--font-en); font-weight: 400; font-size: 28px;
+    line-height: var(--lh-heading); font-style: italic;
+    margin-bottom: 28px;
+  }
+  .hero-jp {
+    font-family: var(--font-jp); font-size: 16px; font-weight: 600;
+    line-height: 1.8; letter-spacing: var(--ls-wide);
+    font-feature-settings: "palt";
+  }
+  .hero-buttons { display: flex; gap: 20px; margin-top: 44px; flex-wrap: wrap; }
+
+  /* ---------- BUTTONS ---------- */
+  /* 角丸は 2em。font-size を変えれば角丸も一緒に動く */
+  .btn {
+    display: inline-block; background: transparent; color: currentColor;
+    border: 2px solid currentColor; border-radius: var(--radius-pill);
+    font-size: 1.1em; line-height: 1; letter-spacing: 0.045em;
+    padding: 15px 60px; text-decoration: none; font-feature-settings: "palt";
+  }
+  .btn--small { font-size: 1em; padding: 11px 30px; }
+  .btn--filled { background: #fff; color: #000; border-color: #fff; }
+
+  /* ---------- COLORS ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+  .swatch { border: 1px solid #222; }
+  .swatch-block { height: 84px; }
+  .swatch-info { padding: 12px 14px; }
+  .swatch-name { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+  .swatch-hex { font-family: var(--font-ui); font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .swatch-role { font-family: var(--font-jp); font-size: 12px; line-height: 1.7;
+                 color: var(--caption); font-feature-settings: "palt"; }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  .type-sample { padding: 22px 0; border-bottom: 1px solid #1e1e1e; }
+  .type-meta {
+    font-family: var(--font-ui); font-size: 11px; color: var(--muted);
+    margin-top: 12px; letter-spacing: 0.03em;
+  }
+  .type-context { color: #5f5f5f; margin-left: 12px; }
+
+  /* ---------- PRODUCT（白地に反転するセクション） ---------- */
+  .invert { background: var(--surface); color: var(--on-light); }
+  .invert .section-title { color: var(--on-light); }
+  .invert .section-no { color: #666; }
+  .invert .group-label { color: var(--on-light); border-bottom-color: var(--divider); }
+  .invert .section-divider { border-top-color: var(--divider); }
+
+  .product-lead {
+    font-family: var(--font-jp); font-size: 15.4px; font-weight: 400;
+    line-height: var(--lh-read); letter-spacing: 0.045em;
+    font-feature-settings: "palt"; max-width: 720px; margin-bottom: 56px;
+  }
+  .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+  .product-visual {
+    height: 200px; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(160deg, #e6e6e6 0%, #f7f7f7 100%);
+  }
+  .nipper { width: 108px; height: 8px; background: #6e737a; position: relative; }
+  .nipper::before, .nipper::after {
+    content: ""; position: absolute; left: -34px; width: 40px; height: 5px; background: #8b9099;
+  }
+  .nipper::before { top: -9px; transform: rotate(12deg); }
+  .nipper::after  { top: 12px; transform: rotate(-12deg); }
+  /* カテゴリ札だけは角丸ゼロ。ボタンの 2em との対比 */
+  .chip {
+    display: inline-block; background: var(--chip); color: #fff;
+    border-radius: 0; padding: 10px 20px; font-size: 14px; line-height: 1;
+    font-feature-settings: "palt"; margin: 18px 0 12px;
+  }
+  .product-name {
+    font-family: var(--font-ui); font-size: 22px; font-weight: 600;
+    line-height: var(--lh-heading); margin-bottom: 8px;
+  }
+  .product-desc {
+    font-family: var(--font-jp); font-size: 14px; line-height: var(--lh-read);
+    letter-spacing: var(--ls-body); font-feature-settings: "palt";
+  }
+
+  /* ---------- PROCESS（グラデーションスクリム） ---------- */
+  .process-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+  .process-card { position: relative; height: 260px; overflow: hidden; }
+  .process-photo {
+    position: absolute; inset: 0;
+    background: linear-gradient(150deg, #23262b 0%, #0d0f12 70%);
+  }
+  .process-photo::before {
+    content: ""; position: absolute; left: 18%; top: 26%; width: 64%; height: 3px;
+    background: linear-gradient(90deg, transparent, #c7cdd6, transparent);
+  }
+  /* 写真の下部だけを潰してキャプションを読ませる */
+  .process-scrim { position: absolute; inset: 0; background: var(--scrim-grad); }
+  .process-body { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px; }
+  .process-no { font-family: var(--font-ui); font-size: 28px; font-weight: 300; line-height: 1; margin-bottom: 8px; }
+  .process-text {
+    font-family: var(--font-jp); font-size: 14px; line-height: var(--lh-read);
+    letter-spacing: var(--ls-body); font-feature-settings: "palt";
+  }
+
+  /* ---------- SCRIM DEMO ---------- */
+  .scrim-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .scrim-card { position: relative; height: 150px; overflow: hidden; }
+  .scrim-photo {
+    position: absolute; inset: 0;
+    background: linear-gradient(140deg, #4a4f57 0%, #23262b 60%, #14171b 100%);
+  }
+  .scrim-layer { position: absolute; inset: 0; }
+  .scrim-label {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 6px; text-align: center;
+  }
+  .scrim-label b { font-family: var(--font-jp); font-size: 14px; font-weight: 600;
+                   letter-spacing: var(--ls-body); font-feature-settings: "palt"; }
+  .scrim-label span { font-family: var(--font-ui); font-size: 11px; color: #cfcfcf; }
+
+  /* ---------- FORMS ---------- */
+  .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+  .form-label {
+    display: block; font-family: var(--font-jp); font-size: 13px; font-weight: 600;
+    letter-spacing: var(--ls-body); font-feature-settings: "palt"; margin-bottom: 10px;
+  }
+  .form-input {
+    width: 100%; background: transparent; color: var(--on-dark);
+    border: 1px solid #444; border-radius: 0;
+    padding: 13px 14px; font-family: var(--font-ui); font-size: 14px;
+    letter-spacing: 0.02em;
+  }
+  .form-input::placeholder { color: #5a5a5a; }
+  .form-input--focus { border-color: #fff; }
+  .form-input--error { border-color: #fff; border-style: dashed; }
+  .form-note { font-family: var(--font-jp); font-size: 12px; line-height: 1.8;
+               color: var(--caption); margin-top: 8px; font-feature-settings: "palt"; }
+
+  /* ---------- LAYOUT ---------- */
+  .spec-table { width: 100%; border-collapse: collapse; }
+  .spec-table th, .spec-table td {
+    text-align: left; padding: 13px 12px; border-bottom: 1px solid #222;
+    font-size: 13px; vertical-align: top;
+  }
+  .spec-table th { color: var(--muted); font-weight: 400; width: 180px; }
+  .spec-table td { font-family: var(--font-jp); line-height: 1.8; font-feature-settings: "palt"; }
+  .invert .spec-table th, .invert .spec-table td { border-bottom-color: var(--divider); }
+  .invert .spec-table th { color: #666; }
+
+  /* ---------- FOOTER ---------- */
+  .footer { position: relative; margin-top: 0; }
+  .footer-photo {
+    position: absolute; inset: 0;
+    background: linear-gradient(160deg, #1a1d21 0%, #0a0c0f 100%);
+  }
+  .footer-scrim { position: absolute; inset: 0; background: var(--scrim-footer); }
+  .footer-inner { position: relative; max-width: var(--container); margin: 0 auto; padding: 64px 15px; }
+  .footer h4 { font-size: 14px; font-weight: 600; line-height: var(--lh-heading); margin-bottom: 12px; }
+  .footer p { font-size: 14px; line-height: var(--lh-heading); letter-spacing: var(--ls-body); }
+  .footer-en {
+    font-family: var(--font-en); font-size: 28px; font-weight: 400;
+    line-height: var(--lh-heading); margin-bottom: 28px;
+  }
+
+  @media (max-width: 900px) {
+    .product-grid, .process-grid, .form-grid { grid-template-columns: 1fr 1fr; }
+    .scrim-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .nav { gap: 16px; padding: 18px 20px; }
+    .nav-links { display: none; }
+    .section { padding-block: 56px; }
+    .section-title { font-size: 24px; }
+    .hero h1 { font-size: 22px; }
+    .btn { padding: 15px 30px; }
+    .product-grid, .process-grid, .form-grid, .scrim-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">SUWADA</a>
+  <ul class="nav-links">
+    <li><a href="#colors">SUWADAについて</a></li>
+    <li><a href="#typography">工場見学</a></li>
+    <li><a href="#product">商品案内</a></li>
+    <li><a href="#process">クラフトマンシップ</a></li>
+    <li><a href="#forms">サポート</a></li>
+  </ul>
+  <span class="nav-lang"><b>JP</b> / EN / 中文</span>
+  <a class="nav-cta" href="#">お問い合わせ</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-photo"></div>
+  <div class="hero-scrim"></div>
+  <div class="hero-inner">
+    <h1>Making superior cutting tools since 1926</h1>
+    <p class="hero-jp">美を創りだす道具は、それ自身も美しく、<br>愛情が湧く本物でなければならない。</p>
+    <div class="hero-buttons">
+      <a class="btn" href="#colors">SUWADAについて</a>
+      <a class="btn" href="#product">商品案内</a>
+    </div>
+  </div>
+</div>
+
+<!-- COLORS -->
+<section class="section container" id="colors">
+  <div class="section-title">Colors</div>
+  <div class="section-no">01 / 有彩色を1色も持たない</div>
+
+  <div class="group-label">Base — 黒地が既定、白地は部分的な反転</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#000000; border-bottom:1px solid #222"></div><div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-hex">#000000</div><div class="swatch-role">body に明示指定されたページ地色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#ffffff"></div><div class="swatch-info"><div class="swatch-name">Text on Dark</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">黒地の上のすべての文字</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#f2f2f2"></div><div class="swatch-info"><div class="swatch-name">Surface Light</div><div class="swatch-hex">#f2f2f2</div><div class="swatch-role">白地セクション・ドロップダウン</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#222222"></div><div class="swatch-info"><div class="swatch-name">Chip Dark</div><div class="swatch-hex">#222222</div><div class="swatch-role">カテゴリ札の面色</div></div></div>
+  </div>
+
+  <div class="group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#cccccc"></div><div class="swatch-info"><div class="swatch-name">Divider</div><div class="swatch-hex">#cccccc</div><div class="swatch-role">白地セクションの区切り罫</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#888888"></div><div class="swatch-info"><div class="swatch-name">Text Muted</div><div class="swatch-hex">#888888</div><div class="swatch-role">言語切替「JP / EN / 中文」</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#999999"></div><div class="swatch-info"><div class="swatch-name">Text Caption</div><div class="swatch-hex">#999999</div><div class="swatch-role">商品カードの補足</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#333333"></div><div class="swatch-info"><div class="swatch-name">Text Hover</div><div class="swatch-hex">#333333</div><div class="swatch-role">白地ナビのホバー時</div></div></div>
+  </div>
+
+  <div class="group-label">Scrim — 奥行きは影ではなく黒の濃度でつくる</div>
+  <div class="scrim-grid">
+    <div class="scrim-card"><div class="scrim-photo"></div><div class="scrim-layer" style="background:rgba(0,0,0,0.2)"></div><div class="scrim-label"><b>Hero</b><span>rgba(0,0,0,0.2)</span></div></div>
+    <div class="scrim-card"><div class="scrim-photo"></div><div class="scrim-layer" style="background:rgba(0,0,0,0.4)"></div><div class="scrim-label"><b>Nav Card</b><span>rgba(0,0,0,0.4)</span></div></div>
+    <div class="scrim-card"><div class="scrim-photo"></div><div class="scrim-layer" style="background:rgba(0,0,0,0.5)"></div><div class="scrim-label"><b>Page Header</b><span>rgba(0,0,0,0.5)</span></div></div>
+    <div class="scrim-card"><div class="scrim-photo"></div><div class="scrim-layer" style="background:rgba(0,0,0,0.7)"></div><div class="scrim-label"><b>Footer</b><span>rgba(0,0,0,0.7)</span></div></div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- TYPOGRAPHY -->
+<section class="section container" id="typography">
+  <div class="section-title">Typography</div>
+  <div class="section-no">02 / 欧文セリフ・和文明朝・UIゴシックの3系統</div>
+
+  <div class="group-label">English — Libre Baskerville（weight 300 で使う）</div>
+  <div class="type-sample">
+    <div class="tracked" style="font-family:var(--font-en); font-size:36px; font-weight:400; line-height:1.0;">Craftsmanship</div>
+    <div class="type-meta">Libre Baskerville / 36px / 300 / line-height: 1.0 / letter-spacing: 0.1em<span class="type-context">下層ページの見出し帯。行を詰めて字間を空ける</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-en); font-size:36px; font-weight:400; line-height:1.5;">Nail Nippers</div>
+    <div class="type-meta">Libre Baskerville / 36px / 300 / line-height: 1.5 / letter-spacing: 0<span class="type-context">セクション見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-en); font-size:28px; font-weight:400; line-height:1.5; font-style:italic;">Making superior cutting tools since 1926</div>
+    <div class="type-meta">Libre Baskerville / 28px / 300 / line-height: 1.5<span class="type-context">ヒーローのコピー</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-en); font-size:21px; font-weight:400; line-height:1.5;">Models</div>
+    <div class="type-meta">Libre Baskerville / 21px / 300 / line-height: 1.5<span class="type-context">小見出し</span></div>
+  </div>
+
+  <div class="group-label">Japanese — Noto Serif JP（読ませる文はすべて明朝）</div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-jp); font-size:16px; font-weight:600; line-height:1.8; letter-spacing:0.1em; font-feature-settings:'palt';">美を創りだす道具は、それ自身も美しく、愛情が湧く本物でなければならない。</div>
+    <div class="type-meta">Noto Serif JP / 16px / 600 / line-height: 1.8 / letter-spacing: 0.1em<span class="type-context">ヒーローの和文コピー</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-jp); font-size:16px; font-weight:600; line-height:1.4; letter-spacing:0.044em; font-feature-settings:'palt';">クラフトマンシップ</div>
+    <div class="type-meta">Noto Serif JP / 16px / 600 / line-height: 1.4 / letter-spacing: 0.044em<span class="type-context">ページラベル</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-jp); font-size:15.4px; font-weight:400; line-height:2.0; letter-spacing:0.045em; font-feature-settings:'palt';">当社は1926年に、ニッパーの前身とも言える釘の頭を切るための工具づくりから始まりました。以来、刃物の町・三条で刃と向き合い続けています。</div>
+    <div class="type-meta">Noto Serif JP / 15.4px（= 14 × 1.1）/ 400 / line-height: 2.0 / letter-spacing: 0.045em<span class="type-context">リード本文</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-jp); font-size:14px; font-weight:400; line-height:2.0; letter-spacing:0.05em; font-feature-settings:'palt';">SUWADAのつめ切りは、材料選びから仕上げまで、一貫して自社で行っています。職人の手仕上げによって、刃と刃が隙間なく閉じる精度を出します。</div>
+    <div class="type-meta">Noto Serif JP / 14px / 400 / line-height: 2.0 / letter-spacing: 0.05em<span class="type-context">商品説明・工程説明</span></div>
+  </div>
+
+  <div class="group-label">UI — Source Sans Pro ＋ 游ゴシック / ヒラギノ（欧文優先チェーン）</div>
+  <div class="type-sample">
+    <div style="font-size:22px; font-weight:600; line-height:1.5;">つめ切り — Product Name</div>
+    <div class="type-meta">Source Sans Pro 系 / 22px / 600 / line-height: 1.5<span class="type-context">商品名だけゴシック</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:2.0; font-feature-settings:'palt';">SUWADAについて — Navigation</div>
+    <div class="type-meta">Source Sans Pro 系 / 14px / 400 / line-height: 2.0<span class="type-context">グローバルナビ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:1.5; letter-spacing:0.05em;">〒959-1114 新潟県三条市高安寺1332番地 — Footer Body</div>
+    <div class="type-meta">Source Sans Pro 系 / 14px / 400 / line-height: 1.5 / letter-spacing: 0.05em<span class="type-context">フッター</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:400; line-height:2.0; color:var(--muted);">JP / EN / 中文 — Nav Sub</div>
+    <div class="type-meta">Source Sans Pro 系 / 12px / 400 / line-height: 2.0 / color: #888888<span class="type-context">言語切替</span></div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- PROCESS -->
+<section class="section container" id="process">
+  <div class="section-title">— Manufacturing Process —</div>
+  <div class="section-no">03 / 写真の下部だけをグラデーションで潰す</div>
+
+  <div class="process-grid">
+    <div class="process-card">
+      <div class="process-photo"></div><div class="process-scrim"></div>
+      <div class="process-body">
+        <div class="process-no">1.</div>
+        <p class="process-text">つめ切りの原材料は、カスタムナイフにも使われる高級刃物鋼を用います。</p>
+      </div>
+    </div>
+    <div class="process-card">
+      <div class="process-photo"></div><div class="process-scrim"></div>
+      <div class="process-body">
+        <div class="process-no">7.</div>
+        <p class="process-text">ダイヤモンドヤスリを駆使し、左右の刃が隙間なく閉じるよう調整します。</p>
+      </div>
+    </div>
+    <div class="process-card">
+      <div class="process-photo"></div><div class="process-scrim"></div>
+      <div class="process-body">
+        <div class="process-no">8.</div>
+        <p class="process-text">緩くカーブした刃先の形状に合わせ、薄く鋭い刃をつけて行きます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT（白地に反転） -->
+<section class="invert">
+  <div class="section container" id="product">
+    <div class="section-title">Products</div>
+    <div class="section-no">04 / 下層の本文エリアだけが白地に反転する</div>
+
+    <p class="product-lead">美しく仕上げられた刃は、道具としての精度と、手に取ったときの佇まいを両立します。SUWADAのつめ切りは、そのどちらも譲りません。</p>
+
+    <div class="product-grid">
+      <div>
+        <div class="product-visual"><span class="nipper"></span></div>
+        <div><span class="chip">つめ切り</span></div>
+        <div class="product-name">つめ切り クラシックL</div>
+        <p class="product-desc">刃と刃が隙間なく閉じる精度。切るのではなく、断つ感触。</p>
+      </div>
+      <div>
+        <div class="product-visual"><span class="nipper"></span></div>
+        <div><span class="chip">ネイルニッパー</span></div>
+        <div class="product-name">キューティクルニッパー</div>
+        <p class="product-desc">甘皮処理のための細身の刃先。プロの現場で使われる仕様。</p>
+      </div>
+      <div>
+        <div class="product-visual"><span class="nipper"></span></div>
+        <div><span class="chip">盆栽</span></div>
+        <div class="product-name">盆栽鋏</div>
+        <p class="product-desc">枝を潰さずに断つ。手入れの跡が木に残らない切れ味。</p>
+      </div>
+    </div>
+
+    <div style="margin-top:56px; display:flex; gap:20px; flex-wrap:wrap;">
+      <a class="btn" href="#">ご購入はこちら</a>
+      <a class="btn" href="#">商品カテゴリ一覧へ</a>
+    </div>
+  </div>
+
+  <div class="container"><hr class="section-divider"></div>
+
+  <!-- BUTTONS -->
+  <div class="section container" id="buttons">
+    <div class="section-title">Buttons</div>
+    <div class="section-no">05 / 角丸は px ではなく 2em。文字サイズに追従する</div>
+
+    <div class="group-label">Outline Pill — 主要CTA。塗らずに枠線1本</div>
+    <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap;">
+      <a class="btn" href="#">SUWADAについて</a>
+      <a class="btn btn--small" href="#">YouTube</a>
+      <!-- ヘッダーの塗りピルは黒地の上に置かれる要素なので、地色を敷いて示す -->
+      <span style="display:inline-flex; align-items:center; background:#000; padding:14px 20px;">
+        <a class="btn btn--filled" href="#" style="font-size:12px; padding:11px 10px;">お問い合わせ</a>
+      </span>
+    </div>
+    <p style="font-family:var(--font-jp); font-size:13px; line-height:1.9; color:#555; margin-top:22px; font-feature-settings:'palt';">
+      実測: border-radius 30.8px ÷ font-size 15.4px = <strong>2em</strong>。24px ÷ 12px、33.88px ÷ 16.94px も同じ比。<br>
+      左右の padding は 60px と極端に広く取る。
+    </p>
+
+    <div class="group-label">Category Chip — 札だけは角丸ゼロ</div>
+    <div style="display:flex; gap:14px; flex-wrap:wrap;">
+      <span class="chip" style="margin:0">つめ切り</span>
+      <span class="chip" style="margin:0">クラフトマンシップ</span>
+      <span class="chip" style="margin:0">工場見学</span>
+    </div>
+  </div>
+
+  <div class="container"><hr class="section-divider"></div>
+
+  <!-- LAYOUT -->
+  <div class="section container" id="layout">
+    <div class="section-title">Layout</div>
+    <div class="section-no">06 / Bootstrap 3 系の 15px グリッド</div>
+    <table class="spec-table">
+      <tr><th>Container</th><td>1170px / 左右パディング 15px</td></tr>
+      <tr><th>Spacing Scale</th><td>10 / 15 / 30 / 60 / 90 / 120px（15px の倍数）</td></tr>
+      <tr><th>Product Grid</th><td>3カラム / gutter 30px</td></tr>
+      <tr><th>Hero</th><td>100vh の全画面スライドショー。文字は左寄せ・垂直中央</td></tr>
+      <tr><th>Elevation</th><td>影は使わない。奥行きはスクリムの濃度（0.2 / 0.4 / 0.5 / 0.7）で表現する</td></tr>
+      <tr><th>Type Scale</th><td>font-size は 1.1em の入れ子（14 → 15.4 → 16.94px）</td></tr>
+    </table>
+  </div>
+
+  <div class="container"><hr class="section-divider"></div>
+
+  <!-- FORMS -->
+  <div class="section container" id="forms">
+    <div class="section-title">Forms</div>
+    <div class="section-no">07 / 入力欄は角丸ゼロ・罫線1本</div>
+    <div class="form-grid" style="color:var(--on-light)">
+      <div>
+        <label class="form-label">お名前 — Default</label>
+        <input class="form-input" style="border-color:#cccccc; color:#000" placeholder="諏訪田 太郎">
+        <p class="form-note" style="color:#666">通常状態。罫線は #cccccc</p>
+      </div>
+      <div>
+        <label class="form-label">メールアドレス — Focus</label>
+        <input class="form-input" style="border-color:#000000; color:#000" value="info@example.com">
+        <p class="form-note" style="color:#666">フォーカス時は本文色（#000000）まで濃くする</p>
+      </div>
+      <div>
+        <label class="form-label">お問い合わせ内容 — Error</label>
+        <input class="form-input" style="border-color:#000000; border-style:dashed; color:#000" value="">
+        <p class="form-note" style="color:#666">有彩色を持たないため、エラーは破線で示す</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-photo"></div>
+  <div class="footer-scrim"></div>
+  <div class="footer-inner">
+    <div class="footer-en">SUWADA</div>
+    <h4>株式会社 諏訪田製作所</h4>
+    <p>〒959-1114 新潟県三条市高安寺1332番地</p>
+    <p style="color:var(--caption); margin-top:20px; font-size:12px;">
+      Design System Preview — DESIGN.md の実測値に基づくカタログ。実在サイトの再現ではありません。
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

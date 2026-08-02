@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>final（ファイナル） — Design System Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&family=Shippori+Mincho:wght@400;500;700&display=swap" rel="stylesheet">
+<!--
+  final（ファイナル / S'NEXT）DESIGN.md のプレビュー。
+  実測日 2026-08-02 / https://final-inc.com/
+
+  このサイトの要点は6つ。
+  1. 和文の本文フォントが明朝。--text-font-family が "Hiragino Mincho ProN" 始まりで、
+     商品名・価格・ボタン・フォームまでサイト全体が明朝で組まれる。
+  2. 見出しは EB Garamond ＋ 和文明朝を1つのチェーンに混ぜる。
+  3. letter-spacing が全要素で 0.05em（font-size × 0.05）。
+  4. 例外は3つだけ。欧文の大見出し -0.025em（マイナス）、
+     ボタンのラベル 2px（13px で 0.154em）、ブランドタブ 0.02em。
+  5. --button-border-radius: 4px に対し --block-border-radius: 0px。
+     面は角丸ゼロ、ボタンだけ 4px という非対称。
+  6. グリッドが20カラム / gap 34px、コンテナ 1520px。
+
+  ■ フォント代替について
+  EB Garamond は Google Fonts にあるのでそのまま。
+  和文は macOS ならヒラギノ明朝が実際に出るが、実サイトのチェーンは末尾が
+  Meiryo（ゴシック）なので、明朝が無い環境ではゴシックに落ちて印象が大きく変わる。
+  ここでは Meiryo の前に Shippori Mincho を挟み、どの環境でも明朝で組まれるようにした。
+-->
+<style>
+  :root {
+    /* --- 色は実サイトと同じく RGB 成分で持ち、rgb() で組み立てる --- */
+    --heading-color: 34, 34, 34;
+    --text-color: 34, 34, 34;
+    --background: 255, 255, 255;
+    --secondary-background: 245, 245, 245;
+    --border-color: 0, 0, 0, 0.1;
+    --border-color-darker: 167, 167, 167;
+    --root-border-color: 222, 222, 222;
+
+    --primary-button-background: 0, 107, 198;
+    --primary-button-text-color: 255, 255, 255;
+    --secondary-button-background: 34, 34, 34;
+
+    --success-color: 0, 107, 198;
+    --success-background: 204, 225, 244;
+    --error-color: 236, 9, 36;
+    --error-background: 254, 238, 240;
+    --product-star-rating: 231, 147, 21;
+    --product-sold-out-accent: 149, 149, 149;
+
+    --dark-section: #222222;
+    --footer-bg:    #171717;
+    --border-subtle: #ededed;   /* ブランド切替タブの枠 */
+
+    /* --- Type：和文明朝のみ。ゴシックの指定が存在しない --- */
+    --text-font-family: "Hiragino Mincho ProN", "Hiragino Mincho Pro",
+                        "Yu Mincho", YuMincho, "Shippori Mincho", Meiryo, sans-serif;
+    --heading-font-family: "EB Garamond", "Hiragino Mincho ProN", "Hiragino Mincho Pro",
+                           "Yu Mincho", YuMincho, "Shippori Mincho", Meiryo, sans-serif;
+    --heading-font-weight: 400;
+    --text-font-weight: 400;
+    --text-font-bold-weight: 700;
+
+    --base-font-size: 15px;
+    --heading-large-font-size: 58px;
+    --heading-h1-font-size: 40px;
+    --heading-h3-font-size: 32px;
+    --heading-h4-font-size: 26px;
+    --heading-h5-font-size: 22px;
+    --heading-small-font-size: 12px;
+
+    --ls: 0.05em;          /* 全要素で共通 */
+    --lh-body: 1.7333;     /* 15px → 26px */
+    --lh-lead: 2.2;        /* 読ませるリードだけ開く */
+
+    --button-border-radius: 4px;
+    --block-border-radius: 0px;
+    --color-swatch-border-radius: 0px;
+    --button-height: 52px;
+    --button-small-height: 44px;
+    --form-input-field-height: 52px;
+    --form-input-gap: 16px;
+
+    --container-max-width: 1520px;
+    --container-gutter: 40px;
+    --grid-column-count: 20;
+    --grid-gap: 34px;
+    --vertical-breather: 80px;
+    --vertical-breather-tight: 64px;
+    --product-list-block-spacing: 34px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: rgb(var(--background));
+    color: rgb(var(--text-color));
+    font-family: var(--text-font-family);
+    font-size: var(--base-font-size);
+    font-weight: var(--text-font-weight);
+    line-height: var(--lh-body);
+    letter-spacing: var(--ls);
+    font-feature-settings: normal;   /* palt は使わない */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: var(--container-max-width); margin: 0 auto; padding: 0 var(--container-gutter); }
+  .section { padding-block: var(--vertical-breather); }
+
+  /* セクション見出し：英語（EB Garamond）の下に和文ラベルを小さく置く2層構成 */
+  .section-title {
+    font-family: var(--heading-font-family);
+    font-size: var(--heading-h1-font-size); font-weight: 500;
+    line-height: 1.083; letter-spacing: var(--ls);
+    margin-bottom: 8px;
+  }
+  .section-label {
+    font-size: 14px; line-height: 1.23; letter-spacing: var(--ls);
+    color: rgba(34, 34, 34, 0.7); margin-bottom: 48px;
+  }
+  .group-label {
+    font-size: 13px; letter-spacing: var(--ls); color: rgba(34, 34, 34, 0.7);
+    margin: 48px 0 20px; padding-bottom: 10px;
+    border-bottom: 1px solid rgba(var(--border-color));
+  }
+  .group-label:first-of-type { margin-top: 0; }
+  .section-divider { border: 0; border-top: 1px solid rgba(var(--border-color)); }
+
+  /* ---------- HEADER ---------- */
+  .announcement {
+    text-align: center; padding: 10px 0;
+    font-size: 14px; line-height: 1.71; letter-spacing: var(--ls);
+    border-bottom: 1px solid rgba(var(--border-color));
+  }
+  .header {
+    display: flex; align-items: center; gap: 40px; flex-wrap: wrap;
+    padding: 24px var(--container-gutter);
+    border-bottom: 1px solid rgba(var(--border-color));
+  }
+  .header-brand {
+    font-family: var(--heading-font-family); font-size: 30px; font-weight: 400;
+    letter-spacing: 0.2em; text-decoration: none; color: rgb(var(--text-color));
+  }
+  .header-nav { display: flex; gap: 32px; list-style: none; margin: 0 auto; }
+  .header-nav a {
+    font-family: var(--heading-font-family); font-size: 15px;
+    line-height: var(--lh-body); letter-spacing: var(--ls);
+    color: rgb(var(--text-color)); text-decoration: none;
+  }
+  .cart-count {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border-radius: 21px;
+    background: rgb(var(--primary-button-background)); color: #fff;
+    font-size: 9px; font-weight: 700; letter-spacing: normal;
+  }
+  /* 唯一のピル。radius 30px */
+  .brand-tab {
+    display: inline-block; background: transparent; color: rgb(var(--text-color));
+    border: 1px solid var(--border-subtle); border-radius: 30px;
+    padding: 4px 14px; font-family: var(--heading-font-family);
+    font-size: 13px; letter-spacing: 0.02em; text-decoration: none;
+  }
+  .brand-tab--active { border-color: rgb(var(--text-color)); }
+
+  /* ---------- HERO ---------- */
+  .hero { position: relative; }
+  .hero-photo {
+    height: 420px;
+    background:
+      radial-gradient(700px 260px at 68% 46%, rgba(255,255,255,0.55), transparent 62%),
+      linear-gradient(150deg, #d9d6d1 0%, #efece8 45%, #c9c6c2 100%);
+    display: flex; align-items: center; justify-content: flex-end;
+    padding: 0 8%;
+  }
+  .hero-copy { text-align: right; }
+  .hero-copy p {
+    font-size: 26px; line-height: 1.9; letter-spacing: var(--ls);
+    color: #6f6f6f;
+  }
+  .hero-copy .hero-en {
+    font-family: var(--heading-font-family); font-size: 58px; font-weight: 400;
+    line-height: 1.07; letter-spacing: -0.025em; color: #8e8e8e; margin-top: 24px;
+  }
+
+  /* ---------- BUTTONS ---------- */
+  /* 高さは padding ではなく line-height で作る */
+  .button {
+    display: inline-block; border: 0; cursor: pointer;
+    border-radius: var(--button-border-radius);
+    height: var(--button-height); padding: 0 35px;
+    font-family: var(--text-font-family); font-size: 13px; font-weight: 400;
+    line-height: var(--button-height); letter-spacing: 2px;
+    text-decoration: none; text-align: center;
+  }
+  .button--primary   { background: rgb(var(--primary-button-background)); color: #fff; }
+  .button--secondary { background: rgb(var(--secondary-button-background)); color: #fff; }
+  .button--small     { height: var(--button-small-height); line-height: var(--button-small-height); }
+  .button--newsletter{ background: #000; color: #fff; border-radius: 0; padding: 0 21px; letter-spacing: 0.05em; }
+  .button--outline {
+    background: transparent; color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 6px;
+    height: auto; padding: 12px 20px; line-height: 1;
+    font-family: var(--heading-font-family); font-size: 12px; letter-spacing: var(--ls);
+  }
+
+  /* ---------- COLORS ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: var(--grid-gap); }
+  .swatch { border: 1px solid rgba(var(--border-color)); border-radius: var(--block-border-radius); overflow: hidden; }
+  .swatch-block { height: 84px; }
+  .swatch-info { padding: 14px; }
+  .swatch-name { font-size: 14px; margin-bottom: 3px; letter-spacing: var(--ls); }
+  .swatch-hex { font-size: 12px; color: rgba(34,34,34,0.7); margin-bottom: 8px; letter-spacing: var(--ls); }
+  .swatch-role { font-size: 12px; line-height: 1.5; letter-spacing: var(--ls); color: rgba(34,34,34,0.7); }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  .type-sample { padding: 22px 0; border-bottom: 1px solid rgba(var(--border-color)); }
+  .type-meta { font-size: 12px; letter-spacing: var(--ls); color: rgba(34,34,34,0.5); margin-top: 12px; }
+  .type-context { color: rgba(34,34,34,0.35); margin-left: 12px; }
+
+  /* ---------- PRODUCT ---------- */
+  .product-lead {
+    font-size: 15px; line-height: var(--lh-lead); letter-spacing: var(--ls);
+    max-width: 760px; margin-bottom: 56px;
+  }
+  .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--grid-gap); }
+  .product-visual {
+    position: relative; height: 220px;
+    background: linear-gradient(160deg, #eeeeee 0%, #f8f8f8 100%);
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--block-border-radius);
+  }
+  .earbud { width: 54px; height: 54px; border-radius: 50% 50% 46% 54%; background: #3a3a3a; position: relative; }
+  .earbud::after { content: ""; position: absolute; right: -6px; bottom: 4px; width: 16px; height: 34px;
+                   border-radius: 8px; background: #4a4a4a; transform: rotate(12deg); }
+  .badge {
+    position: absolute; top: 10px; left: 10px;
+    background: rgb(var(--product-sold-out-accent)); color: #fff;
+    border-radius: 0; padding: 0 5px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.042em; line-height: 1.6;
+  }
+  .product-name { font-size: 15px; letter-spacing: var(--ls); margin: 16px 0 4px; }
+  .product-price { font-size: 16px; line-height: 1.73; letter-spacing: var(--ls); }
+  .product-price .sale { color: rgb(var(--error-color)); }
+
+  /* シリーズカード：唯一 radius 6px を持つ面 */
+  .series-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--grid-gap); }
+  .series-card { background: rgb(var(--secondary-background)); border-radius: 6px; padding: 28px 24px 32px; }
+  .series-name { font-family: var(--heading-font-family); font-size: 24px; font-weight: 400;
+                 line-height: 1.11; letter-spacing: var(--ls); margin-bottom: 10px; }
+  .series-desc { font-size: 12px; line-height: 1.5; letter-spacing: var(--ls); }
+
+  /* カラースウォッチ：radius 0、選択中は白の2px枠 */
+  .swatch-row { display: flex; gap: 10px; }
+  .color-chip { width: 30px; height: 30px; border-radius: var(--color-swatch-border-radius);
+                border: 2px solid #fff; outline: 1px solid rgba(var(--border-color)); }
+
+  /* ---------- DARK SECTION ---------- */
+  .dark { background: var(--dark-section); color: #fff; }
+  .dark .section-title { color: #fff; }
+  .dark .section-label { color: rgba(255,255,255,0.7); }
+  .dark .lead { font-size: 15px; line-height: 2.0; letter-spacing: var(--ls); max-width: 700px; }
+
+  /* ---------- FORMS ---------- */
+  .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--grid-gap); }
+  .form-label { display: block; font-size: 13px; letter-spacing: var(--ls); margin-bottom: var(--form-input-gap); }
+  .form-input {
+    width: 100%; height: var(--form-input-field-height);
+    background: #fff; color: rgb(var(--text-color));
+    border: 1px solid rgba(var(--border-color)); border-radius: 0;
+    padding: 0 16px; font-family: var(--text-font-family);
+    font-size: 15px; letter-spacing: var(--ls);
+  }
+  .form-input--focus { border-color: rgb(var(--primary-button-background)); }
+  .form-input--error { border-color: rgb(var(--error-color)); background: rgb(var(--error-background)); }
+  .form-note { font-size: 12px; line-height: 1.5; letter-spacing: var(--ls); margin-top: 8px; color: rgba(34,34,34,0.7); }
+  .form-note--error { color: rgb(var(--error-color)); }
+
+  /* ---------- PAGINATION ---------- */
+  .pagination { display: flex; gap: 10px; }
+  .page {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; letter-spacing: var(--ls); text-decoration: none;
+    border: 1px solid rgba(34, 34, 34, 0.15); color: rgba(34, 34, 34, 0.15);
+  }
+  .page--current { background: rgb(var(--secondary-button-background)); color: #fff; }
+
+  /* ---------- LAYOUT TABLE ---------- */
+  .spec-table { width: 100%; border-collapse: collapse; }
+  .spec-table th, .spec-table td {
+    text-align: left; padding: 14px 12px; border-bottom: 1px solid rgba(var(--border-color));
+    font-size: 14px; letter-spacing: var(--ls); vertical-align: top;
+  }
+  .spec-table th { color: rgba(34,34,34,0.5); font-weight: 400; width: 220px; }
+
+  /* ---------- FOOTER ---------- */
+  .footer { background: var(--footer-bg); color: #fff; padding: 64px 0; }
+  .footer-title { font-family: var(--heading-font-family); font-size: 34px; font-weight: 500;
+                  line-height: 1.5; letter-spacing: -0.03em; margin-bottom: 24px; }
+  .footer p { font-size: 13px; line-height: 1.54; letter-spacing: var(--ls); color: rgba(255,255,255,0.7); }
+  .footer-form { display: flex; gap: 0; margin: 24px 0 32px; max-width: 460px; }
+  .footer-form input {
+    flex: 1; height: 44px; background: transparent; color: #fff;
+    border: 1px solid rgba(255,255,255,0.3); border-right: 0; border-radius: 0;
+    padding: 0 14px; font-family: var(--text-font-family); font-size: 13px; letter-spacing: var(--ls);
+  }
+  .footer-form input::placeholder { color: rgba(255,255,255,0.7); }
+
+  @media (max-width: 1100px) {
+    .product-grid, .series-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 700px) {
+    :root { --container-gutter: 20px; }
+    .header { gap: 20px; }
+    .header-nav { display: none; }
+    .section { padding-block: var(--vertical-breather-tight); }
+    .section-title { font-size: 28px; }   /* letter-spacing は維持する */
+    .hero-photo { height: 300px; padding: 0 20px; }
+    .hero-copy p { font-size: 18px; }
+    .hero-copy .hero-en { font-size: 34px; }
+    .product-grid, .series-grid, .form-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="announcement">夏季休暇のお知らせ</div>
+
+<header class="header">
+  <a class="header-brand" href="#">final</a>
+  <ul class="header-nav">
+    <li><a href="#colors">PRODUCTS</a></li>
+    <li><a href="#typography">SPECIAL</a></li>
+    <li><a href="#product">ABOUT</a></li>
+    <li><a href="#lab">final LAB</a></li>
+    <li><a href="#forms">SUPPORT</a></li>
+  </ul>
+  <a class="brand-tab brand-tab--active" href="#">final</a>
+  <a class="brand-tab" href="#">ag</a>
+  <span class="cart-count">0</span>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-photo">
+    <div class="hero-copy">
+      <p>音のクオリティは、<br>音楽体験に大きな影響を与える。</p>
+      <div class="hero-en">ZE8000 MK2</div>
+    </div>
+  </div>
+</div>
+
+<!-- COLORS -->
+<section class="section container" id="colors">
+  <div class="section-title">Colors</div>
+  <div class="section-label">01 / 有彩色は #006bc6 の1色だけ</div>
+
+  <div class="group-label">Primary — サイト唯一の有彩色</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#006bc6"></div><div class="swatch-info"><div class="swatch-name">Primary Blue</div><div class="swatch-hex">#006bc6</div><div class="swatch-role">--primary-button-background。主要CTA・カートバッジ</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#222222"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#222222</div><div class="swatch-role">--secondary-button-background。文字色と同値</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#171717"></div><div class="swatch-info"><div class="swatch-name">Footer</div><div class="swatch-hex">#171717</div><div class="swatch-role">ダークセクションよりさらに一段暗い</div></div></div>
+  </div>
+
+  <div class="group-label">Semantic</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#ec0924"></div><div class="swatch-info"><div class="swatch-name">Error</div><div class="swatch-hex">#ec0924</div><div class="swatch-role">セール価格・在庫僅少</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#feeef0"></div><div class="swatch-info"><div class="swatch-name">Error Background</div><div class="swatch-hex">#feeef0</div><div class="swatch-role">エラー時の入力欄</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#cce1f4"></div><div class="swatch-info"><div class="swatch-name">Success Background</div><div class="swatch-hex">#cce1f4</div><div class="swatch-role">Success は Primary と同値</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#959595"></div><div class="swatch-info"><div class="swatch-name">Sold Out</div><div class="swatch-hex">#959595</div><div class="swatch-role">「在庫切れ」「生産終了」バッジ</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#e79315"></div><div class="swatch-info"><div class="swatch-name">Star Rating</div><div class="swatch-hex">#e79315</div><div class="swatch-role">レビューの星</div></div></div>
+  </div>
+
+  <div class="group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#ffffff; border-bottom:1px solid #ececec"></div><div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">ページ地色（html に指定）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#f5f5f5"></div><div class="swatch-info"><div class="swatch-name">Secondary Background</div><div class="swatch-hex">#f5f5f5</div><div class="swatch-role">シリーズカードの面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#a7a7a7"></div><div class="swatch-info"><div class="swatch-name">Border Darker</div><div class="swatch-hex">#a7a7a7</div><div class="swatch-role">--border-color-darker</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#dedede"></div><div class="swatch-info"><div class="swatch-name">Border Root</div><div class="swatch-hex">#dedede</div><div class="swatch-role">--root-border-color</div></div></div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- TYPOGRAPHY -->
+<section class="section container" id="typography">
+  <div class="section-title">Typography</div>
+  <div class="section-label">02 / 和文はすべて明朝。字間は全要素で 0.05em</div>
+
+  <div class="group-label">English — EB Garamond。大見出しだけ字間がマイナス</div>
+  <div class="type-sample">
+    <div style="font-family:var(--heading-font-family); font-size:40px; font-weight:400; line-height:1.07; letter-spacing:-0.025em;">PRODUCTS</div>
+    <div class="type-meta">EB Garamond / 40px / 400 / line-height: 1.07 / letter-spacing: <strong>-0.025em</strong><span class="type-context">和文は開き、欧文は締める</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--heading-font-family); font-size:40px; font-weight:500; line-height:1.083; letter-spacing:0.05em;">PICK UP</div>
+    <div class="type-meta">EB Garamond / 40px / 500 / line-height: 1.083 / letter-spacing: 0.05em<span class="type-context">セクション見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--heading-font-family); font-size:24px; font-weight:400; line-height:1.11; letter-spacing:0.05em;">ZE series</div>
+    <div class="type-meta">EB Garamond / 24px / 400 / line-height: 1.11<span class="type-context">シリーズ名</span></div>
+  </div>
+
+  <div class="group-label">Japanese — 和文明朝。本文・価格・ボタン・フォームまですべて</div>
+  <div class="type-sample">
+    <div style="font-size:30px; font-weight:700; line-height:1.733; letter-spacing:0.05em;">final 公式ストア</div>
+    <div class="type-meta">和文明朝 / 30px / <strong>700</strong> / line-height: 1.733 / letter-spacing: 0.05em<span class="type-context">ストアタイトル</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:15px; line-height:2.2; letter-spacing:0.05em; max-width:760px;">音のクオリティは音楽体験に大きな影響を与えると信じています。私たちは研究開発を軸に、音を測ることと聴くことの両方から製品をつくっています。</div>
+    <div class="type-meta">和文明朝 / 15px / 400 / line-height: <strong>2.2</strong> / letter-spacing: 0.05em<span class="type-context">リードだけ行間を開く</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:15px; line-height:1.733; letter-spacing:0.05em; max-width:760px;">本文 — 音響工学と音響心理学の双方を踏まえ、測定値と聴感の一致を目指した音質設計を行っています。</div>
+    <div class="type-meta">和文明朝 / 15px / 400 / line-height: 1.733 / letter-spacing: 0.05em<span class="type-context">継承の基準値</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; line-height:1.733; letter-spacing:0.05em;">セール価格 ¥1,280,000</div>
+    <div class="type-meta">和文明朝 / 16px / 400 / line-height: 1.733<span class="type-context">価格も明朝。数字はヒラギノ明朝の欧文グリフ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; line-height:1.23; letter-spacing:0.05em;">ピックアップ</div>
+    <div class="type-meta">和文明朝 / 14px / 400 / line-height: 1.23<span class="type-context">英語見出しの下に置く和文ラベル</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:13px; line-height:1.54; letter-spacing:0.05em; color:rgba(34,34,34,0.7);">TOP ／ 全ての商品 ／ ZE8000 MK2</div>
+    <div class="type-meta">和文明朝 / 13px / 400 / line-height: 1.54 / color: rgba(34,34,34,0.7)<span class="type-context">パンくず</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; line-height:1.5; letter-spacing:0.05em;">音響工学・音響心理学を踏まえた音質設計 — Caption</div>
+    <div class="type-meta">和文明朝 / 12px / 400 / line-height: 1.5<span class="type-context">シリーズ説明</span></div>
+  </div>
+
+  <div class="group-label">例外 — ボタンのラベルだけ字間が本文の3倍</div>
+  <div class="type-sample">
+    <div style="font-size:13px; line-height:2.4; letter-spacing:2px;">カートに追加する — Button Label</div>
+    <div class="type-meta">和文明朝 / 13px / 400 / letter-spacing: <strong>2px（0.154em）</strong><span class="type-context">押せる文字を字間で区別する</span></div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- PRODUCT -->
+<section class="section container" id="product">
+  <div class="section-title">ABOUT</div>
+  <div class="section-label">03 / 20カラムグリッド・gutter 34px の商品一覧</div>
+
+  <p class="product-lead">音のクオリティは音楽体験に大きな影響を与えると信じています。研究開発部門が、研究や技術開発の成果や過程を製品に落とし込んでいます。</p>
+
+  <div class="product-grid">
+    <div>
+      <div class="product-visual"><span class="earbud"></span></div>
+      <div class="product-name">ZE8000 MK2</div>
+      <div class="product-price">¥39,800</div>
+    </div>
+    <div>
+      <div class="product-visual"><span class="earbud"></span></div>
+      <div class="product-name">VR3000 for Gaming</div>
+      <div class="product-price">¥7,980</div>
+    </div>
+    <div>
+      <div class="product-visual"><span class="earbud"></span><span class="badge">在庫切れ</span></div>
+      <div class="product-name">A8000</div>
+      <div class="product-price">¥198,000</div>
+    </div>
+    <div>
+      <div class="product-visual"><span class="earbud"></span><span class="badge">生産終了</span></div>
+      <div class="product-name">E3000</div>
+      <div class="product-price"><span class="sale">セール価格 ¥3,980</span></div>
+    </div>
+  </div>
+
+  <div class="group-label">Color Swatches — radius 0。選択中は白の2px枠</div>
+  <div class="swatch-row">
+    <span class="color-chip" style="background:#000000"></span>
+    <span class="color-chip" style="background:#f5f5dc"></span>
+    <span class="color-chip" style="background:#dcd4c7"></span>
+    <span class="color-chip" style="background:#7f807b"></span>
+  </div>
+
+  <div class="group-label">Series Cards — 面色 #f5f5f5、唯一 radius 6px を持つ</div>
+  <div class="series-grid">
+    <div class="series-card"><div class="series-name">ZE series</div><p class="series-desc">音響工学・音響心理学を踏まえた音質設計</p></div>
+    <div class="series-card"><div class="series-name">DX series</div><p class="series-desc">全く新しい超開放型の音場感を実現</p></div>
+    <div class="series-card"><div class="series-name">VR series</div><p class="series-desc">ゲームジャンルに最適な定位表現</p></div>
+    <div class="series-card"><div class="series-name">A series</div><p class="series-desc">時間応答の研究成果から生まれた設計</p></div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- BUTTONS -->
+<section class="section container" id="buttons">
+  <div class="section-title">Buttons</div>
+  <div class="section-label">04 / 高さは padding ではなく line-height で作る</div>
+
+  <div class="group-label">Primary / Secondary — radius 4px / height 52px / letter-spacing 2px</div>
+  <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+    <a class="button button--primary" href="#">カートに追加する</a>
+    <a class="button button--secondary" href="#">TOPへ戻る</a>
+    <a class="button button--primary button--small" href="#">結果を見る</a>
+  </div>
+  <p style="font-size:13px; line-height:1.9; color:rgba(34,34,34,0.7); margin-top:22px; letter-spacing:0.05em;">
+    <code>--button-border-radius: 4px</code> に対し <code>--block-border-radius: 0px</code>。<br>
+    面・バッジ・スウォッチは角丸ゼロで、ボタンだけが 4px を持つ。
+  </p>
+
+  <div class="group-label">Newsletter — 純黒 #000000。#222222 ではない</div>
+  <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+    <a class="button button--newsletter button--small" href="#">登録</a>
+    <a class="brand-tab" href="#">final</a>
+    <a class="brand-tab" href="#">ag</a>
+  </div>
+
+  <div class="group-label">Pagination — 正円。現在ページのみ塗る</div>
+  <div class="pagination">
+    <a class="page page--current" href="#">1</a>
+    <a class="page" href="#">2</a>
+    <a class="page" href="#">3</a>
+    <a class="page" href="#">5</a>
+  </div>
+</section>
+
+<!-- DARK SECTION -->
+<section class="dark">
+  <div class="section container" id="lab">
+    <div class="section-title">final LAB</div>
+    <div class="section-label">05 / ダークセクションのリードは行間 2.0（白地の 2.2 より少し詰める）</div>
+    <p class="lead">研究開発部門が、研究や技術開発の成果や過程を皆さんと共有する場です。測定と聴感のあいだにあるものを、できるだけそのまま書いています。</p>
+    <div style="margin-top:36px;">
+      <a class="button button--outline" href="#">VIEW MORE</a>
+    </div>
+  </div>
+</section>
+
+<!-- FORMS -->
+<section class="section container" id="forms">
+  <div class="section-title">Forms</div>
+  <div class="section-label">06 / 入力欄はボタンと同じ高さ 52px・角丸ゼロ</div>
+  <div class="form-grid">
+    <div>
+      <label class="form-label">お名前 — Default</label>
+      <input class="form-input" placeholder="山田 太郎">
+      <p class="form-note">罫線は rgba(0,0,0,0.1)。高さ 52px</p>
+    </div>
+    <div>
+      <label class="form-label">メールアドレス — Focus</label>
+      <input class="form-input form-input--focus" value="info@example.com">
+      <p class="form-note">フォーカス時は Primary の #006bc6</p>
+    </div>
+    <div>
+      <label class="form-label">電話番号 — Error</label>
+      <input class="form-input form-input--error" value="09012345">
+      <p class="form-note form-note--error">エラーは #ec0924 の罫線＋ #feeef0 の背景</p>
+    </div>
+  </div>
+</section>
+
+<div class="container"><hr class="section-divider"></div>
+
+<!-- LAYOUT -->
+<section class="section container" id="layout">
+  <div class="section-title">Layout</div>
+  <div class="section-label">07 / 20カラム。12 でも 16 でもない</div>
+  <table class="spec-table">
+    <tr><th>Container</th><td>1520px / 左右 40px（<code>--container-gutter</code>）</td></tr>
+    <tr><th>Grid</th><td>20カラム / gap 34px。4・5・10 分割が同じグリッドで作れる</td></tr>
+    <tr><th>Vertical Breather</th><td>80px（既定）/ 64px（tight）</td></tr>
+    <tr><th>Product Block Spacing</th><td>34px（グリッド gutter と同値）</td></tr>
+    <tr><th>Button / Input Height</th><td>52px（小サイズ 44px）</td></tr>
+    <tr><th>Border Radius</th><td>ボタン 4px / シリーズカード 6px / 面・バッジ・スウォッチ 0px</td></tr>
+    <tr><th>Elevation</th><td>影は使わない。面色 #f5f5f5 と rgba(0,0,0,0.1) の罫だけで分節する</td></tr>
+  </table>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-title">final</div>
+    <p>音のクオリティは音楽体験に大きな影響を与えると信じています。</p>
+    <div class="footer-form">
+      <input placeholder="メールアドレスを入力">
+      <button class="button button--newsletter button--small">登録</button>
+    </div>
+    <p>Design System Preview — DESIGN.md の実測値に基づくカタログ。実在サイトの再現ではありません。</p>
+  </div>
+</footer>
+
+</body>
+</html>
