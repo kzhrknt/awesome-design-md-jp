@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>うなぎの寝床（UNAGINO NEDOKO） — Design System Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<!--
+  うなぎの寝床（UNAGINO NEDOKO）DESIGN.md のプレビュー。
+  実測日 2026-08-03 / https://unagino-nedoko.net/
+
+  このサイトの要点は6つ。
+  1. 本文・見出し・ナビ・ボタンがすべて明朝（dnp-shuei-anti-std = DNP 秀英アンチック）。
+     body の既定は游ゴシックだが、文字が乗る要素はほぼ全部明朝に上書きされる。
+  2. font-feature-settings: "palt" が body から全体に継承される。
+     例外は下層ページの h1 だけで、そこは "palt" 0 で明示的にオフ。
+  3. line-height の既定が 1.0（font-size と同値）。読ませる要素だけ 1.6〜1.8。
+  4. letter-spacing が実質 0.1em 固定（14px→1.4px、22px→2.2px）。
+  5. グローバルナビ／サイドバーが和文＋欧文の二段（「衣 / Clothing」）。
+  6. 商品状態のバッジ4色（新商品 #8b1b18 / オリジナル #1a1a41 /
+     在庫限り #8d654a / 再入荷 #e4ab9c）以外の有彩色を UI に使わない。
+
+  ■ フォント代替について
+    dnp-shuei-anti-std（Adobe Fonts）→ Shippori Mincho（Google Fonts）
+      Adobe Fonts はドメインライセンスのためローカル表示不可。
+      秀英アンチックは「仮名がアンチック体・漢字が明朝」で仮名が骨太。
+      Google Fonts では仮名の懐が広い Shippori Mincho が最も印象が近い。
+    游ゴシック Medium → Zen Kaku Gothic New（Google Fonts）
+-->
+<style>
+  :root {
+    /* --- Base --- */
+    --bg:            #ffffff;
+    --ink:           #121212;   /* 見出し・ナビ・価格 */
+    --ink-black:     #000000;   /* 記事タイトル・記事内リンク */
+    --text-muted:    #555555;
+    --text-caption:  #787878;
+    --text-sub:      #676767;
+
+    /* --- Indigo：このサイトの基調色 --- */
+    --navy:          #1a1a41;   /* サイドドロワー地色・オリジナルバッジ */
+    --indigo:        #4d4d77;   /* 塗りCTA */
+    --indigo-border: #6c6c84;
+    --indigo-text:   #717188;
+    --navy-deep:     #0f0d3f;
+    --violet-navy:   #4b4a86;
+
+    /* --- Badge：商品状態の4色 --- */
+    --badge-new:     #8b1b18;   /* 新商品 */
+    --badge-orig:    #1a1a41;   /* オリジナル */
+    --badge-last:    #8d654a;   /* 在庫限り */
+    --badge-back:    #e4ab9c;   /* 再入荷 */
+
+    /* --- Neutral --- */
+    --border:        #d8d8d8;
+    --border-wide:   #d9d9d9;
+    --border-gray:   #b4b4b5;
+    --divider-gray:  #979797;
+    --overlay:       rgba(0, 0, 0, 0.05);
+
+    /* --- Type：明朝が主役、ゴシックは脇役 --- */
+    --font-min: "Shippori Mincho", dnp-shuei-anti-std, 游明朝体, 游明朝, YuMincho,
+                "ヒラギノ明朝 ProN", "Hiragino Mincho ProN", serif;
+    --font-go:  "Zen Kaku Gothic New", "游ゴシック Medium", "Yu Gothic Medium",
+                游ゴシック体, YuGothic, "Hiragino Sans", メイリオ, Meiryo, sans-serif;
+    --font-en:  Helvetica, Arial, sans-serif;
+
+    --lh-tight: 1.0;   /* 既定。見出し・ナビ・価格・バッジ */
+    --lh-read:  1.7;   /* 読ませる要素 */
+    --ls:       0.1em; /* font-size × 0.1 で統一 */
+
+    --container: 870px;
+    --sidebar:   230px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-go);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: var(--lh-tight);
+    font-feature-settings: "palt";   /* body から全体に継承 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .section { padding-block: 72px; border-top: 1px solid var(--border); }
+  .section:first-of-type { border-top: 0; }
+
+  .section-title {
+    font-family: var(--font-min);
+    font-size: 22px; font-weight: 400;
+    line-height: var(--lh-tight); letter-spacing: 0.1em;
+    color: var(--ink); margin-bottom: 6px;
+  }
+  .section-no {
+    font-family: var(--font-min); font-size: 10px; color: var(--text-caption);
+    letter-spacing: 0.15em; line-height: 1.5; margin-bottom: 40px;
+  }
+  .group-label {
+    font-family: var(--font-min); font-size: 12px; font-weight: 400;
+    letter-spacing: 0.12em; color: var(--text-muted);
+    margin: 40px 0 18px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .group-label:first-of-type { margin-top: 0; }
+  .note {
+    font-family: var(--font-min); font-size: 11px; line-height: 1.8;
+    letter-spacing: 0.1em; color: var(--text-caption); margin-top: 14px;
+  }
+
+  /* ---------- HEADER（和欧二段ナビ） ---------- */
+  .site-header { border-bottom: 1px solid var(--border); }
+  .topbar {
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 24px; font-family: var(--font-min);
+    font-size: 12px; letter-spacing: 0.1em; line-height: 1.0;
+  }
+  .topbar time { color: var(--text-muted); }
+  .topbar a { color: var(--ink-black); text-decoration: none; }
+  .header-main {
+    display: flex; align-items: flex-end; gap: 48px;
+    padding: 18px 24px 16px;
+  }
+  .logo {
+    font-family: var(--font-go); font-size: 28px; font-weight: 400;
+    line-height: 1.0; letter-spacing: normal; color: var(--ink);
+    white-space: nowrap;
+  }
+  .gnav { display: flex; gap: 30px; list-style: none; }
+  .gnav a {
+    display: block; text-align: center; text-decoration: none;
+    font-family: var(--font-min); color: var(--ink);
+    font-size: 14px; line-height: 1.0; letter-spacing: normal;
+  }
+  .gnav .en {
+    display: block; margin-top: 7px;
+    font-size: 10px; letter-spacing: 0.06em; line-height: 1.5;
+    color: var(--text-caption);
+  }
+
+  /* ---------- COLORS ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--border); }
+  .swatch .chip { height: 84px; }
+  .swatch .meta {
+    padding: 10px 12px 12px; font-family: var(--font-min);
+    font-size: 11px; line-height: 1.7; letter-spacing: 0.1em;
+  }
+  .swatch .hex { color: var(--text-caption); letter-spacing: 0.04em; }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  .type-row {
+    display: grid; grid-template-columns: 190px 1fr; gap: 24px;
+    padding: 18px 0; border-bottom: 1px solid var(--border);
+    align-items: baseline;
+  }
+  .type-spec {
+    font-family: var(--font-min); font-size: 10px; line-height: 1.5;
+    letter-spacing: 0.06em; color: var(--text-caption);
+  }
+  .t-logo        { font-family: var(--font-go); font-size: 28px; line-height: 1.0; }
+  .t-page-title  { font-family: var(--font-min); font-size: 26px; line-height: 1.0;
+                   letter-spacing: 0.15em; font-feature-settings: "palt" 0; }
+  .t-section     { font-family: var(--font-min); font-size: 22px; line-height: 1.0; letter-spacing: 0.1em; }
+  .t-lead        { font-family: var(--font-min); font-size: 21px; line-height: 1.7; letter-spacing: 0.08em; }
+  .t-subhead     { font-family: var(--font-go); font-size: 21px; line-height: 1.0; }
+  .t-card-title  { font-family: var(--font-min); font-size: 16px; line-height: 1.6; letter-spacing: 0.1em; }
+  .t-list-title  { font-family: var(--font-min); font-size: 15px; line-height: 1.6; letter-spacing: 0.1em; }
+  .t-nav         { font-family: var(--font-min); font-size: 14px; line-height: 1.0; }
+  .t-article     { font-family: var(--font-min); font-size: 14px; line-height: 1.7; letter-spacing: 0.1em; }
+  .t-label       { font-family: var(--font-min); font-size: 12px; line-height: 1.0; letter-spacing: 0.12em; }
+  .t-price       { font-family: var(--font-min); font-size: 12px; font-weight: 700; line-height: 1.0; letter-spacing: 0.08em; }
+  .t-caption     { font-family: var(--font-min); font-size: 11px; line-height: 1.8; letter-spacing: 0.1em; color: var(--text-caption); }
+  .t-badge       { font-family: var(--font-min); font-size: 10px; font-weight: 700; line-height: 1.0; letter-spacing: 0.04em; }
+  .t-en-head     { font-family: var(--font-en); font-size: 38px; font-weight: 300; line-height: 1.4; letter-spacing: 0.02em; color: var(--text-caption); }
+  .t-en-body     { font-family: var(--font-en); font-size: 15px; line-height: 1.7; }
+
+  /* ---------- ARTICLE / PRODUCT ---------- */
+  .layout { display: grid; grid-template-columns: var(--sidebar) 1fr; gap: 48px; }
+  .side-nav-demo { border-right: 1px solid var(--border); padding-right: 20px; }
+  .side-cat {
+    font-family: var(--font-min); font-size: 16.38px; line-height: 1.0;
+    color: var(--ink); margin-bottom: 18px;
+  }
+  .side-list { list-style: none; }
+  .side-list li { margin-bottom: 16px; }
+  .side-list a {
+    text-decoration: none; color: var(--ink); font-family: var(--font-min);
+    font-size: 14px; line-height: 1.0;
+  }
+  .side-list .en {
+    display: block; margin-top: 6px; font-size: 10px;
+    letter-spacing: 0.06em; line-height: 1.5; color: var(--text-caption);
+  }
+
+  .article { max-width: var(--container); }
+  .article h1 {
+    font-family: var(--font-min); font-size: 26px; font-weight: 400;
+    line-height: 1.0; letter-spacing: 0.15em;
+    font-feature-settings: "palt" 0;   /* 下層 h1 だけ palt をオフ */
+    margin-bottom: 26px;
+  }
+  .article .kicker {
+    font-family: var(--font-min); font-size: 11px; line-height: 1.8;
+    letter-spacing: 0.1em; color: var(--text-caption); margin-bottom: 12px;
+  }
+  .article p {
+    font-family: var(--font-min); font-size: 14px; line-height: 1.7;
+    letter-spacing: 0.1em; color: var(--ink-black); margin-bottom: 22px;
+  }
+  .article h2 {
+    font-family: var(--font-min); font-size: 16px; font-weight: 400;
+    line-height: 1.6; letter-spacing: 0.1em; margin: 34px 0 14px;
+  }
+  .article a { color: var(--ink-black); }
+
+  .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+  .product .thumb {
+    position: relative; aspect-ratio: 4 / 5; background: var(--overlay);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-min); font-size: 11px; letter-spacing: 0.1em;
+    color: var(--text-caption);
+  }
+  .product .badge { position: absolute; top: 8px; left: 8px; }
+  .product .name {
+    font-family: var(--font-min); font-size: 11px; line-height: 1.7;
+    letter-spacing: 0.04em; color: var(--text-caption); margin-top: 10px;
+  }
+  .product .price {
+    font-family: var(--font-min); font-size: 12px; font-weight: 700;
+    line-height: 1.0; letter-spacing: 0.08em; color: var(--ink); margin-top: 6px;
+  }
+
+  .badge {
+    display: inline-block; color: #fff; border-radius: 2px;
+    padding: 3px 4px 4px; font-family: var(--font-min);
+    font-size: 10px; font-weight: 700; line-height: 1.0; letter-spacing: 0.04em;
+  }
+  .badge-new  { background: var(--badge-new); }
+  .badge-orig { background: var(--badge-orig); }
+  .badge-last { background: var(--badge-last); }
+  .badge-back { background: var(--badge-back); }
+
+  /* ---------- BUTTONS ---------- */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+  .btn-filled {
+    display: inline-block; min-width: 260px; text-align: center;
+    background: var(--indigo); color: #fff; text-decoration: none;
+    border-radius: 4px; padding: 20px 0 18px 2px;
+    font-family: var(--font-min); font-size: 14px; line-height: 1.0;
+  }
+  .btn-pill {
+    display: inline-block; background: transparent; color: var(--text-muted);
+    border: 1px solid var(--border); border-radius: 20px;
+    padding: 8px 14px 8px 16px; text-decoration: none;
+    font-family: var(--font-min); font-size: 12px; line-height: 1.0;
+    letter-spacing: 0.12em;
+  }
+  .btn-tiny {
+    display: inline-block; background: transparent; color: var(--indigo-text);
+    border: 1px solid var(--border-gray); border-radius: 2px;
+    padding: 4px 4px 4px 8px; text-decoration: none;
+    font-family: var(--font-min); font-size: 10px; line-height: 1.0;
+    letter-spacing: 0.15em;
+  }
+  .btn-wide {
+    display: block; width: 100%; text-align: center;
+    background: transparent; color: var(--ink-black);
+    border: 1px solid var(--border-wide); border-radius: 0;
+    padding: 20px; text-decoration: none;
+    font-family: var(--font-min); font-size: 18px; line-height: 1.0;
+    letter-spacing: 0.15em; margin-top: 16px;
+  }
+  .on-photo {
+    background: var(--navy); padding: 26px; margin-top: 22px;
+    display: flex; gap: 14px; align-items: center;
+  }
+  .btn-on-photo {
+    display: inline-block; background: transparent; color: #fff;
+    border: 1px solid var(--indigo-border); border-radius: 3px;
+    padding: 5px 7px 5px 8px; text-decoration: none;
+    font-family: var(--font-min); font-size: 12px; line-height: 1.0;
+    letter-spacing: 0.15em;
+  }
+  .on-photo .cap {
+    font-family: var(--font-min); font-size: 11px; line-height: 1.8;
+    letter-spacing: 0.1em; color: #fff;
+  }
+
+  /* ---------- CARDS ---------- */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .card .thumb {
+    aspect-ratio: 3 / 2; background: var(--overlay);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-min); font-size: 11px; letter-spacing: 0.1em;
+    color: var(--text-caption);
+  }
+  .card h3 {
+    font-family: var(--font-min); font-size: 16px; font-weight: 400;
+    line-height: 1.6; letter-spacing: 0.1em; margin-top: 12px; color: var(--ink);
+  }
+  .card p {
+    font-family: var(--font-min); font-size: 11px; line-height: 1.8;
+    letter-spacing: 0.1em; color: var(--text-caption); margin-top: 6px;
+  }
+
+  /* ---------- FORMS ---------- */
+  .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .field label {
+    display: block; font-family: var(--font-min); font-size: 12px;
+    line-height: 1.0; letter-spacing: 0.12em; color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .field input {
+    width: 100%; background: #fff; color: var(--ink);
+    border: 1px solid var(--border); border-radius: 2px;
+    padding: 11px 12px; font-family: var(--font-min); font-size: 14px;
+    line-height: 1.0; letter-spacing: 0.1em; font-feature-settings: "palt";
+  }
+  .field input::placeholder { color: var(--text-caption); }
+  .field.is-focus input { border-color: var(--indigo); outline: 1px solid var(--indigo); }
+  .field.is-error input { border-color: var(--badge-new); }
+  .field .msg {
+    font-family: var(--font-min); font-size: 11px; line-height: 1.8;
+    letter-spacing: 0.1em; margin-top: 8px; color: var(--text-caption);
+  }
+  .field.is-error .msg { color: var(--badge-new); }
+
+  /* ---------- ELEVATION ---------- */
+  .elev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .elev {
+    background: #fff; border: 1px solid var(--border);
+    padding: 26px; min-height: 118px;
+    font-family: var(--font-min); font-size: 11px; line-height: 1.8;
+    letter-spacing: 0.1em; color: var(--text-caption);
+  }
+  .elev strong {
+    display: block; font-size: 14px; font-weight: 400; color: var(--ink);
+    letter-spacing: 0.1em; margin-bottom: 8px;
+  }
+  .elev-0 { box-shadow: none; }
+  .elev-1 { box-shadow: rgba(0, 0, 0, 0.1) 2px 6px 10px 0px; border-color: transparent; }
+  .elev-2 { box-shadow: rgb(128, 128, 128) 0px 0px 5px 0px; border-color: transparent; }
+
+  /* ---------- LAYOUT ---------- */
+  .layout-demo { display: grid; gap: 12px; }
+  .bar {
+    font-family: var(--font-min); font-size: 11px; line-height: 1.0;
+    letter-spacing: 0.1em; color: #fff; padding: 14px 16px;
+  }
+  .bar-870  { background: var(--indigo);      max-width: 870px; }
+  .bar-824  { background: var(--violet-navy); max-width: 824px; }
+  .bar-730  { background: var(--indigo-text); max-width: 730px; }
+  .bar-1440 { background: var(--navy);        max-width: 1440px; }
+  .bar-340  { background: var(--navy-deep);   max-width: 340px; }
+
+  .spacing { display: flex; align-items: flex-end; gap: 18px; margin-top: 26px; }
+  .spacing div { background: var(--overlay); width: 46px; }
+  .spacing span {
+    display: block; text-align: center; margin-top: 8px;
+    font-family: var(--font-min); font-size: 10px; letter-spacing: 0.06em;
+    color: var(--text-caption);
+  }
+
+  /* ---------- FOOTER ---------- */
+  .site-footer {
+    background: var(--navy); color: #fff; padding: 44px 24px; margin-top: 72px;
+  }
+  .site-footer .inner { max-width: 1180px; margin: 0 auto; }
+  .site-footer p {
+    font-family: var(--font-min); font-size: 11px; line-height: 1.8;
+    letter-spacing: 0.1em;
+  }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .side-nav-demo { border-right: 0; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+    .card-grid, .form-grid, .elev-grid { grid-template-columns: 1fr; }
+    .type-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="topbar">
+    <time>2026.08.03</time>
+    <a href="#">【お知らせ】お盆期間の営業のご案内</a>
+  </div>
+  <div class="header-main">
+    <div class="logo">うなぎの寝床</div>
+    <nav>
+      <ul class="gnav">
+        <li><a href="#">うなぎの寝床<span class="en">About us</span></a></li>
+        <li><a href="#">店舗のこと<span class="en">About Store</span></a></li>
+        <li><a href="#">宿と旅<span class="en">Trip and Inn</span></a></li>
+        <li><a href="#">おしらせ<span class="en">Information</span></a></li>
+        <li><a href="#">特集<span class="en">Feature</span></a></li>
+        <li><a href="#">つくりて紹介<span class="en">Maker index</span></a></li>
+        <li><a href="#">商品を買う<span class="en">Online shop</span></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ==================== 1. COLORS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Colors</div>
+  <div class="section-no">01 — 白地に藍。有彩色はバッジ4色と藍系だけ</div>
+
+  <div class="group-label">Base</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#ffffff;border-bottom:1px solid #d8d8d8"></div>
+      <div class="meta">Background<br><span class="hex">#ffffff</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#121212"></div>
+      <div class="meta">Ink<br><span class="hex">#121212</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#000000"></div>
+      <div class="meta">Ink Black<br><span class="hex">#000000</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#555555"></div>
+      <div class="meta">Text Muted<br><span class="hex">#555555</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#787878"></div>
+      <div class="meta">Text Caption<br><span class="hex">#787878</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#676767"></div>
+      <div class="meta">Text Sub<br><span class="hex">#676767</span></div></div>
+  </div>
+
+  <div class="group-label">Indigo（藍）</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#1a1a41"></div>
+      <div class="meta">Navy<br><span class="hex">#1a1a41</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#4d4d77"></div>
+      <div class="meta">Indigo（塗りCTA）<br><span class="hex">#4d4d77</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#6c6c84"></div>
+      <div class="meta">Indigo Border<br><span class="hex">#6c6c84</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#717188"></div>
+      <div class="meta">Indigo Text<br><span class="hex">#717188</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#0f0d3f"></div>
+      <div class="meta">Navy Deep<br><span class="hex">#0f0d3f</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#4b4a86"></div>
+      <div class="meta">Violet Navy<br><span class="hex">#4b4a86</span></div></div>
+  </div>
+
+  <div class="group-label">Badge（商品状態）</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#8b1b18"></div>
+      <div class="meta">新商品<br><span class="hex">#8b1b18</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#1a1a41"></div>
+      <div class="meta">オリジナル<br><span class="hex">#1a1a41</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#8d654a"></div>
+      <div class="meta">在庫限り<br><span class="hex">#8d654a</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#e4ab9c"></div>
+      <div class="meta">再入荷<br><span class="hex">#e4ab9c</span></div></div>
+  </div>
+
+  <div class="group-label">Neutral（罫・面）</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#d8d8d8"></div>
+      <div class="meta">Border<br><span class="hex">#d8d8d8</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#d9d9d9"></div>
+      <div class="meta">Border Wide<br><span class="hex">#d9d9d9</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#b4b4b5"></div>
+      <div class="meta">Border Gray<br><span class="hex">#b4b4b5</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#979797"></div>
+      <div class="meta">Divider Gray<br><span class="hex">#979797</span></div></div>
+    <div class="swatch"><div class="chip" style="background:rgba(0,0,0,0.05);border-bottom:1px solid #d8d8d8"></div>
+      <div class="meta">Overlay<br><span class="hex">rgba(0,0,0,.05)</span></div></div>
+  </div>
+
+  <p class="note">商品写真は色数が多いが、UI の有彩色はバッジ4色と藍系だけ。「安い」「セール」的な赤や黄を足さない。</p>
+</section>
+
+<!-- ==================== 2. TYPOGRAPHY ==================== -->
+<section class="section wrap">
+  <div class="section-title">Typography</div>
+  <div class="section-no">02 — 明朝が主役。line-height の既定は 1.0、letter-spacing は 0.1em 固定</div>
+
+  <div class="type-row"><div class="type-spec">Logo<br>ゴシック 28px / 400 / 1.0 / normal</div>
+    <div class="t-logo">うなぎの寝床</div></div>
+  <div class="type-row"><div class="type-spec">Page Title<br>明朝 26px / 400 / 1.0 / 0.15em<br>font-feature-settings: "palt" 0</div>
+    <div class="t-page-title">はじめに</div></div>
+  <div class="type-row"><div class="type-spec">Section Title<br>明朝 22px / 400 / 1.0 / 0.1em</div>
+    <div class="t-section">おしらせ</div></div>
+  <div class="type-row"><div class="type-spec">Lead<br>明朝 21px / 400 / 1.7 / 0.08em</div>
+    <div class="t-lead">地域文化商社として、土地性を紐解き流通を担い、交流を生む</div></div>
+  <div class="type-row"><div class="type-spec">Sub Head<br>ゴシック 21px / 400 / 1.0</div>
+    <div class="t-subhead">地域文化商社として対話を生みたい</div></div>
+  <div class="type-row"><div class="type-spec">Card Title<br>明朝 16px / 400 / 1.6 / 0.1em</div>
+    <div class="t-card-title">【ステテコ】2026年の柄、いろいろ</div></div>
+  <div class="type-row"><div class="type-spec">List Title<br>明朝 15px / 400 / 1.6 / 0.1em</div>
+    <div class="t-list-title">江戸注染をまとう浴衣シャツ、丸久商店「ダボシャツ」</div></div>
+  <div class="type-row"><div class="type-spec">Nav<br>明朝 14px / 400 / 1.0 / normal</div>
+    <div class="t-nav">つくりて紹介</div></div>
+  <div class="type-row"><div class="type-spec">Article Title<br>明朝 14px / 400 / 1.7 / 0.1em</div>
+    <div class="t-article">【もんぺ巡業・出張 現地レポート】久留米絣のはじまりを訪ねて</div></div>
+  <div class="type-row"><div class="type-spec">Category Label<br>明朝 12px / 400 / 1.0 / 0.12em</div>
+    <div class="t-label">おしらせ一覧</div></div>
+  <div class="type-row"><div class="type-spec">Price<br>明朝 12px / <strong>700</strong> / 1.0 / 0.08em</div>
+    <div class="t-price">19,800円(税込)</div></div>
+  <div class="type-row"><div class="type-spec">Caption<br>明朝 11px / 400 / 1.8 / 0.1em</div>
+    <div class="t-caption">[お買い物] 久留米絣のもんぺは、反物の柄をそのまま生かして仕立てています。</div></div>
+  <div class="type-row"><div class="type-spec">Badge<br>明朝 10px / <strong>700</strong> / 1.0 / 0.04em</div>
+    <div><span class="badge badge-new">新商品</span> <span class="badge badge-orig">オリジナル</span>
+      <span class="badge badge-last">在庫限り</span> <span class="badge badge-back">再入荷</span></div></div>
+  <div class="type-row"><div class="type-spec">EN Heading<br>Helvetica 38px / <strong>300</strong> / 1.4 / 0.02em</div>
+    <div class="t-en-head">Shopping Guide</div></div>
+  <div class="type-row"><div class="type-spec">EN Body<br>Helvetica 15px / 400 / 1.7</div>
+    <div class="t-en-body">We are a shop and local enterprise based in Yame, Fukuoka.</div></div>
+
+  <p class="note">ウェイトは 400 と 700 の2値だけ（欧文見出しの 300 が唯一の例外）。700 を使うのは価格とバッジのみ。</p>
+</section>
+
+<!-- ==================== 3. ARTICLE / PRODUCT ==================== -->
+<section class="section wrap">
+  <div class="section-title">Article / Product</div>
+  <div class="section-no">03 — 左固定サイドバー ＋ 本文870px の2カラム</div>
+
+  <div class="layout">
+    <aside class="side-nav-demo">
+      <div class="side-cat">カテゴリから探す</div>
+      <ul class="side-list">
+        <li><a href="#">UNA PRODUCTS<span class="en">Unagino Nedoko Original</span></a></li>
+        <li><a href="#">衣<span class="en">Clothing</span></a></li>
+        <li><a href="#">食<span class="en">Tableware &amp; Foods</span></a></li>
+        <li><a href="#">住<span class="en">Houseware</span></a></li>
+        <li><a href="#">贈り物<span class="en">Gift</span></a></li>
+        <li><a href="#">つくりて<span class="en">Maker, Designer</span></a></li>
+        <li><a href="#">素材<span class="en">Material</span></a></li>
+        <li><a href="#">カラー・柄<span class="en">Color, Pattern</span></a></li>
+      </ul>
+    </aside>
+
+    <div class="article">
+      <div class="kicker">[つくりて紹介]</div>
+      <h1>久留米絣のはじまり</h1>
+      <p>福岡県南部、筑後地方で二百年あまり織り継がれてきた久留米絣は、糸を先に括って染め分け、
+        織りあがったときに柄が立ちあがる織物です。図案を描き、糸を括り、藍に沈め、
+        織機に掛ける。工程のほとんどが人の手に残されています。</p>
+      <h2>反物の幅から、もんぺが生まれた</h2>
+      <p>着物のために織られてきた反物は、幅が約36センチ。この幅をそのまま使い切る型として、
+        わたしたちは「もんぺ」を仕立てています。裁ち落としが出ないこと、
+        産地の織り機をそのまま生かせること。ふたつが同時に満たされる形でした。</p>
+      <p><a href="#">つくりての一覧を見る</a></p>
+
+      <div class="group-label">Product Grid</div>
+      <div class="product-grid">
+        <div class="product">
+          <div class="thumb"><span class="badge badge-new">新商品</span>product</div>
+          <div class="name">久留米絣 MONPE いろは / あさがお</div>
+          <div class="price">19,800円(税込)</div>
+        </div>
+        <div class="product">
+          <div class="thumb"><span class="badge badge-orig">オリジナル</span>product</div>
+          <div class="name">UNA PRODUCTS ステテコ 綿麻</div>
+          <div class="price">9,900円(税込)</div>
+        </div>
+        <div class="product">
+          <div class="thumb"><span class="badge badge-last">在庫限り</span>product</div>
+          <div class="name">丸久商店 ダボシャツ 江戸注染</div>
+          <div class="price">14,300円(税込)</div>
+        </div>
+        <div class="product">
+          <div class="thumb"><span class="badge badge-back">再入荷</span>product</div>
+          <div class="name">八女の手漉き和紙 便箋</div>
+          <div class="price">1,320円(税込)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 4. BUTTONS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Buttons</div>
+  <div class="section-no">04 — 用途ごとに角丸を変える（塗り 4px / ピル 20px / 小 2px / 全幅 0px）</div>
+
+  <div class="group-label">Filled（塗りCTA）</div>
+  <div class="btn-row">
+    <a class="btn-filled" href="#">写真一覧から探す</a>
+  </div>
+
+  <div class="group-label">Outline Pill</div>
+  <div class="btn-row">
+    <a class="btn-pill" href="#">おしらせ一覧</a>
+    <a class="btn-pill" href="#">企画展一覧</a>
+    <a class="btn-pill" href="#">全カテゴリから探す</a>
+  </div>
+
+  <div class="group-label">Outline Tiny</div>
+  <div class="btn-row">
+    <a class="btn-tiny" href="#">一覧へ</a>
+  </div>
+
+  <div class="group-label">Wide Outline（角丸ゼロ）</div>
+  <a class="btn-wide" href="#">企画展・店休日カレンダー</a>
+
+  <div class="group-label">On Dark Surface（サイドドロワー）</div>
+  <div class="on-photo">
+    <span class="cap">カテゴリから探す</span>
+    <a class="btn-on-photo" href="#">全て</a>
+  </div>
+
+  <p class="note">塗りのCTAは藍 #4d4d77 の1種のみ。padding が「20px 0 18px 2px」と上下だけ厚いのは全幅ブロック前提のため。</p>
+</section>
+
+<!-- ==================== 5. CARDS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Cards</div>
+  <div class="section-no">05 — 影なし・枠なし。白地にそのまま置く</div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="thumb">feature</div>
+      <h3>【ステテコ】2026年の柄、いろいろ</h3>
+      <p>今年のステテコは久留米絣・遠州織物・播州織の3産地から。</p>
+    </div>
+    <div class="card">
+      <div class="thumb">feature</div>
+      <h3>江戸注染をまとう浴衣シャツ</h3>
+      <p>丸久商店の注染は、生地の両面に色が抜けるのが特徴です。</p>
+    </div>
+    <div class="card">
+      <div class="thumb">feature</div>
+      <h3>もんぺ巡業、今年の行き先</h3>
+      <p>全国20会場を回ります。試着してから選べます。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 6. FORMS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Forms</div>
+  <div class="section-no">06 — デフォルト / フォーカス / エラー</div>
+
+  <div class="form-grid">
+    <div class="field">
+      <label>お名前</label>
+      <input type="text" placeholder="山田 太郎">
+      <div class="msg">全角でご入力ください</div>
+    </div>
+    <div class="field is-focus">
+      <label>メールアドレス</label>
+      <input type="email" value="yame@example.jp">
+      <div class="msg">フォーカス時は罫線が藍 #4d4d77 に変わる</div>
+    </div>
+    <div class="field is-error">
+      <label>郵便番号</label>
+      <input type="text" value="834-00">
+      <div class="msg">郵便番号を7桁でご入力ください</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 7. ELEVATION ==================== -->
+<section class="section wrap">
+  <div class="section-title">Elevation</div>
+  <div class="section-no">07 — 影はほぼ使わない。奥行きは罫線と余白でつくる</div>
+
+  <div class="elev-grid">
+    <div class="elev elev-0"><strong>Level 0 — none</strong>既定。カード・ボタン・写真すべて影なし。1px の罫線で区切る。</div>
+    <div class="elev elev-1"><strong>Level 1</strong>rgba(0, 0, 0, 0.1) 2px 6px 10px 0px<br>浮かせるパネル（ドロワー・ドロップダウン）。</div>
+    <div class="elev elev-2"><strong>Focus</strong>rgb(128, 128, 128) 0px 0px 5px 0px</div>
+  </div>
+</section>
+
+<!-- ==================== 8. LAYOUT ==================== -->
+<section class="section wrap">
+  <div class="section-title">Layout</div>
+  <div class="section-no">08 — 本文870px。サイドバーは常時固定</div>
+
+  <div class="layout-demo">
+    <div class="bar bar-1440">1440px — フルブリード</div>
+    <div class="bar bar-870">870px — 本文カラム（標準）</div>
+    <div class="bar bar-824">824px — 記事内の狭い版面</div>
+    <div class="bar bar-730">730px — 最も狭い版面</div>
+    <div class="bar bar-340">340px — サイドドロワー（固定幅）</div>
+  </div>
+
+  <div class="group-label">Spacing Scale</div>
+  <div class="spacing">
+    <div><div style="height:4px"></div><span>4</span></div>
+    <div><div style="height:8px"></div><span>8</span></div>
+    <div><div style="height:20px"></div><span>20</span></div>
+    <div><div style="height:40px"></div><span>40</span></div>
+    <div><div style="height:80px"></div><span>80</span></div>
+  </div>
+
+  <p class="note">
+    ブレークポイントは 600 / 767px（モバイル）と、1300 / 1340 / 1360 / 1380 / 1400 / 1415 / 1439 / 1455px の
+    「絞り込みラダー」。2カラムを崩さずに幅だけ段階的に削る設計。
+  </p>
+</section>
+
+<footer class="site-footer">
+  <div class="inner">
+    <p>うなぎの寝床 — 地域文化商社 / 福岡県八女市</p>
+    <p style="margin-top:10px;color:rgba(255,255,255,.7)">
+      このページは DESIGN.md のプレビューです。実サイトの Adobe Fonts（DNP 秀英アンチック）は
+      Shippori Mincho で代替しています。
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

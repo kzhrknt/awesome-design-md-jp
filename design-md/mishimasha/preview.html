@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ミシマ社（MISHIMASHA） — Design System Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<!--
+  ミシマ社（MISHIMASHA）DESIGN.md のプレビュー。
+  実測日 2026-08-03 / https://mishimasha.com/
+
+  このサイトの要点は7つ。
+  1. 出版社なのに明朝を1箇所も使わない。明朝は書影の中にだけ存在する。
+  2. 文字色が rgba(39, 30, 21, 0.88)。hex ではなくアルファ付きの黒茶。
+     白地上の実効色は約 #413931。
+  3. letter-spacing: 0.3em はグローバルナビだけ。他は全部 normal。
+  4. line-height: 1.6 が全階層で共通。読み物本文だけ 2.0、新刊見出しだけ 1.26。
+  5. ヘッダーの高さを CSS 変数で持つ（--header-y: 128px / --header-y-low: 80px）。
+  6. 重版バッジが純赤 #ff0000。サイト内で唯一の原色。
+  7. border-radius は 10px（ボタン）と 5px（バッジ）の2値だけ。
+
+  ■ フォント代替について
+  実サイトが Google Fonts の Noto Sans JP を使っているため、代替不要。
+  実サイトの font-family には "Noto Sans JP" が2回書かれている（旧名からの移行の名残）が、
+  ここでは1回に整理している。
+-->
+<style>
+  :root {
+    /* --- Base --- */
+    --bg:         #ffffff;
+    --ink:        rgba(39, 30, 21, 0.88);   /* hex に潰さない */
+    --ink-solid:  #271e15;                  /* ボタンの罫線 */
+    --on-green:   #ffffff;
+    --copyright:  rgba(255, 255, 255, 0.8);
+
+    /* --- Brand --- */
+    --green:      #009d4e;
+    --green-dark: #016c36;   /* カレント */
+    --link-green: #008000;   /* 本文中リンク */
+
+    /* --- Accent：唯一の原色 --- */
+    --red:        #ff0000;
+
+    /* --- Neutral --- */
+    --divider:    rgba(24, 24, 24, 0.06);
+    --overlay:    rgba(39, 30, 21, 0.4);
+    --search:     rgba(237, 237, 237, 0.96);
+    --top-grad:   linear-gradient(rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0) 100%);
+
+    /* --- Type：ゴシック1本 --- */
+    --font: "Noto Sans JP", "Noto Sans Japanese",
+            "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN",
+            メイリオ, Meiryo, 游ゴシック, YuGothic,
+            Avenir, Helvetica, Arial, sans-serif;
+
+    --lh:       1.6;    /* 全階層の基準 */
+    --lh-read:  2.0;    /* 読み物本文 */
+    --lh-tight: 1.26;   /* 新刊見出しのみ */
+    --ls-nav:   0.3em;  /* グローバルナビのみ */
+
+    --header-y:     128px;
+    --header-y-low: 80px;
+
+    --container:        1280px;
+    --container-mid:    960px;
+    --container-narrow: 760px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: var(--lh);
+    letter-spacing: normal;
+    font-feature-settings: normal;   /* palt は使わない */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+  .section { padding-block: 72px; border-top: 1px solid var(--divider); }
+  .section:first-of-type { border-top: 0; }
+
+  .section-title {
+    font-size: 28px; font-weight: 700; line-height: var(--lh);
+    color: var(--ink); margin-bottom: 2px;
+  }
+  .section-no { font-size: 14px; font-weight: 400; line-height: var(--lh); opacity: .65; margin-bottom: 40px; }
+  .group-label {
+    font-size: 16px; font-weight: 700; line-height: 1.44;
+    margin: 40px 0 18px; padding-bottom: 8px; border-bottom: 1px solid var(--divider);
+  }
+  .group-label:first-of-type { margin-top: 0; }
+  .note { font-size: 14px; line-height: var(--lh); opacity: .7; margin-top: 16px; }
+
+  /* ---------- HEADER：高さを変数で持つ ---------- */
+  .site-header {
+    height: var(--header-y);
+    display: flex; align-items: center;
+    border-bottom: 1px solid var(--divider);
+    transition: height .3s;
+  }
+  .header-inner {
+    width: 100%; max-width: var(--container); margin: 0 auto;
+    display: flex; align-items: center; gap: 32px; padding: 0 24px;
+  }
+  .burger { width: 24px; }
+  .burger span { display: block; height: 2px; background: var(--ink-solid); margin: 5px 0; }
+  .gnav { display: flex; gap: 30px; list-style: none; }
+  .gnav a {
+    text-decoration: none; color: var(--ink);
+    font-size: 16px; font-weight: 700; line-height: 1.44;
+    letter-spacing: var(--ls-nav);
+  }
+  .brand { margin-left: auto; margin-right: auto; display: flex; align-items: center; gap: 12px; }
+  .brand .mark {
+    width: 56px; height: 56px; border-radius: 50%;
+    border: 2px solid var(--green); color: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; line-height: 1.2; text-align: center;
+  }
+  .brand .name { font-size: 26px; font-weight: 700; line-height: 1.3; letter-spacing: .12em; }
+  .brand .name small { display: block; font-size: 12px; letter-spacing: .18em; color: var(--green); }
+  .search {
+    background: var(--search); border-radius: 20px; padding: 10px 18px;
+    font-size: 14px; opacity: .7; min-width: 180px;
+  }
+  .header-grad { height: 8px; background: var(--top-grad); }
+
+  /* ---------- COLORS ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 18px; }
+  .swatch { border: 1px solid var(--divider); }
+  .swatch .chip { height: 88px; }
+  .swatch .meta { padding: 12px 14px 16px; font-size: 14px; line-height: var(--lh); }
+  .swatch .hex { font-size: 12px; opacity: .65; }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  .type-row {
+    display: grid; grid-template-columns: 200px 1fr; gap: 26px;
+    padding: 18px 0; border-bottom: 1px solid var(--divider); align-items: baseline;
+  }
+  .type-spec { font-size: 12px; line-height: var(--lh); opacity: .65; }
+  .t-heading   { font-size: 28px; font-weight: 700; line-height: 1.6; }
+  .t-heading-l { font-size: 28px; font-weight: 400; line-height: 1.6; }
+  .t-section   { font-size: 22.5px; font-weight: 700; line-height: 1.6; }
+  .t-feature   { font-size: 23px; font-weight: 700; line-height: 1.26; }
+  .t-card      { font-size: 16px; font-weight: 700; line-height: 1.44; }
+  .t-nav       { font-size: 16px; font-weight: 700; line-height: 1.44; letter-spacing: .3em; }
+  .t-body      { font-size: 15px; font-weight: 400; line-height: 1.6; }
+  .t-read      { font-size: 15px; font-weight: 400; line-height: 2.0; }
+  .t-desc      { font-size: 14px; font-weight: 400; line-height: 1.6; }
+  .t-subtitle  { font-size: 12px; font-weight: 700; line-height: 1.92; }
+  .t-crumb     { font-size: 12px; font-weight: 400; line-height: 1.6; }
+
+  /* ---------- BOOKS ---------- */
+  .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; max-width: 640px; }
+  .feature-block { max-width: 640px; }
+  .cover {
+    aspect-ratio: 3 / 4; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 15px; text-align: center; padding: 20px;
+  }
+  .cover-a { background: #3d6fe8; }
+  .cover-b { background: #b6e02b; color: #1a1a1a; }
+  .cover-c { background: #0b3c68; }
+  .cover-d { background: #fadfe2; color: #1a1a1a; }
+  .feature-title { font-size: 23px; font-weight: 700; line-height: 1.26; margin-top: 20px; }
+  .feature-desc  { font-size: 14px; font-weight: 400; line-height: 1.6; margin-top: 10px; }
+
+  .book-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+  .book .thumb { position: relative; }
+  .book .badge { position: absolute; right: 8px; bottom: 8px; }
+  .book h3 { font-size: 16px; font-weight: 700; line-height: 1.44; margin-top: 12px; }
+  .book .sub { font-size: 12px; font-weight: 700; line-height: 1.92; }
+  .book .author { font-size: 15px; font-weight: 400; line-height: 1.6; }
+
+  .badge {
+    display: inline-block; background: var(--red); color: #fff;
+    border-radius: 5px; padding: 5px 8px;
+    font-size: 12px; font-weight: 700; line-height: 1.0;
+  }
+
+  /* ---------- BUTTONS ---------- */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .btn-tag {
+    display: inline-block; background: transparent; color: var(--ink);
+    border: 1px solid var(--ink-solid); border-radius: 10px;
+    padding: 7px 12px; text-decoration: none;
+    font-size: 14px; font-weight: 700; line-height: 1.4;
+  }
+  .pager { display: flex; gap: 6px; margin-top: 8px; }
+  .pager a, .pager span {
+    width: 33px; height: 33px; display: flex; align-items: center; justify-content: center;
+    background: var(--green); color: #fff; text-decoration: none;
+    border-radius: 0; font-size: 15px; font-weight: 400;
+  }
+  .pager .current { background: var(--green-dark); }
+  .link-green { color: var(--link-green); font-weight: 700; }
+
+  /* ---------- FORMS ---------- */
+  .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .field label { display: block; font-size: 14px; font-weight: 700; line-height: 1.6; margin-bottom: 8px; }
+  .field input {
+    width: 100%; background: #fff; color: var(--ink);
+    border: 1px solid var(--ink-solid); border-radius: 10px;
+    padding: 10px 14px; font-family: var(--font); font-size: 15px; line-height: 1.6;
+  }
+  .field input::placeholder { color: rgba(39,30,21,.4); }
+  .field.is-focus input { border-color: var(--green); outline: 1px solid var(--green); }
+  .field.is-error input { border-color: var(--red); }
+  .field .msg { font-size: 12px; line-height: 1.6; opacity: .7; margin-top: 8px; }
+  .field.is-error .msg { color: var(--red); opacity: 1; }
+
+  /* ---------- ELEVATION ---------- */
+  .elev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .elev {
+    background: #fff; border: 1px solid var(--divider); padding: 26px; min-height: 130px;
+    font-size: 14px; line-height: 1.6;
+  }
+  .elev strong { display: block; font-size: 16px; font-weight: 700; line-height: 1.44; margin-bottom: 8px; }
+  .elev-0 { box-shadow: none; }
+  .elev-1 { box-shadow: rgb(128, 128, 128) 0px 0px 5px 0px; border-color: transparent; }
+  .elev-grad { background: var(--top-grad); border-color: transparent; }
+
+  /* ---------- LAYOUT ---------- */
+  .layout-demo { display: grid; gap: 12px; }
+  .bar { color: #fff; padding: 14px 16px; font-size: 14px; line-height: 1.6; }
+  .bar-1280 { background: var(--green);      max-width: 1280px; }
+  .bar-960  { background: var(--green-dark); max-width: 960px; }
+  .bar-760  { background: var(--ink-solid);  max-width: 760px; }
+  .header-demo { display: grid; gap: 12px; margin-top: 24px; }
+  .hbar { background: var(--divider); display: flex; align-items: center; padding-left: 16px; font-size: 12px; }
+  .hbar-hi  { height: 128px; }
+  .hbar-low { height: 80px; }
+  .spacing { display: flex; align-items: flex-end; gap: 18px; margin-top: 26px; }
+  .spacing div { background: var(--divider); width: 46px; }
+  .spacing span { display: block; text-align: center; margin-top: 8px; font-size: 12px; opacity: .65; }
+
+  /* ---------- FOOTER ---------- */
+  .site-footer { background: var(--green); color: var(--on-green); padding: 48px 24px; margin-top: 72px; }
+  .site-footer .inner { max-width: var(--container); margin: 0 auto; }
+  .footer-nav { display: flex; gap: 26px; list-style: none; flex-wrap: wrap; }
+  .footer-nav a { color: #fff; text-decoration: none; font-size: 14px; font-weight: 700; line-height: 1.6; }
+  .copyright { font-size: 12px; line-height: 1.42; color: var(--copyright); margin-top: 22px; }
+
+  @media (max-width: 979px) {
+    .book-grid { grid-template-columns: repeat(2, 1fr); }
+    .feature-grid { grid-template-columns: 1fr; }
+    .form-grid, .elev-grid { grid-template-columns: 1fr; }
+    .type-row { grid-template-columns: 1fr; }
+    .gnav { display: none; }
+    .site-header { height: var(--header-y-low); }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="burger"><span></span><span></span><span></span></div>
+    <ul class="gnav">
+      <li><a href="#">本の一覧</a></li>
+      <li><a href="#">書店様へ</a></li>
+    </ul>
+    <div class="brand">
+      <div class="mark">MISHIMA<br>SHA</div>
+      <div class="name">ミシマ社<small>MISHIMASHA</small></div>
+    </div>
+    <div class="search">書名、キーワード</div>
+  </div>
+</header>
+<div class="header-grad"></div>
+
+<!-- ==================== 1. COLORS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Colors</div>
+  <div class="section-no">01 — 白地に緑ひと色。刷数だけが原色の赤</div>
+
+  <div class="group-label">Base</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#ffffff;border-bottom:1px solid rgba(24,24,24,.06)"></div>
+      <div class="meta">Background<br><span class="hex">#ffffff</span></div></div>
+    <div class="swatch"><div class="chip" style="background:rgba(39,30,21,0.88)"></div>
+      <div class="meta">Ink（実効色 ≒ #413931）<br><span class="hex">rgba(39, 30, 21, 0.88)</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#271e15"></div>
+      <div class="meta">Ink Solid（罫線）<br><span class="hex">#271e15</span></div></div>
+  </div>
+
+  <div class="group-label">Brand / Accent</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#009d4e"></div>
+      <div class="meta">Brand Green<br><span class="hex">#009d4e</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#016c36"></div>
+      <div class="meta">Green Dark（カレント）<br><span class="hex">#016c36</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#008000"></div>
+      <div class="meta">Link Green（本文中）<br><span class="hex">#008000</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#ff0000"></div>
+      <div class="meta">Reprint Red（重版）<br><span class="hex">#ff0000</span></div></div>
+  </div>
+
+  <div class="group-label">Neutral</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:rgba(24,24,24,0.06)"></div>
+      <div class="meta">Divider<br><span class="hex">rgba(24, 24, 24, 0.06)</span></div></div>
+    <div class="swatch"><div class="chip" style="background:rgba(39,30,21,0.4)"></div>
+      <div class="meta">Menu Overlay<br><span class="hex">rgba(39, 30, 21, 0.4)</span></div></div>
+    <div class="swatch"><div class="chip" style="background:rgba(237,237,237,0.96)"></div>
+      <div class="meta">Search Panel<br><span class="hex">rgba(237, 237, 237, 0.96)</span></div></div>
+    <div class="swatch"><div class="chip" style="background:linear-gradient(rgba(0,0,0,0.04) 0%, rgba(0,0,0,0) 100%);border-bottom:1px solid rgba(24,24,24,.06)"></div>
+      <div class="meta">Top Gradient<br><span class="hex">rgba(0,0,0,.04) → 0</span></div></div>
+  </div>
+
+  <p class="note">文字色は hex に置き換えず <code>rgba(39, 30, 21, 0.88)</code> のまま使う。透過があること自体が仕様。</p>
+</section>
+
+<!-- ==================== 2. TYPOGRAPHY ==================== -->
+<section class="section wrap">
+  <div class="section-title">Typography</div>
+  <div class="section-no">02 — ゴシック1本。line-height 1.6 で全階層を統一</div>
+
+  <div class="type-row"><div class="type-spec">Page Heading<br>28px / <strong>700</strong> / 1.6 / normal</div>
+    <div class="t-heading">書籍</div></div>
+  <div class="type-row"><div class="type-spec">Page Heading Light<br>28px / <strong>400</strong> / 1.6 / normal</div>
+    <div class="t-heading-l">会社概要</div></div>
+  <div class="type-row"><div class="type-spec">Section Title<br>22.5px / 700 / 1.6 / normal</div>
+    <div class="t-section">ピックアップ</div></div>
+  <div class="type-row"><div class="type-spec">Feature Title<br>23px / 700 / <strong>1.26</strong> / normal</div>
+    <div class="t-feature">7月の新刊『ゼミはガチだと役に立つ』『新装版 超訳 古事記』</div></div>
+  <div class="type-row"><div class="type-spec">Card Title<br>16px / 700 / 1.44 / normal</div>
+    <div class="t-card">自分と社会をいい感じにする 仕事技芸論</div></div>
+  <div class="type-row"><div class="type-spec">Nav<br>16px / 700 / 1.44 / <strong>0.3em</strong></div>
+    <div class="t-nav">本の一覧</div></div>
+  <div class="type-row"><div class="type-spec">Base (body)<br>15px / 400 / 1.6 / normal</div>
+    <div class="t-body">ミシマ社は、二〇〇六年に創業した出版社です。</div></div>
+  <div class="type-row"><div class="type-spec">Body (long form)<br>15px / 400 / <strong>2.0</strong></div>
+    <div class="t-read">一冊の本が届くまでに、書き手がいて、編集がいて、装丁があって、
+      印刷所があって、そして書店があります。その一つひとつと直接やりとりをする。
+      それが「原点回帰」ということの中身です。</div></div>
+  <div class="type-row"><div class="type-spec">Description<br>14px / 400 / 1.6</div>
+    <div class="t-desc">7/9（木）リアル書店発売！　名物ゼミを開講した内藤先生と、卒業生13名が語る。</div></div>
+  <div class="type-row"><div class="type-spec">Subtitle<br>12px / 700 / 1.92</div>
+    <div class="t-subtitle">韓国ベストセラー編集者の企業秘密</div></div>
+  <div class="type-row"><div class="type-spec">Breadcrumb<br>12px / 400 / 1.6</div>
+    <div class="t-crumb">ホーム ＞ 書籍</div></div>
+  <div class="type-row"><div class="type-spec">Badge<br>12px / 700 / 1.0</div>
+    <div><span class="badge">2刷</span> <span class="badge">6刷</span></div></div>
+
+  <p class="note">ウェイトは 400 と 700 の2値だけ。中間（500 / 600）を使わない。
+    letter-spacing を持つのはグローバルナビ（0.3em）だけで、他はすべて normal。</p>
+</section>
+
+<!-- ==================== 3. BOOKS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Books</div>
+  <div class="section-no">03 — 書影をそのまま置く。角丸・影・トリミングなし</div>
+
+  <div class="group-label">Feature（新刊 — 2カラム）</div>
+  <div class="feature-grid">
+    <div class="cover cover-a">ゼミはガチだと役に立つ<br>内藤正典ゼミ</div>
+    <div class="cover cover-b">新装版 超訳 古事記<br>鎌田東二</div>
+  </div>
+  <div class="feature-title feature-block">7月の新刊『ゼミはガチだと役に立つ』『新装版　超訳 古事記』</div>
+  <div class="feature-desc feature-block">7/9（木）リアル書店発売！　名物ゼミを開講した内藤先生と、卒業生13名が語る
+    『ゼミはガチだと役に立つ』、そして本邦最古の書を「今の言葉」で蘇らせた、
+    故・鎌田東二さんの原点が時を経て新装版として発刊します。</div>
+  <div class="btn-row" style="margin-top:18px">
+    <a class="btn-tag" href="#">新刊</a>
+    <a class="btn-tag" href="#">展示</a>
+    <a class="btn-tag" href="#">ミシマ社ラジオ</a>
+  </div>
+
+  <div class="group-label">Book Grid</div>
+  <div class="book-grid">
+    <div class="book">
+      <div class="thumb"><div class="cover cover-c">仕事技芸論</div><span class="badge">2刷</span></div>
+      <h3>自分と社会をいい感じにする 仕事技芸論</h3>
+      <div class="author">倉貫義人</div>
+    </div>
+    <div class="book">
+      <div class="thumb"><div class="cover cover-d">中年に飽きた夜は</div></div>
+      <h3>中年に飽きた夜は</h3>
+      <div class="author">益田ミリ</div>
+    </div>
+    <div class="book">
+      <div class="thumb"><div class="cover cover-a">編集の秘密</div><span class="badge">6刷</span></div>
+      <h3>本をつくるということ</h3>
+      <div class="sub">韓国ベストセラー編集者の企業秘密</div>
+      <div class="author">キム・ヒョンジョン</div>
+    </div>
+    <div class="book">
+      <div class="thumb"><div class="cover cover-b">超訳 古事記</div></div>
+      <h3>新装版　超訳 古事記</h3>
+      <div class="author">鎌田東二</div>
+    </div>
+  </div>
+
+  <div class="group-label">Pagination</div>
+  <div class="pager">
+    <span class="current">1</span>
+    <a href="#">2</a><a href="#">3</a><a href="#">4</a><a href="#">5</a><a href="#">13</a>
+  </div>
+</section>
+
+<!-- ==================== 4. BUTTONS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Buttons</div>
+  <div class="section-no">04 — 塗りのCTAを持たない。枠線ボタンとテキストリンクだけ</div>
+
+  <div class="group-label">Outline Tag Button</div>
+  <div class="btn-row">
+    <a class="btn-tag" href="#">展示</a>
+    <a class="btn-tag" href="#">ミシマ社ラジオ</a>
+    <a class="btn-tag" href="#">新刊</a>
+    <a class="btn-tag" href="#">ミシマガジン</a>
+  </div>
+  <p class="note">transparent / 1px solid #271e15 / border-radius 10px / padding 7px 12px / 14px / 700</p>
+
+  <div class="group-label">Badge / Link</div>
+  <div class="btn-row">
+    <span class="badge">2刷</span>
+    <span class="badge">6刷</span>
+    <a class="link-green" href="#">「ミシマ社の本屋さん」</a>
+  </div>
+</section>
+
+<!-- ==================== 5. CARDS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Cards</div>
+  <div class="section-no">05 — 面色も枠も影も持たない。書影と文字だけ</div>
+
+  <div class="book-grid">
+    <div class="book">
+      <div class="thumb"><div class="cover cover-c">ちゃぶ台</div></div>
+      <h3>ちゃぶ台 vol.16</h3>
+      <div class="sub">特集「はたらく」</div>
+      <div class="author">ミシマ社編</div>
+    </div>
+    <div class="book">
+      <div class="thumb"><div class="cover cover-d">おすそわけ</div><span class="badge">3刷</span></div>
+      <h3>おすそわけの本</h3>
+      <div class="author">三島邦弘</div>
+    </div>
+    <div class="book">
+      <div class="thumb"><div class="cover cover-a">京都の一年</div></div>
+      <h3>京都オフィスの一年</h3>
+      <div class="author">ミシマ社京都</div>
+    </div>
+    <div class="book">
+      <div class="thumb"><div class="cover cover-b">本屋さん</div></div>
+      <h3>ミシマ社の本屋さん</h3>
+      <div class="author">ミシマ社編</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 6. FORMS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Forms</div>
+  <div class="section-no">06 — デフォルト / フォーカス / エラー。角丸はボタンと同じ 10px</div>
+
+  <div class="form-grid">
+    <div class="field">
+      <label>お名前</label>
+      <input type="text" placeholder="三島 邦弘">
+      <div class="msg">メールマガジン登録に使用します</div>
+    </div>
+    <div class="field is-focus">
+      <label>メールアドレス</label>
+      <input type="email" value="books@example.jp">
+      <div class="msg">フォーカス時は罫線が #009d4e に変わる</div>
+    </div>
+    <div class="field is-error">
+      <label>書店名</label>
+      <input type="text" value="">
+      <div class="msg">書店様のご注文には書店名が必要です</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 7. ELEVATION ==================== -->
+<section class="section wrap">
+  <div class="section-title">Elevation</div>
+  <div class="section-no">07 — 影ではなく、極薄のグラデーションと罫線で境界をつくる</div>
+
+  <div class="elev-grid">
+    <div class="elev elev-0"><strong>Level 0 — none</strong>既定。カード・書影・ボタンすべて影なし。</div>
+    <div class="elev elev-1"><strong>Level 1</strong>rgb(128, 128, 128) 0px 0px 5px 0px<br>検索パネル・ドロワー。</div>
+    <div class="elev elev-grad"><strong>Top Gradient</strong>linear-gradient(rgba(0,0,0,0.04) 0%, rgba(0,0,0,0) 100%)<br>ヘッダー直下の境界。</div>
+  </div>
+</section>
+
+<!-- ==================== 8. LAYOUT ==================== -->
+<section class="section wrap">
+  <div class="section-title">Layout</div>
+  <div class="section-no">08 — 3段のコンテナ。ヘッダー高さは CSS 変数で持つ</div>
+
+  <div class="layout-demo">
+    <div class="bar bar-1280">1280px — ワイド（書籍グリッド）</div>
+    <div class="bar bar-960">960px — 標準</div>
+    <div class="bar bar-760">760px — 読み物</div>
+  </div>
+
+  <div class="group-label">Header Height（スクロールで縮む）</div>
+  <div class="header-demo">
+    <div class="hbar hbar-hi">--header-y: 128px（初期）</div>
+    <div class="hbar hbar-low">--header-y-low: 80px（スクロール後）</div>
+  </div>
+  <p class="note">固定ヘッダーぶんのオフセットは <code>var(--header-y)</code> を使う。px を直接書かない。</p>
+
+  <div class="group-label">Spacing Scale</div>
+  <div class="spacing">
+    <div><div style="height:5px"></div><span>5</span></div>
+    <div><div style="height:12px"></div><span>12</span></div>
+    <div><div style="height:24px"></div><span>24</span></div>
+    <div><div style="height:48px"></div><span>48</span></div>
+    <div><div style="height:80px"></div><span>80</span></div>
+  </div>
+
+  <p class="note">
+    主境界は 980px（一般的な 768px ではない）。さらに 900 / 984 / 1020 / 1140px の
+    中間ブレークポイントで、2カラムを崩さずに書影サイズだけを削る。
+    @media (prefers-reduced-motion: reduce) を持つ。
+  </p>
+</section>
+
+<footer class="site-footer">
+  <div class="inner">
+    <ul class="footer-nav">
+      <li><a href="#">会社概要</a></li>
+      <li><a href="#">メールマガジン登録</a></li>
+      <li><a href="#">プライバシーポリシー</a></li>
+      <li><a href="#">書店様へ</a></li>
+      <li><a href="#">お問い合わせ</a></li>
+    </ul>
+    <div class="copyright">COPYRIGHT © 2006-2026 MISHIMASHA PUBLISHING CO.</div>
+  </div>
+</footer>
+
+</body>
+</html>

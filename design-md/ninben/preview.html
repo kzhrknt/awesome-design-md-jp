@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>にんべん（NINBEN） — Design System Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
+<!--
+  にんべん（NINBEN）DESIGN.md のプレビュー。
+  実測日 2026-08-03 / https://www.ninben.co.jp/
+
+  このサイトの要点は7つ。
+  1. ページ地色が #f8f8f5（生成り）。html / body は透明で、セクションの面色として敷く。
+  2. Webフォントを一切使わない。ヒラギノ／メイリオ／游明朝だけで組む。
+  3. ゴシックが Pro、明朝が ProN。同じサイト内で Pro / ProN が混在する。
+  4. font-weight がほぼ全部 400。階層は「書体（明朝／ゴシック）× サイズ × 行送り」でつくる。
+  5. リンクのホバー下線が linear-gradient。text-decoration は使わない。
+     background: linear-gradient(rgba(0,0,0,0) calc(100% - 1px), #e7190a 0)
+  6. border-radius は 50% と 3px しかない。box-shadow は1件もない。
+  7. ブランドステートメント「この国の味、ここから。」は writing-mode: vertical-rl の縦組み。
+
+  ■ フォント代替について
+    ヒラギノ明朝 ProN → Shippori Mincho（Google Fonts）
+    ヒラギノ角ゴ Pro  → Zen Kaku Gothic New（Google Fonts）
+  実サイトの指定を先頭に残しているので、Mac では実サイトと同じ書体で表示される。
+-->
+<style>
+  :root {
+    /* --- Base --- */
+    --bg:         #f8f8f5;   /* 生成り。ページ地色 */
+    --surface:    #ffffff;
+    --ink:        #1b120f;   /* 黒茶 */
+    --text-sub:   #6e6765;
+    --on-photo:   #ffffff;
+
+    /* --- Brand：有彩色は朱赤1色だけ --- */
+    --brand:      #e7190a;
+    --surface-tag:#efefec;
+
+    /* --- Type：明朝＝見出し、角ゴ＝本文 --- */
+    --font-min: "ヒラギノ明朝 ProN", HiraMinProN-W3, "Shippori Mincho",
+                游明朝体, "Yu Mincho", YuMincho, serif;
+    --font-go:  "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro",
+                "Zen Kaku Gothic New", メイリオ, Meiryo, sans-serif;
+
+    --lh-body:  2.0;    /* 和文本文 */
+    --lh-min:   1.714;  /* 明朝の大見出し */
+    --ls-body:  0.05em;
+    --ls-catch: 0.13em;
+
+    --container: 1200px;
+    --container-narrow: 1000px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-go);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: var(--lh-body);
+    letter-spacing: var(--ls-body);
+    font-feature-settings: normal;   /* palt は使わない */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+  .section { padding-block: 80px; border-top: 1px solid #e4e2dd; }
+  .section:first-of-type { border-top: 0; }
+
+  .section-title {
+    font-family: var(--font-min); font-size: 42px; font-weight: 400;
+    line-height: var(--lh-min); letter-spacing: normal;
+    color: var(--ink); margin-bottom: 4px;
+  }
+  .section-no {
+    font-family: var(--font-go); font-size: 13px; line-height: 1.769;
+    color: var(--text-sub); margin-bottom: 44px;
+  }
+  .group-label {
+    font-family: var(--font-go); font-size: 15px; line-height: 1.733;
+    color: var(--text-sub); margin: 44px 0 18px;
+    padding-bottom: 8px; border-bottom: 1px solid #e4e2dd;
+  }
+  .group-label:first-of-type { margin-top: 0; }
+  .note {
+    font-family: var(--font-go); font-size: 15px; line-height: 1.667;
+    color: var(--text-sub); margin-top: 18px;
+  }
+
+  /* ---------- LINK：朱赤のグラデーション下線 ---------- */
+  .u-link { text-decoration: none; color: var(--ink); }
+  .u-link span {
+    background: linear-gradient(rgba(0, 0, 0, 0) calc(100% - 1px), #e7190a 0);
+    background-size: 0 100%;
+    background-repeat: no-repeat;
+    padding-bottom: 1px;
+    transition: background-size .3s;
+  }
+  .u-link:hover span { background-size: 100% 100%; }
+  .u-link.is-current { color: var(--brand); }
+  .u-link.is-current span { background-size: 100% 100%; }
+  .u-link.is-shown span { background-size: 100% 100%; }   /* 静止プレビュー用 */
+
+  /* ---------- HEADER ---------- */
+  .site-header { background: var(--surface); border-bottom: 1px solid #e4e2dd; }
+  .header-inner {
+    max-width: var(--container); margin: 0 auto;
+    display: flex; align-items: center; gap: 40px; padding: 18px 24px;
+  }
+  .logo { display: flex; align-items: baseline; gap: 10px; }
+  .logo .mark {
+    width: 34px; height: 34px; background: var(--brand); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-min); font-size: 18px; line-height: 1;
+  }
+  .logo .name {
+    font-family: var(--font-min); font-size: 26px; font-weight: 700;
+    line-height: 1.2; letter-spacing: 0.02em;
+  }
+  .gnav { display: flex; gap: 26px; list-style: none; margin-left: auto; }
+  .gnav a { font-family: var(--font-go); font-size: 15px; line-height: 1.733; }
+  .utility { display: flex; gap: 18px; list-style: none; }
+  .utility a { font-family: var(--font-go); font-size: 12px; line-height: 1.667; }
+  .utility .kana { letter-spacing: -0.07em; }   /* 狭い枠のカタカナは負の字間 */
+  .utility .en   { letter-spacing: 0.04em; }
+
+  /* ---------- COLORS ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 18px; }
+  .swatch { background: var(--surface); }
+  .swatch .chip { height: 90px; }
+  .swatch .meta {
+    padding: 12px 14px 16px; font-family: var(--font-go);
+    font-size: 15px; line-height: 1.667;
+  }
+  .swatch .hex { color: var(--text-sub); font-size: 13px; }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  .type-row {
+    display: grid; grid-template-columns: 210px 1fr; gap: 28px;
+    padding: 20px 0; border-bottom: 1px solid #e4e2dd; align-items: baseline;
+  }
+  .type-spec {
+    font-family: var(--font-go); font-size: 13px; line-height: 1.769;
+    color: var(--text-sub); letter-spacing: 0;
+  }
+  .t-page-title { font-family: var(--font-min); font-size: 56px; font-weight: 400; line-height: 1.4; }
+  .t-section    { font-family: var(--font-min); font-size: 42px; font-weight: 400; line-height: 1.714; }
+  .t-sub        { font-family: var(--font-min); font-size: 28px; font-weight: 400; line-height: 1.682; }
+  .t-photo      { font-family: var(--font-go);  font-size: 24px; line-height: 1.176; letter-spacing: 0.05em; }
+  .t-recipe     { font-family: var(--font-go);  font-size: 24px; line-height: 1.556; letter-spacing: 0.05em; }
+  .t-card       { font-family: var(--font-go);  font-size: 20px; line-height: 1.5; letter-spacing: 0; }
+  .t-body       { font-family: var(--font-go);  font-size: 16px; line-height: 2.0; letter-spacing: 0.05em; }
+  .t-nav        { font-family: var(--font-go);  font-size: 15px; line-height: 1.733; letter-spacing: 0; }
+  .t-crumb      { font-family: var(--font-go);  font-size: 13px; line-height: 1.769; letter-spacing: 0; }
+  .t-util       { font-family: var(--font-go);  font-size: 12px; line-height: 1.667; letter-spacing: -0.07em; }
+  .t-subnav     { font-family: var(--font-go);  font-size: 12px; line-height: 2.0; color: var(--text-sub); }
+
+  /* 縦組みのブランドステートメント */
+  .vertical-demo {
+    background: var(--surface); padding: 40px 30px;
+    display: flex; justify-content: flex-end; min-height: 460px;
+  }
+  .brand-statement {
+    writing-mode: vertical-rl;
+    font-family: var(--font-min); font-size: 42px; font-weight: 400;
+    line-height: 1.556; letter-spacing: var(--ls-catch); color: var(--ink);
+  }
+
+  /* ---------- ARTICLE ---------- */
+  .article { background: var(--surface); padding: 56px; max-width: var(--container-narrow); }
+  .article h1 {
+    font-family: var(--font-min); font-size: 56px; font-weight: 400;
+    line-height: 1.4; margin-bottom: 30px;
+  }
+  .article h2 {
+    font-family: var(--font-min); font-size: 28px; font-weight: 400;
+    line-height: 1.682; margin: 40px 0 14px;
+  }
+  .article p {
+    font-family: var(--font-go); font-size: 16px; line-height: 2.0;
+    letter-spacing: 0.05em; margin-bottom: 26px;
+  }
+  .crumb { font-family: var(--font-go); font-size: 13px; line-height: 1.769; color: var(--text-sub); margin-bottom: 20px; }
+
+  /* ---------- BUTTONS ---------- */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+  .btn-block {
+    display: flex; align-items: center; justify-content: center;
+    width: 244px; height: 57px;
+    background: var(--ink); color: #fff; text-decoration: none;
+    border-radius: 0; font-family: var(--font-go);
+    font-size: 15px; line-height: 1; letter-spacing: 0.053em;
+  }
+  .page-top {
+    width: 56px; height: 56px; border-radius: 50%; background: var(--ink);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-go); font-size: 11px; letter-spacing: 0;
+    text-decoration: none; text-align: center; line-height: 1.3;
+  }
+  .badge-circle {
+    border-radius: 50%; background: var(--brand); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; font-family: var(--font-go); line-height: 1.3;
+  }
+  .badge-lg { width: 80px; height: 80px; font-size: 13px; }
+  .badge-sm { width: 40px; height: 40px; font-size: 12px; }
+  .tag {
+    display: inline-block; background: var(--surface-tag); color: var(--text-sub);
+    border-radius: 3px; padding: 5px; font-family: var(--font-go);
+    font-size: 11px; line-height: 1.4; letter-spacing: -0.04em;
+  }
+
+  /* ---------- CARDS ---------- */
+  .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .card { background: var(--surface); }
+  .card .thumb {
+    position: relative; aspect-ratio: 4 / 3; background: #e9e7e1;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-go); font-size: 13px; color: var(--text-sub);
+  }
+  .card .thumb .badge-circle { position: absolute; top: 10px; left: 10px; }
+  .card .body { padding: 18px 20px 24px; }
+  .card h3 { font-family: var(--font-go); font-size: 20px; font-weight: 400; line-height: 1.5; }
+  .card p { font-family: var(--font-go); font-size: 15px; line-height: 1.667; color: var(--text-sub); margin-top: 8px; }
+
+  .photo-card {
+    position: relative; aspect-ratio: 16 / 9; background: #6b5f57; max-width: 760px;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 26px; color: #fff;
+  }
+  .photo-card h3 { font-family: var(--font-go); font-size: 24px; font-weight: 400; line-height: 1.176; letter-spacing: 0.05em; }
+  .photo-card p  { font-family: var(--font-go); font-size: 15px; line-height: 1.385; margin-top: 10px; }
+
+  /* ---------- FORMS ---------- */
+  .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .field label {
+    display: block; font-family: var(--font-go); font-size: 15px;
+    line-height: 1.733; color: var(--ink); margin-bottom: 8px;
+  }
+  .field input {
+    width: 100%; background: var(--surface); color: var(--ink);
+    border: 1px solid #d6d3cd; border-radius: 0;
+    padding: 12px 14px; font-family: var(--font-go); font-size: 16px;
+    line-height: 1.5; letter-spacing: 0.05em;
+  }
+  .field input::placeholder { color: var(--text-sub); }
+  .field.is-focus input { border-color: var(--brand); outline: 1px solid var(--brand); }
+  .field.is-error input { border-color: var(--brand); background: #fdf2f1; }
+  .field .msg { font-family: var(--font-go); font-size: 13px; line-height: 1.769; color: var(--text-sub); margin-top: 8px; }
+  .field.is-error .msg { color: var(--brand); }
+
+  /* ---------- ELEVATION ---------- */
+  .elev-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+  .elev {
+    background: var(--surface); padding: 30px; min-height: 140px;
+    font-family: var(--font-go); font-size: 15px; line-height: 1.667; color: var(--text-sub);
+  }
+  .elev strong {
+    display: block; font-family: var(--font-min); font-size: 28px; font-weight: 400;
+    line-height: 1.682; color: var(--ink); margin-bottom: 8px;
+  }
+  .elev-flat { box-shadow: none; }
+  .elev-bg   { box-shadow: none; background: var(--bg); border: 0; }
+
+  /* ---------- LAYOUT ---------- */
+  .layout-demo { display: grid; gap: 12px; }
+  .bar { font-family: var(--font-go); font-size: 13px; line-height: 1.769; color: #fff; padding: 14px 16px; }
+  .bar-1200 { background: var(--ink);      max-width: 1200px; }
+  .bar-1000 { background: #4b4340;         max-width: 1000px; }
+  .bar-1440 { background: var(--brand);    max-width: 1440px; }
+  .spacing { display: flex; align-items: flex-end; gap: 20px; margin-top: 28px; }
+  .spacing div { background: #e9e7e1; width: 48px; }
+  .spacing span {
+    display: block; text-align: center; margin-top: 8px;
+    font-family: var(--font-go); font-size: 13px; color: var(--text-sub);
+  }
+
+  /* ---------- FOOTER ---------- */
+  .site-footer { background: var(--surface); padding: 50px 24px; margin-top: 80px; border-top: 1px solid #e4e2dd; }
+  .site-footer .inner { max-width: var(--container); margin: 0 auto; }
+  .site-footer p { font-family: var(--font-go); font-size: 15px; line-height: 1.667; color: var(--text-sub); }
+
+  @media (max-width: 999px) {
+    .card-grid { grid-template-columns: repeat(2, 1fr); }
+    .form-grid, .elev-grid { grid-template-columns: 1fr; }
+    .type-row { grid-template-columns: 1fr; }
+    .gnav { display: none; }
+    .t-page-title, .article h1 { font-size: 32px; }
+    .section-title, .t-section, .brand-statement { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="mark">に</div>
+      <div class="name">にんべん</div>
+    </div>
+    <ul class="gnav">
+      <li><a class="u-link is-current" href="#"><span>ホーム</span></a></li>
+      <li><a class="u-link" href="#"><span>商品情報</span></a></li>
+      <li><a class="u-link" href="#"><span>レシピ</span></a></li>
+      <li><a class="u-link" href="#"><span>店舗情報</span></a></li>
+      <li><a class="u-link" href="#"><span>にんべんとは</span></a></li>
+      <li><a class="u-link" href="#"><span>企業情報</span></a></li>
+    </ul>
+    <ul class="utility">
+      <li><a class="u-link" href="#"><span class="kana">ネットショップ</span></a></li>
+      <li><a class="u-link" href="#"><span class="en">ENGLISH</span></a></li>
+    </ul>
+  </div>
+</header>
+
+<!-- ==================== 1. COLORS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Colors</div>
+  <div class="section-no">01 — 生成りの地に、朱赤ひと色</div>
+
+  <div class="group-label">Base</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#f8f8f5;border:1px solid #e4e2dd"></div>
+      <div class="meta">Background（生成り）<br><span class="hex">#f8f8f5</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#ffffff;border:1px solid #e4e2dd"></div>
+      <div class="meta">Surface White<br><span class="hex">#ffffff</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#1b120f"></div>
+      <div class="meta">Ink（黒茶）<br><span class="hex">#1b120f</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#6e6765"></div>
+      <div class="meta">Text Sub<br><span class="hex">#6e6765</span></div></div>
+  </div>
+
+  <div class="group-label">Brand / Neutral</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#e7190a"></div>
+      <div class="meta">Brand Red（朱赤）<br><span class="hex">#e7190a</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#efefec;border:1px solid #e4e2dd"></div>
+      <div class="meta">Surface Tag<br><span class="hex">#efefec</span></div></div>
+  </div>
+
+  <p class="note">有彩色は朱赤 #e7190a の1色だけ。緑・青・黄を足さない。朱赤は「いま居る場所」と「触れる場所」にだけ現れる。</p>
+</section>
+
+<!-- ==================== 2. TYPOGRAPHY ==================== -->
+<section class="section wrap">
+  <div class="section-title">Typography</div>
+  <div class="section-no">02 — 明朝＝見出し / 角ゴ＝本文。font-weight は 400 一択</div>
+
+  <div class="type-row"><div class="type-spec">Page Title<br>明朝 56px / 400 / 1.4 / normal</div>
+    <div class="t-page-title">にんべんとは</div></div>
+  <div class="type-row"><div class="type-spec">Section Title<br>明朝 42px / 400 / 1.714 / normal</div>
+    <div class="t-section">商品情報</div></div>
+  <div class="type-row"><div class="type-spec">Sub Section<br>明朝 28px / 400 / 1.682 / normal</div>
+    <div class="t-sub">ブランドサイト</div></div>
+  <div class="type-row"><div class="type-spec">Photo Title<br>角ゴ 24px / 400 / <strong>1.176</strong> / 0.05em</div>
+    <div class="t-photo">日本橋本店</div></div>
+  <div class="type-row"><div class="type-spec">Recipe Title<br>角ゴ 24px / 400 / 1.556 / 0.05em</div>
+    <div class="t-recipe">和風タコライス（白だし使用）</div></div>
+  <div class="type-row"><div class="type-spec">Card Title<br>角ゴ 20px / 400 / 1.5 / normal</div>
+    <div class="t-card">にんべんの約束</div></div>
+  <div class="type-row"><div class="type-spec">Body<br>角ゴ 16px / 400 / <strong>2.0</strong> / 0.05em</div>
+    <div class="t-body">豊かな海の恵みと四季の育み、伝統の技に磨かれてきた鰹節。にんべんは一六九九年の創業から、
+      その味をこの国の食卓へ届けてきました。</div></div>
+  <div class="type-row"><div class="type-spec">Nav<br>角ゴ 15px / 400 / 1.733 / normal</div>
+    <div class="t-nav">にんべんとは</div></div>
+  <div class="type-row"><div class="type-spec">Breadcrumb<br>角ゴ 13px / 400 / 1.769</div>
+    <div class="t-crumb">ホーム ＞ にんべんとは</div></div>
+  <div class="type-row"><div class="type-spec">Utility<br>角ゴ 12px / 400 / 1.667 / <strong>-0.07em</strong></div>
+    <div class="t-util">ネットショップ</div></div>
+  <div class="type-row"><div class="type-spec">Sub Nav<br>角ゴ 12px / 400 / 2.0 / #6e6765</div>
+    <div class="t-subnav">商品情報トップ</div></div>
+  <div class="type-row"><div class="type-spec">Tag<br>角ゴ 11px / 400 / -0.04em</div>
+    <div><span class="tag">ニュースリリース</span></div></div>
+
+  <div class="group-label">縦組み — ブランドステートメント（サイト内で1箇所だけ）</div>
+  <div class="vertical-demo">
+    <div class="brand-statement">この国の味、ここから。</div>
+  </div>
+  <p class="note">writing-mode: vertical-rl / 明朝 42px / line-height 1.556 / letter-spacing 0.13em。
+    この字間は横組みの見出しではなく、縦に並ぶ一文字ずつの間隔として設計されている。</p>
+</section>
+
+<!-- ==================== 3. ARTICLE ==================== -->
+<section class="section wrap">
+  <div class="section-title">Article</div>
+  <div class="section-no">03 — 生成りの地に、白い本文エリアを置く</div>
+
+  <div class="article">
+    <div class="crumb">ホーム ＞ にんべんとは ＞ 本枯鰹節ができるまで</div>
+    <h1>本枯鰹節ができるまで</h1>
+    <p>鰹節は、生の鰹をおろし、煮て、幾度も燻し、そのうえでカビを付けて乾かす。
+      半年をかけて水分を抜ききったものだけが「本枯鰹節」と呼ばれます。
+      削れば、湯を注ぐ前から香りが立ちます。</p>
+
+    <h2>職人が選び抜いた一本</h2>
+    <p>形が整っていること、背と腹の締まりが揃っていること、叩いたときに硬い音が返ること。
+      仕入れの場で見ているのはその三つです。数値では表せない差が、
+      だしの澄み方にそのまま出ます。</p>
+    <p>
+      <a class="u-link is-shown" href="#"><span>すべての商品を見る</span></a>
+    </p>
+  </div>
+</section>
+
+<!-- ==================== 4. BUTTONS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Buttons</div>
+  <div class="section-no">04 — 主役はボタンではなくリンク。朱赤の1px下線が伸びる</div>
+
+  <div class="group-label">Link（グラデーション下線 / hover でご確認ください）</div>
+  <div class="btn-row" style="gap:32px">
+    <a class="u-link" href="#"><span>すべての商品を見る</span></a>
+    <a class="u-link" href="#"><span>レシピ一覧を見る</span></a>
+    <a class="u-link is-current" href="#"><span>いま見ているページ</span></a>
+  </div>
+  <p class="note">
+    background: linear-gradient(rgba(0,0,0,0) calc(100% - 1px), #e7190a 0);<br>
+    background-size: 0 100% → hover で 100% 100%。text-decoration は使わない。
+  </p>
+
+  <div class="group-label">Block Link（塗り・角丸ゼロ）</div>
+  <div class="btn-row">
+    <a class="btn-block" href="#">にんべんとは</a>
+    <a class="btn-block" href="#">店舗をさがす</a>
+  </div>
+
+  <div class="group-label">Circle Badge / Tag / PAGE TOP</div>
+  <div class="btn-row">
+    <div class="badge-circle badge-lg">今月の<br>レシピ</div>
+    <div class="badge-circle badge-sm">お勧め</div>
+    <span class="tag">ニュースリリース</span>
+    <a class="page-top" href="#">PAGE<br>TOP</a>
+  </div>
+
+  <p class="note">border-radius は 50%（円）と 3px（タグ）だけ。角丸の矩形をつくらない。</p>
+</section>
+
+<!-- ==================== 5. CARDS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Cards</div>
+  <div class="section-no">05 — 生成り地の上に白の面。影は使わない</div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="thumb">product</div>
+      <div class="body"><h3>だし</h3><p>削りたての香りをそのまま封じたフレッシュパック。</p></div>
+    </div>
+    <div class="card">
+      <div class="thumb">product</div>
+      <div class="body"><h3>つゆ・白だし</h3><p>かえしとだしの比を、料理ごとに整えました。</p></div>
+    </div>
+    <div class="card">
+      <div class="thumb">product</div>
+      <div class="body"><h3>本節・削り節</h3><p>半年かけて仕上げた鰹節の王様、本枯鰹節。</p></div>
+    </div>
+    <div class="card">
+      <div class="thumb"><div class="badge-circle badge-sm">お勧め</div>product</div>
+      <div class="body"><h3>贈り物</h3><p>お祝いの席にふさわしい、日本橋からの詰め合わせ。</p></div>
+    </div>
+  </div>
+
+  <div class="group-label">Photo Card（写真の上に白文字）</div>
+  <div class="photo-card">
+    <h3>日本橋本店</h3>
+    <p>本物のだしの美味しさを体験</p>
+  </div>
+  <p class="note">CSS のスクリムを重ねていない。暗く処理した写真そのものを使う。</p>
+</section>
+
+<!-- ==================== 6. FORMS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Forms</div>
+  <div class="section-no">06 — デフォルト / フォーカス / エラー。角丸ゼロ</div>
+
+  <div class="form-grid">
+    <div class="field">
+      <label>お名前</label>
+      <input type="text" placeholder="山田 太郎">
+      <div class="msg">全角でご入力ください</div>
+    </div>
+    <div class="field is-focus">
+      <label>メールアドレス</label>
+      <input type="email" value="nihonbashi@example.jp">
+      <div class="msg">フォーカス時は罫線が朱赤 #e7190a に変わる</div>
+    </div>
+    <div class="field is-error">
+      <label>お電話番号</label>
+      <input type="tel" value="03-3241">
+      <div class="msg">電話番号を正しくご入力ください</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 7. ELEVATION ==================== -->
+<section class="section wrap">
+  <div class="section-title">Elevation</div>
+  <div class="section-no">07 — box-shadow は実測で1件もない</div>
+
+  <div class="elev-grid">
+    <div class="elev elev-flat">
+      <strong>Level 0 — none</strong>
+      すべての要素が影なし。カード・ヘッダー・ドロワー・モーダルすべて。
+    </div>
+    <div class="elev elev-bg">
+      <strong>面色の差でつくる</strong>
+      生成り #f8f8f5 の上に白 #ffffff のカードを置く。これが唯一の階層表現。
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 8. LAYOUT ==================== -->
+<section class="section wrap">
+  <div class="section-title">Layout</div>
+  <div class="section-no">08 — コンテナ 1200px。主境界は 999px / 1000px</div>
+
+  <div class="layout-demo">
+    <div class="bar bar-1440">1440px — フルブリード</div>
+    <div class="bar bar-1200">1200px — 標準コンテナ</div>
+    <div class="bar bar-1000">1000px — 読み物・狭い版面</div>
+  </div>
+
+  <div class="group-label">Spacing Scale</div>
+  <div class="spacing">
+    <div><div style="height:5px"></div><span>5</span></div>
+    <div><div style="height:10px"></div><span>10</span></div>
+    <div><div style="height:20px"></div><span>20</span></div>
+    <div><div style="height:40px"></div><span>40</span></div>
+    <div><div style="height:80px"></div><span>80</span></div>
+    <div><div style="height:120px"></div><span>120</span></div>
+  </div>
+
+  <p class="note">
+    ブレークポイントは 767px（モバイル）／ 999px・1000px（主境界）／ 1360・1400・1750px（ワイド）。
+    一般的な 768px ではなく 1000px を境にレイアウトが切り替わる。@media print も持つ。
+  </p>
+</section>
+
+<footer class="site-footer">
+  <div class="inner">
+    <p>にんべん — 元禄十二年創業 / 東京・日本橋 鰹節専門店</p>
+    <p style="margin-top:10px">
+      このページは DESIGN.md のプレビューです。実サイトはWebフォントを使っていないため、
+      Mac ではヒラギノ、それ以外では Shippori Mincho / Zen Kaku Gothic New で表示されます。
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

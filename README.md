@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (429 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (432 sites)</a>
 </p>
 
 <table>
@@ -644,6 +644,11 @@
 <td align="center"><strong>final</strong><br><img src="design-md/final-audio/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>ぺんてる</strong><br><img src="design-md/pentel/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>うなぎの寝床</strong><br><img src="design-md/unagino-nedoko/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>にんべん</strong><br><img src="design-md/ninben/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ミシマ社</strong><br><img src="design-md/mishimasha/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1133,11 +1138,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [SUWADA (諏訪田製作所)](https://www.suwada.co.jp/) | Cutlery / Manufacturing | [DESIGN.md](design-md/suwada/DESIGN.md) | [preview.html](design-md/suwada/preview.html) |
 | [final (ファイナル)](https://final-inc.com/) | Audio / Earphones EC | [DESIGN.md](design-md/final-audio/DESIGN.md) | [preview.html](design-md/final-audio/preview.html) |
 | [Pentel (ぺんてる)](https://www.pentel.co.jp/) | Stationery / Manufacturing | [DESIGN.md](design-md/pentel/DESIGN.md) | [preview.html](design-md/pentel/preview.html) |
+| [UNAGINO NEDOKO (うなぎの寝床)](https://unagino-nedoko.net/) | Regional Culture / Craft EC | [DESIGN.md](design-md/unagino-nedoko/DESIGN.md) | [preview.html](design-md/unagino-nedoko/preview.html) |
+| [NINBEN (にんべん)](https://www.ninben.co.jp/) | Katsuobushi / Food Manufacturing | [DESIGN.md](design-md/ninben/DESIGN.md) | [preview.html](design-md/ninben/preview.html) |
+| [MISHIMASHA (ミシマ社)](https://mishimasha.com/) | Publishing / Books | [DESIGN.md](design-md/mishimasha/DESIGN.md) | [preview.html](design-md/mishimasha/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (429 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (432 sites)</a>
 </p>
 
 <table>
@@ -1746,6 +1754,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>諏訪田製作所</strong><br><img src="design-md/suwada/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>final</strong><br><img src="design-md/final-audio/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>ぺんてる</strong><br><img src="design-md/pentel/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>うなぎの寝床</strong><br><img src="design-md/unagino-nedoko/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>にんべん</strong><br><img src="design-md/ninben/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ミシマ社</strong><br><img src="design-md/mishimasha/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
