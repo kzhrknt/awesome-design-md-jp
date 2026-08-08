@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>印傳屋 上原勇七（INDEN-YA） — Design System Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
+<!--
+  印傳屋 上原勇七（INDEN-YA）DESIGN.md のプレビュー。
+  実測日 2026-08-08 / https://www.inden-ya.co.jp/
+
+  このサイトの要点は8つ。
+  1. 見出しは明朝（筑紫明朝 Pr6 L）、本文はゴシック（筑紫ゴシック Pr5 R）の分業。
+  2. body に font-feature-settings: "palt" を置き全要素へ継承させる。
+  3. letter-spacing の既定は 0.64px（0.04em）。palt と併用して「詰めてから開き直す」。
+  4. 本文色は rgba(0,0,0,.843)。純黒を本文に使わない。
+  5. font-weight は全要素 400。太字を使わず DemiBold の書体差し替えで強調する。
+  6. 有彩色は紅 #9b0e15 の1色だけ。現在地の 1px 下線と文字色にしか使わない（面に塗らない）。
+  7. CTA は黒ベタ #000000 / radius 5px の2サイズだけ。ホバーで色を変えない。
+  8. 1280px 以上では vw 単位に切り替わり、全体が比例拡大する。
+
+  ■ フォント代替について
+    実サイトの筑紫ゴシック / 筑紫明朝（フォントワークス、FONTPLUS 配信）は
+    ドメインライセンスのためローカルで表示できません。
+      筑紫ゴシック Pr5 R → Zen Kaku Gothic New 400
+      筑紫明朝 Pr6 L    → Shippori Mincho 400
+    筑紫明朝 L はふところが狭く仮名が小ぶりで縦画が長いため、
+    仮名の大きい Noto Serif JP よりも しっぽり明朝 のほうが印象が近いという判断です。
+    どちらの代替でも palt と letter-spacing: 0.64px を必ず添えています。
+-->
+<style>
+  :root {
+    /* --- Ink --- */
+    --ink-body:  rgba(0, 0, 0, .843);   /* ≒ #272727。純黒ではない */
+    --ink:       #000000;               /* CTA の面色 */
+    --text-sub:  #333333;               /* ナビ・パンくず */
+    --text-muted:#666666;               /* タグの面色 */
+    --text-faint:#7c7c7c;
+    --text-thin: #999999;
+
+    /* --- Surface --- */
+    --bg:        #ffffff;
+    --surface:   #efefef;
+    --surface-alt:#ededed;
+
+    /* --- Accent（サイト唯一の有彩色） --- */
+    --crimson:   #9b0e15;
+
+    /* --- Type --- */
+    --font-gothic: "Zen Kaku Gothic New", "游ゴシック Medium", "Yu Gothic Medium",
+                   游ゴシック体, YuGothic, メイリオ, Meiryo, Osaka, sans-serif;
+    --font-mincho: "Shippori Mincho", "ＭＳ Ｐ明朝", "MS PMincho", serif;
+
+    --container: 944px;
+    --container-read: 854px;
+    --radius: 5px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink-body);
+    font-family: var(--font-gothic);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.69;                  /* 27px */
+    letter-spacing: 0.64px;             /* 0.04em */
+    font-feature-settings: "palt";      /* 全要素に継承 */
+    -webkit-text-size-adjust: 100%;
+  }
+  h1,h2,h3,h4,h5,h6 { font-size:100%; font-weight:400; font-family: var(--font-mincho); }
+  ul,ol { list-style:none; }
+
+  .section { max-width: var(--container); margin: 60px auto; padding: 0 20px; }
+  .section-title { font-family: var(--font-mincho); font-size:30px; font-weight:400; line-height:1.7; letter-spacing:0.8px; }
+  .section-no { font-size:14px; line-height:1.7; color: var(--text-faint); margin-bottom:36px; }
+  .group-label {
+    font-family: var(--font-mincho); font-size:24px; font-weight:400; line-height:1.7;
+    letter-spacing:0.96px; margin:44px 0 16px; padding-left:14px;
+    border-left:1px solid var(--crimson);
+  }
+  .group-label:first-of-type { margin-top:0; }
+  .note { font-size:14px; line-height:1.7; color: var(--text-faint); margin-top:20px; }
+
+  /* ---------- HEADER ---------- */
+  .site-header { padding:22px 20px 0; text-align:center; border-bottom:1px solid #eee; }
+  .mark {
+    display:inline-block; width:44px; height:36px; line-height:36px;
+    border:1px solid var(--ink-body); font-family: var(--font-mincho); font-size:20px;
+  }
+  .wordmark { font-family: var(--font-mincho); font-size:15px; letter-spacing:3px; margin-top:6px; }
+  .gnav { display:flex; justify-content:center; flex-wrap:wrap; margin-top:20px; }
+  .gnav li { padding:0 18px 10px; border-left:1px solid #ddd; }
+  .gnav li:first-child { border-left:0; }
+  .gnav li.is-current { border-bottom:1px solid var(--crimson); }
+  .gnav a { font-family: var(--font-mincho); font-size:18px; line-height:1; letter-spacing:0.64px;
+            color: var(--text-sub); text-decoration:none; }
+  .gnav li.is-current a { color: var(--crimson); }
+
+  .lang { display:flex; justify-content:flex-end; max-width:1264px; margin:14px auto 0; padding:0 20px; }
+  .lang li { padding:0 12px 4px; }
+  .lang li.is-current { border-bottom:1px solid var(--crimson); }
+  .lang a { font-size:14px; letter-spacing:0.64px; color: var(--text-sub); text-decoration:none; }
+  .lang li.is-current a { color: var(--crimson); }
+
+  /* ---------- HERO ---------- */
+  .hero { position:relative; height:400px; background: linear-gradient(150deg,#3b444a,#232a2f 60%,#161b1f);
+          display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; }
+  .hero h1 {
+    font-family: var(--font-mincho); font-size:50px; font-weight:400;
+    line-height:34px;                 /* 字面より小さい。2〜4文字専用 */
+    letter-spacing:4px; margin-right:-4px;   /* 最後の字間を打ち消す */
+    color:#ffffff;
+  }
+  .hero p { font-family: var(--font-mincho); font-size:24px; line-height:1.46; letter-spacing:0.64px; color:#ffffff; }
+
+  /* ---------- BUTTONS ---------- */
+  .btn {
+    display:inline-flex; align-items:center; justify-content:center;
+    background: var(--ink); color:#ffffff; border:0; border-radius: var(--radius);
+    font-family: var(--font-mincho); font-weight:400; line-height:1; text-decoration:none;
+  }
+  .btn-lg { padding:16px 36px; font-size:20px; letter-spacing:0.64px; }
+  .btn-sm { padding:12.8px 28.8px; font-size:16px; letter-spacing:normal; }
+  .btn-row { display:flex; flex-wrap:wrap; gap:20px; align-items:center; }
+
+  .tag {
+    display:inline-block; background: var(--text-muted); color:#ffffff;
+    border-radius: var(--radius); padding:7px 12.25px;
+    font-family: var(--font-gothic); font-size:14px; font-weight:400; line-height:1;
+    letter-spacing:0.64px;
+  }
+  .link-more { font-family: var(--font-gothic); font-size:16px; line-height:1; letter-spacing:0.64px;
+               color: var(--text-sub); text-decoration:none; }
+  .link-more::after { content:"　›"; }
+
+  /* ---------- COLORS ---------- */
+  .swatches { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:18px; }
+  .swatch .chip { height:80px; border-radius: var(--radius); border:1px solid #ececec; }
+  .swatch .meta { padding:8px 2px 0; font-size:14px; line-height:1.7; }
+  .swatch .hex  { display:block; color: var(--text-faint); font-size:12px; }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  .type-row { display:grid; grid-template-columns:250px 1fr; gap:24px; padding:20px 0; border-bottom:1px solid #eee; align-items:baseline; }
+  .type-spec { font-size:12px; line-height:1.8; color: var(--text-faint); letter-spacing:0.48px; }
+  .t-hero  { font-family:var(--font-mincho); font-size:50px; line-height:34px; letter-spacing:4px; }
+  .t-lead  { font-family:var(--font-mincho); font-size:24px; line-height:1.46; letter-spacing:0.64px; }
+  .t-sec   { font-family:var(--font-mincho); font-size:30px; line-height:1.7; letter-spacing:0.8px; }
+  .t-sub   { font-family:var(--font-mincho); font-size:24px; line-height:1.7; letter-spacing:1.44px; }
+  .t-nav   { font-family:var(--font-mincho); font-size:18px; line-height:1; letter-spacing:0.64px; color:var(--text-sub); }
+  .t-navc  { font-family:var(--font-mincho); font-size:18px; line-height:1; letter-spacing:0.64px; color:var(--crimson); }
+  .t-body  { font-size:16px; line-height:1.69; letter-spacing:0.64px; }
+  .t-emph  { font-size:16px; line-height:1.69; letter-spacing:0.96px; }
+  .t-cap   { font-size:14px; line-height:1.7; letter-spacing:0.64px; color:var(--text-faint); }
+  .t-copy  { font-size:11px; line-height:1; letter-spacing:0.44px; color:var(--text-faint); }
+
+  /* ---------- ARTICLE ---------- */
+  .article { max-width: var(--container-read); margin:0 auto; }
+  .article .crumb { font-size:14px; letter-spacing:0.64px; color: var(--text-sub); margin-bottom:20px; }
+  .article h2 { font-family:var(--font-mincho); font-size:30px; line-height:1.7; letter-spacing:0.8px; margin-bottom:16px; }
+  .article h3 { font-family:var(--font-mincho); font-size:24px; line-height:1.7; letter-spacing:0.96px; margin:32px 0 10px; }
+  .article p  { font-size:16px; line-height:1.69; letter-spacing:0.64px; margin-bottom:18px; }
+  .ruby { font-family: var(--font-mincho); font-size:18px; letter-spacing:0.64px; }
+  .pattern-name { white-space:nowrap; }
+
+  /* ---------- CARDS ---------- */
+  .card-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:28px; }
+  .card .thumb { aspect-ratio:4/3; background: linear-gradient(150deg,#33393e,#1e2327);
+                 display:flex; align-items:center; justify-content:center; color:#7f878d; font-size:12px; }
+  .card h3 { font-family:var(--font-mincho); font-size:24px; line-height:1.7; letter-spacing:0.96px; margin:14px 0 6px; }
+  .card p  { font-size:14px; line-height:1.7; letter-spacing:0.64px; color: var(--text-faint); }
+
+  /* ---------- NEWS LIST ---------- */
+  .news li { display:flex; gap:20px; align-items:center; padding:18px 0; border-bottom:1px solid #eee; }
+  .news .date { font-size:14px; letter-spacing:0.64px; color: var(--text-faint); flex:0 0 96px; }
+  .news .title { font-size:16px; line-height:1.69; letter-spacing:0.96px; }
+
+  /* ---------- SUBNAV ---------- */
+  .subnav { background: var(--surface-alt); padding:28px 20px; }
+  .subnav ul { max-width: var(--container); margin:0 auto; display:flex; gap:36px; flex-wrap:wrap; justify-content:center; }
+  .subnav a { font-family:var(--font-mincho); font-size:18px; letter-spacing:0.64px; color: var(--ink-body); text-decoration:none; }
+
+  /* ---------- FORMS ---------- */
+  .form-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:26px; }
+  .field label { display:block; font-size:16px; line-height:1.69; letter-spacing:0.64px; margin-bottom:8px; }
+  .field input {
+    width:100%; background:#ffffff; color: var(--ink-body);
+    border:1px solid #ddd; border-radius: var(--radius);
+    padding:11px 14px; font-family: var(--font-gothic);
+    font-size:16px; line-height:1.69; letter-spacing:0.64px;
+    font-feature-settings:"palt";
+  }
+  .field input::placeholder { color: var(--text-thin); }
+  .field.is-focus input { border-color: var(--ink); outline:2px solid var(--surface); }
+  .field.is-error input { border-color: var(--crimson); background:#fdf6f6; }
+  .field .msg { font-size:14px; line-height:1.7; letter-spacing:0.64px; color: var(--text-faint); margin-top:6px; }
+  .field.is-error .msg { color: var(--crimson); }
+
+  /* ---------- ELEVATION ---------- */
+  .elev-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:26px; }
+  .elev { background:#fff; border-radius: var(--radius); padding:22px; min-height:130px;
+          font-size:14px; line-height:1.8; letter-spacing:0.56px; color: var(--text-faint); }
+  .elev strong { display:block; font-family:var(--font-mincho); font-size:18px; font-weight:400;
+                 color: var(--ink-body); margin-bottom:8px; letter-spacing:0.64px; }
+  .e-0 { box-shadow:none; border:1px solid #efefef; }
+  .e-1 { box-shadow: 0 4px 8px rgba(0,0,0,.08); }
+  .e-2 { box-shadow: 0 0 10px rgba(0,0,0,.2); }
+
+  /* ---------- LAYOUT ---------- */
+  .bar { font-size:14px; letter-spacing:0.64px; color:#fff; background: var(--ink);
+         padding:10px 14px; border-radius: var(--radius); margin-bottom:8px; }
+  .bar-944 { max-width:944px; }
+  .bar-854 { max-width:854px; background:#444; }
+  .bar-616 { max-width:616px; background: var(--text-muted); }
+  .bar-288 { max-width:288px; background: var(--text-faint); }
+  .spacing { display:flex; align-items:flex-end; gap:18px; margin-top:20px; }
+  .spacing div { background: var(--surface); width:40px; border-radius:2px; }
+  .spacing span { display:block; text-align:center; margin-top:6px; font-size:12px; color: var(--text-faint); }
+
+  .site-footer { background: var(--surface); margin-top:60px; padding:44px 20px; text-align:center; }
+  .site-footer .slogan { font-family:var(--font-mincho); font-size:16px; letter-spacing:0.64px; }
+  .site-footer p { font-size:14px; line-height:1.8; letter-spacing:0.64px; color: var(--text-faint); margin-top:16px; }
+
+  @media (max-width:767px) {
+    .card-grid,.form-grid,.elev-grid { grid-template-columns:1fr; }
+    .type-row { grid-template-columns:1fr; }
+    .gnav { display:none; }
+    .btn { width:100%; }
+    .hero { height:260px; }
+    .hero h1 { font-size:30px; line-height:1.2; }
+    .hero p  { font-size:16px; }
+    .t-hero { font-size:30px; line-height:1.2; }
+    .section-title,.t-sec { font-size:22px; }
+    .news li { flex-direction:column; align-items:flex-start; gap:6px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="lang">
+  <ul style="display:flex">
+    <li class="is-current"><a href="#">日本語</a></li>
+    <li><a href="#">English</a></li>
+    <li><a href="#">簡体中文</a></li>
+    <li><a href="#">繁体中文</a></li>
+  </ul>
+</div>
+
+<header class="site-header">
+  <div class="mark">印</div>
+  <div class="wordmark">INDEN-YA</div>
+  <ul class="gnav">
+    <li class="is-current"><a href="#">トップ</a></li>
+    <li><a href="#">印傳屋について</a></li>
+    <li><a href="#">印伝の世界</a></li>
+    <li><a href="#">商品</a></li>
+    <li><a href="#">店舗情報</a></li>
+    <li><a href="#">印傳博物館</a></li>
+    <li><a href="#">オンラインショップ</a></li>
+  </ul>
+</header>
+
+<div class="hero">
+  <h1>模様</h1>
+  <p>自然の力や四季の美しさを想う日本人の心から生まれた様式美</p>
+  <a class="btn btn-lg" href="#"><span class="pattern-name">更紗「雀踊り」模様</span></a>
+</div>
+
+<div class="subnav">
+  <ul>
+    <li><a href="#">歴史</a></li>
+    <li><a href="#">技</a></li>
+    <li><a href="#" style="color:var(--crimson)">模様</a></li>
+    <li><a href="#">素材</a></li>
+  </ul>
+</div>
+
+<!-- ==================== 1. COLORS ==================== -->
+<section class="section">
+  <div class="section-title">Colors</div>
+  <div class="section-no">01 — 面色はグレーだけ。紅 #9b0e15 は「いまここ」を指す1本の線にしか使わない</div>
+
+  <div class="group-label">Accent</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#9b0e15"></div>
+      <div class="meta">紅 / Crimson<span class="hex">#9b0e15 — 現在地の 1px 下線と文字色のみ。<strong>面に塗らない</strong></span></div></div>
+  </div>
+
+  <div class="group-label">Ink</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:rgba(0,0,0,.843)"></div>
+      <div class="meta">Body Ink<span class="hex">rgba(0,0,0,.843) ≒ #272727。純黒ではない</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#000000"></div>
+      <div class="meta">Ink（CTA の面色）<span class="hex">#000000</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#333333"></div>
+      <div class="meta">Text Sub（ナビ）<span class="hex">#333333</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#666666"></div>
+      <div class="meta">Text Muted（タグの面）<span class="hex">#666666</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#7c7c7c"></div>
+      <div class="meta">Text Faint<span class="hex">#7c7c7c</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#999999"></div>
+      <div class="meta">Text Thin<span class="hex">#999999</span></div></div>
+  </div>
+
+  <div class="group-label">Surface</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#ffffff"></div>
+      <div class="meta">Background<span class="hex">#ffffff</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#efefef"></div>
+      <div class="meta">Surface<span class="hex">#efefef</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#ededed"></div>
+      <div class="meta">Surface Alt（サブナビ）<span class="hex">#ededed</span></div></div>
+  </div>
+
+  <p class="note">色は商品写真（漆の黒・鹿革の色）が担い、UI には持ち込みません。
+    本文色を <code>rgba(0,0,0,.843)</code> とアルファ付きで持つのは、写真の上に置いたときに
+    下地が透けるようにするためです。</p>
+</section>
+
+<!-- ==================== 2. TYPOGRAPHY ==================== -->
+<section class="section">
+  <div class="section-title">Typography</div>
+  <div class="section-no">02 — 見出しは明朝、本文はゴシックの分業 / palt を全体に継承 / letter-spacing 0.64px</div>
+
+  <div class="type-row"><div class="type-spec">Hero Title（明朝）<br>50px / 400 / <strong>line-height 34px</strong> / <strong>4px</strong><br>※字面より小さい行送り。2〜4文字専用</div>
+    <div class="t-hero">模様</div></div>
+  <div class="type-row"><div class="type-spec">Hero Lead（明朝）<br>24px / 400 / 1.46 / 0.64px</div>
+    <div class="t-lead">自然の力や四季の美しさを想う日本人の心から生まれた様式美</div></div>
+  <div class="type-row"><div class="type-spec">Section Head（明朝）<br>30px / 400 / <strong>1.7</strong> / 0.8px</div>
+    <div class="t-sec">印伝の美と伝統の物語。</div></div>
+  <div class="type-row"><div class="type-spec">Sub Head（明朝）<br>24px / 400 / 1.7 / 1.44px</div>
+    <div class="t-sub">小桜</div></div>
+  <div class="type-row"><div class="type-spec">Nav（明朝）<br>18px / 400 / <strong>1.0</strong> / 0.64px</div>
+    <div class="t-nav">印傳屋について</div></div>
+  <div class="type-row"><div class="type-spec">Nav Current（明朝）<br>18px / 400 / 1.0 / 0.64px<br>color #9b0e15 + 下線 1px</div>
+    <div class="t-navc" style="border-bottom:1px solid #9b0e15;display:inline-block;padding-bottom:4px">模様</div></div>
+  <div class="type-row"><div class="type-spec">Body（ゴシック）<br>16px / 400 / <strong>1.69</strong> / 0.64px</div>
+    <div class="t-body">平安時代以降、花といえば桜を意味するようになり、現在では日本を象徴する花として親しまれています。
+      印伝の模様のなかでも小桜は最も古くから伝わるもののひとつです。</div></div>
+  <div class="type-row"><div class="type-spec">Body Emphasis（ゴシック）<br>16px / 400 / 1.69 / <strong>0.96px</strong></div>
+    <div class="t-emph">【配送情報】台風の接近により、一部地域でお届けを停止しております。</div></div>
+  <div class="type-row"><div class="type-spec">CTA L（明朝）<br>20px / 400 / 1.0 / 0.64px</div>
+    <div><a class="btn btn-lg" href="#"><span class="pattern-name">更紗「雀踊り」模様</span></a></div></div>
+  <div class="type-row"><div class="type-spec">CTA S（明朝）<br>16px / 400 / 1.0 / normal</div>
+    <div><a class="btn btn-sm" href="#">詳細を見る</a></div></div>
+  <div class="type-row"><div class="type-spec">Tag（ゴシック）<br>14px / 400 / 1.0 / 0.64px</div>
+    <div><span class="tag">直営店</span> <span class="tag">企業情報</span></div></div>
+  <div class="type-row"><div class="type-spec">Caption（ゴシック）<br>14px / 400 / 1.7 / 0.64px</div>
+    <div class="t-cap">鹿革に漆で模様を置く、甲州印伝の技法</div></div>
+  <div class="type-row"><div class="type-spec">Copyright（ゴシック）<br>11px / 400 / 1.0 / 0.44px</div>
+    <div class="t-copy">Copyright © INDEN-YA Co.,Ltd. All Rights Reserved.</div></div>
+
+  <p class="note">
+    <strong>font-weight は全要素 400。</strong>太字を使わず、強調は書体そのものを
+    DemiBold（FOT-筑紫ゴシック Pr5 D）に差し替えて表現します。<br>
+    <code>font-feature-settings: "palt"</code> を body に置いて全体へ継承させたうえで、
+    <code>letter-spacing: 0.64px</code>（0.04em）を重ねます。<strong>詰めてから開き直す</strong>組み方で、
+    約物だけが詰まり、字面は均等に開きます。明朝の見出しで最も効きます。<br>
+    ヒーロー見出しの <code>line-height: 34px</code>（50px の字面より小さい）は、
+    <strong>2〜4文字の大見出しを写真に載せるための詰めです。多行の見出しに使わないでください。</strong>
+  </p>
+</section>
+
+<!-- ==================== 3. ARTICLE ==================== -->
+<section class="section">
+  <div class="section-title">Article</div>
+  <div class="section-no">03 — 読み物の版面は 854px。模様名は途中で折らない</div>
+
+  <div class="article">
+    <div class="crumb">トップ ／ 印伝の世界 ／ 模様</div>
+    <h2>小桜</h2>
+    <p>平安時代以降、花といえば桜を意味するようになり、現在では日本を象徴する花として
+      親しまれています。武具にも多く用いられた小桜は、印伝の模様のなかでも最も古くから
+      伝わるもののひとつです。</p>
+
+    <h3>とんぼ<span class="ruby">（とんぼ）</span></h3>
+    <p>とんぼは前にしか進まないことから「勝ち虫」と呼ばれ、武将に好まれました。
+      <span class="pattern-name">更紗「雀踊り」模様</span>と同じく、
+      いまも定番として受け継がれています。</p>
+
+    <div class="btn-row" style="margin-top:28px">
+      <a class="btn btn-sm" href="#">詳細を見る</a>
+      <a class="link-more" href="#">一覧へ</a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 4. BUTTONS ==================== -->
+<section class="section">
+  <div class="section-title">Buttons</div>
+  <div class="section-no">04 — 黒ベタの角丸 5px、サイズ違いの2種類だけ。文字は明朝</div>
+
+  <div class="btn-row">
+    <a class="btn btn-lg" href="#"><span class="pattern-name">更紗「雀踊り」模様</span></a>
+    <a class="btn btn-sm" href="#">詳細を見る</a>
+  </div>
+  <p class="note">
+    L — 背景 #000000 / 文字 #fff / radius 5px / padding 16px 36px / 明朝 20px / letter-spacing 0.64px<br>
+    S — 背景 #000000 / 文字 #fff / radius 5px / padding 12.8px 28.8px / 明朝 16px / letter-spacing normal<br>
+    <strong>ボタンの文字が明朝</strong>というのがこのサイトの声です。
+    枠線ボタンを持たず、ホバーで色も影も変えません。
+  </p>
+
+  <div class="group-label">Tags（グレー #666666・同じ角丸 5px）</div>
+  <div class="btn-row">
+    <span class="tag">直営店</span><span class="tag">企業情報</span><span class="tag">お知らせ</span>
+  </div>
+  <p class="note">紅を使いません。タグは情報の分類であって「いまここ」ではないためです。</p>
+
+  <div class="group-label">Text Link（枠を持たず、記号を1つ添えるだけ）</div>
+  <a class="link-more" href="#">一覧へ</a>
+</section>
+
+<!-- ==================== 5. NAVIGATION ==================== -->
+<section class="section">
+  <div class="section-title">Navigation</div>
+  <div class="section-no">05 — 現在地は「紅の 1px 下線 ＋ 紅の文字色」で示す。面を塗らない</div>
+
+  <ul class="gnav" style="justify-content:flex-start">
+    <li><a href="#">トップ</a></li>
+    <li><a href="#">印傳屋について</a></li>
+    <li class="is-current"><a href="#">印伝の世界</a></li>
+    <li><a href="#">商品</a></li>
+    <li><a href="#">店舗情報</a></li>
+  </ul>
+  <p class="note">項目の区切りは縦の細い罫（1px solid #ddd）。
+    言語切替（日本語 / English / 簡体中文 / 繁体中文）も同じルールで、選択中に紅の下線が付きます。</p>
+
+  <div class="group-label">News List</div>
+  <ul class="news">
+    <li><span class="date">2026.08.07</span><span class="tag">直営店</span>
+      <span class="title">夏季休業のお知らせ</span></li>
+    <li><span class="date">2026.07.22</span><span class="tag">企業情報</span>
+      <span class="title"><span class="pattern-name">更紗「雀踊り」模様</span>の新作を発売しました</span></li>
+    <li><span class="date">2026.07.01</span><span class="tag">お知らせ</span>
+      <span class="title">印傳博物館 企画展のご案内</span></li>
+  </ul>
+</section>
+
+<!-- ==================== 6. CARDS ==================== -->
+<section class="section">
+  <div class="section-title">Cards</div>
+  <div class="section-no">06 — 写真をフルブリードで見せ、白い明朝を直に載せる。枠も影も敷かない</div>
+
+  <div class="card-grid">
+    <div class="card"><div class="thumb">product photo</div>
+      <h3>小桜</h3><p>最も古くから伝わる模様のひとつ</p></div>
+    <div class="card"><div class="thumb">product photo</div>
+      <h3>とんぼ</h3><p>前にしか進まぬ「勝ち虫」</p></div>
+    <div class="card"><div class="thumb">product photo</div>
+      <h3>青海波</h3><p>穏やかな波が重なる吉祥文様</p></div>
+  </div>
+</section>
+
+<!-- ==================== 7. FORMS ==================== -->
+<section class="section">
+  <div class="section-title">Forms</div>
+  <div class="section-no">07 — デフォルト / フォーカス / エラー。radius 5px、入力欄にも palt を効かせる</div>
+
+  <div class="form-grid">
+    <div class="field">
+      <label>お名前</label>
+      <input type="text" placeholder="山田 太郎">
+      <div class="msg">全角でご入力ください</div>
+    </div>
+    <div class="field is-focus">
+      <label>メールアドレス</label>
+      <input type="email" value="info@example.jp">
+      <div class="msg">フォーカスは #000000 の枠＋ #efefef のアウトライン</div>
+    </div>
+    <div class="field is-error">
+      <label>お電話番号</label>
+      <input type="tel" value="055-220">
+      <div class="msg">電話番号を正しくご入力ください</div>
+    </div>
+  </div>
+  <p class="note">エラーだけ紅 #9b0e15 を線と文字に使います（面には塗りません）。</p>
+</section>
+
+<!-- ==================== 8. ELEVATION & LAYOUT ==================== -->
+<section class="section">
+  <div class="section-title">Elevation &amp; Layout</div>
+  <div class="section-no">08 — 影は4種類しか宣言がない。版面は 944px。1280px 以上では vw に切り替わる</div>
+
+  <div class="elev-grid">
+    <div class="elev e-0"><strong>Level 0 — none</strong>
+      ほぼすべての要素。階層は写真のフルブリードと面色（#fff → #efefef → #ededed）でつくります。</div>
+    <div class="elev e-1"><strong>Level 1 — 0 4px 8px rgba(0,0,0,.08)</strong>
+      わずかに浮かせるカード。</div>
+    <div class="elev e-2"><strong>Level 3 — 0 0 10px rgba(0,0,0,.2)</strong>
+      固定ヘッダー・モーダル。これが最も濃い影です。</div>
+  </div>
+
+  <div class="group-label">Container</div>
+  <div class="bar bar-944">944px — 標準コンテナ</div>
+  <div class="bar bar-854">854px — 記事・読み物</div>
+  <div class="bar bar-616">616px — 2カラムの主</div>
+  <div class="bar bar-288">288px — 2カラムの副</div>
+
+  <div class="group-label">Spacing Scale</div>
+  <div class="spacing">
+    <div><div style="height:8px"></div><span>8</span></div>
+    <div><div style="height:12px"></div><span>12</span></div>
+    <div><div style="height:16px"></div><span>16</span></div>
+    <div><div style="height:28px"></div><span>28</span></div>
+    <div><div style="height:36px"></div><span>36</span></div>
+    <div><div style="height:60px"></div><span>60</span></div>
+    <div><div style="height:100px"></div><span>100</span></div>
+  </div>
+
+  <p class="note">ブレークポイントは <strong>767/768px</strong> と <strong>1280px</strong> の2本。
+    1280px 以上では px 指定が vw 指定に置き換わり（<code>border-radius: 0.39063vw</code> = 1280px で 5px）、
+    <strong>全体が比例拡大します</strong>。固定 px を前提にしないでください。</p>
+</section>
+
+<footer class="site-footer">
+  <div class="slogan">印傳屋 上原勇七 — 天正十年創業</div>
+  <p>このページは DESIGN.md のプレビューです。実サイトの筑紫ゴシック Pr5 R / 筑紫明朝 Pr6 L
+    （フォントワークス、FONTPLUS 配信）はドメインライセンスのため表示できないため、
+    Zen Kaku Gothic New と Shippori Mincho で代替しています。<br>
+    筑紫明朝 L はふところが狭く仮名が小ぶりで縦画が長いため、仮名の大きい Noto Serif JP よりも
+    しっぽり明朝のほうが印象が近いという判断です。どちらの代替でも palt と letter-spacing: 0.64px を添えています。</p>
+  <p class="t-copy" style="margin-top:14px">Copyright © INDEN-YA Co.,Ltd. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>

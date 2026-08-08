@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>麻布台ヒルズ（AZABUDAI HILLS） — Design System Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/yakuhanjp@4.0.0/dist/css/yakuhanjp.css">
+<!--
+  麻布台ヒルズ（AZABUDAI HILLS）DESIGN.md のプレビュー。
+  実測日 2026-08-08 / https://www.azabudai-hills.com/
+
+  このサイトの要点は8つ。
+  1. 和文チェーンの先頭に必ず YakuHanJP を置く。約物だけを半角字形に差し替える。
+  2. letter-spacing は全要素 normal。字間で調整せず YakuHanJP に任せる。
+  3. 欧文は自社の Latin ディスプレイ書体3種（AZABUDAI regular / bold / condence）。
+  4. body の font-family は Webflow 既定の Arial のまま。和文は要素ごとに指定する。
+  5. 主要 CTA は枠線ボタン1種だけ（1px solid #003a40 / radius 10px / 300×50px）。塗らない。
+  6. 緑が2段。#003a40（文字・枠）と #00875f（アクション）で役割が違う。
+  7. 見出しの font-weight は 500。大見出しほど軽い。
+  8. 角丸は 10px に統一。影は最大でも rgba(0,0,0,.1)。
+
+  ■ フォント代替について
+    YakuHanJP … MIT ライセンスの公開フォント。jsDelivr から実サイトと同じものを読み込み。
+    Noto Sans JP … Google Fonts。実サイトと同一。
+    AZABUDAI（自社フォント）… 配信されないため Jost（Futura 系ジオメトリック）で代替。
+      大文字の字幅とトラッキングの印象が近い。letter-spacing: 0.03em を必ず添えること。
+-->
+<style>
+  :root {
+    /* --- Brand：緑の2段 --- */
+    --dark-green:  #003a40;   /* 見出し・本文・CTA の枠線 */
+    --green:       #00875f;   /* アクション・ロゴ下線・検索ボタン */
+    --green-hover: #179c75;
+    --green-01:    #b9e972;   /* 差し色の黄緑 */
+    --green-02:    #c3dc93;   /* 英字ラベル */
+
+    /* --- Surface --- */
+    --white:            #ffffff;
+    --light-grey:       #f8f8f8;
+    --light-green-01:   #e6f0e7;
+    --light-green-02:   #f1f9e2;
+    --greyge:           #e1dcdc;
+    --brown:            #9b8376;
+
+    /* --- Ink --- */
+    --black:      #000000;
+    --black-01:   #333333;
+    --dark-grey:  #5c5c5c;
+    --grey:       #8c8c8c;
+    --divider:    #dddddd;
+    --divider-02: #cdcdcd;
+
+    /* --- Type --- */
+    --font-jp: YakuHanJP, "Noto Sans JP", "Hiragino Sans",
+               "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    --font-en: "Jost", sans-serif;   /* 実サイトは自社の AZABUDAI */
+
+    --container: 940px;
+    --container-read: 728px;
+    --radius: 10px;
+    --shadow-1: 0 4px 10px rgba(0,0,0,.05);
+    --shadow-2: 0 0 10px rgba(0,0,0,.1);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  /* body は Webflow 既定のまま。和文はここに頼らない */
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 14px;
+    line-height: 1.43;
+    letter-spacing: normal;
+    -webkit-text-size-adjust: 100%;
+  }
+  /* 和文は要素ごとに指定する */
+  h1,h2,h3,h4,h5,h6,p,a,li,label,input,span,div,td,th {
+    font-family: var(--font-jp);
+    letter-spacing: normal;      /* 字間で調整しない */
+  }
+  h1,h2,h3,h4,h5,h6 { font-size:100%; font-weight:500; }
+  ul,ol { list-style:none; }
+
+  .en      { font-family: var(--font-en); font-weight:400; letter-spacing:0.03em; }
+  .en-bold { font-family: var(--font-en); font-weight:500; letter-spacing:0.03em; }
+
+  .section {
+    max-width: var(--container);
+    margin: 40px auto;
+    padding: 0 20px 40px;
+  }
+  .section-title { font-family: var(--font-en); font-weight:400; font-size:33px; line-height:1.2; letter-spacing:0.03em; }
+  .section-no { font-size:13px; line-height:1.7; color: var(--dark-grey); margin: 6px 0 32px; }
+  .group-label {
+    font-size:18px; font-weight:500; line-height:1.4; color: var(--dark-green);
+    margin: 36px 0 16px; padding-left:12px; border-left:4px solid var(--green);
+  }
+  .group-label:first-of-type { margin-top:0; }
+  .note { font-size:13px; line-height:1.86; color: var(--dark-grey); margin-top:16px; }
+
+  /* ---------- HEADER ---------- */
+  .site-header { background: var(--white); box-shadow: var(--shadow-1); }
+  .header-top {
+    max-width:1170px; margin:0 auto; padding:14px 20px;
+    display:flex; align-items:center; gap:20px;
+  }
+  .lang-switch { font-size:12px; color: var(--black-01); }
+  .brand { margin: 0 auto; text-align:center; }
+  .brand .wordmark {
+    font-family: var(--font-en); font-weight:400; font-size:26px;
+    letter-spacing:0.16em; color: var(--black); line-height:1.1;
+  }
+  .brand .rule { height:4px; background: var(--green); margin-top:6px; }
+  .header-utility { display:flex; gap:18px; }
+  .header-utility a { font-size:12px; color: var(--black-01); text-decoration:none; }
+  .gnav {
+    max-width:1170px; margin:0 auto; padding:0 20px 12px;
+    display:flex; gap:26px; justify-content:center; flex-wrap:wrap;
+  }
+  .gnav a { font-size:15px; color: var(--black); text-decoration:none; line-height:1.2; }
+  .gnav a.is-current { color: var(--green); }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position:relative; height:340px; margin-bottom:0;
+    background: linear-gradient(160deg,#4a5f4c,#2c3d31 60%,#1b241d);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .hero::after {
+    content:""; position:absolute; inset:auto 0 0 0; height:50%;
+    background: linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,.1) 50%, rgba(0,0,0,.85) 90%);
+  }
+  .hero .title {
+    position:relative; z-index:1;
+    font-family: var(--font-en); font-weight:400; font-size:46px;
+    letter-spacing:0.18em; color: var(--white);
+  }
+  .credit {
+    position:absolute; right:14px; bottom:12px; z-index:2;
+    background: rgba(0,0,0,.08); color: var(--white);
+    font-size:12px; padding:2px 8px;
+  }
+
+  /* ---------- CONCEPT ---------- */
+  .concept { background: var(--light-green-01); padding:64px 20px; text-align:center; }
+  .concept h2 {
+    font-size:28px; font-weight:500; line-height:1.4;
+    letter-spacing:1px;                 /* 唯一の和文の字間指定 */
+    color: var(--dark-green); margin-bottom:28px;
+  }
+  .concept p { font-size:15px; font-weight:400; line-height:1.7; color: var(--dark-green); }
+
+  /* ---------- BUTTONS ---------- */
+  .btn-outline {
+    display:flex; align-items:center; justify-content:center; gap:14px;
+    width:300px; height:50px; margin:32px auto 0;
+    background: transparent; color: var(--dark-green);
+    border:1px solid var(--dark-green); border-radius: var(--radius);
+    font-size:15px; font-weight:400; text-decoration:none;
+  }
+  .btn-category {
+    display:inline-flex; align-items:center; justify-content:center;
+    background: transparent; color: var(--green);
+    border:1px solid var(--green); border-radius:0;   /* こちらは角丸を持たない */
+    padding:12px 28px; font-size:15px; font-weight:400; text-decoration:none;
+  }
+  .btn-search {
+    background: var(--green); color: var(--white);
+    border:0; border-radius:0; padding:10px 24px;
+    font-size:15px; font-weight:400; cursor:pointer;
+  }
+  .btn-row { display:flex; flex-wrap:wrap; gap:16px; align-items:center; }
+
+  /* ---------- COLORS ---------- */
+  .swatches { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:18px; }
+  .swatch .chip { height:80px; border-radius: var(--radius); border:1px solid #ececec; }
+  .swatch .meta { padding:8px 2px 0; font-size:14px; font-weight:500; line-height:1.6; }
+  .swatch .hex  { display:block; font-weight:400; color: var(--dark-grey); font-size:12px; }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  .type-row { display:grid; grid-template-columns:250px 1fr; gap:24px; padding:18px 0; border-bottom:1px solid #eee; align-items:baseline; }
+  .type-spec { font-size:12px; line-height:1.7; color: var(--dark-grey); }
+  .t-page   { font-family:var(--font-en); font-weight:500; font-size:54px; line-height:1.1; letter-spacing:0.03em; }
+  .t-cond   { font-family:var(--font-en); font-weight:400; font-size:35px; line-height:1.0; letter-spacing:0.03em; }
+  .t-en-sec { font-family:var(--font-en); font-weight:400; font-size:33px; line-height:1.2; letter-spacing:0.03em; }
+  .t-label  { font-family:var(--font-en); font-weight:400; font-size:32px; line-height:1.0; color: var(--green-02); letter-spacing:0.03em; }
+  .t-con    { font-size:28px; font-weight:500; line-height:1.4; letter-spacing:1px; color: var(--dark-green); }
+  .t-sec    { font-size:24px; font-weight:500; line-height:1.4; color: var(--dark-green); }
+  .t-sub    { font-size:20px; font-weight:700; line-height:1.5; color: var(--dark-green); }
+  .t-card   { font-size:18px; font-weight:500; line-height:1.4; }
+  .t-body   { font-size:15px; font-weight:400; line-height:1.86; color: var(--black-01); }
+  .t-bodyg  { font-size:15px; font-weight:400; line-height:1.7; color: var(--dark-green); }
+  .t-strong { font-size:15px; font-weight:700; line-height:1.5; }
+  .t-nav    { font-size:15px; font-weight:400; line-height:1.2; }
+  .t-util   { font-size:12px; font-weight:400; line-height:1.52; color: var(--black-01); }
+  .t-foot   { font-size:12px; font-weight:300; line-height:1.5; color:#8c8c8c; }
+
+  /* ---------- CARDS ---------- */
+  .card-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-1); overflow:hidden; }
+  .card .thumb { aspect-ratio:16/9; background: linear-gradient(150deg,#dfe7e0,#c9d6cb); display:flex; align-items:center; justify-content:center; color:#7d8b80; font-size:12px; }
+  .card .body { padding:16px 18px 22px; }
+  .card h3 { font-size:18px; font-weight:500; line-height:1.4; margin-bottom:6px; }
+  .card p  { font-size:12px; font-weight:400; line-height:1.6; color: var(--dark-grey); }
+
+  /* ---------- ARTICLE ---------- */
+  .article { max-width: var(--container-read); margin:0 auto; }
+  .article h2 { font-size:24px; font-weight:500; line-height:1.4; color: var(--dark-green); margin:28px 0 12px; }
+  .article h3 { font-size:15px; font-weight:700; line-height:1.5; margin:20px 0 8px; }
+  .article p  { font-size:15px; font-weight:400; line-height:1.86; color: var(--black-01); margin-bottom:16px; }
+
+  /* ---------- FORMS ---------- */
+  .form-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .field label { display:block; font-size:15px; font-weight:700; line-height:1.5; margin-bottom:8px; }
+  .field input {
+    width:100%; background: var(--light-grey); color: var(--black-01);
+    border:1px solid var(--divider); border-radius: var(--radius);
+    padding:10px 14px; font-family: var(--font-jp);
+    font-size:15px; line-height:1.5; letter-spacing:normal;
+  }
+  .field input::placeholder { color: var(--grey); }
+  .field.is-focus input { border-color: var(--green); outline:2px solid var(--light-green-01); }
+  .field.is-error input { border-color: var(--brown); background:#fbf5f3; }
+  .field .msg { font-size:12px; line-height:1.6; color: var(--dark-grey); margin-top:6px; }
+  .field.is-error .msg { color: var(--brown); }
+
+  /* ---------- PAGINATION ---------- */
+  .pager { display:flex; gap:8px; align-items:center; }
+  .pager a { background: var(--divider); color: var(--black-01); border-radius:3px; padding:3px 10px; font-size:12.8px; text-decoration:none; }
+  .pager a.is-current { background:#666666; color:#eeeeee; }
+
+  /* ---------- ELEVATION ---------- */
+  .elev-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .elev { background: var(--white); border-radius: var(--radius); padding:22px; min-height:130px; font-size:13px; line-height:1.8; color: var(--dark-grey); }
+  .elev strong { display:block; font-size:15px; font-weight:700; color: var(--dark-green); margin-bottom:8px; }
+  .e-0 { box-shadow:none; border:1px solid #efefef; }
+  .e-1 { box-shadow: var(--shadow-1); }
+  .e-2 { box-shadow: var(--shadow-2); }
+
+  /* ---------- LAYOUT ---------- */
+  .bar { font-size:13px; font-weight:500; color: var(--white); background: var(--dark-green); padding:9px 14px; border-radius: var(--radius); margin-bottom:8px; }
+  .bar-940 { max-width:940px; }
+  .bar-728 { max-width:728px; background: var(--green); }
+  .bar-360 { max-width:360px; background: var(--green-02); color: var(--dark-green); }
+  .spacing { display:flex; align-items:flex-end; gap:18px; margin-top:20px; }
+  .spacing div { background: var(--light-green-01); width:40px; border-radius:2px; }
+  .spacing span { display:block; text-align:center; margin-top:6px; font-size:12px; color: var(--dark-grey); }
+  .radii { display:flex; gap:16px; flex-wrap:wrap; margin-top:12px; }
+  .radii div { width:104px; height:64px; background: var(--light-green-01); display:flex; align-items:center; justify-content:center; font-size:12px; color: var(--dark-green); }
+
+  .site-footer { background: var(--dark-green); color: var(--white); padding:40px 20px; margin-top:40px; }
+  .site-footer .inner { max-width: var(--container); margin:0 auto; }
+  .site-footer a { color:#e2e2e2; font-size:12px; font-weight:300; text-decoration:none; margin-right:20px; }
+  .site-footer p { font-size:12px; font-weight:300; line-height:1.8; margin-top:14px; color:#cfd8d0; }
+
+  @media (max-width:767px) {
+    .card-grid,.form-grid,.elev-grid { grid-template-columns:1fr; }
+    .type-row { grid-template-columns:1fr; }
+    .gnav { display:none; }
+    .btn-outline { width:100%; }
+    .t-page { font-size:32px; }
+    .t-con,.concept h2 { font-size:20px; }
+    .section-title,.t-en-sec { font-size:24px; }
+    .hero { height:220px; }
+    .hero .title { font-size:26px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-top">
+    <div class="lang-switch">JP ▾</div>
+    <div class="brand">
+      <div class="wordmark">AZABUDAI HILLS</div>
+      <div class="rule"></div>
+    </div>
+    <div class="header-utility">
+      <a href="#">麻布台ヒルズについて</a><a href="#">アクセス</a><a href="#">インフォメーション</a>
+    </div>
+  </div>
+  <nav class="gnav">
+    <a class="is-current" href="#">最新情報</a>
+    <a href="#">ショップ＆レストラン</a>
+    <a href="#">マーケット</a>
+    <a href="#">アート＆ギャラリー</a>
+    <a href="#">ホテル＆レジデンス</a>
+    <a href="#">ワークプレイス</a>
+    <a href="#">スクール</a>
+    <a href="#">グリーン＆ウェルネス</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <div class="title">AZABUDAI HILLS</div>
+  <div class="credit">©Photographer Name</div>
+</div>
+
+<div class="concept">
+  <h2>緑あふれる広場のような街へ、ようこそ。</h2>
+  <p>麻布台ヒルズのコンセプトは、<br>
+     「緑に包まれ、人と人をつなぐ「広場」のような街−Modern Urban Village−」です。<br>
+     都市の本質はそこに生きる人にあるからこそ、<br>
+     人間を中心に発想し、誰もが豊かに暮らせる環境をめざしました。<br>
+     世界が注目するGreen&amp;Wellnessという価値を、東京の中心で実現します。</p>
+  <a class="btn-outline" href="#"><span>麻布台ヒルズについて</span><span>→</span></a>
+</div>
+
+<!-- ==================== 1. COLORS ==================== -->
+<section class="section">
+  <div class="section-title">Colors</div>
+  <div class="section-no">01 — 有彩色は緑だけ。#003a40（文字・枠）と #00875f（アクション）の2段で使い分ける</div>
+
+  <div class="group-label">Brand</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#003a40"></div>
+      <div class="meta">Deep Green（見出し・本文・枠線）<span class="hex">#003a40 / --dark-green</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#00875f"></div>
+      <div class="meta">Green（アクション）<span class="hex">#00875f / --green</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#179c75"></div>
+      <div class="meta">Green Hover<span class="hex">#179c75</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#b9e972"></div>
+      <div class="meta">Light Green（差し色）<span class="hex">#b9e972 / --green-01</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#c3dc93"></div>
+      <div class="meta">Sage（英字ラベル）<span class="hex">#c3dc93 / --green-02</span></div></div>
+  </div>
+
+  <div class="group-label">Surface</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#ffffff"></div>
+      <div class="meta">Background<span class="hex">#ffffff / --white</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#e6f0e7"></div>
+      <div class="meta">Surface Green（コンセプト面）<span class="hex">#e6f0e7 / --light-green-01</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#f1f9e2"></div>
+      <div class="meta">Surface Green Pale<span class="hex">#f1f9e2 / --light-green-02</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#f8f8f8"></div>
+      <div class="meta">Surface Light<span class="hex">#f8f8f8 / --light-grey</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#e1dcdc"></div>
+      <div class="meta">Greige<span class="hex">#e1dcdc / --greyge</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#9b8376"></div>
+      <div class="meta">Brown（アート系の差し色）<span class="hex">#9b8376 / --brown</span></div></div>
+  </div>
+
+  <div class="group-label">Ink</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#000000"></div>
+      <div class="meta">Ink<span class="hex">#000000 / --bkack（原文ママ）</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#333333"></div>
+      <div class="meta">Text<span class="hex">#333333 / --black-01</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#5c5c5c"></div>
+      <div class="meta">Text Muted<span class="hex">#5c5c5c / --dark-grey</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#8c8c8c"></div>
+      <div class="meta">Text Faint<span class="hex">#8c8c8c / --grey</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#dddddd"></div>
+      <div class="meta">Divider<span class="hex">#dddddd</span></div></div>
+  </div>
+
+  <p class="note">赤・青・黄を UI に一切足しません。「Green &amp; Wellness」というコンセプトを
+    配色そのもので言っています。CSS 変数名の <code>--bkack</code> は実サイトのタイポをそのまま記載しています。</p>
+</section>
+
+<!-- ==================== 2. TYPOGRAPHY ==================== -->
+<section class="section">
+  <div class="section-title">Typography</div>
+  <div class="section-no">02 — 和文チェーンの先頭に YakuHanJP / letter-spacing は normal / 見出しは 500</div>
+
+  <div class="type-row"><div class="type-spec">Page Title（EN）<br>Azabudai Bold → Jost<br>54px / 1.1 / 0.03em</div>
+    <div class="t-page">ABOUT AZABUDAI HILLS</div></div>
+  <div class="type-row"><div class="type-spec">Section Title（EN）<br>Azabudai Condence → Jost<br>35px / 1.0 / 1.05px</div>
+    <div class="t-cond">SPECIAL INTERVIEW</div></div>
+  <div class="type-row"><div class="type-spec">Section Title（EN）<br>Azabudai Regular → Jost<br>33px / 1.2 / 0.99px</div>
+    <div class="t-en-sec">What’s on</div></div>
+  <div class="type-row"><div class="type-spec">Section Label（EN）<br>32px / 1.0 / color #c3dc93</div>
+    <div class="t-label">OUR STORY</div></div>
+  <div class="type-row"><div class="type-spec">Concept Head<br>28px / <strong>500</strong> / 1.4 / <strong>1px</strong></div>
+    <div class="t-con">緑あふれる広場のような街へ、ようこそ。</div></div>
+  <div class="type-row"><div class="type-spec">Section Head<br>24px / <strong>500</strong> / 1.4 / normal</div>
+    <div class="t-sec">施設概要</div></div>
+  <div class="type-row"><div class="type-spec">Sub Head<br>20px / <strong>700</strong> / 1.5 / normal</div>
+    <div class="t-sub">ワークプレイス</div></div>
+  <div class="type-row"><div class="type-spec">Card Title<br>18px / 500 / 1.4 / normal</div>
+    <div class="t-card">森ビルデジタルアートミュージアム</div></div>
+  <div class="type-row"><div class="type-spec">Body<br>15px / 400 / <strong>1.86</strong> / normal</div>
+    <div class="t-body">麻布台ヒルズの周辺はホテルや大使館が多く集まり、グローバルで多様な人が行き交う場所です。
+      「広場」を中心に、住む人・働く人・訪れる人が同じ場所で時間を過ごせる街をめざしました。</div></div>
+  <div class="type-row"><div class="type-spec">Body Green<br>15px / 400 / 1.7 / normal</div>
+    <div class="t-bodyg">麻布台ヒルズは、区域面積約8.1ha、延床面積約86万㎡。開業までに35年を要しました。</div></div>
+  <div class="type-row"><div class="type-spec">Strong<br>15px / 700 / 1.5 / normal</div>
+    <div class="t-strong">タワー形状および外観デザイン</div></div>
+  <div class="type-row"><div class="type-spec">Nav<br>15px / 400 / 1.2 / normal</div>
+    <div class="t-nav">ショップ＆レストラン</div></div>
+  <div class="type-row"><div class="type-spec">Utility<br>12px / 400 / 1.52 / normal</div>
+    <div class="t-util">インフォメーション</div></div>
+  <div class="type-row"><div class="type-spec">Footer Link<br>12px / <strong>300</strong> / 1.5 / normal</div>
+    <div class="t-foot">麻布台ヒルズについて</div></div>
+
+  <p class="note">和文チェーンは
+    <code>YakuHanJP, "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif</code>。
+    先頭の YakuHanJP は約物（、。「」（））だけを収録した半角字形フォントで、
+    残りの文字は次の Noto Sans JP に落ちます。<strong>letter-spacing を使わずに約物のアキだけを詰める</strong>設計なので、
+    palt と併用しません（二重に詰まります）。<br>
+    見出しの font-weight は 500 が基本で、700 を使うのは 20px 以下の小見出しだけ。
+    <strong>大きい見出しほど軽い</strong>のがこのサイトの上品さの正体です。</p>
+</section>
+
+<!-- ==================== 3. ARTICLE ==================== -->
+<section class="section">
+  <div class="section-title">Article</div>
+  <div class="section-no">03 — 読み物の版面は 728px。本文は 15px / line-height 1.86</div>
+
+  <div class="article">
+    <div class="t-label" style="font-size:24px;margin-bottom:8px">OUR STORY</div>
+    <h2>広場を中心につくられた街</h2>
+    <p>麻布台ヒルズは、区域面積約8.1ha、延床面積約86万㎡。構想から開業まで35年を要しました。
+      中央に約6,000㎡の中央広場を置き、その周囲に住宅・オフィス・商業・学校・医療を配しています。</p>
+
+    <h3>タワー形状および外観デザイン</h3>
+    <p>3棟のタワーは、頂部に向かってゆるやかに絞られる形状をとっています。
+      足元から立ち上がる低層部は、緑の地形と連続するようにデザインされました。</p>
+
+    <a class="btn-outline" style="margin-left:0" href="#"><span>詳しく見る</span><span>→</span></a>
+  </div>
+</section>
+
+<!-- ==================== 4. BUTTONS ==================== -->
+<section class="section">
+  <div class="section-title">Buttons</div>
+  <div class="section-no">04 — 主要 CTA は枠線1種だけ。塗るのは検索の送信ボタンだけ</div>
+
+  <div class="group-label">Primary（唯一の主要 CTA）</div>
+  <a class="btn-outline" style="margin:0" href="#"><span>麻布台ヒルズについて</span><span>→</span></a>
+  <p class="note">width 300px / height 50px / transparent / 1px solid #003a40 /
+    border-radius 10px / 15px / 400。右端に「→」を文字として置きます。
+    <strong>塗りの CTA を持ちません。</strong></p>
+
+  <div class="group-label">Category Link（角丸を持たない・緑の枠）</div>
+  <div class="btn-row">
+    <a class="btn-category" href="#">レストラン</a>
+    <a class="btn-category" href="#">ショップ</a>
+    <a class="btn-category" href="#">サービス</a>
+    <a class="btn-category" href="#">マーケット</a>
+  </div>
+  <p class="note">1px solid #00875f / border-radius 0 / padding 12px。
+    主要 CTA（radius 10px）と角丸で区別します。</p>
+
+  <div class="group-label">Search（サイト内で唯一の塗りボタン）</div>
+  <div class="btn-row">
+    <input type="search" placeholder="サイト内検索" style="padding:10px 14px;border:1px solid #ddd;border-radius:0;background:#f7f7f7;font-family:var(--font-jp);font-size:15px;width:260px">
+    <button class="btn-search">検索</button>
+  </div>
+
+  <div class="group-label">Pagination（radius 3px）</div>
+  <div class="pager">
+    <a class="is-current" href="#">10</a><a href="#">20</a><a href="#">30</a>
+  </div>
+</section>
+
+<!-- ==================== 5. CARDS ==================== -->
+<section class="section">
+  <div class="section-title">Cards</div>
+  <div class="section-no">05 — 角丸は 10px に統一。写真はカード幅いっぱいのフルブリード</div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="thumb">shop photo</div>
+      <div class="body"><h3>ショップ＆レストラン</h3><p>約150の店舗が集まるフロア</p></div>
+    </div>
+    <div class="card">
+      <div class="thumb">gallery photo</div>
+      <div class="body"><h3>アート＆ギャラリー</h3><p>常設・企画あわせて年間20本以上</p></div>
+    </div>
+    <div class="card">
+      <div class="thumb">green photo</div>
+      <div class="body"><h3>グリーン＆ウェルネス</h3><p>約24,000㎡の緑地と菜園</p></div>
+    </div>
+  </div>
+
+  <div class="group-label">Photo Credit（rgba(0,0,0,.08) の極薄い面に白文字）</div>
+  <div style="position:relative;height:160px;border-radius:var(--radius);overflow:hidden;background:linear-gradient(150deg,#4a5f4c,#243026)">
+    <div class="credit" style="position:absolute">©Photographer Name</div>
+  </div>
+  <p class="note">黒ベタではなく 8% の極薄い面。写真の階調を殺しません。</p>
+</section>
+
+<!-- ==================== 6. FORMS ==================== -->
+<section class="section">
+  <div class="section-title">Forms</div>
+  <div class="section-no">06 — デフォルト / フォーカス / エラー。radius 10px、フォーカスは緑</div>
+
+  <div class="form-grid">
+    <div class="field">
+      <label>お名前</label>
+      <input type="text" placeholder="山田 太郎">
+      <div class="msg">全角でご入力ください</div>
+    </div>
+    <div class="field is-focus">
+      <label>メールアドレス</label>
+      <input type="email" value="info@example.jp">
+      <div class="msg">フォーカスは #00875f の枠＋ #e6f0e7 のアウトライン</div>
+    </div>
+    <div class="field is-error">
+      <label>お電話番号</label>
+      <input type="tel" value="03-6433">
+      <div class="msg">電話番号を正しくご入力ください</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 7. ELEVATION ==================== -->
+<section class="section">
+  <div class="section-title">Elevation</div>
+  <div class="section-no">07 — 影は薄い。最大でも rgba(0,0,0,.1)</div>
+
+  <div class="elev-grid">
+    <div class="elev e-0"><strong>Level 0 — none</strong>
+      セクション・本文。階層は面色（#ffffff → #f8f8f8 → #e6f0e7）でつくります。</div>
+    <div class="elev e-1"><strong>Level 1 — 0 4px 10px rgba(0,0,0,.05)</strong>
+      ヘッダー・カード。最頻出。「浮いている」と言うだけの最小限。</div>
+    <div class="elev e-2"><strong>Level 2 — 0 0 10px rgba(0,0,0,.1)</strong>
+      ドロワー・ドロップダウン。</div>
+  </div>
+</section>
+
+<!-- ==================== 8. LAYOUT ==================== -->
+<section class="section">
+  <div class="section-title">Layout</div>
+  <div class="section-no">08 — 標準 940px（Webflow 既定）/ 読み物 728px。写真はフルブリード</div>
+
+  <div class="bar bar-940">940px — 標準コンテナ</div>
+  <div class="bar bar-728">728px — 読み物</div>
+  <div class="bar bar-360">360px — サムネイル</div>
+
+  <div class="group-label">Spacing Scale</div>
+  <div class="spacing">
+    <div><div style="height:5px"></div><span>5</span></div>
+    <div><div style="height:10px"></div><span>10</span></div>
+    <div><div style="height:12px"></div><span>12</span></div>
+    <div><div style="height:24px"></div><span>24</span></div>
+    <div><div style="height:40px"></div><span>40</span></div>
+    <div><div style="height:60px"></div><span>60</span></div>
+    <div><div style="height:100px"></div><span>100</span></div>
+  </div>
+
+  <div class="group-label">Border Radius</div>
+  <div class="radii">
+    <div style="border-radius:10px">10px — カード・CTA・画像</div>
+    <div style="border-radius:3px">3px — ページネーション</div>
+    <div style="border-radius:0">0px — カテゴリリンク</div>
+    <div style="border-radius:50%">50% — アイコン</div>
+  </div>
+
+  <p class="note">ブレークポイントは Webflow 既定の 479 / <strong>767</strong> / 991 / 1170px。
+    モバイルでも letter-spacing: normal と YakuHanJP は維持します。</p>
+</section>
+
+<footer class="site-footer">
+  <div class="inner">
+    <a href="#">麻布台ヒルズについて</a><a href="#">アクセス</a><a href="#">インフォメーション</a><a href="#">利用規約</a>
+    <p>麻布台ヒルズ — 東京都港区虎ノ門5丁目、麻布台1丁目および六本木3丁目の各一部</p>
+    <p>このページは DESIGN.md のプレビューです。YakuHanJP（jsDelivr）と Noto Sans JP（Google Fonts）は
+      実サイトと同じものを読み込んでいます。実サイトの自社 Latin 書体「AZABUDAI Regular / Bold / Condence」は
+      配信されないため、Jost（Futura 系ジオメトリック）で代替し letter-spacing: 0.03em を添えています。</p>
+  </div>
+</footer>
+
+</body>
+</html>

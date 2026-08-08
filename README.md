@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (435 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (438 sites)</a>
 </p>
 
 <table>
@@ -654,6 +654,11 @@
 <td align="center"><strong>ヤッホーブルーイング</strong><br><img src="design-md/yohobrewing/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>ライゾマティクス</strong><br><img src="design-md/rhizomatiks/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>ログラス</strong><br><img src="design-md/loglass/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>麻布台ヒルズ</strong><br><img src="design-md/azabudai-hills/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>印傳屋</strong><br><img src="design-md/inden-ya/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1149,11 +1154,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [Nakanoshima Museum of Art, Osaka (大阪中之島美術館)](https://nakka-art.jp/) | Museum / Modern & Contemporary Art | [DESIGN.md](design-md/nakanoshima-museum/DESIGN.md) | [preview.html](design-md/nakanoshima-museum/preview.html) |
 | [YOHO BREWING (ヤッホーブルーイング)](https://yohobrewing.com/) | Craft Beer / Food & Beverage | [DESIGN.md](design-md/yohobrewing/DESIGN.md) | [preview.html](design-md/yohobrewing/preview.html) |
 | [Rhizomatiks (ライゾマティクス)](https://rhizomatiks.com/) | Creative Studio / Art & Technology | [DESIGN.md](design-md/rhizomatiks/DESIGN.md) | [preview.html](design-md/rhizomatiks/preview.html) |
+| [Loglass (ログラス)](https://www.loglass.jp/) | SaaS / Corporate Performance Management | [DESIGN.md](design-md/loglass/DESIGN.md) | [preview.html](design-md/loglass/preview.html) |
+| [AZABUDAI HILLS (麻布台ヒルズ)](https://www.azabudai-hills.com/) | Urban Development / Mixed-use Complex | [DESIGN.md](design-md/azabudai-hills/DESIGN.md) | [preview.html](design-md/azabudai-hills/preview.html) |
+| [INDEN-YA (印傳屋 上原勇七)](https://www.inden-ya.co.jp/) | Traditional Craft / Leather Goods | [DESIGN.md](design-md/inden-ya/DESIGN.md) | [preview.html](design-md/inden-ya/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (435 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (438 sites)</a>
 </p>
 
 <table>
@@ -1772,6 +1780,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>大阪中之島美術館</strong><br><img src="design-md/nakanoshima-museum/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>ヤッホーブルーイング</strong><br><img src="design-md/yohobrewing/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>ライゾマティクス</strong><br><img src="design-md/rhizomatiks/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>ログラス</strong><br><img src="design-md/loglass/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>麻布台ヒルズ</strong><br><img src="design-md/azabudai-hills/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>印傳屋</strong><br><img src="design-md/inden-ya/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
