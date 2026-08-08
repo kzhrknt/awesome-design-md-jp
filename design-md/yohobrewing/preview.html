@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ヤッホーブルーイング（YOHO BREWING） — Design System Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700&family=Inter:wght@500&display=swap" rel="stylesheet">
+<!--
+  ヤッホーブルーイング DESIGN.md のプレビュー。
+  実測日 2026-08-08 / https://yohobrewing.com/
+
+  このサイトの要点は8つ。
+  1. body の地色が濃紺 #112240。白地から始めない。
+  2. アクセントは黄 #F8E133 の1色。紺と黄を反転させて階層をつくる。
+  3. ボタンのボーダーが 4px。border-radius 80px のピルに太い罫を巻く。
+  4. font-weight は 500（本文）と 700（見出し・ボタン・バッジ）の2値だけ。
+  5. line-height の既定は 1.6。代表メッセージの見出しだけ 2.4。
+  6. letter-spacing は 0（normal ではなく明示的な 0）。palt も使わない。
+  7. 商品バッジは円形（50% / 6px solid #F8E133 / rgba(0,0,0,.3)）。
+  8. box-shadow の宣言が CSS 全体で0件。
+
+  ■ フォント代替について
+    Noto Sans JP / Inter とも Google Fonts で公開されているため代替不要。
+    実サイトとまったく同じ書体で表示されます。
+-->
+<style>
+  :root {
+    /* --- Brand：この2色がすべて --- */
+    --yh-navy:        #112240;   /* ページ地色 */
+    --yh-yellow:      #F8E133;   /* アクセント */
+
+    /* --- Sub：黄の派生 --- */
+    --yh-soft-yellow: #EABF4B;
+    --yh-profile-bg:  #F1E2B0;
+    --yh-beige:       #e8daaa;
+
+    /* --- Base --- */
+    --yh-black:       #000000;
+    --on-navy:        #ffffff;
+    --surface:        #ffffff;
+    --overlay:        rgba(0, 0, 0, 0.3);
+    --header-scrim:   rgba(17, 34, 64, 0.85);
+
+    --font: "Noto Sans JP", sans-serif;
+    --font-en: "Inter", sans-serif;
+
+    --lh-base: 1.6;
+    --container: 1200px;
+    --container-read: 800px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--yh-navy);
+    color: var(--yh-black);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 500;              /* 400 ではない */
+    font-optical-sizing: auto;
+    line-height: var(--lh-base);   /* 1.6 */
+    letter-spacing: 0;             /* normal ではなく 0 */
+    font-feature-settings: normal; /* palt は使わない */
+    -webkit-text-size-adjust: 100%;
+  }
+  h1, h2, h3, h4, h5, h6 { font-size: 100%; font-weight: 500; }
+  ul, ol { list-style: none; }
+  .inter { font-family: var(--font-en); font-weight: 500; }
+
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 28px; }
+  .section {
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 60px 40px;
+    margin: 28px auto;
+    max-width: var(--container);
+  }
+  .section-title { font-size: 40px; font-weight: 700; line-height: 1.35; }
+  .section-no { font-size: 16px; font-weight: 500; line-height: 1.6; color: #555; margin-bottom: 40px; }
+  .group-label {
+    font-size: 20px; font-weight: 700; line-height: 1.4;
+    margin: 40px 0 20px; padding-left: 12px;
+    border-left: 6px solid var(--yh-soft-yellow);
+  }
+  .group-label:first-of-type { margin-top: 0; }
+  .note { font-size: 14px; font-weight: 500; line-height: 1.6; color: #444; margin-top: 20px; }
+
+  /* ---------- HEADER ---------- */
+  .site-header {
+    background: var(--yh-navy);
+    display: flex; align-items: center; gap: 20px;
+    padding: 0 0 0 0; height: 72px;
+    max-width: var(--container); margin: 0 auto;
+  }
+  .logo {
+    background: var(--yh-navy); color: var(--yh-yellow);
+    border-radius: 0 0 10px 0;
+    font-family: var(--font-en); font-weight: 500;
+    font-size: 20px; line-height: 1.2; letter-spacing: 0.05em;
+    padding: 12px 20px; border: 2px solid var(--yh-yellow);
+  }
+  .site-name { color: var(--on-navy); font-size: 14px; font-weight: 500; line-height: 1.6; }
+  .header-utility { display: flex; align-items: center; gap: 28px; margin-left: auto; }
+  .header-utility a {
+    color: var(--yh-yellow); font-size: 12px; font-weight: 700;
+    line-height: 1; text-decoration: none; text-align: center;
+  }
+  .header-utility a .sub { display: block; font-size: 16px; font-weight: 500; margin-top: 4px; }
+  .lang { display: flex; gap: 4px; }
+  .lang a {
+    border-radius: 26px; padding: 6px 14px 8px;
+    font-size: 16px; font-weight: 700; line-height: 1; text-decoration: none;
+    border: 1px solid transparent; color: var(--yh-yellow);
+  }
+  .lang a.is-current { background: var(--yh-yellow); color: var(--yh-navy); border-color: var(--yh-yellow); }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative; max-width: var(--container); margin: 0 auto;
+    background: linear-gradient(135deg, #2a3b5c 0%, #17294a 100%);
+    border-radius: 10px; overflow: hidden;
+    min-height: 320px; display: flex; align-items: center; justify-content: flex-end;
+    padding: 40px;
+  }
+  .balloon {
+    background: var(--yh-yellow); color: var(--yh-black);
+    border-radius: 20px; padding: 24px 32px;
+    font-size: 32px; font-weight: 700; line-height: 1.375; text-align: center;
+  }
+  .hero-wedge {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 70px;
+    background: var(--yh-yellow);
+    clip-path: polygon(0 100%, 100% 30%, 100% 100%);
+  }
+  .scroll-label {
+    position: absolute; left: 18px; bottom: 80px;
+    writing-mode: vertical-rl; color: var(--on-navy);
+    font-family: var(--font-en); font-size: 12px; letter-spacing: 0.2em;
+  }
+
+  /* ---------- BUTTONS ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    position: relative; height: 56px; padding: 0 28px;
+    border-radius: 80px; font-size: 16px; font-weight: 700; line-height: 1;
+    text-decoration: none;
+  }
+  .btn::after {
+    content: ""; position: absolute; right: 16px; top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+    width: 8px; height: 8px; border-top: 2px solid currentColor; border-right: 2px solid currentColor;
+  }
+  .btn-primary { background: var(--yh-yellow); border: 4px solid var(--yh-yellow); color: var(--yh-navy); }
+  .btn-inverse { background: var(--yh-navy);   border: 4px solid var(--yh-yellow); color: var(--yh-yellow); }
+  .btn-outline { background: transparent;      border: 4px solid var(--yh-navy);   color: var(--yh-navy); }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+
+  /* ---------- TABS ---------- */
+  .tabs { display: flex; flex-wrap: wrap; gap: 10px; }
+  .tabs a {
+    border-radius: 44px; border: 2px solid var(--yh-yellow);
+    background: var(--yh-navy); color: var(--yh-yellow);
+    padding: 10px 32px 12px; font-size: 16px; font-weight: 700; line-height: 1;
+    text-decoration: none;
+  }
+  .tabs a.is-active { background: var(--yh-yellow); color: var(--yh-navy); }
+
+  /* ---------- BADGES ---------- */
+  .badge-circle {
+    width: 160px; height: 160px; border-radius: 50%;
+    background: var(--overlay); border: 6px solid var(--yh-yellow);
+    color: var(--yh-yellow); font-size: 16px; font-weight: 700; line-height: 1.4;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    padding: 14px;
+  }
+  .badge-num {
+    width: 52px; height: 52px; border-radius: 52px;
+    background: var(--yh-yellow); color: var(--yh-black); border: 1px solid var(--yh-black);
+    font-size: 32px; font-weight: 700; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tag {
+    display: inline-block; background: var(--yh-navy); color: var(--on-navy);
+    border-radius: 10px; padding: 4px 10px 6px;
+    font-size: 14px; font-weight: 700; line-height: 1.4;
+  }
+
+  /* ---------- COLORS ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 20px; }
+  .swatch .chip { height: 90px; border-radius: 10px; }
+  .swatch .meta { padding: 10px 2px 0; font-size: 14px; font-weight: 700; line-height: 1.6; }
+  .swatch .hex { display: block; font-weight: 500; color: #555; font-size: 14px; }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  .type-row {
+    display: grid; grid-template-columns: 230px 1fr; gap: 24px;
+    padding: 20px 0; border-bottom: 1px solid #e5e5e5; align-items: baseline;
+  }
+  .type-spec { font-size: 14px; font-weight: 500; line-height: 1.6; color: #555; }
+  .t-page    { font-size: 40px; font-weight: 700; line-height: 1.35; }
+  .t-message { font-size: 36px; font-weight: 700; line-height: 2.4; }
+  .t-section { font-size: 40px; font-weight: 700; line-height: 1.4; }
+  .t-sub     { font-size: 32px; font-weight: 700; line-height: 1.375; }
+  .t-lead    { font-size: 24px; font-weight: 700; line-height: 1.375; }
+  .t-column  { font-size: 20px; font-weight: 700; line-height: 1.4; }
+  .t-mbody   { font-size: 20px; font-weight: 500; line-height: 2.0; }
+  .t-body    { font-size: 16px; font-weight: 500; line-height: 1.6; }
+  .t-emph    { font-size: 16px; font-weight: 700; line-height: 1.6; }
+  .t-card    { font-size: 14px; font-weight: 500; line-height: 1.6; }
+  .t-util    { font-size: 12px; font-weight: 700; line-height: 1; }
+
+  /* ---------- ARTICLE ---------- */
+  .article { max-width: var(--container-read); margin: 0 auto; }
+  .article .crumb { font-size: 12px; font-weight: 700; line-height: 1.5; color: #555; margin-bottom: 14px; }
+  .article h1 { font-size: 40px; font-weight: 700; line-height: 1.35; margin-bottom: 24px; }
+  .article h2 { font-size: 24px; font-weight: 700; line-height: 1.375; margin: 36px 0 12px; }
+  .article p  { font-size: 16px; font-weight: 500; line-height: 1.6; margin-bottom: 20px; }
+  .marker { background: linear-gradient(transparent 60%, var(--yh-soft-yellow) 60%); }
+
+  /* ---------- CARDS ---------- */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .card { background: var(--surface); border-radius: 10px; overflow: hidden; border: 1px solid #ececec; }
+  .card .thumb {
+    aspect-ratio: 4 / 3; background: #dfe4ec;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: #667;
+  }
+  .card .body { padding: 18px 20px 24px; }
+  .card h3 { font-size: 16px; font-weight: 700; line-height: 1.6; margin: 10px 0 6px; }
+  .card p  { font-size: 14px; font-weight: 500; line-height: 1.6; color: #444; }
+
+  .beer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .beer {
+    background: linear-gradient(160deg, #24354f, #14243f);
+    border-radius: 10px; padding: 24px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+  .beer .name { color: var(--on-navy); font-size: 14px; font-weight: 700; line-height: 1.4; }
+
+  /* ---------- STEPS ---------- */
+  .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .step { background: var(--yh-profile-bg); border-radius: 10px; padding: 20px; text-align: center; }
+  .step .badge-num { margin: 0 auto 10px; }
+  .step p { font-size: 14px; font-weight: 500; line-height: 1.6; }
+
+  /* ---------- BANNER ---------- */
+  .banner {
+    display: flex; align-items: center;
+    background: var(--yh-profile-bg); color: var(--yh-navy);
+    border-radius: 10px; padding: 24px 60px 24px 120px;
+    font-size: 24px; font-weight: 700; line-height: 1.375;
+    text-decoration: none; position: relative;
+  }
+  .banner::before {
+    content: "20+"; position: absolute; left: 40px; top: 50%; transform: translateY(-50%);
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--yh-navy); color: var(--yh-yellow);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700;
+  }
+
+  /* ---------- FORMS ---------- */
+  .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .field label { display: block; font-size: 16px; font-weight: 700; line-height: 1.6; margin-bottom: 8px; }
+  .field input {
+    width: 100%; background: #fff; color: var(--yh-black);
+    border: 2px solid #ccd2dd; border-radius: 10px;
+    padding: 12px 16px; font-family: var(--font);
+    font-size: 16px; font-weight: 500; line-height: 2; letter-spacing: 0;
+  }
+  .field input::placeholder { color: #99a2b3; }
+  .field.is-focus input { border-color: var(--yh-navy); outline: 2px solid var(--yh-yellow); }
+  .field.is-error input { border-color: var(--yh-navy); background: var(--yh-profile-bg); }
+  .field .msg { font-size: 14px; font-weight: 500; line-height: 1.6; color: #555; margin-top: 8px; }
+  .field.is-error .msg { color: var(--yh-navy); font-weight: 700; }
+
+  /* ---------- ELEVATION ---------- */
+  .elev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .elev { border-radius: 10px; padding: 24px; min-height: 130px; font-size: 14px; font-weight: 500; line-height: 1.6; box-shadow: none; }
+  .elev strong { display: block; font-size: 20px; font-weight: 700; line-height: 1.4; margin-bottom: 8px; }
+  .elev-1 { background: var(--surface); border: 1px solid #ececec; }
+  .elev-2 { background: var(--yh-navy); color: var(--on-navy); }
+  .elev-3 { background: transparent; border: 4px solid var(--yh-navy); }
+
+  /* ---------- LAYOUT ---------- */
+  .layout-demo { display: grid; gap: 10px; }
+  .bar { font-size: 14px; font-weight: 700; line-height: 1.6; color: var(--on-navy); background: var(--yh-navy); padding: 10px 16px; border-radius: 10px; }
+  .bar-1440 { max-width: 1440px; background: var(--yh-soft-yellow); color: var(--yh-navy); }
+  .bar-1264 { max-width: 1264px; }
+  .bar-1200 { max-width: 1200px; }
+  .bar-800  { max-width: 800px; background: var(--yh-yellow); color: var(--yh-navy); }
+  .spacing { display: flex; align-items: flex-end; gap: 20px; margin-top: 24px; }
+  .spacing div { background: var(--yh-profile-bg); width: 46px; border-radius: 4px; }
+  .spacing span { display: block; text-align: center; margin-top: 8px; font-size: 14px; color: #555; }
+
+  /* ---------- FOOTER ---------- */
+  .site-footer { max-width: var(--container); margin: 40px auto 0; padding: 40px 28px 60px; color: var(--on-navy); }
+  .site-footer p { font-size: 14px; font-weight: 500; line-height: 1.6; }
+  .site-footer .caution { color: var(--yh-yellow); font-weight: 700; margin-bottom: 12px; }
+
+  @media (max-width: 768px) {
+    .card-grid, .form-grid, .elev-grid, .steps, .beer-grid { grid-template-columns: 1fr; }
+    .type-row { grid-template-columns: 1fr; }
+    .header-utility { display: none; }
+    .section { padding: 40px 20px; }
+    .t-page, .t-section, .article h1, .section-title { font-size: 26px; }
+    .t-message { font-size: 24px; }
+    .btn { width: 100%; }
+    .banner { padding: 20px 20px 20px 90px; font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">YOHO<br>BREWING</div>
+  <div class="site-name">ヤッホーブルーイング コーポレートサイト</div>
+  <div class="header-utility">
+    <a href="#">ONLINE STORE<span class="sub">よなよなの里</span></a>
+    <a href="#">RECRUIT</a>
+    <div class="lang">
+      <a class="is-current" href="#">JP</a>
+      <a href="#">EN</a>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="scroll-label">SCROLL</div>
+  <div class="balloon">ビールに味を！<br>人生に幸せを！</div>
+  <div class="hero-wedge"></div>
+</div>
+
+<!-- ==================== 1. COLORS ==================== -->
+<section class="section">
+  <div class="section-title">Colors</div>
+  <div class="section-no">01 — 濃紺と黄の2色。反転させて役割を切り替える</div>
+
+  <div class="group-label">Brand</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#112240"></div>
+      <div class="meta">Navy（ページ地色）<span class="hex">#112240 / --yh-navy</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#F8E133"></div>
+      <div class="meta">Yellow（アクセント）<span class="hex">#F8E133 / --yh-yellow</span></div></div>
+  </div>
+
+  <div class="group-label">Sub</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#EABF4B"></div>
+      <div class="meta">Soft Yellow<span class="hex">#EABF4B / --yh-soft-yellow</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#F1E2B0"></div>
+      <div class="meta">Profile BG（適正飲酒バナー）<span class="hex">#F1E2B0 / --yh-profile-bg</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#e8daaa"></div>
+      <div class="meta">Beige<span class="hex">#e8daaa / --yh-beige</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#000000"></div>
+      <div class="meta">Ink<span class="hex">#000000 / --yh-black</span></div></div>
+  </div>
+
+  <p class="note">紺の上には黄、黄の上には紺、白の上には黒。この3組み合わせだけで階層をつくります。
+    ビールのラベルは色数が多いのですが、UI に赤・緑・青を足しません。</p>
+</section>
+
+<!-- ==================== 2. TYPOGRAPHY ==================== -->
+<section class="section">
+  <div class="section-title">Typography</div>
+  <div class="section-no">02 — Noto Sans JP 1本 / weight は 500 と 700 の2値 / line-height 1.6 / letter-spacing 0</div>
+
+  <div class="type-row"><div class="type-spec">Page Title<br>40px / <strong>700</strong> / 1.35 / 0</div>
+    <div class="t-page">プレスルーム</div></div>
+  <div class="type-row"><div class="type-spec">Message Head<br>36px / 700 / <strong>2.4</strong> / 0</div>
+    <div class="t-message">おいしいビールとともに、<br>心を満たし震わせる体験価値を届ける。</div></div>
+  <div class="type-row"><div class="type-spec">Section Title<br>40px / 700 / 1.4 / 0</div>
+    <div class="t-section">クラフトビールのはじまりと今</div></div>
+  <div class="type-row"><div class="type-spec">Sub Head<br>32px / 700 / 1.375 / 0</div>
+    <div class="t-sub">Breweries &amp; Taprooms</div></div>
+  <div class="type-row"><div class="type-spec">Lead<br>24px / 700 / 1.375 / 0</div>
+    <div class="t-lead">ヤッホーブルーイングとファンとの絆</div></div>
+  <div class="type-row"><div class="type-spec">Column Head<br>20px / 700 / 1.4 / 0</div>
+    <div class="t-column"><span class="marker">コラム：ビール醸造プロセス</span></div></div>
+  <div class="type-row"><div class="type-spec">Message Body<br>20px / 500 / <strong>2.0</strong> / 0</div>
+    <div class="t-mbody">画一的な味しかなかった日本のビール市場に、バラエティを提供したい。
+      その一心で1997年に醸造を始めました。</div></div>
+  <div class="type-row"><div class="type-spec">Base（body）<br>16px / <strong>500</strong> / <strong>1.6</strong> / 0</div>
+    <div class="t-body">日本のクラフトビールのはじまりは1994年に遡ります。酒税法の改正で最低製造数量基準が
+      引き下げられ、小規模な醸造所が各地に生まれました。私たちが軽井沢で醸造を始めたのは、その3年後です。</div></div>
+  <div class="type-row"><div class="type-spec">Emphasis<br>16px / 700 / 1.6 / 0</div>
+    <div class="t-emph">ヤッホーブルーイングが醸造する個性的なクラフトビール</div></div>
+  <div class="type-row"><div class="type-spec">Card Text<br>14px / 500 / 1.6 / 0</div>
+    <div class="t-card">今年で3年目「そらとしば バットビールプロジェクト」</div></div>
+  <div class="type-row"><div class="type-spec">Utility<br>12px / 700 / <strong>1.0</strong> / 0</div>
+    <div class="t-util">ONLINE STORE</div></div>
+
+  <p class="note">font-weight は 500 と 700 の2値だけ。400 も 600 も使いません。
+    letter-spacing は「normal」ではなく明示的な「0」で、palt もかけないベタ組みです。
+    大見出しほど line-height の比率を下げ（40px→1.35）、読み物の見出しだけ 2.4 まで開きます。</p>
+</section>
+
+<!-- ==================== 3. ARTICLE ==================== -->
+<section class="section">
+  <div class="section-title">Article</div>
+  <div class="section-no">03 — 読み物の版面は 800px。写真セクションはフルブリード</div>
+
+  <div class="article">
+    <div class="crumb">TOP ／ クラフトビールづくりについて</div>
+    <h1>クラフトビールのはじまりと今</h1>
+    <p>日本のクラフトビールのはじまりは1994年に遡ります。当時、ビールを造るには年間2,000kLという
+      高い壁がありました。それが60kLまで引き下げられたことで、全国に小さな醸造所が生まれます。
+      いわゆる「地ビールブーム」です。</p>
+
+    <h2>ブームが去ったあとに残ったもの</h2>
+    <p>ブームは数年で終わりました。土産物としての地ビールは売れなくなり、多くの醸造所が姿を消します。
+      それでも残った造り手は、観光ではなく「味」で選ばれる道を選びました。
+      いま「クラフトビール」と呼ばれているのは、その先にある造り手たちのビールです。</p>
+
+    <div class="btn-row" style="margin-top:28px">
+      <a class="btn btn-primary" href="#">一覧はこちら</a>
+      <a class="btn btn-outline" href="#">詳しくはこちら</a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 4. BUTTONS ==================== -->
+<section class="section">
+  <div class="section-title">Buttons</div>
+  <div class="section-no">04 — 3種すべて radius 80px / border 4px / padding 0 28px。面色と文字色だけ入れ替える</div>
+
+  <div class="group-label">Primary / Inverse / Outline</div>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">一覧はこちら</a>
+    <a class="btn btn-inverse" href="#">ご取材申し込みはこちら</a>
+    <a class="btn btn-outline" href="#">詳しくはこちら</a>
+  </div>
+  <p class="note">
+    Primary — 背景 #F8E133 / 枠 4px solid #F8E133 / 文字 #112240<br>
+    Inverse — 背景 #112240 / 枠 4px solid #F8E133 / 文字 #F8E133<br>
+    Outline — 背景 transparent / 枠 4px solid #112240 / 文字 #112240<br>
+    いずれも 16px / weight 700 / line-height 1、右端に 8×14px の矢印を :after で置きます。
+  </p>
+
+  <div class="group-label">Tabs（アクティブは面色の反転で示す。下線は使わない）</div>
+  <div class="tabs">
+    <a class="is-active" href="#">新着</a>
+    <a href="#">製品</a>
+    <a href="#">取り組み</a>
+    <a href="#">ストーリー</a>
+    <a href="#">メディア掲載</a>
+  </div>
+  <p class="note">border-radius 44px / border 2px solid #F8E133 / padding 0 32px 2px / 16px / weight 700。</p>
+
+  <div class="group-label">Tags</div>
+  <div class="btn-row">
+    <span class="tag">取り組み</span>
+    <span class="tag">製品</span>
+    <span class="tag">長野・佐久</span>
+    <span class="tag">東京・新宿</span>
+  </div>
+</section>
+
+<!-- ==================== 5. CARDS & BADGES ==================== -->
+<section class="section">
+  <div class="section-title">Cards &amp; Badges</div>
+  <div class="section-no">05 — 角丸は 10px で統一。商品の特徴は円形バッジで写真に重ねる</div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="thumb">news photo</div>
+      <div class="body"><span class="tag">取り組み</span>
+        <h3>「そらとしば バットビールプロジェクト」始動</h3>
+        <p>折れたバットを再生した什器で、球場にクラフトビールの居場所をつくる。</p></div>
+    </div>
+    <div class="card">
+      <div class="thumb">news photo</div>
+      <div class="body"><span class="tag">製品</span>
+        <h3>ビールだけ飲むと倒れるグラス「ふらつきグラス」</h3>
+        <p>飲み過ぎを、笑いながら止める。適正飲酒のための一杯。</p></div>
+    </div>
+    <div class="card">
+      <div class="thumb">news photo</div>
+      <div class="body"><span class="tag">ストーリー</span>
+        <h3>軽井沢の醸造所ができるまで</h3>
+        <p>年間60kL からはじまった小さな醸造所の話。</p></div>
+    </div>
+  </div>
+
+  <div class="group-label">Circle Badge（ビールの特徴を1行で。写真の上に重ねる）</div>
+  <div class="beer-grid">
+    <div class="beer"><div class="badge-circle">軽やかで<br>ハッとする<br>味と香り</div><div class="name">よなよなエール</div></div>
+    <div class="beer"><div class="badge-circle">心をゆるめる<br>ホワイトエール</div><div class="name">水曜日のネコ</div></div>
+    <div class="beer"><div class="badge-circle">驚愕の苦みと<br>鮮烈な香り</div><div class="name">インドの青鬼</div></div>
+    <div class="beer"><div class="badge-circle">トロピカルな<br>香りの<br>ヘイジーIPA</div><div class="name">僕ビール君ビール</div></div>
+  </div>
+  <p class="note">border-radius 50% / background rgba(0,0,0,.3) / border 6px solid #F8E133 /
+    color #F8E133 / 16px / weight 700。半透明なので下の写真が透けます。</p>
+
+  <div class="group-label">Number Badge（醸造工程）</div>
+  <div class="steps">
+    <div class="step"><div class="badge-num">1</div><p>麦芽を粉砕する</p></div>
+    <div class="step"><div class="badge-num">2</div><p>仕込んで糖化させる</p></div>
+    <div class="step"><div class="badge-num">3</div><p>ホップを加えて煮沸</p></div>
+    <div class="step"><div class="badge-num">4</div><p>酵母を入れて発酵</p></div>
+    <div class="step"><div class="badge-num">5</div><p>熟成させ、詰める</p></div>
+  </div>
+</section>
+
+<!-- ==================== 6. FORMS ==================== -->
+<section class="section">
+  <div class="section-title">Forms</div>
+  <div class="section-no">06 — デフォルト / フォーカス / エラー。radius 10px、line-height は 2.0</div>
+
+  <div class="form-grid">
+    <div class="field">
+      <label>お名前</label>
+      <input type="text" placeholder="山田 太郎">
+      <div class="msg">全角でご入力ください</div>
+    </div>
+    <div class="field is-focus">
+      <label>メールアドレス</label>
+      <input type="email" value="press@example.jp">
+      <div class="msg">フォーカスは紺の枠＋黄のアウトライン</div>
+    </div>
+    <div class="field is-error">
+      <label>お電話番号</label>
+      <input type="tel" value="0267-66">
+      <div class="msg">電話番号を正しくご入力ください</div>
+    </div>
+  </div>
+  <p class="note">フォーム部品だけリセットで line-height: 2 が指定されています（本文は 1.6）。</p>
+</section>
+
+<!-- ==================== 7. ELEVATION ==================== -->
+<section class="section">
+  <div class="section-title">Elevation</div>
+  <div class="section-no">07 — box-shadow は CSS 全体で0件。反転・太い罫・角丸で奥行きをつくる</div>
+
+  <div class="elev-grid">
+    <div class="elev elev-1">
+      <strong>面色の反転</strong>
+      紺の地の上に白いカード、白い面の上に紺のボタン。
+    </div>
+    <div class="elev elev-2">
+      <strong>4px のボーダー</strong>
+      ピル型ボタンの太い輪郭が、紺の上でも白の上でも輪郭を保つ。
+    </div>
+    <div class="elev elev-3">
+      <strong>角丸 10px</strong>
+      カードを地から切り離す。影は使わない。
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 8. LAYOUT ==================== -->
+<section class="section">
+  <div class="section-title">Layout</div>
+  <div class="section-no">08 — 標準コンテナ 1200px、読み物は 800px。主境界は 768/769px</div>
+
+  <div class="layout-demo">
+    <div class="bar bar-1440">1440px — フルブリード（写真セクション）</div>
+    <div class="bar bar-1264">1264px — ワイド</div>
+    <div class="bar bar-1200">1200px — 標準コンテナ</div>
+    <div class="bar bar-800">800px — 読み物の版面</div>
+  </div>
+
+  <div class="group-label">Spacing Scale</div>
+  <div class="spacing">
+    <div><div style="height:4px"></div><span>4</span></div>
+    <div><div style="height:10px"></div><span>10</span></div>
+    <div><div style="height:20px"></div><span>20</span></div>
+    <div><div style="height:28px"></div><span>28</span></div>
+    <div><div style="height:60px"></div><span>60</span></div>
+    <div><div style="height:120px"></div><span>120</span></div>
+  </div>
+
+  <p class="note">ブレークポイントは 768px / 769px の対が主境界（40箇所以上）。
+    ほかに 960 / 1000 / 1024 / 1108 / 1200px。モバイルでも font-size 16px / line-height 1.6 は変えません。</p>
+
+  <div class="group-label">適正飲酒バナー（酒類サイトの必須要素）</div>
+  <a class="banner" href="#">適正飲酒の取り組み</a>
+</section>
+
+<footer class="site-footer">
+  <p class="caution">お酒は20歳になってから。お酒に関する情報の20歳未満の方への転送および共有はご遠慮ください。</p>
+  <p>株式会社ヤッホーブルーイング — 長野県北佐久郡軽井沢町</p>
+  <p style="margin-top:10px">
+    このページは DESIGN.md のプレビューです。Noto Sans JP / Inter はどちらも Google Fonts で
+    公開されているため、実サイトと同じ書体で表示されます。
+  </p>
+</footer>
+
+</body>
+</html>

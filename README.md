@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (432 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (435 sites)</a>
 </p>
 
 <table>
@@ -649,6 +649,11 @@
 <td align="center"><strong>にんべん</strong><br><img src="design-md/ninben/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>ミシマ社</strong><br><img src="design-md/mishimasha/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>大阪中之島美術館</strong><br><img src="design-md/nakanoshima-museum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ヤッホーブルーイング</strong><br><img src="design-md/yohobrewing/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ライゾマティクス</strong><br><img src="design-md/rhizomatiks/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1141,11 +1146,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [UNAGINO NEDOKO (うなぎの寝床)](https://unagino-nedoko.net/) | Regional Culture / Craft EC | [DESIGN.md](design-md/unagino-nedoko/DESIGN.md) | [preview.html](design-md/unagino-nedoko/preview.html) |
 | [NINBEN (にんべん)](https://www.ninben.co.jp/) | Katsuobushi / Food Manufacturing | [DESIGN.md](design-md/ninben/DESIGN.md) | [preview.html](design-md/ninben/preview.html) |
 | [MISHIMASHA (ミシマ社)](https://mishimasha.com/) | Publishing / Books | [DESIGN.md](design-md/mishimasha/DESIGN.md) | [preview.html](design-md/mishimasha/preview.html) |
+| [Nakanoshima Museum of Art, Osaka (大阪中之島美術館)](https://nakka-art.jp/) | Museum / Modern & Contemporary Art | [DESIGN.md](design-md/nakanoshima-museum/DESIGN.md) | [preview.html](design-md/nakanoshima-museum/preview.html) |
+| [YOHO BREWING (ヤッホーブルーイング)](https://yohobrewing.com/) | Craft Beer / Food & Beverage | [DESIGN.md](design-md/yohobrewing/DESIGN.md) | [preview.html](design-md/yohobrewing/preview.html) |
+| [Rhizomatiks (ライゾマティクス)](https://rhizomatiks.com/) | Creative Studio / Art & Technology | [DESIGN.md](design-md/rhizomatiks/DESIGN.md) | [preview.html](design-md/rhizomatiks/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (432 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (435 sites)</a>
 </p>
 
 <table>
@@ -1759,6 +1767,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>うなぎの寝床</strong><br><img src="design-md/unagino-nedoko/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>にんべん</strong><br><img src="design-md/ninben/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>ミシマ社</strong><br><img src="design-md/mishimasha/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>大阪中之島美術館</strong><br><img src="design-md/nakanoshima-museum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ヤッホーブルーイング</strong><br><img src="design-md/yohobrewing/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ライゾマティクス</strong><br><img src="design-md/rhizomatiks/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

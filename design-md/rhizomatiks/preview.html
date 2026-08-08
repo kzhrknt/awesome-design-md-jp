@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ライゾマティクス（Rhizomatiks） — Design System Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Noto+Serif+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!--
+  ライゾマティクス（Rhizomatiks）DESIGN.md のプレビュー。
+  実測日 2026-08-08 / https://rhizomatiks.com/
+
+  このサイトの要点は8つ。
+  1. 和文が明朝（Noto Serif JP）、欧文がセリフ（Libre Baskerville）。ゴシックを使わない。
+  2. html に font-feature-settings: "palt" を指定し、全要素へ継承。
+  3. 和欧混植のときだけ 'Libre Baskerville','Noto Serif JP', serif（欧文が先頭）。
+  4. body の line-height が 1。読ませる要素だけ 1.8〜2.0 に開く。
+  5. UI に有彩色が1つもない。#000 / #333 / #666 / #999 / #C4C4C4 / #E5E5E5 /
+     #F0F0F0 / #F8F8F8 / #F9F9F9 / #fff のグレースケールだけ。
+  6. ボタンは「View More」の枠線ボックス1種のみ。塗りボタンを持たない。
+  7. box-shadow の宣言が CSS 全体で0件。ホバーは scale(1.03) + brightness(125%)。
+  8. ブレークポイントは 860px の1本だけ。
+
+  ■ フォント代替について
+    Noto Serif JP / Libre Baskerville とも Google Fonts で公開されているため代替不要。
+    実サイトとまったく同じ書体で表示されます。
+-->
+<style>
+  :root {
+    /* --- Base --- */
+    --bg:          #ffffff;
+    --ink:         #000000;
+    --heading:     #333333;   /* h1 は純黒ではない */
+    --text-sub:    #666666;   /* ナビ・ボタン */
+    --text-muted:  #999999;   /* 日付・クレジット */
+    --text-faint:  #C8C8C8;
+
+    /* --- Neutral --- */
+    --border:      #C4C4C4;   /* 唯一の枠線色 */
+    --divider:     #E5E5E5;
+    --surface:     #F0F0F0;
+    --surface-lt:  #F8F8F8;
+    --surface-ltr: #F9F9F9;
+    --surface-fnt: #EEEEEE;
+
+    /* --- Dark --- */
+    --footer-bg:   #000000;
+    --on-dark:     #ffffff;
+
+    /* --- Type：すべてセリフ --- */
+    --font-jp:    'Noto Serif JP', serif;
+    --font-en:    'Libre Baskerville', serif;
+    --font-mixed: 'Libre Baskerville', 'Noto Serif JP', serif;
+
+    --container: 1156px;
+    --container-wide: 1300px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-jp);
+    font-feature-settings: "palt";     /* 全要素へ継承 */
+    -webkit-font-smoothing: antialiased;
+  }
+  body { line-height: 1; font-size: 16px; }   /* 既定は 1。読ませる要素に個別指定 */
+  ul, ol { list-style: none; }
+  a { color: inherit; }
+
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 20px; }
+  .section { padding-block: 80px; }
+  .section.is-tinted { background: var(--surface-ltr); }
+  .section.is-faint  { background: var(--surface-fnt); }
+
+  .section-title {
+    font-family: var(--font-en); font-size: 26px; font-weight: 400;
+    line-height: 1.23; color: var(--heading);
+  }
+  .section-no {
+    font-family: var(--font-jp); font-size: 13px; line-height: 1.23;
+    color: var(--text-muted); margin: 10px 0 40px;
+  }
+  .group-label {
+    font-family: var(--font-jp); font-size: 19.2px; font-weight: 600;
+    line-height: 1; margin: 44px 0 20px;
+  }
+  .group-label:first-of-type { margin-top: 0; }
+  .note {
+    font-family: var(--font-jp); font-size: 15px; line-height: 1.8;
+    letter-spacing: 0.021em; color: var(--text-sub); margin-top: 20px;
+  }
+
+  /* ---------- HEADER ---------- */
+  .site-header {
+    max-width: var(--container-wide); margin: 0 auto;
+    display: flex; align-items: center; gap: 40px; padding: 30px 20px;
+  }
+  .logo {
+    font-family: var(--font-en); font-size: 22px; font-style: italic;
+    letter-spacing: 0.02em; color: var(--ink); text-decoration: none;
+  }
+  .gnav { display: flex; gap: 34px; margin-left: auto; }
+  .gnav a {
+    font-family: var(--font-en); font-size: 13px; line-height: 1.23;
+    color: var(--text-sub); text-decoration: none;
+  }
+  .gnav a:hover { opacity: .5; }
+  .lang { font-family: var(--font-en); font-size: 13px; color: var(--text-muted); }
+
+  /* ---------- HERO / SLIDER ---------- */
+  .hero {
+    position: relative; width: 100%; aspect-ratio: 16 / 7;
+    background: linear-gradient(160deg, #101018 0%, #1d2740 60%, #0b0b12 100%);
+    display: flex; align-items: flex-end;
+  }
+  .hero .tit {
+    font-family: var(--font-en); font-size: 15px; font-weight: 500;
+    line-height: 2.0; color: #fff; text-align: justify;
+    width: 100%; padding: 60px 28px 20px;
+    background: linear-gradient(rgba(51,51,51,0) 0%, rgba(51,51,51,.15) 100%);
+  }
+  .hero-dots { display: flex; justify-content: center; gap: 12px; padding: 22px 0; }
+  .hero-dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--text-faint); }
+  .hero-dots span.is-active { background: var(--heading); }
+
+  /* ---------- COLORS ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+  .swatch .chip { height: 84px; }
+  .swatch .meta {
+    font-family: var(--font-jp); font-size: 14px; line-height: 1.8;
+    padding-top: 8px;
+  }
+  .swatch .hex { display: block; font-family: var(--font-en); font-size: 12px; color: var(--text-muted); }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  .type-row {
+    display: grid; grid-template-columns: 250px 1fr; gap: 28px;
+    padding: 20px 0; border-bottom: 1px solid var(--divider); align-items: baseline;
+  }
+  .type-spec {
+    font-family: var(--font-jp); font-size: 13px; line-height: 1.8;
+    color: var(--text-muted);
+  }
+  .t-section { font-family: var(--font-en); font-size: 26px; font-weight: 400; line-height: 1.23; color: var(--heading); }
+  .t-lead    { font-family: var(--font-mixed); font-size: 22px; font-weight: 400; line-height: 1.23; letter-spacing: 0.036em; color: var(--heading); }
+  .t-sub     { font-family: var(--font-jp); font-size: 19.2px; font-weight: 600; line-height: 1; }
+  .t-body    { font-family: var(--font-jp); font-size: 15px; font-weight: 400; line-height: 1.8; letter-spacing: 0.021em; }
+  .t-list    { font-family: var(--font-jp); font-size: 15px; font-weight: 400; line-height: 2.0; letter-spacing: 0.011em; }
+  .t-caption { font-family: var(--font-en); font-size: 15px; font-weight: 500; line-height: 2.0; }
+  .t-filter  { font-family: var(--font-mixed); font-size: 14px; font-weight: 400; line-height: 1.8; }
+  .t-nav     { font-family: var(--font-en); font-size: 13px; font-weight: 400; line-height: 1.23; color: var(--text-sub); }
+  .t-date    { font-family: var(--font-jp); font-size: 13px; font-weight: 400; line-height: 1.23; color: var(--text-muted); }
+  .t-btn     { font-family: var(--font-en); font-size: 12px; font-weight: 400; line-height: 1.33; color: var(--text-sub); }
+  .t-credit  { font-family: var(--font-en); font-size: 12px; font-weight: 400; line-height: 1.42; color: var(--text-muted); }
+
+  /* ---------- ARTICLE ---------- */
+  .article { max-width: 860px; }
+  .article h1 {
+    font-family: var(--font-mixed); font-size: 22px; font-weight: 400;
+    line-height: 1.23; letter-spacing: 0.036em; color: var(--heading); margin-bottom: 24px;
+  }
+  .article h2 { font-family: var(--font-jp); font-size: 19.2px; font-weight: 600; line-height: 1; margin: 36px 0 14px; }
+  .article p {
+    font-family: var(--font-jp); font-size: 15px; line-height: 1.8;
+    letter-spacing: 0.021em; margin-bottom: 22px; text-align: justify;
+  }
+  .article .date { font-family: var(--font-jp); font-size: 13px; line-height: 1.23; color: var(--text-muted); margin-bottom: 14px; }
+
+  /* ---------- BUTTON（唯一の1種） ---------- */
+  .btn-view-more {
+    display: block; width: 249px;
+    background: transparent; color: var(--text-sub);
+    border: 1px solid var(--border); border-radius: 0;
+    padding: 13px 0;
+    font-family: var(--font-en); font-size: 12px; line-height: 1.33;
+    text-align: center; text-decoration: none;
+  }
+  .btn-view-more:hover { opacity: .5; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; }
+
+  /* ---------- WORK GRID ---------- */
+  .work-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .listbox { text-decoration: none; display: block; }
+  .listbox .imgWrapper { overflow: hidden; transition: filter .6s ease; will-change: filter; }
+  .listbox .img {
+    aspect-ratio: 4 / 3; background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-en); font-size: 12px; color: var(--text-muted);
+    transition: transform .6s ease;
+  }
+  .listbox:hover .img { transform: scale(1.03); }
+  .listbox:hover .imgWrapper { filter: brightness(125%); }
+  .listbox .name { font-family: var(--font-mixed); font-size: 14px; line-height: 1.8; color: var(--ink); margin-top: 12px; }
+  .listbox .credit { font-family: var(--font-en); font-size: 12px; line-height: 1.42; color: var(--text-muted); }
+
+  /* ---------- FILTER ---------- */
+  .filters { display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 32px; }
+  .filters a {
+    font-family: var(--font-mixed); font-size: 14px; line-height: 1.8;
+    color: var(--text-muted); text-decoration: none;
+  }
+  .filters a.is-current { color: var(--heading); }
+
+  /* ---------- NEWS LIST ---------- */
+  .news-list li {
+    display: grid; grid-template-columns: 160px 1fr; gap: 20px;
+    padding: 16px 0; border-bottom: 1px solid var(--divider);
+  }
+  .news-list .date { font-family: var(--font-jp); font-size: 13px; line-height: 2.0; color: var(--text-muted); }
+  .news-list .title {
+    font-family: var(--font-jp); font-size: 15px; line-height: 2.0;
+    letter-spacing: 0.011em; color: var(--ink); text-decoration: none;
+  }
+  .news-list .title:hover { opacity: .5; }
+
+  /* ---------- FORMS ---------- */
+  .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .field label { display: block; font-family: var(--font-jp); font-size: 13px; line-height: 1.8; color: var(--text-muted); margin-bottom: 8px; }
+  .field input {
+    width: 100%; font-family: var(--font-jp); font-size: 15px; line-height: 1.8;
+    letter-spacing: 0.021em; color: var(--ink);
+    padding: 0 0 8px; border: none; border-bottom: 1px solid var(--divider);
+    border-radius: 0; outline: none; background: none; -webkit-appearance: none;
+  }
+  .field input::placeholder { color: var(--text-faint); }
+  .field.is-focus input { border-bottom-color: var(--heading); }
+  .field.is-error input { border-bottom-color: var(--ink); }
+  .field .msg { font-family: var(--font-jp); font-size: 12px; line-height: 1.8; color: var(--text-muted); margin-top: 8px; }
+  .field.is-error .msg { color: var(--ink); }
+
+  /* ---------- ELEVATION ---------- */
+  .elev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .elev {
+    padding: 24px; min-height: 130px; box-shadow: none;
+    font-family: var(--font-jp); font-size: 14px; line-height: 1.8; color: var(--text-sub);
+  }
+  .elev strong { display: block; font-family: var(--font-jp); font-size: 19.2px; font-weight: 600; line-height: 1; color: var(--ink); margin-bottom: 12px; }
+  .elev-1 { background: var(--surface-ltr); }
+  .elev-2 { background: var(--surface); }
+  .elev-3 { background: var(--footer-bg); color: var(--text-faint); }
+  .elev-3 strong { color: var(--on-dark); }
+
+  /* ---------- LAYOUT ---------- */
+  .layout-demo { display: grid; gap: 10px; }
+  .bar {
+    font-family: var(--font-en); font-size: 12px; line-height: 1.33;
+    color: var(--on-dark); background: var(--ink); padding: 12px 14px;
+  }
+  .bar-1600 { max-width: 1600px; background: var(--text-muted); }
+  .bar-1300 { max-width: 1300px; background: var(--text-sub); }
+  .bar-1156 { max-width: 1156px; }
+  .bar-860  { max-width: 860px; background: var(--heading); }
+  .spacing { display: flex; align-items: flex-end; gap: 20px; margin-top: 24px; }
+  .spacing div { background: var(--surface); width: 44px; }
+  .spacing span { display: block; text-align: center; margin-top: 8px; font-family: var(--font-en); font-size: 12px; color: var(--text-muted); }
+
+  /* ---------- FOOTER ---------- */
+  .site-footer { background: var(--footer-bg); color: var(--on-dark); padding: 90px 0 60px; margin-top: 80px; }
+  .site-footer .inner { max-width: 88%; margin: 0 auto; }
+  .site-footer p { font-family: var(--font-jp); font-size: 13px; line-height: 2.0; letter-spacing: 0.011em; }
+  .site-footer .en { font-family: var(--font-en); font-size: 15px; line-height: 2.0; }
+
+  @media screen and (max-width: 860px) {
+    .work-grid { grid-template-columns: repeat(2, 1fr); }
+    .form-grid, .elev-grid { grid-template-columns: 1fr; }
+    .type-row { grid-template-columns: 1fr; }
+    .news-list li { grid-template-columns: 1fr; gap: 4px; }
+    .gnav { display: none; }
+    .wrap { max-width: 88%; }
+    /* ホバー演出はモバイルで無効化する */
+    .listbox .img, .listbox .imgWrapper { transition: none; will-change: auto; }
+    .listbox:hover .img { transform: none; }
+    .listbox:hover .imgWrapper { filter: none; }
+    .btn-view-more { width: 100%; padding: 15px 0; }
+    .site-footer { padding: 60px 0 40px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="#">rhizomatiks</a>
+  <nav class="gnav">
+    <a href="#">News</a>
+    <a href="#">Work</a>
+    <a href="#">Careers</a>
+    <a href="#">Contact</a>
+  </nav>
+  <span class="lang">JP</span>
+</header>
+
+<div class="hero">
+  <p class="tit">Deleted Reality 2025 ／ laser, motion capture, real-time rendering</p>
+</div>
+<div class="hero-dots"><span class="is-active"></span><span></span><span></span></div>
+
+<!-- ==================== 1. COLORS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Colors</div>
+  <div class="section-no">01 — グレースケールだけ。有彩色は作品画像の中にしかない</div>
+
+  <div class="group-label">Text</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#000000"></div>
+      <div class="meta">Ink<span class="hex">#000000</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#333333"></div>
+      <div class="meta">Heading（h1）<span class="hex">#333333</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#666666"></div>
+      <div class="meta">Text Sub（ナビ・ボタン）<span class="hex">#666666</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#999999"></div>
+      <div class="meta">Text Muted（日付・クレジット）<span class="hex">#999999</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#C8C8C8"></div>
+      <div class="meta">Text Faint<span class="hex">#C8C8C8</span></div></div>
+  </div>
+
+  <div class="group-label">Border / Surface</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#C4C4C4"></div>
+      <div class="meta">Border（唯一の枠線色）<span class="hex">#C4C4C4</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#E5E5E5"></div>
+      <div class="meta">Divider<span class="hex">#E5E5E5</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#EEEEEE"></div>
+      <div class="meta">Surface Faint（Links）<span class="hex">#EEEEEE</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#F0F0F0"></div>
+      <div class="meta">Surface（Work 一覧）<span class="hex">#F0F0F0</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#F8F8F8;border:1px solid #E5E5E5"></div>
+      <div class="meta">Surface Light<span class="hex">#F8F8F8</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#F9F9F9;border:1px solid #E5E5E5"></div>
+      <div class="meta">Surface Lighter（News）<span class="hex">#F9F9F9</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#ffffff;border:1px solid #E5E5E5"></div>
+      <div class="meta">Background<span class="hex">#ffffff</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#000000"></div>
+      <div class="meta">Footer（唯一の暗い面）<span class="hex">#000000</span></div></div>
+  </div>
+
+  <p class="note">アクセントカラーを持ちません。情報の強弱は文字色の階調（#000 → #333 → #666 → #999）と
+    面色の階調（#fff → #F9F9F9 → #F0F0F0 → #EEEEEE）だけでつくります。</p>
+</section>
+
+<!-- ==================== 2. TYPOGRAPHY ==================== -->
+<section class="section wrap">
+  <div class="section-title">Typography</div>
+  <div class="section-no">02 — 全要素セリフ。和文＝Noto Serif JP / 欧文＝Libre Baskerville / palt はグローバル</div>
+
+  <div class="type-row"><div class="type-spec">Section Title<br>Libre Baskerville 26px / 400 / 1.23 / #333333</div>
+    <div class="t-section">Work</div></div>
+  <div class="type-row"><div class="type-spec">Lead<br><strong>混植</strong> 22px / 400 / 1.23 / <strong>0.036em</strong></div>
+    <div class="t-lead">人とテクノロジーの関係を探求し新しい表現を生み出す</div></div>
+  <div class="type-row"><div class="type-spec">Sub Head（h4）<br>Noto Serif JP 19.2px / <strong>600</strong> / <strong>1.0</strong></div>
+    <div class="t-sub">Projects</div></div>
+  <div class="type-row"><div class="type-spec">Body<br>Noto Serif JP 15px / 400 / <strong>1.8</strong> / 0.021em</div>
+    <div class="t-body">技術と表現の新しい可能性を探求し、研究開発要素の強い実験的なプロジェクトを中心に、
+      外部のアーティストやクリエイター・研究者・科学者などとの刺激的なコラボレーションを通じ、
+      R&amp;Dプロジェクトや作品制作を行うクリエイティブコレクティブです。</div></div>
+  <div class="type-row"><div class="type-spec">List Item<br>Noto Serif JP 15px / 400 / <strong>2.0</strong> / 0.011em</div>
+    <div class="t-list">WORLD FENCING LEAGUE（LA）にて「Fencing Visualized」の新バージョンを公開しました</div></div>
+  <div class="type-row"><div class="type-spec">Slider Caption<br>Libre Baskerville 15px / <strong>500</strong> / 2.0</div>
+    <div class="t-caption">tv asahi MUSIC STATION SUPER LIVE2025</div></div>
+  <div class="type-row"><div class="type-spec">Filter / Tag<br>混植 14px / 400 / 1.8</div>
+    <div class="t-filter">_Installation</div></div>
+  <div class="type-row"><div class="type-spec">Nav<br>Libre Baskerville 13px / 400 / 1.23 / #666666</div>
+    <div class="t-nav">Careers</div></div>
+  <div class="type-row"><div class="type-spec">Date<br>Noto Serif JP 13px / 400 / 1.23 / #999999</div>
+    <div class="t-date">April 17, 2026</div></div>
+  <div class="type-row"><div class="type-spec">Button<br>Libre Baskerville 12px / 400 / 1.33 / #666666</div>
+    <div class="t-btn">View More</div></div>
+  <div class="type-row"><div class="type-spec">Credit<br>Libre Baskerville 12px / 400 / 1.42 / #999999</div>
+    <div class="t-credit">Perfume</div></div>
+
+  <div class="group-label">3種のフォントチェーンを打ち分ける</div>
+  <p class="t-body">
+    和文だけの要素 → <code>'Noto Serif JP', serif</code><br>
+    欧文だけの要素 → <code>'Libre Baskerville', serif</code><br>
+    和欧が混じる要素 → <code>'Libre Baskerville', 'Noto Serif JP', serif</code>（<strong>欧文が先頭</strong>）<br>
+    プラットフォームフォント（ヒラギノ明朝・游明朝）をチェーンに並べず、
+    落ちる先は generic な serif だけです。
+  </p>
+  <p class="note">body の line-height は 1。読ませる要素にだけ 1.8〜2.0 を個別指定します。
+    letter-spacing は基本 normal で、開けても 0.011〜0.036em に留めます——
+    palt で既に詰め組みになっているため、大きく開くと組版が崩れます。</p>
+</section>
+
+<!-- ==================== 3. ARTICLE ==================== -->
+<section class="section is-tinted">
+  <div class="wrap">
+    <div class="section-title">Article</div>
+    <div class="section-no">03 — News 記事の組版。面色 #F9F9F9 の上に置く</div>
+
+    <div class="article">
+      <div class="date">April 17, 2026</div>
+      <h1>Fencing Visualized、新バージョンを公開</h1>
+      <p>剣先の軌跡をリアルタイムに可視化する「Fencing Visualized」を、
+        WORLD FENCING LEAGUE（LA）にて更新しました。従来のマーカー式トラッキングを廃し、
+        複数台のハイフレームレートカメラからの推定に切り替えたことで、
+        選手の装備に手を加えずに撮影できるようになっています。</p>
+
+      <h2>Technical Notes</h2>
+      <p>推定パイプラインは学習済みモデルと物理シミュレーションのハイブリッドで、
+        剣身のしなりを含めた軌跡を毎秒240フレームで再構成します。
+        描画は会場のLEDと配信映像の双方に同時出力しています。</p>
+
+      <a class="btn-view-more" href="#" style="margin-top:28px">View More</a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 4. BUTTONS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Buttons</div>
+  <div class="section-no">04 — 枠線ボックス1種だけ。塗りボタンを持たない</div>
+
+  <div class="btn-row">
+    <a class="btn-view-more" href="#">View More</a>
+    <a class="btn-view-more" href="#">Contact</a>
+  </div>
+  <p class="note">width 249px / transparent / 1px solid #C4C4C4 / border-radius 0 /
+    padding 13px 0 / Libre Baskerville 12px / color #666666 / text-align center。
+    色でも面積でも導線の優劣をつけません。</p>
+
+  <div class="group-label">Filter（下線・ボタン化をせず、文字色の濃淡だけで状態を示す）</div>
+  <div class="filters">
+    <a class="is-current" href="#">All</a>
+    <a href="#">_Dance</a>
+    <a href="#">_Installation</a>
+    <a href="#">_Music</a>
+    <a href="#">_Research</a>
+    <a href="#">_Stage</a>
+  </div>
+  <p class="note">選択中 #333333 / 非選択 #999999。カテゴリ名の頭に _（アンダースコア）を付ける独特の表記。</p>
+</section>
+
+<!-- ==================== 5. WORK GRID ==================== -->
+<section class="section" style="background:rgba(240,240,240,.5)">
+  <div class="wrap">
+    <div class="section-title">Work</div>
+    <div class="section-no">05 — サムネイルは枠なし・角丸なし・影なし。ホバーで明るく持ち上げる</div>
+
+    <div class="work-grid">
+      <a class="listbox" href="#">
+        <div class="imgWrapper"><div class="img">work image</div></div>
+        <div class="name">Fencing Visualized</div>
+        <div class="credit">World Fencing League</div>
+      </a>
+      <a class="listbox" href="#">
+        <div class="imgWrapper"><div class="img">work image</div></div>
+        <div class="name">Deleted Reality 2025</div>
+        <div class="credit">ELEVENPLAY</div>
+      </a>
+      <a class="listbox" href="#">
+        <div class="imgWrapper"><div class="img">work image</div></div>
+        <div class="name">MUSIC STATION SUPER LIVE</div>
+        <div class="credit">Perfume</div>
+      </a>
+      <a class="listbox" href="#">
+        <div class="imgWrapper"><div class="img">work image</div></div>
+        <div class="name">角野隼斗 ピアノリサイタル “Klassik Arena”</div>
+        <div class="credit">Stage Design</div>
+      </a>
+    </div>
+    <p class="note">ホバー: transform: scale(1.03) と filter: brightness(125%) の2段。
+      暗くするのではなく明るく持ち上げます（マウスを乗せて確認してください）。
+      860px 以下ではこの演出を transition: none / transform: none で無効化します。</p>
+  </div>
+</section>
+
+<!-- ==================== 6. NEWS & FORMS ==================== -->
+<section class="section wrap">
+  <div class="section-title">News &amp; Forms</div>
+  <div class="section-no">06 — リストは行送り 2.0。入力欄は装飾を全部剥がす</div>
+
+  <ul class="news-list">
+    <li>
+      <div class="date">April 17, 2026</div>
+      <a class="title" href="#">WORLD FENCING LEAGUE（LA）にて「Fencing Visualized」の新バージョンを公開しました</a>
+    </li>
+    <li>
+      <div class="date">March 2, 2026</div>
+      <a class="title" href="#">「Deleted Reality 2025」の記録映像を Repository に追加しました</a>
+    </li>
+    <li>
+      <div class="date">January 24, 2026</div>
+      <a class="title" href="#">エンジニア・リサーチャーの採用を開始しました（Careers）</a>
+    </li>
+  </ul>
+
+  <div class="group-label">Forms — デフォルト / フォーカス / エラー</div>
+  <div class="form-grid">
+    <div class="field">
+      <label>Name</label>
+      <input type="text" placeholder="山田 太郎">
+      <div class="msg">お名前をご入力ください</div>
+    </div>
+    <div class="field is-focus">
+      <label>Email</label>
+      <input type="email" value="contact@example.jp">
+      <div class="msg">フォーカスは下線が #333333 に変わるだけ</div>
+    </div>
+    <div class="field is-error">
+      <label>Tel</label>
+      <input type="tel" value="03-6427">
+      <div class="msg">エラーも色を持たない。下線が #000000 になる</div>
+    </div>
+  </div>
+  <p class="note">border / background / padding / border-radius をすべて剥がし、
+    border-bottom: 1px solid #E5E5E5 だけで入力位置を示します。</p>
+</section>
+
+<!-- ==================== 7. ELEVATION ==================== -->
+<section class="section wrap">
+  <div class="section-title">Elevation</div>
+  <div class="section-no">07 — box-shadow は CSS 全体で0件</div>
+
+  <div class="elev-grid">
+    <div class="elev elev-1">
+      <strong>面色の階調</strong>
+      #ffffff → #F9F9F9 → #F0F0F0 → #EEEEEE。セクションの境界は面色の差だけでつくり、罫線を引かない。
+    </div>
+    <div class="elev elev-2">
+      <strong>文字色の階調</strong>
+      #000 → #333 → #666 → #999 → #C8C8C8。強弱はすべてグレーの濃淡で表す。
+    </div>
+    <div class="elev elev-3">
+      <strong>黒いフッター</strong>
+      サイト内で唯一の反転面。padding 90px 0 60px（モバイルは 60px 0 40px）。
+    </div>
+  </div>
+  <p class="note">ホバーの brightness(125%) が、影の代わりに「浮き」を表現する唯一の手段です。</p>
+</section>
+
+<!-- ==================== 8. LAYOUT ==================== -->
+<section class="section wrap">
+  <div class="section-title">Layout</div>
+  <div class="section-no">08 — 標準コンテナ 1156px。ブレークポイントは 860px の1本だけ</div>
+
+  <div class="layout-demo">
+    <div class="bar bar-1600">1600px — 最大</div>
+    <div class="bar bar-1300">1300px — ワイド（ヘッダー）</div>
+    <div class="bar bar-1156">1156px — 標準コンテナ</div>
+    <div class="bar bar-860">860px — 唯一のブレークポイント</div>
+  </div>
+
+  <div class="group-label">Spacing Scale</div>
+  <div class="spacing">
+    <div><div style="height:5px"></div><span>5</span></div>
+    <div><div style="height:13px"></div><span>13</span></div>
+    <div><div style="height:20px"></div><span>20</span></div>
+    <div><div style="height:40px"></div><span>40</span></div>
+    <div><div style="height:60px"></div><span>60</span></div>
+    <div><div style="height:90px"></div><span>90</span></div>
+  </div>
+
+  <p class="note">768px でも 1024px でもなく、860px の1本で切り替えます
+    （@media screen and (max-width: 860px) が 24 箇所）。中間サイズを刻みません。
+    モバイルではコンテナが max-width: 88% になります。</p>
+</section>
+
+<footer class="site-footer">
+  <div class="inner">
+    <p class="en">Abstract Engine Co., Ltd.</p>
+    <p style="margin-top:12px">ライゾマティクス — 人とテクノロジーの関係を探求し新しい表現を生み出す</p>
+    <p style="margin-top:12px; color:#999999">
+      このページは DESIGN.md のプレビューです。Noto Serif JP / Libre Baskerville は
+      どちらも Google Fonts で公開されているため、実サイトと同じ書体で表示されます。
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

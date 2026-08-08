@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大阪中之島美術館（NAKANOSHIMA MUSEUM OF ART, OSAKA） — Design System Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+<!--
+  大阪中之島美術館 DESIGN.md のプレビュー。
+  実測日 2026-08-08 / https://nakka-art.jp/
+
+  このサイトの要点は8つ。
+  1. 有彩色が1色もない。白 #ffffff・黒 #000000・罫 #808080 だけで組む。
+  2. 専用書体 NakanoshimaFont を Light / Medium / Thin の3ファイルで自前配信。
+  3. YakuHanJPs（約物半角）を別ファイルで併載。palt は使わない。
+  4. リセットで全要素に text-align: justify と line-break: strict を適用。
+  5. リセットで font-weight: 500 / line-height: 2 が既定。太字は書体差し替え。
+  6. box-shadow の宣言が CSS 全体で0件。
+  7. border-radius は 0。円（100%）は開館カレンダーのセルだけ。
+  8. 主要CTA も枠線ボタン。塗りは「開催中」バッジだけ。
+
+  ■ フォント代替について
+    NakanoshimaFont（館の専用書体）→ Zen Kaku Gothic New（Google Fonts）
+    Light=300 / 既定=400・500 / Medium=500 に割り当てて再現している。
+    約物半角（YakuHanJPs）は専用サブセットが必要なため再現していない。
+-->
+<style>
+  :root {
+    /* --- Base：この2色がほぼ全部 --- */
+    --bg:          #ffffff;
+    --ink:         #000000;   /* 純黒 */
+    --on-dark:     #ffffff;
+
+    /* --- Neutral：主役は 1px の罫 --- */
+    --border:      #808080;   /* 枠線ボタン・区切り・セクション境界 */
+    --surface:     #ededed;   /* 検索パネル */
+    --surface-lt:  #f7f7f7;   /* 言語切替 */
+    --divider:     #cecece;
+    --text-muted:  #4d4d4d;
+
+    /* --- Type：専用書体1本。太さは書体で切り替える --- */
+    --font: "NakanoshimaFont", "Zen Kaku Gothic New",
+            "Hiragino Kaku Gothic Pro", "Yu Gothic", YuGothic,
+            "Meiryo UI", Meiryo, "MS PGothic", sans-serif;
+
+    --lh-base: 2;        /* 全要素の既定 */
+    --ls-head: 0.06em;   /* 見出し */
+    --ls-util: 0.07em;   /* ユーティリティ */
+
+    --container: 960px;
+    --container-header: 1267px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* リセット — 実サイトの全要素指定を再現 */
+  html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, li, ul, ol,
+  dl, dt, dd, table, th, td, label, input, button, nav, header, footer, section, article {
+    font-family: var(--font);
+    font-style: normal;
+    font-weight: 500;             /* 太字はファミリー差し替えで表現する */
+    line-height: var(--lh-base);  /* 2.0 */
+    text-align: justify;          /* 両端揃え */
+    line-break: strict;           /* 禁則を厳格モードで */
+    word-break: break-word;
+    overflow-wrap: break-word;
+    font-feature-settings: normal;/* palt は使わない */
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    letter-spacing: normal;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 太さ：NakanoshimaFont-M / -T の代替 */
+  .fw-m { font-family: "NakanoshimaFont-M", "Zen Kaku Gothic New", sans-serif; font-weight: 500; }
+  .fw-t { font-family: "NakanoshimaFont-T", "Zen Kaku Gothic New", sans-serif; font-weight: 300; }
+
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 20px; }
+  .section { padding-block: 80px; border-top: 1px solid var(--border); }
+  .section:first-of-type { border-top: 0; }
+
+  .section-title {
+    font-size: 20px; line-height: 2; letter-spacing: var(--ls-head);
+    margin-bottom: 0;
+  }
+  .section-no {
+    font-size: 12px; line-height: 2; letter-spacing: var(--ls-util);
+    color: var(--text-muted); margin-bottom: 40px;
+  }
+  .group-label {
+    font-size: 14px; line-height: 2; color: var(--text-muted);
+    margin: 40px 0 20px; padding-bottom: 5px; border-bottom: 1px solid var(--border);
+  }
+  .group-label:first-of-type { margin-top: 0; }
+  .note { font-size: 14px; line-height: 2; color: var(--ink); margin-top: 20px; }
+
+  /* ---------- HEADER（3層） ---------- */
+  .site-header { border-bottom: 1px solid var(--border); }
+  .header-inner { max-width: var(--container-header); margin: 0 auto; padding: 0 20px; }
+  .header-utility {
+    display: flex; gap: 20px; align-items: center; justify-content: flex-end;
+    padding: 10px 0; list-style: none;
+  }
+  .header-utility a { font-size: 12px; line-height: 2; letter-spacing: var(--ls-util); color: var(--ink); text-decoration: none; }
+  .lang { background: var(--surface-lt); padding: 2px 10px; }
+  .header-main { display: flex; align-items: flex-end; gap: 40px; padding: 20px 0 24px; }
+  .logo-mark {
+    width: 108px; height: 42px; background: var(--ink);
+    -webkit-mask: linear-gradient(#000 0 0) padding-box; /* 見た目だけの黒ブロック */
+  }
+  .logo-name {
+    font-size: 12px; line-height: 1.6; letter-spacing: var(--ls-head);
+    text-align: left; margin-top: 8px;
+  }
+  .gnav { display: flex; gap: 30px; list-style: none; margin-left: auto; }
+  .gnav a { font-size: 15px; line-height: 2; color: var(--ink); text-decoration: none; }
+  .header-cta { display: flex; gap: 10px; }
+
+  /* ---------- BUTTONS ---------- */
+  .btn-outline {
+    display: inline-block; background: transparent; color: var(--ink);
+    border: 1px solid var(--border); border-radius: 0;
+    padding: 10px 26px 7px 10px;
+    font-size: 12px; line-height: 1; letter-spacing: normal;
+    text-align: center; text-decoration: none;
+  }
+  .btn-outline:hover { background: var(--surface-lt); }
+  .badge-filled {
+    display: inline-block; background: var(--ink); color: var(--on-dark);
+    border: 1px solid var(--ink); border-radius: 0;
+    padding: 7px 8px 4px; font-size: 12px; line-height: 1;
+  }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+
+  /* ---------- COLORS ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+  .swatch .chip { height: 90px; }
+  .swatch .meta { padding: 10px 0 0; font-size: 14px; line-height: 2; text-align: left; }
+  .swatch .hex { color: var(--text-muted); font-size: 12px; }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  .type-row {
+    display: grid; grid-template-columns: 220px 1fr; gap: 24px;
+    padding: 16px 0; border-bottom: 1px solid var(--divider); align-items: baseline;
+  }
+  .type-spec { font-size: 12px; line-height: 2; letter-spacing: var(--ls-util); color: var(--text-muted); text-align: left; }
+  .t-site    { font-size: 28px; line-height: 2; }
+  .t-sechead { font-size: 21px; line-height: 2; }
+  .t-sectitle{ font-size: 20px; line-height: 2; letter-spacing: var(--ls-head); }
+  .t-sub     { font-size: 18px; line-height: 2; letter-spacing: var(--ls-head); }
+  .t-lead    { font-size: 16px; line-height: 2; }
+  .t-card    { font-size: 16px; line-height: 1.75; }
+  .t-body    { font-size: 14px; line-height: 2; }
+  .t-nav     { font-size: 15px; line-height: 2; }
+  .t-util    { font-size: 12px; line-height: 2; letter-spacing: var(--ls-util); }
+  .t-btn     { font-size: 12px; line-height: 1; }
+  .t-micro   { font-size: 9px;  line-height: 2; }
+
+  /* ---------- ARTICLE ---------- */
+  .article { max-width: 892px; }
+  .article h1 { font-size: 28px; line-height: 2; letter-spacing: var(--ls-head); margin-bottom: 20px; text-align: left; }
+  .article h2 { font-size: 20px; line-height: 2; letter-spacing: var(--ls-head); margin: 40px 0 10px; text-align: left; }
+  .article p  { font-size: 14px; line-height: 2; margin-bottom: 20px; }
+  .article .meta { font-size: 12px; line-height: 2; letter-spacing: var(--ls-util); color: var(--text-muted); margin-bottom: 10px; text-align: left; }
+
+  /* ---------- CARDS ---------- */
+  .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; }
+  .card { border-top: 1px solid var(--border); padding-top: 20px; }
+  .card .thumb {
+    aspect-ratio: 3 / 4; max-width: 240px; background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: var(--text-muted); margin-bottom: 14px;
+  }
+  .card h3 { font-size: 16px; line-height: 1.75; margin: 10px 0 5px; text-align: left; }
+  .card p  { font-size: 14px; line-height: 2; }
+
+  /* ---------- CALENDAR ---------- */
+  .cal { border-top: 1px solid var(--border); padding-top: 20px; max-width: 420px; }
+  .cal-head { font-size: 16px; line-height: 2; margin-bottom: 10px; text-align: left; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-grid .dow { font-size: 12px; line-height: 2; text-align: center; color: var(--text-muted); }
+  .cal-grid .day {
+    aspect-ratio: 1; border-radius: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; line-height: 1; text-decoration: none; color: var(--ink);
+  }
+  .cal-grid .day.is-event { background: var(--ink); color: var(--on-dark); }
+  .cal-grid .day.is-closed { color: var(--divider); }
+
+  /* ---------- FORMS ---------- */
+  .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .field label { display: block; font-size: 12px; line-height: 2; letter-spacing: var(--ls-util); margin-bottom: 5px; text-align: left; }
+  .field input {
+    width: 100%; background: #fff; color: var(--ink);
+    border: 1px solid var(--border); border-radius: 0;
+    padding: 10px; font-size: 12px; line-height: 1.6;
+  }
+  .field input::placeholder { color: var(--divider); }
+  .field.is-focus input { border-color: var(--ink); outline: 1px solid var(--ink); }
+  .field.is-error input { border-color: var(--ink); background: var(--surface); }
+  .field .msg { font-size: 12px; line-height: 2; color: var(--text-muted); margin-top: 5px; text-align: left; }
+  .field.is-error .msg { color: var(--ink); }
+  .search-panel { background: var(--surface); padding: 20px; }
+
+  /* ---------- ELEVATION ---------- */
+  .elev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .elev { padding: 20px; min-height: 120px; font-size: 14px; line-height: 2; }
+  .elev strong { display: block; font-size: 16px; line-height: 2; margin-bottom: 5px; text-align: left; }
+  .elev-0 { border: 1px solid var(--border); box-shadow: none; }
+  .elev-s { background: var(--surface); box-shadow: none; }
+  .elev-b { background: var(--ink); color: var(--on-dark); box-shadow: none; }
+
+  /* ---------- LAYOUT ---------- */
+  .layout-demo { display: grid; gap: 10px; }
+  .bar { font-size: 12px; line-height: 2; color: var(--on-dark); background: var(--ink); padding: 8px 10px; text-align: left; }
+  .bar-960  { max-width: 960px; }
+  .bar-1267 { max-width: 1267px; }
+  .bar-892  { max-width: 892px; background: var(--text-muted); }
+  .spacing { display: flex; align-items: flex-end; gap: 20px; margin-top: 20px; }
+  .spacing div { background: var(--surface); width: 44px; }
+  .spacing span { display: block; text-align: center; margin-top: 5px; font-size: 12px; color: var(--text-muted); }
+
+  /* ---------- FOOTER ---------- */
+  .site-footer { border-top: 1px solid var(--border); padding: 40px 20px; margin-top: 80px; }
+  .site-footer .inner { max-width: var(--container); margin: 0 auto; }
+  .site-footer p { font-size: 12px; line-height: 2; letter-spacing: var(--ls-util); color: var(--text-muted); }
+
+  @media all and (max-width: 767px) {
+    .card-grid, .form-grid, .elev-grid { grid-template-columns: 1fr; }
+    .type-row { grid-template-columns: 1fr; }
+    .gnav, .header-cta { display: none; }
+    .article h1, .t-site { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <ul class="header-utility">
+      <li><a href="#">メンバーシップ</a></li>
+      <li><a href="#">寄附</a></li>
+      <li><a href="#">施設を借りる</a></li>
+      <li><a href="#">大阪中之島美術館について</a></li>
+      <li><a class="lang" href="#">JP</a></li>
+    </ul>
+    <div class="header-main">
+      <div>
+        <div class="logo-mark"></div>
+        <div class="logo-name fw-t">NAKANOSHIMA<br>MUSEUM OF ART,<br>OSAKA</div>
+      </div>
+      <ul class="gnav">
+        <li><a href="#">展覧会</a></li>
+        <li><a href="#">参加する</a></li>
+        <li><a href="#">訪ねる</a></li>
+        <li><a href="#">学ぶ</a></li>
+        <li><a href="#">コレクション</a></li>
+      </ul>
+      <div class="header-cta">
+        <a class="btn-outline" href="#">チケット購入</a>
+        <a class="btn-outline" href="#">オンラインストア</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ==================== 1. COLORS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Colors</div>
+  <div class="section-no">01 — 有彩色ゼロ。白と黒、そして 1px のグレーだけ</div>
+
+  <div class="group-label">Base</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#ffffff;border:1px solid #808080"></div>
+      <div class="meta">Background<br><span class="hex">#ffffff</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#000000"></div>
+      <div class="meta">Ink（純黒）<br><span class="hex">#000000</span></div></div>
+  </div>
+
+  <div class="group-label">Neutral</div>
+  <div class="swatches">
+    <div class="swatch"><div class="chip" style="background:#808080"></div>
+      <div class="meta">Border Gray（主役の罫）<br><span class="hex">#808080</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#ededed;border:1px solid #cecece"></div>
+      <div class="meta">Surface（検索パネル）<br><span class="hex">#ededed</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#f7f7f7;border:1px solid #cecece"></div>
+      <div class="meta">Surface Light（言語切替）<br><span class="hex">#f7f7f7</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#cecece"></div>
+      <div class="meta">Divider<br><span class="hex">#cecece</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#4d4d4d"></div>
+      <div class="meta">Text Muted<br><span class="hex">#4d4d4d</span></div></div>
+  </div>
+
+  <p class="note">アクセントカラーが存在しない。強調は「黒地に白文字」で行う。
+    展覧会ごとの色はポスター画像の中だけで表現し、UI には持ち込まない。</p>
+</section>
+
+<!-- ==================== 2. TYPOGRAPHY ==================== -->
+<section class="section wrap">
+  <div class="section-title">Typography</div>
+  <div class="section-no">02 — 専用書体1本 / font-weight 500 固定 / line-height 2.0 / 全要素 justify</div>
+
+  <div class="type-row"><div class="type-spec">Site Title<br>28px / 500 / 2.0 / 0</div>
+    <div class="t-site">大阪中之島美術館</div></div>
+  <div class="type-row"><div class="type-spec">Section Head<br>21px / 500 / 2.0 / 0</div>
+    <div class="t-sechead">協賛企業</div></div>
+  <div class="type-row"><div class="type-spec">Section Title<br>20px / 500 / 2.0 / <strong>0.06em</strong></div>
+    <div class="t-sectitle">展覧会</div></div>
+  <div class="type-row"><div class="type-spec">Sub Section<br>18px / 500 / 2.0 / 0.06em</div>
+    <div class="t-sub">コレクションを見る</div></div>
+  <div class="type-row"><div class="type-spec">Lead<br>16px / 500 / 2.0 / 0</div>
+    <div class="t-lead">近代・現代の美術とデザインを、大阪という都市の記憶とともに。</div></div>
+  <div class="type-row"><div class="type-spec">Card Title<br>16px / 500 / <strong>1.75</strong> / 0</div>
+    <div class="t-card">スイス絵画の異才　カール・ヴァルザー</div></div>
+  <div class="type-row"><div class="type-spec">Base（body）<br>14px / 500 / <strong>2.0</strong> / normal</div>
+    <div class="t-body">開館は2022年2月。黒い直方体の中央に「パッサージュ」と呼ばれる吹き抜けが貫き、
+      来館者は建物を通り抜けながら展示室へ上がっていきます。収蔵品は約6,000点。</div></div>
+  <div class="type-row"><div class="type-spec">Nav<br>15px / 500 / 2.0 / 0</div>
+    <div class="t-nav">コレクション</div></div>
+  <div class="type-row"><div class="type-spec">Utility<br>12px / 500 / 2.0 / <strong>0.07em</strong></div>
+    <div class="t-util">メンバーシップ</div></div>
+  <div class="type-row"><div class="type-spec">Button Label<br>12px / 500 / <strong>1.0</strong> / 0</div>
+    <div class="t-btn">チケット購入</div></div>
+  <div class="type-row"><div class="type-spec">Micro<br>9px / 500 / 2.0 / 0</div>
+    <div class="t-micro">JP</div></div>
+
+  <div class="group-label">太さは「ウェイト」ではなく「書体」で切り替える</div>
+  <p class="t-body">font-weight は全要素 500 のまま固定します。<br>
+    <span class="fw-t" style="font-size:20px">NakanoshimaFont-T — 極細（大見出し・数字）</span><br>
+    <span style="font-size:20px">NakanoshimaFont — 既定（本文・見出し・ナビ）</span><br>
+    <span class="fw-m" style="font-size:20px">NakanoshimaFont-M — 中太（強調・小見出し）</span></p>
+
+  <div class="group-label">全要素に効く組版指定</div>
+  <p class="t-body">
+    text-align: justify ／ line-break: strict ／ word-break: break-word。<br>
+    段落だけでなく見出し・ナビ・リンクまで両端揃えになります。
+    「ゃゅょっー」などの小書き仮名・長音符が行頭に来ないよう、禁則は厳格モードで効かせます。
+    約物の詰めは palt ではなく YakuHanJPs（約物半角サブセット）が担当します
+    ——「これ（この括弧）や、この読点。」のアキを詰めるためだけの専用書体です。
+  </p>
+</section>
+
+<!-- ==================== 3. EXHIBITION（組版サンプル） ==================== -->
+<section class="section wrap">
+  <div class="section-title">Exhibition</div>
+  <div class="section-no">03 — 展覧会ページの組版。960px の版面に行送り 2.0</div>
+
+  <div class="article">
+    <div class="meta">2026年7月18日［土］— 2026年10月12日［月・祝］／ 4階展示室</div>
+    <h1>スイス絵画の異才　カール・ヴァルザー</h1>
+    <p>19世紀末のバーゼルに生まれ、舞台美術家として、また壁画家として活動したカール・ヴァルザー。
+      弟の作家ローベルト・ヴァルザーとともにベルリンの前衛の只中にありながら、
+      その絵は一貫して静けさを保っていました。日本初の回顧展となる本展では、
+      油彩・素描・舞台衣裳のデザイン画あわせて約120点を展示します。</p>
+
+    <h2>展覧会の構成</h2>
+    <p>第1章では、装飾と平面性への関心が芽生えた初期の仕事を紹介します。
+      第2章は舞台の仕事——マックス・ラインハルトとの協働で描かれた背景画の下絵。
+      第3章は1908年の日本旅行の記録です。</p>
+
+    <div class="btn-row" style="margin-top:20px">
+      <a class="btn-outline" href="#">チケット購入</a>
+      <a class="btn-outline" href="#">MORE</a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 4. BUTTONS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Buttons</div>
+  <div class="section-no">04 — 主要CTA も枠線。塗りはステータスバッジだけ</div>
+
+  <div class="group-label">Outline（標準CTA）</div>
+  <div class="btn-row">
+    <a class="btn-outline" href="#">チケット購入</a>
+    <a class="btn-outline" href="#">オンラインストア</a>
+    <a class="btn-outline" href="#">MORE</a>
+  </div>
+  <p class="note">transparent / 1px solid #808080 / border-radius 0 /
+    padding 10px 26px 7px 10px（右に外部リンクアイコンが入るため右だけ厚く、上下も非対称）/
+    12px / line-height 1。</p>
+
+  <div class="group-label">Filled（ステータスバッジ — 唯一の塗り）</div>
+  <div class="btn-row">
+    <span class="badge-filled">開催中</span>
+    <span class="badge-filled">開催予定</span>
+    <span class="badge-filled">終了</span>
+  </div>
+  <p class="note">#000000 / #ffffff / border-radius 0 / padding 7px 8px 4px / 12px / line-height 1。
+    色や面積で導線の優劣をつけない設計なので、塗りはこのバッジだけに留めます。</p>
+</section>
+
+<!-- ==================== 5. CARDS & CALENDAR ==================== -->
+<section class="section wrap">
+  <div class="section-title">Cards &amp; Calendar</div>
+  <div class="section-no">05 — カードは影なし枠なし。円が出るのはカレンダーだけ</div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="thumb">poster</div>
+      <span class="badge-filled">開催中</span>
+      <h3>スイス絵画の異才　カール・ヴァルザー</h3>
+      <p>2026年7月18日［土］— 10月12日［月・祝］</p>
+    </div>
+    <div class="card">
+      <div class="thumb">poster</div>
+      <span class="badge-filled">開催予定</span>
+      <h3>大阪の日本画　1920—1940</h3>
+      <p>2026年11月1日［土］— 2027年1月18日［日］</p>
+    </div>
+  </div>
+
+  <div class="group-label">開館カレンダー（サイト内で唯一 border-radius が効く場所）</div>
+  <div class="cal">
+    <div class="cal-head">2026 08 August</div>
+    <div class="cal-grid">
+      <div class="dow">日</div><div class="dow">月</div><div class="dow">火</div>
+      <div class="dow">水</div><div class="dow">木</div><div class="dow">金</div><div class="dow">土</div>
+      <a class="day is-event" href="#">01</a>
+      <a class="day" href="#">02</a>
+      <span class="day is-closed">03</span>
+      <a class="day" href="#">04</a>
+      <a class="day" href="#">05</a>
+      <a class="day" href="#">06</a>
+      <a class="day" href="#">07</a>
+      <a class="day" href="#">08</a>
+      <a class="day is-event" href="#">09</a>
+      <span class="day is-closed">10</span>
+      <a class="day" href="#">11</a>
+      <a class="day" href="#">12</a>
+      <a class="day" href="#">13</a>
+      <a class="day" href="#">14</a>
+    </div>
+  </div>
+  <p class="note">日付セルは border-radius 100% の円。イベント日は黒い円に白文字、休館日は #cecece。
+    矩形の角丸は0のまま、円だけを許す。</p>
+</section>
+
+<!-- ==================== 6. FORMS ==================== -->
+<section class="section wrap">
+  <div class="section-title">Forms</div>
+  <div class="section-no">06 — デフォルト / フォーカス / エラー。角丸ゼロ、色で区別しない</div>
+
+  <div class="form-grid">
+    <div class="field">
+      <label>お名前</label>
+      <input type="text" placeholder="中之島 花子">
+      <div class="msg">全角でご入力ください</div>
+    </div>
+    <div class="field is-focus">
+      <label>メールアドレス</label>
+      <input type="email" value="info@example.jp">
+      <div class="msg">フォーカス時は罫が #000000 に変わる</div>
+    </div>
+    <div class="field is-error">
+      <label>電話番号</label>
+      <input type="tel" value="06-4301">
+      <div class="msg">エラーも赤にしない。面色 #ededed で示す</div>
+    </div>
+  </div>
+
+  <div class="group-label">サイト内検索パネル</div>
+  <div class="search-panel">
+    <p class="t-util" style="margin-bottom:10px">検索範囲（複数選択可）</p>
+    <div class="btn-row">
+      <a class="btn-outline" href="#">サイト内全検索</a>
+      <a class="btn-outline" href="#">コレクション検索</a>
+      <a class="btn-outline" href="#">展覧会検索</a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 7. ELEVATION ==================== -->
+<section class="section wrap">
+  <div class="section-title">Elevation</div>
+  <div class="section-no">07 — box-shadow は CSS 全体で0件</div>
+
+  <div class="elev-grid">
+    <div class="elev elev-0">
+      <strong>1px の罫線</strong>
+      #808080 の 1px でセクション・カード・リストを分ける。
+    </div>
+    <div class="elev elev-s">
+      <strong>面色</strong>
+      #ededed / #f7f7f7 で検索パネルや言語切替を沈める。
+    </div>
+    <div class="elev elev-b">
+      <strong>黒ベタ</strong>
+      唯一「浮いて見える」要素。影ではなくコントラストで成立させる。
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 8. LAYOUT ==================== -->
+<section class="section wrap">
+  <div class="section-title">Layout</div>
+  <div class="section-no">08 — 標準コンテナ 960px。1カラム中央寄せ</div>
+
+  <div class="layout-demo">
+    <div class="bar bar-1267">1267px — ヘッダー内側</div>
+    <div class="bar bar-960">960px — 標準コンテナ</div>
+    <div class="bar bar-892">892px — カード列</div>
+  </div>
+
+  <div class="group-label">Spacing Scale</div>
+  <div class="spacing">
+    <div><div style="height:5px"></div><span>5</span></div>
+    <div><div style="height:10px"></div><span>10</span></div>
+    <div><div style="height:20px"></div><span>20</span></div>
+    <div><div style="height:40px"></div><span>40</span></div>
+    <div><div style="height:80px"></div><span>80</span></div>
+  </div>
+
+  <p class="note">ブレークポイントは 767px（モバイル主境界）／ 959px ／ 1069px ／
+    1070–1260px（ナビを詰める中間帯）／ 1600px（ヒーロー拡大）。
+    モバイルでも text-align: justify と line-height 2.0 は維持します。</p>
+</section>
+
+<footer class="site-footer">
+  <div class="inner">
+    <p>大阪中之島美術館 — 大阪府大阪市北区中之島4-3-1</p>
+    <p style="margin-top:5px">
+      このページは DESIGN.md のプレビューです。実サイトは館の専用書体 NakanoshimaFont を
+      自前配信しているため、ここでは Zen Kaku Gothic New で代替表示しています。
+      約物半角（YakuHanJPs）は再現していません。
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
