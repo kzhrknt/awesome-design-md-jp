@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ANDPAD アンドパッド</title>
+<!--
+  NOTE: 原典の和文はモリサワ TypeSquare の Web フォント
+  「中ゴシックBBB」(Gothic Medium BBB) と「太ゴB101」(Futo Go B101)。
+  TypeSquare のライセンス Web フォントのため、ローカルの preview.html では表示できない。
+  ここでは Google Fonts の "Zen Kaku Gothic New"(400/500/700) を代替に使用している。
+  Zen Kaku Gothic New は【モリサワ提供の書体】で、中ゴシックBBB 系の落ち着いた字面に最も近い。
+  実装時は必ず TypeSquare（Gothic Medium BBB / Futo Go B101）を読み込むこと。
+
+  欧文見出しの "SF Display" は原典が自社ホストしている San Francisco。
+  プレビューでは -apple-system / system-ui で代替している（macOS / iOS では実物が出る）。
+
+  原典は html { font-size: 14px } を rem の基準にしており、
+  0.85rem=11.9px / 1.4rem=19.6px / 2rem=28px / 2.8rem=39.2px と 14 の倍数で刻まれる。
+  また body の font-weight は 505 という中間値（TypeSquare の可変軸調整）。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --color-bg: #ffffff;          /* ページ地色（純白） */
+    --color-ink: #222222;         /* 基本テキスト色。フッターの面色でもある */
+    --color-red: #ef3340;         /* ANDPAD レッド。唯一の彩度 */
+    --color-red-dark: #c8102e;    /* 沈んだ赤。ホバー・プレス */
+    --color-surface: #fafafa;     /* News / Company セクション面 */
+    --color-meta: #adb5bd;        /* ニュース日付 */
+    --color-overlay: rgba(0,0,0,0.1); /* 画像上のスクリム */
+
+    /* === Fonts === */
+    /* 原典: "Gothic Medium BBB"（本文・UI）/ "Futo Go B101"（強調）— Zen Kaku Gothic New で代替 */
+    --font-jp: "Zen Kaku Gothic New", "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", Arial, メイリオ, Meiryo, sans-serif;
+    --font-jp-bold: "Zen Kaku Gothic New", "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", Arial, メイリオ, Meiryo, sans-serif;
+    /* 原典: "SF Display"（自社ホストの San Francisco） */
+    --font-en: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-body: 13px;
+    --fw-body: 505;      /* 原典の中間値。500 でも 600 でもない */
+    --lh-body: 1.85;     /* 24.05px */
+    --lh-bold: 2.2;      /* 太字は行間が広がる（28.6px） */
+
+    /* === Shape === */
+    --radius-pill: 38.36px;   /* サイトで唯一の角丸 */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 14px; }   /* rem の基準は 16px ではなく 14px */
+  body {
+    background: var(--color-bg); color: var(--color-ink);
+    font-family: var(--font-jp);
+    font-size: var(--fs-body); font-weight: var(--fw-body); line-height: var(--lh-body);
+    letter-spacing: normal;
+    font-feature-settings: normal;   /* palt を使わない */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { position: relative; z-index: 100; display: flex; align-items: center; justify-content: space-between;
+    padding: 21px 40px; background: rgba(255,255,255,0.95); backdrop-filter: blur(6px); }
+  .header-brand { font-family: var(--font-en); font-size: 22px; font-weight: 700; color: var(--color-red); text-decoration: none; letter-spacing: 0.02em; }
+  .header-menu { display: flex; gap: 28px; align-items: center; }
+  .header-menu a { color: var(--color-ink); text-decoration: none; font-size: 13px; font-weight: 700; line-height: var(--lh-bold); }
+  .header-menu a:hover { color: var(--color-red); }
+
+  /* HERO */
+  .hero { padding: 84px 40px; background: var(--color-bg); }
+  .hero-inner { max-width: 1140px; margin: 0 auto; }
+  .hero-eyebrow { font-family: var(--font-en); font-size: 25.2px; font-weight: 700; line-height: 1.5; color: var(--color-red); margin-bottom: 18px; }
+  .hero-display { font-family: var(--font-jp-bold); font-size: 39.2px; font-weight: 600; line-height: 1.5; letter-spacing: 0.1em; color: var(--color-ink); }
+  .hero-sub { font-family: var(--font-jp-bold); font-size: 13px; font-weight: var(--fw-body); line-height: var(--lh-body); color: var(--color-ink); margin-top: 28px; max-width: 570px; }
+  .hero-cta { display: flex; gap: 16px; margin-top: 36px; flex-wrap: wrap; align-items: center; }
+
+  /* SECTIONS */
+  .section { padding: 77px 40px; max-width: 1140px; margin: 0 auto; }
+  .section--alt { background: var(--color-surface); max-width: none; }
+  .section--alt > .inner { max-width: 1140px; margin: 0 auto; }
+  /* 赤い矩形 ＋ 英字（原典の定型） */
+  .section-title { font-family: var(--font-en); font-size: 35px; font-weight: 600; line-height: 1.0; color: var(--color-ink);
+    padding-left: 105px; position: relative; margin-bottom: 20px; }
+  .section-title::before { content: ""; position: absolute; left: 0; top: 0; width: 77px; height: 35px; background: var(--color-red); }
+  .section-lead { font-family: var(--font-jp-bold); font-size: 13px; line-height: var(--lh-body); color: var(--color-ink); max-width: 760px; margin-bottom: 40px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px,1fr)); gap: 21px; }
+  .swatch { border: 1px solid #eeeeee; overflow: hidden; background: #fff; }  /* radius 0 */
+  .swatch-block { height: 92px; }
+  .swatch-info { padding: 14px 16px 18px; }
+  .swatch-name { font-size: 13px; font-weight: 700; line-height: var(--lh-bold); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--color-meta); margin-top: 2px; }
+  .swatch-role { font-size: 11.9px; color: var(--color-ink); margin-top: 6px; line-height: 1.6; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 26px 0; border-bottom: 1px solid #eeeeee; }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-red); margin-top: 12px; }
+
+  /* ARTICLE */
+  .article { max-width: 570px; }
+  .article h2 { font-family: var(--font-jp-bold); font-size: 28px; font-weight: 600; line-height: 1.5; margin-bottom: 14px; }
+  .article h3 { font-family: var(--font-jp-bold); font-size: 19.6px; font-weight: 600; line-height: 1.5; margin: 32px 0 10px; }
+  .article p { font-size: 13px; font-weight: var(--fw-body); line-height: var(--lh-body); margin-bottom: 20px; }
+  .article a { color: var(--color-red); text-decoration: none; font-weight: 700; line-height: var(--lh-bold); border-bottom: 1px solid var(--color-red); }
+  .article .cap { font-size: 11.9px; font-weight: 700; line-height: 1.3; color: var(--color-meta); }
+
+  /* BUTTONS — 面色を持たないアウトラインピルのみ */
+  .btn-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--font-jp); font-size: 13px; font-weight: 700; line-height: var(--lh-bold);
+    text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+    background: transparent; padding: 5.25px 10.5px; min-width: 8rem; border-radius: var(--radius-pill); transition: all .18s ease; }
+  .btn-primary { color: var(--color-ink); border: 1px solid var(--color-red); }
+  .btn-primary:hover { background: var(--color-red); color: #fff; }
+  .btn-inverse { color: #ffffff; border: 1px solid #ffffff; }
+  .btn-inverse:hover { background: #ffffff; color: var(--color-red); }
+  .btn-inverse-black { color: var(--color-ink); border: 1px solid var(--color-ink); }
+  .btn-inverse-black:hover { background: var(--color-ink); color: #fff; }
+  .btn-icon { width: 42px; height: 42px; min-width: 0; padding: 0; border-radius: 50%;
+    border: 1px solid var(--color-red); color: var(--color-red); font-family: var(--font-en); font-size: 15px; }
+  .btn-icon:hover { background: var(--color-red); color: #fff; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 28px; }
+  .card { background: var(--color-bg); border-radius: 0; }   /* radius 0 / shadow なし */
+  .card-top { height: 116px; background: var(--color-surface); display: flex; align-items: flex-end; padding: 21px; }
+  .card-top .t { font-family: var(--font-en); font-size: 19.6px; font-weight: 600; line-height: 1.2; }
+  .card-body { padding: 21px 0 0; }
+  .card-name { font-family: var(--font-jp-bold); font-size: 19.6px; font-weight: 600; line-height: 1.5; }
+  .card-meta { font-size: 13px; color: var(--color-ink); margin-top: 8px; line-height: var(--lh-body); }
+  .card-date { font-size: 13px; color: var(--color-meta); margin-top: 10px; }
+
+  /* FORMS — 入力欄はピルにしない */
+  .form { max-width: 460px; display: grid; gap: 24px; }
+  .field label { display: block; font-size: 13px; font-weight: 700; line-height: var(--lh-bold); color: var(--color-ink); margin-bottom: 6px; }
+  .field input { width: 100%; background: #fff; border: 1px solid var(--color-ink); border-radius: 0; padding: 12px 14px;
+    font-family: var(--font-jp); font-size: 13px; font-weight: var(--fw-body); color: var(--color-ink); }
+  .field input::placeholder { color: var(--color-meta); }
+  .field input:focus { outline: none; border-color: var(--color-red); }
+  .field--error input { border-color: var(--color-red-dark); }
+  .field--error .msg { font-size: 11.9px; color: var(--color-red-dark); margin-top: 6px; font-weight: 700; }
+
+  /* ELEVATION — 原典は影ゼロ */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 28px; }
+  .elev { background: #fff; padding: 28px; text-align: center; font-size: 13px; border-radius: 0; }
+  .elev--0 { box-shadow: none; border: 1px solid #eeeeee; }
+  .elev--surface { box-shadow: none; background: var(--color-surface); }
+  .elev--ink { box-shadow: none; background: var(--color-ink); color: #fff; }
+  .elev--red { box-shadow: none; background: var(--color-red); color: #fff; }
+  .elev-cap { font-family: var(--font-mono); font-size: 11px; color: var(--color-meta); margin-top: 10px; text-align: center; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-red); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: var(--color-meta); margin-top: 8px; text-align: center; }
+
+  /* BAND */
+  .band { background: var(--color-red); color: #fff; padding: 56px 40px; }
+  .band-inner { max-width: 1140px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap; }
+  .band-text { font-size: 13px; line-height: var(--lh-body); }
+
+  footer { background: var(--color-ink); color: #fff; padding: 63px 40px; }
+  footer .finner { max-width: 1140px; margin: 0 auto; }
+  footer .flinks { display: flex; gap: 28px; flex-wrap: wrap; margin-bottom: 26px; }
+  footer .flinks a { color: #fff; text-decoration: none; font-size: 13px; font-weight: 700; line-height: var(--lh-bold); }
+  footer .fnote { font-size: 11.9px; line-height: 1.6; color: var(--color-meta); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-brand" href="#">ANDPAD</a>
+  <nav class="header-menu">
+    <a href="#">ミッション</a>
+    <a href="#">サービス</a>
+    <a href="#">ニュース</a>
+    <a href="#">採用情報</a>
+    <a href="#">会社情報</a>
+    <a href="#">お問い合わせ</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Mission</div>
+    <div class="hero-display">幸せを築く人を、幸せに。</div>
+    <p class="hero-sub">「ANDPAD」は、現場の効率化から経営改善まで一元管理できるクラウド型建設プロジェクト管理サービスです。図面・工程・写真・原価を一つに束ね、現場と経営をつなぎます。</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#">ミッション</a>
+      <a class="btn btn-primary" href="#" style="min-width:10rem">サービスサイト</a>
+      <a class="btn btn-inverse-black" href="#" style="min-width:7rem">会社情報</a>
+      <a class="btn btn-icon" href="#">→</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Colors</h2>
+  <p class="section-lead">地は純白 #ffffff。テキストとフッターは #222222 で、純黒は使わない。彩度を持つのは ANDPAD レッド #ef3340 ただ一色で、帯・輪郭・見出し脇の矩形・アイコンに「点」で置く。セクションの面は #fafafa という、白との差がごくわずかな極薄グレー。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-red)"></div><div class="swatch-info"><div class="swatch-name">ANDPAD Red</div><div class="swatch-hex">#ef3340</div><div class="swatch-role">唯一の彩度。帯・輪郭・矩形・アイコン</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-red-dark)"></div><div class="swatch-info"><div class="swatch-name">Red Dark</div><div class="swatch-hex">#c8102e</div><div class="swatch-role">ホバー・プレス／沈めたい赤</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-ink)"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#222222</div><div class="swatch-role">基本テキスト／フッターの面色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-surface)"></div><div class="swatch-info"><div class="swatch-name">Surface Alt</div><div class="swatch-hex">#fafafa</div><div class="swatch-role">News / Company セクション面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-meta)"></div><div class="swatch-info"><div class="swatch-name">Meta Gray</div><div class="swatch-hex">#adb5bd</div><div class="swatch-role">ニュース日付</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-bg);border-bottom:1px solid #eee"></div><div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">ページ地色（純白）</div></div></div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Typography</h2>
+  <p class="section-lead">和文はモリサワ TypeSquare の 2 書体。本文・UI が「中ゴシック BBB」、強調段落・小見出しが「太ゴ B101」で、太さはファミリー名の切り替えで作る。英字の見出しだけ自社ホストの SF Display に切り替わる和欧分離型。html の font-size は 14px で、すべてのサイズが 14 の倍数の rem として刻まれる。body の font-weight は 505 という中間値。</p>
+  <div class="type-sample"><div style="font-family:var(--font-en);font-size:46px;font-weight:500;line-height:1.5;letter-spacing:.14em">Mission</div><div class="type-meta">Mission Display · SF Display · 46px · weight 500 · lh 1.5 · ls 0.14em</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-en);font-size:42px;font-weight:700;line-height:1.2">History of ANDPAD</div><div class="type-meta">Section Head (EN) · SF Display · 42px · weight 700 · lh 1.2 · ls normal</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-en);font-size:35px;font-weight:600;line-height:1.0">Service</div><div class="type-meta">Section Head (EN) · SF Display · 35px · weight 600 · lh 1.0 · 赤矩形＋padding-left 105px</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-jp-bold);font-size:39.2px;font-weight:600;line-height:1.5;letter-spacing:.1em">幸せを築く人を、幸せに。</div><div class="type-meta">Section Head (JP) · 太ゴB101 · 39.2px (2.8rem) · weight 600 · lh 1.5 · ls 0.1em</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-jp-bold);font-size:28px;font-weight:600;line-height:1.5">建設現場の生産性を上げる</div><div class="type-meta">Heading 3 · 太ゴB101 · 28px (2rem) · weight 600 · lh 1.5</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-jp-bold);font-size:19.6px;font-weight:600;line-height:1.5">現場と経営を、ひとつに。</div><div class="type-meta">Heading 4 · 太ゴB101 · 19.6px (1.4rem) · weight 600 · lh 1.5</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-jp-bold);font-size:13px;font-weight:505;line-height:1.85">強調段落（太ゴB101）— 「ANDPAD」は、現場の効率化から経営改善まで一元管理できるクラウド型建設プロジェクト管理サービスです。</div><div class="type-meta">Lead / Emphasis · 太ゴB101 · 13px · weight 505 · lh 1.85</div></div>
+  <div class="type-sample"><div style="font-size:13px;font-weight:505;line-height:1.85">本文（中ゴシックBBB）— 施工管理に必要な情報を一つの場所に集めることで、現場に立つ人の手間を減らし、判断を速くします。写真も図面も工程も、探す時間をなくすことから始まります。</div><div class="type-meta">Body · 中ゴシックBBB · 13px · weight <strong>505</strong> · lh 1.85 · ls normal</div></div>
+  <div class="type-sample"><div style="font-size:13px;font-weight:700;line-height:2.2">太字（行間が広がる）— リンクやナビゲーションはこのウェイト。</div><div class="type-meta">Body Bold · 13px · weight 700 · <strong>lh 2.2</strong>（太字は行間を広げる）</div></div>
+  <div class="type-sample"><div style="font-size:14px;font-weight:700;line-height:1.85;color:var(--color-red)">ドロワーナビゲーション</div><div class="type-meta">Nav (Drawer) · 14px · weight 700 · lh 1.85 · #ef3340</div></div>
+  <div class="type-sample"><div style="font-size:11.9px;font-weight:700;line-height:1.3;color:var(--color-meta)">図版キャプション — 2026.07.14</div><div class="type-meta">Caption · 11.9px (0.85rem) · weight 700 · lh 1.3 · #adb5bd</div></div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Article</h2>
+  <div class="article">
+    <h2>現場のとなりに、ANDPAD を。</h2>
+    <p>建設業の現場では、図面と工程と写真と原価が、それぞれ別の場所に置かれてきました。ひとつの変更が起きるたびに、電話とファックスと手戻りが発生します。</p>
+    <h3>情報を、ひとつの場所に</h3>
+    <p>ANDPAD は、その分断をなくすところから始まりました。現場で撮った写真が、そのまま報告書になる。工程を動かせば、関わる全員に届く。当たり前のことを、当たり前にできるようにしています。</p>
+    <p>本文の行間は 1.85。太字にしたら 2.2 まで広げます。中ゴシック BBB は字面が詰まって見えやすいので、太さを足したぶんだけ余白も足す、という考え方です。<a href="#">サービスサイトを見る</a>。</p>
+    <p class="cap">※ 図版キャプションはこのサイズ。11.9px / weight 700 / lh 1.3</p>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Buttons</h2>
+  <p class="section-lead">CTA は面色を持たない。1px のアウトラインとピル（radius 38.36px）だけで作り、背景に応じて赤枠 / 白枠 / 黒枠に反転させる。角丸が許されるのはこのピルとアイコンの円のみで、それ以外はすべて radius 0。</p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">ミッション</a>
+    <a class="btn btn-primary" href="#" style="min-width:9rem">ニュース一覧</a>
+    <a class="btn btn-primary" href="#" style="min-width:15rem">10周年特設サイトはこちら</a>
+    <a class="btn btn-inverse-black" href="#" style="min-width:7rem">会社情報</a>
+    <a class="btn btn-icon" href="#">→</a>
+  </div>
+  <div class="btn-row" style="margin-top:28px;background:var(--color-red);padding:28px;">
+    <a class="btn btn-inverse" href="#">採用情報</a>
+    <span style="color:#fff;font-size:13px;line-height:1.85">↑ 赤バンドの上では白枠に反転する</span>
+  </div>
+</section>
+
+<section class="section--alt">
+  <div class="inner section" style="padding-left:0;padding-right:0">
+    <h2 class="section-title">Cards</h2>
+    <p class="section-lead">面 #fafafa の上にカードを置く。border-radius は 0、box-shadow は使わない。奥行きは余白と面色の差だけで作る。</p>
+    <div class="card-grid">
+      <div class="card"><div class="card-top"><span class="t">Kanri</span></div><div class="card-body"><div class="card-name">施工管理</div><div class="card-meta">図面・工程・写真をひとつに束ねる</div><div class="card-date">2026.07.14</div></div></div>
+      <div class="card"><div class="card-top"><span class="t">Genka</span></div><div class="card-body"><div class="card-name">原価管理</div><div class="card-meta">見積から実行予算・支払までを一本化</div><div class="card-date">2026.06.30</div></div></div>
+      <div class="card"><div class="card-top"><span class="t">Chat</span></div><div class="card-body"><div class="card-name">現場チャット</div><div class="card-meta">協力会社を含めた連絡を案件ごとに</div><div class="card-date">2026.06.02</div></div></div>
+      <div class="card"><div class="card-top"><span class="t">Board</span></div><div class="card-body"><div class="card-name">経営ダッシュボード</div><div class="card-meta">現場の数字がそのまま経営の数字に</div><div class="card-date">2026.05.19</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Forms</h2>
+  <p class="section-lead">デフォルト / フォーカス / エラーの3状態。入力欄は radius 0（ピルにしない）。フォーカスは #ef3340、エラーは沈んだ赤 #c8102e で CTA の赤と区別する。</p>
+  <div class="form">
+    <div class="field"><label>会社名</label><input type="text" placeholder="株式会社アンドパッド"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="03-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn btn-primary" href="#" style="justify-self:start;min-width:10rem">送信する</a>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Elevation</h2>
+  <p class="section-lead">ANDPAD のサイトには box-shadow が 1 つも存在しない。奥行きは面色の差と余白だけで作る。浮かせたいときは影ではなく余白を広げるか、面色を変える。</p>
+  <div class="elev-grid">
+    <div><div class="elev elev--0">Level 0</div><div class="elev-cap">none（既定にして唯一）</div></div>
+    <div><div class="elev elev--surface">Surface</div><div class="elev-cap">#fafafa の面で段差を作る</div></div>
+    <div><div class="elev elev--ink">Ink</div><div class="elev-cap">#222222 の面（フッター）</div></div>
+    <div><div class="elev elev--red">Brand</div><div class="elev-cap">#ef3340 の帯（採用バンド）</div></div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Layout</h2>
+  <p class="section-lead">rem 基準が 14px なので、余白も 7 / 14 の倍数で刻む。コンテナは最大 1140px、2 カラムは 570px ずつ。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:7px;height:7px"></div><div class="space-label">XS 7</div></div>
+    <div><div class="space-bar" style="width:14px;height:14px"></div><div class="space-label">S 14</div></div>
+    <div><div class="space-bar" style="width:21px;height:21px"></div><div class="space-label">M 21</div></div>
+    <div><div class="space-bar" style="width:28px;height:28px"></div><div class="space-label">L 28</div></div>
+    <div><div class="space-bar" style="width:56px;height:56px"></div><div class="space-label">XL 56</div></div>
+    <div><div class="space-bar" style="width:77px;height:77px"></div><div class="space-label">XXL 77</div></div>
+    <div><div class="space-bar" style="width:84px;height:84px"></div><div class="space-label">XXXL 84</div></div>
+  </div>
+</section>
+
+<div class="band">
+  <div class="band-inner">
+    <span class="band-text">私たちは、業界を共に変える仲間を募集しています</span>
+    <a class="btn btn-inverse" href="#">採用情報</a>
+  </div>
+</div>
+
+<footer>
+  <div class="finner">
+    <div class="flinks">
+      <a href="#">トップ</a>
+      <a href="#">ミッション</a>
+      <a href="#">ニュース</a>
+      <a href="#">採用情報</a>
+      <a href="#">会社情報</a>
+      <a href="#">セキュリティ</a>
+      <a href="#">お問い合わせ</a>
+    </div>
+    <div class="fnote">ANDPAD アンドパッド — Design System Preview　/　実測ベース 2026-08-09</div>
+  </div>
+</footer>
+
+</body>
+</html>

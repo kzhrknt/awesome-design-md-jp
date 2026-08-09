@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Whatever ホワットエバー</title>
+<!--
+  NOTE: 原典の欧文は Apercu（Colophon Foundry）。ライセンスフォントのため
+  ローカルの preview.html では表示できない。ここでは Google Fonts の
+  "Archivo"(200/300/400/500/700) を代替に使用している。
+  Archivo はグロテスク系で a の骨格と字幅が Apercu に近く、
+  巨大サイズ（10.5vw）での印象が最も揃う。実装時は必ず Apercu を読み込むこと。
+
+  和文は原典どおり "Noto Sans JP"（300 / 500 / 700 の 3 ウェイトのみ）。
+  font-family は Apercu, "Noto Sans JP", sans-serif の【欧文優先】1 スタックを全要素で使い回す。
+
+  原典は html { font-size: 10px } を rem の基準にし、
+  --font-size-ja: 1.5rem (15px) / --font-size-en: 1.7rem (17px) の 2 変数だけを持つ。
+  見出しは vw 基準の流体（ヒーロー 10.5vw / セクション見出し 約 2.64vw）。
+
+  グラデーションは linear-gradient(to right in oklab, A, B) に noise.png を重ねる形。
+  ここでは noise.png を SVG フィルタ由来の data URI で代替している。
+  in oklab の補間指定は原典どおり。省略すると中間が濁る。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@200;300;400;500;700&family=Noto+Sans+JP:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Brand Spectrum: 実測 9 色 === */
+    --c-blue:    #0d44fb;
+    --c-cyan:    #29ebfe;
+    --c-green:   #00c745;
+    --c-lime:    #89e82b;
+    --c-yellow:  #ffeb00;
+    --c-orange:  #ff9201;
+    --c-red:     #ff2300;
+    --c-magenta: #fd1eba;
+    --c-purple:  #a725fc;
+
+    /* === Neutral === */
+    --color-bg: #ffffff;      /* 純白 */
+    --color-ink: #000000;     /* 純黒。軟らかい黒に逃げない */
+    --color-border: #b4b4b4;  /* タグの 1px 枠。サイト唯一の罫線色 */
+    --color-meta: #cccccc;    /* 非活性の日付・言語切替 */
+
+    /* === Noise: 原典の noise.png の代替（SVG フラクタルノイズ） === */
+    --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.28'/%3E%3C/svg%3E");
+
+    /* === Fonts === */
+    /* 原典: Apercu, "Noto Sans JP", sans-serif（Apercu を Archivo で代替） */
+    --font: Archivo, "Noto Sans JP", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --font-size-ja: 1.5rem;   /* 15px */
+    --font-size-en: 1.7rem;   /* 17px */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 10px; }   /* rem の基準は 16px ではなく 10px */
+  body {
+    background: var(--color-bg); color: var(--color-ink);
+    font-family: var(--font);
+    font-size: var(--font-size-ja); font-weight: 300; line-height: 2.0;   /* 15px → 30px */
+    letter-spacing: normal;
+    font-feature-settings: normal;   /* palt を使わない */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* === Gradient utilities: noise + linear-gradient(... in oklab, A, B) === */
+  .grad { background-image: var(--noise), linear-gradient(to right in oklab, var(--a), var(--b)); }
+  .grad-text { background-image: var(--noise), linear-gradient(to right in oklab, var(--a), var(--b));
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  /* HEADER */
+  .header { position: relative; z-index: 100; display: flex; align-items: stretch; justify-content: space-between;
+    background: var(--color-bg); }
+  .header-brand { display: flex; align-items: center; padding: 0 24px; background: var(--color-ink); color: #fff;
+    font-size: 18px; font-weight: 700; letter-spacing: 0.04em; text-decoration: none; }
+  .header-grad { flex: 1; --a: var(--c-yellow); --b: var(--c-orange); }
+  .header-cta { display: flex; align-items: center; justify-content: center; min-width: 256px; padding: 20px 24px;
+    background: var(--color-ink); color: #fff; text-decoration: none; font-size: 18px; font-weight: 700; letter-spacing: 0.04em; }
+  .header-cta:hover { --a: var(--c-magenta); --b: var(--c-red); background-image: var(--noise), linear-gradient(to right in oklab, var(--a), var(--b)); }
+
+  /* HERO */
+  .hero { padding: 120px 80px 100px; }
+  .hero-line { font-size: 10.5vw; font-weight: 700; line-height: 1.02; letter-spacing: normal; }
+  .hero-line--2 { text-align: right; }
+  .hero-lead { margin-top: 80px; }
+  .hero-lead p { font-size: 1.91vw; font-weight: 700; line-height: 2.31; }   /* 和文リード: 太くて行間が極端に広い */
+
+  /* SECTIONS */
+  .section { padding: 100px 80px; }
+  .section-title { font-size: 2.64vw; font-weight: 700; line-height: 1.1; margin-bottom: 16px; }
+  .section-lead { font-size: 15px; font-weight: 300; line-height: 2.0; max-width: 720px; margin-bottom: 60px; }
+  .rule { height: 1px; background: var(--color-border); margin: 0 80px; }
+
+  /* COLORS */
+  .spectrum { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 0; }
+  .spectrum div { height: 120px; display: flex; align-items: flex-end; padding: 10px;
+    font-family: var(--font-mono); font-size: 11px; color: #fff; mix-blend-mode: normal; }
+  .grad-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 20px; margin-top: 40px; }
+  .grad-card { height: 120px; display: flex; align-items: flex-end; padding: 16px; }
+  .grad-card span { font-family: var(--font-mono); font-size: 11px; color: #fff; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 30px 0; border-bottom: 1px solid var(--color-border); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-ink); margin-top: 14px; letter-spacing: 0.12em; }
+
+  /* ARTICLE */
+  .article { max-width: 700px; }
+  .article h2 { font-size: 32px; font-weight: 700; line-height: 1.3; letter-spacing: 0.01em; margin-bottom: 24px; }
+  .article p { font-size: 15px; font-weight: 300; line-height: 2.0; margin-bottom: 24px; }
+  .article p.en { font-size: 17px; font-weight: 200; line-height: 1.76; }   /* 行送りは和文と同じ 30px */
+  .article a { color: var(--color-ink); text-decoration: none; border-bottom: 2px solid var(--color-ink); font-weight: 500; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-width: 256px; height: 60px;
+    background: var(--color-ink); color: #fff; text-decoration: none; border: none; cursor: pointer;
+    font-family: var(--font); font-size: 18px; font-weight: 700; letter-spacing: 0.04em;
+    border-radius: 0; padding: 4px 6px 1px; transition: background-image .2s ease; }
+  .btn:hover { --a: var(--c-blue); --b: var(--c-cyan); background-image: var(--noise), linear-gradient(to right in oklab, var(--a), var(--b)); }
+  .tag { display: inline-block; border: 1px solid var(--color-border); border-radius: 0;
+    padding: 9px 10px 7px; font-size: 12px; font-weight: 300; letter-spacing: 0.12em; color: var(--color-ink); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px,1fr)); gap: 60px 40px; }
+  .card-thumb { height: 260px; }   /* radius 0 */
+  .card-name { font-size: 28px; font-weight: 700; line-height: 1.2; margin-top: 24px; }
+  .card-desc { font-size: 15px; font-weight: 500; line-height: 1.6; margin-top: 12px; }
+  .card-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+  .card-date { font-size: 12px; font-weight: 300; letter-spacing: 0.03em; color: var(--color-meta); margin-top: 14px; }
+
+  /* FORMS */
+  .form { max-width: 480px; display: grid; gap: 28px; }
+  .field label { display: block; font-size: 12px; font-weight: 300; letter-spacing: 0.12em; margin-bottom: 10px; }
+  .field input { width: 100%; background: #fff; border: 1px solid var(--color-border); border-radius: 0; padding: 12px 14px;
+    font-family: var(--font); font-size: 15px; font-weight: 300; color: var(--color-ink); }
+  .field input::placeholder { color: var(--color-meta); }
+  .field input:focus { outline: none; border-color: var(--color-ink); }
+  .field--error input { border-color: var(--c-red); }
+  .field--error .msg { font-size: 12px; letter-spacing: 0.12em; color: var(--c-red); margin-top: 8px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 20px; }
+  .elev { height: 120px; display: flex; align-items: center; justify-content: center; box-shadow: none; border-radius: 0;
+    font-size: 15px; font-weight: 500; }
+  .elev-cap { font-family: var(--font-mono); font-size: 11px; color: var(--color-ink); margin-top: 10px; letter-spacing: 0.12em; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-ink); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; margin-top: 10px; text-align: center; letter-spacing: 0.12em; }
+
+  footer { background: var(--color-ink); color: #fff; padding: 80px; }
+  footer .flinks { display: flex; gap: 32px; flex-wrap: wrap; margin-bottom: 32px; }
+  footer .flinks a { color: #fff; text-decoration: none; font-size: 12px; font-weight: 300; letter-spacing: 0.12em; }
+  footer .fnote { font-size: 12px; font-weight: 300; letter-spacing: 0.07em; color: var(--color-meta); }
+  .band { height: 80px; --a: var(--c-purple); --b: var(--c-green); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-brand" href="#">WHATEVER</a>
+  <div class="header-grad grad"></div>
+  <a class="header-cta" href="#">Watch Reel</a>
+</header>
+
+<section class="hero">
+  <div class="hero-line">Make whatever.</div>
+  <div class="hero-line hero-line--2">Rules, whatever.</div>
+  <div class="hero-lead">
+    <p>わたしたちは、誰も見たことがないようなアイデアを考え、</p>
+    <p>あらゆる方法でそれを実現していくクリエイティブスタジオ。</p>
+  </div>
+  <div class="btn-row" style="margin-top:60px">
+    <a class="btn" href="#">Watch Reel</a>
+    <a class="btn" href="#">Learn more</a>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="section">
+  <h2 class="section-title">Colors</h2>
+  <p class="section-lead">地は純白、文字は純黒。UI に単色のブランドカラーは現れず、9 色のスペクトラムはすべてグラデーションの構成色として使われる。2 色を linear-gradient(to right in oklab, A, B) で繋ぎ、ノイズテクスチャを必ず重ねる。in oklab を省略すると、補色寄りの組み合わせで中間がグレーに濁る。</p>
+  <div class="spectrum">
+    <div style="background:var(--c-blue)">#0d44fb</div>
+    <div style="background:var(--c-cyan);color:#000">#29ebfe</div>
+    <div style="background:var(--c-green)">#00c745</div>
+    <div style="background:var(--c-lime);color:#000">#89e82b</div>
+    <div style="background:var(--c-yellow);color:#000">#ffeb00</div>
+    <div style="background:var(--c-orange)">#ff9201</div>
+    <div style="background:var(--c-red)">#ff2300</div>
+    <div style="background:var(--c-magenta)">#fd1eba</div>
+    <div style="background:var(--c-purple)">#a725fc</div>
+  </div>
+  <div class="grad-grid">
+    <div class="grad-card grad" style="--a:var(--c-blue);--b:var(--c-cyan)"><span>in oklab · #0d44fb → #29ebfe</span></div>
+    <div class="grad-card grad" style="--a:var(--c-magenta);--b:var(--c-red)"><span>in oklab · #fd1eba → #ff2300</span></div>
+    <div class="grad-card grad" style="--a:var(--c-orange);--b:var(--c-blue)"><span>in oklab · #ff9201 → #0d44fb</span></div>
+    <div class="grad-card grad" style="--a:var(--c-green);--b:var(--c-magenta)"><span>in oklab · #00c745 → #fd1eba</span></div>
+    <div class="grad-card grad" style="--a:var(--c-lime);--b:var(--c-magenta)"><span>in oklab · #89e82b → #fd1eba</span></div>
+    <div class="grad-card grad" style="--a:var(--c-purple);--b:var(--c-blue)"><span>in oklab · #a725fc → #0d44fb</span></div>
+  </div>
+  <div style="margin-top:40px">
+    <div class="grad-text" style="--a:var(--c-blue);--b:var(--c-magenta);font-size:5vw;font-weight:700;line-height:1.1">Gradient Text</div>
+    <div class="type-meta">background-clip: text — 同じグラデーションを文字マスクとして流す（.grad-effect-base）</div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="section">
+  <h2 class="section-title">Typography</h2>
+  <p class="section-lead">font-family は Apercu, "Noto Sans JP", sans-serif の 1 スタックを全要素で使い回す（欧文優先）。html の font-size は 10px、本文は言語別に 15px / 17px。見出しは vw 基準の流体で、12px と 151px のような極端なジャンプで階層を作る。</p>
+  <div class="type-sample"><div style="font-size:10.5vw;font-weight:700;line-height:1.02">Make whatever.</div><div class="type-meta">Hero · Apercu · 10.5vw（1440px 幅で 151.23px）· weight 700 · lh normal</div></div>
+  <div class="type-sample"><div style="font-size:2.64vw;font-weight:700;line-height:1.1">Featured Works</div><div class="type-meta">Section Head · Apercu · 約 2.64vw（38.07px）· weight 700 · lh normal</div></div>
+  <div class="type-sample"><div style="font-size:1.91vw;font-weight:700;line-height:2.31">考えるだけではなく、作るだけでもなく、「考えて作る」からこそ生み出せる。</div><div class="type-meta">Lead (JP) · Noto Sans JP · 約 1.91vw（27.50px）· weight <strong>700</strong> · <strong>lh 2.31</strong>（太くて行間が極端に広い）</div></div>
+  <div class="type-sample"><div style="font-size:32px;font-weight:700;line-height:1.3;letter-spacing:.01em">Silent Cleaning</div><div class="type-meta">Work Detail H2 · Apercu · 32px · weight 700 · lh 1.3 · ls 0.01em</div></div>
+  <div class="type-sample"><div style="font-size:28px;font-weight:700;line-height:1.2">everies</div><div class="type-meta">Card Title · Apercu · 28px · weight 700 · lh 1.2</div></div>
+  <div class="type-sample"><div style="font-size:18px;font-weight:700;letter-spacing:.04em">Watch Reel</div><div class="type-meta">Button · Apercu · 18px · weight 700 · ls 0.04em</div></div>
+  <div class="type-sample"><div style="font-size:16px;font-weight:700;letter-spacing:.04em">お問い合わせ</div><div class="type-meta">Nav / CTA (JP) · Noto Sans JP · 16px · weight 700 · ls 0.04em</div></div>
+  <div class="type-sample"><div style="font-size:17px;font-weight:200;line-height:1.76">Body (EN) — We think and make. An idea that stays on a deck is only half an idea, so we build it, ship it, and see what the world does with it.</div><div class="type-meta">Body (EN) · Apercu · 17px · weight <strong>200</strong> · lh 1.76（行送り 30px）</div></div>
+  <div class="type-sample"><div style="font-size:15px;font-weight:300;line-height:2.0">本文（和文）— アイデアと実現力を武器に、世界中の人々に驚き愛されるような体験を作り続けています。和文 15px と欧文 17px で、行送りの実寸をどちらも 30px に揃えている。</div><div class="type-meta">Body (JP) · Noto Sans JP · 15px · weight 300 · <strong>lh 2.0</strong>（行送り 30px）</div></div>
+  <div class="type-sample"><div style="font-size:15px;font-weight:500;line-height:1.6">カード説明 — 身の回りのモノと会話できる AR アプリ。</div><div class="type-meta">Card Meta · Noto Sans JP · 15px · weight 500 · lh 1.6</div></div>
+  <div class="type-sample"><div style="font-size:12px;font-weight:300;letter-spacing:.12em">BRANDING / WEB / APP / EVENT</div><div class="type-meta">Label / Tag · Apercu · 12px · weight 300 · <strong>ls 0.12em</strong></div></div>
+  <div class="type-sample"><div style="font-size:12px;font-weight:300;letter-spacing:.03em;color:var(--color-meta)">Oct 01, 2025</div><div class="type-meta">Caption · Apercu · 12px · weight 300 · ls 0.03em · #cccccc</div></div>
+</section>
+
+<div class="rule"></div>
+
+<section class="section">
+  <h2 class="section-title">Article</h2>
+  <div class="article">
+    <h2>Think and make.</h2>
+    <p>考えるだけではなく、作るだけでもなく。デッキの中に留まったアイデアは、まだ半分しかできていません。だから作って、出して、世界がそれをどう扱うかを見にいきます。</p>
+    <p class="en">Body (EN) — The gap between an idea and a thing is where most of the work lives. We keep both hands in it: strategy and production, concept and craft, in the same room.</p>
+    <p>和文は 15px・行間 2.0、欧文は 17px・行間 1.76。サイズは違っても行送りの実寸は 30px で揃えているので、和欧が混ざっても行のリズムは崩れません。<a href="#">All Works</a>。</p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="section">
+  <h2 class="section-title">Buttons</h2>
+  <p class="section-lead">ボタンは黒ベタの矩形ひとつだけ。border-radius は 0、影も無し。ホバーでブランドグラデーションに差し替える。タグは 1px solid #b4b4b4 の枠に 12px / letter-spacing 0.12em。</p>
+  <div class="btn-row">
+    <a class="btn" href="#">Watch Reel</a>
+    <a class="btn" href="#">Learn more</a>
+    <a class="btn" href="#">All Works</a>
+  </div>
+  <div class="card-tags" style="margin-top:32px">
+    <span class="tag">Branding</span>
+    <span class="tag">Web / App</span>
+    <span class="tag">Event / Installation</span>
+    <span class="tag">Film</span>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="section">
+  <h2 class="section-title">Cards</h2>
+  <p class="section-lead">Work のサムネイルが主役。画像も角丸にしない。作品名 28px / 700、説明 15px / 500、タグ 12px / 300 / ls 0.12em という並び。</p>
+  <div class="card-grid">
+    <div>
+      <div class="card-thumb grad" style="--a:var(--c-cyan);--b:var(--c-yellow)"></div>
+      <div class="card-name">everies</div>
+      <div class="card-desc">身の回りのモノと会話できる AR アプリ</div>
+      <div class="card-tags"><span class="tag">Web / App</span><span class="tag">Branding</span></div>
+      <div class="card-date">Oct 01, 2025</div>
+    </div>
+    <div>
+      <div class="card-thumb grad" style="--a:var(--c-purple);--b:var(--c-green)"></div>
+      <div class="card-name">Silent Cleaning</div>
+      <div class="card-desc">音を立てずに街をきれいにする、という提案</div>
+      <div class="card-tags"><span class="tag">Event / Installation</span></div>
+      <div class="card-date">Aug 08, 2025</div>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="section">
+  <h2 class="section-title">Forms</h2>
+  <p class="section-lead">デフォルト / フォーカス / エラーの3状態。radius 0、罫は #b4b4b4、フォーカスで純黒に。エラーはスペクトラムの #ff2300 を単色で使う。</p>
+  <div class="form">
+    <div class="field"><label>NAME</label><input type="text" placeholder="Taro Yamada"></div>
+    <div class="field"><label>EMAIL（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+    <div class="field field--error"><label>PHONE</label><input type="tel" value="03-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn" href="#" style="justify-self:start">Send</a>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="section">
+  <h2 class="section-title">Elevation</h2>
+  <p class="section-lead">Whatever のサイトには box-shadow が存在しない。奥行きは白地・黒面・グラデーション帯の 3 層で作る。ノイズテクスチャが唯一の「質感」で、影の代わりに平面へ厚みを与えている。</p>
+  <div class="elev-grid">
+    <div><div class="elev" style="border:1px solid var(--color-border)">Level 0</div><div class="elev-cap">none（既定にして唯一）</div></div>
+    <div><div class="elev" style="background:var(--color-ink);color:#fff">Ink</div><div class="elev-cap">#000000 のベタ面</div></div>
+    <div><div class="elev grad" style="--a:var(--c-red);--b:var(--c-orange);color:#fff">Gradient</div><div class="elev-cap">noise + in oklab のグラデーション帯</div></div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="section">
+  <h2 class="section-title">Layout</h2>
+  <p class="section-lead">rem 基準が 10px なので余白は 10 の倍数で刻む。max-width のコンテナは持たず、要素は全幅にブリードして左右 padding だけで寄せる。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:4px;height:4px"></div><div class="space-label">XS 4</div></div>
+    <div><div class="space-bar" style="width:10px;height:10px"></div><div class="space-label">S 10</div></div>
+    <div><div class="space-bar" style="width:20px;height:20px"></div><div class="space-label">M 20</div></div>
+    <div><div class="space-bar" style="width:40px;height:40px"></div><div class="space-label">L 40</div></div>
+    <div><div class="space-bar" style="width:80px;height:80px"></div><div class="space-label">XL 80</div></div>
+    <div><div class="space-bar" style="width:120px;height:120px"></div><div class="space-label">XXL 120</div></div>
+  </div>
+</section>
+
+<div class="band grad"></div>
+
+<footer>
+  <div class="flinks">
+    <a href="#">WORK</a>
+    <a href="#">NEWS</a>
+    <a href="#">ABOUT</a>
+    <a href="#">SHOP</a>
+    <a href="#">JA / EN / ZH</a>
+  </div>
+  <div class="fnote">Whatever ホワットエバー — Design System Preview　/　実測ベース 2026-08-09</div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 福光屋 FUKUMITSUYA</title>
+<!--
+  NOTE: 原典の和文はモリサワの Web フォント 2 系統。
+    明朝（見出し・情緒）= "Ryumin Light KL" / "Ryumin Regular KL"（リュウミン L-KL / R-KL）
+    ゴシック（UI・本文）= "Koburina Gothic W1 JIS2004" / "W3 JIS2004"（こぶりなゴシック）
+  いずれもライセンス Web フォントのため、ローカルの preview.html では表示できない。
+  ここでは Google Fonts の
+    明朝  → "Shippori Mincho"(400/500)
+    ゴシック → "Zen Kaku Gothic New"(300/400/500)
+  を代替に使用している。Zen Kaku Gothic New は【モリサワ提供の書体】で、
+  こぶりなゴシックと同じ提供元・近い字面設計のため印象が最も近い。
+  実装時は必ずモリサワ Web フォントを読み込むこと。
+
+  原典は font-weight を全要素 400 のまま置き、太さは W1 → W3 の
+  【ファミリー名切り替え】で作る（.c-gothic-bold）。プレビューでは
+  --font-gothic / --font-gothic-bold を分けて切り替え箇所を明示している。
+
+  letter-spacing を 0.05em（本文）→ 0.085〜0.1em（見出し）→ 0.2em（英字ラベル）と
+  段階的に開くのがこのサイトの組版の核心。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --color-bg: #ffffff;        /* ページ地色（純白） */
+    --color-sumi: #211c1c;      /* 基本テキスト＝焦茶。純黒ではない */
+    --color-crimson: #b71a35;   /* 深紅。唯一の彩度 */
+    --color-brown: #39302d;     /* 商品カテゴリ面 */
+    --color-btn: #3e3a39;       /* ソリッドボタン面 */
+    --color-gray-cta: #5e5d5c;  /* 弱い導線 */
+    --color-sub: #727171;       /* 補足文・アウトライン枠 */
+    --color-muted: #898989;     /* 英字ラベル専用 */
+    --color-border: #c9caca;    /* 区切り罫 */
+    --color-surface: #efefef;   /* SNS 帯などの薄い面 */
+    --color-scrim: rgba(33,28,28,0.6);
+    --color-error: #c8253c;     /* エラー（CTA の深紅と区別する） */
+
+    /* === Fonts === */
+    /* 原典: "Ryumin Light KL"（Shippori Mincho で代替） */
+    --font-serif: "Shippori Mincho", "ヒラギノ明朝 ProN", serif;
+    /* 原典: "Koburina Gothic W1 JIS2004"（Zen Kaku Gothic New で代替） */
+    --font-gothic: "Zen Kaku Gothic New", 游ゴシック体, "Yu Gothic", YuGothic, "ヒラギノ角ゴシック Pro", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, Osaka, sans-serif;
+    /* 原典: "Koburina Gothic W3 JIS2004"（.c-gothic-bold） */
+    --font-gothic-bold: "Zen Kaku Gothic New", 游ゴシック体, "Yu Gothic", YuGothic, "ヒラギノ角ゴシック Pro", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, Osaka, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-body: 14px;
+    --lh-body: 1.6;      /* 22.4px */
+    --lh-read: 2.0;      /* 読み物本文 28px */
+    --ls-body: 0.05em;   /* 0.7px */
+    --ls-head: 0.085em;  /* 見出し */
+    --ls-wide: 0.2em;    /* 英字ラベル・セクション見出し */
+
+    /* === Shape === */
+    --radius: 0px;       /* すべて 0。円 50% はページトップのみ */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-bg); color: var(--color-sumi);
+    font-family: var(--font-gothic);
+    font-size: var(--fs-body); font-weight: 400; line-height: var(--lh-body);
+    letter-spacing: var(--ls-body);
+    font-feature-settings: normal;   /* palt を使わない */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  /* 原典の切替クラス */
+  .c-serif { font-family: var(--font-serif); font-weight: 400; }
+  .c-gothic-bold { font-family: var(--font-gothic-bold); font-weight: 500; }  /* 原典は W3 への切替。font-weight は 400 */
+  .c-gothic-thin { font-family: var(--font-gothic); font-weight: 300; }
+
+  /* HEADER — 「通信販売」CTA はコンテナを飛び出して右端に接地する */
+  .header { position: relative; z-index: 100; display: flex; align-items: stretch; justify-content: space-between;
+    background: rgba(255,255,255,0.96); backdrop-filter: blur(6px); border-bottom: 1px solid var(--color-border); }
+  .header-left { display: flex; align-items: center; gap: 34px; padding: 0 20px 0 40px; }
+  .header-brand { font-family: var(--font-serif); font-size: 20px; letter-spacing: 0.1em; color: var(--color-sumi); text-decoration: none; }
+  .header-menu { display: flex; gap: 26px; align-items: center; }
+  .header-menu a { color: var(--color-sumi); text-decoration: none; font-size: 14px; letter-spacing: var(--ls-body); }
+  .header-menu a:hover { color: var(--color-crimson); }
+  .header-cta { display: flex; align-items: center; padding: 0 34px; background: var(--color-crimson); color: #fff;
+    text-decoration: none; font-size: 14px; letter-spacing: var(--ls-body); border-radius: var(--radius); }
+
+  /* HERO */
+  .hero { padding: 80px 40px 60px; }
+  .hero-inner { max-width: 1000px; margin: 0 auto; }
+  .hero-ja { font-family: var(--font-serif); font-size: 35px; line-height: 1.2; letter-spacing: 0.1em; }
+  .hero-en { font-family: var(--font-gothic); font-weight: 300; font-size: 12px; line-height: 1.6; letter-spacing: var(--ls-wide); color: var(--color-muted); margin-top: 14px; }
+  .hero-copy { font-size: 17px; line-height: var(--lh-body); letter-spacing: 0.041em; margin-top: 34px; max-width: 680px; }
+  .hero-cta { display: flex; gap: 15px; margin-top: 40px; flex-wrap: wrap; }
+
+  /* SECTIONS */
+  .section { padding: 60px 40px; max-width: 1000px; margin: 0 auto; }
+  /* 2 段見出し（和文明朝＋英字ゴシック）— サイトの定型 */
+  .sec-2 { margin-bottom: 40px; }
+  .sec-2 .ja { font-family: var(--font-serif); font-size: 33px; line-height: 1.6; letter-spacing: var(--ls-head); }
+  .sec-2 .en { font-family: var(--font-gothic); font-weight: 300; font-size: 12px; line-height: 1.6; letter-spacing: var(--ls-wide); color: var(--color-muted); }
+  /* 英字単独の見出し（直下に全幅の細罫） */
+  .sec-en { font-size: 20px; line-height: 1.6; letter-spacing: var(--ls-wide); padding-bottom: 14px; border-bottom: 1px solid var(--color-border); margin-bottom: 34px; }
+  .sec-lead { font-size: 14px; line-height: var(--lh-read); letter-spacing: var(--ls-body); max-width: 680px; margin-bottom: 40px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(186px,1fr)); gap: 20px; }
+  .swatch { border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; background: #fff; }
+  .swatch-block { height: 92px; }
+  .swatch-info { padding: 15px; }
+  .swatch-name { font-family: var(--font-gothic-bold); font-weight: 500; font-size: 13px; letter-spacing: 0.054em; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--color-sub); margin-top: 4px; letter-spacing: 0; }
+  .swatch-role { font-size: 12px; color: var(--color-sub); margin-top: 8px; line-height: 1.6; letter-spacing: 0; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 26px 0; border-bottom: 1px solid var(--color-border); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-crimson); margin-top: 12px; letter-spacing: 0; }
+
+  /* ARTICLE */
+  .article { max-width: 680px; }
+  .article h2 { font-family: var(--font-serif); font-size: 33px; line-height: 1.6; letter-spacing: var(--ls-head); margin-bottom: 20px; }
+  .article h3 { font-family: var(--font-serif); font-size: 18px; line-height: 1.6; letter-spacing: 0.039em; margin: 34px 0 12px; }
+  .article p { font-size: 14px; line-height: var(--lh-read); letter-spacing: var(--ls-body); margin-bottom: 22px; }
+  .article a { color: var(--color-crimson); text-decoration: none; border-bottom: 1px solid var(--color-crimson); }
+  .article .attention { font-size: 11px; line-height: 1.6; letter-spacing: 0.064em; color: var(--color-sumi); }
+
+  /* BUTTONS — すべて radius 0 */
+  .btn-row { display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--font-gothic); font-size: 14px; font-weight: 400; letter-spacing: var(--ls-body);
+    text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+    border: none; border-radius: var(--radius); transition: opacity .15s ease; }
+  .btn:hover { opacity: .82; }
+  .btn-primary { background: var(--color-crimson); color: #fff; padding: 14px 24px; }
+  .btn-dark { background: var(--color-btn); color: #fff; padding: 14px 24px; }
+  .btn-gray { font-family: var(--font-gothic-bold); font-weight: 500; background: var(--color-gray-cta); color: #fff; padding: 15px 24px; }
+  .btn-outline { font-family: var(--font-gothic-bold); font-weight: 500; background: transparent; color: var(--color-sumi);
+    border: 1px solid var(--color-sub); padding: 10px 24px; min-width: 380px; font-size: 15px; letter-spacing: 0.1em; position: relative; justify-content: center; }
+  .btn-outline::before { content: "›"; position: absolute; left: 20px; font-size: 16px; }
+  .badge { display: inline-flex; align-items: center; justify-content: center; width: 130px; padding: 6px 0;
+    background: var(--color-crimson); color: #fff; font-size: 11px; letter-spacing: 0.064em; border-radius: var(--radius); }
+  .btn-top { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--color-sub); background: #fff;
+    display: inline-flex; align-items: center; justify-content: center; color: var(--color-sumi); text-decoration: none; }
+
+  /* NEWS LIST */
+  .news-row { display: grid; grid-template-columns: 160px 1fr 130px; align-items: center; gap: 20px;
+    padding: 22px 0; border-bottom: 1px solid var(--color-border); }
+  .news-date { font-size: 14px; letter-spacing: var(--ls-body); }
+  .news-title { font-size: 15px; line-height: 1.6; letter-spacing: 0.047em; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 20px; }
+  .card { background: #fff; border-radius: var(--radius); }
+  .card-thumb { height: 150px; border-radius: var(--radius); position: relative; display: flex; align-items: center; justify-content: center; }
+  .card-thumb .scrim { position: absolute; inset: 0; background: var(--color-scrim); display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 14px; letter-spacing: var(--ls-body); opacity: 0; transition: opacity .2s ease; }
+  .card:hover .scrim { opacity: 1; }
+  .card-name { font-size: 14px; line-height: 1.4; letter-spacing: var(--ls-body); margin-top: 14px; }
+  .card-desc { font-size: 12px; line-height: 1.6; letter-spacing: 0; color: var(--color-sub); margin-top: 8px; }
+
+  /* FORMS */
+  .form { max-width: 460px; display: grid; gap: 24px; }
+  .field label { display: block; font-family: var(--font-gothic-bold); font-weight: 500; font-size: 13px; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .field input { width: 100%; background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius); padding: 12px 14px;
+    font-family: var(--font-gothic); font-size: 14px; color: var(--color-sumi); letter-spacing: var(--ls-body); }
+  .field input::placeholder { color: var(--color-muted); }
+  .field input:focus { outline: none; border-color: var(--color-crimson); }
+  .field--error input { border-color: var(--color-error); }
+  .field--error .msg { font-size: 12px; color: var(--color-error); margin-top: 6px; letter-spacing: var(--ls-body); }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 40px; }
+  .elev { background: #fff; border-radius: var(--radius); padding: 28px; text-align: center; font-size: 14px; letter-spacing: var(--ls-body); }
+  .elev--0 { box-shadow: none; border: 1px solid var(--color-border); }
+  .elev--1 { box-shadow: 0 0 50px 5px rgba(0,0,0,.1); }
+  .elev--2 { box-shadow: 0 25px 50px 5px rgba(0,0,0,.1); }
+  .elev-cap { font-family: var(--font-mono); font-size: 11px; color: var(--color-sub); margin-top: 14px; letter-spacing: 0; text-align: center; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-crimson); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: var(--color-sub); margin-top: 8px; text-align: center; letter-spacing: 0; }
+
+  /* CATEGORY BAND */
+  .cat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; }
+  .cat { background: var(--color-brown); color: #fff; padding: 40px 20px; text-align: center; }
+  .cat .c-serif { font-size: 20px; line-height: 1.6; letter-spacing: 0.035em; }
+  .cat .en { font-size: 11px; letter-spacing: var(--ls-wide); color: rgba(255,255,255,.7); margin-top: 8px; }
+
+  footer { background: #fff; border-top: 1px solid var(--color-border); padding: 50px 40px 30px; }
+  footer .finner { max-width: 1000px; margin: 0 auto; }
+  footer .flinks { display: flex; gap: 26px; flex-wrap: wrap; margin-bottom: 24px; }
+  footer .flinks a { color: var(--color-sumi); text-decoration: none; font-size: 13px; letter-spacing: var(--ls-body); }
+  footer .faddr { font-size: 13px; line-height: 1.6; letter-spacing: var(--ls-body); }
+  footer .fnote { font-size: 11px; line-height: 1.6; letter-spacing: 0.064em; color: var(--color-sub); margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <a class="header-brand" href="#">福光屋</a>
+    <nav class="header-menu">
+      <a href="#">商品情報</a>
+      <a href="#">福光屋の酒造り</a>
+      <a href="#">直営店</a>
+      <a href="#">お知らせ</a>
+      <a href="#">会社概要</a>
+    </nav>
+  </div>
+  <a class="header-cta" href="#">通信販売</a>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-ja c-serif">寛永二年、金沢。</div>
+    <div class="hero-en">FUKUMITSUYA SINCE 1625</div>
+    <p class="hero-copy">石川県で最も古い酒蔵として、四百年にわたり米と水だけで酒を醸してきました。全量純米蔵として、伝統の技を今日に進化させています。</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#">公式通販</a>
+      <a class="btn btn-dark" href="#">もっと詳しく</a>
+      <a class="btn btn-gray" href="#">酒蔵見学のご案内</a>
+    </div>
+  </div>
+</section>
+
+<div class="cat-grid">
+  <div class="cat"><div class="c-serif">酒</div><div class="en">SAKE</div></div>
+  <div class="cat"><div class="c-serif">食品</div><div class="en">FOODS</div></div>
+  <div class="cat"><div class="c-serif">化粧品</div><div class="en">COSMETICS</div></div>
+</div>
+
+<section class="section">
+  <div class="sec-2">
+    <div class="ja c-serif">色</div>
+    <div class="en">COLOR PALETTE</div>
+  </div>
+  <p class="sec-lead">地は純白 #ffffff、テキストは焦茶 #211c1c（純黒は使わない）。彩度を持つのは深紅 #b71a35 のみで、バッジと通販導線にだけ現れる。それ以外は焦茶からグレーへ連なる低彩度の階調で、区切りは面ではなく細い罫 #c9caca で引く。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-crimson)"></div><div class="swatch-info"><div class="swatch-name">Crimson</div><div class="swatch-hex">#b71a35</div><div class="swatch-role">唯一の彩度。バッジ・通販 CTA</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-sumi)"></div><div class="swatch-info"><div class="swatch-name">Sumi</div><div class="swatch-hex">#211c1c</div><div class="swatch-role">基本テキスト（焦茶）／フッター CTA</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-brown)"></div><div class="swatch-info"><div class="swatch-name">Dark Brown</div><div class="swatch-hex">#39302d</div><div class="swatch-role">商品カテゴリ面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-btn)"></div><div class="swatch-info"><div class="swatch-name">Button Dark</div><div class="swatch-hex">#3e3a39</div><div class="swatch-role">ソリッドボタン面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-gray-cta)"></div><div class="swatch-info"><div class="swatch-name">Gray CTA</div><div class="swatch-hex">#5e5d5c</div><div class="swatch-role">弱い導線（蔵見学・GLOBAL SITE）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-sub)"></div><div class="swatch-info"><div class="swatch-name">Sub Text</div><div class="swatch-hex">#727171</div><div class="swatch-role">補足文・アウトライン枠</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-muted)"></div><div class="swatch-info"><div class="swatch-name">Muted</div><div class="swatch-hex">#898989</div><div class="swatch-role">英字ラベル専用</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-border)"></div><div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-hex">#c9caca</div><div class="swatch-role">区切り罫</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-surface)"></div><div class="swatch-info"><div class="swatch-name">Surface</div><div class="swatch-hex">#efefef</div><div class="swatch-role">SNS 帯などの薄い面</div></div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-2">
+    <div class="ja c-serif">文字</div>
+    <div class="en">TYPOGRAPHY</div>
+  </div>
+  <p class="sec-lead">和文はリュウミン（見出し・情緒）とこぶりなゴシック（UI・本文）の 2 系統。太さは font-weight ではなく W1 → W3 のファミリー切り替えで作り、font-weight は全要素 400 のまま。字間を本文 0.05em → 見出し 0.085〜0.1em → 英字 0.2em と段階的に開くのが組版の核心。</p>
+  <div class="type-sample"><div class="c-serif" style="font-size:35px;line-height:1.2;letter-spacing:.1em">福光屋の酒造り</div><div class="type-meta">Page Title · リュウミン L-KL · 35px · weight 400 · lh 1.2 · ls 0.1em</div></div>
+  <div class="type-sample"><div class="c-serif" style="font-size:33px;line-height:1.6;letter-spacing:.021em">福光屋の酒</div><div class="type-meta">Section Title (JP) · リュウミン L-KL · 33px · weight 400 · lh 1.6 · ls 0.021em</div></div>
+  <div class="type-sample"><div class="c-gothic-thin" style="font-size:12px;line-height:1.6;letter-spacing:.2em;color:var(--color-muted)">FUKUMITSUYA’S SAKE</div><div class="type-meta">Section Label (EN) · こぶりな W1 · 12px · weight 400 · <strong>ls 0.2em</strong> · #898989</div></div>
+  <div class="type-sample"><div style="font-size:20px;line-height:1.6;letter-spacing:.2em">INFORMATION</div><div class="type-meta">Section Head (EN) · こぶりな W1 · 20px · weight 400 · <strong>ls 0.2em</strong>（直下に 1px 罫）</div></div>
+  <div class="type-sample"><div class="c-serif" style="font-size:20px;line-height:1.6;letter-spacing:.035em">酒／食品／化粧品</div><div class="type-meta">Category Title · リュウミン L-KL · 20px · weight 400 · lh 1.6 · ls 0.035em</div></div>
+  <div class="type-sample"><div class="c-serif" style="font-size:18px;line-height:1.6;letter-spacing:.039em">米と水だけで醸すということ</div><div class="type-meta">Heading 3 (Serif) · リュウミン L-KL · 18px · weight 400 · lh 1.6 · ls 0.039em</div></div>
+  <div class="type-sample"><div style="font-size:17px;line-height:1.6;letter-spacing:.041em">伝統の技を進化させ、種類豊富な銘柄を揃えています。</div><div class="type-meta">Lead / Copy · こぶりな W1 · 17px · weight 400 · lh 1.6 · ls 0.041em</div></div>
+  <div class="type-sample"><div class="c-gothic-bold" style="font-size:16px;line-height:1.6;letter-spacing:.044em">全量純米蔵として</div><div class="type-meta">Sub Head · こぶりな <strong>W3</strong> · 16px · weight 400 · lh 1.6 · ls 0.044em（.c-gothic-bold）</div></div>
+  <div class="type-sample"><div style="font-size:15px;line-height:1.6;letter-spacing:.047em">企画展『黒帯五十年　～廣島晴弥～』</div><div class="type-meta">List Item · こぶりな W1 · 15px · weight 400 · lh 1.6 · ls 0.047em</div></div>
+  <div class="type-sample"><div style="font-size:14px;line-height:1.6;letter-spacing:.05em">本文（既定）— 酒米や造りによる多様な味わい、デザインの異なる銘柄を取り揃えています。</div><div class="type-meta">Body · こぶりな W1 · 14px · weight 400 · lh 1.6 · ls 0.05em</div></div>
+  <div class="type-sample"><div style="font-size:14px;line-height:2.0;letter-spacing:.05em">読み物本文 — 福光屋の酒は、酒米と、犀川の伏流水と、蔵に棲む微生物によってつくられます。醸造アルコールを加えず、米だけで醸す。四百年のあいだ変わらなかったのは、その一点でした。</div><div class="type-meta">Body (Article) · こぶりな W1 · 14px · weight 400 · <strong>lh 2.0</strong> · ls 0.05em</div></div>
+  <div class="type-sample"><div style="font-size:14px;line-height:1.6;letter-spacing:.2em">蔵元見学</div><div class="type-meta">Body (wide) · こぶりな W1 · 14px · <strong>ls 0.2em</strong>（写真上のラベル）</div></div>
+  <div class="type-sample"><div style="font-size:12px;line-height:1.6;letter-spacing:0;color:var(--color-sub)">キャプション — 福光屋の日本酒を身近に体験いただける各種コースを開催しています。</div><div class="type-meta">Caption · こぶりな W1 · 12px · weight 400 · lh 1.6 · ls normal · #727171</div></div>
+  <div class="type-sample"><div style="font-size:11px;line-height:1.6;letter-spacing:.064em">お酒は20歳になってから。飲酒運転は絶対にやめましょう。</div><div class="type-meta">Attention · こぶりな W1 · 11px · weight 400 · lh 1.6 · ls 0.064em</div></div>
+</section>
+
+<section class="section">
+  <div class="sec-2">
+    <div class="ja c-serif">組版</div>
+    <div class="en">ARTICLE</div>
+  </div>
+  <div class="article">
+    <h2>米と水だけで、醸す。</h2>
+    <p>福光屋は寛永二年、金沢の地に創業しました。石川県で最も古い酒蔵として、四百年にわたり酒を醸し続けています。</p>
+    <h3>全量純米蔵という選択</h3>
+    <p>二〇〇一年、福光屋はすべての酒を純米酒とすることを決めました。醸造アルコールを加えず、米と水と麹だけで醸す。手間も時間もかかりますが、米の味がそのまま酒の味になります。</p>
+    <p>読み物本文の行間は 2.0、UI の本文は 1.6。字間はどちらも 0.05em。見出しでは 0.085em まで、英字ラベルでは 0.2em まで開きます。<a href="#">福光屋の酒造りを見る</a>。</p>
+    <p class="attention">※ お酒は20歳になってから。飲酒運転は絶対にやめましょう。妊娠中や授乳期の飲酒は、胎児・乳児の発育に悪影響を与えるおそれがあります。</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-en">INFORMATION</div>
+  <div class="news-row"><div class="news-date">2026年7月21日</div><div class="news-title">企画展『黒帯五十年　～廣島晴弥～』</div><span class="badge">NEWS</span></div>
+  <div class="news-row"><div class="news-date">2026年7月7日</div><div class="news-title">当社社員を装ったSNSでの勧誘にご注意ください</div><span class="badge">NEWS</span></div>
+  <div class="news-row"><div class="news-date">2026年6月9日</div><div class="news-title">「優等賞 加賀鳶 純米大吟醸46 百万石乃白」新発売のお知らせ</div><span class="badge">PRESS RELEASE</span></div>
+  <div style="display:flex;justify-content:center;margin-top:40px"><a class="btn btn-outline" href="#">一覧をみる</a></div>
+</section>
+
+<section class="section">
+  <div class="sec-2">
+    <div class="ja c-serif">ボタン</div>
+    <div class="en">BUTTONS</div>
+  </div>
+  <p class="sec-lead">すべて radius 0 の矩形。深紅は通販・購入の導線に限定し、一般の遷移は #3e3a39、弱い導線は #5e5d5c。アウトラインは 1px solid #727171 に左シェブロン。円が許されるのはページトップボタンだけ。</p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">公式通販</a>
+    <a class="btn btn-dark" href="#">もっと詳しく</a>
+    <a class="btn btn-dark" href="#">店舗一覧</a>
+    <a class="btn btn-gray" href="#">GLOBAL SITE</a>
+    <span class="badge">NEWS</span>
+    <span class="badge">PRESS RELEASE</span>
+    <a class="btn-top" href="#">↑</a>
+  </div>
+  <div class="btn-row" style="margin-top:20px">
+    <a class="btn btn-outline" href="#">直営店 一覧</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-en">TOPICS</div>
+  <div class="card-grid">
+    <div class="card"><div class="card-thumb" style="background:var(--color-brown)"><div class="scrim">もっと詳しく</div></div><div class="card-name">黒帯</div><div class="card-desc">燗にして旨い、食中酒としての純米酒。</div></div>
+    <div class="card"><div class="card-thumb" style="background:var(--color-gray-cta)"><div class="scrim">もっと詳しく</div></div><div class="card-name">加賀鳶</div><div class="card-desc">キレのある辛口。加賀鳶の名を冠した銘柄。</div></div>
+    <div class="card"><div class="card-thumb" style="background:var(--color-sub)"><div class="scrim">もっと詳しく</div></div><div class="card-name">福正宗</div><div class="card-desc">金沢の食卓に寄り添う、日常の一本。</div></div>
+    <div class="card"><div class="card-thumb" style="background:var(--color-crimson)"><div class="scrim">もっと詳しく</div></div><div class="card-name">酒蔵見学</div><div class="card-desc">福光屋の日本酒を身近に体験いただける各種コース。</div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-2">
+    <div class="ja c-serif">入力</div>
+    <div class="en">FORMS</div>
+  </div>
+  <p class="sec-lead">デフォルト / フォーカス / エラーの3状態。radius 0、罫は #c9caca、フォーカスは深紅 #b71a35。エラーは明度を上げた赤 #c8253c にして CTA の深紅と区別する。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="山田 太郎"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="076-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn btn-dark" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-2">
+    <div class="ja c-serif">奥行き</div>
+    <div class="en">ELEVATION</div>
+  </div>
+  <p class="sec-lead">影は 2 種類だけ。いずれもぼかし半径 50px の「広く薄いぼかし」で、濃い落ち影は作らない。奥行きは主に白地と焦茶の面、そして細い罫のコントラストで表現する。</p>
+  <div class="elev-grid">
+    <div><div class="elev elev--0">Level 0</div><div class="elev-cap">none（既定）</div></div>
+    <div><div class="elev elev--1">Level 1</div><div class="elev-cap">0 0 50px 5px rgba(0,0,0,.1)</div></div>
+    <div><div class="elev elev--2">Level 2</div><div class="elev-cap">0 25px 50px 5px rgba(0,0,0,.1)</div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-2">
+    <div class="ja c-serif">余白</div>
+    <div class="en">LAYOUT</div>
+  </div>
+  <p class="sec-lead">6 / 10 / 15 / 20 / 40 / 60 / 100px。コンテナは最大 1000px、読み物カラムは 680px。ヘッダーの通販 CTA だけはコンテナを飛び出して右端に接地する。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:6px;height:6px"></div><div class="space-label">XS 6</div></div>
+    <div><div class="space-bar" style="width:10px;height:10px"></div><div class="space-label">S 10</div></div>
+    <div><div class="space-bar" style="width:15px;height:15px"></div><div class="space-label">M 15</div></div>
+    <div><div class="space-bar" style="width:20px;height:20px"></div><div class="space-label">L 20</div></div>
+    <div><div class="space-bar" style="width:40px;height:40px"></div><div class="space-label">XL 40</div></div>
+    <div><div class="space-bar" style="width:60px;height:60px"></div><div class="space-label">XXL 60</div></div>
+    <div><div class="space-bar" style="width:100px;height:100px"></div><div class="space-label">XXXL 100</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="finner">
+    <div class="flinks">
+      <a href="#">商品情報</a>
+      <a href="#">福光屋の酒造り</a>
+      <a href="#">直営店</a>
+      <a href="#">お知らせ</a>
+      <a href="#">採用情報</a>
+      <a href="#">会社概要</a>
+      <a href="#">お問い合わせ</a>
+    </div>
+    <p class="faddr">〒920-8638　石川県金沢市石引二丁目8番3号</p>
+    <div class="fnote">福光屋 FUKUMITSUYA — Design System Preview　/　実測ベース 2026-08-09</div>
+  </div>
+</footer>
+
+</body>
+</html>

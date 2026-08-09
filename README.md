@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (438 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (441 sites)</a>
 </p>
 
 <table>
@@ -659,6 +659,11 @@
 <td align="center"><strong>麻布台ヒルズ</strong><br><img src="design-md/azabudai-hills/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>印傳屋</strong><br><img src="design-md/inden-ya/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>ANDPAD</strong><br><img src="design-md/andpad/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Whatever</strong><br><img src="design-md/whatever/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>福光屋</strong><br><img src="design-md/fukumitsuya/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1157,11 +1162,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [Loglass (ログラス)](https://www.loglass.jp/) | SaaS / Corporate Performance Management | [DESIGN.md](design-md/loglass/DESIGN.md) | [preview.html](design-md/loglass/preview.html) |
 | [AZABUDAI HILLS (麻布台ヒルズ)](https://www.azabudai-hills.com/) | Urban Development / Mixed-use Complex | [DESIGN.md](design-md/azabudai-hills/DESIGN.md) | [preview.html](design-md/azabudai-hills/preview.html) |
 | [INDEN-YA (印傳屋 上原勇七)](https://www.inden-ya.co.jp/) | Traditional Craft / Leather Goods | [DESIGN.md](design-md/inden-ya/DESIGN.md) | [preview.html](design-md/inden-ya/preview.html) |
+| [ANDPAD (アンドパッド)](https://andpad.co.jp/) | SaaS / Construction Management | [DESIGN.md](design-md/andpad/DESIGN.md) | [preview.html](design-md/andpad/preview.html) |
+| [Whatever (ホワットエバー)](https://whatever.co/ja/) | Creative Studio | [DESIGN.md](design-md/whatever/DESIGN.md) | [preview.html](design-md/whatever/preview.html) |
+| [FUKUMITSUYA (福光屋)](https://www.fukumitsuya.co.jp/) | Sake Brewery / Since 1625 | [DESIGN.md](design-md/fukumitsuya/DESIGN.md) | [preview.html](design-md/fukumitsuya/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (438 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (441 sites)</a>
 </p>
 
 <table>
@@ -1785,6 +1793,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>ログラス</strong><br><img src="design-md/loglass/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>麻布台ヒルズ</strong><br><img src="design-md/azabudai-hills/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>印傳屋</strong><br><img src="design-md/inden-ya/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>ANDPAD</strong><br><img src="design-md/andpad/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Whatever</strong><br><img src="design-md/whatever/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>福光屋</strong><br><img src="design-md/fukumitsuya/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
