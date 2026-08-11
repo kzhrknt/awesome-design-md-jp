@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 丸山珈琲 MARUYAMA COFFEE</title>
+<!--
+  NOTE: 原典の書体は 2 系統とも Google Fonts で提供されているため、
+  このプレビューは【実サイトと同じ書体】で表示される（代替なし）。
+    和文 = "Noto Sans JP"（400 / 500 / 600 / 700）
+    欧文ラベル = "Roboto"（600 / 700）
+
+  このサイトの組版の核心は 3 つ:
+    (1) ブランド色が純黒 #000000 ではなく #231815。
+        日本の DTP でスミベタに使われる標準値そのもの（＝印刷のインクの黒）。
+    (2) 字間は letter-spacing で開かず、font-feature-settings: "palt" で【詰めて】作る。
+        和文の letter-spacing は原則 normal。欧文（Roboto）だけ 0.1〜0.12em に開く。
+    (3) 行間で階層を作る。見出し 1.4〜1.5 → 本文 2.0 → リード文 2.5。
+        そしてサイズと太さが【反比例】する（40px の見出しは weight 400、
+        11px のラベルは weight 700）。
+
+  CTA は border-radius: 16000px の完全ピル ＋ 3px solid #231815。
+  面と枠が同色で、輪郭の太さだけで存在感を作る。
+  box-shadow は実測 0 件。厚みは 3px の枠だけで作る。
+
+  なおオンラインストア側は別系統（Helvetica 先頭 / palt なし / lh 1.0〜1.4）。
+  焙煎度バッジ #4e4e4e（radius 4px）とフレーバータグ #fcf6e9 はストア側の要素。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --color-bg: #ffffff;        /* ページ地色（純白） */
+    --color-ink: #231815;       /* ブランド色＝インクの黒。純黒ではない */
+    --color-cream: #fcf6e9;     /* フレーバータグの面。唯一の暖色面 */
+    --color-surface: #f7f6f4;   /* 導線ブロックの面（わずかに暖かい白） */
+    --color-roast: #4e4e4e;     /* 焙煎度バッジ */
+    --color-gray: #808080;      /* 補足・非活性 */
+    --color-surface2: #eeeeee;  /* お知らせ一覧の行 */
+    --color-surface3: #f1f1f1;  /* カテゴリ一覧セクション */
+    --color-dark: #262626;      /* 暗いパネル */
+    --color-border: #dddddd;    /* 入力の罫 */
+    --color-outline-dark: rgba(255,255,255,0.8);
+    --color-error: #a83b32;     /* エラー（低彩度の赤） */
+
+    /* === Fonts === */
+    --font-jp: "Noto Sans JP", "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    --font-en: Roboto, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-body: 14px;
+    --lh-body: 2.0;     /* 28px。本文の基準 */
+    --lh-lead: 2.5;     /* 50px。サイトで最も開く行間 */
+    --lh-head: 1.5;     /* 見出しは締める */
+    --ls-body: normal;  /* 字間は palt に任せる */
+    --ls-en: 0.12em;    /* Roboto の欧文ラベル */
+    --ls-badge: 0.1em;  /* 欧文バッジ */
+
+    /* === Shape === */
+    --radius-pill: 16000px;  /* 完全なピル */
+    --radius-sm: 4px;        /* バッジ・入力 */
+    --radius: 0px;           /* それ以外 */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-bg); color: var(--color-ink);
+    font-family: var(--font-jp);
+    font-size: var(--fs-body); font-weight: 400; line-height: var(--lh-body);
+    letter-spacing: var(--ls-body);
+    font-feature-settings: "palt";   /* 全体に掛ける */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  .en { font-family: var(--font-en); font-weight: 600; letter-spacing: var(--ls-en); }
+
+  /* HEADER — 右端の「オンラインストア」だけが高さいっぱいの黒ブロック */
+  .header { display: flex; align-items: stretch; justify-content: space-between; border-bottom: 1px solid var(--color-surface2); }
+  .header-left { display: flex; align-items: center; gap: 40px; padding: 18px 24px 18px 32px; }
+  .header-brand { text-decoration: none; color: var(--color-ink); font-size: 13px; font-weight: 700; line-height: 1.4; letter-spacing: .08em; }
+  .header-nav { display: flex; gap: 30px; align-items: center; }
+  .header-nav a { color: var(--color-ink); text-decoration: none; font-size: 15px; font-weight: 500; line-height: var(--lh-body); }
+  .header-nav a:hover { opacity: .6; }
+  .header-right { display: flex; align-items: stretch; gap: 16px; }
+  .header-util { display: flex; align-items: center; gap: 18px; }
+  .header-util a { color: var(--color-ink); text-decoration: none; font-size: 13px; font-weight: 700; line-height: 1.67; }
+  /* 言語トグル（ピル） */
+  .lang { display: inline-flex; align-items: center; background: var(--color-ink); border-radius: 1000px; padding: 3px; align-self: center; }
+  .lang span, .lang a { font-family: var(--font-en); font-size: 13px; font-weight: 700; text-decoration: none; padding: 4px 14px; border-radius: 1000px; }
+  .lang .on { background: #fff; color: var(--color-ink); }
+  .lang .off { color: #fff; }
+  .header-store { display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: var(--color-ink); color: #fff; text-decoration: none; padding: 0 22px;
+    font-size: 11px; font-weight: 600; line-height: 1.3; border-radius: var(--radius); }
+
+  /* HERO */
+  .hero { position: relative; background: var(--color-ink); color: #fff; padding: 120px 40px; text-align: center; }
+  .hero-copy { font-size: 30px; font-weight: 400; line-height: var(--lh-head); letter-spacing: .05em; }
+  .hero-brand { font-family: var(--font-en); font-size: 14px; font-weight: 600; letter-spacing: var(--ls-en); margin-top: 24px; opacity: .85; }
+  .hero-pick { position: absolute; right: 40px; bottom: 40px; display: flex; align-items: center; gap: 16px;
+    background: var(--color-ink); border: 1px solid rgba(255,255,255,.3); padding: 18px 24px; max-width: 460px; text-align: left; }
+  .hero-pick .tag { font-family: var(--font-en); font-size: 11px; font-weight: 700; letter-spacing: var(--ls-badge); white-space: nowrap; }
+  .hero-pick .txt { font-size: 12px; line-height: var(--lh-body); }
+
+  /* SECTIONS */
+  .section { padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+  .section--surface { background: var(--color-surface); max-width: none; }
+  .section--surface .inner { max-width: 1200px; margin: 0 auto; }
+  .sec-head { margin-bottom: 40px; }
+  .sec-head .label { font-family: var(--font-en); font-size: 14px; font-weight: 600; letter-spacing: var(--ls-en); }
+  .sec-head .ja { font-size: 40px; font-weight: 400; line-height: var(--lh-head); margin-top: 10px; }
+  .sec-lead { font-size: 14px; line-height: var(--lh-body); max-width: 720px; margin-bottom: 40px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px,1fr)); gap: 20px; }
+  .swatch { border: 1px solid var(--color-surface2); border-radius: var(--radius); overflow: hidden; background: #fff; }
+  .swatch-block { height: 92px; }
+  .swatch-info { padding: 16px; }
+  .swatch-name { font-size: 14px; font-weight: 500; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--color-gray); margin-top: 4px; }
+  .swatch-role { font-size: 12px; color: var(--color-gray); margin-top: 8px; line-height: 1.7; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 26px 0; border-bottom: 1px solid var(--color-surface2); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-gray); margin-top: 12px; }
+
+  /* ARTICLE */
+  .article { max-width: 720px; }
+  .article h2 { font-size: 40px; font-weight: 400; line-height: var(--lh-head); margin-bottom: 24px; }
+  .article .lead { font-size: 20px; font-weight: 400; line-height: var(--lh-lead); letter-spacing: .05em; margin-bottom: 32px; }
+  .article h3 { font-size: 20px; font-weight: 400; line-height: 1.4; margin: 40px 0 14px; }
+  .article p { font-size: 14px; line-height: var(--lh-body); margin-bottom: 24px; }
+  .article a { color: var(--color-ink); text-decoration: none; border-bottom: 1px solid var(--color-ink); }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--font-jp); text-decoration: none; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; transition: background .18s ease, color .18s ease; }
+  /* Primary: 完全ピル ＋ 3px の太い枠。面と枠が同色 */
+  .btn-primary { background: var(--color-ink); color: #fff; border: 3px solid var(--color-ink);
+    border-radius: var(--radius-pill); font-size: 15px; font-weight: 500; padding: 14px 44px; }
+  .btn-primary:hover { background: #fff; color: var(--color-ink); }   /* 面を抜くと枠だけが残る */
+  /* 暗い面の上では矩形アウトラインに切り替わる */
+  .btn-outline-dark { background: transparent; color: #fff; border: 1px solid var(--color-outline-dark);
+    border-radius: var(--radius); font-size: 14px; font-weight: 400; padding: 13px 28px; }
+  .btn-outline-dark:hover { background: rgba(255,255,255,.12); }
+  .badge-roast { display: inline-flex; align-items: center; background: var(--color-roast); color: #fff;
+    font-size: 13px; padding: 2px 6px 1px; border-radius: var(--radius-sm); }
+  .badge-flavor { display: inline-flex; align-items: center; background: var(--color-cream); color: var(--color-ink);
+    font-size: 13px; padding: 3px 10px; border-radius: var(--radius); }
+  .badge-pick { display: inline-flex; align-items: center; background: var(--color-ink); color: #fff;
+    font-family: var(--font-en); font-size: 11px; font-weight: 700; letter-spacing: var(--ls-badge);
+    padding: 5px 12px; border-radius: var(--radius); }
+
+  /* PRODUCT CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 40px; }
+  .card-thumb { height: 200px; border-radius: var(--radius); }
+  .card-badges { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .card-name { font-size: 15px; font-weight: 500; line-height: var(--lh-body); margin-top: 12px; }
+  .card-price { font-size: 12px; line-height: var(--lh-body); color: var(--color-gray); margin-top: 4px; }
+
+  /* NEWS */
+  .news-row { display: grid; grid-template-columns: 130px 1fr; gap: 24px; align-items: baseline;
+    padding: 22px 0; border-bottom: 1px solid var(--color-surface2); }
+  .news-date { font-size: 12px; color: var(--color-gray); }
+  .news-title { font-size: 14px; font-weight: 500; line-height: var(--lh-body); }
+
+  /* DARK PANEL */
+  .panel { background: var(--color-dark); color: #fff; padding: 80px 40px; text-align: center; }
+  .panel .label { font-family: var(--font-en); font-size: 14px; font-weight: 600; letter-spacing: var(--ls-en); }
+  .panel .ja { font-size: 40px; font-weight: 400; line-height: var(--lh-head); margin: 12px 0 32px; }
+
+  /* FORMS */
+  .form { max-width: 460px; display: grid; gap: 24px; }
+  .field label { display: block; font-size: 12px; font-weight: 500; margin-bottom: 8px; }
+  .field input { width: 100%; background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 12px 14px;
+    font-family: var(--font-jp); font-size: 14px; line-height: var(--lh-body); color: var(--color-ink); font-feature-settings: "palt"; }
+  .field input::placeholder { color: var(--color-gray); }
+  .field input:focus { outline: none; border-color: var(--color-ink); }
+  .field--error input { border-color: var(--color-error); }
+  .field--error .msg { font-size: 12px; color: var(--color-error); margin-top: 6px; }
+
+  /* ELEVATION — 実測 0 件。面の 3 段と 3px の枠だけ */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 24px; }
+  .elev { border-radius: var(--radius); padding: 34px; text-align: center; font-size: 14px; }
+  .elev--white { background: #fff; border: 1px solid var(--color-surface2); }
+  .elev--warm { background: var(--color-surface); }
+  .elev--dark { background: var(--color-dark); color: #fff; }
+  .elev--ring { background: #fff; border: 3px solid var(--color-ink); border-radius: var(--radius-pill); }
+  .elev-cap { font-family: var(--font-mono); font-size: 11px; color: var(--color-gray); margin-top: 14px; text-align: center; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-ink); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: var(--color-gray); margin-top: 8px; text-align: center; }
+
+  footer { border-top: 1px solid var(--color-surface2); padding: 50px 40px 30px; }
+  footer .finner { max-width: 1200px; margin: 0 auto; }
+  footer .flinks { display: flex; gap: 26px; flex-wrap: wrap; margin-bottom: 24px; }
+  footer .flinks a { color: var(--color-ink); text-decoration: none; font-size: 13px; font-weight: 500; line-height: var(--lh-body); letter-spacing: -0.025em; }
+  footer .faddr { font-size: 13px; line-height: var(--lh-body); }
+  footer .fnote { font-size: 12px; line-height: var(--lh-body); color: var(--color-gray); margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <a class="header-brand" href="#">MARUYAMA<br>COFFEE</a>
+    <nav class="header-nav">
+      <a href="#">丸山珈琲について</a>
+      <a href="#">商品一覧</a>
+      <a href="#">店舗一覧</a>
+      <a href="#">法人のお客さまへ</a>
+      <a href="#">お知らせ</a>
+      <a href="#">企業情報</a>
+    </nav>
+  </div>
+  <div class="header-right">
+    <div class="header-util">
+      <a href="#">採用情報</a>
+      <a href="#">お問い合わせ</a>
+      <div class="lang"><span class="on">JP</span><a class="off" href="#">EN</a></div>
+    </div>
+    <a class="header-store" href="#">オンライン<br>ストア</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-copy">一杯のコーヒーから始まる美味しさの世界</div>
+  <div class="hero-brand">MARUYAMA COFFEE — SINCE 1991</div>
+  <div class="hero-pick">
+    <span class="tag">PICK UP</span>
+    <span class="txt">天空の農園が届ける、世界最高峰の1杯「アグロタケシ」を2026年7月1日（水）より発売</span>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <div class="label">Color Palette</div>
+    <div class="ja">色</div>
+  </div>
+  <p class="sec-lead">地は純白 #ffffff、テキストとCTAはインクの黒 #231815。純黒 #000000 は使わない。#231815 は日本のDTPでスミベタに使われる標準値そのもので、焙煎豆の色でもある。有彩色はクリーム #fcf6e9 だけ。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-ink)"></div><div class="swatch-info"><div class="swatch-name">Ink Black</div><div class="swatch-hex">#231815</div><div class="swatch-role">ブランド色。テキスト・CTA 面・CTA 枠</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-cream);border-bottom:1px solid var(--color-surface2)"></div><div class="swatch-info"><div class="swatch-name">Cream</div><div class="swatch-hex">#fcf6e9</div><div class="swatch-role">フレーバータグの面。唯一の暖色面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-surface);border-bottom:1px solid var(--color-surface2)"></div><div class="swatch-info"><div class="swatch-name">Surface Warm</div><div class="swatch-hex">#f7f6f4</div><div class="swatch-role">導線ブロックの面（わずかに暖かい白）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-roast)"></div><div class="swatch-info"><div class="swatch-name">Roast Badge</div><div class="swatch-hex">#4e4e4e</div><div class="swatch-role">焙煎度バッジ（ストア側）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-gray)"></div><div class="swatch-info"><div class="swatch-name">Gray</div><div class="swatch-hex">#808080</div><div class="swatch-role">補足・非活性</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-surface2)"></div><div class="swatch-info"><div class="swatch-name">Surface Gray</div><div class="swatch-hex">#eeeeee</div><div class="swatch-role">お知らせ一覧の行の面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-surface3)"></div><div class="swatch-info"><div class="swatch-name">Surface Gray 2</div><div class="swatch-hex">#f1f1f1</div><div class="swatch-role">カテゴリ一覧セクションの面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-dark)"></div><div class="swatch-info"><div class="swatch-name">Dark Panel</div><div class="swatch-hex">#262626</div><div class="swatch-role">「ABOUT 丸山珈琲の想い」のパネル</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-error)"></div><div class="swatch-info"><div class="swatch-name">Error</div><div class="swatch-hex">#a83b32</div><div class="swatch-role">低彩度の赤（推奨値）</div></div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <div class="label">Typography</div>
+    <div class="ja">文字</div>
+  </div>
+  <p class="sec-lead">和文は Noto Sans JP、欧文ラベルは Roboto。字間は letter-spacing で開かず palt で詰めて作り、欧文だけ 0.1〜0.12em に開く。行間は見出し 1.4〜1.5 → 本文 2.0 → リード文 2.5。サイズと太さが反比例するのがこのサイトの階層設計。</p>
+  <div class="type-sample"><div style="font-size:40px;font-weight:400;line-height:1.5">私たちの取り組み</div><div class="type-meta">Section Title · Noto Sans JP · 40px · <strong>weight 400</strong> · lh 1.5 · ls normal</div></div>
+  <div class="type-sample"><div style="font-size:24px;font-weight:400;line-height:1.5">丸山珈琲のスペシャルブランド</div><div class="type-meta">Sub Section · Noto Sans JP · 24px · weight 400 · lh 1.5 · ls normal</div></div>
+  <div class="type-sample"><div style="font-size:20px;font-weight:400;line-height:2.5;letter-spacing:.05em">丸山珈琲は美味しさで癒しと幸せを創る会社です</div><div class="type-meta">Lead / Tagline · Noto Sans JP · 20px · weight 400 · <strong>lh 2.5 (50px)</strong> · ls 0.05em</div></div>
+  <div class="type-sample"><div style="font-size:20px;font-weight:400;line-height:1.4">ABOUT US</div><div class="type-meta">Heading 3 (EN) · Noto Sans JP · 20px · weight 400 · lh 1.4</div></div>
+  <div class="type-sample"><div style="font-size:15px;font-weight:500;line-height:2.0">丸山珈琲のブレンド 深煎り</div><div class="type-meta">Product Title · Noto Sans JP · 15px · weight 500 · lh 2.0</div></div>
+  <div class="type-sample"><div style="font-size:14px;font-weight:400;line-height:2.0">本文（既定）— バイヤーが産地に足を運び、生産者と直接向き合って買い付けます。カップ・オブ・エクセレンスの審査を通じて出会った農園も少なくありません。</div><div class="type-meta">Body · Noto Sans JP · 14px · weight 400 · <strong>lh 2.0 (28px)</strong> · ls normal（palt で詰める）</div></div>
+  <div class="type-sample"><div style="font-size:14px;font-weight:500;line-height:2.0">【新商品】定番ブレンドをリキッドコーヒーのカフェオレベースに</div><div class="type-meta">News Title · Noto Sans JP · 14px · weight 500 · lh 2.0</div></div>
+  <div class="type-sample"><div class="en" style="font-size:14px;line-height:2.0">Our challenge</div><div class="type-meta">Label (EN) · <strong>Roboto</strong> · 14px · weight 600 · <strong>ls 0.12em (1.68px)</strong></div></div>
+  <div class="type-sample"><div style="font-size:13px;font-weight:700;line-height:1.67">採用情報／お問い合わせ</div><div class="type-meta">Utility Link · Noto Sans JP · 13px · <strong>weight 700</strong> · lh 1.67</div></div>
+  <div class="type-sample"><div style="font-size:13px;font-weight:500;line-height:2.0;letter-spacing:-0.025em">ホーム　商品一覧　店舗一覧　企業情報</div><div class="type-meta">Footer Link · Noto Sans JP · 13px · weight 500 · <strong>ls -0.025em</strong>（唯一の負の字間）</div></div>
+  <div class="type-sample"><div style="font-size:12px;font-weight:400;line-height:2.0;color:var(--color-gray)">プレスリリース</div><div class="type-meta">Meta · Noto Sans JP · 12px · weight 400 · lh 2.0 · #808080</div></div>
+  <div class="type-sample"><div style="font-size:11px;font-weight:600;line-height:1.3">オンラインストア</div><div class="type-meta">Header Utility · Noto Sans JP · 11px · weight 600 · lh 1.3</div></div>
+  <div class="type-sample"><span class="badge-pick">PICK UP</span><div class="type-meta">Badge (EN) · <strong>Roboto</strong> · 11px · <strong>weight 700</strong> · ls 0.1em · 白文字／#231815 面</div></div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <div class="label">Article</div>
+    <div class="ja">組版</div>
+  </div>
+  <div class="article">
+    <h2>産地へ、行く。</h2>
+    <p class="lead">丸山珈琲は美味しさで癒しと幸せを創る会社です</p>
+    <p>1991 年、長野県軽井沢に小さな喫茶店として始まりました。いま私たちがしていることは、当時とほとんど変わりません。美味しいコーヒーを探し、焙煎し、淹れる。それだけです。</p>
+    <h3>ダイレクトトレードという方法</h3>
+    <p>バイヤーは年間を通じて産地を回ります。エチオピア、ケニア、コロンビア、ボリビア、パナマ。農園主と直接話し、その年のロットを自分たちの舌で選んで買い付ける。品評会を通さない取引だからこそ、生産者に正当な対価を返せます。</p>
+    <p>本文の行間は 2.0、リード文だけ 2.5 まで開きます。字間は letter-spacing ではなく palt で詰めて揃えます。<a href="#">私たちの取り組みを見る</a>。</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <div class="label">Products</div>
+    <div class="ja">商品カード</div>
+  </div>
+  <p class="sec-lead">画像 → 焙煎度バッジ（#4e4e4e / radius 4px）→ 商品名 15px/500 → フレーバータグ（クリーム面 / radius 0）→ 価格。カードは枠線も影も持たない。</p>
+  <div class="card-grid">
+    <div>
+      <div class="card-thumb" style="background:var(--color-ink)"></div>
+      <div class="card-badges"><span class="badge-roast">深煎り</span></div>
+      <div class="card-name">丸山珈琲のブレンド 深煎り</div>
+      <div class="card-badges"><span class="badge-flavor">卓越した味わい</span></div>
+      <div class="card-price">1,302円（税込 1,406円）</div>
+    </div>
+    <div>
+      <div class="card-thumb" style="background:var(--color-roast)"></div>
+      <div class="card-badges"><span class="badge-roast">中煎り</span></div>
+      <div class="card-name">アグロタケシ ゲイシャ 80g</div>
+      <div class="card-badges"><span class="badge-flavor">花のような香り</span></div>
+      <div class="card-price">5,940円（税込 6,415円）</div>
+    </div>
+    <div>
+      <div class="card-thumb" style="background:var(--color-surface)"></div>
+      <div class="card-badges"><span class="badge-roast">中深煎り</span></div>
+      <div class="card-name">エチオピア イルガチェフェ</div>
+      <div class="card-badges"><span class="badge-flavor">柑橘系のフルーツの爽やかさ</span></div>
+      <div class="card-price">1,836円（税込 1,982円）</div>
+    </div>
+    <div>
+      <div class="card-thumb" style="background:var(--color-cream)"></div>
+      <div class="card-badges"><span class="badge-roast">中煎り</span></div>
+      <div class="card-name">カフェインレス ブレンド</div>
+      <div class="card-badges"><span class="badge-flavor">やわらかな口あたり</span></div>
+      <div class="card-price">1,458円（税込 1,574円）</div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--surface">
+  <div class="inner">
+    <div class="sec-head">
+      <div class="label">News</div>
+      <div class="ja">お知らせ</div>
+    </div>
+    <div class="news-row"><div class="news-date">2026.07.31</div><div class="news-title">新発売コーヒー豆のお知らせ【8/1】</div></div>
+    <div class="news-row"><div class="news-date">2026.07.29</div><div class="news-title">熊本県熊本地方を震源とする地震の影響について</div></div>
+    <div class="news-row"><div class="news-date">2026.06.30</div><div class="news-title">天空の農園が届ける、世界最高峰の1杯「アグロタケシ」を2026年7月1日（水）より発売</div></div>
+    <div style="display:flex;justify-content:center;margin-top:40px"><a class="btn btn-primary" href="#">お知らせ一覧をみる</a></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <div class="label">Buttons</div>
+    <div class="ja">ボタン</div>
+  </div>
+  <p class="sec-lead">主要 CTA は border-radius 16000px の完全ピル ＋ 3px solid #231815。面と枠が同色なので、hover で面を白に抜くと枠だけが残る。暗い面の上では矩形アウトラインに切り替える。中間の角丸（8px 等）は使わない。</p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">オンラインストアをみる</a>
+    <a class="btn btn-primary" href="#">お知らせ一覧をみる</a>
+    <span class="badge-roast">中煎り</span>
+    <span class="badge-flavor">卓越した味わい</span>
+    <span class="badge-pick">PICK UP</span>
+  </div>
+</section>
+
+<div class="panel">
+  <div class="label">ABOUT</div>
+  <div class="ja">丸山珈琲の想い</div>
+  <div class="btn-row" style="justify-content:center">
+    <a class="btn btn-outline-dark" href="#">お問い合わせ</a>
+    <a class="btn btn-outline-dark" href="#">メールマガジンのご登録</a>
+    <a class="btn btn-outline-dark" href="#">FAXご注文用紙・豆価格表（PDF）</a>
+    <a class="btn btn-outline-dark" href="#">アレルギー表示</a>
+  </div>
+</div>
+
+<section class="section">
+  <div class="sec-head">
+    <div class="label">Forms</div>
+    <div class="ja">入力</div>
+  </div>
+  <p class="sec-lead">デフォルト / フォーカス / エラーの3状態。radius 4px（バッジに揃える）、罫は #dddddd、フォーカスは #231815。入力中も palt を掛けて字面を揃える。</p>
+  <div class="form">
+    <div class="field"><label>お名前</label><input type="text" placeholder="山田 太郎"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="0267-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn btn-primary" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <div class="label">Elevation</div>
+    <div class="ja">奥行き</div>
+  </div>
+  <p class="sec-lead">box-shadow の実測は 0 件。前後関係は面色の 3 段（純白 → 暖白 #f7f6f4 → 黒 #262626）で作り、唯一の「厚み」は CTA の 3px の枠だけ。</p>
+  <div class="elev-grid">
+    <div><div class="elev elev--white">Level 0</div><div class="elev-cap">#ffffff（既定）</div></div>
+    <div><div class="elev elev--warm">Surface</div><div class="elev-cap">#f7f6f4（導線ブロック）</div></div>
+    <div><div class="elev elev--dark">Panel</div><div class="elev-cap">#262626（暗いパネル）</div></div>
+    <div><div class="elev elev--ring">Ring</div><div class="elev-cap">3px solid #231815（影の代わり）</div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <div class="label">Layout</div>
+    <div class="ja">余白</div>
+  </div>
+  <p class="sec-lead">4 / 8 / 12 / 20 / 40 / 80 / 120px。コンテナは最大 1200px、読み物カラムは 720px。1セクション1メッセージで、セクション間は 80〜120px 空ける。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:4px;height:4px"></div><div class="space-label">XS 4</div></div>
+    <div><div class="space-bar" style="width:8px;height:8px"></div><div class="space-label">S 8</div></div>
+    <div><div class="space-bar" style="width:12px;height:12px"></div><div class="space-label">M 12</div></div>
+    <div><div class="space-bar" style="width:20px;height:20px"></div><div class="space-label">L 20</div></div>
+    <div><div class="space-bar" style="width:40px;height:40px"></div><div class="space-label">XL 40</div></div>
+    <div><div class="space-bar" style="width:80px;height:80px"></div><div class="space-label">XXL 80</div></div>
+    <div><div class="space-bar" style="width:120px;height:120px"></div><div class="space-label">XXXL 120</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="finner">
+    <div class="flinks">
+      <a href="#">ホーム</a>
+      <a href="#">丸山珈琲について</a>
+      <a href="#">商品一覧</a>
+      <a href="#">店舗一覧</a>
+      <a href="#">法人のお客さまへ</a>
+      <a href="#">お知らせ</a>
+      <a href="#">企業情報</a>
+      <a href="#">採用情報</a>
+    </div>
+    <p class="faddr">〒389-0111　長野県北佐久郡軽井沢町長倉塩沢1147-1</p>
+    <div class="fnote">丸山珈琲 MARUYAMA COFFEE — Design System Preview　/　実測ベース 2026-08-11</div>
+  </div>
+</footer>
+
+</body>
+</html>

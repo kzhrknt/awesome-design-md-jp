@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 京都市京セラ美術館 Kyoto City KYOCERA Museum of Art</title>
+<!--
+  NOTE: 原典の和文はモリサワの写植由来ゴシック 2 書体（Adobe Fonts）。
+    UI・本文   = a-otf-gothic-bbb-pr6n（中ゴシック BBB）
+    大見出し   = a-otf-futo-go-b101-pr6n（太ゴ B101）
+  いずれも Adobe Fonts のドメインライセンスのため、ローカルの preview.html では表示できない。
+  ここでは Google Fonts の "Zen Kaku Gothic New"(400/500/700) を両方の代替に使用している。
+  Zen Kaku Gothic New は【モリサワ提供の書体】で、中ゴシック BBB と同じ提供元・近い骨格のため
+  印象が最も近い。実装時は必ず Adobe Fonts を読み込むこと。
+
+  原典のフォールバックは "a-otf-gothic-bbb-pr6n, sans-serif" という 2 段だけの
+  極端に短いチェーン。Web フォントが当たることを前提にしている。
+
+  このサイトの組版の核心は 2 つ:
+    (1) letter-spacing が全要素 0.625px の【px 固定値】（em ではない）。
+        サイズが上がるほど相対的に締まる。
+    (2) 太ゴ B101 に切り替えるときだけ weight 500 ＋ ls 0.1em に開く。
+        書体・ウェイト・字間の 3 つが同時に切り替わる。
+
+  box-shadow は実測 0 件。奥行きは面色と 1px の罫だけで作る。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値 === */
+    --color-bg: #ffffff;          /* ページ地色（純白） */
+    --color-sumi: #333333;        /* 基本テキスト＝墨。純黒ではない */
+    --color-vermilion: #c83c1e;   /* 朱。チケット導線専用の唯一の暖色 CTA */
+    --color-search: #2f2d2c;      /* 検索ボタン面 */
+    --color-nav: #4f4a46;         /* ナビラベル */
+    --color-gold-dark: #917d43;   /* カレンダー帯の面 */
+    --color-gold-mid: #b69f59;    /* 開館情報の文字 */
+    --color-gold-light: #cec093;  /* 罫・薄い面。最も出現回数の多い有彩色 */
+    --color-gold-text: #9f8142;   /* 施設カード見出し */
+    --color-beige: #e9e3d8;       /* パンくず・下層ページ上部 */
+    --color-cell: #eaeaea;        /* カレンダーの休館日・祝日セル */
+    --color-badge-bd: #858585;    /* カウントダウンバッジの枠 */
+    --color-muted: #999999;       /* 非選択ラベル */
+    --color-divider: #cccccc;     /* 区切り罫 */
+    --color-teal: #8cc6bf;        /* 限定的な差し色 */
+    --color-holiday: #38a169;     /* 祝日 */
+    --color-danger: #e53e3e;      /* 日曜・エラー */
+    --color-info: #4b5563;        /* 休館日 */
+    --color-scrim: rgba(33,33,33,0.9);
+
+    /* === Fonts === */
+    /* 原典: a-otf-gothic-bbb-pr6n（中ゴシック BBB）→ Zen Kaku Gothic New で代替 */
+    --font-gothic: "Zen Kaku Gothic New", sans-serif;
+    /* 原典: a-otf-futo-go-b101-pr6n（太ゴ B101）→ 同じ書体を weight 500 で代替 */
+    --font-futo: "Zen Kaku Gothic New", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type === */
+    --fs-body: 16px;
+    --lh-body: 1.8;       /* 28.8px。全体の基準 */
+    --lh-head: 1.5;       /* 大見出し・カードタイトル */
+    --lh-badge: 1.2;      /* バッジ */
+    --ls-body: 0.625px;   /* px 固定値。em ではない。全体に継承させる */
+    --ls-16: 0.8px;       /* 16px の小見出し・ナビ（= 0.05em） */
+    --ls-futo: 0.1em;     /* 太ゴ B101 の見出しだけ開く */
+
+    /* === Shape === */
+    --radius: 0px;        /* 原則すべて 0。5px は検索・言語切替のみ */
+    --radius-ui: 5px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-bg); color: var(--color-sumi);
+    font-family: var(--font-gothic);
+    font-size: var(--fs-body); font-weight: 400; line-height: var(--lh-body);
+    letter-spacing: var(--ls-body);
+    font-feature-settings: normal;   /* palt を使わない */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  /* 原典の切替: 太ゴ B101 は「書体 + weight 500 + ls 0.1em」の 3 点セット */
+  .futo { font-family: var(--font-futo); font-weight: 500; letter-spacing: var(--ls-futo); }
+
+  /* HEADER — 朱の CTA だけがコンテナ外の右上に接地する */
+  .header { display: flex; align-items: stretch; justify-content: space-between;
+    border-bottom: 1px solid var(--color-divider); background: #fff; }
+  .header-left { display: flex; align-items: center; gap: 40px; padding: 20px 24px 20px 40px; }
+  .header-brand { text-decoration: none; color: var(--color-sumi); }
+  .header-brand .ja { font-size: 24px; letter-spacing: 0.1em; display: block; }
+  .header-brand .en { font-size: 11px; letter-spacing: 0.08em; color: var(--color-nav); display: block; margin-top: 4px; }
+  .header-nav { display: flex; gap: 26px; align-items: center; }
+  .header-nav a { color: var(--color-nav); text-decoration: none; font-size: 16px; letter-spacing: var(--ls-16); }
+  .header-nav a:hover { color: var(--color-vermilion); }
+  .header-right { display: flex; align-items: center; gap: 10px; padding-right: 0; }
+  .lang { display: flex; gap: 6px; align-items: center; padding-right: 10px; }
+  .lang .on { background: rgba(0,0,0,0.05); color: var(--color-muted); border-radius: var(--radius-ui); padding: 7px 15px; font-size: 14px; }
+  .lang .off { color: var(--color-sumi); border-radius: 4px; padding: 7px 15px; font-size: 14px; text-decoration: none; }
+  .header-cta { display: flex; align-items: center; background: var(--color-vermilion); color: #fff;
+    text-decoration: none; font-size: 12px; font-weight: 700; line-height: 1.2; letter-spacing: var(--ls-body);
+    border-radius: var(--radius); padding: 8px 20px; align-self: stretch; }
+
+  /* HERO */
+  .hero { padding: 60px 40px 40px; }
+  .hero-inner { max-width: 1280px; margin: 0 auto; }
+  .hero-title { font-size: 32px; line-height: var(--lh-head); }
+  .hero-copy { font-size: 16px; line-height: var(--lh-body); letter-spacing: var(--ls-body); margin-top: 24px; max-width: 760px; }
+  .hero-cta { display: flex; gap: 20px; margin-top: 32px; flex-wrap: wrap; align-items: center; }
+
+  /* SECTIONS */
+  .section { padding: 60px 40px; max-width: 1280px; margin: 0 auto; }
+  .sec-head { margin-bottom: 40px; }
+  .sec-head .ja { font-size: 28px; line-height: var(--lh-body); }
+  .sec-head .en { font-size: 14px; letter-spacing: var(--ls-body); color: var(--color-gold-text); margin-top: 6px; }
+  .sec-lead { font-size: 16px; line-height: var(--lh-body); letter-spacing: var(--ls-body); max-width: 760px; margin-bottom: 40px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px,1fr)); gap: 20px; }
+  .swatch { border: 1px solid var(--color-divider); border-radius: var(--radius); overflow: hidden; background: #fff; }
+  .swatch-block { height: 92px; }
+  .swatch-info { padding: 16px; }
+  .swatch-name { font-weight: 700; font-size: 14px; letter-spacing: var(--ls-body); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--color-muted); margin-top: 4px; letter-spacing: 0; }
+  .swatch-role { font-size: 12px; color: var(--color-nav); margin-top: 8px; line-height: 1.6; letter-spacing: 0; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 26px 0; border-bottom: 1px solid var(--color-divider); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-vermilion); margin-top: 12px; letter-spacing: 0; }
+
+  /* ARTICLE */
+  .article { max-width: 760px; }
+  .article h2 { font-family: var(--font-futo); font-weight: 500; font-size: 28px; line-height: var(--lh-body); letter-spacing: var(--ls-futo); margin-bottom: 24px; }
+  .article h3 { font-size: 16px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-16); margin: 34px 0 12px; }
+  .article p { font-size: 16px; line-height: var(--lh-body); letter-spacing: var(--ls-body); margin-bottom: 24px; }
+  .article a { color: var(--color-vermilion); text-decoration: none; border-bottom: 1px solid var(--color-vermilion); }
+  .article .note { font-size: 10px; line-height: var(--lh-body); letter-spacing: var(--ls-body); color: var(--color-nav); }
+
+  /* BUTTONS — 原則すべて radius 0 */
+  .btn-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--font-gothic); font-weight: 400; letter-spacing: var(--ls-body);
+    text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+    border: none; border-radius: var(--radius); transition: opacity .15s ease; }
+  .btn:hover { opacity: .82; }
+  .btn-primary { background: var(--color-vermilion); color: #fff; font-size: 12px; font-weight: 700; line-height: 1.2; padding: 12px 20px; }
+  .btn-fill { background: var(--color-sumi); color: #fff; border: 1px solid var(--color-sumi); font-size: 16px; padding: 12.8px 24px 12.8px 20.8px; }
+  .btn-outline { background: transparent; color: var(--color-sumi); border: 1px solid var(--color-sumi); font-size: 16px; padding: 10px 32px; }
+  .btn-search { background: var(--color-search); color: #fff; font-size: 15px; padding: 12px 24px; border-radius: var(--radius-ui); }
+  .badge-fill { display: inline-flex; align-items: center; background: var(--color-sumi); color: #fff; border: 1px solid var(--color-sumi);
+    font-size: 10px; line-height: var(--lh-badge); letter-spacing: 0.4px; padding: 6.5px 10px; border-radius: var(--radius); }
+  .badge-outline { display: inline-flex; align-items: center; background: #fff; color: var(--color-sumi); border: 1px solid var(--color-badge-bd);
+    font-size: 11px; line-height: var(--lh-body); letter-spacing: var(--ls-body); padding: 5px 8px; border-radius: var(--radius); }
+  .badge-cal { display: inline-flex; align-items: center; background: var(--color-cell); font-size: 10px; padding: 0 2px; border-radius: var(--radius); }
+
+  /* EXHIBITION CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px,1fr)); gap: 20px; }
+  .card-thumb { height: 240px; border-radius: var(--radius); }
+  .card-badges { display: flex; gap: 8px; margin-top: 14px; }
+  .card-title { font-size: 16px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-16); margin-top: 12px; }
+  .card-meta { font-size: 14px; line-height: var(--lh-body); letter-spacing: var(--ls-body); color: var(--color-nav); margin-top: 8px; }
+
+  /* GOLD BAND */
+  .band { background: var(--color-gold-dark); color: #fff; padding: 60px 40px; text-align: center; }
+  .band .ja { font-size: 32px; line-height: 1.4; letter-spacing: var(--ls-body); }
+  .band .en { font-size: 16px; line-height: var(--lh-body); letter-spacing: var(--ls-body); margin-top: 8px; }
+
+  /* CALENDAR */
+  .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--color-divider); border: 1px solid var(--color-divider); margin-top: 34px; }
+  .cal div { background: #fff; padding: 14px 8px; text-align: center; font-size: 14px; letter-spacing: var(--ls-body); }
+  .cal .off { background: var(--color-cell); color: var(--color-info); }
+  .cal .sun { color: var(--color-danger); }
+  .cal .hol { color: var(--color-holiday); }
+
+  /* INFO BAR — 墨面に金の文字 */
+  .infobar { background: var(--color-sumi); color: #fff; padding: 22px 40px; text-align: center; }
+  .infobar .main { font-size: 18px; font-weight: 700; line-height: var(--lh-body); letter-spacing: var(--ls-body); color: var(--color-gold-mid); }
+  .infobar .time { font-size: 16px; line-height: var(--lh-body); letter-spacing: var(--ls-body); margin-top: 4px; }
+  .infobar .note { font-size: 10px; line-height: var(--lh-body); letter-spacing: var(--ls-body); margin-top: 4px; opacity: .8; }
+
+  /* FORMS */
+  .form { max-width: 460px; display: grid; gap: 24px; }
+  .field label { display: block; font-size: 10px; letter-spacing: var(--ls-body); margin-bottom: 8px; }
+  .field input { width: 100%; background: #fff; border: 1px solid var(--color-divider); border-radius: var(--radius); padding: 12px 14px;
+    font-family: var(--font-gothic); font-size: 18px; color: var(--color-sumi); letter-spacing: var(--ls-body); }
+  .field input::placeholder { color: var(--color-muted); }
+  .field input:focus { outline: none; border-color: var(--color-sumi); }
+  .field--error input { border-color: var(--color-danger); }
+  .field--error .msg { font-size: 12px; color: var(--color-danger); margin-top: 6px; letter-spacing: var(--ls-body); }
+
+  /* ELEVATION — 実測 0 件。面と罫だけ */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 24px; }
+  .elev { border-radius: var(--radius); padding: 34px; text-align: center; font-size: 16px; letter-spacing: var(--ls-body); }
+  .elev--white { background: #fff; border: 1px solid var(--color-divider); }
+  .elev--beige { background: var(--color-beige); }
+  .elev--gold { background: var(--color-gold-dark); color: #fff; }
+  .elev--sumi { background: var(--color-sumi); color: #fff; }
+  .elev-cap { font-family: var(--font-mono); font-size: 11px; color: var(--color-nav); margin-top: 14px; letter-spacing: 0; text-align: center; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-gold-dark); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: var(--color-nav); margin-top: 8px; text-align: center; letter-spacing: 0; }
+
+  /* BREADCRUMB */
+  .crumb { background: var(--color-beige); padding: 12px 40px; font-size: 14px; letter-spacing: var(--ls-body); color: var(--color-nav); }
+
+  footer { border-top: 1px solid var(--color-divider); padding: 50px 40px 30px; }
+  footer .finner { max-width: 1280px; margin: 0 auto; }
+  footer .flinks { display: flex; gap: 26px; flex-wrap: wrap; margin-bottom: 24px; }
+  footer .flinks a { color: var(--color-sumi); text-decoration: none; font-size: 14px; letter-spacing: var(--ls-body); }
+  footer .faddr { font-size: 14px; line-height: var(--lh-body); letter-spacing: var(--ls-body); }
+  footer .fnote { font-size: 10px; line-height: var(--lh-body); letter-spacing: var(--ls-body); color: var(--color-nav); margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <a class="header-brand" href="#">
+      <span class="ja">京都市京セラ美術館</span>
+      <span class="en">Kyoto City KYOCERA Museum of Art</span>
+    </a>
+    <nav class="header-nav">
+      <a href="#">利用案内・アクセス</a>
+      <a href="#">展覧会・イベント</a>
+      <a href="#">ラーニング</a>
+      <a href="#">当館について</a>
+    </nav>
+  </div>
+  <div class="header-right">
+    <div class="lang"><span class="on">日本語</span><a class="off" href="#">English</a></div>
+    <a class="header-cta" href="#">オンラインチケット購入・日時指定予約 ↗</a>
+  </div>
+</header>
+
+<div class="crumb">HOME　›　展覧会　›　自主・共催の展覧会</div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-title futo">自主・共催の展覧会 Exhibitions</div>
+    <p class="hero-copy">1933 年に開館した、日本で現存する最古の公立美術館建築。2020 年のリニューアルを経て、日本画・工芸から現代美術までを紹介しています。</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#">オンラインチケット購入・日時指定予約 ↗</a>
+      <a class="btn btn-fill" href="#">日別カレンダー</a>
+      <a class="btn btn-outline" href="#">今年度の展覧会カレンダー</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <div class="ja futo">色</div>
+    <div class="en">Color Palette</div>
+  </div>
+  <p class="sec-lead">地は純白 #ffffff、テキストは墨 #333333（純黒は使わない）。彩度を持つのは朱 #c83c1e と金茶の三段だけ。朱はチケット導線にのみ使い、それ以外のボタン・バッジはすべて墨で作る。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-vermilion)"></div><div class="swatch-info"><div class="swatch-name">Vermilion</div><div class="swatch-hex">#c83c1e</div><div class="swatch-role">唯一の暖色 CTA。チケット導線専用</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-sumi)"></div><div class="swatch-info"><div class="swatch-name">Sumi</div><div class="swatch-hex">#333333</div><div class="swatch-role">基本テキスト／ソリッドボタン・バッジ面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-gold-dark)"></div><div class="swatch-info"><div class="swatch-name">Gold Dark</div><div class="swatch-hex">#917d43</div><div class="swatch-role">カレンダーセクションの帯</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-gold-mid)"></div><div class="swatch-info"><div class="swatch-name">Gold Mid</div><div class="swatch-hex">#b69f59</div><div class="swatch-role">開館情報の文字色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-gold-light)"></div><div class="swatch-info"><div class="swatch-name">Gold Light</div><div class="swatch-hex">#cec093</div><div class="swatch-role">罫・薄い面。最も出現回数が多い有彩色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-gold-text)"></div><div class="swatch-info"><div class="swatch-name">Gold Text</div><div class="swatch-hex">#9f8142</div><div class="swatch-role">施設案内カードの見出し</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-search)"></div><div class="swatch-info"><div class="swatch-name">Search Dark</div><div class="swatch-hex">#2f2d2c</div><div class="swatch-role">検索ボタン面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-nav)"></div><div class="swatch-info"><div class="swatch-name">Nav Text</div><div class="swatch-hex">#4f4a46</div><div class="swatch-role">グローバルナビのラベル</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-beige)"></div><div class="swatch-info"><div class="swatch-name">Beige Surface</div><div class="swatch-hex">#e9e3d8</div><div class="swatch-role">パンくず・下層ページ上部</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-cell)"></div><div class="swatch-info"><div class="swatch-name">Calendar Cell</div><div class="swatch-hex">#eaeaea</div><div class="swatch-role">休館日・祝日セル</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-badge-bd)"></div><div class="swatch-info"><div class="swatch-name">Badge Border</div><div class="swatch-hex">#858585</div><div class="swatch-role">カウントダウンバッジの枠</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-teal)"></div><div class="swatch-info"><div class="swatch-name">Teal</div><div class="swatch-hex">#8cc6bf</div><div class="swatch-role">限定的な差し色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-holiday)"></div><div class="swatch-info"><div class="swatch-name">Holiday</div><div class="swatch-hex">#38a169</div><div class="swatch-role">祝日ラベル（カレンダー）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-danger)"></div><div class="swatch-info"><div class="swatch-name">Danger</div><div class="swatch-hex">#e53e3e</div><div class="swatch-role">日曜・エラー</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-info)"></div><div class="swatch-info"><div class="swatch-name">Info</div><div class="swatch-hex">#4b5563</div><div class="swatch-role">休館日ラベル</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-divider)"></div><div class="swatch-info"><div class="swatch-name">Divider</div><div class="swatch-hex">#cccccc</div><div class="swatch-role">区切り罫</div></div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <div class="ja futo">文字</div>
+    <div class="en">Typography</div>
+  </div>
+  <p class="sec-lead">和文はモリサワの 2 書体だけ。中ゴシック BBB が UI・本文、太ゴ B101 が大見出し。letter-spacing は全要素 0.625px の px 固定値で、太ゴ B101 に切り替えるときだけ 0.1em に開く。行間の基準は 1.8。</p>
+  <div class="type-sample"><div class="futo" style="font-size:32px;line-height:1.5">自主・共催の展覧会 Exhibitions</div><div class="type-meta">Page Title · 太ゴ B101 · 32px · weight 500 · lh 1.5 · <strong>ls 0.1em (3.2px)</strong></div></div>
+  <div class="type-sample"><div class="futo" style="font-size:28px;line-height:1.8">開催中</div><div class="type-meta">Section Title · 太ゴ B101 · 28px · weight 500 · lh 1.8 · <strong>ls 0.1em (2.8px)</strong></div></div>
+  <div class="type-sample"><div style="font-size:32px;line-height:1.4;letter-spacing:.625px">カレンダー</div><div class="type-meta">Section Title (Band) · 中ゴシック BBB · 32px · weight 400 · lh 1.4 · ls 0.625px</div></div>
+  <div class="type-sample"><div style="font-size:20px;line-height:1.5;letter-spacing:.625px">浮世絵スーパークリエイター 歌川国芳展</div><div class="type-meta">Card Title (L) · 中ゴシック BBB · 20px · weight 400 · lh 1.5 · ls 0.625px</div></div>
+  <div class="type-sample"><div style="font-size:20px;line-height:1.6;letter-spacing:.1em;color:var(--color-gold-text)">ミュージアムカフェ「ENFUSE」</div><div class="type-meta">Facility Title · 中ゴシック BBB · 20px · lh 1.6 · <strong>ls 0.1em (2px)</strong> · #9f8142</div></div>
+  <div class="type-sample"><div style="font-size:18px;font-weight:700;line-height:1.8;letter-spacing:.625px;color:var(--color-gold-mid)">本日開館［2026年8月11日（火）］</div><div class="type-meta">Open Info · 中ゴシック BBB · 18px · <strong>weight 700</strong> · lh 1.8 · #b69f59</div></div>
+  <div class="type-sample"><div style="font-size:16px;font-weight:700;line-height:1.5;letter-spacing:.8px">［2026夏期］コレクションルーム 特集「詩情の画家、塩川文麟と近代京都の日本画」</div><div class="type-meta">Card Title (M) · 中ゴシック BBB · 16px · weight 700 · lh 1.5 · <strong>ls 0.8px (0.05em)</strong></div></div>
+  <div class="type-sample"><div style="font-size:16px;line-height:1.8;letter-spacing:.625px">本文（既定）— 帝冠様式の本館に、ガラスのリボンを差し込むように増築された新しいエントランス。</div><div class="type-meta">Body · 中ゴシック BBB · 16px · weight 400 · <strong>lh 1.8 (28.8px)</strong> · ls 0.625px</div></div>
+  <div class="type-sample"><div style="font-size:16px;line-height:1.8;letter-spacing:.8px;color:var(--color-nav)">利用案内・アクセス</div><div class="type-meta">Nav Trigger · 中ゴシック BBB · 16px · lh 1.8 · ls 0.8px · #4f4a46</div></div>
+  <div class="type-sample"><div style="font-size:14px;font-weight:700;line-height:1.6;letter-spacing:.625px">台風７・８号接近に伴う当館の対応について</div><div class="type-meta">News Title · 中ゴシック BBB · 14px · weight 700 · lh 1.6 · ls 0.625px</div></div>
+  <div class="type-sample"><div style="font-size:14px;line-height:1.8;letter-spacing:.625px;color:var(--color-nav)">会場［ 本館 北回廊1階 ］</div><div class="type-meta">Small / Meta · 中ゴシック BBB · 14px · weight 400 · lh 1.8 · ls 0.625px</div></div>
+  <div class="type-sample"><div style="font-size:11px;line-height:1.8;letter-spacing:.625px">終了まで43日</div><div class="type-meta">Countdown · 中ゴシック BBB · 11px · weight 400 · lh 1.8 · ls 0.625px</div></div>
+  <div class="type-sample"><div style="font-size:10px;line-height:1.2;letter-spacing:.4px">入場自由 ／ チケット購入</div><div class="type-meta">Badge · 中ゴシック BBB · 10px · weight 400 · <strong>lh 1.2</strong> · ls 0.4px</div></div>
+  <div class="type-sample"><div style="font-size:10px;line-height:1.8;letter-spacing:.625px;color:var(--color-nav)">最終入場時間は展覧会により異なります</div><div class="type-meta">Caption / Footer · 中ゴシック BBB · 10px · weight 400 · lh 1.8 · ls 0.625px（最小サイズ）</div></div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <div class="ja futo">組版</div>
+    <div class="en">Article</div>
+  </div>
+  <div class="article">
+    <h2>帝冠様式の器に、現代を入れる</h2>
+    <p>京都市京セラ美術館は 1933 年、昭和天皇の即位を記念して「大礼記念京都美術館」として開館しました。日本で現存する最古の公立美術館建築です。</p>
+    <h3>ガラスのリボンという解法</h3>
+    <p>2020 年のリニューアルでは、青木淳・西澤徹夫の設計により、既存の本館を残したまま前面の地盤を掘り下げ、ガラスのファサードを差し込みました。古い器を壊さずに、新しい入口をつくるという解法です。</p>
+    <p>本文の行間は 1.8、字間は 0.625px の固定値。大見出しに太ゴ B101 を当てるときだけ、weight 500 と letter-spacing 0.1em が同時に切り替わります。<a href="#">建築について詳しく見る</a>。</p>
+    <p class="note">※ 最終入場時間は展覧会により異なります。休館日は月曜日（祝日の場合は開館）および年末年始です。</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <div class="ja futo">展覧会カード</div>
+    <div class="en">Exhibition Cards</div>
+  </div>
+  <p class="sec-lead">画像 → 枠バッジ（白地・1px solid #858585）＋塗りバッジ（#333333）→ タイトル 16px/700 → 会期 → 会場。カードは枠線で囲まず、20px のガターだけで区切る。影は使わない。</p>
+  <div class="card-grid">
+    <div>
+      <div class="card-thumb" style="background:var(--color-gold-light)"></div>
+      <div class="card-badges"><span class="badge-outline">終了まで20日</span><span class="badge-fill">入場自由</span></div>
+      <div class="card-title">倉敷安耶：女が生まれて、女が死んで</div>
+      <div class="card-meta">2026年05月30日 - 2026年08月30日<br>会場［ ザ・トライアングル ］</div>
+    </div>
+    <div>
+      <div class="card-thumb" style="background:var(--color-sumi)"></div>
+      <div class="card-badges"><span class="badge-outline">終了まで27日</span><span class="badge-fill">チケット購入</span></div>
+      <div class="card-title">テート美術館 ― YBA &amp; BEYOND 世界を変えた90s英国アート</div>
+      <div class="card-meta">2026年06月03日 - 2026年09月06日<br>会場［ 新館 東山キューブ ］</div>
+    </div>
+    <div>
+      <div class="card-thumb" style="background:var(--color-beige)"></div>
+      <div class="card-badges"><span class="badge-outline">終了まで27日</span><span class="badge-fill">チケット購入</span></div>
+      <div class="card-title">［2026夏期］コレクションルーム 特集「詩情の画家、塩川文麟」</div>
+      <div class="card-meta">2026年06月26日 - 2026年09月06日<br>会場［ 本館 南回廊1階 ］</div>
+    </div>
+    <div>
+      <div class="card-thumb" style="background:var(--color-gold-dark)"></div>
+      <div class="card-badges"><span class="badge-outline">終了まで44日</span><span class="badge-fill">チケット購入</span></div>
+      <div class="card-title">浮世絵スーパークリエイター 歌川国芳展</div>
+      <div class="card-meta">2026年07月18日 - 2026年09月23日<br>会場［ 本館 北回廊1階 ］</div>
+    </div>
+    <div>
+      <div class="card-thumb" style="background:var(--color-teal)"></div>
+      <div class="card-badges"><span class="badge-fill">入場自由</span></div>
+      <div class="card-title">松延総司：壁</div>
+      <div class="card-meta">2026年09月12日 - 2026年12月20日<br>会場［ ザ・トライアングル ］</div>
+    </div>
+  </div>
+</section>
+
+<div class="band">
+  <div class="ja">カレンダー</div>
+  <div class="en">Calendar</div>
+</div>
+
+<section class="section">
+  <div class="cal">
+    <div class="sun">8月11日（日）</div>
+    <div>8月12日（月）</div>
+    <div>8月13日（火）</div>
+    <div>8月14日（水）</div>
+    <div class="off">8月15日（木）</div>
+    <div>8月16日（金）</div>
+    <div class="sun">8月17日（土）</div>
+  </div>
+  <div class="btn-row" style="margin-top:24px">
+    <span class="badge-cal" style="color:var(--color-holiday)">山の日</span>
+    <span class="badge-cal" style="color:var(--color-info)">休館日</span>
+    <span class="badge-cal" style="color:var(--color-danger)">春分の日</span>
+  </div>
+</section>
+
+<div class="infobar">
+  <div class="main">本日開館［2026年8月11日（火）］</div>
+  <div class="time">10:00-18:00</div>
+  <div class="note">最終入場時間は展覧会により異なります</div>
+</div>
+
+<section class="section">
+  <div class="sec-head">
+    <div class="ja futo">ボタン</div>
+    <div class="en">Buttons</div>
+  </div>
+  <p class="sec-lead">原則すべて radius 0 の矩形。朱 #c83c1e はチケット導線に限定し、一般の遷移は墨 #333333 の塗り（面色と同色の 1px 枠を明示）かアウトライン。角丸 5px が許されるのは検索と言語切替だけ。</p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">オンラインチケット購入・日時指定予約 ↗</a>
+    <a class="btn btn-fill" href="#">日別カレンダー</a>
+    <a class="btn btn-outline" href="#">今年度の展覧会カレンダー</a>
+    <a class="btn btn-search" href="#">検索する</a>
+  </div>
+  <div class="btn-row" style="margin-top:20px">
+    <span class="badge-fill">チケット購入</span>
+    <span class="badge-fill">入場自由</span>
+    <span class="badge-outline">終了まで43日</span>
+    <span class="badge-cal" style="color:var(--color-holiday)">敬老の日</span>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <div class="ja futo">入力</div>
+    <div class="en">Forms</div>
+  </div>
+  <p class="sec-lead">デフォルト / フォーカス / エラーの3状態。radius 0、罫は #cccccc、フォーカスは墨 #333333。検索入力は本文より大きい 18px。ラベルは 10px で入力欄の上に置く。</p>
+  <div class="form">
+    <div class="field"><label>検索キーワード</label><input type="text" placeholder="展覧会名・作家名"></div>
+    <div class="field"><label>メールアドレス（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+    <div class="field field--error"><label>電話番号</label><input type="tel" value="075-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+    <a class="btn btn-fill" href="#" style="justify-self:start">送信する</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <div class="ja futo">奥行き</div>
+    <div class="en">Elevation</div>
+  </div>
+  <p class="sec-lead">box-shadow の実測は 0 件。このサイトは影を一切使わない。前後関係は面色の切り替え（白 → ベージュ → 金茶 → 墨）と 1px の罫だけで表現する。</p>
+  <div class="elev-grid">
+    <div><div class="elev elev--white">Level 0</div><div class="elev-cap">#ffffff ＋ 1px solid #cccccc</div></div>
+    <div><div class="elev elev--beige">Surface</div><div class="elev-cap">#e9e3d8（パンくず・上部）</div></div>
+    <div><div class="elev elev--gold">Band</div><div class="elev-cap">#917d43（セクション帯）</div></div>
+    <div><div class="elev elev--sumi">Bar</div><div class="elev-cap">#333333（開館情報バー）</div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <div class="ja futo">余白</div>
+    <div class="en">Layout</div>
+  </div>
+  <p class="sec-lead">5 / 8 / 10 / 20 / 24 / 40 / 80px。コンテナは最大 1280px、読み物カラムは 760px。展覧会カードは 5 カラムの横スクロールカルーセル、ガターは 20px。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:5px;height:5px"></div><div class="space-label">XS 5</div></div>
+    <div><div class="space-bar" style="width:8px;height:8px"></div><div class="space-label">S 8</div></div>
+    <div><div class="space-bar" style="width:10px;height:10px"></div><div class="space-label">M 10</div></div>
+    <div><div class="space-bar" style="width:20px;height:20px"></div><div class="space-label">L 20</div></div>
+    <div><div class="space-bar" style="width:24px;height:24px"></div><div class="space-label">XL 24</div></div>
+    <div><div class="space-bar" style="width:40px;height:40px"></div><div class="space-label">XXL 40</div></div>
+    <div><div class="space-bar" style="width:80px;height:80px"></div><div class="space-label">XXXL 80</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="finner">
+    <div class="flinks">
+      <a href="#">利用案内・アクセス</a>
+      <a href="#">展覧会・イベント</a>
+      <a href="#">オンラインで楽しむ</a>
+      <a href="#">ラーニング</a>
+      <a href="#">当館について</a>
+      <a href="#">法人メンバーシップ</a>
+    </div>
+    <p class="faddr">〒606-8344　京都市左京区岡崎円勝寺町124</p>
+    <div class="fnote">京都市京セラ美術館 Kyoto City KYOCERA Museum of Art — Design System Preview　/　実測ベース 2026-08-11</div>
+  </div>
+</footer>
+
+</body>
+</html>

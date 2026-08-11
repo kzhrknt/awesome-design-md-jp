@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: TRANSIT GENERAL OFFICE</title>
+<!--
+  NOTE: 原典の書体は 2 系統とも Adobe Fonts（ドメインライセンス）のため、
+  ローカルの preview.html では表示できない。
+    和文 = ryo-gothic-plusn（凛ゴシック PlusN）
+    欧文 = futura-pt（Futura PT / weight 600 Demi 固定）
+  ここでは Google Fonts の
+    和文 → "Zen Kaku Gothic New"(400/500/700)
+    欧文 → "Jost"(600)
+  を代替に使用している。Jost は Futura を参照した幾何学サンセリフで、
+  円と直線の構成が最も近い。実装時は必ず Adobe Fonts を読み込むこと。
+
+  原典のフォールバックは "ryo-gothic-plusn, sans-serif" / "futura-pt, sans-serif" という
+  2 段だけの極端に短いチェーン。和文と欧文を 1 つのスタックに混ぜず、
+  要素ごとに font-family を切り替える設計。
+
+  このサイトの組版の核心は【字間の三段規律】:
+    和文本文   0.033em（15px → 0.5px）
+    和文見出し 0.08em  ＋ font-weight 700
+    Futura PT  0.1em   ＋ font-weight 600（サイズを問わず一定）
+  この 3 つ以外の値をほとんど使わない。
+
+  行間も和欧で分ける: 和文 2.0（見出し 1.5）/ Futura PT 1.27〜1.29。
+  有彩色は 1 色も持たない。box-shadow は実測 0 件。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Jost:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実測値。有彩色は 1 色も無い === */
+    --color-bg: #ffffff;        /* ページ地色（純白） */
+    --color-black: #000000;     /* 唯一の主色。純黒を避けない */
+    --color-charcoal: #2c2c2c;  /* フッター CONTACT ブロックの面 */
+    --color-darkgray: #333333;  /* ヘッダー・ナビのテキスト */
+    --color-surface: #fafafa;   /* VISION / GROUP COMPANIES セクションの面 */
+    --color-surface2: #f2f2f2;  /* OUR BUSINESS セクションの面 */
+    --color-border: #e5e5e5;    /* ゴースト pill の枠・区切り罫 */
+    --color-muted: #999999;     /* プレースホルダ・非活性 */
+    --color-scrim: rgba(0,0,0,0.7);   /* 写真上の固定オーバーレイ */
+    --color-error: #a3352e;     /* 低彩度の赤（推奨値） */
+
+    /* === Fonts === */
+    /* 原典: ryo-gothic-plusn（凛ゴシック）→ Zen Kaku Gothic New で代替 */
+    --font-jp: "Zen Kaku Gothic New", sans-serif;
+    /* 原典: futura-pt（Futura PT）→ Jost で代替 */
+    --font-en: Jost, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Type: 字間は三段しか使わない === */
+    --fs-body: 15px;
+    --lh-body: 2.0;      /* 30px。和文本文 */
+    --lh-dense: 1.75;    /* 26.2px。長文の説明段落 */
+    --lh-jp-head: 1.5;   /* 和文見出し */
+    --lh-en: 1.28;       /* Futura PT。和文と揃えない */
+    --ls-body: 0.5px;    /* = 0.033em。和文本文 */
+    --ls-jp-head: 0.08em;/* 和文見出し */
+    --ls-en: 0.1em;      /* Futura PT。サイズを問わず一定 */
+
+    /* === Shape === */
+    --radius: 0px;         /* 既定 */
+    --radius-pill: 25px;   /* ゴースト pill */
+    --radius-top: 35px;    /* Back to Top */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--color-bg); color: var(--color-black);
+    font-family: var(--font-jp);
+    font-size: var(--fs-body); font-weight: 400; line-height: var(--lh-body);
+    letter-spacing: var(--ls-body);
+    font-feature-settings: normal;   /* palt を使わない */
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  /* 欧文は必ず font-family ごと切り替える。weight 600 / ls 0.1em はセット */
+  .en { font-family: var(--font-en); font-weight: 600; letter-spacing: var(--ls-en); line-height: var(--lh-en); }
+  /* 和文見出しは weight 700 ＋ ls 0.08em のセット */
+  .jp-head { font-weight: 700; letter-spacing: var(--ls-jp-head); line-height: var(--lh-jp-head); }
+
+  /* HEADER — 全幅・白地・不透過。KV に重ねない */
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 22px 48px; background: #fff; }
+  .header-brand { font-family: var(--font-en); font-weight: 600; font-size: 20px; letter-spacing: var(--ls-en);
+    color: var(--color-black); text-decoration: none; line-height: 1.1; }
+  .header-brand small { display: block; font-size: 9px; letter-spacing: .2em; }
+  .header-nav { display: flex; gap: 34px; align-items: center; }
+  .header-nav a { font-family: var(--font-en); font-weight: 600; font-size: 16px; letter-spacing: var(--ls-en);
+    color: var(--color-black); text-decoration: none; }
+  .header-nav a:hover { opacity: .55; }
+  .header-lang { font-family: var(--font-en); font-weight: 600; font-size: 16px; letter-spacing: var(--ls-en); color: var(--color-black); }
+
+  /* HERO — 左右 48px の余白を残す（全幅ブリードにしない） */
+  .hero { padding: 0 48px; }
+  .hero-inner { position: relative; height: 520px; background: var(--color-darkgray); display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center; color: #fff; }
+  .hero-inner::after { content: ""; position: absolute; inset: 0; background: var(--color-scrim); }
+  .hero-body { position: relative; z-index: 1; }
+  .hero-title { font-family: var(--font-en); font-weight: 600; font-size: 72px; letter-spacing: var(--ls-en); line-height: 1.05; }
+  .hero-sub { font-family: var(--font-en); font-weight: 600; font-size: 20px; letter-spacing: var(--ls-en); margin-top: 20px; }
+  .hero-ja { display: inline-block; background: #fff; color: var(--color-black); font-weight: 700;
+    font-size: 26px; letter-spacing: var(--ls-jp-head); line-height: var(--lh-jp-head); padding: 4px 12px; margin-top: 14px; }
+
+  /* SECTIONS */
+  .section { padding: 80px 48px; max-width: 1280px; margin: 0 auto; }
+  .section--surface { background: var(--color-surface); max-width: none; }
+  .section--surface2 { background: var(--color-surface2); max-width: none; }
+  .section--surface .inner, .section--surface2 .inner { max-width: 1280px; margin: 0 auto; }
+  /* 見出しは「英字が主、和文が従」の 2 段組（福光屋とは逆） */
+  .sec-head { margin-bottom: 40px; }
+  .sec-head .en { font-size: 30px; display: block; }
+  .sec-head .ja { font-size: 16px; font-weight: 700; letter-spacing: var(--ls-body); line-height: 1.56; margin-top: 6px; }
+  .sec-lead { font-size: 15px; line-height: var(--lh-dense); letter-spacing: var(--ls-body); max-width: 760px; margin-bottom: 40px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px,1fr)); gap: 24px; }
+  .swatch { border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; background: #fff; }
+  .swatch-block { height: 92px; }
+  .swatch-info { padding: 16px; }
+  .swatch-name { font-family: var(--font-en); font-weight: 600; font-size: 13px; letter-spacing: var(--ls-en); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--color-muted); margin-top: 6px; letter-spacing: 0; }
+  .swatch-role { font-size: 12px; color: var(--color-darkgray); margin-top: 8px; line-height: 1.7; letter-spacing: var(--ls-body); }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding: 26px 0; border-bottom: 1px solid var(--color-border); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color-muted); margin-top: 12px; letter-spacing: 0; }
+
+  /* ARTICLE */
+  .article { max-width: 760px; }
+  .article h2 { font-family: var(--font-en); font-weight: 600; font-size: 30px; letter-spacing: var(--ls-en); line-height: var(--lh-en); margin-bottom: 8px; }
+  .article h2 + .ja { font-weight: 700; font-size: 16px; letter-spacing: var(--ls-body); margin-bottom: 28px; }
+  .article h3 { font-weight: 700; font-size: 32px; letter-spacing: var(--ls-jp-head); line-height: var(--lh-jp-head); margin: 40px 0 18px; }
+  .article p { font-size: 15px; line-height: var(--lh-body); letter-spacing: var(--ls-body); margin-bottom: 24px; }
+  .article a { color: var(--color-black); text-decoration: none; border-bottom: 1px solid var(--color-black); }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  /* ゴースト pill — 面色を持たないのが既定。塗るのは選択中の 1 つだけ */
+  .pill { display: inline-flex; align-items: center; justify-content: center;
+    background: transparent; color: var(--color-black); border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill); padding: 10px 24px;
+    font-size: 13px; font-weight: 700; letter-spacing: var(--ls-body); line-height: 2.0;
+    text-decoration: none; cursor: pointer; transition: background .18s ease, color .18s ease, border-color .18s ease; }
+  .pill:hover { border-color: var(--color-black); }
+  .pill--on { background: var(--color-black); color: #fff; border-color: var(--color-black); }
+  /* 記事の属性表示は矩形。pill と役割で分ける */
+  .tag { display: inline-flex; align-items: center; background: #fff; color: var(--color-black);
+    border: 1px solid var(--color-black); border-radius: var(--radius);
+    padding: 3px 9px; font-size: 14px; font-weight: 700; line-height: 1.2; letter-spacing: var(--ls-body); }
+  /* 矢印つきテキストリンク */
+  .txtbtn { display: inline-flex; align-items: center; gap: 12px; color: var(--color-black); text-decoration: none;
+    font-size: 18px; font-weight: 700; letter-spacing: var(--ls-body); }
+  .txtbtn::before { content: "›"; display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border: 1px solid var(--color-black); border-radius: 50%; font-size: 14px; }
+  .btn-top { display: inline-flex; align-items: center; justify-content: center; gap: 14px;
+    background: transparent; color: var(--color-black); border: 1px solid var(--color-black);
+    border-radius: var(--radius-top); padding: 16px 44px; text-decoration: none;
+    font-size: 18px; font-weight: 700; letter-spacing: var(--ls-body); }
+  /* ページャー（円） */
+  .pager { display: flex; gap: 10px; align-items: center; }
+  .pager span { width: 10px; height: 10px; border: 1px solid var(--color-black); border-radius: 50%; display: block; }
+  .pager .on { background: var(--color-black); }
+
+  /* PHOTO CARDS — 英字が主、和文が従。スクリムは固定値 */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 24px; }
+  .card { position: relative; height: 270px; border-radius: var(--radius); overflow: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: #fff; }
+  .card::after { content: ""; position: absolute; inset: 0; background: var(--color-scrim); }
+  .card-body { position: relative; z-index: 1; }
+  .card-en { font-family: var(--font-en); font-weight: 600; font-size: 25px; letter-spacing: var(--ls-en); line-height: var(--lh-en); }
+  .card-ja { display: inline-flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; line-height: 2.0; letter-spacing: var(--ls-body); margin-top: 8px; }
+  .card-ja::before { content: "›"; display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border: 1px solid #fff; border-radius: 50%; font-size: 12px; }
+
+  /* NEWS */
+  .news-row { display: grid; grid-template-columns: 140px 120px 1fr; gap: 20px; align-items: center;
+    padding: 22px 0; border-bottom: 1px solid var(--color-border); }
+  .news-date { font-family: var(--font-en); font-weight: 600; font-size: 18px; letter-spacing: var(--ls-en); line-height: 1.5; }
+  .news-title { font-size: 15px; line-height: var(--lh-body); letter-spacing: var(--ls-body); }
+
+  /* FORMS */
+  .form { max-width: 460px; display: grid; gap: 24px; }
+  .field label { display: block; font-family: var(--font-en); font-weight: 600; font-size: 14px; letter-spacing: var(--ls-en); margin-bottom: 8px; }
+  .field input { width: 100%; background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius); padding: 14px 16px;
+    font-family: var(--font-jp); font-size: 15px; line-height: var(--lh-body); color: var(--color-black); letter-spacing: var(--ls-body); }
+  .field input::placeholder { color: var(--color-muted); }
+  .field input:focus { outline: none; border-color: var(--color-black); }
+  .field--error input { border-color: var(--color-error); }
+  .field--error .msg { font-size: 13px; color: var(--color-error); margin-top: 6px; letter-spacing: var(--ls-body); }
+
+  /* ELEVATION — 実測 0 件。面の 4 段と 1px の罫だけ */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 24px; }
+  .elev { border-radius: var(--radius); padding: 34px; text-align: center; font-size: 15px; letter-spacing: var(--ls-body); }
+  .elev--white { background: #fff; border: 1px solid var(--color-border); }
+  .elev--s1 { background: var(--color-surface); }
+  .elev--s2 { background: var(--color-surface2); }
+  .elev--dark { background: var(--color-charcoal); color: #fff; }
+  .elev-cap { font-family: var(--font-mono); font-size: 11px; color: var(--color-muted); margin-top: 14px; text-align: center; letter-spacing: 0; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .space-bar { background: var(--color-black); }
+  .space-label { font-family: var(--font-mono); font-size: 11px; color: var(--color-muted); margin-top: 8px; text-align: center; letter-spacing: 0; }
+
+  /* FOOTER CONTACT — #2c2c2c（純黒より一段浅い） */
+  .contact { background: var(--color-charcoal); color: #fff; padding: 80px 48px; }
+  .contact-inner { max-width: 1280px; margin: 0 auto; }
+  .contact h2 { font-family: var(--font-en); font-weight: 600; font-size: 49px; letter-spacing: var(--ls-en); line-height: var(--lh-en); }
+  .contact .main { font-size: 18px; font-weight: 700; line-height: 2.0; letter-spacing: var(--ls-body); margin-top: 20px; }
+  .contact .sub { font-size: 13px; font-weight: 400; line-height: 1.44; letter-spacing: -0.01em; margin-top: 10px; opacity: .85; max-width: 560px; }
+  .contact .link { display: inline-block; font-size: 15px; font-weight: 700; letter-spacing: var(--ls-body); color: #fff; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,.6); margin-top: 22px; }
+  .contact .fnav { display: flex; gap: 26px; flex-wrap: wrap; margin-top: 48px; }
+  .contact .fnav a { font-family: var(--font-en); font-weight: 600; font-size: 14px; letter-spacing: var(--ls-en); color: #fff; text-decoration: none; }
+  .contact .copy { font-family: var(--font-en); font-weight: 600; font-size: 10px; letter-spacing: var(--ls-en); line-height: 2.0; margin-top: 34px; opacity: .7; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-brand" href="#">TRANSIT<small>GROUP</small></a>
+  <nav class="header-nav">
+    <a href="#">HOME</a>
+    <a href="#">COMPANY</a>
+    <a href="#">BUSINESS</a>
+    <a href="#">BRANDS</a>
+    <a href="#">NEWS</a>
+    <a href="#">RECRUIT</a>
+    <a href="#">CONTACT</a>
+  </nav>
+  <div class="header-lang">EN / JP</div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-body">
+      <div class="hero-title">PLAYFUL<br>DAYS.</div>
+      <div class="hero-sub">WE CREATE SPECIAL EXPERIENCES.</div>
+      <div><span class="hero-ja">遊び場を創ろう。</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <span class="en">COLOR PALETTE</span>
+    <div class="ja">色</div>
+  </div>
+  <p class="sec-lead">地は純白 #ffffff、テキストは純黒 #000000。uniqueBackgrounds に有彩色が 1 件も現れない完全なモノクロームで、彩度は写真だけが担う。区切りは #e5e5e5 の 1px 罫と #fafafa / #f2f2f2 の薄い面だけ。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-black)"></div><div class="swatch-info"><div class="swatch-name">BLACK</div><div class="swatch-hex">#000000</div><div class="swatch-role">唯一の主色。テキスト・枠・選択中 pill の面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-charcoal)"></div><div class="swatch-info"><div class="swatch-name">CHARCOAL</div><div class="swatch-hex">#2c2c2c</div><div class="swatch-role">フッター CONTACT ブロックの面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-darkgray)"></div><div class="swatch-info"><div class="swatch-name">DARK GRAY</div><div class="swatch-hex">#333333</div><div class="swatch-role">ヘッダー・ナビのテキスト</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-surface);border-bottom:1px solid var(--color-border)"></div><div class="swatch-info"><div class="swatch-name">SURFACE</div><div class="swatch-hex">#fafafa</div><div class="swatch-role">VISION / GROUP COMPANIES の面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-surface2);border-bottom:1px solid var(--color-border)"></div><div class="swatch-info"><div class="swatch-name">SURFACE 2</div><div class="swatch-hex">#f2f2f2</div><div class="swatch-role">OUR BUSINESS セクションの面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-border)"></div><div class="swatch-info"><div class="swatch-name">BORDER</div><div class="swatch-hex">#e5e5e5</div><div class="swatch-role">ゴースト pill の枠・区切り罫</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-scrim)"></div><div class="swatch-info"><div class="swatch-name">SCRIM</div><div class="swatch-hex">rgba(0,0,0,0.7)</div><div class="swatch-role">写真上の固定オーバーレイ（濃度を変えない）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:var(--color-error)"></div><div class="swatch-info"><div class="swatch-name">ERROR</div><div class="swatch-hex">#a3352e</div><div class="swatch-role">低彩度の赤（推奨値。実サイトには存在しない）</div></div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <span class="en">TYPOGRAPHY</span>
+    <div class="ja">文字</div>
+  </div>
+  <p class="sec-lead">和文は凛ゴシック、欧文は Futura PT。字間は三段しか使わない — 和文本文 0.033em / 和文見出し 0.08em / Futura PT 0.1em。Futura PT はサイズを問わず 0.1em・weight 600 で固定する。行間も和欧で分ける（和文 2.0 / 欧文 1.28）。</p>
+  <div class="type-sample"><div class="en" style="font-size:49px">CONTACT</div><div class="type-meta">Footer Head (EN) · Futura PT · 49px · weight 600 · lh 1.29 · <strong>ls 0.1em (4.9px)</strong></div></div>
+  <div class="type-sample"><div class="en" style="font-size:40px">COMPANY</div><div class="type-meta">Page Title (EN) · Futura PT · 40px · weight 600 · lh 1.27 · <strong>ls 0.1em (4px)</strong></div></div>
+  <div class="type-sample"><div class="jp-head" style="font-size:38px;line-height:1.55">新しいライフスタイルの創出</div><div class="type-meta">Statement (JP) · 凛ゴシック · 38px · <strong>weight 700</strong> · lh 1.55 · <strong>ls 0.08em (3.04px)</strong></div></div>
+  <div class="type-sample"><div class="jp-head" style="font-size:32px">新しいライフスタイルを生む仕事</div><div class="type-meta">Lead Head (JP) · 凛ゴシック · 32px · weight 700 · lh 1.5 · <strong>ls 0.08em (2.56px)</strong></div></div>
+  <div class="type-sample"><div class="en" style="font-size:30px">NEWS</div><div class="type-meta">Section Head (EN) · Futura PT · 30px · weight 600 · lh 1.27 · <strong>ls 0.1em (3px)</strong></div></div>
+  <div class="type-sample"><div class="jp-head" style="font-size:30px">ライフスタイルオペレーションプラットフォーマー</div><div class="type-meta">Sub Head (JP) · 凛ゴシック · 30px · weight 700 · lh 1.5 · ls 0.08em (2.4px)</div></div>
+  <div class="type-sample"><div class="en" style="font-size:24px">CREATIVE</div><div class="type-meta">Category (EN) · Futura PT · 24px · weight 600 · lh 1.29 · <strong>ls 0.1em (2.4px)</strong></div></div>
+  <div class="type-sample"><div style="font-size:18px;font-weight:700;line-height:1.5;letter-spacing:.5px">代表取締役社長 CEO　中村 貞裕</div><div class="type-meta">Person Title (JP) · 凛ゴシック · 18px · weight 700 · lh 1.5 · ls 0.5px</div></div>
+  <div class="type-sample"><div class="en" style="font-size:18px">2026.08.06</div><div class="type-meta">Date (EN) · Futura PT · 18px · weight 600 · lh 1.5 · <strong>ls 0.1em (1.8px)</strong></div></div>
+  <div class="type-sample"><div class="en" style="font-size:16px">HOME　COMPANY　BUSINESS</div><div class="type-meta">Nav (EN) · Futura PT · 16px · weight 600 · lh 2.0 · <strong>ls 0.1em (1.6px)</strong></div></div>
+  <div class="type-sample"><div style="font-size:16px;font-weight:700;line-height:1.56;letter-spacing:.5px">クリエイティブ</div><div class="type-meta">Category (JP) · 凛ゴシック · 16px · weight 700 · lh 1.56 · ls 0.5px</div></div>
+  <div class="type-sample"><div style="font-size:15px;line-height:2.0;letter-spacing:.5px">本文（既定）— トランジットグループは、クリエイティブ、オペレーション、プロデュースの三つを自社で持つ稀有な会社です。</div><div class="type-meta">Body · 凛ゴシック · 15px · weight 400 · <strong>lh 2.0 (30px)</strong> · <strong>ls 0.033em (0.5px)</strong></div></div>
+  <div class="type-sample"><div style="font-size:15px;line-height:1.75;letter-spacing:.5px">長文の説明段落 — 1996 年の創業以来、カフェ、レストラン、ホテル、商業施設のプロデュースを通じて、新しいライフスタイルを提案してきました。</div><div class="type-meta">Body (Dense) · 凛ゴシック · 15px · weight 400 · lh 1.75 (26.2px) · ls 0.5px</div></div>
+  <div class="type-sample"><div style="font-size:15px;font-weight:700;line-height:2.0;letter-spacing:.5px">詳しくはこちら</div><div class="type-meta">Link Label (JP) · 凛ゴシック · 15px · weight 700 · lh 2.0 · ls 0.5px</div></div>
+  <div class="type-sample"><div class="en" style="font-size:14px">SADAHIRO NAKAMURA</div><div class="type-meta">Person Name (EN) · Futura PT · 14px · weight 600 · lh 1.29 · <strong>ls 0.1em (1.4px)</strong></div></div>
+  <div class="type-sample"><span class="tag">グループ情報</span><div class="type-meta">Tag (JP) · 凛ゴシック · 14px · weight 700 · lh 1.2 · ls 0.5px（矩形バッジ）</div></div>
+  <div class="type-sample"><div style="font-size:13px;line-height:1.44;letter-spacing:-0.01em;color:var(--color-darkgray)">150店舗以上の実績をもとに、開業・運営をサポートします。</div><div class="type-meta">Note (JP) · 凛ゴシック · 13px · weight 400 · lh 1.44 · <strong>ls -0.01em</strong>（唯一の負の字間）</div></div>
+  <div class="type-sample"><div class="en" style="font-size:10px">© TRANSIT HOLDINGS INC.</div><div class="type-meta">Copyright (EN) · Futura PT · 10px · weight 600 · lh 2.0 · <strong>ls 0.1em (1px)</strong></div></div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <span class="en">ARTICLE</span>
+    <div class="ja">組版</div>
+  </div>
+  <div class="article">
+    <h2>TOP MESSAGE</h2>
+    <div class="ja">トップメッセージ</div>
+    <h3>新しいライフスタイルの創出</h3>
+    <p>トランジットグループは、クリエイティブ、オペレーション、プロデュースの三つを自社で持つ稀有な会社です。企画するだけでも、運営するだけでもない。両方を自分たちの手でやるからこそ、場所は生き続けます。</p>
+    <h3>遊び場を創ろう。</h3>
+    <p>1996 年の創業以来、カフェ、レストラン、ホテル、商業施設のプロデュースを通じて、150 店舗以上を世に出してきました。私たちがつくっているのは店ではなく、人が集まる理由です。</p>
+    <p>本文の行間は 2.0、字間は 0.033em。見出しに切り替えると weight 700 と letter-spacing 0.08em が同時に立ち上がります。英字は Futura PT に切り替え、常に 0.1em で組みます。<a href="#">ビジョンを詳しく見る</a>。</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <span class="en">CARDS</span>
+    <div class="ja">導線カード</div>
+  </div>
+  <p class="sec-lead">写真の上に rgba(0,0,0,0.7) のスクリムを固定値で掛け、中央に「Futura PT の英字（大）＋ 凛ゴシックの和文（小）」を 2 段で置く。英字が主、和文が従。角丸も影も持たない。</p>
+  <div class="card-grid">
+    <div class="card" style="background:var(--color-darkgray)"><div class="card-body"><div class="card-en">TOP MESSAGE</div><div class="card-ja">メッセージ</div></div></div>
+    <div class="card" style="background:#555"><div class="card-body"><div class="card-en">PRODUCE &amp; OPERATIONS</div><div class="card-ja">プロデュース・運営委託</div></div></div>
+    <div class="card" style="background:#777"><div class="card-body"><div class="card-en">RECRUIT</div><div class="card-ja">採用情報</div></div></div>
+  </div>
+</section>
+
+<section class="section section--surface">
+  <div class="inner">
+    <div class="sec-head">
+      <span class="en">NEWS</span>
+      <div class="ja">お知らせ</div>
+    </div>
+    <div class="btn-row" style="justify-content:flex-end;margin-bottom:34px">
+      <a class="pill pill--on" href="#">すべて</a>
+      <a class="pill" href="#">ニュースリリース</a>
+      <a class="pill" href="#">メディア掲載</a>
+      <a class="pill" href="#">グループ情報</a>
+      <a class="pill" href="#">お知らせ</a>
+    </div>
+    <div class="news-row"><div class="news-date">2026.08.06</div><div><span class="tag">グループ情報</span></div><div class="news-title">『L’AS TOKYO』、8月6日（木）より予約開始。</div></div>
+    <div class="news-row"><div class="news-date">2026.07.28</div><div><span class="tag">ニュースリリース</span></div><div class="news-title">新業態のベーカリーカフェを渋谷にオープンいたします</div></div>
+    <div class="news-row"><div class="news-date">2026.07.14</div><div><span class="tag">メディア掲載</span></div><div class="news-title">代表 中村貞裕のインタビューが掲載されました</div></div>
+    <div style="margin-top:40px"><a class="txtbtn" href="#">ニュースを詳しく見る</a></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <span class="en">BUTTONS</span>
+    <div class="ja">ボタン</div>
+  </div>
+  <p class="sec-lead">絞り込みは面色を持たないゴースト pill（radius 25px / 1px solid #e5e5e5）。塗るのは選択中の 1 つだけ。記事の属性表示は矩形バッジ（radius 0 / 1px solid #000000）。形で役割を分ける。</p>
+  <div class="btn-row">
+    <a class="pill pill--on" href="#">会社概要</a>
+    <a class="pill" href="#">トップメッセージ</a>
+    <a class="pill" href="#">ビジョン</a>
+    <a class="pill" href="#">グループ会社</a>
+    <a class="pill" href="#">沿革</a>
+  </div>
+  <div class="btn-row" style="margin-top:24px">
+    <span class="tag">グループ情報</span>
+    <span class="tag">ニュースリリース</span>
+    <span class="tag">メディア掲載</span>
+    <div class="pager"><span></span><span class="on"></span><span></span><span></span><span></span></div>
+  </div>
+  <div class="btn-row" style="margin-top:24px">
+    <a class="txtbtn" href="#">事業内容を詳しく見る</a>
+    <a class="txtbtn" href="#">採用情報を見る</a>
+  </div>
+  <div class="btn-row" style="margin-top:24px">
+    <a class="btn-top" href="#"><span class="en" style="font-size:20px">TOP</span>トップページに戻る</a>
+  </div>
+</section>
+
+<section class="section section--surface2">
+  <div class="inner">
+    <div class="sec-head">
+      <span class="en">FORMS</span>
+      <div class="ja">入力</div>
+    </div>
+    <p class="sec-lead">デフォルト / フォーカス / エラーの3状態。radius 0、罫は #e5e5e5、フォーカスは #000000。ラベルは Futura PT / 14px / ls 0.1em で入力欄の上に置く。</p>
+    <div class="form">
+      <div class="field"><label>NAME</label><input type="text" placeholder="山田 太郎"></div>
+      <div class="field"><label>EMAIL（フォーカス）</label><input type="email" value="hello@example.com" autofocus></div>
+      <div class="field field--error"><label>TEL</label><input type="tel" value="03-000"><div class="msg">正しい電話番号を入力してください。</div></div>
+      <div><a class="txtbtn" href="#">送信する</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <span class="en">ELEVATION</span>
+    <div class="ja">奥行き</div>
+  </div>
+  <p class="sec-lead">box-shadow の実測は 0 件。前後関係は面色の 4 段（#ffffff → #fafafa → #f2f2f2 → #2c2c2c）と 1px solid #e5e5e5 の罫だけで表現する。</p>
+  <div class="elev-grid">
+    <div><div class="elev elev--white">Level 0</div><div class="elev-cap">#ffffff ＋ 1px solid #e5e5e5</div></div>
+    <div><div class="elev elev--s1">Surface</div><div class="elev-cap">#fafafa</div></div>
+    <div><div class="elev elev--s2">Surface 2</div><div class="elev-cap">#f2f2f2</div></div>
+    <div><div class="elev elev--dark">Contact</div><div class="elev-cap">#2c2c2c</div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sec-head">
+    <span class="en">LAYOUT</span>
+    <div class="ja">余白</div>
+  </div>
+  <p class="sec-lead">6 / 10 / 16 / 24 / 48 / 80 / 120px。コンテナは最大 1280px、読み物カラムは 760px。KV は左右に 48px の余白を残し、全幅ブリードにしない。</p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:6px;height:6px"></div><div class="space-label">XS 6</div></div>
+    <div><div class="space-bar" style="width:10px;height:10px"></div><div class="space-label">S 10</div></div>
+    <div><div class="space-bar" style="width:16px;height:16px"></div><div class="space-label">M 16</div></div>
+    <div><div class="space-bar" style="width:24px;height:24px"></div><div class="space-label">L 24</div></div>
+    <div><div class="space-bar" style="width:48px;height:48px"></div><div class="space-label">XL 48</div></div>
+    <div><div class="space-bar" style="width:80px;height:80px"></div><div class="space-label">XXL 80</div></div>
+    <div><div class="space-bar" style="width:120px;height:120px"></div><div class="space-label">XXXL 120</div></div>
+  </div>
+</section>
+
+<div class="contact">
+  <div class="contact-inner">
+    <h2>CONTACT</h2>
+    <div class="main">各種お問い合わせ・ご依頼はこちら</div>
+    <div class="sub">150店舗以上の実績をもとに、開業・運営をサポートします。プロデュース・運営委託のご相談も承ります。</div>
+    <a class="link" href="#">詳しくはこちら</a>
+    <div class="fnav">
+      <a href="#">HOME</a>
+      <a href="#">COMPANY</a>
+      <a href="#">BUSINESS</a>
+      <a href="#">BRANDS</a>
+      <a href="#">NEWS</a>
+      <a href="#">RECRUIT</a>
+      <a href="#">CONTACT</a>
+    </div>
+    <div class="copy">© TRANSIT HOLDINGS INC. — Design System Preview　/　実測ベース 2026-08-11</div>
+  </div>
+</div>
+
+</body>
+</html>

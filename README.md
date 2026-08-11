@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (441 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (444 sites)</a>
 </p>
 
 <table>
@@ -664,6 +664,11 @@
 <td align="center"><strong>Whatever</strong><br><img src="design-md/whatever/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>福光屋</strong><br><img src="design-md/fukumitsuya/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>京都市京セラ美術館</strong><br><img src="design-md/kyocera-museum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>丸山珈琲</strong><br><img src="design-md/maruyamacoffee/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>TRANSIT GENERAL OFFICE</strong><br><img src="design-md/transit-general-office/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1165,11 +1170,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [ANDPAD (アンドパッド)](https://andpad.co.jp/) | SaaS / Construction Management | [DESIGN.md](design-md/andpad/DESIGN.md) | [preview.html](design-md/andpad/preview.html) |
 | [Whatever (ホワットエバー)](https://whatever.co/ja/) | Creative Studio | [DESIGN.md](design-md/whatever/DESIGN.md) | [preview.html](design-md/whatever/preview.html) |
 | [FUKUMITSUYA (福光屋)](https://www.fukumitsuya.co.jp/) | Sake Brewery / Since 1625 | [DESIGN.md](design-md/fukumitsuya/DESIGN.md) | [preview.html](design-md/fukumitsuya/preview.html) |
+| [Kyoto City KYOCERA Museum of Art (京都市京セラ美術館)](https://kyotocity-kyocera.museum/) | Museum / Culture | [DESIGN.md](design-md/kyocera-museum/DESIGN.md) | [preview.html](design-md/kyocera-museum/preview.html) |
+| [MARUYAMA COFFEE (丸山珈琲)](https://www.maruyamacoffee.com/) | Specialty Coffee / Roaster | [DESIGN.md](design-md/maruyamacoffee/DESIGN.md) | [preview.html](design-md/maruyamacoffee/preview.html) |
+| [TRANSIT GENERAL OFFICE (トランジットジェネラルオフィス)](https://www.transit-web.com/) | Hospitality / Space Produce | [DESIGN.md](design-md/transit-general-office/DESIGN.md) | [preview.html](design-md/transit-general-office/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (441 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (444 sites)</a>
 </p>
 
 <table>
@@ -1798,6 +1806,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>ANDPAD</strong><br><img src="design-md/andpad/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>Whatever</strong><br><img src="design-md/whatever/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>福光屋</strong><br><img src="design-md/fukumitsuya/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>京都市京セラ美術館</strong><br><img src="design-md/kyocera-museum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>丸山珈琲</strong><br><img src="design-md/maruyamacoffee/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>TRANSIT GENERAL OFFICE</strong><br><img src="design-md/transit-general-office/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
