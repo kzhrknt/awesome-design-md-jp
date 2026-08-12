@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 大分県立美術館（OPAM）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測値 === */
+    --teal: #027e73;
+    --teal-bright: #1bbc9b;
+    --mint: #75cec6;
+    --mint-pale: #c7eae7;
+    --mint-pale-ink: #00675e;
+    --green-pale: #e7eee7;
+    --sand: #dbcea5;
+    --gold: #c4aa5c;
+    --apricot: #ecb576;
+    --navy: #374c9f;
+
+    /* Calendar */
+    --sky: #c5d8f2;
+    --slate-pale: #e2e5ec;
+    --gray-legend: #d4d4d4;
+    --gray-mid: #757575;
+
+    /* Neutral */
+    --bg: #f6f6f6;
+    --surface: #ffffff;
+    --surface-2: #eef0ee;
+    --ink: #323131;
+    --ink-muted: #5e606e;
+    --ink-form: #444746;
+    --border: #a3a3a3;
+    --backtotop: #d5d6d5;
+
+    /* Semantic（実装目安） */
+    --danger: #b3312a;
+
+    /* === Elevation 実測値（1 段・オフセットなし） === */
+    --elevation-1: 0 0 6px rgba(0,0,0,0.16);
+
+    /* === Fonts 実測値 === */
+    --font-base: "Noto Sans JP", 游ゴシック体, "Yu Gothic", "ヒラギノ角ゴ ProN W3", HiraKakuProN-W3, "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-base);
+    font-size: 16px;
+    font-weight: 500;              /* ← Regular ではなく Medium */
+    line-height: 1.5;
+    letter-spacing: 0.64px;        /* 全要素に継承される px 固定 */
+    word-wrap: break-word;
+    font-feature-settings: normal; /* palt は使わない */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 72px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--slate-pale);
+  }
+  .nav-brand { font-size: 20px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-brand small { display: block; font-size: 11px; font-weight: 500; color: var(--ink-muted); }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 16px; font-weight: 500; color: var(--ink); text-decoration: none; transition: color .15s; }
+  .nav-links a:hover { color: var(--teal); }
+  .nav-search {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--teal); color: #fff;
+    padding: 10px 27px; border-radius: 100px; border: none;
+    font-family: var(--font-base); font-size: 15px; font-weight: 500;
+    text-decoration: none; cursor: pointer;
+  }
+
+  /* HERO */
+  .hero { padding: 72px 32px; text-align: center; background: var(--surface); }
+  .hero h1 { font-size: 35px; font-weight: 500; line-height: 1.5; color: var(--ink); margin-bottom: 20px; }
+  .hero p { font-size: 20px; font-weight: 500; line-height: 1.5; color: var(--ink); max-width: 720px; margin: 0 auto 32px; }
+  .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+  /* BUTTONS — すべて pill */
+  .btn-outline {
+    display: inline-block; background: var(--surface); color: var(--ink);
+    padding: 10px 20px; border-radius: 100px; border: 1px solid var(--teal);
+    font-family: var(--font-base); font-size: 18px; font-weight: 700; line-height: 1.5;
+    text-decoration: none; cursor: pointer; transition: background .15s;
+  }
+  .btn-outline:hover { background: var(--green-pale); }
+  .btn-outline-wide { padding: 10px 40px; }
+  .btn-fill {
+    display: inline-block; background: var(--teal); color: #fff;
+    padding: 12px 40px; border-radius: 100px; border: none;
+    font-family: var(--font-base); font-size: 18px; font-weight: 700; line-height: 1.5;
+    text-decoration: none; cursor: pointer; transition: opacity .15s;
+  }
+  .btn-fill:hover { opacity: .88; }
+  .btn-soft {
+    display: inline-block; background: var(--green-pale); color: var(--ink);
+    padding: 12px 40px; border-radius: 100px; border: none;
+    font-family: var(--font-base); font-size: 18px; font-weight: 700; line-height: 1.5;
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-tab {
+    display: inline-block; background: var(--surface); color: var(--ink);
+    padding: 5.4px 18px; border-radius: 100px; border: 1px solid var(--teal);
+    font-family: var(--font-base); font-size: 18px; font-weight: 500; line-height: 1.5;
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-tab--active { background: var(--sand); border-color: var(--sand); font-weight: 700; }
+
+  /* BADGES — pill */
+  .badge {
+    display: inline-block; background: var(--sand); color: var(--ink);
+    padding: 5px 16px; border-radius: 100px; border: 1px solid var(--sand);
+    font-size: 16px; font-weight: 500; line-height: 1.5;
+  }
+  .badge--event { background: var(--mint); border-color: var(--mint); }
+  .badge--news { background: var(--surface); border-color: var(--apricot); color: #0a0a0a; font-size: 12px; font-weight: 700; }
+  .badge--new { background: var(--ink); border-color: var(--ink); color: #fff; font-size: 12px; font-weight: 700; }
+  .badge--facility { background: var(--gray-legend); border-color: var(--gray-legend); font-size: 20px; padding: 8px 20px; }
+  .badge--frame { background: var(--surface); border: 1px solid var(--border); border-radius: 0; font-size: 14px; font-weight: 400; } /* 唯一の矩形 */
+
+  /* STATUS CIRCLES */
+  .status {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 88px; height: 88px; border-radius: 50%;
+    background: var(--teal); color: #fff;
+    font-size: 16px; font-weight: 500; line-height: 1.5; text-align: center;
+  }
+  .status--soon { background: var(--mint-pale); color: var(--mint-pale-ink); }
+  .status--ended { background: var(--gray-mid); color: #fff; }
+  .status--free { background: var(--navy); color: #fff; }
+
+  /* SECTIONS */
+  .section { padding: 72px 32px; max-width: 1280px; margin: 0 auto; }
+  .section-label { font-size: 16px; font-weight: 700; color: var(--teal); margin-bottom: 8px; }
+  .section-title { font-size: 28px; font-weight: 700; line-height: 1.5; margin-bottom: 32px; color: var(--ink); }
+  .section-divider { border: none; border-top: 1px solid var(--slate-pale); margin: 0; }
+  .section-white { background: var(--surface); padding: 72px 32px; }
+  .section-white .section-inner { max-width: 1280px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { overflow: hidden; background: var(--surface); box-shadow: var(--elevation-1); }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; color: var(--ink); }
+  .color-swatch-hex { font-size: 12px; color: var(--ink-muted); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 11px; color: var(--ink-muted); margin-top: 3px; line-height: 1.5; }
+  .color-group-label { font-size: 20px; font-weight: 700; color: var(--ink); margin: 24px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--slate-pale); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--ink-muted); margin-top: 8px; letter-spacing: normal; }
+  .type-context { display: inline-block; background: var(--sand); color: var(--ink); font-size: 11px; padding: 2px 8px; border-radius: 100px; margin-left: 8px; font-family: var(--font-base); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+  .card { background: var(--surface); border-radius: 0; box-shadow: var(--elevation-1); overflow: hidden; }
+  .card-thumb { height: 160px; background: var(--slate-pale); display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--ink-muted); }
+  .card-body { padding: 20px; }
+  .card-body h3 { font-size: 20px; font-weight: 700; line-height: 1.5; margin: 12px 0 12px; color: var(--ink); }
+  .card-meta { font-size: 16px; font-weight: 500; line-height: 1.5; color: var(--ink); display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+
+  /* TODAY BLOCK */
+  .today { background: var(--sand); padding: 32px 40px; }
+  .today .date { font-size: 22px; font-weight: 700; line-height: 1.5; letter-spacing: 2px; color: var(--ink); }
+  .today hr { border: none; border-top: 1px solid var(--gold); margin: 16px 0; }
+  .today .hours { font-size: 20px; font-weight: 500; line-height: 1.5; color: var(--ink); }
+
+  /* CALENDAR */
+  .cal { border-collapse: collapse; width: 100%; max-width: 560px; background: var(--surface); }
+  .cal th, .cal td { border: 1px solid var(--slate-pale); text-align: center; padding: 12px 0; font-size: 16px; font-weight: 500; }
+  .cal th { font-weight: 700; }
+  .cal td.ext { background: var(--sky); }
+  .cal td.past { color: var(--gray-mid); }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 440px; }
+  .form-label { display: block; font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: var(--bg); color: var(--ink);
+    border: 1px solid var(--bg); padding: 16px 24px; border-radius: 0;
+    font-family: var(--font-base); font-size: 16px; font-weight: 400; outline: none; transition: border-color .15s;
+  }
+  .form-input::placeholder { color: var(--ink-form); }
+  .form-input--focus { border-color: var(--teal); }
+  .form-input--error { border-color: var(--danger); }
+  .form-search { background: var(--surface); border: none; border-radius: 25px; padding: 12px 20px; }
+  .form-state-label { font-size: 12px; color: var(--ink-muted); margin-top: 4px; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
+  .elevation-card { background: var(--surface); padding: 24px; text-align: center; }
+  .elevation-label { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); word-break: break-all; letter-spacing: normal; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--teal); border-radius: 100px; margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); letter-spacing: normal; }
+
+  /* WIDTHS */
+  .width-bar { height: 32px; background: var(--surface); border: 1px solid var(--slate-pale); border-radius: 100px; margin-bottom: 8px; overflow: hidden; }
+  .width-bar-inner { height: 100%; background: var(--teal); opacity: .3; }
+  .width-bar-label { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .width-bar-value { font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted); font-weight: 400; letter-spacing: normal; }
+
+  /* FOOTER */
+  .footer { padding: 40px 32px; text-align: center; background: var(--surface-2); font-size: 14px; color: var(--ink); line-height: 1.5; }
+
+  @media (max-width: 769px) {
+    .hero { padding: 48px 20px; }
+    .hero h1 { font-size: 24px; }
+    .nav-links { display: none; }
+    .section, .section-white { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .today { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">OPAM 大分県立美術館<small>Oita Prefectural Art Museum</small></a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#exhibition">Exhibition</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#elevation">Elevation</a></li>
+  </ul>
+  <a class="nav-search" href="#">🔍 検索</a>
+</nav>
+
+<section class="hero">
+  <h1>出会いと五感のミュージアム</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。カラー、タイポグラフィ、コンポーネント、スペーシングの全値を可視化。computed style 実測値に基づく。</p>
+  <div class="hero-buttons">
+    <a class="btn-outline btn-outline-wide" href="#">展覧会年間スケジュール</a>
+    <a class="btn-fill" href="#">この条件で絞り込む</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット — ティール（操作）と サンド（展覧会）の二軸</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#027e73"></div><div class="color-swatch-info"><div class="color-swatch-name">Teal</div><div class="color-swatch-hex">#027e73</div><div class="color-swatch-role">主色。押せるもの＝検索・実行・枠・開催中</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1bbc9b"></div><div class="color-swatch-info"><div class="color-swatch-name">Bright Teal</div><div class="color-swatch-hex">#1bbc9b</div><div class="color-swatch-role">月タブ専用</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#75cec6"></div><div class="color-swatch-info"><div class="color-swatch-name">Mint</div><div class="color-swatch-hex">#75cec6</div><div class="color-swatch-role">イベントバッジ</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c7eae7"></div><div class="color-swatch-info"><div class="color-swatch-name">Pale Mint</div><div class="color-swatch-hex">#c7eae7</div><div class="color-swatch-role">開催予定の円（文字 #00675e）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e7eee7"></div><div class="color-swatch-info"><div class="color-swatch-name">Pale Green</div><div class="color-swatch-hex">#e7eee7</div><div class="color-swatch-role">印刷するボタン</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dbcea5"></div><div class="color-swatch-info"><div class="color-swatch-name">Sand</div><div class="color-swatch-hex">#dbcea5</div><div class="color-swatch-role">第 2 の主色。展覧会バッジ・当日情報</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c4aa5c"></div><div class="color-swatch-info"><div class="color-swatch-name">Gold</div><div class="color-swatch-hex">#c4aa5c</div><div class="color-swatch-role">サンドの濃版。罫・Warning に流用</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ecb576"></div><div class="color-swatch-info"><div class="color-swatch-name">Apricot</div><div class="color-swatch-hex">#ecb576</div><div class="color-swatch-role">お知らせバッジの枠のみ（面は白）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#374c9f"></div><div class="color-swatch-info"><div class="color-swatch-name">Navy</div><div class="color-swatch-hex">#374c9f</div><div class="color-swatch-role">申込不要の円</div></div></div>
+  </div>
+
+  <div class="color-group-label">Calendar</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c5d8f2"></div><div class="color-swatch-info"><div class="color-swatch-name">Sky</div><div class="color-swatch-hex">#c5d8f2</div><div class="color-swatch-role">開館延長日のセル専用</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e2e5ec"></div><div class="color-swatch-info"><div class="color-swatch-name">Pale Slate</div><div class="color-swatch-hex">#e2e5ec</div><div class="color-swatch-role">カレンダーの枠・区切り</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d4d4d4"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray Legend</div><div class="color-swatch-hex">#d4d4d4</div><div class="color-swatch-role">凡例・施設バッジ</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#757575"></div><div class="color-swatch-info"><div class="color-swatch-name">Mid Gray</div><div class="color-swatch-hex">#757575</div><div class="color-swatch-role">開催終了の円・非活性</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f6f6f6"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#f6f6f6</div><div class="color-swatch-role">ページ地色。純白ではない</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #e2e5ec"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">カード・アウトライン pill の面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#eef0ee"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface 2</div><div class="color-swatch-hex">#eef0ee</div><div class="color-swatch-role">フッター上部の面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#323131"></div><div class="color-swatch-info"><div class="color-swatch-name">Ink</div><div class="color-swatch-hex">#323131</div><div class="color-swatch-role">主文字色。純黒を使わない</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#5e606e"></div><div class="color-swatch-info"><div class="color-swatch-name">Ink Muted</div><div class="color-swatch-hex">#5e606e</div><div class="color-swatch-role">弱いラベル</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#a3a3a3"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#a3a3a3</div><div class="color-swatch-role">「会期」枠バッジ</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section-white" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <h2 class="section-title">タイポグラフィ階層 — body に weight 500 と ls 0.64px</h2>
+
+  <div class="type-sample">
+    <div style="font-size:38px; font-weight:700; line-height:1.5;">ラブ! ヴァンガード!! 前衛を愛した、あるコレクターの眼</div>
+    <div class="type-meta">38px / 700 / line-height: 1.5 / letter-spacing: 0.64px (0.017em)<span class="type-context">展覧会タイトル</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:37px; font-weight:700; line-height:1.2; letter-spacing:10px; background:#027e73; color:#fff; padding:20px 24px; display:inline-block;">本日開館</div>
+    <div class="type-meta">37px / 700 / line-height: 1.2 / letter-spacing: 10px (0.27em)<span class="type-context">唯一の極端な字間</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:35px; font-weight:500; line-height:1.5;">展覧会</div>
+    <div class="type-meta">35px / 500 / line-height: 1.5 / letter-spacing: 0.64px<span class="type-context">ページタイトル（h1）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:28px; font-weight:700; line-height:1.5;">カレンダー</div>
+    <div class="type-meta">28px / 700 / line-height: 1.5 / letter-spacing: 0.64px (0.023em)<span class="type-context">セクション見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:28px; font-weight:500; line-height:1.5;">café Charité（カフェ シャリテ）</div>
+    <div class="type-meta">28px / 500 / line-height: 1.5 / letter-spacing: 0.64px<span class="type-context">施設名（weight 500）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:22px; font-weight:700; line-height:1.5; letter-spacing:2px;">2026年8月12日（水曜日）</div>
+    <div class="type-meta">22px / 700 / line-height: 1.5 / letter-spacing: 2px (0.09em)<span class="type-context">日付（字間の例外）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:20px; font-weight:700; line-height:1.5;">トークセッション「東勝吉をめぐって ― 由布院と一人の画家」</div>
+    <div class="type-meta">20px / 700 / line-height: 1.5 / letter-spacing: 0.64px<span class="type-context">サブ見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:20px; font-weight:500; line-height:1.5;">10時から19時まで（入場は閉館の30分前まで）</div>
+    <div class="type-meta">20px / 500 / line-height: 1.5 / letter-spacing: 0.64px<span class="type-context">開館情報</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:500; line-height:1.5;">本文テキスト — 大分県立美術館は、大分県の芸術文化の拠点として 2015 年に開館しました。県民の暮らしのなかに美術を届け、出会いと五感を通じて作品と向き合う場をつくっています。body には font-weight: 500 と letter-spacing: 0.64px が掛かっています。</div>
+    <div class="type-meta">16px / 500 / line-height: 1.5 (24px) / letter-spacing: 0.64px (0.04em)<span class="type-context">body の基準</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:1.5;">会期・場所などのラベル（400 が現れる数少ない箇所）</div>
+    <div class="type-meta">14px / 400 / line-height: 1.5 / letter-spacing: 0.64px<span class="type-context">枠バッジ・フォーム入力欄のみ</span></div>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- EXHIBITION -->
+<section class="section" id="exhibition">
+  <div class="section-label">03 / Exhibition — 展覧会の組版</div>
+  <h2 class="section-title">当日情報ブロックとカレンダー</h2>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:32px; align-items:start;">
+    <div>
+      <div class="today">
+        <div class="date">2026年8月12日（水曜日）</div>
+        <hr>
+        <div class="hours">10時から19時まで（入場は閉館の30分前まで）</div>
+      </div>
+      <div style="margin-top:24px; display:flex; flex-direction:column; gap:16px;">
+        <div><span class="badge">企画展</span><div style="margin-top:8px; font-size:16px; font-weight:500; text-decoration:underline;">ラブ! ヴァンガード!! 前衛を愛した、あるコレクターの眼 ―草間彌生、ヘイター and more</div></div>
+        <div><span class="badge">コレクション展</span><div style="margin-top:8px; font-size:16px; font-weight:500; text-decoration:underline;">Hello Kitty 展 － わたしが変わるとキティも変わる －</div></div>
+        <div><span class="badge badge--event">イベント</span><div style="margin-top:8px; font-size:16px; font-weight:500; text-decoration:underline;">トークセッション「東勝吉をめぐって」</div></div>
+      </div>
+    </div>
+    <div>
+      <table class="cal">
+        <thead><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr></thead>
+        <tbody>
+          <tr><td class="past">26</td><td class="past">27</td><td class="past">28</td><td class="past">29</td><td class="past">30</td><td class="past">31</td><td class="ext">1</td></tr>
+          <tr><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td class="ext">7</td><td class="ext">8</td></tr>
+          <tr><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td class="ext">14</td><td class="ext">15</td></tr>
+          <tr><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td class="ext">21</td><td class="ext">22</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:12px; font-size:14px; color:var(--ink-muted);">水色のセル（<span style="display:inline-block;width:14px;height:14px;background:var(--sky);vertical-align:middle"></span> #c5d8f2）は開館延長日（20時まで）。この色はカレンダーの外に持ち出さない。</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS & BADGES -->
+<section class="section-white" id="buttons">
+<div class="section-inner">
+  <div class="section-label">04 / Buttons &amp; Badges</div>
+  <h2 class="section-title">すべて pill（radius 100px）— 矩形のボタンは存在しない</h2>
+
+  <div style="display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start; margin-bottom:40px;">
+    <div style="text-align:center"><a class="btn-outline" href="#">もっと見る</a><div style="font-size:12px;color:var(--ink-muted);margin-top:8px">Outline — 遷移</div></div>
+    <div style="text-align:center"><a class="btn-fill" href="#">この条件で絞り込む</a><div style="font-size:12px;color:var(--ink-muted);margin-top:8px">Filled — 実行</div></div>
+    <div style="text-align:center"><a class="btn-soft" href="#">印刷する</a><div style="font-size:12px;color:var(--ink-muted);margin-top:8px">Soft — 副次操作</div></div>
+    <div style="text-align:center"><a class="btn-tab" href="#">開催予定</a><div style="font-size:12px;color:var(--ink-muted);margin-top:8px">Tab — 非選択</div></div>
+    <div style="text-align:center"><a class="btn-tab btn-tab--active" href="#">展覧会</a><div style="font-size:12px;color:var(--ink-muted);margin-top:8px">Tab — 選択中（面を塗り 700 に）</div></div>
+  </div>
+
+  <h3 style="font-size:20px; font-weight:700; margin-bottom:16px;">バッジ（pill）</h3>
+  <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:32px;">
+    <span class="badge">企画展</span>
+    <span class="badge">コレクション展</span>
+    <span class="badge">MAPO</span>
+    <span class="badge badge--event">イベント</span>
+    <span class="badge badge--news">お知らせ</span>
+    <span class="badge badge--new">NEW</span>
+    <span class="badge badge--facility">カフェ</span>
+    <span class="badge badge--frame">会期</span>
+  </div>
+  <p style="font-size:14px; color:var(--ink-muted); margin-bottom:40px;">「お知らせ」は面を持たない唯一のバッジ（白地＋1px solid #ecb576）。「会期」はサイト内で唯一の矩形（radius 0）。</p>
+
+  <h3 style="font-size:20px; font-weight:700; margin-bottom:16px;">ステータス円（radius 50%）— pill（分類）と円（状態）を形で分ける</h3>
+  <div style="display:flex; gap:20px; flex-wrap:wrap; align-items:center;">
+    <div class="status">開催中</div>
+    <div class="status status--soon">開催予定</div>
+    <div class="status status--ended">開催終了</div>
+    <div class="status status--free">申込不要</div>
+  </div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">カードは矩形（radius 0）、中の操作要素は pill</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-thumb">展覧会ポスター</div>
+      <div class="card-body">
+        <span class="badge">企画展</span>
+        <h3>ラブ! ヴァンガード!! 前衛を愛した、あるコレクターの眼</h3>
+        <div class="card-meta"><span class="badge--frame badge">会期</span><span>2026年7月17日〜9月23日</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb">展覧会ポスター</div>
+      <div class="card-body">
+        <span class="badge">コレクション展</span>
+        <h3>Hello Kitty 展 － わたしが変わるとキティも変わる －</h3>
+        <div class="card-meta"><span class="badge--frame badge">会期</span><span>2026年7月17日〜9月23日</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb">イベント写真</div>
+      <div class="card-body">
+        <span class="badge badge--event">イベント</span>
+        <h3>トークセッション「東勝吉をめぐって ― 由布院と一人の画家」</h3>
+        <div class="card-meta"><span class="badge--frame badge">会期</span><span>2026年8月23日</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section-white" id="forms">
+<div class="section-inner">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group"><label class="form-label">検索（枠を持たず pill の面だけ）</label><input class="form-input form-search" type="text" placeholder="サイト内を検索"><div class="form-state-label">border: なし / radius: 25px</div></div>
+  <div class="form-group"><label class="form-label">お名前</label><input class="form-input" type="text" placeholder="大分 太郎"><div class="form-state-label">デフォルト — 面を地色 #f6f6f6 と同じにして白いカードの上で凹ませる</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--focus" type="text" value="taro@example.com"><div class="form-state-label">フォーカス — border: #027e73（ティール）</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー — border: #b3312a（実装目安）</div></div>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation — 実測値（1 段・オフセットなし）</div>
+  <h2 class="section-title">Depth &amp; Elevation</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card" style="border:1px solid var(--slate-pale)"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">ボタン・バッジ・ステータス円・入力欄のすべて</div></div>
+    <div class="elevation-card" style="box-shadow: var(--elevation-1);"><div class="elevation-label">Level 1</div><div class="elevation-desc">0 0 6px rgba(0,0,0,0.16) — カード・フローティングバッジ</div></div>
+    <div class="elevation-card" style="background:var(--bg)"><div class="elevation-label">地 #f6f6f6</div><div class="elevation-desc">ページ地色。カードの白より暗い</div></div>
+    <div class="elevation-card" style="border: 2px solid var(--teal);"><div class="elevation-label">Focus Ring</div><div class="elevation-desc">#027e73</div></div>
+  </div>
+  <p style="margin-top:20px; font-size:14px; color:var(--ink-muted); line-height:1.5;">影に方向（オフセット）を持たせない。「浮いている」ではなく「輪郭が柔らかい」表現。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">08 / Layout</div>
+  <h2 class="section-title">スペーシングとコンテンツ幅</h2>
+
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:5px"></div><div class="spacing-value">XS 5</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:10px"></div><div class="spacing-value">S 10</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">M 16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">L 24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">XL 40</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:64px"></div><div class="spacing-value">XXL 64</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:96px"></div><div class="spacing-value">XXXL 96</div></div>
+  </div>
+
+  <div style="margin-bottom:16px"><div class="width-bar-label">Main Container <span class="width-bar-value">1280px 目安</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Article <span class="width-bar-value">800px 目安</span></div><div class="width-bar"><div class="width-bar-inner" style="width:62.5%"></div></div></div>
+  <p style="font-size:14px; color:var(--ink-muted); line-height:1.5;">実サイトは <code style="font-family:var(--font-mono)">max-width: 100%</code> の流動レイアウトで、コンテナ幅を CSS 変数に持たない。上記は実装時の目安。</p>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://www.opam.jp/" style="color:var(--teal); text-decoration:underline;">opam.jp</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-08-12）<br>
+  フォントは Noto Sans JP（Google Fonts）のため、実サイトと同じ書体でプレビューできる。body の weight 500 を再現するため 500 を読み込んでいる。
+</footer>
+
+</body>
+</html>

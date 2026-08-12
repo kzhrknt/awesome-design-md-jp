@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 角川武蔵野ミュージアム</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測値 === */
+    --sumi: #231815;          /* 印刷のスミ＝赤みのある黒 */
+    --yamabuki: #ffcc00;      /* 唯一の高彩度。チケット導線だけ */
+    --cream: #f7f3de;
+    --black: #000000;         /* 本文テキストのみ */
+
+    /* Category */
+    --cat-purple: #905ed3;
+    --cat-green: #4abf23;
+    --cat-cyan: #38b9e1;
+    --cat-warm: #766965;
+
+    /* Neutral */
+    --bg: #ffffff;
+    --surface: #e9e9e9;
+    --ink-muted: #939393;
+
+    /* Semantic（実装目安） */
+    --danger: #c0392b;
+    --warning: #d98c00;       /* 山吹は流用しない */
+
+    /* === Fonts 実測値 === */
+    --font-base: "Noto Sans JP", メイリオ, Meiryo, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", 游ゴシック, YuGothic, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--black);
+    font-family: var(--font-base);
+    font-size: 16px; font-weight: 400; line-height: 1.5;
+    letter-spacing: 0.32px;        /* px 固定・全要素に継承 */
+    word-wrap: break-word;
+    font-feature-settings: normal; /* palt は使わない */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV — 2 段構成 */
+  .nav-util {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 32px; background: var(--bg);
+    font-size: 12px; font-weight: 400; color: var(--black);
+  }
+  .nav-util-right { display: flex; align-items: center; gap: 12px; }
+  .nav-main {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 32px;
+    padding: 12px 32px; background: var(--bg);
+    border-bottom: 1px solid var(--surface);
+  }
+  .nav-brand { font-size: 14px; font-weight: 700; color: var(--sumi); text-decoration: none; line-height: 1.4; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 700; color: var(--sumi); text-decoration: none; transition: opacity .15s; }
+  .nav-links a:hover { opacity: .6; }
+
+  /* BUTTONS */
+  .btn-ticket {
+    display: inline-block; background: var(--yamabuki); color: var(--sumi);
+    padding: 8px 24px; border-radius: 50px; border: 3px solid var(--sumi);
+    font-family: var(--font-base); font-size: 12px; font-weight: 700; line-height: 1.5;
+    text-decoration: none; cursor: pointer; transition: opacity .15s;
+  }
+  .btn-ticket:hover { opacity: .85; }
+  .btn-ticket--lg { font-size: 16px; padding: 16px 32px; }
+  .btn-search {
+    display: inline-block; background: var(--sumi); color: #fff;
+    padding: 8px 16px; border-radius: 0; border: 3px solid var(--sumi);
+    font-family: var(--font-base); font-size: 12px; font-weight: 100; line-height: 1.5;
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-fill {
+    display: inline-block; background: var(--sumi); color: #fff;
+    padding: 6px 15px; border-radius: 0; border: 3px solid var(--sumi);
+    font-family: var(--font-base); font-size: 14px; font-weight: 700; line-height: 1.5;
+    text-decoration: none; cursor: pointer; transition: opacity .15s;
+  }
+  .btn-fill:hover { opacity: .85; }
+  .btn-outline {
+    display: inline-block; background: transparent; color: var(--sumi);
+    padding: 6px 20px; border-radius: 0; border: 3px solid var(--sumi);
+    font-family: var(--font-base); font-size: 12px; font-weight: 700; line-height: 1.5;
+    text-decoration: none; cursor: pointer; transition: background .15s, color .15s;
+  }
+  .btn-outline:hover { background: var(--sumi); color: #fff; }
+  .btn-outline--md { font-size: 14px; padding: 6px 15px; }
+  .btn-outline--invert { color: #fff; border-color: #fff; }
+  .btn-outline--invert:hover { background: #fff; color: var(--sumi); }
+
+  /* BADGES — 矩形 */
+  .badge {
+    display: inline-block; background: var(--sumi); color: #fff;
+    padding: 2px 5px; border-radius: 0; border: none;
+    font-size: 12px; font-weight: 400; line-height: 1.5;
+  }
+  .badge--kikaku { background: var(--cat-purple); }
+  .badge--library { background: var(--cat-green); }
+  .badge--event { background: var(--cat-cyan); }
+  .badge--soon { background: var(--cat-warm); }
+
+  /* HERO */
+  .hero { padding: 80px 32px; text-align: center; background: var(--cream); }
+  .hero h1 { font-size: 28px; font-weight: 700; line-height: 1.5; color: var(--sumi); margin-bottom: 20px; }
+  .hero p { font-size: 16px; font-weight: 400; line-height: 1.5; color: var(--black); max-width: 720px; margin: 0 auto 32px; }
+  .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+  /* BANDS */
+  .band { padding: 20px 32px; }
+  .band-inner { max-width: 1240px; margin: 0 auto; display: flex; align-items: center; gap: 32px; }
+  .band--important { background: var(--sumi); color: #fff; }
+  .band--topics { background: var(--surface); color: var(--black); }
+  .band-label { font-size: 16px; font-weight: 700; flex: 0 0 160px; }
+  .band--important .band-label { color: #fff; }
+  .band--topics .band-label { color: var(--sumi); }
+  .band-list { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .band-row { display: flex; gap: 16px; align-items: baseline; }
+  .band-date { font-size: 12px; font-weight: 100; flex: 0 0 88px; }
+  .band--topics .band-date { font-weight: 400; }
+  .band-text { font-size: 16px; font-weight: 400; }
+
+  /* SECTIONS */
+  .section { padding: 72px 32px; max-width: 1240px; margin: 0 auto; }
+  .section-label { font-size: 14px; font-weight: 700; color: var(--sumi); margin-bottom: 8px; }
+  .section-title { font-size: 28px; font-weight: 700; line-height: 1.5; margin-bottom: 32px; color: var(--sumi); }
+  .section-divider { border: none; border-top: 1px solid var(--surface); margin: 0; }
+  .section-cream { background: var(--cream); padding: 72px 32px; }
+  .section-cream .section-inner { max-width: 1240px; margin: 0 auto; }
+
+  /* VERTICAL HEADING — このサイトの核 */
+  .vertical-layout { display: grid; grid-template-columns: 110px 1fr; gap: 32px; align-items: start; }
+  .v-head {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-size: 28px; font-weight: 700; line-height: 1.5;
+    letter-spacing: 0.2em;              /* 縦組み専用の広い字間（em 指定） */
+    color: var(--sumi);
+    margin: 0;
+  }
+  .v-head--sm { font-size: 20px; letter-spacing: 0.2em; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { overflow: hidden; background: #fff; border: 3px solid var(--sumi); }
+  .color-swatch-block { height: 68px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; border-top: 3px solid var(--sumi); }
+  .color-swatch-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; color: var(--sumi); }
+  .color-swatch-hex { font-size: 12px; color: var(--ink-muted); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 11px; color: var(--ink-muted); margin-top: 3px; line-height: 1.5; }
+  .color-group-label { font-size: 20px; font-weight: 700; color: var(--sumi); margin: 24px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--surface); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted); margin-top: 8px; letter-spacing: normal; }
+  .type-context { display: inline-block; background: var(--cream); color: var(--sumi); font-size: 11px; padding: 2px 8px; margin-left: 8px; font-family: var(--font-base); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .card { background: #fff; border: none; border-radius: 0; box-shadow: none; }
+  .card-thumb { aspect-ratio: 3/4; background: var(--sumi); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; font-weight: 100; }
+  .card-badges { display: flex; gap: 4px; margin: 12px 0 8px; }
+  .card h3 { font-size: 16px; font-weight: 700; line-height: 1.5; color: var(--black); margin-bottom: 8px; }
+  .card-meta { font-size: 12px; font-weight: 400; line-height: 1.5; color: var(--black); }
+  .card-meta dt { display: inline-block; width: 3em; }
+
+  /* SCRIM */
+  .scrim-demo {
+    height: 180px; position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #4a5a6a, #8fa3b8);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .scrim-demo::after {
+    content: ""; position: absolute; inset: 0;
+    background-color: rgba(0,0,0,0.8);
+    background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2) 7.5px, rgba(0,0,0,0) 0, rgba(0,0,0,0) 15px);
+  }
+  .scrim-demo span { position: relative; z-index: 1; color: #fff; font-size: 14px; font-weight: 700; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 440px; }
+  .form-label { display: block; font-size: 16px; font-weight: 700; color: var(--sumi); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: #fff; color: var(--black);
+    border: 3px solid var(--sumi); padding: 10px 14px; border-radius: 0;
+    font-family: var(--font-base); font-size: 16px; outline: none; letter-spacing: 0.32px;
+    transition: border-color .15s;
+  }
+  .form-input::placeholder { color: var(--ink-muted); }
+  .form-input--focus { border-color: var(--yamabuki); }
+  .form-input--error { border-color: var(--danger); }
+  .form-state-label { font-size: 12px; color: var(--ink-muted); margin-top: 4px; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
+  .elevation-card { background: #fff; padding: 24px; text-align: center; border: 3px solid var(--sumi); }
+  .elevation-label { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: var(--sumi); }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); word-break: break-all; letter-spacing: normal; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--sumi); margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); letter-spacing: normal; }
+
+  /* WIDTHS */
+  .width-bar { height: 32px; background: #fff; border: 3px solid var(--sumi); margin-bottom: 8px; }
+  .width-bar-inner { height: 100%; background: var(--yamabuki); }
+  .width-bar-label { font-size: 16px; font-weight: 700; color: var(--sumi); margin-bottom: 4px; }
+  .width-bar-value { font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted); font-weight: 400; letter-spacing: normal; }
+
+  /* FOOTER */
+  .footer { padding: 40px 32px; text-align: center; background: var(--surface); font-size: 14px; color: var(--black); line-height: 1.5; }
+
+  @media (max-width: 769px) {
+    .hero { padding: 48px 20px; }
+    .hero h1 { font-size: 22px; }
+    .nav-links, .nav-util { display: none; }
+    .section, .section-cream { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr 1fr; }
+    .band-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
+    /* モバイルでは縦組みを解除するが 0.2em は維持する */
+    .vertical-layout { grid-template-columns: 1fr; }
+    .v-head { writing-mode: horizontal-tb; font-size: 22px; letter-spacing: 0.2em; }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav-util">
+  <span>📅 営業カレンダー　本日の営業時間：10:00 〜 18:00</span>
+  <span class="nav-util-right">
+    <a class="btn-ticket" href="#">チケット購入はこちら</a>
+    <a class="btn-search" href="#">蔵書／収蔵品 検索</a>
+  </span>
+</div>
+
+<nav class="nav-main">
+  <a class="nav-brand" href="#">Kadokawa<br>Culture Museum</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#vertical">Vertical</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#elevation">Elevation</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <h1>図書館・美術館・博物館が同居するミュージアム</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。カラー、タイポグラフィ、コンポーネント、スペーシングの全値を可視化。computed style 実測値に基づく。</p>
+  <div class="hero-buttons">
+    <a class="btn-ticket btn-ticket--lg" href="#">チケット購入はこちら</a>
+    <a class="btn-outline btn-outline--md" href="#">DESIGN.md を読む</a>
+  </div>
+</section>
+
+<!-- BANDS -->
+<section class="band band--important">
+  <div class="band-inner">
+    <div class="band-label">重要なお知らせ</div>
+    <div class="band-list">
+      <div class="band-row"><span class="band-date">2026.03.13</span><span class="band-text">角川武蔵野ミュージアムの公式チケット販売サイト変更のお知らせ</span></div>
+      <div class="band-row"><span class="band-date">2025.06.27</span><span class="band-text">【ご注意】当館になりすましたSNSアカウントについて</span></div>
+    </div>
+    <a class="btn-outline btn-outline--invert" href="#">› 一覧</a>
+  </div>
+</section>
+
+<section class="band band--topics">
+  <div class="band-inner">
+    <div class="band-label">トピックス</div>
+    <div class="band-list">
+      <div class="band-row"><span class="band-date">2026.07.14</span><span class="band-text">8月の休館日【4日、18日、25日】及び8月31日までのチケット販売に関するお知らせ</span></div>
+      <div class="band-row"><span class="band-date">2026.07.05</span><span class="band-text">夏休みは家族で角川武蔵野ミュージアムへ！小学生無料キャンペーンを実施します</span></div>
+    </div>
+    <a class="btn-outline" href="#">› 一覧</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">カラーパレット — 墨と山吹の 2 色が骨格</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#231815"></div><div class="color-swatch-info"><div class="color-swatch-name">Sumi</div><div class="color-swatch-hex">#231815</div><div class="color-swatch-role">主色。印刷のスミ＝赤みのある黒。面・枠・帯・バッジ</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffcc00"></div><div class="color-swatch-info"><div class="color-swatch-name">Yamabuki</div><div class="color-swatch-hex">#ffcc00</div><div class="color-swatch-role">唯一の高彩度。チケット購入導線だけ</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f7f3de"></div><div class="color-swatch-info"><div class="color-swatch-name">Cream</div><div class="color-swatch-hex">#f7f3de</div><div class="color-swatch-role">企画展セクションの地。紙の色</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000000"></div><div class="color-swatch-info"><div class="color-swatch-name">Black</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">本文テキストのみ。面や枠には使わない</div></div></div>
+  </div>
+
+  <div class="color-group-label">Category — カテゴリ識別色（12px のバッジにのみ現れる）</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#905ed3"></div><div class="color-swatch-info"><div class="color-swatch-name">Purple</div><div class="color-swatch-hex">#905ed3</div><div class="color-swatch-role">企画展</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#4abf23"></div><div class="color-swatch-info"><div class="color-swatch-name">Green</div><div class="color-swatch-hex">#4abf23</div><div class="color-swatch-role">ライブラリー・Success に流用</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#38b9e1"></div><div class="color-swatch-info"><div class="color-swatch-name">Cyan</div><div class="color-swatch-hex">#38b9e1</div><div class="color-swatch-role">イベント</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#766965"></div><div class="color-swatch-info"><div class="color-swatch-name">Warm Gray</div><div class="color-swatch-hex">#766965</div><div class="color-swatch-role">開催予定。墨の彩度を落とした同系色</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ地色。純白</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e9e9e9"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#e9e9e9</div><div class="color-swatch-role">トピックス帯・言語切替メニュー</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#939393"></div><div class="color-swatch-info"><div class="color-swatch-name">Ink Muted</div><div class="color-swatch-hex">#939393</div><div class="color-swatch-role">写真クレジット・非活性</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d98c00"></div><div class="color-swatch-info"><div class="color-swatch-name">Warning</div><div class="color-swatch-hex">#d98c00</div><div class="color-swatch-role">山吹は流用しない（実装目安）</div></div></div>
+  </div>
+
+  <div class="color-group-label">Modal Scrim — rgba(0,0,0,0.8) ＋ 45° ハッチング</div>
+  <div class="scrim-demo"><span>背景の写真が透けつつ、7.5px / 15px 周期のハッチングが均一なテクスチャを与える</span></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <h2 class="section-title">タイポグラフィ階層 — ウェイトは 100 / 400 / 700 の 3 段</h2>
+
+  <div class="type-sample">
+    <div style="font-size:28px; font-weight:700; line-height:1.5; letter-spacing:0.011em; color:var(--sumi);">フロアガイド</div>
+    <div class="type-meta">28px / 700 / line-height: 1.5 / letter-spacing: 0.32px<span class="type-context">セクション見出し（横組み）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:20px; font-weight:700; line-height:1.5; color:var(--black);">館長通信 No.18　現代に自然との共生を考える</div>
+    <div class="type-meta">20px / 700 / line-height: 1.5 / letter-spacing: 0.32px<span class="type-context">記事見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.5;">本文テキスト — 自然との共生。美しい言葉です。ふだん私たちが目にする自然は、すでに人の手が入ったものであることも多い。角川武蔵野ミュージアムは、ラノベ・マンガから現代アート・古典籍までを一つの建物のなかに収めています。</div>
+    <div class="type-meta">16px / 400 / line-height: 1.5 (24px) / letter-spacing: 0.32px (0.02em)<span class="type-context">body の基準</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:700; line-height:1.5; color:var(--sumi);">トピックス／館長挨拶／チケット／営業カレンダー</div>
+    <div class="type-meta">16px / 700 / line-height: 1.5 / letter-spacing: 0.32px<span class="type-context">サブ見出し・ナビ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:700; line-height:1.5; color:var(--sumi);">企画展／イベント　ご利用案内　フロアガイド　ミュージアムを知る　レストラン・ショップ</div>
+    <div class="type-meta">14px / 700 / line-height: 1.5 / letter-spacing: 0.32px<span class="type-context">グローバルナビ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:400; line-height:1.5;">営業カレンダー　本日の営業時間：10:00 〜 18:00</div>
+    <div class="type-meta">12px / 400 / line-height: 1.5 / letter-spacing: 0.32px<span class="type-context">ユーティリティナビ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="background:var(--sumi); padding:14px 18px; display:inline-block;"><span style="font-size:12px; font-weight:100; line-height:1.5; color:#fff;">蔵書／収蔵品 検索　　2026/7/15</span></div>
+    <div class="type-meta">12px / <strong>100（Thin）</strong> / line-height: 1.5<span class="type-context">墨地の上の白い細字と日付だけ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:10px; font-weight:400; line-height:1.5; color:var(--ink-muted);">写真：新津保建秀</div>
+    <div class="type-meta">10px / 400 / line-height: 1.5 / color: #939393<span class="type-context">写真クレジット</span></div>
+  </div>
+  <p style="font-size:14px; color:var(--ink-muted); line-height:1.7; margin-top:8px;">
+    文字サイズは 28 / 20 / 16 / 14 / 12 / 10 の 6 段。24px・18px を作らない。ウェイトは 100 / 400 / 700 の 3 段で、500・600 を使わない。
+  </p>
+</section>
+
+<hr class="section-divider">
+
+<!-- VERTICAL HEADINGS -->
+<section class="section-cream" id="vertical">
+<div class="section-inner">
+  <div class="section-label">03 / Vertical Headings — 設計の核</div>
+  <h2 class="section-title">縦組みのセクション見出し（writing-mode: vertical-rl）</h2>
+
+  <div class="vertical-layout">
+    <h3 class="v-head">企画展／イベント<br>／ライブラリー</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-thumb">展覧会ポスター</div>
+        <div class="card-badges"><span class="badge">開催中</span><span class="badge badge--kikaku">企画展</span></div>
+        <h3>銀河鉄道999 THE GALAXY EXPERIENCE　あの旅は、まだ続いている。</h3>
+        <dl class="card-meta"><dt>期間</dt><dd style="display:inline">2026年04月25日[土]〜2026年10月26日[月]</dd><br><dt>場所</dt><dd style="display:inline">1F グランドギャラリー</dd></dl>
+      </div>
+      <div class="card">
+        <div class="card-thumb">展覧会ポスター</div>
+        <div class="card-badges"><span class="badge">開催中</span><span class="badge badge--kikaku">企画展</span></div>
+        <h3>池上彰と考える現代アート Vol.1　「われわれが何をしたのか」</h3>
+        <dl class="card-meta"><dt>期間</dt><dd style="display:inline">2026年03月28日[土]〜2026年09月07日[月]</dd><br><dt>場所</dt><dd style="display:inline">4F エディット アンド アートギャラリー</dd></dl>
+      </div>
+      <div class="card">
+        <div class="card-thumb">展覧会ポスター</div>
+        <div class="card-badges"><span class="badge badge--soon">開催予定</span><span class="badge badge--library">ライブラリー</span></div>
+        <h3>ワンダーバードに憧れて　鳥に取り憑かれた人々</h3>
+        <dl class="card-meta"><dt>期間</dt><dd style="display:inline">2026年04月18日[土]〜2026年09月28日[月]</dd><br><dt>場所</dt><dd style="display:inline">4F 荒俣ワンダー秘宝館</dd></dl>
+      </div>
+      <div class="card">
+        <div class="card-thumb">イベント写真</div>
+        <div class="card-badges"><span class="badge">開催中</span><span class="badge badge--event">イベント</span></div>
+        <h3>角川源義の時代〜荒波を越えて〜</h3>
+        <dl class="card-meta"><dt>期間</dt><dd style="display:inline">2025年10月25日[土]〜</dd><br><dt>場所</dt><dd style="display:inline">5F 武蔵野ギャラリー</dd></dl>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:56px;" class="vertical-layout">
+    <h3 class="v-head v-head--sm">本棚劇場</h3>
+    <div>
+      <p style="font-size:16px; line-height:1.5; max-width:640px;">高さ約8メートルの巨大本棚にかこまれた空間。KADOKAWA 刊行物と、角川源義文庫、山本健吉文庫、竹内理三文庫、外間守善文庫ほかの個人蔵書が一堂に集まっています。</p>
+      <div style="margin-top:20px;"><a class="btn-outline" href="#">› くわしく見る</a></div>
+    </div>
+  </div>
+
+  <p style="margin-top:40px; font-size:14px; color:var(--ink-muted); line-height:1.7;">
+    縦組み見出しは 28px / weight 700 / <code style="font-family:var(--font-mono)">letter-spacing: 0.2em</code>（em 指定）。折り返しは <code style="font-family:var(--font-mono)">&lt;br&gt;</code> で明示する。横組みの 0.32px（px 固定）とは指定方法自体が違う。モバイル（≤767px）では横組みに切り替えるが 0.2em は維持する。
+  </p>
+</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS & BADGES -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons &amp; Badges</div>
+  <h2 class="section-title">枠線はすべて 3px。pill はチケット専用の形</h2>
+
+  <div style="display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start; margin-bottom:40px;">
+    <div style="text-align:center"><a class="btn-ticket btn-ticket--lg" href="#">チケット購入はこちら</a><div style="font-size:12px;color:var(--ink-muted);margin-top:8px">Ticket CTA — #ffcc00 / radius 50px</div></div>
+    <div style="text-align:center"><a class="btn-fill" href="#">特設ページはこちら</a><div style="font-size:12px;color:var(--ink-muted);margin-top:8px">Filled — #231815 / radius 0</div></div>
+    <div style="text-align:center"><a class="btn-outline" href="#">› 続きを読む</a><div style="font-size:12px;color:var(--ink-muted);margin-top:8px">Outline — 3px solid #231815</div></div>
+    <div style="text-align:center"><a class="btn-outline btn-outline--md" href="#">› くわしく見る</a><div style="font-size:12px;color:var(--ink-muted);margin-top:8px">Outline (14px)</div></div>
+    <div style="text-align:center"><a class="btn-search" href="#">蔵書／収蔵品 検索</a><div style="font-size:12px;color:var(--ink-muted);margin-top:8px">Search — weight 100（Thin）</div></div>
+  </div>
+
+  <h3 style="font-size:20px; font-weight:700; margin-bottom:16px; color:var(--sumi);">カテゴリバッジ（矩形・padding 2px 5px・12px weight 400）</h3>
+  <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:16px;">
+    <span class="badge">開催中</span>
+    <span class="badge badge--soon">開催予定</span>
+    <span class="badge badge--kikaku">企画展</span>
+    <span class="badge badge--library">ライブラリー</span>
+    <span class="badge badge--event">イベント</span>
+  </div>
+  <p style="font-size:14px; color:var(--ink-muted); line-height:1.7;">
+    状態（開催中／開催予定）と分類（企画展／ライブラリー／イベント）を同じ形で並べ、色だけで区別する。バッジは pill にしない。weight は 400（ボタンの 700 と役割で分ける）。
+  </p>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div>
+  <h2 class="section-title">フォーム要素（実装目安）</h2>
+  <p style="font-size:14px; color:var(--ink-muted); margin-bottom:24px; line-height:1.7;">実サイトに独立した入力欄は現れない（検索は別ドメインの蔵書検索システムへ遷移する）。このサイトの「枠は必ず 3px」に揃えた実装案。</p>
+  <div class="form-group"><label class="form-label">お名前</label><input class="form-input" type="text" placeholder="武蔵野 太郎"><div class="form-state-label">デフォルト — border: 3px solid #231815 / radius: 0</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--focus" type="text" value="taro@example.com"><div class="form-state-label">フォーカス — border: #ffcc00（山吹）</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー — border: #c0392b（実装目安）</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">06 / Elevation — 実測 0 件</div>
+  <h2 class="section-title">Depth &amp; Elevation — 「浮かせる」代わりに「囲む」</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">すべて。box-shadow は 1 つも使わない</div></div>
+    <div class="elevation-card" style="background:var(--sumi); border-color:var(--sumi);"><div class="elevation-label" style="color:#fff">帯 #231815</div><div class="elevation-desc" style="color:#fff">重要なお知らせ</div></div>
+    <div class="elevation-card" style="background:var(--surface);"><div class="elevation-label">帯 #e9e9e9</div><div class="elevation-desc">トピックス</div></div>
+    <div class="elevation-card" style="background:var(--cream);"><div class="elevation-label">帯 #f7f3de</div><div class="elevation-desc">企画展セクション</div></div>
+  </div>
+  <p style="margin-top:20px; font-size:14px; color:var(--ink-muted); line-height:1.7;">奥行きは帯の面色（白 → #231815 → #e9e9e9 → #f7f3de）と 3px の枠だけで表現する。3px の太い枠が影の役割を代替している。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">07 / Layout</div>
+  <h2 class="section-title">スペーシングとコンテンツ幅</h2>
+
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:2px"></div><div class="spacing-value">XS 2</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:6px"></div><div class="spacing-value">S 6</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:15px"></div><div class="spacing-value">M 15</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">L 24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px"></div><div class="spacing-value">XL 48</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:80px"></div><div class="spacing-value">XXL 80</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:120px"></div><div class="spacing-value">XXXL 120</div></div>
+  </div>
+
+  <div style="margin-bottom:16px"><div class="width-bar-label">Main Container <span class="width-bar-value">1240px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Sub Container <span class="width-bar-value">1200px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:96.8%"></div></div></div>
+  <div style="margin-bottom:16px"><div class="width-bar-label">Article <span class="width-bar-value">800px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:64.5%"></div></div></div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://kadcul.com/" style="color:var(--sumi); text-decoration:underline;">kadcul.com</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-08-12）<br>
+  フォントは Noto Sans JP（Google Fonts）のため、実サイトと同じ書体でプレビューできる。weight 100 / 400 / 700 の 3 つを読み込んでいる。
+</footer>
+
+</body>
+</html>
