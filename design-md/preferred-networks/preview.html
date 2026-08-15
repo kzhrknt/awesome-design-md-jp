@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Preferred Networks（PFN）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測値 === */
+    --blue: #1a4aff;          /* 唯一の主色 */
+    --navy-deep: #0d318f;     /* Cookie バー専用。UI には持ち出さない */
+    --ink: #000000;
+    --bg: #ffffff;
+    --tint: #f3f7ff;          /* 告知バーの面。青の最薄 */
+    --gray: #f7f7f8;          /* 事業紹介カードの面 */
+    --border: rgba(0,0,0,0.2);
+    --divider: #90a1b9;
+
+    /* Semantic（実装目安。実サイトには存在しない） */
+    --danger: #d62828;
+
+    /* === Gradients 実測値（面は background-image で塗る） === */
+    --grad-heading: linear-gradient(160deg, #010947, #0043af 51.03%, #0046ff 99.04%);
+    --grad-card: linear-gradient(160deg, #01053f 20%, #001b6d 40%, #022d73 60%, #00237e 70%, #000a58 90%);
+    --grad-radial: radial-gradient(circle at 76% 84%, #002fd7 0px, #000e7e 100%);
+    --grad-cta: linear-gradient(160deg, #1a4aff 0px, #1a4aff 100%);  /* ソリッドもグラデで書く */
+
+    /* === Fonts 実測値 === */
+    /* 実サイトは "Noto Sans JP", "Noto Sans JP Fallback"。
+       Fallback は next/font が生成するメトリクス合わせのため、自前実装では不要 */
+    --font-base: "Noto Sans JP", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-base);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: normal;         /* body は開かない。サイズ帯ごとに当てる */
+    word-wrap: break-word;
+    font-feature-settings: "palt";  /* ← 全要素に継承される */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 字送りは「36px の境界」1 本の規則 */
+  .t-display { letter-spacing: 0.03em; line-height: 1.3; }   /* ≥ 36px */
+  .t-body    { letter-spacing: 0.05em; line-height: 1.5; }   /* 16〜30px */
+  .t-ui      { letter-spacing: 0.05em; line-height: 1.3; }   /* ≤ 14px */
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 88px;
+    background: var(--bg);
+  }
+  .nav-brand { font-size: 20px; font-weight: 500; letter-spacing: 0.05em; line-height: 1.5; color: var(--ink); text-decoration: none; }
+  .nav-brand small { display: block; font-size: 12px; font-weight: 400; letter-spacing: 0.05em; color: var(--blue); }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 400; letter-spacing: 0.05em; line-height: 1.3; color: var(--ink); text-decoration: none; }
+  .nav-links a:hover { color: var(--blue); }
+  .nav-right { display: flex; align-items: center; gap: 20px; }
+  .nav-en { font-size: 12px; font-weight: 400; letter-spacing: 0.05em; color: var(--ink); text-decoration: none; border-left: 1px solid var(--divider); padding-left: 20px; }
+
+  /* BUTTONS — radius 6px */
+  .btn-primary {
+    display: inline-block; background-image: var(--grad-cta); color: #fff;
+    padding: 12px 24px; border-radius: 6px; border: 1px solid var(--border);
+    font-family: var(--font-base); font-size: 16px; font-weight: 400; line-height: 1.5;
+    letter-spacing: normal;          /* ボタンだけ字間を開かない */
+    text-decoration: none; cursor: pointer; transition: opacity .15s;
+  }
+  .btn-primary:hover { opacity: .85; }
+  .btn-secondary {
+    display: inline-flex; align-items: center; min-height: 44px;
+    background: var(--bg); color: var(--blue);
+    padding: 0 24px; border-radius: 6px; border: none;
+    font-family: var(--font-base); font-size: 16px; font-weight: 400; letter-spacing: 0.05em;
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-secondary--sm { font-size: 14px; padding: 0 16px; }
+  .btn-onnavy {
+    display: inline-flex; align-items: center; min-height: 44px;
+    background-image: var(--grad-cta); color: #fff;
+    padding: 0 16px; border-radius: 6px; border: none;
+    font-family: var(--font-base); font-size: 14px; font-weight: 400; letter-spacing: 0.05em;
+    text-decoration: none; cursor: pointer;
+  }
+
+  /* ANNOUNCEMENT PILL — サイト唯一のピル */
+  .announce {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--tint); border: 1px solid var(--blue); border-radius: 80px;
+    padding: 12px 20px; max-width: 760px;
+    font-size: 14px; font-weight: 400; letter-spacing: 0.05em; line-height: 1.3;
+    color: var(--ink); text-decoration: none;
+  }
+  .announce .bell { width: 32px; height: 32px; border-radius: 50%; background-image: var(--grad-cta); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; flex: 0 0 32px; }
+  .announce .txt { flex: 1; }
+  .announce .more { color: var(--blue); border-left: 1px solid var(--divider); padding-left: 16px; white-space: nowrap; }
+
+  /* HERO */
+  .hero { padding: 80px 40px 96px; }
+  .hero h1 {
+    display: inline-block;
+    font-size: 72px; font-weight: 400; line-height: 1.3; letter-spacing: 0.03em;
+    background-image: var(--grad-heading);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    padding-bottom: 8px;
+  }
+  .hero p { font-size: 18px; font-weight: 400; line-height: 1.5; letter-spacing: 0.05em; max-width: 760px; margin-top: 32px; }
+
+  /* SECTIONS */
+  .section { padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+  .section-label { font-size: 14px; font-weight: 400; letter-spacing: 0.05em; line-height: 1.3; color: var(--blue); margin-bottom: 12px; }
+  .section-title { font-size: 36px; font-weight: 400; line-height: 1.3; letter-spacing: 0.03em; margin-bottom: 40px; }
+
+  /* NAVY CARD */
+  .navy-card {
+    background-image: var(--grad-card);
+    border-radius: 16px; overflow: hidden; padding: 80px 64px; color: #fff;
+  }
+  .navy-card h2 { font-size: 48px; font-weight: 400; line-height: 1.3; letter-spacing: 0.03em; margin-bottom: 24px; }
+  .navy-card h3 { font-size: 36px; font-weight: 400; line-height: 1.3; letter-spacing: 0.03em; margin-bottom: 20px; }
+  .navy-card p { font-size: 18px; font-weight: 400; line-height: 1.5; letter-spacing: 0.05em; color: rgba(255,255,255,0.9); max-width: 720px; }
+  .navy-card .date { font-size: 14px; font-weight: 400; line-height: 1.3; letter-spacing: 0.05em; color: rgba(255,255,255,0.7); }
+  .radial-card { background-image: var(--grad-radial); }
+
+  /* LIGHT CARD */
+  .light-card { background: var(--gray); border-radius: 16px; padding: 40px 32px; }
+  .light-card h3 { font-size: 22px; font-weight: 400; line-height: 1.5; letter-spacing: 0.05em; margin-bottom: 12px; }
+  .light-card p { font-size: 16px; font-weight: 400; line-height: 1.5; letter-spacing: 0.05em; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+  .color-swatch-block { height: 80px; width: 100%; }
+  .color-swatch-info { padding: 12px; }
+  .color-swatch-name { font-size: 14px; font-weight: 400; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .color-swatch-hex { font-size: 12px; font-family: var(--font-mono); color: rgba(0,0,0,0.6); }
+  .color-swatch-role { font-size: 12px; color: rgba(0,0,0,0.6); margin-top: 6px; line-height: 1.5; letter-spacing: 0.05em; }
+  .color-group-label { font-size: 22px; font-weight: 400; letter-spacing: 0.05em; line-height: 1.5; margin: 32px 0 12px; }
+  .grad-swatch { border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+  .grad-block { height: 110px; width: 100%; }
+  .grad-info { padding: 14px; }
+  .grad-code { font-family: var(--font-mono); font-size: 11px; color: rgba(0,0,0,0.6); line-height: 1.5; word-break: break-all; letter-spacing: normal; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 32px; padding-bottom: 28px; border-bottom: 1px solid var(--gray); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: rgba(0,0,0,0.6); margin-top: 10px; letter-spacing: normal; line-height: 1.5; }
+  .type-context { display: inline-block; background: var(--tint); color: var(--blue); font-size: 11px; padding: 3px 10px; border-radius: 6px; margin-left: 8px; font-family: var(--font-base); }
+
+  /* RULE TABLE */
+  .rule-table { width: 100%; border-collapse: collapse; }
+  .rule-table th, .rule-table td { border: 1px solid var(--border); padding: 12px 16px; text-align: left; font-size: 16px; font-weight: 400; line-height: 1.5; letter-spacing: 0.05em; }
+  .rule-table th { background: var(--gray); }
+
+  /* FORMS */
+  .form-group { margin-bottom: 24px; max-width: 460px; }
+  .form-label { display: block; font-size: 16px; font-weight: 400; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .form-input {
+    width: 100%; background: var(--bg); color: var(--ink);
+    border: 1px solid var(--border); padding: 12px 16px; border-radius: 6px;
+    font-family: var(--font-base); font-size: 16px; font-weight: 400; letter-spacing: 0.05em;
+    outline: none; transition: border-color .15s;
+  }
+  .form-input::placeholder { color: rgba(0,0,0,0.4); }
+  .form-input--focus { border-color: var(--blue); }
+  .form-input--error { border-color: var(--danger); }
+  .form-state-label { font-size: 12px; color: rgba(0,0,0,0.6); margin-top: 6px; letter-spacing: 0.05em; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
+  .elevation-card { padding: 28px; text-align: center; border-radius: 16px; }
+  .elevation-label { font-size: 16px; font-weight: 400; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; letter-spacing: normal; line-height: 1.5; opacity: .7; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background-image: var(--grad-cta); border-radius: 6px; margin-bottom: 6px; height: 26px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; color: rgba(0,0,0,0.6); letter-spacing: normal; }
+
+  /* WIDTHS */
+  .width-bar { height: 30px; background: var(--gray); border-radius: 6px; margin-bottom: 8px; overflow: hidden; }
+  .width-bar-inner { height: 100%; background-image: var(--grad-cta); opacity: .35; }
+  .width-bar-label { font-size: 16px; font-weight: 400; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .width-bar-value { font-family: var(--font-mono); font-size: 12px; color: rgba(0,0,0,0.6); letter-spacing: normal; }
+
+  /* FOOTER */
+  .footer { padding: 48px 40px; text-align: center; font-size: 14px; letter-spacing: 0.05em; line-height: 1.5; background: var(--gray); }
+
+  @media (max-width: 767px) {
+    .nav { padding: 0 20px; height: 64px; }
+    .nav-links, .nav-en { display: none; }
+    .hero { padding: 48px 20px 64px; }
+    /* 36px を割ったら 0.05em / 1.5 に切り替える（境界の規則を守る） */
+    .hero h1 { font-size: 34px; letter-spacing: 0.05em; line-height: 1.5; }
+    .section { padding: 56px 20px; }
+    .section-title { font-size: 26px; letter-spacing: 0.05em; line-height: 1.5; }
+    .navy-card { padding: 40px 24px; }
+    .navy-card h2 { font-size: 28px; letter-spacing: 0.05em; line-height: 1.5; }
+    .navy-card h3 { font-size: 24px; letter-spacing: 0.05em; line-height: 1.5; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">Preferred Networks<small>PFN</small></a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#elevation">Elevation</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="btn-primary" href="#">お問い合わせ</a>
+    <a class="nav-en" href="#">ENGLISH</a>
+  </div>
+</nav>
+
+<section class="section" style="padding-top:32px; padding-bottom:0">
+  <a class="announce" href="#">
+    <span class="bell">🔔</span>
+    <span class="txt">Noetra によるフィジカル AI 向け国産マルチモーダル基盤モデル開発に参画</span>
+    <span class="more">詳細 ›</span>
+  </a>
+</section>
+
+<section class="hero">
+  <h1>現実世界を計算可能にし、<br>共に未来を創り出す</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。カラー、タイポグラフィ、コンポーネント、スペーシングの全値を可視化。computed style 実測値に基づく。</p>
+</section>
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / COLORS</div>
+  <h2 class="section-title">有彩色は #1a4aff の 1 色だけ</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1a4aff"></div><div class="color-swatch-info"><div class="color-swatch-name">PFN Blue</div><div class="color-swatch-hex">#1a4aff</div><div class="color-swatch-role">唯一の主色。CTA・リンク・告知バーの枠</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0d318f"></div><div class="color-swatch-info"><div class="color-swatch-name">Deep Navy</div><div class="color-swatch-hex">#0d318f</div><div class="color-swatch-role">Cookie バー専用。UI には持ち出さない</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ地色。html/body に塗り指定は無い</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f3f7ff"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Tint</div><div class="color-swatch-hex">#f3f7ff</div><div class="color-swatch-role">告知バーの面。青の最薄</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f7f7f8"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Gray</div><div class="color-swatch-hex">#f7f7f8</div><div class="color-swatch-role">事業紹介カードの面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000000"></div><div class="color-swatch-info"><div class="color-swatch-name">Ink</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">本文・ナビ。純黒を使う</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#90a1b9"></div><div class="color-swatch-info"><div class="color-swatch-name">Divider</div><div class="color-swatch-hex">#90a1b9</div><div class="color-swatch-role">縦罫・区切り</div></div></div>
+  </div>
+
+  <div class="color-group-label">Gradients — 面は background-image で塗る</div>
+  <p style="font-size:16px; letter-spacing:0.05em; line-height:1.5; margin-bottom:20px;">このサイトは面を <code style="font-family:var(--font-mono)">background-color</code> で塗らない。<strong>ソリッドな青も「全ストップが同色のグラデーション」として書かれている</strong>ため、<code style="font-family:var(--font-mono)">background-color</code> だけを読むと CTA も濃紺カードも「透明」に見える。</p>
+  <div class="card-grid">
+    <div class="grad-swatch"><div class="grad-block" style="background-image:var(--grad-heading)"></div><div class="grad-info"><div class="color-swatch-name">Heading Gradient</div><div class="grad-code">linear-gradient(160deg, #010947, #0043af 51.03%, #0046ff 99.04%)<br>＋ background-clip: text</div></div></div>
+    <div class="grad-swatch"><div class="grad-block" style="background-image:var(--grad-card)"></div><div class="grad-info"><div class="color-swatch-name">Card Gradient（濃紺・5 ストップ）</div><div class="grad-code">linear-gradient(160deg, #01053f 20%, #001b6d 40%, #022d73 60%, #00237e 70%, #000a58 90%)</div></div></div>
+    <div class="grad-swatch"><div class="grad-block" style="background-image:var(--grad-radial)"></div><div class="grad-info"><div class="color-swatch-name">Radial（採用カード）</div><div class="grad-code">radial-gradient(circle at 76% 84%, #002fd7 0px, #000e7e 100%)</div></div></div>
+    <div class="grad-swatch"><div class="grad-block" style="background-image:var(--grad-cta)"></div><div class="grad-info"><div class="color-swatch-name">Solid-as-Gradient（CTA）</div><div class="grad-code">linear-gradient(160deg, #1a4aff 0px, #1a4aff 100%)</div></div></div>
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / TYPOGRAPHY — 実測値</div>
+  <h2 class="section-title">字送りは「36px の境界」1 本の規則で決まる</h2>
+
+  <table class="rule-table" style="margin-bottom:48px">
+    <thead><tr><th>サイズ帯</th><th>letter-spacing</th><th>line-height</th><th>性格</th></tr></thead>
+    <tbody>
+      <tr><td><strong>≥ 36px</strong></td><td><strong>0.03em</strong></td><td><strong>1.3</strong></td><td>見出し。字間を締め、行を詰めて塊にする</td></tr>
+      <tr><td><strong>16〜30px</strong></td><td><strong>0.05em</strong></td><td><strong>1.5</strong></td><td>本文・小見出し。字間を開き、行を空けて読ませる</td></tr>
+      <tr><td><strong>≤ 14px</strong></td><td>0.05em</td><td><strong>1.3</strong></td><td>UI テキスト。字間は本文と同じ、行だけ詰める</td></tr>
+      <tr><td><strong>ボタン</strong></td><td><strong>normal</strong></td><td>1.5</td><td>唯一の例外。ピル／矩形の中で横に伸びないよう字間を切る</td></tr>
+    </tbody>
+  </table>
+
+  <div class="type-sample">
+    <div style="font-size:72px; font-weight:400; line-height:1.3; letter-spacing:0.03em; background-image:var(--grad-heading); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; display:inline-block;">現実世界を計算可能にし</div>
+    <div class="type-meta">72px / 400 / line-height: 1.3 (93.6px) / letter-spacing: 0.03em (2.16px) / background-clip: text<span class="type-context">Hero — color は transparent</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:48px; font-weight:400; line-height:1.3; letter-spacing:0.03em;">幅広い産業領域にプロダクトを水平展開</div>
+    <div class="type-meta">48px / 400 / line-height: 1.3 (62.4px) / letter-spacing: 0.03em (1.44px)<span class="type-context">ステートメント（h2）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:36px; font-weight:400; line-height:1.3; letter-spacing:0.03em;">注目ニュース</div>
+    <div class="type-meta">36px / 400 / line-height: 1.3 (46.8px) / letter-spacing: 0.03em (1.08px)<span class="type-context">セクション見出し — 境界のちょうど上</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:30px; font-weight:400; line-height:1.5; letter-spacing:0.05em;">最先端の技術を最適な形で実装</div>
+    <div class="type-meta">30px / 400 / line-height: 1.5 (45px) / letter-spacing: 0.05em (1.5px)<span class="type-context">リード — 境界のちょうど下。値が切り替わる</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:24px; font-weight:400; line-height:1.5; letter-spacing:0.05em;">世界最高水準の AI 技術を擁するエンジニア・リサーチャー</div>
+    <div class="type-meta">24px / 400 / line-height: 1.5 (36px) / letter-spacing: 0.05em (1.2px)<span class="type-context">カード見出し（h3）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:20px; font-weight:500; line-height:1.5; letter-spacing:0.05em;">企業情報</div>
+    <div class="type-meta">20px / <strong>500</strong> / line-height: 1.5 (30px) / letter-spacing: 0.05em (1px)<span class="type-context">ドロワーの見出しリンク — 500 が出る唯一の箇所</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:18px; font-weight:400; line-height:1.5; letter-spacing:0.05em;">PFN は自社が持つ計算基盤や最先端技術を応用し、各業界のドメイン知識と組み合わせることで、現実世界の課題を解ける形に落とし込んでいます。</div>
+    <div class="type-meta">18px / 400 / line-height: 1.5 (27px) / letter-spacing: 0.05em (0.9px)<span class="type-context">本文（大）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.5; letter-spacing:0.05em;">本文テキスト — 計算可能なものづくりでより効率よく、安全に、低環境負荷に。font-weight は 400 で通し、700 は一切使いません。強調はサイズ・グラデーション・面の暗さで作ります。</div>
+    <div class="type-meta">16px / 400 / line-height: 1.5 (24px) / letter-spacing: 0.05em (0.8px)<span class="type-context">本文の基準</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:1.3; letter-spacing:0.05em;">2026.07.16 — グローバルナビ・日付などの UI テキスト</div>
+    <div class="type-meta">14px / 400 / line-height: 1.3 (18.2px) / letter-spacing: 0.05em (0.7px)<span class="type-context">UI — 行だけ詰める</span></div>
+  </div>
+</section>
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">03 / CARDS</div>
+  <h2 class="section-title">白地セクション → 濃紺カード → 白地セクション の交互</h2>
+
+  <div class="navy-card" style="margin-bottom:32px">
+    <h2>半導体からアプリケーションまで、<br>AI 技術のバリューチェーンを垂直統合</h2>
+    <p>Preferred Networks (PFN) は、AI 技術の研究開発から、自社設計の AI プロセッサ MN-Core、計算基盤、そして各産業向けのソリューションまでを一貫して手がけています。</p>
+    <div style="margin-top:32px; display:flex; gap:12px; flex-wrap:wrap;">
+      <a class="btn-onnavy" href="#">業界一覧</a>
+      <a class="btn-onnavy" href="#">企業情報</a>
+      <a class="btn-onnavy" href="#">創業者メッセージ</a>
+    </div>
+  </div>
+
+  <div class="navy-card radial-card" style="margin-bottom:32px">
+    <h3>PFN は新しい仲間を募集しています</h3>
+    <div class="date">2026.07.16</div>
+    <div style="margin-top:24px"><a class="btn-onnavy" href="#">採用情報</a></div>
+  </div>
+
+  <div class="card-grid">
+    <div class="light-card"><h3>製造業</h3><p>計算可能なものづくりでより効率よく、安全に、低環境負荷に。</p></div>
+    <div class="light-card"><h3>ロボティクス</h3><p>現場の作業を学習し、変化に追従する自律システムを届ける。</p></div>
+    <div class="light-card"><h3>ライフサイエンス</h3><p>創薬・医療の探索空間を計算で圧縮する。</p></div>
+    <div class="light-card"><h3>エンターテインメント</h3><p>生成技術を制作の現場で使える形にする。</p></div>
+  </div>
+  <p style="margin-top:24px; font-size:14px; letter-spacing:0.05em; line-height:1.3; opacity:.7;">濃紺カードは radius 16px / overflow hidden。濃紺カードを 2 枚続けて置かず、白地を挟んでリズムを作る。</p>
+</section>
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / BUTTONS</div>
+  <h2 class="section-title">radius は 6px（ボタン）と 16px（カード）の 2 段だけ</h2>
+
+  <div style="display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start; margin-bottom:40px;">
+    <div style="text-align:center"><a class="btn-primary" href="#">お問い合わせ</a><div style="font-size:12px;opacity:.6;margin-top:10px;letter-spacing:0.05em">Primary — 面はグラデ ＋ 1px rgba(0,0,0,.2)</div></div>
+    <div style="text-align:center"><a class="btn-secondary" href="#">事業内容</a><div style="font-size:12px;opacity:.6;margin-top:10px;letter-spacing:0.05em">Secondary — 白地・枠なし・文字だけ青</div></div>
+    <div style="text-align:center"><a class="btn-secondary btn-secondary--sm" href="#">ニュース一覧</a><div style="font-size:12px;opacity:.6;margin-top:10px;letter-spacing:0.05em">Secondary（小）— 14px</div></div>
+  </div>
+
+  <div class="navy-card" style="padding:40px 32px; margin-bottom:32px">
+    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+      <a class="btn-onnavy" href="#">業界一覧</a>
+      <a class="btn-onnavy" href="#">企業情報</a>
+      <a class="btn-onnavy" href="#">創業者メッセージ</a>
+    </div>
+    <p style="font-size:14px; line-height:1.3; margin-top:20px; color:rgba(255,255,255,0.7);">On-Navy — 濃紺カード上の CTA。枠なし・radius 6px・14px</p>
+  </div>
+
+  <h3 style="font-size:22px; font-weight:400; letter-spacing:0.05em; line-height:1.5; margin-bottom:16px;">告知バー — サイト唯一のピル（radius 80px）</h3>
+  <a class="announce" href="#">
+    <span class="bell">🔔</span>
+    <span class="txt">Noetra によるフィジカル AI 向け国産マルチモーダル基盤モデル開発に参画</span>
+    <span class="more">詳細 ›</span>
+  </a>
+  <p style="margin-top:20px; font-size:14px; letter-spacing:0.05em; line-height:1.3; opacity:.7;">ピルはこの告知バーだけ。他の操作要素は必ず 6px の矩形にする。</p>
+</section>
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">05 / FORMS</div>
+  <h2 class="section-title">フォーム要素</h2>
+  <div class="form-group"><label class="form-label">お名前</label><input class="form-input" type="text" placeholder="山田 太郎"><div class="form-state-label">デフォルト — 1px solid rgba(0,0,0,0.2) / radius 6px</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--focus" type="text" value="taro@example.com"><div class="form-state-label">フォーカス — border: #1a4aff</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー — border: #d62828（実装目安。#1a4aff と明度を揃える）</div></div>
+</section>
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">06 / ELEVATION — 実測値（影は 0 段）</div>
+  <h2 class="section-title">奥行きは面の暗さで作る</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card" style="background:var(--bg); border:1px solid var(--border)"><div class="elevation-label">地 #ffffff</div><div class="elevation-desc">ページ全体</div></div>
+    <div class="elevation-card" style="background:var(--gray)"><div class="elevation-label">薄い面 #f7f7f8</div><div class="elevation-desc">事業紹介カード</div></div>
+    <div class="elevation-card" style="background:var(--tint)"><div class="elevation-label">薄い面 #f3f7ff</div><div class="elevation-desc">告知バー</div></div>
+    <div class="elevation-card" style="background-image:var(--grad-card); color:#fff"><div class="elevation-label">主役の面</div><div class="elevation-desc">濃紺グラデーションのカード。影の代わりに層を作る</div></div>
+  </div>
+  <p style="margin-top:24px; font-size:14px; letter-spacing:0.05em; line-height:1.3; opacity:.7;">box-shadow はサイト内に 1 つも存在しない。Mantine の <code style="font-family:var(--font-mono)">--mantine-shadow-*</code>（250 個の CSS 変数）はすべてライブラリ既定値で未使用。<strong>PFN の青 #1a4aff は Mantine のパレットに存在しない</strong>。</p>
+</section>
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">07 / LAYOUT</div>
+  <h2 class="section-title">スペーシングとコンテンツ幅</h2>
+
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">1 · 4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">2 · 8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">3 · 12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">4 · 16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">6 · 24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">8 · 32</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px"></div><div class="spacing-value">12 · 48</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:80px"></div><div class="spacing-value">20 · 80</div></div>
+  </div>
+
+  <div style="margin-bottom:20px"><div class="width-bar-label">Main Container <span class="width-bar-value">1200px 目安</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:20px"><div class="width-bar-label">Article <span class="width-bar-value">760px 目安</span></div><div class="width-bar"><div class="width-bar-inner" style="width:63%"></div></div></div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://www.preferred.jp/ja/" style="color:var(--blue);">preferred.jp</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-08-15）<br>
+  フォントは Noto Sans JP（Google Fonts）のため、実サイトと同じ書体でプレビューできる。
+  実サイトの <code style="font-family:var(--font-mono)">"Noto Sans JP Fallback"</code> は next/font が生成するメトリクス合わせのため、自前実装では不要。
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 文喫（BUNKITSU）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Bitter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測値 === */
+    --apricot: #fdeadf;   /* 主色。全 CTA ピルの面 ＋ フッター帯 */
+    --forest: #34806f;    /* 第 2 色。記事への遷移＝アウトラインピル */
+    --ink: #000000;       /* 見出し・CTA の文字・枠線。純黒を使う */
+    --body-ink: #28292b;  /* body の既定文字色 */
+    --muted: #5d5d5d;     /* 住所・注記・キャプション */
+    --bg: #ffffff;
+    --surface: #f4f4f4;   /* 実用情報ブロックの面 */
+
+    /* Semantic（実装目安。実サイトには存在しない） */
+    --danger: #b34a3a;
+
+    /* === Fonts === */
+    /* 実サイト:
+         和文     TsukuGoPr5-D, sans-serif（筑紫ゴシック Pro5 D / Fontworks）
+         欧文ラベル BookmanOldStylePro-Regular, serif
+       どちらもドメインライセンスのためローカルでは表示されない。
+       和文は Zen Kaku Gothic New（仮名が小ぶりで縦長・フォントワークス系）、
+       欧文は Bitter（太めのスラブ／トランジショナル・セリフ）で代替する。 */
+    --font-jp: "Zen Kaku Gothic New", noto-sans-cjk-jp, "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, sans-serif;
+    --font-en: "Bitter", Georgia, serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--body-ink);
+    font-family: var(--font-jp);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: 0.512px;          /* 0.02em。全要素に継承される px 固定 */
+    word-wrap: break-word;
+    font-feature-settings: "palt";    /* ← 全要素に継承される */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    padding: 0 60px; height: 80px;
+    background: var(--bg);
+  }
+  .nav-mark { font-family: var(--font-en); font-size: 20px; letter-spacing: 0.08em; color: var(--ink); text-decoration: none; }
+  .nav-logo { justify-self: center; font-size: 30px; color: var(--ink); text-decoration: none; letter-spacing: 0.1em; }
+  .nav-links { justify-self: end; display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 16px; font-weight: 400; color: var(--ink); text-decoration: none; }
+  .nav-links a:hover { text-decoration: underline; }
+
+  /* HERO */
+  .hero { padding: 80px 60px 120px; }
+  .hero h1 { font-size: 44px; font-weight: 400; line-height: 1.25; color: var(--ink); margin-bottom: 32px; }
+  .hero p { font-size: 18px; font-weight: 400; line-height: 1.75; color: var(--ink); max-width: 720px; margin-bottom: 48px; }
+  .hero-buttons { display: flex; gap: 20px; flex-wrap: wrap; }
+
+  /* BUTTONS — すべて radius 38px のピル。padding は上下非対称 */
+  .btn-pill {
+    display: inline-block; background: var(--apricot); color: var(--ink);
+    padding: 9.6px 40px 12px;         /* 下を上より 2.4px 厚く（和文の視覚補正） */
+    border-radius: 38px; border: 1px solid var(--ink);
+    font-family: var(--font-jp); font-size: 16px; font-weight: 500; line-height: 1.75;
+    letter-spacing: normal;           /* ボタンだけ字間を開かない */
+    text-decoration: none; cursor: pointer; transition: opacity .15s;
+  }
+  .btn-pill:hover { opacity: .8; }
+  .btn-pill--sm { padding: 3.5px 16.8px 5.6px; font-size: 14px; }
+  .btn-outline {
+    display: inline-block; background: var(--bg); color: var(--forest);
+    padding: 3.5px 16.8px 5.6px;
+    border-radius: 38px; border: 1px solid var(--forest);
+    font-family: var(--font-jp); font-size: 14px; font-weight: 500; line-height: 1.75;
+    letter-spacing: normal; text-decoration: none; cursor: pointer;
+  }
+  .chip {
+    display: inline-block; background: transparent; color: var(--ink);
+    padding: 0 7px 0.5px 7.14px;
+    border-radius: 38px; border: 1px solid var(--ink);
+    font-size: 12px; font-weight: 400; line-height: 1.6; letter-spacing: 0.512px;
+    text-decoration: none;
+  }
+
+  /* SECTIONS */
+  .section { padding: 120px 60px; max-width: 1320px; margin: 0 auto; }
+  .section-label { font-family: var(--font-en); font-size: 24px; font-weight: 400; line-height: 1.5; letter-spacing: -0.48px; color: var(--ink); text-align: center; }
+  .section-head-v {
+    writing-mode: vertical-rl; text-orientation: mixed;
+    font-size: 30px; font-weight: 400; line-height: 1.5;
+    letter-spacing: 31.5px;           /* 1.05em。文字 1 つ分以上開ける */
+    color: var(--ink);
+    border-left: 1px solid var(--ink);
+    padding-left: 24px;
+    margin: 16px auto 0;
+    font-feature-settings: "vpal";    /* 縦組みでは palt ではなく vpal */
+  }
+  .section-head-wrap { display: flex; flex-direction: column; align-items: center; margin-bottom: 80px; }
+  .section-title-h { font-size: 30px; font-weight: 400; line-height: 1.5; color: var(--ink); margin-bottom: 40px; }
+  .section-divider { border: none; border-top: 1px solid var(--ink); margin: 0; opacity: .12; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .color-swatch { border: 1px solid var(--ink); border-radius: 0; overflow: hidden; }
+  .color-swatch-block { height: 80px; width: 100%; }
+  .color-swatch-info { padding: 12px; border-top: 1px solid var(--ink); }
+  .color-swatch-name { font-size: 14px; font-weight: 500; margin-bottom: 4px; color: var(--ink); }
+  .color-swatch-hex { font-size: 12px; font-family: var(--font-mono); color: var(--muted); }
+  .color-swatch-role { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.6; }
+  .color-group-label { font-size: 24px; font-weight: 400; color: var(--ink); margin: 32px 0 12px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 32px; padding-bottom: 28px; border-bottom: 1px solid var(--surface); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 10px; letter-spacing: normal; line-height: 1.6; }
+  .type-context { display: inline-block; background: var(--apricot); color: var(--ink); font-size: 11px; padding: 3px 10px; border-radius: 38px; margin-left: 8px; font-family: var(--font-jp); }
+
+  /* CARDS（ニュース） */
+  .news-list { border-top: 1px solid var(--ink); }
+  .news-card {
+    border-bottom: 1px solid var(--ink);
+    padding: 51.2px 58.88px 51.2px 20px;
+    display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center;
+  }
+  .news-date { font-size: 14px; font-weight: 400; line-height: 1.5; color: var(--muted); margin-bottom: 8px; }
+  .news-card h3 { font-size: 18px; font-weight: 700; line-height: 1.6; color: var(--ink); }
+
+  /* INFO BLOCK */
+  .info { background: var(--surface); padding: 48px 40px; }
+  .info h3 { font-size: 30px; font-weight: 400; line-height: 1.5; color: var(--ink); margin-bottom: 24px; }
+  .info p { font-size: 16px; font-weight: 400; line-height: 1.75; color: var(--ink); max-width: 720px; }
+
+  /* STORE */
+  .store-name { font-size: 24px; font-weight: 400; line-height: 1.5; color: var(--ink); }
+  .store-addr { font-size: 14px; font-weight: 400; line-height: 1.5; color: var(--muted); margin-top: 8px; }
+
+  /* VERTICAL COPY */
+  .v-copy {
+    writing-mode: vertical-rl; text-orientation: mixed;
+    font-size: 16px; font-weight: 400; line-height: 2.4;
+    letter-spacing: 0.512px; color: var(--ink);
+    height: 320px; margin: 0 auto;
+    font-feature-settings: "vpal";
+  }
+
+  /* FORMS */
+  .form-group { margin-bottom: 24px; max-width: 460px; }
+  .form-label { display: block; font-size: 16px; font-weight: 400; color: var(--ink); margin-bottom: 8px; }
+  .form-input {
+    width: 100%; background: var(--bg); color: var(--ink);
+    border: 1px solid var(--ink); padding: 9.6px 24px 12px; border-radius: 38px;
+    font-family: var(--font-jp); font-size: 16px; font-weight: 400; outline: none; transition: border-color .15s;
+  }
+  .form-input::placeholder { color: var(--muted); }
+  .form-input--focus { border-color: var(--forest); }
+  .form-input--error { border-color: var(--danger); }
+  .form-textarea { border-radius: 8px; min-height: 120px; }  /* 複数行はピルにしない */
+  .form-state-label { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.6; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
+  .elevation-card { padding: 28px; text-align: center; border-radius: 0; }
+  .elevation-label { font-size: 16px; font-weight: 500; margin-bottom: 6px; color: var(--ink); }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: normal; line-height: 1.6; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--apricot); border: 1px solid var(--ink); border-radius: 38px; margin-bottom: 6px; height: 26px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: normal; }
+
+  /* WIDTHS */
+  .width-bar { height: 30px; background: var(--bg); border: 1px solid var(--ink); border-radius: 38px; margin-bottom: 8px; overflow: hidden; }
+  .width-bar-inner { height: 100%; background: var(--apricot); }
+  .width-bar-label { font-size: 16px; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+  .width-bar-value { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-weight: 400; letter-spacing: normal; }
+
+  /* FOOTER BAND */
+  .footer-band { background: var(--apricot); padding: 118px 0; text-align: center; }
+  .footer-band .logo { font-size: 40px; color: var(--ink); line-height: 1.2; letter-spacing: 0.1em; }
+  .footer { padding: 40px 60px; text-align: center; font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  @media (max-width: 769px) {
+    .nav { padding: 0 20px; height: 64px; }
+    .hero { padding: 48px 20px 72px; }
+    .hero h1 { font-size: 28px; }
+    .nav-links { display: none; }
+    .section { padding: 72px 20px; }
+    .section-head-v { font-size: 22px; letter-spacing: 0.6em; }
+    .news-card { grid-template-columns: 1fr; padding: 32px 20px; gap: 16px; }
+    .btn-pill--sm { padding: 9.6px 20px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-mark" href="#">BUNKITSU</a>
+  <a class="nav-logo" href="#">文喫</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#store">Store</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#news">News</a></li>
+    <li><a href="#forms">Forms</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <h1>文化を喫する、<br>入場料のある本屋。</h1>
+  <p>DESIGN.md から抽出したデザイントークンのカタログ。カラー、タイポグラフィ、コンポーネント、スペーシングの全値を可視化。computed style 実測値に基づく。</p>
+  <div class="hero-buttons">
+    <a class="btn-pill" href="#">文喫の楽しみ方</a>
+    <a class="btn-pill btn-pill--sm" href="#">店舗を探す</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-head-wrap">
+    <div class="section-label">Colors</div>
+    <div class="section-head-v">配色</div>
+  </div>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fdeadf"></div><div class="color-swatch-info"><div class="color-swatch-name">Apricot</div><div class="color-swatch-hex">#fdeadf</div><div class="color-swatch-role">主色。全 CTA ピルの面 ＋ フッター帯</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#34806f"></div><div class="color-swatch-info"><div class="color-swatch-name">Forest</div><div class="color-swatch-hex">#34806f</div><div class="color-swatch-role">第 2 色。記事への遷移＝アウトラインピル</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000000"></div><div class="color-swatch-info"><div class="color-swatch-name">Ink</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">見出し・CTA の文字・枠線。純黒を使う</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#28292b"></div><div class="color-swatch-info"><div class="color-swatch-name">Body Ink</div><div class="color-swatch-hex">#28292b</div><div class="color-swatch-role">body の既定文字色</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#5d5d5d"></div><div class="color-swatch-info"><div class="color-swatch-name">Muted</div><div class="color-swatch-hex">#5d5d5d</div><div class="color-swatch-role">住所・注記・キャプション</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ地色。純白</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f4f4f4"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#f4f4f4</div><div class="color-swatch-role">実用情報ブロックの面</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-head-wrap">
+    <div class="section-label">Typography</div>
+    <div class="section-head-v">組版</div>
+  </div>
+
+  <div class="type-sample">
+    <div style="font-size:44px; font-weight:400; line-height:1.25; color:var(--ink);">文喫の楽しみ方</div>
+    <div class="type-meta">44px / 400 / line-height: 1.25 (55px) / letter-spacing: 0.512px<span class="type-context">h1 — 見出しも 400 のまま</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:36px; font-weight:400; line-height:1.6; color:var(--ink);">文化を喫する、入場料のある本屋。</div>
+    <div class="type-meta">36px / 400 / line-height: 1.6 (57.6px) / letter-spacing: 0.512px<span class="type-context">リード（h2）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-en); font-size:24px; font-weight:400; line-height:1.5; letter-spacing:-0.48px; color:var(--ink);">Store / How to use / Information</div>
+    <div class="type-meta">Bookman Old Style（代替 Bitter）/ 24px / 400 / line-height: 1.5 / letter-spacing: -0.48px (-0.02em)<span class="type-context">欧文ラベル — 唯一の負の字間</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:24px; font-weight:400; line-height:1.6; color:var(--ink);">読書・ワークなど目的にあわせた滞在</div>
+    <div class="type-meta">24px / 400 / line-height: 1.6 (38.4px) / letter-spacing: 0.512px<span class="type-context">h3</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:18px; font-weight:400; line-height:1.75; color:var(--ink);">読み物本文 — 文喫の店舗には、どなたも気軽に立ち寄っていただける無料エリアと、入場料をお支払いいただくことで一日じっくり過ごせるエリアがあります。読み物ブロックだけ line-height を 1.6 から 1.75 に広げます。</div>
+    <div class="type-meta">18px / 400 / line-height: 1.75 (31.5px) / letter-spacing: 0.512px<span class="type-context">読み物本文</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:18px; font-weight:700; line-height:1.6; color:var(--ink);">新企画「文喫復刻選書」始動　第1弾は吉本隆明『言葉からの触手』</div>
+    <div class="type-meta">18px / <strong>700</strong> / line-height: 1.6 (28.8px) / letter-spacing: 0.512px<span class="type-context">ニュースカード — 700 が出る唯一の箇所</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.6; color:var(--ink);">本文テキスト — body に font-feature-settings: "palt" と letter-spacing: 0.512px が掛かり、全要素に継承されます。約物「」（）、。を palt で詰めた上で、一律の px を足して開き直す二段構えです。</div>
+    <div class="type-meta">16px / 400 / line-height: 1.6 (25.6px) / letter-spacing: 0.512px (0.032em)<span class="type-context">本文の基準</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:1.5; color:var(--muted);">東京都港区六本木6-1-20 六本木電気ビルディング1F</div>
+    <div class="type-meta">14px / 400 / line-height: 1.5 (21px) / letter-spacing: 0.512px / #5d5d5d<span class="type-context">住所（メタ）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:400; line-height:1.6; color:var(--muted);">※こちらはイメージ図です。詳しいエリアの情報は下記の店舗ページをご確認ください。</div>
+    <div class="type-meta">12px / 400 / line-height: 1.6 (19.2px) / letter-spacing: 0.512px / #5d5d5d<span class="type-context">キャプション</span></div>
+  </div>
+
+  <h3 style="font-size:24px; font-weight:400; margin:48px 0 20px; color:var(--ink);">縦組み — セクション見出しと本文コピー</h3>
+  <div style="display:flex; gap:80px; align-items:flex-start; justify-content:center; padding:40px 0;">
+    <div style="text-align:center">
+      <div class="section-label">Store</div>
+      <div class="section-head-v">店舗</div>
+      <div style="font-family:var(--font-mono); font-size:11px; color:var(--muted); margin-top:16px; letter-spacing:normal;">30px / 400 / ls 31.5px (1.05em)<br>writing-mode: vertical-rl<br>border-left: 1px solid #000</div>
+    </div>
+    <div style="text-align:center">
+      <div class="v-copy">自由で楽しい、みんなの居場所です。</div>
+      <div style="font-family:var(--font-mono); font-size:11px; color:var(--muted); margin-top:16px; letter-spacing:normal;">16px / lh 2.4 / ls 0.512px<br>height 固定で行数を制御</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- STORE -->
+<section class="section" id="store">
+  <div class="section-head-wrap">
+    <div class="section-label">Store</div>
+    <div class="section-head-v">店舗</div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start;">
+    <div>
+      <div class="store-name">文喫 六本木</div>
+      <div class="store-addr">東京都港区六本木6-1-20 六本木電気ビルディング1F　<a class="chip" href="#">MAP</a></div>
+      <div style="margin-top:24px"><a class="btn-pill btn-pill--sm" href="#">詳しくみる</a></div>
+    </div>
+    <div class="info">
+      <h3>スペースのご利用について</h3>
+      <p>文喫では、イベント・パーティー、撮影利用での店舗貸切や、企業さまとの共同企画を承っています。実用情報のブロックだけ面（#f4f4f4）を敷いて横組みにし、詩的な部分（縦組み）と書式で分けます。</p>
+      <div style="margin-top:24px"><a class="btn-pill btn-pill--sm" href="#">お問い合わせ</a></div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-head-wrap">
+    <div class="section-label">Buttons</div>
+    <div class="section-head-v">操作</div>
+  </div>
+
+  <div style="display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start; margin-bottom:40px;">
+    <div style="text-align:center"><a class="btn-pill" href="#">文喫の楽しみ方</a><div style="font-size:12px;color:var(--muted);margin-top:10px">Primary（大）— padding 9.6/40/12</div></div>
+    <div style="text-align:center"><a class="btn-pill btn-pill--sm" href="#">店舗を探す</a><div style="font-size:12px;color:var(--muted);margin-top:10px">Primary（小）— padding 3.5/16.8/5.6</div></div>
+    <div style="text-align:center"><a class="btn-outline" href="#">詳しくみる</a><div style="font-size:12px;color:var(--muted);margin-top:10px">Outline（深緑）— 記事への遷移</div></div>
+    <div style="text-align:center"><a class="chip" href="#">MAP</a><div style="font-size:12px;color:var(--muted);margin-top:10px">Chip — 面を持たない最小のピル</div></div>
+  </div>
+  <p style="font-size:14px; color:var(--muted); line-height:1.6;">すべて <code style="font-family:var(--font-mono)">border-radius: 38px</code>。塗りピルにも <code style="font-family:var(--font-mono)">1px solid #000000</code> の枠を付ける（塗りと輪郭をセットで持たせる）。<strong>padding は上下非対称で、下を上より 2.4px 厚くする</strong>——和文の字面が視覚的に中央へ来るための補正。ボタンだけ <code style="font-family:var(--font-mono)">letter-spacing: normal</code> に戻す。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- NEWS -->
+<section class="section" id="news">
+  <div class="section-head-wrap">
+    <div class="section-label">Information</div>
+    <div class="section-head-v">お知らせ</div>
+  </div>
+
+  <div class="news-list">
+    <div class="news-card">
+      <div>
+        <div class="news-date">2026.08.01</div>
+        <h3>新企画「文喫復刻選書」始動　第1弾は吉本隆明『言葉からの触手』</h3>
+      </div>
+      <a class="btn-outline" href="#">詳しくみる</a>
+    </div>
+    <div class="news-card">
+      <div>
+        <div class="news-date">2026.07.18</div>
+        <h3>文喫 栄が「NIKKEI OFFICE PASS AWARD」を受賞しました</h3>
+      </div>
+      <a class="btn-outline" href="#">詳しくみる</a>
+    </div>
+    <div class="news-card">
+      <div>
+        <div class="news-date">2026.06.30</div>
+        <h3>「BUNKITSU TOKYO」がオープンしました</h3>
+      </div>
+      <a class="btn-outline" href="#">詳しくみる</a>
+    </div>
+  </div>
+  <div style="text-align:center; margin-top:48px"><a class="btn-pill" href="#">一覧を見る</a></div>
+  <p style="margin-top:24px; font-size:14px; color:var(--muted); line-height:1.6;">カードは <code style="font-family:var(--font-mono)">border-radius: 0px</code>。ピル（38px）とカード（0px）の対比を保つ。区切りは 1px の横罫だけで、枠も影も付けない。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-head-wrap">
+    <div class="section-label">Forms</div>
+    <div class="section-head-v">入力</div>
+  </div>
+  <div class="form-group"><label class="form-label">お名前</label><input class="form-input" type="text" placeholder="文喫 太郎"><div class="form-state-label">デフォルト — 1px solid #000000 / radius 38px / padding 9.6px 24px 12px（ボタンと同じ非対称）</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--focus" type="text" value="taro@example.com"><div class="form-state-label">フォーカス — border: #34806f（深緑）</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー — border: #b34a3a（実装目安。アプリコットの濃版に寄せる）</div></div>
+  <div class="form-group"><label class="form-label">お問い合わせ内容</label><textarea class="form-input form-textarea" placeholder="ご用件をご記入ください"></textarea><div class="form-state-label">Textarea だけ radius 8px（ピルにすると複数行が入らない）</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-head-wrap">
+    <div class="section-label">Elevation</div>
+    <div class="section-head-v">階層</div>
+  </div>
+  <div class="elevation-grid">
+    <div class="elevation-card" style="background:var(--bg); border:1px solid var(--ink)"><div class="elevation-label">地 #ffffff</div><div class="elevation-desc">ページ全体</div></div>
+    <div class="elevation-card" style="background:var(--surface)"><div class="elevation-label">面 #f4f4f4</div><div class="elevation-desc">実用情報のセクション</div></div>
+    <div class="elevation-card" style="background:var(--apricot)"><div class="elevation-label">面 #fdeadf</div><div class="elevation-desc">CTA・フッター帯</div></div>
+    <div class="elevation-card" style="border:1px solid var(--forest)"><div class="elevation-label">線 #34806f</div><div class="elevation-desc">深緑アウトライン（1px）</div></div>
+  </div>
+  <p style="margin-top:24px; font-size:14px; color:var(--muted); line-height:1.6;">box-shadow はサイト内に 1 つも存在しない。奥行きは面色 3 段（白 / #f4f4f4 / #fdeadf）と 1px 罫だけで作る。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-head-wrap">
+    <div class="section-label">Layout</div>
+    <div class="section-head-v">寸法</div>
+  </div>
+
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:6.4px"></div><div class="spacing-value">XS 6.4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12.8px"></div><div class="spacing-value">S 12.8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:20px"></div><div class="spacing-value">M 20</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">L 40</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:51.2px"></div><div class="spacing-value">XL 51.2</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:80px"></div><div class="spacing-value">XXL 80</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:118px"></div><div class="spacing-value">XXXL 118</div></div>
+  </div>
+
+  <div style="margin-bottom:20px"><div class="width-bar-label">Main Container <span class="width-bar-value">1320px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:20px"><div class="width-bar-label">Article <span class="width-bar-value">720px 目安</span></div><div class="width-bar"><div class="width-bar-inner" style="width:55%"></div></div></div>
+  <p style="font-size:14px; color:var(--muted); line-height:1.6;">セクションの間に 300〜500px の余白を置く。1 画面にセクションを 2 つ入れない。</p>
+</section>
+
+<div class="footer-band">
+  <div class="logo">文喫</div>
+</div>
+
+<footer class="footer">
+  Generated from <a href="https://bunkitsu.jp/" style="color:var(--forest);">bunkitsu.jp</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-08-15）<br>
+  実サイトの書体は 和文 <code style="font-family:var(--font-mono)">TsukuGoPr5-D</code>（筑紫ゴシック Pro5 D / Fontworks）、
+  欧文ラベル <code style="font-family:var(--font-mono)">BookmanOldStylePro-Regular</code>。
+  どちらもドメインライセンスのためローカルでは表示されない。
+  ここでは和文を <strong>Zen Kaku Gothic New</strong>（仮名が小ぶりで縦長・フォントワークス系の情緒に近い）、
+  欧文を <strong>Bitter</strong>（Bookman と同系統のセリフ）で代替している。
+</footer>
+
+</body>
+</html>

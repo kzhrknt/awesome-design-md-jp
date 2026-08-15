@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (447 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (450 sites)</a>
 </p>
 
 <table>
@@ -674,6 +674,11 @@
 <td align="center"><strong>大分県立美術館</strong><br><img src="design-md/opam/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>角川武蔵野ミュージアム</strong><br><img src="design-md/kadokawa-museum/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>青森県立美術館</strong><br><img src="design-md/aomori-museum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>文喫</strong><br><img src="design-md/bunkitsu/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Preferred Networks</strong><br><img src="design-md/preferred-networks/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1181,11 +1186,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [Nulab (ヌーラボ)](https://nulab.com/ja/) | SaaS / Collaboration Tools | [DESIGN.md](design-md/nulab/DESIGN.md) | [preview.html](design-md/nulab/preview.html) |
 | [OPAM (大分県立美術館)](https://www.opam.jp/) | Museum / Culture | [DESIGN.md](design-md/opam/DESIGN.md) | [preview.html](design-md/opam/preview.html) |
 | [Kadokawa Culture Museum (角川武蔵野ミュージアム)](https://kadcul.com/) | Museum / Library / Culture | [DESIGN.md](design-md/kadokawa-museum/DESIGN.md) | [preview.html](design-md/kadokawa-museum/preview.html) |
+| [Aomori Museum of Art (青森県立美術館)](https://www.aomori-museum.jp/) | Museum / Culture | [DESIGN.md](design-md/aomori-museum/DESIGN.md) | [preview.html](design-md/aomori-museum/preview.html) |
+| [BUNKITSU (文喫)](https://bunkitsu.jp/) | Bookstore / Space | [DESIGN.md](design-md/bunkitsu/DESIGN.md) | [preview.html](design-md/bunkitsu/preview.html) |
+| [Preferred Networks (PFN)](https://www.preferred.jp/ja/) | AI / Deep Tech | [DESIGN.md](design-md/preferred-networks/DESIGN.md) | [preview.html](design-md/preferred-networks/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (447 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (450 sites)</a>
 </p>
 
 <table>
@@ -1824,6 +1832,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>ヌーラボ</strong><br><img src="design-md/nulab/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>大分県立美術館</strong><br><img src="design-md/opam/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>角川武蔵野ミュージアム</strong><br><img src="design-md/kadokawa-museum/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>青森県立美術館</strong><br><img src="design-md/aomori-museum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>文喫</strong><br><img src="design-md/bunkitsu/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Preferred Networks</strong><br><img src="design-md/preferred-networks/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
