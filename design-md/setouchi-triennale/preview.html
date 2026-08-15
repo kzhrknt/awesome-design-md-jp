@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 瀬戸内国際芸術祭（Setouchi Triennale）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測値 === */
+    --blue: #0068b5;        /* 主色。ボタン文字・MENU・現在地・チップの枠 */
+    --sky: #cfe9f8;         /* ファーストビューの面色 / MENU ボタン */
+    --sea-light: #e2f1f7;   /* PICK UP カードの面 */
+    --sea-pale: #e9f2fc;    /* フッターの面 */
+    --sea-deep: #227ea5;    /* 大きな導線ブロックの面 */
+    --sea-mid: #2e7c9e;     /* PICK UP の見出し文字 */
+    --sea-slate: #3a7b98;   /* ステータス「申込不要」 */
+    --highlight: #f5f57f;   /* 右上固定バナー。唯一の暖色 */
+
+    /* 会期の 4 色 */
+    --season-all: #323232;
+    --season-spring: #2f837b;
+    --season-summer: #466ca6;
+    --season-autumn: #aa6255;
+
+    /* KV の図案（画像／SVG の実測ピクセル。CSS トークンではない） */
+    --kv-sky: #32a7c7;
+    --kv-island: #4091a4;
+    --kv-sea: #99c6e2;
+
+    --ink: #323232;         /* 既定の文字色。純黒ではない */
+    --muted: #6d7682;       /* 日付・非活性 */
+    --bg: #ffffff;
+
+    /* === Fonts === */
+    /* 実サイトは "Noto Sans JP", sans-serif の 1 本のみ（和欧とも）。
+       ロゴタイプだけが明朝のレタリング画像で、Web フォント化されていない。
+       ここではロゴの雰囲気を Shippori Mincho で代替する。 */
+    --font: "Noto Sans JP", sans-serif;
+    --font-logo: "Shippori Mincho", serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: normal;
+    font-feature-settings: normal;   /* palt も chws も使わない */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: stretch; justify-content: space-between; background: var(--bg); height: 100px; }
+  .nav-logo { display: flex; flex-direction: column; justify-content: center; padding: 0 40px; text-decoration: none; }
+  .nav-logo-jp { font-family: var(--font-logo); font-size: 24px; font-weight: 500; color: var(--ink); letter-spacing: 0.05em; line-height: 1.4; }
+  .nav-logo-en { font-family: var(--font-logo); font-size: 13px; font-weight: 500; color: var(--ink); letter-spacing: 0.08em; line-height: 1.4; }
+  .nav-links { display: flex; align-items: center; gap: 34px; list-style: none; }
+  .nav-links a { font-size: 16px; font-weight: 700; line-height: 1.5; letter-spacing: 0.8px; color: var(--ink); text-decoration: none; }
+  .nav-links a:hover { color: var(--blue); }
+  .nav-right { display: flex; align-items: stretch; }
+  .nav-banner { display: flex; align-items: center; background: var(--highlight); color: var(--ink); font-size: 14px; font-weight: 700; letter-spacing: 0.7px; padding: 0 24px; text-decoration: none; box-shadow: 0 3px 6px 0 rgba(0,0,0,.16); }
+  .nav-menu { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; background: var(--sky); color: var(--blue); width: 88px; font-size: 12px; font-weight: 500; text-decoration: none; }
+  .nav-menu i { display: block; width: 28px; height: 1.5px; background: var(--blue); box-shadow: 0 6px 0 var(--blue), 0 -6px 0 var(--blue); }
+
+  /* KV — 空・島影・海の 3 層 */
+  .kv { position: relative; height: 420px; background: var(--kv-sky); overflow: hidden; }
+  .kv-island { position: absolute; left: 0; bottom: 168px; width: 46%; height: 130px; background: var(--kv-island); clip-path: polygon(0 100%, 0 40%, 42% 0, 100% 100%); }
+  .kv-island2 { position: absolute; right: 6%; bottom: 168px; width: 22%; height: 110px; background: var(--kv-island); clip-path: polygon(0 100%, 50% 0, 100% 100%); }
+  .kv-sea { position: absolute; left: 0; right: 0; bottom: 0; height: 168px; background: var(--kv-sea); }
+  .kv-wordmark { position: absolute; right: 6%; bottom: 66px; font-size: 22px; font-weight: 500; letter-spacing: 0.6em; color: rgba(255,255,255,.75); }
+  .kv-banner { position: absolute; right: 0; top: 0; background: var(--blue); color: #fff; font-size: 18px; font-weight: 700; line-height: 1.5; padding: 24px 28px; max-width: 460px; }
+
+  /* SECTIONS */
+  .section { padding: 88px 40px; max-width: 1200px; margin: 0 auto; }
+  .section--tinted { background: var(--sea-light); max-width: none; }
+  .heading-en { font-size: 25px; font-weight: 700; line-height: 1.72; letter-spacing: 5px; color: var(--ink); text-align: center; margin-bottom: 40px; }
+  .heading-jp { font-size: 25px; font-weight: 500; line-height: 1.72; letter-spacing: 1.25px; color: var(--ink); text-align: center; margin-bottom: 40px; }
+  .heading-wide { font-size: 26px; font-weight: 500; line-height: 1.65; letter-spacing: 15.6px; color: var(--ink); text-align: center; margin-bottom: 40px; }
+  .section-divider { border: none; border-top: 1px solid rgba(50,50,50,.12); margin: 0; }
+  .lead { font-size: 16px; font-weight: 500; line-height: 2.19; letter-spacing: 0.8px; max-width: 760px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .color-swatch { background: #fff; border: 1px solid rgba(50,50,50,.12); }
+  .color-swatch-block { height: 78px; width: 100%; }
+  .color-swatch-info { padding: 12px; border-top: 1px solid rgba(50,50,50,.12); }
+  .color-swatch-name { font-size: 14px; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.7px; }
+  .color-swatch-hex { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+  .color-swatch-role { font-size: 12px; font-weight: 500; color: var(--muted); margin-top: 8px; line-height: 1.7; }
+  .color-group-label { font-size: 16px; font-weight: 700; letter-spacing: 0.8px; margin: 32px 0 12px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 32px; padding-bottom: 28px; border-bottom: 1px solid rgba(50,50,50,.12); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 12px; line-height: 1.6; }
+  .type-context { display: inline-block; background: var(--sea-light); color: var(--ink); font-family: var(--font); font-size: 11px; font-weight: 500; padding: 3px 10px; margin-left: 8px; }
+
+  /* BUTTONS */
+  .btn-primary {
+    display: inline-block; background: #fff; color: var(--blue);
+    border: none; border-radius: 0; padding: 17px 40px;
+    font-size: 16px; font-weight: 700; line-height: 1.4; letter-spacing: 1.6px;
+    box-shadow: 0 0 6px 0 rgba(61, 77, 84, 0.28);   /* オフセット 0 の縁取り */
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-primary:hover { color: var(--sea-deep); }
+  .btn-block { display: block; background: var(--sea-deep); color: #fff; padding: 39px 80px; text-align: center; text-decoration: none; font-size: 16px; font-weight: 400; line-height: 1.6; }
+  .btn-block strong { display: block; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+  .chip-cat { display: inline-block; background: #fff; color: var(--ink); border: 1px solid var(--blue); border-radius: 30px; padding: 4px 9px; font-size: 13px; font-weight: 500; text-decoration: none; }
+
+  /* LABELS */
+  .label-season { display: inline-block; color: #fff; padding: 6px 18px; font-size: 14px; font-weight: 500; letter-spacing: 0.7px; line-height: 1; }
+  .label-status { display: inline-block; color: #fff; padding: 5px 12px; font-size: 12px; font-weight: 500; line-height: 1; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 30px; }
+  .card-pickup { background: var(--sea-light); padding: 30px 24px 24px; box-shadow: 0 3px 6px 0 rgba(33, 56, 121, 0.16); }
+  .card-pickup p { font-size: 22px; font-weight: 700; line-height: 1.45; color: var(--sea-mid); }
+  .card-island { background: #fff; }
+  .card-island-photo { height: 150px; background: linear-gradient(180deg, var(--kv-sky), var(--kv-sea)); }
+  .card-island-name { background: #fff; text-align: center; padding: 10px 0; font-size: 22px; font-weight: 700; white-space: nowrap; }
+
+  /* NEWS */
+  .news-row { display: grid; grid-template-columns: 150px 1fr; gap: 24px; padding: 22px 0; border-bottom: 1px solid rgba(50,50,50,.12); align-items: baseline; }
+  .news-date { font-size: 13px; font-weight: 500; color: var(--muted); }
+  .news-title { font-size: 16px; font-weight: 700; line-height: 1.44; letter-spacing: 0.8px; }
+  .news-new { display: inline-block; background: var(--blue); color: #fff; font-size: 12px; font-weight: 500; padding: 2px 8px; margin-left: 8px; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 24px; max-width: 460px; }
+  .form-label { display: block; font-size: 14px; font-weight: 700; letter-spacing: 0.7px; margin-bottom: 8px; }
+  .form-input {
+    width: 100%; background: #fff; color: var(--ink);
+    border: 1px solid var(--muted); border-radius: 0; padding: 12px 16px;
+    font-family: var(--font); font-size: 16px; font-weight: 500; letter-spacing: 0.8px; line-height: 2.19;
+    outline: none; transition: border-color .15s, box-shadow .15s;
+  }
+  .form-input::placeholder { color: var(--muted); }
+  .form-input--focus { border-color: var(--blue); box-shadow: 0 0 6px 0 rgba(61,77,84,.28); }
+  .form-input--error { border-color: var(--season-autumn); }
+  .form-textarea { min-height: 110px; }
+  .form-state-label { font-size: 12px; font-weight: 500; color: var(--muted); margin-top: 8px; line-height: 1.7; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 24px; }
+  .elevation-card { background: #fff; padding: 26px; text-align: center; }
+  .elevation-label { font-size: 14px; font-weight: 700; margin-bottom: 8px; letter-spacing: 0.7px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+  /* LAYOUT */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--blue); margin-bottom: 6px; height: 24px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+  .width-bar { height: 28px; background: var(--sea-pale); margin-bottom: 8px; overflow: hidden; }
+  .width-bar-inner { height: 100%; background: var(--blue); }
+  .width-bar-label { font-size: 14px; font-weight: 700; letter-spacing: 0.7px; margin-bottom: 4px; }
+  .width-bar-value { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-weight: 400; letter-spacing: normal; }
+
+  /* FOOTER */
+  .footer { background: var(--sea-pale); padding: 56px 40px; text-align: center; }
+  .footer-logo { font-family: var(--font-logo); font-size: 22px; font-weight: 500; letter-spacing: 0.05em; margin-bottom: 16px; }
+  .colophon { padding: 32px 40px; font-size: 12px; font-weight: 500; color: var(--muted); line-height: 1.9; text-align: center; }
+  .colophon a { color: var(--blue); }
+
+  @media (max-width: 769px) {
+    .nav { height: 72px; }
+    .nav-links, .nav-banner { display: none; }
+    .nav-logo { padding: 0 16px; }
+    .section { padding: 56px 20px; }
+    .heading-wide { font-size: 20px; letter-spacing: 0.3em; }   /* 0.6em → 0.3em */
+    .heading-en { font-size: 18px; }
+    .kv { height: 300px; }
+    .kv-banner { position: static; max-width: none; }
+    .chip-cat { padding: 10px 16px; }
+    .card-island-name { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="#">
+    <span class="nav-logo-jp">瀬戸内国際芸術祭</span>
+    <span class="nav-logo-en">Setouchi Triennale</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#colors">島・会場</a></li>
+    <li><a href="#typography">作品・イベント / 作家</a></li>
+    <li><a href="#buttons">アクセス</a></li>
+    <li><a href="#cards">滞在する</a></li>
+    <li><a href="#forms">応援する</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="nav-banner" href="#">作品公開スケジュール</a>
+    <a class="nav-menu" href="#"><i></i>MENU</a>
+  </div>
+</nav>
+
+<!-- KV -->
+<section class="kv">
+  <div class="kv-banner">芸術祭会期外も、島・エリア毎に開館日を設け、定期的に作品公開を行っています。</div>
+  <div class="kv-island"></div>
+  <div class="kv-island2"></div>
+  <div class="kv-sea"></div>
+  <div class="kv-wordmark">SETOUCHI</div>
+</section>
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="heading-en">COLORS</div>
+
+  <div class="color-group-label">Brand — 水色の階調</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0068b5"></div><div class="color-swatch-info"><div class="color-swatch-name">Setouchi Blue</div><div class="color-swatch-hex">#0068b5</div><div class="color-swatch-role">主色。ボタン文字・MENU・現在地・チップの枠</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#cfe9f8"></div><div class="color-swatch-info"><div class="color-swatch-name">Sky</div><div class="color-swatch-hex">#cfe9f8</div><div class="color-swatch-role">ファーストビューの面色 / MENU ボタン</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e2f1f7"></div><div class="color-swatch-info"><div class="color-swatch-name">Sea Light</div><div class="color-swatch-hex">#e2f1f7</div><div class="color-swatch-role">PICK UP カードの面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e9f2fc"></div><div class="color-swatch-info"><div class="color-swatch-name">Sea Pale</div><div class="color-swatch-hex">#e9f2fc</div><div class="color-swatch-role">フッターの面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#227ea5"></div><div class="color-swatch-info"><div class="color-swatch-name">Deep Sea</div><div class="color-swatch-hex">#227ea5</div><div class="color-swatch-role">大きな導線ブロックの面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#2e7c9e"></div><div class="color-swatch-info"><div class="color-swatch-name">Mid Sea</div><div class="color-swatch-hex">#2e7c9e</div><div class="color-swatch-role">PICK UP の見出し文字</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#3a7b98"></div><div class="color-swatch-info"><div class="color-swatch-name">Slate Sea</div><div class="color-swatch-hex">#3a7b98</div><div class="color-swatch-role">ステータス「申込不要」</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5f57f"></div><div class="color-swatch-info"><div class="color-swatch-name">Highlight Yellow</div><div class="color-swatch-hex">#f5f57f</div><div class="color-swatch-role">右上固定バナー。唯一の暖色</div></div></div>
+  </div>
+
+  <div class="color-group-label">Season — 会期の 4 色（このサイト固有）</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#323232"></div><div class="color-swatch-info"><div class="color-swatch-name">全会期</div><div class="color-swatch-hex">#323232</div><div class="color-swatch-role">通年公開のエリア・作品</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#2f837b"></div><div class="color-swatch-info"><div class="color-swatch-name">春会期</div><div class="color-swatch-hex">#2f837b</div><div class="color-swatch-role">新緑の緑青</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#466ca6"></div><div class="color-swatch-info"><div class="color-swatch-name">夏会期</div><div class="color-swatch-hex">#466ca6</div><div class="color-swatch-role">藍</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#aa6255"></div><div class="color-swatch-info"><div class="color-swatch-name">秋会期</div><div class="color-swatch-hex">#aa6255</div><div class="color-swatch-role">枯れた赤茶</div></div></div>
+  </div>
+
+  <div class="color-group-label">KV の図案（画像の実測ピクセル。CSS トークンではない）</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#32a7c7"></div><div class="color-swatch-info"><div class="color-swatch-name">空</div><div class="color-swatch-hex">#32a7c7</div><div class="color-swatch-role">上半分。彩度の高いシアン</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#4091a4"></div><div class="color-swatch-info"><div class="color-swatch-name">島影</div><div class="color-swatch-hex">#4091a4</div><div class="color-swatch-role">空より暗く沈めたシルエット</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#99c6e2"></div><div class="color-swatch-info"><div class="color-swatch-name">海</div><div class="color-swatch-hex">#99c6e2</div><div class="color-swatch-role">下半分。空より淡くする</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#323232"></div><div class="color-swatch-info"><div class="color-swatch-name">Ink</div><div class="color-swatch-hex">#323232</div><div class="color-swatch-role">既定の文字色。純黒ではない</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#6d7682"></div><div class="color-swatch-info"><div class="color-swatch-name">Muted</div><div class="color-swatch-hex">#6d7682</div><div class="color-swatch-role">日付・非活性</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ地色</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="heading-en">TYPOGRAPHY</div>
+  <div class="heading-wide">組版の規則</div>
+
+  <div class="type-sample">
+    <div class="heading-wide" style="margin-bottom:0">ART SETOUCHIとは</div>
+    <div class="type-meta">26px / 500 / lh 1.65 (42.9px) / <strong>letter-spacing: 15.6px（0.6em）</strong> / 中央寄せ<span class="type-context">セクション見出し — サイト最大の字間</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:25px; font-weight:700; line-height:1.72; letter-spacing:5px;">PICK UP</div>
+    <div class="type-meta">25px / 700 / lh 1.72 (43px) / letter-spacing: 5px（0.2em）<span class="type-context">英字見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:25px; font-weight:500; line-height:1.72; letter-spacing:1.25px;">新着情報</div>
+    <div class="type-meta">25px / 500 / lh 1.72 (43px) / letter-spacing: 1.25px（0.05em）<span class="type-context">同じ 25px でも和文は 0.05em に落とす</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:22px; font-weight:700; line-height:1.0; white-space:nowrap;">直　島　　豊　島　　男　木　島</div>
+    <div class="type-meta">22px / 700 / lh 1.0 / ls normal / <strong>全角スペースで文字を割る</strong><span class="type-context">島名 — 正規化で全角スペースを消さない</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:500; line-height:2.19; letter-spacing:0.8px; max-width:760px;">「ART SETOUCHI」は 3 年ごとに開催される「瀬戸内国際芸術祭」と、その間に取り組まれるアートを通して地域の活力を取り戻す活動の総称です。本文は 16px / weight 500 / line-height 2.19 / letter-spacing 0.05em。行間を詰めるとこのサイトの読み心地は成立しません。</div>
+    <div class="type-meta">16px / 500 / <strong>lh 2.19 (35.04px)</strong> / letter-spacing: 0.8px（0.05em）<span class="type-context">本文 — 行間 2.19</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:18px; font-weight:700; line-height:1.667; letter-spacing:0.9px;">みんなの手　月まで届く手袋を編もう！</div>
+    <div class="type-meta">18px / 700 / lh 1.667 (30px) / letter-spacing: 0.9px（0.05em）<span class="type-context">記事タイトル</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:700; line-height:1.4; letter-spacing:1.6px; color:var(--blue);">新着情報一覧</div>
+    <div class="type-meta">16px / 700 / lh 1.4 / <strong>letter-spacing: 1.6px（0.1em）</strong><span class="type-context">ボタン — 字間を 0.1em に上げる</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:500; line-height:1.86; letter-spacing:0.7px;">直島　豊島　女木島　男木島　小豆島　大島　犬島　沙弥島　本島　高見島　粟島　伊吹島</div>
+    <div class="type-meta">14px / 500 / lh 1.86 (26.04px) / letter-spacing: 0.7px（0.05em）<span class="type-context">エリア一覧</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:13px; font-weight:500; color:var(--muted);">2026年08月06日</div>
+    <div class="type-meta">13px / 500 / lh 1.0 / ls normal / #6d7682<span class="type-context">日付 — 小さい文字は字間を開かない</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- PICK UP -->
+<section class="section section--tinted">
+  <div style="max-width:1200px; margin:0 auto;">
+    <div class="heading-en">PICK UP</div>
+    <div class="card-grid">
+      <div class="card-pickup"><p>島・会場ごとの注意事項</p></div>
+      <div class="card-pickup"><p>アクセスと船の時刻表</p></div>
+      <div class="card-pickup"><p>作品鑑賞パスポート</p></div>
+    </div>
+    <p style="font-size:14px; font-weight:500; color:var(--muted); line-height:1.86; margin-top:24px; letter-spacing:0.7px;">カードの影は <code style="font-family:var(--font-mono)">0 3px 6px 0 rgba(33,56,121,.16)</code>。<strong>影の色に青を混ぜる</strong>——水色の面の上では灰色の影が濁るため。</p>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ISLANDS -->
+<section class="section" id="cards">
+  <div class="heading-wide">瀬戸内海の島々と沿岸部の全17エリア</div>
+  <div class="card-grid" style="margin-bottom:40px;">
+    <div class="card-island">
+      <div class="card-island-photo"></div>
+      <div class="card-island-name">直　島</div>
+      <div style="display:flex"><span class="label-season" style="background:var(--season-all); flex:1; text-align:center;">全会期</span></div>
+    </div>
+    <div class="card-island">
+      <div class="card-island-photo"></div>
+      <div class="card-island-name">豊　島</div>
+      <div style="display:flex"><span class="label-season" style="background:var(--season-spring); flex:1; text-align:center;">春会期</span></div>
+    </div>
+    <div class="card-island">
+      <div class="card-island-photo"></div>
+      <div class="card-island-name">女木島</div>
+      <div style="display:flex"><span class="label-season" style="background:var(--season-summer); flex:1; text-align:center;">夏会期</span></div>
+    </div>
+    <div class="card-island">
+      <div class="card-island-photo"></div>
+      <div class="card-island-name">本　島</div>
+      <div style="display:flex"><span class="label-season" style="background:var(--season-autumn); flex:1; text-align:center;">秋会期</span></div>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:32px;">
+    <span class="label-status" style="background:var(--blue)">募集中</span>
+    <span class="label-status" style="background:var(--sea-slate)">申込不要</span>
+    <span class="label-status" style="background:var(--muted)">申込開始前</span>
+    <a class="chip-cat" href="#">映画</a>
+    <a class="chip-cat" href="#">パフォーマンス</a>
+    <span style="font-size:14px; font-weight:500; color:var(--muted); letter-spacing:0.7px;">← ステータスは矩形（radius 0）、カテゴリだけピル（radius 30px）</span>
+  </div>
+
+  <a class="btn-block" href="#"><strong>アーカイブ</strong>これまでの歩み・活動報告</a>
+</section>
+
+<hr class="section-divider">
+
+<!-- NEWS -->
+<section class="section" id="news">
+  <div class="heading-jp">新着情報</div>
+  <div style="border-top:1px solid rgba(50,50,50,.12);">
+    <div class="news-row"><span class="news-date">2026年08月06日</span><span class="news-title">瀬戸内国際芸術祭2028作品公募を実施します<span class="news-new">NEW</span></span></div>
+    <div class="news-row"><span class="news-date">2026年07月22日</span><span class="news-title">夏会期の作品公開スケジュールを更新しました</span></div>
+    <div class="news-row"><span class="news-date">2026年06月30日</span><span class="news-title">こえび隊（瀬戸内国際芸術祭サポーター）の登録受付を開始します</span></div>
+  </div>
+  <div style="text-align:center; margin-top:44px"><a class="btn-primary" href="#">新着情報一覧</a></div>
+  <p style="font-size:14px; font-weight:500; color:var(--muted); line-height:1.86; margin-top:24px; text-align:center; letter-spacing:0.7px;">プライマリボタンは塗りにしない。<strong>白地 ＋ 青文字 ＋ オフセット 0 の影（0 0 6px rgba(61,77,84,.28)）</strong>で輪郭を作る。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="heading-en">BUTTONS</div>
+  <div style="display:flex; gap:32px; flex-wrap:wrap; align-items:flex-start;">
+    <div style="text-align:center"><a class="btn-primary" href="#">新着情報一覧</a><div style="font-size:12px;font-weight:500;color:var(--muted);margin-top:12px;line-height:1.7">Primary — 白地 ＋ 影 / ls 0.1em</div></div>
+    <div style="text-align:center"><a class="chip-cat" href="#">映画</a><div style="font-size:12px;font-weight:500;color:var(--muted);margin-top:12px;line-height:1.7">Category Chip — 唯一の radius 30px</div></div>
+    <div style="text-align:center"><span class="label-season" style="background:var(--season-summer)">夏会期</span><div style="font-size:12px;font-weight:500;color:var(--muted);margin-top:12px;line-height:1.7">会期ラベル — radius 0</div></div>
+    <div style="text-align:center"><span class="nav-banner" style="padding:14px 24px; display:inline-flex;">作品公開スケジュール</span><div style="font-size:12px;font-weight:500;color:var(--muted);margin-top:12px;line-height:1.7">固定バナー — 唯一の暖色</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="heading-en">FORMS</div>
+  <div class="form-group"><label class="form-label">お名前</label><input class="form-input" type="text" placeholder="瀬戸内 太郎"><div class="form-state-label">デフォルト — 1px solid #6d7682 / radius 0</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--focus" type="text" value="taro@example.com"><div class="form-state-label">フォーカス — border #0068b5 ＋ ボタンと同じ影（0 0 6px rgba(61,77,84,.28)）</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー — border #aa6255（秋会期の色を流用。新しい赤を持ち込まない）</div></div>
+  <div class="form-group"><label class="form-label">お問い合わせ内容</label><textarea class="form-input form-textarea" placeholder="ご用件をご記入ください"></textarea><div class="form-state-label">Textarea も radius 0</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section section--tinted" id="elevation">
+  <div style="max-width:1200px; margin:0 auto;">
+    <div class="heading-en">ELEVATION</div>
+    <div class="elevation-grid">
+      <div class="elevation-card"><div class="elevation-label">Level 0</div><div class="elevation-desc">none<br>ラベル・チップ・ブロックリンク</div></div>
+      <div class="elevation-card" style="box-shadow:0 3px 6px 0 rgba(0,0,0,.16)"><div class="elevation-label">Level 1</div><div class="elevation-desc">0 3px 6px rgba(0,0,0,.16)<br>固定バナー（黄）</div></div>
+      <div class="elevation-card" style="box-shadow:0 3px 6px 0 rgba(33,56,121,.16)"><div class="elevation-label">Level 2</div><div class="elevation-desc">0 3px 6px rgba(33,56,121,.16)<br>カード（影に青を混ぜる）</div></div>
+      <div class="elevation-card" style="box-shadow:0 0 6px 0 rgba(61,77,84,.28)"><div class="elevation-label">Level 3</div><div class="elevation-desc">0 0 6px rgba(61,77,84,.28)<br>ボタン（オフセット 0 の縁取り）</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <div class="heading-en">LAYOUT</div>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:6px"></div><div class="spacing-value">XS 6</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:10px"></div><div class="spacing-value">S 10</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:17px"></div><div class="spacing-value">M 17</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:30px"></div><div class="spacing-value">L 30</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">XL 40</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:80px"></div><div class="spacing-value">XXL 80</div></div>
+  </div>
+  <div style="margin-bottom:20px"><div class="width-bar-label">Main Container <span class="width-bar-value">1200px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:20px"><div class="width-bar-label">本文カラム <span class="width-bar-value">760px 目安</span></div><div class="width-bar"><div class="width-bar-inner" style="width:63%"></div></div></div>
+  <p style="font-size:14px; font-weight:500; color:var(--muted); line-height:1.86; letter-spacing:0.7px;">ボタンの <code style="font-family:var(--font-mono)">padding: 17px 40px</code>、ブロックリンクの <code style="font-family:var(--font-mono)">39px 80px</code> と、縦:横 ≒ 1:2.3 の比率が共通する。セクションの区切りは罫線ではなく面色（#e2f1f7 / #e9f2fc）の帯で作る。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-logo">瀬戸内国際芸術祭</div>
+  <div style="font-size:14px; font-weight:500; letter-spacing:0.7px; line-height:1.86;">このサイトについて　／　プライバシーポリシー</div>
+</footer>
+
+<div class="colophon">
+  Generated from <a href="https://setouchi-artfest.jp/">setouchi-artfest.jp</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-08-15）<br>
+  実サイトの書体は <code style="font-family:var(--font-mono)">"Noto Sans JP", sans-serif</code> の 1 本のみ（和欧とも）で、Google Fonts からそのまま読み込める。<br>
+  ロゴタイプだけは明朝のレタリング画像で Web フォント化されていないため、ここでは <strong>Shippori Mincho</strong> で雰囲気を代替している。
+</div>
+
+</body>
+</html>

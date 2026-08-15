@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: フォントワークス（Monotype 株式会社）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500;700&family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測値 === */
+    --crimson: #d70c19;       /* 主色。CTA の枠と文字・カード見出し・現在地 */
+    --crimson-deep: #b1000f;  /* KV 右面 ＋ その上のタグの面 */
+    --notice: #0a1111;        /* 商号変更の告知バー */
+    --ink: #1a1a1a;           /* 既定の文字色・ツールチップ／メニューの面 */
+    --bg: #fafafa;            /* ページ地色。純白ではない */
+    --surface: #ffffff;       /* ボタン・入力・チップの面。「押せるもの」の白 */
+    --border: #dddddd;        /* セカンダリの枠・区切り罫 */
+    --disabled: #c9c9c9;      /* 非活性の面。文字は白 */
+
+    /* === Fonts === */
+    /* 実サイト:
+         既定    "Tsukushi Gothic", "Yu Gothic", "YuGothic", sans-serif（筑紫ゴシック）
+         UI      "UD Kakugo Small", "Hiragino Sans", sans-serif（UD角ゴ_スモール）
+         KV タグ  "Tsukushi Mincho", "Yu Mincho", "YuMincho", serif（筑紫明朝）
+       すべて自社書体のドメイン配信のためローカルでは表示されない。
+       筑紫ゴシック → Zen Kaku Gothic New（仮名が小ぶりで縦長）
+       UD角ゴ_スモール → BIZ UDPGothic（同じ UD 系。字面が広く小サイズで潰れない）
+       筑紫明朝 → Shippori Mincho（コントラストが強く仮名が小さい明朝）で代替する。 */
+    --font-gothic: "Zen Kaku Gothic New", "Tsukushi Gothic", "Yu Gothic", YuGothic, sans-serif;
+    --font-ud: "BIZ UDPGothic", "UD Kakugo Small", "Hiragino Sans", sans-serif;
+    --font-mincho: "Shippori Mincho", "Tsukushi Mincho", "Yu Mincho", YuMincho, serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Weights: 書体のウェイト名に対応した変数 === */
+    --fw-r: 300;   /* R  = Regular */
+    --fw-m: 400;   /* M  = Medium */
+    --fw-rb: 450;  /* RB = Regular Bold */
+    --fw-d: 500;   /* D  = Demibold */
+    --fw-b: 600;   /* B  = Bold */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-gothic);
+    font-size: 16px;
+    font-weight: var(--fw-m);
+    line-height: 1.0;
+    letter-spacing: normal;            /* 既定は開かない */
+    font-feature-settings: "chws";     /* ← 全要素に継承される */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NOTICE BAR */
+  .notice { background: var(--notice); color: #fff; text-align: center; padding: 18px 20px; font-size: 16px; line-height: 1.5; }
+  .notice a { color: #fff; text-decoration: underline; }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px 0 60px;            /* 左右非対称 */
+    height: 78px; background: var(--bg);
+  }
+  .nav-logo { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-links { display: flex; gap: 22px; list-style: none; margin-right: 12px; }
+  .nav-links a { font-family: var(--font-ud); font-size: 14px; font-weight: var(--fw-d); color: var(--ink); text-decoration: none; line-height: 1; }
+  .nav-links a:hover { color: var(--crimson); }
+  .nav-burger { width: 44px; height: 44px; border-radius: 100px; background: var(--ink); display: inline-flex; align-items: center; justify-content: center; }
+  .nav-burger span { display: block; width: 18px; height: 1px; background: #fff; box-shadow: 0 5px 0 #fff, 0 -5px 0 #fff; }
+
+  /* NEWS BAR */
+  .newsbar { display: flex; align-items: center; gap: 24px; padding: 20px 60px; background: var(--surface); border-bottom: 1px solid var(--border); }
+  .newsbar-date { font-family: var(--font-ud); font-size: 14px; font-weight: var(--fw-r); color: var(--crimson); }
+  .newsbar-text { font-family: var(--font-ud); font-size: 14px; font-weight: var(--fw-d); color: var(--ink); flex: 1; }
+
+  /* KV — 縦 2 分割 */
+  .kv { display: grid; grid-template-columns: 1fr 1fr; min-height: 460px; }
+  .kv-left { background: var(--crimson); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px; }
+  .kv-glyph { font-family: var(--font-gothic); font-size: 240px; font-weight: 700; line-height: 1; color: #fff; }
+  .kv-name { font-family: var(--font-ud); font-size: 14px; font-weight: var(--fw-d); color: var(--bg); padding-top: 16px; }
+  .kv-right { background: var(--crimson-deep); display: flex; flex-wrap: wrap; align-content: flex-end; gap: 12px 16px; padding: 48px; }
+
+  /* TAG（KV の明朝タグ） */
+  .tag {
+    display: inline-block; background: var(--crimson-deep); color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 32px;
+    padding: 3px 13px;
+    font-family: var(--font-mincho); font-size: 20.57px; font-weight: var(--fw-rb);
+    letter-spacing: 0.05em; font-feature-settings: "palt";
+    text-decoration: none; line-height: 1.4;
+  }
+  .tag--current { background: var(--surface); color: var(--crimson); border-color: var(--surface); }
+
+  /* BUTTONS — 塗りボタンは存在しない */
+  .btn {
+    display: inline-block; background: var(--surface); color: var(--crimson);
+    border: 1px solid var(--crimson); border-radius: 32px;
+    padding: 6px 13px;
+    font-family: var(--font-ud); font-size: 12px; font-weight: var(--fw-d); line-height: 1.571;
+    letter-spacing: normal; text-decoration: none; cursor: pointer; transition: opacity .15s;
+  }
+  .btn:hover { opacity: .7; }
+  .btn--secondary { color: var(--ink); border-color: var(--border); font-weight: var(--fw-m); }
+  .btn--lg { font-size: 18px; font-weight: var(--fw-m); padding: 12px 28px; }
+  .chip {
+    display: inline-block; background: var(--surface); color: var(--ink);
+    border: 1px solid var(--border); border-radius: 100px;
+    padding: 7px 10px; font-family: var(--font-ud); font-size: 10px; font-weight: var(--fw-r);
+    line-height: 1; text-decoration: none;
+  }
+  .tooltip { display: inline-block; background: var(--ink); color: #fff; border-radius: 100px; padding: 4px 10px; font-family: var(--font-ud); font-size: 10px; font-weight: var(--fw-m); line-height: 1; }
+  .pager { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 100px; font-family: var(--font-ud); font-size: 12px; font-weight: var(--fw-d); text-decoration: none; }
+  .pager--current { background: var(--crimson); color: #fff; }
+  .pager--rest { background: transparent; color: var(--crimson); border: 1px solid var(--border); }
+  .btn--disabled { background: var(--disabled); color: #fff; border: none; border-radius: 100px; padding: 8px 20px; font-family: var(--font-ud); font-size: 14px; font-weight: var(--fw-d); line-height: 1.4; }
+
+  /* SECTIONS */
+  .section { padding: 88px 60px; max-width: 1320px; margin: 0 auto; }
+  .section-label { font-family: var(--font-ud); font-size: 10px; font-weight: var(--fw-d); color: var(--crimson); line-height: 1; margin-bottom: 12px; }
+  .section-title { font-family: var(--font-ud); font-size: 18px; font-weight: var(--fw-d); color: var(--ink); line-height: 1; margin-bottom: 40px; }
+  .section-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .color-swatch { background: var(--surface); border: 1px solid var(--border); border-radius: 0; overflow: hidden; }
+  .color-swatch-block { height: 76px; width: 100%; }
+  .color-swatch-info { padding: 12px; border-top: 1px solid var(--border); }
+  .color-swatch-name { font-family: var(--font-ud); font-size: 14px; font-weight: var(--fw-d); margin-bottom: 6px; line-height: 1; }
+  .color-swatch-hex { font-family: var(--font-mono); font-size: 12px; color: #767676; }
+  .color-swatch-role { font-family: var(--font-ud); font-size: 12px; font-weight: var(--fw-r); color: #767676; margin-top: 8px; line-height: 1.571; }
+  .color-group-label { font-family: var(--font-ud); font-size: 14px; font-weight: var(--fw-d); color: var(--ink); margin: 32px 0 12px; line-height: 1; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 30px; padding-bottom: 26px; border-bottom: 1px solid var(--border); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: #767676; margin-top: 12px; line-height: 1.6; }
+  .type-context { display: inline-block; background: var(--surface); border: 1px solid var(--border); border-radius: 100px; color: var(--ink); font-family: var(--font-ud); font-size: 10px; padding: 3px 10px; margin-left: 8px; }
+
+  /* SPECIMEN */
+  .specimen { background: var(--bg); border: 1px solid var(--border); padding: 32px; }
+  .specimen-name { font-family: var(--font-ud); font-size: 14px; font-weight: var(--fw-d); line-height: 1; margin-bottom: 16px; }
+  .specimen-text { font-size: 40px; font-weight: var(--fw-r); line-height: 1.333; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 0; }
+  .card-thumb { height: 130px; background: var(--crimson-deep); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 56px; font-weight: 700; line-height: 1; }
+  .card-body { padding: 20px; }
+  .card-title { font-family: var(--font-ud); font-size: 14px; font-weight: var(--fw-d); color: var(--crimson); line-height: 1.875; font-feature-settings: "halt"; }
+  .card-text { font-family: var(--font-ud); font-size: 14px; font-weight: var(--fw-r); color: var(--ink); line-height: 1.875; }
+
+  /* NEWS LIST */
+  .news-list { border-top: 1px solid var(--border); }
+  .news-row { display: grid; grid-template-columns: 110px 1fr auto; gap: 24px; align-items: center; padding: 22px 0; border-bottom: 1px solid var(--border); }
+  .news-date { font-family: var(--font-ud); font-size: 14px; font-weight: var(--fw-r); color: var(--ink); line-height: 1; }
+  .news-title { font-family: var(--font-ud); font-size: 14px; font-weight: var(--fw-d); color: var(--ink); line-height: 1.571; font-feature-settings: "halt"; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 24px; max-width: 460px; }
+  .form-label { display: block; font-family: var(--font-ud); font-size: 12px; font-weight: var(--fw-d); color: var(--ink); margin-bottom: 8px; line-height: 1; }
+  .form-input {
+    width: 100%; background: var(--surface); color: var(--ink);
+    border: 1px solid var(--border); border-radius: 32px; padding: 10px 16px;
+    font-family: var(--font-ud); font-size: 12px; font-weight: var(--fw-r); line-height: 1.571;
+    font-feature-settings: normal;     /* フォームでは OpenType 機能を切る */
+    outline: none; transition: border-color .15s;
+  }
+  .form-input::placeholder { color: var(--disabled); }
+  .form-input--focus { border-color: var(--crimson); }
+  .form-input--error { border-color: var(--crimson); }
+  .form-textarea { border-radius: 0; min-height: 110px; }
+  .form-state-label { font-family: var(--font-ud); font-size: 12px; font-weight: var(--fw-r); color: #767676; margin-top: 8px; line-height: 1.571; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .elevation-card { padding: 26px; text-align: center; border-radius: 0; }
+  .elevation-label { font-family: var(--font-ud); font-size: 14px; font-weight: var(--fw-d); margin-bottom: 8px; line-height: 1; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: #767676; line-height: 1.6; }
+
+  /* LAYOUT */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--crimson); border-radius: 32px; margin-bottom: 6px; height: 24px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; color: #767676; }
+  .width-bar { height: 28px; background: var(--surface); border: 1px solid var(--border); margin-bottom: 8px; overflow: hidden; }
+  .width-bar-inner { height: 100%; background: var(--crimson); }
+  .width-bar-label { font-family: var(--font-ud); font-size: 14px; font-weight: var(--fw-d); margin-bottom: 4px; line-height: 1; }
+  .width-bar-value { font-family: var(--font-mono); font-size: 12px; color: #767676; }
+
+  /* FOOTER */
+  .footer { background: var(--ink); color: #fff; padding: 56px 60px; }
+  .footer-title { font-family: var(--font-ud); font-size: 20px; font-weight: var(--fw-d); line-height: 1; margin-bottom: 24px; }
+  .footer-nav { display: flex; gap: 40px; flex-wrap: wrap; }
+  .footer-nav h3 { font-family: var(--font-ud); font-size: 18px; font-weight: var(--fw-d); line-height: 1; margin-bottom: 12px; }
+  .footer-nav a { font-family: var(--font-ud); font-size: 16px; font-weight: var(--fw-r); color: #fff; text-decoration: none; line-height: 1.714; display: block; }
+  .colophon { padding: 32px 60px; font-family: var(--font-ud); font-size: 12px; font-weight: var(--fw-r); color: #767676; line-height: 1.714; }
+  .colophon a { color: var(--crimson); }
+
+  @media (max-width: 769px) {
+    .nav { padding: 0 20px; height: 64px; }
+    .nav-links { display: none; }
+    .newsbar { padding: 16px 20px; flex-wrap: wrap; gap: 8px; }
+    .kv { grid-template-columns: 1fr; }
+    .kv-glyph { font-size: 140px; }
+    .section { padding: 56px 20px; }
+    .news-row { grid-template-columns: 1fr; gap: 8px; }
+    .btn { padding: 12px 20px; }
+    .chip { padding: 12px 14px; }
+    .footer, .colophon { padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="notice">
+  <a href="#">フォントワークス株式会社はMonotype株式会社へ商号変更しました</a>
+</div>
+
+<nav class="nav">
+  <a class="nav-logo" href="#">Monotype.</a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#colors">Colors</a></li>
+      <li><a href="#typography">Typography</a></li>
+      <li><a href="#specimen">書体見本</a></li>
+      <li><a href="#buttons">Buttons</a></li>
+      <li><a href="#cards">Cards</a></li>
+      <li><a href="#forms">Forms</a></li>
+    </ul>
+    <a class="btn btn--secondary" href="#">書体見本 ›</a>
+    <a class="btn btn--secondary" href="#">お問い合わせ ▾</a>
+    <span class="nav-burger"><span></span></span>
+  </div>
+</nav>
+
+<div class="newsbar">
+  <span class="newsbar-date">2026.06.04</span>
+  <span class="newsbar-text">フォントワークス LETS ゲーム・アプリ組込・頒布オプションおよび Monotype LETS ゲーム組込・頒布オプション提供開始のご案内</span>
+  <a class="btn" href="#">ニュース ›</a>
+</div>
+
+<!-- KV — 縦 2 分割 -->
+<section class="kv">
+  <div class="kv-left">
+    <div class="kv-glyph">ア</div>
+    <div class="kv-name">あおかね EB</div>
+  </div>
+  <div class="kv-right">
+    <a class="tag tag--current" href="#"># アニメ</a>
+    <a class="tag" href="#"># ブログ</a>
+    <a class="tag" href="#"># つばめ</a>
+    <a class="tag" href="#"># 藤田重信</a>
+    <a class="tag" href="#"># 極小画面</a>
+    <a class="tag" href="#"># 字幕</a>
+    <a class="tag" href="#"># フォトからフォント検索</a>
+    <a class="tag" href="#"># たづがね角ゴシック ↗</a>
+  </div>
+</section>
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">COLORS</div>
+  <div class="section-title">配色</div>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d70c19"></div><div class="color-swatch-info"><div class="color-swatch-name">Crimson</div><div class="color-swatch-hex">#d70c19</div><div class="color-swatch-role">主色。CTA の枠と文字・カード見出し・現在地</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#b1000f"></div><div class="color-swatch-info"><div class="color-swatch-name">Deep Crimson</div><div class="color-swatch-hex">#b1000f</div><div class="color-swatch-role">KV 右面 ＋ その上のタグの面（最頻 61 回）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0a1111"></div><div class="color-swatch-info"><div class="color-swatch-name">Notice Black</div><div class="color-swatch-hex">#0a1111</div><div class="color-swatch-role">商号変更の告知バー。純黒ではない</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1a1a1a"></div><div class="color-swatch-info"><div class="color-swatch-name">Ink</div><div class="color-swatch-hex">#1a1a1a</div><div class="color-swatch-role">既定の文字色・ツールチップ／メニューの面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fafafa"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#fafafa</div><div class="color-swatch-role">ページ地色。純白ではない</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ボタン・入力・チップの面（押せるものの白）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dddddd"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#dddddd</div><div class="color-swatch-role">セカンダリの枠・区切り罫</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c9c9c9"></div><div class="color-swatch-info"><div class="color-swatch-name">Disabled</div><div class="color-swatch-hex">#c9c9c9</div><div class="color-swatch-role">非活性の面。文字は白</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">TYPOGRAPHY</div>
+  <div class="section-title">組版 — 3 系統の書体を用途で使い分ける</div>
+
+  <div class="type-sample">
+    <div style="font-family:var(--font-mincho); font-size:20.57px; font-weight:450; letter-spacing:0.05em; font-feature-settings:'palt'; line-height:1.6; color:var(--crimson);"># 藤田重信　# たづがね角ゴシック　# Fate/Grand Order</div>
+    <div class="type-meta">筑紫明朝（代替 Shippori Mincho）/ 20.57px / 450 / ls 1.03px (0.05em) / font-feature-settings: "palt"<span class="type-context">KV タグ — 唯一の明朝・唯一の字間</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-ud); font-size:18px; font-weight:500; line-height:1.667; color:var(--crimson); font-feature-settings:'halt';">筑紫書体という選択肢——書体が文章の温度を決める</div>
+    <div class="type-meta">UD角ゴ（代替 BIZ UDPGothic）/ 18px / 500 / lh 1.667 (30px) / ls normal / "halt"<span class="type-context">カード見出し — 紅で組む</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-ud); font-size:16px; font-weight:300; line-height:1.0; color:var(--ink);">書体見本　／　あ 明朝系　／　か 角ゴシック系</div>
+    <div class="type-meta">UD角ゴ / 16px / <strong>300（R）</strong> / lh 1.0 / ls normal<span class="type-context">ナビ・本文系 — 300 で軽い</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-ud); font-size:14px; font-weight:500; line-height:1.0; color:var(--ink);">企業情報　Fontへの取り組み　製品・サービス</div>
+    <div class="type-meta">UD角ゴ / 14px / 500（D）/ lh 1.0 / ls normal<span class="type-context">グローバルナビ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-ud); font-size:14px; font-weight:300; line-height:1.875; color:var(--ink); max-width:720px;">カード本文 — 小さい文字を読ませるために、行間だけを 1.875 に広げます。字間は normal のまま。約物「」（）、。の詰めは font-feature-settings: "chws" が担当するので、letter-spacing で足しません。</div>
+    <div class="type-meta">UD角ゴ / 14px / 300 / <strong>lh 1.875 (26.25px)</strong> / ls normal<span class="type-context">読ませるブロック</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-ud); font-size:12px; font-weight:500; line-height:1.571; color:var(--crimson);">書体見本 ›　ニュース ›　あとで見るに追加</div>
+    <div class="type-meta">UD角ゴ / 12px / 500 / lh 1.571 (18.86px) / ls normal<span class="type-context">ボタン（S）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-ud); font-size:10px; font-weight:300; line-height:1.0; color:var(--ink);">アニメ　ゲーム　出版・印刷　パッケージ　オリジナルフォント制作</div>
+    <div class="type-meta">UD角ゴ / 10px / 300（R）/ lh 1.0<span class="type-context">絞り込みチップ — サイト最小の文字</span></div>
+  </div>
+
+  <h3 style="font-family:var(--font-ud); font-size:14px; font-weight:500; margin:44px 0 16px; line-height:1;">OpenType 機能を 3 つ打ち分ける</h3>
+  <table style="width:100%; border-collapse:collapse; font-family:var(--font-ud); font-size:12px; font-weight:300; line-height:1.571;">
+    <tr style="border-bottom:1px solid var(--border);"><th style="text-align:left; padding:10px 0; font-weight:500;">機能</th><th style="text-align:left; font-weight:500;">適用先</th><th style="text-align:left; font-weight:500;">効き方</th></tr>
+    <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 0; font-family:var(--font-mono);">chws</td><td>既定（body から全継承）</td><td>文脈を見て約物を詰める。本文向き</td></tr>
+    <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 0; font-family:var(--font-mono);">halt</td><td>カード見出し・ニュース見出し</td><td>約物を一律半角へ。短い見出しを締める</td></tr>
+    <tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 0; font-family:var(--font-mono);">palt</td><td>KV のタグ（明朝）のみ</td><td>詰めた上で letter-spacing 0.05em で開き直す</td></tr>
+    <tr><td style="padding:10px 0; font-family:var(--font-mono);">normal</td><td>button / input / select</td><td>フォームコントロールでは機能を切る</td></tr>
+  </table>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPECIMEN -->
+<section class="section" id="specimen">
+  <div class="section-label">SPECIMEN</div>
+  <div class="section-title">書体見本 — 大きい文字は常に商品の書体に譲る</div>
+  <div class="card-grid">
+    <div class="specimen">
+      <div class="specimen-name">テロップ明朝 Pro D</div>
+      <div class="specimen-text" style="font-family:var(--font-mincho);">国語の授業で永遠を</div>
+    </div>
+    <div class="specimen">
+      <div class="specimen-name">テロップ明朝 ProN D（N仕様）</div>
+      <div class="specimen-text" style="font-family:var(--font-mincho);">国語の授業で永遠を</div>
+    </div>
+    <div class="specimen">
+      <div class="specimen-name">UD角ゴ_スモール Pr6 DB</div>
+      <div class="specimen-text" style="font-family:var(--font-ud);">おきにいりのフライパン</div>
+    </div>
+  </div>
+  <p style="font-family:var(--font-ud); font-size:12px; font-weight:300; color:#767676; line-height:1.714; margin-top:20px;">見本の文字は 40px / weight 300 / line-height 1.333。UI の見出しは 20px を超えさせない。<strong>Pro と ProN は両方を等価に並べて字形の違いを見せる</strong>。書体名は <code style="font-family:var(--font-mono)">white-space: nowrap</code> で折り返さない。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">BUTTONS</div>
+  <div class="section-title">操作 — 塗りボタンは存在しない</div>
+
+  <div style="display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start; margin-bottom:36px;">
+    <div style="text-align:center"><a class="btn" href="#">ニュース ›</a><div style="font-family:var(--font-ud);font-size:12px;font-weight:300;color:#767676;margin-top:10px;line-height:1.571">Primary — 白地 ＋ 1px #d70c19</div></div>
+    <div style="text-align:center"><a class="btn btn--secondary" href="#">書体見本 ›</a><div style="font-family:var(--font-ud);font-size:12px;font-weight:300;color:#767676;margin-top:10px;line-height:1.571">Secondary — 枠だけ #dddddd に</div></div>
+    <div style="text-align:center"><a class="btn btn--lg" href="#">各プランを見る</a><div style="font-family:var(--font-ud);font-size:12px;font-weight:300;color:#767676;margin-top:10px;line-height:1.571">Primary（大）— 18px / 400</div></div>
+    <div style="text-align:center"><a class="chip" href="#">オリジナルフォント制作</a><div style="font-family:var(--font-ud);font-size:12px;font-weight:300;color:#767676;margin-top:10px;line-height:1.571">Filter Chip — radius 100px</div></div>
+    <div style="text-align:center"><span class="tooltip">グリッドビュー</span><div style="font-family:var(--font-ud);font-size:12px;font-weight:300;color:#767676;margin-top:10px;line-height:1.571">Tooltip — 面 #1a1a1a</div></div>
+    <div style="text-align:center"><span class="btn--disabled">送信できません</span><div style="font-family:var(--font-ud);font-size:12px;font-weight:300;color:#767676;margin-top:10px;line-height:1.571">Disabled — 面 #c9c9c9</div></div>
+  </div>
+
+  <div style="display:flex; gap:8px; align-items:center; margin-bottom:24px;">
+    <a class="pager pager--current" href="#">1</a>
+    <a class="pager pager--rest" href="#">2</a>
+    <a class="pager pager--rest" href="#">3</a>
+    <a class="pager pager--rest" href="#">»</a>
+    <span style="font-family:var(--font-ud);font-size:12px;font-weight:300;color:#767676;margin-left:12px;line-height:1.571">Pagination — 現在地だけ紅の塗り（radius 100px）</span>
+  </div>
+
+  <div style="background:var(--crimson-deep); padding:24px; display:flex; gap:12px 16px; flex-wrap:wrap;">
+    <a class="tag tag--current" href="#"># アニメ</a>
+    <a class="tag" href="#"># 筆文字フォント</a>
+    <a class="tag" href="#"># LETS20周年</a>
+  </div>
+  <p style="font-family:var(--font-ud); font-size:12px; font-weight:300; color:#767676; line-height:1.714; margin-top:20px;">radius は <strong>32px（ボタン）</strong>と<strong>100px（チップ・丸）</strong>の 2 値だけ。4px / 8px / 16px を持ち込まない。KV のタグは面を <code style="font-family:var(--font-mono)">#b1000f</code>（背景と同色）にして <code style="font-family:var(--font-mono)">1px solid rgba(255,255,255,0.3)</code> の半透明枠で浮かせる。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">CARDS</div>
+  <div class="section-title">カード・ニュース — 角丸ゼロ</div>
+
+  <div class="card-grid" style="margin-bottom:56px;">
+    <div class="card">
+      <div class="card-thumb">筑</div>
+      <div class="card-body">
+        <div class="card-title">筑紫書体の 20 年</div>
+        <div class="card-text">藤田重信が設計した筑紫書体シリーズの歩みと、仮名の造形について。</div>
+        <div style="margin-top:16px"><a class="btn" href="#">読む ›</a></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb">UD</div>
+      <div class="card-body">
+        <div class="card-title">UD書体を UI に使う</div>
+        <div class="card-text">10〜14px の小さい文字ほど、UD 書体の字面の広さが効きます。</div>
+        <div style="margin-top:16px"><a class="btn" href="#">読む ›</a></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb">た</div>
+      <div class="card-body">
+        <div class="card-title">たづがね角ゴシック</div>
+        <div class="card-text">和文と欧文の重心を合わせるために設計された、多言語対応のゴシック体。</div>
+        <div style="margin-top:16px"><a class="btn" href="#">読む ›</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="news-list">
+    <div class="news-row">
+      <span class="news-date">2026.06.04</span>
+      <span class="news-title">フォントワークス LETS ゲーム・アプリ組込・頒布オプション提供開始のご案内</span>
+      <a class="btn btn--secondary" href="#">詳細 ›</a>
+    </div>
+    <div class="news-row">
+      <span class="news-date">2026.05.21</span>
+      <span class="news-title">書体検索に「フォトからフォント検索」機能を追加しました</span>
+      <a class="btn btn--secondary" href="#">詳細 ›</a>
+    </div>
+    <div class="news-row">
+      <span class="news-date">2026.04.02</span>
+      <span class="news-title">新書体「あおかね」EB ウェイトをリリース</span>
+      <a class="btn btn--secondary" href="#">詳細 ›</a>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">FORMS</div>
+  <div class="section-title">入力 — フォームでは OpenType 機能を切る</div>
+  <div class="form-group"><label class="form-label">サンプルテキスト</label><input class="form-input" type="text" placeholder="国語の授業で永遠を教わった"><div class="form-state-label">デフォルト — 1px solid #dddddd / radius 32px / font-feature-settings: normal</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--focus" type="text" value="taro@example.com"><div class="form-state-label">フォーカス — border: #d70c19（影は付けない）</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー — border: #d70c19（既存の紅をそのまま使い、新しい赤を足さない）</div></div>
+  <div class="form-group"><label class="form-label">お問い合わせ内容</label><textarea class="form-input form-textarea" placeholder="ご用件をご記入ください"></textarea><div class="form-state-label">Textarea は radius 0（32px のピルに複数行は入らない）</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">ELEVATION</div>
+  <div class="section-title">階層 — 影は 1 つも無い</div>
+  <div class="elevation-grid">
+    <div class="elevation-card" style="background:var(--bg); border:1px solid var(--border)"><div class="elevation-label">地 #fafafa</div><div class="elevation-desc">ページ全体・ヘッダー</div></div>
+    <div class="elevation-card" style="background:var(--surface); border:1px solid var(--border)"><div class="elevation-label">面 #ffffff</div><div class="elevation-desc">ボタン・入力・チップ</div></div>
+    <div class="elevation-card" style="background:var(--ink); color:#fff"><div class="elevation-label" style="color:#fff">反転 #1a1a1a</div><div class="elevation-desc" style="color:#c9c9c9">ツールチップ・フッター</div></div>
+    <div class="elevation-card" style="background:var(--crimson); color:#fff"><div class="elevation-label" style="color:#fff">紅 #d70c19</div><div class="elevation-desc" style="color:#fff">KV・現在地・強調</div></div>
+  </div>
+  <p style="font-family:var(--font-ud); font-size:12px; font-weight:300; color:#767676; line-height:1.714; margin-top:20px;">box-shadow はサイト内に 1 つも存在しない。<strong>地 #fafafa と面 #ffffff の「5 の差」だけで押せるものを浮かせる</strong>。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">LAYOUT</div>
+  <div class="section-title">寸法</div>
+
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:3px"></div><div class="spacing-value">XXS 3</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:6px"></div><div class="spacing-value">XS 6</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:10px"></div><div class="spacing-value">S 10</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:13px"></div><div class="spacing-value">S 13</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">M 16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">L 32</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">XL 40</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:60px"></div><div class="spacing-value">XXL 60</div></div>
+  </div>
+
+  <div style="margin-bottom:20px"><div class="width-bar-label">Main Container <span class="width-bar-value">1320px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:20px"><div class="width-bar-label">Header Padding <span class="width-bar-value">0 40px 0 60px（左右非対称）</span></div><div class="width-bar"><div class="width-bar-inner" style="width:72%"></div></div></div>
+  <p style="font-family:var(--font-ud); font-size:12px; font-weight:300; color:#767676; line-height:1.714;">ボタンの padding が <code style="font-family:var(--font-mono)">6px 13px</code> / <code style="font-family:var(--font-mono)">7px 10px</code> と奇数を含むのは、1px の枠を含めた実寸を揃えるため。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-title">Menu</div>
+  <div class="footer-nav">
+    <div><h3>企業情報</h3><a href="#">会社概要</a><a href="#">沿革</a><a href="#">採用情報</a></div>
+    <div><h3>Fontへの取り組み</h3><a href="#">書体づくり</a><a href="#">UD書体</a><a href="#">多言語対応</a></div>
+    <div><h3>製品・サービス</h3><a href="#">LETS</a><a href="#">mojimo</a><a href="#">オリジナル書体制作</a></div>
+  </div>
+</footer>
+
+<div class="colophon">
+  Generated from <a href="https://fontworks.co.jp/">fontworks.co.jp</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-08-15）<br>
+  実サイトの書体は 既定 <code style="font-family:var(--font-mono)">"Tsukushi Gothic"</code>（筑紫ゴシック）、
+  UI <code style="font-family:var(--font-mono)">"UD Kakugo Small"</code>（UD角ゴ_スモール）、
+  KV タグ <code style="font-family:var(--font-mono)">"Tsukushi Mincho"</code>（筑紫明朝）。
+  いずれも自社書体のドメイン配信のためローカルでは表示されない。
+  ここでは <strong>Zen Kaku Gothic New</strong>（筑紫ゴシック）／<strong>BIZ UDPGothic</strong>（UD角ゴ_スモール。同じ UD 系）／<strong>Shippori Mincho</strong>（筑紫明朝）で代替している。
+  <code style="font-family:var(--font-mono)">font-feature-settings: "chws"</code> も代替書体では効かないため、実サイトの約物の詰まり方とは異なる。
+</div>
+
+</body>
+</html>

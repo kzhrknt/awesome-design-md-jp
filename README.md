@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (450 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (453 sites)</a>
 </p>
 
 <table>
@@ -679,6 +679,11 @@
 <td align="center"><strong>文喫</strong><br><img src="design-md/bunkitsu/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>Preferred Networks</strong><br><img src="design-md/preferred-networks/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>フォントワークス</strong><br><img src="design-md/fontworks/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>瀬戸内国際芸術祭</strong><br><img src="design-md/setouchi-triennale/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Waphyto</strong><br><img src="design-md/waphyto/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1189,11 +1194,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [Aomori Museum of Art (青森県立美術館)](https://www.aomori-museum.jp/) | Museum / Culture | [DESIGN.md](design-md/aomori-museum/DESIGN.md) | [preview.html](design-md/aomori-museum/preview.html) |
 | [BUNKITSU (文喫)](https://bunkitsu.jp/) | Bookstore / Space | [DESIGN.md](design-md/bunkitsu/DESIGN.md) | [preview.html](design-md/bunkitsu/preview.html) |
 | [Preferred Networks (PFN)](https://www.preferred.jp/ja/) | AI / Deep Tech | [DESIGN.md](design-md/preferred-networks/DESIGN.md) | [preview.html](design-md/preferred-networks/preview.html) |
+| [Fontworks / Monotype (フォントワークス)](https://fontworks.co.jp/) | Type Foundry | [DESIGN.md](design-md/fontworks/DESIGN.md) | [preview.html](design-md/fontworks/preview.html) |
+| [Setouchi Triennale (瀬戸内国際芸術祭)](https://setouchi-artfest.jp/) | Art Festival / Culture | [DESIGN.md](design-md/setouchi-triennale/DESIGN.md) | [preview.html](design-md/setouchi-triennale/preview.html) |
+| [Waphyto (ワフィト)](https://waphyto.com/) | Skincare / Botanical | [DESIGN.md](design-md/waphyto/DESIGN.md) | [preview.html](design-md/waphyto/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (450 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (453 sites)</a>
 </p>
 
 <table>
@@ -1837,6 +1845,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>青森県立美術館</strong><br><img src="design-md/aomori-museum/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>文喫</strong><br><img src="design-md/bunkitsu/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>Preferred Networks</strong><br><img src="design-md/preferred-networks/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>フォントワークス</strong><br><img src="design-md/fontworks/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>瀬戸内国際芸術祭</strong><br><img src="design-md/setouchi-triennale/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Waphyto</strong><br><img src="design-md/waphyto/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

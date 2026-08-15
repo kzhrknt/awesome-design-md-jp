@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Waphyto（ワフィト）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Bentham&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測値 === */
+    --bg: #f0ebe1;            /* ページ地色。生成りのベージュ。純白ではない */
+    --surface: #ffffff;       /* 商品カード・ドロワー・入力・選択タブ */
+    --surface-warm: #f9f7f3;  /* 非選択タブ */
+    --beige-button: #efebe2;  /* 「新規会員登録」の面 */
+    --beige-deep: #dfd4bf;    /* コレクションのヘッダー帯 */
+
+    --sage: #6c8b7e;          /* 実行の色。もっと読み込む・送信・フォーカス */
+    --terracotta: #e96952;    /* お気に入りの縦タブ */
+    --terracotta-muted: #ca6e61; /* 定期お届け便ラベル・エラー */
+    --slate: #344150;         /* ログインボタンの面 */
+
+    --ink: #304251;           /* 既定の文字色。青みのあるスレート */
+    --ink-alt: #3e4a58;       /* 商品ラベルの文字 */
+    --nav-ink: #333333;       /* ドロワーのナビ文字 */
+    --border: #dad1ca;        /* カードの枠・区切り罫。グレーではない */
+    --muted: #7d7d7d;         /* 絞り込みタグの枠と文字 */
+
+    /* === Fonts === */
+    /* 実サイト:
+         本文     "Noto Serif JP", serif             （Google Fonts。そのまま表示できる）
+         欧文見出し "Bentham", serif                  （Google Fonts。そのまま表示できる）
+         UI       dnp-shuei-gothic-gin-std, sans-serif（秀英角ゴシック銀 / DNP・Adobe Fonts）
+       UI の秀英角ゴシック銀だけがドメインライセンスのためローカルでは表示されない。
+       ここでは Zen Kaku Gothic New（穏やかな humanist gothic）で代替する。 */
+    --font-body: "Noto Serif JP", serif;
+    --font-en: "Bentham", "Noto Serif JP", serif;
+    --font-ui: "Zen Kaku Gothic New", dnp-shuei-gothic-gin-std, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 14px;                 /* --base-font-size: 14px。16px ではない */
+    font-weight: 400;
+    line-height: 2.0;                /* 実サイトは 28px 固定。ここでは比率で持つ */
+    letter-spacing: 0.7px;           /* 0.05em */
+    font-feature-settings: normal;   /* palt も chws も使わない */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 30px; height: 88px; background: var(--bg); position: sticky; top: 0; z-index: 100; }
+  .nav-burger { display: flex; flex-direction: column; gap: 5px; width: 24px; }
+  .nav-burger i { display: block; height: 1px; background: var(--ink); }
+  .nav-logo { justify-self: center; font-family: var(--font-en); font-size: 26px; letter-spacing: 0.06em; color: var(--ink); text-decoration: none; line-height: 1.4; }
+  .nav-right { justify-self: end; display: flex; gap: 20px; align-items: center; font-family: var(--font-ui); font-size: 13px; font-weight: 500; }
+  .nav-right a { color: var(--ink); text-decoration: none; }
+
+  /* FAVORITE TAB — サイト唯一の影 */
+  .fav-tab {
+    position: fixed; right: 0; top: 40%; z-index: 200;
+    background: var(--terracotta); color: #fff;
+    writing-mode: vertical-rl;
+    padding: 24px 15px 24px 12px;
+    font-family: var(--font-body); font-size: 12px; font-weight: 400; line-height: 2.5; letter-spacing: 0.7px;
+    box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 0; text-decoration: none;
+  }
+
+  /* HERO */
+  .hero { background: var(--surface); padding: 96px 60px 110px; position: relative; }
+  .hero-jp { font-family: var(--font-body); font-size: 16px; font-weight: 400; line-height: 2.0; letter-spacing: 0.7px; color: var(--ink); }
+  .hero-en { font-family: var(--font-en); font-size: 32px; line-height: 1.4; letter-spacing: 1px; color: var(--ink); margin: 12px 0 20px; }
+  .hero-note { font-family: var(--font-body); font-size: 11px; color: var(--ink); }
+  .hero-label { display: inline-block; background: var(--slate); color: #fff; font-family: var(--font-ui); font-size: 13px; font-weight: 500; letter-spacing: 0.7px; padding: 8px 16px; }
+
+  /* SECTIONS */
+  .section { padding: 80px 30px; max-width: 1200px; margin: 0 auto; }
+  .section-title { font-family: var(--font-en); font-size: 32px; line-height: 1.4; letter-spacing: 1px; color: var(--ink); text-align: center; margin-bottom: 12px; }
+  .section-sub { font-family: var(--font-body); font-size: 14px; line-height: 2.0; letter-spacing: 0.7px; color: var(--ink); text-align: center; margin-bottom: 48px; }
+  .section-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .color-swatch { background: var(--surface); border: 1px solid var(--border); border-radius: 0; overflow: hidden; }
+  .color-swatch-block { height: 78px; width: 100%; }
+  .color-swatch-info { padding: 14px; border-top: 1px solid var(--border); }
+  .color-swatch-name { font-family: var(--font-ui); font-size: 14px; font-weight: 500; margin-bottom: 4px; line-height: 1.6; }
+  .color-swatch-hex { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+  .color-swatch-role { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.9; }
+  .color-group-label { font-family: var(--font-en); font-size: 22px; letter-spacing: 1px; color: var(--ink); margin: 36px 0 12px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 32px; padding-bottom: 26px; border-bottom: 1px solid var(--border); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 12px; line-height: 1.7; letter-spacing: normal; }
+  .type-context { display: inline-block; background: var(--beige-deep); color: var(--ink); font-family: var(--font-ui); font-size: 11px; font-weight: 500; padding: 3px 10px; margin-left: 8px; }
+
+  /* BUTTONS — すべて radius 0 */
+  .btn {
+    display: inline-block; background: var(--sage); color: #fff;
+    border: none; border-radius: 0; padding: 10px 35px;
+    font-family: var(--font-ui); font-size: 14px; font-weight: 500; line-height: 1.5; letter-spacing: 1px;
+    text-decoration: none; cursor: pointer; transition: opacity .15s;
+  }
+  .btn:hover { opacity: .85; }
+  .btn--dark { background: var(--slate); padding: 15px; letter-spacing: 0.7px; }
+  .btn--beige { background: var(--beige-button); color: #000; padding: 15px; letter-spacing: 0.7px; }
+  .btn--outline { background: transparent; color: var(--ink); border: 1px solid rgba(48, 66, 81, .5); padding: 10px; font-family: var(--font-body); font-weight: 400; letter-spacing: 0.7px; }
+
+  /* LABELS */
+  .label { display: inline-block; font-family: var(--font-body); font-size: 11px; font-weight: 400; line-height: 1.6; letter-spacing: 0.7px; border-radius: 0; }
+  .label--attr { background: var(--border); color: var(--ink-alt); padding: 1px 10px; }
+  .label--sub { background: var(--terracotta-muted); color: #fff; border: 1px solid var(--terracotta-muted); padding: 0 5px; }
+  .label--tag { background: transparent; color: var(--muted); border: 1px solid var(--muted); padding: 0 5px; }
+  .label--sold { background: #000; color: #fff; font-weight: 700; padding: 10px 20px; }
+
+  /* PRODUCT CARDS */
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .product-card { background: var(--surface); border: 1px solid #d8d1cb; border-radius: 0; padding: 30px 30px 10px; text-align: center; }
+  .product-photo { height: 150px; background: linear-gradient(160deg, #efe9df, #ded4c6); margin-bottom: 20px; }
+  .product-name { font-family: var(--font-body); font-size: 14px; font-weight: 400; line-height: 2.0; letter-spacing: 0.7px; }
+  .product-price { font-family: var(--font-body); font-size: 14px; line-height: 2.0; }
+
+  /* TOPICS */
+  .topic-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px; }
+  .topic-photo { position: relative; height: 210px; background: linear-gradient(150deg, #cdc4b6, #8f9a91); display: flex; align-items: center; justify-content: center; }
+  .topic-photo span { font-family: var(--font-en); font-size: 26px; letter-spacing: 1px; color: #fff; }
+  .topic-title { font-family: var(--font-body); font-size: 18.06px; font-weight: 400; line-height: 1.4; letter-spacing: 0.7px; margin-top: 16px; }
+
+  /* TABS */
+  .tabs { display: flex; }
+  .tab { font-family: var(--font-ui); font-size: 16px; font-weight: 500; line-height: 2.0; letter-spacing: 0.7px; color: var(--ink); background: var(--surface-warm); padding: 20px 40px; border-radius: 0; cursor: pointer; }
+  .tab--active { background: var(--surface); }
+
+  /* FORMS */
+  .form-group { margin-bottom: 24px; max-width: 460px; }
+  .form-label { display: block; font-family: var(--font-ui); font-size: 13px; font-weight: 500; letter-spacing: 0.7px; margin-bottom: 8px; line-height: 1.8; }
+  .form-input {
+    width: 100%; background: var(--surface); color: var(--ink);
+    border: 1px solid var(--border); border-radius: 0; padding: 12px 16px;
+    font-family: var(--font-body); font-size: 14px; font-weight: 400; line-height: 2.0; letter-spacing: 0.7px;
+    outline: none; transition: border-color .15s;
+  }
+  .form-input::placeholder { color: var(--muted); }
+  .form-input--focus { border-color: var(--sage); }
+  .form-input--error { border-color: var(--terracotta-muted); }
+  .form-textarea { min-height: 110px; }
+  .form-state-label { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.9; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .elevation-card { padding: 26px; text-align: center; border-radius: 0; }
+  .elevation-label { font-family: var(--font-ui); font-size: 14px; font-weight: 500; margin-bottom: 8px; line-height: 1.6; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--muted); line-height: 1.7; letter-spacing: normal; }
+
+  /* LAYOUT */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--sage); margin-bottom: 6px; height: 24px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: normal; }
+  .width-bar { height: 28px; background: var(--surface); border: 1px solid var(--border); margin-bottom: 8px; overflow: hidden; }
+  .width-bar-inner { height: 100%; background: var(--sage); }
+  .width-bar-label { font-family: var(--font-ui); font-size: 14px; font-weight: 500; margin-bottom: 4px; line-height: 1.6; }
+  .width-bar-value { font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: normal; }
+
+  /* FOOTER */
+  .footer { background: var(--surface); padding: 64px 30px; text-align: center; }
+  .footer-logo { font-family: var(--font-en); font-size: 26px; letter-spacing: 0.06em; margin-bottom: 20px; }
+  .footer-nav { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; font-family: var(--font-ui); font-size: 13px; font-weight: 500; }
+  .footer-nav a { color: var(--ink); text-decoration: none; }
+  .colophon { padding: 32px 30px; font-size: 12px; color: var(--muted); line-height: 1.9; text-align: center; }
+  .colophon a { color: var(--sage); }
+
+  @media (max-width: 769px) {
+    .nav { padding: 0 16px; height: 64px; }
+    .nav-right { display: none; }
+    .hero { padding: 56px 20px 64px; }
+    .hero-en, .section-title, .color-group-label { font-size: 24px; }   /* --header-text-size-sp */
+    .section { padding: 56px 20px; }
+    .tab { padding: 16px 20px; font-size: 14px; }
+    .btn { padding: 14px 35px; }
+    .btn--outline { padding: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-burger"><i></i><i></i><i></i></span>
+  <a class="nav-logo" href="#">Waphyto</a>
+  <div class="nav-right">
+    <a href="#colors">Colors</a>
+    <a href="#typography">Typography</a>
+    <a href="#products">Products</a>
+    <a href="#buttons">Buttons</a>
+    <a href="#forms">Forms</a>
+  </div>
+</nav>
+
+<a class="fav-tab" href="#">私のお気に入り</a>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-jp">透明感<span style="font-size:11px">*</span>あふれる、きらめくツヤ肌へ</div>
+  <div class="hero-en">UV Care Kit</div>
+  <div><span class="hero-label">数量限定キット＆サンプル プレゼント</span></div>
+  <p class="hero-note" style="margin-top:36px">*メイクアップ効果による</p>
+</section>
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-title">Colors</div>
+  <div class="section-sub">地が生成り（#f0ebe1）で、手前に来るものが白（#ffffff）。一般的な「白地 ＋ グレーの面」と明度の方向が逆。</div>
+
+  <div class="color-group-label">Base — 生成りの 5 段</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f0ebe1"></div><div class="color-swatch-info"><div class="color-swatch-name">Body</div><div class="color-swatch-hex">#f0ebe1</div><div class="color-swatch-role">ページ地色。--body-color / --color-primary-background</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">商品カード・ドロワー・入力・選択タブ</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f9f7f3"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Warm</div><div class="color-swatch-hex">#f9f7f3</div><div class="color-swatch-role">非選択タブ。白と地の中間</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#efebe2"></div><div class="color-swatch-info"><div class="color-swatch-name">Beige Button</div><div class="color-swatch-hex">#efebe2</div><div class="color-swatch-role">「新規会員登録」の面。地との差は 1</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dfd4bf"></div><div class="color-swatch-info"><div class="color-swatch-name">Beige Deep</div><div class="color-swatch-hex">#dfd4bf</div><div class="color-swatch-role">コレクションのヘッダー帯</div></div></div>
+  </div>
+
+  <div class="color-group-label">Brand — 有彩色は 3 系統だけ</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#6c8b7e"></div><div class="color-swatch-info"><div class="color-swatch-name">Sage</div><div class="color-swatch-hex">#6c8b7e</div><div class="color-swatch-role">実行の色。読み込み・送信・フォーカス</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e96952"></div><div class="color-swatch-info"><div class="color-swatch-name">Terracotta</div><div class="color-swatch-hex">#e96952</div><div class="color-swatch-role">お気に入りの縦タブ</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ca6e61"></div><div class="color-swatch-info"><div class="color-swatch-name">Terracotta Muted</div><div class="color-swatch-hex">#ca6e61</div><div class="color-swatch-role">定期お届け便ラベル・エラー</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#344150"></div><div class="color-swatch-info"><div class="color-swatch-name">Slate</div><div class="color-swatch-hex">#344150</div><div class="color-swatch-role">ログインボタンの面</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#304251"></div><div class="color-swatch-info"><div class="color-swatch-name">Ink</div><div class="color-swatch-hex">#304251</div><div class="color-swatch-role">既定の文字色。青みのあるスレート</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#3e4a58"></div><div class="color-swatch-info"><div class="color-swatch-name">Ink Alt</div><div class="color-swatch-hex">#3e4a58</div><div class="color-swatch-role">商品ラベルの文字。新規実装では Ink に統合してよい</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dad1ca"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#dad1ca</div><div class="color-swatch-role">カードの枠・区切り罫。グレーではない</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#7d7d7d"></div><div class="color-swatch-info"><div class="color-swatch-name">Muted</div><div class="color-swatch-hex">#7d7d7d</div><div class="color-swatch-role">絞り込みタグの枠と文字</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000000"></div><div class="color-swatch-info"><div class="color-swatch-name">Sold Out</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">サイト唯一の純黒の面（文字は白 / 700）</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-title">Typography</div>
+  <div class="section-sub">読ませる文字は明朝、操作する文字はゴシック。書体が 3 系統に分かれる。</div>
+
+  <div class="type-sample">
+    <div style="font-family:var(--font-en); font-size:32px; line-height:1.4; letter-spacing:1px;">Moments of Care</div>
+    <div class="type-meta">Bentham / 32px（SP 24px）/ 400 / lh 1.4 (44.8px) / letter-spacing 1px<span class="type-context">セクション見出し — 常に英語</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-body); font-size:18.06px; font-weight:400; line-height:1.4; letter-spacing:0.7px;">【Waphyto×kuroneko】愛用品から生まれた、ふたつの特別なコラボキット</div>
+    <div class="type-meta">Noto Serif JP / 18.06px / 400 / lh 1.4 (25.28px) / letter-spacing 0.7px<span class="type-context">カードタイトル — 明朝のまま太らせない</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-ui); font-size:18px; font-weight:500; line-height:2.0; letter-spacing:0.7px; color:var(--nav-ink);">Products 製品情報</div>
+    <div class="type-meta">秀英角ゴシック銀（代替 Zen Kaku Gothic New）/ 18px / 500 / lh 2.0 (36px)<span class="type-context">ドロワーナビ — UI だけゴシック</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-body); font-size:14px; font-weight:400; line-height:2.0; letter-spacing:0.7px; max-width:720px;">本文 — 東濃の植物と発酵の技術から生まれた植物療法ブランドです。14px という小さい本文を、行間 2.0 と字間 0.05em だけで読ませます。行間を 1.6 に詰めると、この設計は成立しません。</div>
+    <div class="type-meta">Noto Serif JP / <strong>14px</strong> / 400 / <strong>lh 2.0 (28px)</strong> / letter-spacing 0.7px（0.05em）<span class="type-context">本文 — サイトの基準（16px ではない）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-ui); font-size:14px; font-weight:500; line-height:1.5; letter-spacing:1px; color:var(--ink);">ログイン　もっと読み込む　新規会員登録</div>
+    <div class="type-meta">秀英角ゴシック銀 / 14px / 500 / lh 1.5 / <strong>letter-spacing 1px</strong><span class="type-context">ボタン — 字間を 1px に上げる</span></div>
+  </div>
+  <div class="type-sample">
+    <span class="label label--attr">デリケートゾーン用洗浄料</span>
+    <span class="label label--sub" style="margin-left:8px">定期お届け便対象</span>
+    <span class="label label--tag" style="margin-left:8px">ごわつき・乾燥</span>
+    <span class="label label--sold" style="margin-left:8px">Sold Out</span>
+    <div class="type-meta">Noto Serif JP / 11px / 400（Sold Out のみ 700）/ letter-spacing 0.7px<span class="type-context">ラベル — 属性は面あり、状態は枠だけ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-body); writing-mode:vertical-rl; font-size:12px; line-height:2.5; letter-spacing:0.7px; height:150px; background:var(--terracotta); color:#fff; padding:16px 12px; box-shadow:0 0 25px 0 rgba(0,0,0,.2);">私のお気に入り</div>
+    <div class="type-meta">Noto Serif JP / 12px / 400 / lh 2.5 (30px) / writing-mode: vertical-rl<span class="type-context">縦タブ — 本文カラムに縦組みは持ち込まない</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TOPICS -->
+<section class="section" id="topics">
+  <div class="section-title">Topics</div>
+  <div class="section-sub">写真の上に英語見出しを白抜きで重ね、和文タイトルは写真の下に置く。</div>
+  <div class="topic-grid">
+    <div>
+      <div class="topic-photo"><span>Moments of Care</span></div>
+      <div class="topic-title">【Waphyto×kuroneko】愛用品から生まれた、ふたつの特別なコラボキット</div>
+    </div>
+    <div>
+      <div class="topic-photo"><span>UV Care Kit</span></div>
+      <div class="topic-title">【新UVクリーム発売記念】紫外線対策も、素肌づくりも。この夏だけの特別なセットをご用意しました。</div>
+    </div>
+    <div>
+      <div class="topic-photo"><span>Subscription Service</span></div>
+      <div class="topic-title">Waphytoの便利な定期お届け便｜今なら新規ご契約で嬉しい特典つき。</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- PRODUCTS -->
+<section class="section" id="products">
+  <div class="section-title">Products</div>
+  <div class="section-sub">商品グリッドは PC 5 カラム / タブレット 3 カラム / モバイル 2 カラム。</div>
+
+  <div class="tabs" style="margin-bottom:32px;">
+    <div class="tab tab--active">おすすめアイテム</div>
+    <div class="tab">初めての方に</div>
+  </div>
+
+  <div class="product-grid">
+    <div class="product-card">
+      <div class="product-photo"></div>
+      <div><span class="label label--attr">ボディウォッシュ</span></div>
+      <div class="product-name">ボタニカル ボディウォッシュ</div>
+      <div class="product-price">¥4,180</div>
+    </div>
+    <div class="product-card">
+      <div class="product-photo"></div>
+      <div><span class="label label--sub">定期お届け便対象</span></div>
+      <div class="product-name">スキンケアUVクリーム</div>
+      <div class="product-price">¥4,950</div>
+    </div>
+    <div class="product-card">
+      <div class="product-photo"></div>
+      <div><span class="label label--attr">デリケートゾーン用洗浄料</span></div>
+      <div class="product-name">フェミニン ウォッシュ</div>
+      <div class="product-price">¥3,850</div>
+    </div>
+    <div class="product-card">
+      <div class="product-photo"></div>
+      <div><span class="label label--tag">ごわつき・乾燥</span></div>
+      <div class="product-name">モイスチャー ローション</div>
+      <div class="product-price">¥5,500</div>
+    </div>
+  </div>
+  <div style="text-align:center; margin-top:44px"><a class="btn" href="#">もっと読み込む</a></div>
+  <p style="font-size:12px; color:var(--muted); line-height:1.9; margin-top:20px; text-align:center;">カードは面 #ffffff ＋ 1px solid #d8d1cb ＋ radius 0 ＋ padding 30px 30px 10px（下だけ 10px に詰める）。罫は生成りで、グレーの罫を使わない。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-title">Buttons</div>
+  <div class="section-sub">すべて border-radius: 0px。角丸は 1 つも無い。</div>
+  <div style="display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start;">
+    <div style="text-align:center"><a class="btn" href="#">もっと読み込む</a><div style="font-size:12px;color:var(--muted);margin-top:12px;line-height:1.9">Primary — 面 #6c8b7e（実行）</div></div>
+    <div style="text-align:center"><a class="btn btn--dark" href="#">ログイン</a><div style="font-size:12px;color:var(--muted);margin-top:12px;line-height:1.9">Dark — 面 #344150</div></div>
+    <div style="text-align:center"><a class="btn btn--beige" href="#">新規会員登録</a><div style="font-size:12px;color:var(--muted);margin-top:12px;line-height:1.9">Beige — 面 #efebe2 ＋ 黒文字</div></div>
+    <div style="text-align:center"><a class="btn btn--outline" href="#">すべての商品</a><div style="font-size:12px;color:var(--muted);margin-top:12px;line-height:1.9">Outline — 1px solid rgba(48,66,81,.5)</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-title">Forms</div>
+  <div class="section-sub">入力欄も明朝（Noto Serif JP / 14px / 行間 2.0）。</div>
+  <div class="form-group"><label class="form-label">お名前</label><input class="form-input" type="text" placeholder="山田 花子"><div class="form-state-label">デフォルト — 1px solid #dad1ca / radius 0</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--focus" type="text" value="hanako@example.com"><div class="form-state-label">フォーカス — border #6c8b7e（セージ）。影は付けない</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー — border #ca6e61（Terracotta Muted を流用）</div></div>
+  <div class="form-group"><label class="form-label">お問い合わせ内容</label><textarea class="form-input form-textarea" placeholder="ご用件をご記入ください"></textarea><div class="form-state-label">Textarea も radius 0</div></div>
+  <div class="form-group"><label class="form-label">ニュースレター登録</label><div style="display:flex"><input class="form-input" type="text" placeholder="メールアドレス" style="border-right:none"><button class="btn" style="white-space:nowrap">登録する</button></div><div class="form-state-label">送信は Sage の矩形（radius 0）</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-title">Elevation</div>
+  <div class="section-sub">影は 1 種類だけ。奥行きは「地より明るい白」で作る。</div>
+  <div class="elevation-grid">
+    <div class="elevation-card" style="background:var(--bg); border:1px solid var(--border)"><div class="elevation-label">地 #f0ebe1</div><div class="elevation-desc">ページ全体・ヘッダー</div></div>
+    <div class="elevation-card" style="background:var(--surface-warm)"><div class="elevation-label">面（温）#f9f7f3</div><div class="elevation-desc">非選択タブ</div></div>
+    <div class="elevation-card" style="background:var(--surface)"><div class="elevation-label">面（白）#ffffff</div><div class="elevation-desc">カード・入力・選択タブ</div></div>
+    <div class="elevation-card" style="background:var(--terracotta); color:#fff; box-shadow:0 0 25px 0 rgba(0,0,0,.2)"><div class="elevation-label" style="color:#fff">Level 1</div><div class="elevation-desc" style="color:#fff">0 0 25px rgba(0,0,0,.2)<br>お気に入り縦タブのみ</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-title">Layout</div>
+  <div class="section-sub">余白は 5 の倍数で刻む。</div>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:5px"></div><div class="spacing-value">XS 5</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:10px"></div><div class="spacing-value">S 10</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:15px"></div><div class="spacing-value">M 15</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:20px"></div><div class="spacing-value">L 20</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:30px"></div><div class="spacing-value">XL 30</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">XXL 40</div></div>
+  </div>
+  <div style="margin-bottom:20px"><div class="width-bar-label">Main Container <span class="width-bar-value">1200px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:20px"><div class="width-bar-label">商品カラム <span class="width-bar-value">1/5（PC）→ 1/3（タブレット）→ 1/2（モバイル）</span></div><div class="width-bar"><div class="width-bar-inner" style="width:20%"></div></div></div>
+  <p style="font-size:12px; color:var(--muted); line-height:1.9;">ヘッダーは地と同じ #f0ebe1、高さ 88px 前後。ロゴは常に中央に置き、左にハンバーガー、右に検索とカートを配置する。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-logo">Waphyto</div>
+  <div class="footer-nav">
+    <a href="#">About Us</a><a href="#">Products</a><a href="#">Subscription</a><a href="#">Store</a><a href="#">Contact</a>
+  </div>
+</footer>
+
+<div class="colophon">
+  Generated from <a href="https://waphyto.com/">waphyto.com</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-08-15）<br>
+  本文の <code style="font-family:var(--font-mono)">"Noto Serif JP"</code> と欧文見出しの <code style="font-family:var(--font-mono)">Bentham</code> はどちらも Google Fonts にあるため、実サイトと同じ書体で表示している。<br>
+  UI の <code style="font-family:var(--font-mono)">dnp-shuei-gothic-gin-std</code>（秀英角ゴシック銀 / DNP・Adobe Fonts）だけがドメインライセンスのため表示されず、ここでは <strong>Zen Kaku Gothic New</strong> で代替している。
+</div>
+
+</body>
+</html>
