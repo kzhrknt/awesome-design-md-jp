@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 三菱鉛筆（uni / MITSUBISHI PENCIL）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Serif+JP:wght@400&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測値 === */
+    --ink: #282828;          /* 基本テキスト。純黒ではない */
+    --brand-red: #df1b26;    /* 欧文見出し・NEW バッジ・現在位置ドット */
+    --gray: #999999;         /* 画像上のカテゴリラベル・非活性ドット */
+    --surface: #f5f5f5;      /* フッター・ユーティリティ面・入力欄の枠 */
+    --beige: #eae5df;        /* コンセプトセクションの面 */
+    --border-light: #f1f2f3; /* ブランドチップの枠 */
+    --border: #dbdbdb;       /* フッターのリンクボタンの枠 */
+    --bg: #ffffff;
+
+    /* === Component Tokens: 11 色 × 2 段（実サイトの CSS 変数をそのまま） === */
+    --component-background-yellow: #FFD72E;
+    --component-background-orange: #F4A556;
+    --component-background-red: #E5838F;
+    --component-background-pink: #E38DCC;
+    --component-background-purple: #9389ED;
+    --component-background-blue: #80A7FF;
+    --component-background-bluegreen: #52C196;
+    --component-background-green: #8ED878;
+    --component-background-brown: #C1986F;
+    --component-background-khaki: #D5C441;
+    --component-background-gray: #919FB2;
+
+    --component-primary-yellow: #FFBA00;
+    --component-primary-orange: #F77A1E;
+    --component-primary-red: #C30018;
+    --component-primary-pink: #D60F82;
+    --component-primary-purple: #785ED1;
+    --component-primary-blue: #415EFD;
+    --component-primary-bluegreen: #088D6F;
+    --component-primary-green: #68C100;
+    --component-primary-brown: #966200;
+    --component-primary-khaki: #B7A200;
+    --component-primary-gray: #6F7680;
+
+    --conteint-width: 1168px;   /* 実サイトの変数名（原文ママ） */
+
+    /* === Fonts === */
+    /* 実サイトの 3 系統をそのまま再現できる（すべて Google Fonts） */
+    --font: "Noto Sans JP", sans-serif;
+    --font-en: "Open Sans", "Noto Sans JP", sans-serif;
+    --font-serif: "Noto Serif JP", serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.71;
+    letter-spacing: normal;
+    font-feature-settings: normal;   /* palt は使わない */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV — 唯一の影 */
+  .nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: stretch; justify-content: space-between; background: var(--bg); box-shadow: 0 4px 16px 0 rgba(40,40,40,.1); }
+  .nav-logo { display: flex; flex-direction: column; justify-content: center; padding: 20px 0 20px 32px; text-decoration: none; }
+  .nav-logo-mark { font-family: var(--font-en); font-size: 30px; font-weight: 600; color: var(--brand-red); line-height: 1; letter-spacing: -0.02em; }
+  .nav-logo-sub { font-family: var(--font-en); font-size: 9px; font-weight: 600; color: var(--ink); letter-spacing: 0.12em; line-height: 1.6; }
+  .nav-links { display: flex; align-items: center; gap: 0; list-style: none; }
+  .nav-links a { display: block; padding: 0 22px 2px; font-size: 14px; font-weight: 500; line-height: 1; letter-spacing: 0.05em; color: var(--ink); text-decoration: none; }
+  .nav-links a:hover { color: var(--brand-red); }
+  .nav-right { display: flex; align-items: stretch; }
+  .nav-util { display: flex; align-items: center; background: var(--surface); color: var(--ink); font-size: 12px; font-weight: 500; letter-spacing: 0.05em; line-height: 1; padding: 20px 18px; text-decoration: none; }
+  .nav-util + .nav-util { border-left: 1px solid #fff; }
+
+  /* KV */
+  .kv { position: relative; height: 380px; background: var(--beige); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .kv-copy { position: relative; z-index: 1; font-family: var(--font-serif); font-size: 40px; font-weight: 400; line-height: 1.6; color: #fff; text-align: center; text-shadow: 0 2px 12px rgba(40,40,40,.35); }
+  .kv-scrim { position: absolute; inset: 0; background: rgba(40,40,40,.25); }
+  .kv-photo { position: absolute; inset: 0; background: linear-gradient(135deg, #cfd8dc 0%, #a9b6bd 55%, #7e8c94 100%); }
+  .kv-dots { position: absolute; left: 0; right: 0; bottom: 20px; display: flex; gap: 8px; justify-content: center; }
+  .kv-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gray); }
+  .kv-dot.is-active { background: var(--brand-red); }
+
+  /* SECTIONS */
+  .section { padding: 80px 24px; max-width: var(--conteint-width); margin: 0 auto; }
+  .section--tinted { background: var(--beige); max-width: none; }
+  .section--surface { background: var(--surface); max-width: none; }
+  .section-inner { max-width: var(--conteint-width); margin: 0 auto; }
+  .section-divider { border: none; border-top: 1px solid var(--border-light); margin: 0; }
+
+  /* 見出しは「和文 + 欧文」の 2 段。欧文だけがブランドレッド */
+  .heading { margin-bottom: 40px; }
+  .heading-jp { display: block; font-size: 28px; font-weight: 700; line-height: 1; letter-spacing: 0.05em; color: var(--ink); }
+  .heading-en { display: block; font-family: var(--font-en); font-size: 16px; font-weight: 400; line-height: 1; color: var(--brand-red); margin-top: 10px; }
+  .heading-sub { font-size: 22px; font-weight: 700; line-height: 1.82; letter-spacing: 0.05em; padding-left: 15px; border-left: 3px solid var(--ink); margin-bottom: 24px; }
+  .lead { font-size: 15px; font-weight: 500; line-height: 2.53; text-align: center; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .color-swatch { background: #fff; border: 1px solid var(--border-light); }
+  .color-swatch-block { height: 78px; width: 100%; }
+  .color-swatch-info { padding: 12px; border-top: 1px solid var(--border-light); }
+  .color-swatch-name { font-size: 14px; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.05em; line-height: 1.4; }
+  .color-swatch-hex { font-family: var(--font-mono); font-size: 12px; color: var(--gray); }
+  .color-swatch-role { font-size: 12px; font-weight: 500; color: var(--gray); margin-top: 8px; line-height: 1.7; }
+  .color-group-label { font-size: 16px; font-weight: 700; letter-spacing: 0.05em; margin: 32px 0 12px; }
+  .token-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .token-pair { border: 1px solid var(--border-light); }
+  .token-bar { height: 44px; }
+  .token-info { padding: 8px 10px; font-family: var(--font-mono); font-size: 11px; color: var(--gray); line-height: 1.7; border-top: 1px solid var(--border-light); }
+  .token-name { font-family: var(--font); font-size: 12px; font-weight: 700; color: var(--ink); letter-spacing: 0.05em; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 32px; padding-bottom: 28px; border-bottom: 1px solid var(--border-light); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--gray); margin-top: 12px; line-height: 1.6; }
+  .type-context { display: inline-block; background: var(--surface); color: var(--ink); font-family: var(--font); font-size: 11px; font-weight: 500; padding: 3px 10px; margin-left: 8px; }
+
+  /* BUTTONS — 面色を持たないアウトライン矩形が主役 */
+  .btn-primary { display: inline-block; background: transparent; color: var(--ink); border: 1px solid var(--ink); border-radius: 0; padding: 14px 40px; font-size: 14px; font-weight: 500; line-height: 1; text-decoration: none; cursor: pointer; }
+  .btn-primary:hover { background: var(--ink); color: #fff; }
+  .btn-wide { display: inline-block; background: transparent; color: var(--ink); border: 1px solid var(--ink); border-radius: 0; padding: 16px 35px 16px 16px; font-size: 14px; font-weight: 500; line-height: 1; text-decoration: none; }
+  .btn-secondary { display: inline-block; background: #fff; color: var(--ink); border: 1px solid var(--border); border-radius: 0; padding: 10px 40px 10px 15px; font-size: 14px; font-weight: 400; line-height: 1.7; text-decoration: none; }
+  .chip-brand { display: inline-block; background: #fff; color: var(--ink); border: 1px solid var(--border-light); border-radius: 0; padding: 10px; font-size: 14px; font-weight: 500; line-height: 1; text-decoration: none; }
+
+  /* BADGES */
+  .badge-fill { display: inline-block; background: var(--ink); color: #fff; border: 2px solid var(--ink); border-radius: 0; padding: 4px 4px 5px; font-size: 14px; font-weight: 500; line-height: 1; }
+  .badge-outline { display: inline-block; background: transparent; color: var(--brand-red); border: 2px solid var(--brand-red); border-radius: 0; padding: 4px 4px 5px; font-size: 14px; font-weight: 500; line-height: 1; }
+  .badge-new { display: inline-block; background: var(--brand-red); color: #fff; border-radius: 0; padding: 4px 9px 5px; font-family: var(--font-en); font-size: 16px; font-weight: 600; line-height: 1; }
+  .tag-category { display: inline-block; background: transparent; color: #000; border: 1px solid #000; border-radius: 0; padding: 0 10px; font-size: 16px; font-weight: 700; line-height: 1.3; }
+  .label-product { display: inline-block; background: var(--gray); color: #fff; border-radius: 0; padding: 9px; font-size: 14px; font-weight: 500; line-height: 1; letter-spacing: 0.05em; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+  .card { background: #fff; border-radius: 0; }
+  .card-photo { height: 170px; background: linear-gradient(135deg, #e6e1db, #cdc6bd); }
+  .card-meta { display: flex; align-items: center; gap: 10px; margin: 16px 0 10px; font-family: var(--font-en); font-size: 14px; font-weight: 400; color: var(--gray); }
+  .card-title { font-size: 16px; font-weight: 700; line-height: 1.6; margin-bottom: 8px; }
+  .card-excerpt { font-size: 14px; font-weight: 500; line-height: 1.71; letter-spacing: 0.05em; color: var(--ink); }
+
+  /* INTERVIEW — 11 色トークンを 1 枚ずつ当てる */
+  .interview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .interview-card { padding: 28px 20px; color: #fff; border-radius: 0; }
+  .interview-tag { display: inline-block; border: 1px solid #fff; padding: 0 10px; font-size: 14px; font-weight: 700; line-height: 1.4; margin-bottom: 14px; }
+  .interview-name { font-size: 16px; font-weight: 500; line-height: 1.4; }
+  .interview-title { font-family: var(--font-serif); font-size: 20px; font-weight: 400; line-height: 1.3; margin-top: 10px; }
+
+  /* CONCEPT — 原稿用紙状のビジュアル */
+  .concept-boxes { display: flex; gap: 6px; justify-content: center; margin-bottom: 28px; flex-wrap: wrap; }
+  .concept-box { width: 58px; height: 58px; border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 500; background: #fff; }
+
+  /* CATEGORY */
+  .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .cat-item { position: relative; height: 120px; background: linear-gradient(135deg, #d8d2ca, #b3aca3); display: flex; align-items: flex-end; }
+  .cat-scrim { position: absolute; inset: 0; background: rgba(40,40,40,.25); }
+  .cat-item .label-product { position: relative; width: 100%; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 24px; max-width: 460px; }
+  .form-label { display: block; font-size: 14px; font-weight: 500; letter-spacing: 0.05em; margin-bottom: 8px; line-height: 1; }
+  .form-input { width: 100%; background: #fff; color: var(--ink); border: 2px solid var(--surface); border-radius: 0; padding: 12px 40px 12px 18px; font-family: var(--font); font-size: 14px; font-weight: 400; line-height: 1.7; outline: none; }
+  .form-input::placeholder { color: var(--gray); }
+  .form-input--focus { border-color: var(--ink); }
+  .form-input--error { border-color: var(--component-primary-red); }
+  .form-textarea { min-height: 110px; padding-right: 18px; }
+  .form-state-label { font-size: 12px; font-weight: 500; color: var(--gray); margin-top: 8px; line-height: 1.7; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .elevation-card { background: #fff; padding: 26px; text-align: center; border: 1px solid var(--border-light); }
+  .elevation-label { font-size: 14px; font-weight: 700; margin-bottom: 8px; letter-spacing: 0.05em; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--gray); line-height: 1.6; }
+
+  /* LAYOUT */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--ink); margin-bottom: 6px; height: 24px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; color: var(--gray); }
+  .width-bar { height: 28px; background: var(--surface); margin-bottom: 8px; overflow: hidden; }
+  .width-bar-inner { height: 100%; background: var(--ink); }
+  .width-bar-label { font-size: 14px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .width-bar-value { font-family: var(--font-mono); font-size: 12px; color: var(--gray); font-weight: 400; letter-spacing: normal; }
+
+  /* FOOTER */
+  .footer { background: var(--surface); padding: 45px 24px 0; }
+  .footer-inner { max-width: var(--conteint-width); margin: 0 auto; }
+  .footer-links { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .footer-bar { background: var(--ink); margin: 0 -24px; padding: 18px 24px; text-align: center; }
+  .footer-copy { font-family: var(--font-en); font-size: 12px; font-weight: 400; color: #fff; letter-spacing: 0.05em; line-height: 1; }
+  .colophon { padding: 32px 24px; font-size: 12px; font-weight: 500; color: var(--gray); line-height: 1.9; text-align: center; }
+  .colophon a { color: var(--ink); }
+
+  @media (max-width: 769px) {
+    .nav-links { display: none; }
+    .section { padding: 56px 16px; }
+    .heading-jp { font-size: 21px; }
+    .kv { height: 260px; }
+    .kv-copy { font-size: 24px; }
+    .lead { line-height: 2.0; }
+    .concept-box { width: 40px; height: 40px; font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="#">
+    <span class="nav-logo-mark">uni</span>
+    <span class="nav-logo-sub">MITSUBISHI PENCIL</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#colors">商品情報</a></li>
+    <li><a href="#typography">特集</a></li>
+    <li><a href="#buttons">よくあるご質問</a></li>
+    <li><a href="#cards">企業情報</a></li>
+    <li><a href="#layout">IR情報</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="nav-util" href="#">ENGLISH</a>
+    <a class="nav-util" href="#">お問い合わせ</a>
+  </div>
+</nav>
+
+<!-- KV -->
+<section class="kv">
+  <div class="kv-photo"></div>
+  <div class="kv-scrim"></div>
+  <div class="kv-copy">あなたと、<br>世界をもっとユニークに。</div>
+  <div class="kv-dots">
+    <span class="kv-dot is-active"></span><span class="kv-dot"></span><span class="kv-dot"></span><span class="kv-dot"></span><span class="kv-dot"></span>
+  </div>
+</section>
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="heading"><span class="heading-jp">色</span><span class="heading-en">COLORS</span></div>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#df1b26"></div><div class="color-swatch-info"><div class="color-swatch-name">Brand Red</div><div class="color-swatch-hex">#df1b26</div><div class="color-swatch-role">欧文見出し・NEW バッジ・現在位置ドット。面としては小さく、点で強く使う</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#282828"></div><div class="color-swatch-info"><div class="color-swatch-name">Ink</div><div class="color-swatch-hex">#282828</div><div class="color-swatch-role">基本テキスト色。純黒ではない。アウトライン CTA の枠線でもある</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; box-shadow: inset 0 0 0 1px #f1f2f3"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ地色</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#999999"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray</div><div class="color-swatch-hex">#999999</div><div class="color-swatch-role">画像上のカテゴリラベル・非活性ドット</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5f5f5"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#f5f5f5</div><div class="color-swatch-role">フッター・ユーティリティ面・入力欄の 2px 枠</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#eae5df"></div><div class="color-swatch-info"><div class="color-swatch-name">Beige</div><div class="color-swatch-hex">#eae5df</div><div class="color-swatch-role">コンセプトセクションの面。白地に温度を足す唯一のニュートラル</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f1f2f3"></div><div class="color-swatch-info"><div class="color-swatch-name">Border Light</div><div class="color-swatch-hex">#f1f2f3</div><div class="color-swatch-role">ブランドチップの枠</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dbdbdb"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#dbdbdb</div><div class="color-swatch-role">フッターのリンクボタンの枠</div></div></div>
+  </div>
+
+  <div class="color-group-label">Component Tokens — 11 色 × 2 段（色鉛筆の色数をそのままトークンに）</div>
+  <div class="token-grid">
+    <div class="token-pair"><div class="token-bar" style="background:#FFD72E"></div><div class="token-bar" style="background:#FFBA00"></div><div class="token-info"><span class="token-name">yellow</span><br>#FFD72E / #FFBA00</div></div>
+    <div class="token-pair"><div class="token-bar" style="background:#F4A556"></div><div class="token-bar" style="background:#F77A1E"></div><div class="token-info"><span class="token-name">orange</span><br>#F4A556 / #F77A1E</div></div>
+    <div class="token-pair"><div class="token-bar" style="background:#E5838F"></div><div class="token-bar" style="background:#C30018"></div><div class="token-info"><span class="token-name">red</span><br>#E5838F / #C30018</div></div>
+    <div class="token-pair"><div class="token-bar" style="background:#E38DCC"></div><div class="token-bar" style="background:#D60F82"></div><div class="token-info"><span class="token-name">pink</span><br>#E38DCC / #D60F82</div></div>
+    <div class="token-pair"><div class="token-bar" style="background:#9389ED"></div><div class="token-bar" style="background:#785ED1"></div><div class="token-info"><span class="token-name">purple</span><br>#9389ED / #785ED1</div></div>
+    <div class="token-pair"><div class="token-bar" style="background:#80A7FF"></div><div class="token-bar" style="background:#415EFD"></div><div class="token-info"><span class="token-name">blue</span><br>#80A7FF / #415EFD</div></div>
+    <div class="token-pair"><div class="token-bar" style="background:#52C196"></div><div class="token-bar" style="background:#088D6F"></div><div class="token-info"><span class="token-name">bluegreen</span><br>#52C196 / #088D6F</div></div>
+    <div class="token-pair"><div class="token-bar" style="background:#8ED878"></div><div class="token-bar" style="background:#68C100"></div><div class="token-info"><span class="token-name">green</span><br>#8ED878 / #68C100</div></div>
+    <div class="token-pair"><div class="token-bar" style="background:#C1986F"></div><div class="token-bar" style="background:#966200"></div><div class="token-info"><span class="token-name">brown</span><br>#C1986F / #966200</div></div>
+    <div class="token-pair"><div class="token-bar" style="background:#D5C441"></div><div class="token-bar" style="background:#B7A200"></div><div class="token-info"><span class="token-name">khaki</span><br>#D5C441 / #B7A200</div></div>
+    <div class="token-pair"><div class="token-bar" style="background:#919FB2"></div><div class="token-bar" style="background:#6F7680"></div><div class="token-info"><span class="token-name">gray</span><br>#919FB2 / #6F7680</div></div>
+  </div>
+  <p style="font-size:14px; font-weight:500; line-height:1.71; letter-spacing:0.05em; color:var(--gray); margin-top:20px;">上段が <code style="font-family:var(--font-mono)">--component-background-*</code>（淡い面色）、下段が <code style="font-family:var(--font-mono)">--component-primary-*</code>（同色相の濃い文字・線色）。<strong>ブランドカラー 1 色で塗り固めない</strong>のが三菱鉛筆の設計。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="heading"><span class="heading-jp">組版</span><span class="heading-en">TYPOGRAPHY</span></div>
+
+  <div class="type-sample">
+    <span class="heading-jp">ニュース</span><span class="heading-en">WHAT'S NEW</span>
+    <div class="type-meta">和文 Noto Sans JP 28px / 700 / lh 1.0 / ls 0.05em ＋ 欧文 Open Sans 16px / 400 / <strong>色 #df1b26</strong><span class="type-context">セクション見出し — 和文と欧文の 2 段組み</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:24px; font-weight:700; line-height:1.7; letter-spacing:0.05em;">三菱鉛筆 企業情報</div>
+    <div style="font-family:var(--font-en); font-size:16px; font-weight:500; line-height:1.375; color:var(--ink);">COMPANY INFO</div>
+    <div class="type-meta">和文 24px / 700 / lh 1.7 / ls 0.05em ＋ 欧文 Open Sans 16px / 500<span class="type-context">導線見出し — 欧文が黒のパターンもある</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="heading-sub" style="margin-bottom:0">ブランド・シリーズでさがす</div>
+    <div class="type-meta">22px / 700 / lh 1.82 (40px) / ls 0.05em (1.1px)<span class="type-context">サブ見出し — 左に 3px の罫</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-serif); font-size:24px; font-weight:400; line-height:1.3;">「描くこと」には、違いを可視化して学び合い、本質を浮き彫りにする力がある。</div>
+    <div class="type-meta"><strong>Noto Serif JP</strong> 24px / 400 / lh 1.3 (31.2px) / ls normal<span class="type-context">読み物の見出し — UI はゴシック、コンテンツは明朝</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="lead" style="text-align:left;">すべての人は個性ある表現者であり、その違いこそが美しい。<br>さまざまなジャンルの創作や発信と、筆記具あるいは「書く・描く」ことの関係性を、インタビューの数だけ見つけていきます。</div>
+    <div class="type-meta">15px / 500 / <strong>lh 2.53 (38px)</strong> / ls normal<span class="type-context">リード文 — 極端に開いた行間。通常の本文に流用しない</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:500; line-height:1.71; letter-spacing:0.05em; max-width:760px;">三菱鉛筆の商品やサービスについて、よく寄せられたご質問に対する回答と、お問い合わせの窓口をご覧いただけます。本文は 14px / weight 500 / line-height 1.71 / letter-spacing 0.05em。1 行で置くラベルは line-height 1、折り返す本文は 1.7 以上、という二分法で組みます。</div>
+    <div class="type-meta">14px / 500 / lh 1.71 (24px) / ls 0.05em (0.7px)<span class="type-context">本文</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-en); font-size:12px; font-weight:400; line-height:1; letter-spacing:0.05em; color:var(--gray);">COPYRIGHT MITSUBISHI PENCIL COMPANY, LIMITED All Rights Reserved.</div>
+    <div class="type-meta">Open Sans 12px / 400 / lh 1.0 / ls 0.05em (0.6px)<span class="type-context">フッターの著作権表記 — 欧文は Open Sans</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:10px; font-weight:500; line-height:1; letter-spacing:0.05em;">検索</div>
+    <div class="type-meta">10px / 500 / lh 1.0 / ls 0.05em (0.5px)<span class="type-context">アイコン下のラベル — 最小サイズ</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- NEWS -->
+<section class="section" id="news">
+  <div class="heading"><span class="heading-jp">ニュース</span><span class="heading-en">WHAT'S NEW</span></div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-photo"></div>
+      <div class="card-meta">2026.06.30 <span class="badge-outline">プレスリリース</span></div>
+      <div class="card-title">“自分らしさ”をテーマに表現する第5回アートコンテストを開催</div>
+      <div class="card-excerpt">「パラリンアート」のオフィシャルパートナーとして、本年も全国の障がい者を対象にしたアートコンテストを実施いたします。</div>
+    </div>
+    <div class="card">
+      <div class="card-photo"></div>
+      <div class="card-meta">2026.06.25 <span class="badge-fill">商品</span></div>
+      <div class="card-title">『uniball ZENTO（ユニボール ゼント）スタンダードモデル 3色ボールペン』発売</div>
+      <div class="card-excerpt">「かく」ひと時を心地よく。やわらかい書き心地の『uniball ZENTO』スタンダードモデルから、3色ボールペンが登場。</div>
+    </div>
+    <div class="card">
+      <div class="card-photo"></div>
+      <div class="card-meta">2026.06.17 <span class="badge-fill">商品</span> <span class="badge-new">NEW</span></div>
+      <div class="card-title">『&knot』新発売</div>
+      <div class="card-excerpt">「Write it, wear it」書くことも、装うことも、もっと自由でいい。オフィスやお出かけ先などで、ふとした瞬間にサッとかける、カラビナ付き油性ボールペンが新登場。</div>
+    </div>
+  </div>
+  <div style="text-align:center; margin-top:44px"><a class="btn-primary" href="#">もっとみる　→</a></div>
+  <p style="font-size:14px; font-weight:500; line-height:1.71; letter-spacing:0.05em; color:var(--gray); margin-top:20px; text-align:center;">主要 CTA は<strong>面色を持たない</strong>。<code style="font-family:var(--font-mono)">1px solid #282828</code> のアウトライン矩形（radius 0）。赤は CTA ではなくバッジと欧文見出しに使う。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- CONCEPT -->
+<section class="section section--tinted">
+  <div class="section-inner">
+    <div class="concept-boxes">
+      <span class="concept-box">10</span><span class="concept-box">億</span><span class="concept-box">人</span><span class="concept-box">の</span><span class="concept-box">表</span><span class="concept-box">現</span><span class="concept-box">者</span>
+    </div>
+    <div class="lead">すべての人は個性ある表現者であり、その違いこそが美しい。<br>さまざまなジャンルの創作や発信と、筆記具あるいは「書く・描く」ことの関係性を、<br>インタビューの数だけ見つけていきます。</div>
+
+    <div class="interview-grid" style="margin-top:48px">
+      <div class="interview-card" style="background:var(--component-primary-yellow)">
+        <span class="interview-tag">Interview</span>
+        <div class="interview-title">「描くこと」には、本質を浮き彫りにする力がある。</div>
+        <div class="interview-name" style="margin-top:12px">本園 大介さん（グラフィックレコーダー）</div>
+      </div>
+      <div class="interview-card" style="background:var(--component-primary-orange)">
+        <span class="interview-tag">Interview</span>
+        <div class="interview-title">手を動かすことでしか、たどり着けない場所がある。</div>
+        <div class="interview-name" style="margin-top:12px">— さん（イラストレーター）</div>
+      </div>
+      <div class="interview-card" style="background:var(--component-primary-purple)">
+        <span class="interview-tag">Interview</span>
+        <div class="interview-title">書く速度と、考える速度を揃えたい。</div>
+        <div class="interview-name" style="margin-top:12px">— さん（編集者）</div>
+      </div>
+    </div>
+    <p style="font-size:14px; font-weight:500; line-height:1.71; letter-spacing:0.05em; color:var(--ink); margin-top:24px;">インタビューカードには <code style="font-family:var(--font-mono)">--component-primary-*</code> の 11 色から <strong>1 枚ずつ違う色</strong>を当てる。グラデーションにはしない。</p>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="heading"><span class="heading-jp">ボタンとバッジ</span><span class="heading-en">BUTTONS &amp; BADGES</span></div>
+  <div style="display:flex; gap:32px; flex-wrap:wrap; align-items:flex-start; margin-bottom:40px;">
+    <div style="text-align:center"><a class="btn-primary" href="#">もっとみる　→</a><div style="font-size:12px;font-weight:500;color:var(--gray);margin-top:12px;line-height:1.7">Primary — 面色なし / 1px solid #282828 / radius 0</div></div>
+    <div style="text-align:center"><a class="btn-wide" href="#">複数条件で詳しく商品を検索　→</a><div style="font-size:12px;font-weight:500;color:var(--gray);margin-top:12px;line-height:1.7">Primary 幅広 — padding 16px 35px 16px 16px</div></div>
+    <div style="text-align:center"><a class="btn-secondary" href="#">三菱鉛筆オンラインショップ　↗</a><div style="font-size:12px;font-weight:500;color:var(--gray);margin-top:12px;line-height:1.7">Secondary — 1px solid #dbdbdb</div></div>
+    <div style="text-align:center"><a class="chip-brand" href="#">ジェットストリーム</a><div style="font-size:12px;font-weight:500;color:var(--gray);margin-top:12px;line-height:1.7">Brand Chip — 1px solid #f1f2f3</div></div>
+  </div>
+  <div style="display:flex; gap:20px; flex-wrap:wrap; align-items:center;">
+    <span class="badge-fill">商品</span>
+    <span class="badge-outline">プレスリリース</span>
+    <span class="badge-new">NEW</span>
+    <span class="tag-category">Interview</span>
+    <span class="label-product">ボールペン</span>
+    <span style="font-size:14px; font-weight:500; color:var(--gray); letter-spacing:0.05em;">← 塗り（#282828）と枠（#df1b26）のペアで種別を出し分ける</span>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CATEGORY -->
+<section class="section" id="cards">
+  <div class="heading-sub">商品カテゴリからさがす</div>
+  <div class="cat-grid" style="margin-bottom:32px">
+    <div class="cat-item"><div class="cat-scrim"></div><span class="label-product">ボールペン</span></div>
+    <div class="cat-item"><div class="cat-scrim"></div><span class="label-product">多機能ペン・カスタマイズペン</span></div>
+    <div class="cat-item"><div class="cat-scrim"></div><span class="label-product">シャープ</span></div>
+    <div class="cat-item"><div class="cat-scrim"></div><span class="label-product">鉛筆・色鉛筆</span></div>
+  </div>
+  <div style="display:flex; gap:12px; flex-wrap:wrap;">
+    <a class="chip-brand" href="#">ジェットストリーム</a>
+    <a class="chip-brand" href="#">ユニボール ワン</a>
+    <a class="chip-brand" href="#">uni</a>
+    <a class="chip-brand" href="#">クルトガ</a>
+    <a class="chip-brand" href="#">ポスカ</a>
+  </div>
+  <div style="margin-top:32px"><a class="btn-primary" href="#">くわしくさがす　→</a></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="heading"><span class="heading-jp">フォーム</span><span class="heading-en">FORMS</span></div>
+  <div class="form-group"><label class="form-label">サイト内検索</label><input class="form-input" type="text" placeholder="キーワードを入力"><div class="form-state-label">デフォルト — <strong>2px solid #f5f5f5</strong> / radius 0（細罫ではなく太めの薄い枠）</div></div>
+  <div class="form-group"><label class="form-label">お名前</label><input class="form-input form-input--focus" type="text" value="三菱 太郎"><div class="form-state-label">フォーカス — border #282828（2px のまま色だけ変える）</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー — border #c30018（<code style="font-family:var(--font-mono)">--component-primary-red</code>。ブランドレッドより深い赤で通知と区別する）</div></div>
+  <div class="form-group"><label class="form-label">お問い合わせ内容</label><textarea class="form-input form-textarea" placeholder="ご用件をご記入ください"></textarea><div class="form-state-label">Textarea も radius 0</div></div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section section--surface" id="elevation">
+  <div class="section-inner">
+    <div class="heading"><span class="heading-jp">奥行き</span><span class="heading-en">ELEVATION</span></div>
+    <div class="elevation-grid">
+      <div class="elevation-card"><div class="elevation-label">Level 0</div><div class="elevation-desc">none<br>カード・ボタン・バッジすべて</div></div>
+      <div class="elevation-card" style="box-shadow:0 4px 16px 0 rgba(40,40,40,.1)"><div class="elevation-label">Level 1</div><div class="elevation-desc">0 4px 16px rgba(40,40,40,.1)<br><strong>固定ヘッダーのみ</strong></div></div>
+      <div class="elevation-card" style="background:linear-gradient(135deg,#d8d2ca,#b3aca3); position:relative; color:#fff; border:none"><div style="position:absolute;inset:0;background:rgba(40,40,40,.25)"></div><div style="position:relative"><div class="elevation-label">Scrim</div><div class="elevation-desc" style="color:#fff">rgba(40,40,40,.25)〜.3<br>画像の上に文字を置くとき</div></div></div>
+    </div>
+    <p style="font-size:14px; font-weight:500; line-height:1.71; letter-spacing:0.05em; color:var(--ink); margin-top:24px;">奥行きは <strong>白 #ffffff × 極薄グレー #f5f5f5 × ベージュ #eae5df</strong> の面のコントラストで作る。影を落とすのはヘッダーだけ。</p>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <div class="heading"><span class="heading-jp">レイアウト</span><span class="heading-en">LAYOUT</span></div>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">XS 4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:9px"></div><div class="spacing-value">S 9</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">M 16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:22px"></div><div class="spacing-value">L 22</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:45px"></div><div class="spacing-value">XL 45</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:80px"></div><div class="spacing-value">XXL 80</div></div>
+  </div>
+  <div style="margin-bottom:20px"><div class="width-bar-label">Main Container <span class="width-bar-value">1168px（--conteint-width）</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:20px"><div class="width-bar-label">カードグリッド <span class="width-bar-value">3 カラム / gutter 24px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:76%"></div></div></div>
+  <p style="font-size:14px; font-weight:500; line-height:1.71; letter-spacing:0.05em; color:var(--gray);">パディングに <code style="font-family:var(--font-mono)">4px 4px 5px</code> <code style="font-family:var(--font-mono)">10px 40px 10px 15px</code> のような<strong>上下非対称の値</strong>が現れる。和文の字面を補正するために下側を 1px 多く取る実装。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a class="btn-secondary" href="#">三菱鉛筆オンラインショップ　↗</a>
+      <a class="btn-secondary" href="#">退職者（アルムナイ）ネットワーク登録　↗</a>
+    </div>
+  </div>
+  <div class="footer-bar"><span class="footer-copy">COPYRIGHT MITSUBISHI PENCIL COMPANY, LIMITED All Rights Reserved.</span></div>
+</footer>
+
+<div class="colophon">
+  Generated from <a href="https://www.mpuni.co.jp/">mpuni.co.jp</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-08-16）<br>
+  実サイトの書体は <code style="font-family:var(--font-mono)">"Noto Sans JP"</code>（和文・UI）／<code style="font-family:var(--font-mono)">"Open Sans"</code>（欧文ラベル）／<code style="font-family:var(--font-mono)">"Noto Serif JP"</code>（読み物見出し）の 3 系統で、<strong>すべて Google Fonts からそのまま読み込める</strong>。代替フォントは使っていない。<br>
+  <code style="font-family:var(--font-mono)">border-radius</code> はカルーセルのドット（50%）を除きすべて 0。影はヘッダーの 1 つだけ。
+</div>
+
+</body>
+</html>

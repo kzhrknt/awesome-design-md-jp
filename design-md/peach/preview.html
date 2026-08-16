@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Peach Aviation（ピーチ）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Noto+Sans+JP:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測値 === */
+    --peach-pink: #e65080;   /* 主要 CTA・アクティブタブ */
+    --coral-pink: #ef8da5;   /* トグル・アイコン・ドット */
+    --footer-pink: #e5869a;  /* フッターの面 */
+    --pale-pink: #f9d0db;    /* アイコン背景・ホバー面 */
+    --notice-pink: #fce7ed;  /* 重要なお知らせバー */
+
+    --cream: #fff9f3;        /* ページの基調 */
+    --beige: #f6ede4;        /* 導線グリッド・おすすめ情報の面 */
+    --beige-deep: #eddfd4;   /* さらに一段濃いベージュ */
+    --beige-cal: #f5ede5;    /* カレンダーヘッダー */
+
+    --brown: #6d564a;        /* 基本テキスト色。黒もグレーも使わない */
+    --brown-deep: #6a574c;
+    --tan: #c39378;          /* アイコン */
+    --border-tan: #e2c3a6;   /* カード 3px / チップ 2px / 入力欄 1px */
+    --inactive: #d3ccc9;     /* 非選択タブ・プレースホルダ */
+    --muted: #958d87;
+
+    --danger: #bf0008;       /* 日曜・祝日・エラー */
+    --info: #5172aa;         /* 土曜 */
+
+    /* === Fonts === */
+    /* 実サイトの Montserrat + Noto Sans JP はどちらも Google Fonts。
+       游ゴシック以降は OS 搭載フォントのフォールバック。代替は不要。 */
+    --font: Montserrat, "Noto Sans JP", 游ゴシック体, YuGothic, 游ゴシック, "Yu Gothic",
+            "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, Osaka, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    color: var(--brown);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: normal;          /* サイト全体で触らない */
+    font-feature-settings: normal;   /* palt は使わない */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav { background: #fff; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .nav-logo { font-size: 32px; font-weight: 700; color: var(--coral-pink); line-height: 1; text-decoration: none; letter-spacing: -0.01em; }
+  .nav-links { display: flex; align-items: center; gap: 22px; list-style: none; }
+  .nav-links a { font-size: 17px; font-weight: 600; line-height: 1; color: var(--brown); text-decoration: none; }
+  .nav-links a:hover { color: var(--peach-pink); }
+  .nav-right { display: flex; align-items: center; gap: 14px; }
+  .nav-sub { font-size: 14px; font-weight: 600; color: var(--brown); text-decoration: none; }
+
+  .notice { background: var(--notice-pink); color: var(--peach-pink); font-size: 14px; font-weight: 600; padding: 10px 24px; text-align: center; }
+
+  /* KV — 桃の実（円）を重ねる */
+  .kv { position: relative; height: 330px; background: var(--beige-deep); overflow: hidden; display: flex; align-items: center; }
+  .kv-circle1 { position: absolute; left: -90px; top: 120px; width: 300px; height: 300px; border-radius: 50%; background: var(--peach-pink); opacity: .9; }
+  .kv-circle2 { position: absolute; left: 470px; top: -140px; width: 300px; height: 300px; border-radius: 50%; background: var(--coral-pink); }
+  .kv-circle3 { position: absolute; right: 0; top: 0; bottom: 0; width: 42%; background: var(--cream); }
+  .kv-copy { position: relative; padding-left: 200px; }
+  .kv-title { font-size: 52px; font-weight: 700; line-height: 1.25; }
+  .kv-title em { font-style: normal; color: var(--peach-pink); }
+  .kv-note { position: absolute; right: 6%; top: 90px; font-size: 16px; font-weight: 400; line-height: 1.9; z-index: 2; }
+
+  /* SECTIONS */
+  .section { padding: 72px 24px; max-width: 1020px; margin: 0 auto; }
+  .section--beige { background: var(--beige); max-width: none; }
+  .section--cream { background: var(--cream); max-width: none; }
+  .section-inner { max-width: 1020px; margin: 0 auto; }
+  .section-divider { border: none; border-top: 1px solid var(--border-tan); margin: 0; opacity: .5; }
+  .heading { font-size: 30px; font-weight: 700; line-height: 1.5; margin-bottom: 32px; }
+  .heading-sub { font-size: 22px; font-weight: 600; line-height: 1.5; margin-bottom: 24px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .color-swatch { background: #fff; border: 1px solid var(--border-tan); border-radius: 0 20px; overflow: hidden; }
+  .color-swatch-block { height: 78px; width: 100%; }
+  .color-swatch-info { padding: 12px 16px; border-top: 1px solid var(--border-tan); }
+  .color-swatch-name { font-size: 14px; font-weight: 600; margin-bottom: 6px; line-height: 1.4; }
+  .color-swatch-hex { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+  .color-swatch-role { font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 8px; line-height: 1.7; }
+  .color-group-label { font-size: 18px; font-weight: 600; margin: 32px 0 12px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 32px; padding-bottom: 28px; border-bottom: 1px solid var(--border-tan); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 12px; line-height: 1.6; }
+  .type-context { display: inline-block; background: var(--beige); color: var(--brown); font-family: var(--font); font-size: 11px; font-weight: 600; padding: 3px 10px; margin-left: 8px; border-radius: 0 10px; }
+
+  /* RADIUS SHOWCASE */
+  .radius-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+  .radius-card { background: #fff; border: 2px solid var(--border-tan); padding: 22px 14px; text-align: center; }
+  .radius-value { font-family: var(--font-mono); font-size: 13px; color: var(--brown); font-weight: 600; }
+  .radius-role { font-size: 11px; color: var(--muted); margin-top: 8px; line-height: 1.6; }
+
+  /* BUTTONS */
+  .btn-primary { display: inline-block; background: var(--peach-pink); color: #fff; border: none; border-radius: 0 12px; padding: 10px 24px; font-size: 16px; font-weight: 700; line-height: 1.6; text-decoration: none; cursor: pointer; }
+  .btn-primary:hover { background: #d2426f; }
+  .btn-search { display: inline-block; background: var(--peach-pink); color: #fff; border: none; border-radius: 0 20px; padding: 14px 60px; font-size: 18px; font-weight: 700; line-height: 1.4; cursor: pointer; }
+  .chip { display: inline-block; background: #fff; color: var(--brown); border: 2px solid var(--border-tan); border-radius: 0 20px; padding: 8px 25px 8px 10px; font-size: 16px; font-weight: 400; line-height: 1.6; text-decoration: none; }
+  .pill { display: inline-block; background: var(--beige); color: var(--brown); border-radius: 550px; padding: 5px 14px; font-size: 12px; font-weight: 600; line-height: 1.6; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 6px; }
+  .tab { flex: 1; text-align: center; background: var(--inactive); color: var(--brown); padding: 14px 15px; font-size: 18px; font-weight: 600; line-height: 1.4; border-radius: 10px 10px 0 0; cursor: pointer; }
+  .tab.is-active { background: var(--peach-pink); color: #fff; }
+
+  /* TOGGLE */
+  .toggle { display: inline-flex; border: 2px solid var(--border-tan); border-radius: 0 20px; overflow: hidden; }
+  .toggle span { padding: 10px 20px; font-size: 16px; font-weight: 600; line-height: 1.4; background: #fff; color: var(--brown); }
+  .toggle span.is-on { background: var(--coral-pink); color: #fff; }
+
+  /* SEARCH FORM */
+  .searchbox { background: #fff; padding: 32px; border-radius: 0 42px; border: 3px solid var(--border-tan); }
+  .search-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+  .form-group { margin-bottom: 0; }
+  .form-label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; line-height: 1.6; }
+  .form-input { width: 100%; background: #fff; color: var(--brown); border: 1px solid var(--border-tan); border-radius: 5px; padding: 12px 16px; font-family: var(--font); font-size: 16px; font-weight: 600; line-height: 1.6; outline: none; }
+  .form-input::placeholder { color: var(--inactive); font-weight: 600; }
+  .form-input--focus { border-color: var(--peach-pink); }
+  .form-input--error { border-color: var(--danger); }
+  .form-state-label { font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 8px; line-height: 1.7; }
+
+  /* CARDS — 非対称の大きな角丸 */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+  .nav-card { background: #fff; border: 3px solid var(--border-tan); border-radius: 0 42px; padding: 20px 15px; display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 400; line-height: 1.5; color: var(--brown); text-decoration: none; }
+  .nav-card-icon { flex: none; width: 44px; height: 44px; border-radius: 50%; background: var(--pale-pink); }
+
+  .promo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+  .promo-card { background: #fff; border-radius: 10px; overflow: hidden; }
+  .promo-photo { height: 130px; background: linear-gradient(135deg, var(--pale-pink), var(--beige-deep)); }
+  .promo-body { padding: 14px 16px 18px; }
+  .promo-title { font-size: 18px; font-weight: 600; line-height: 1.6; margin-bottom: 6px; }
+  .promo-text { font-size: 16px; font-weight: 400; line-height: 1.5; }
+
+  /* CALENDAR */
+  .cal { background: var(--beige-deep); padding: 16px; border-radius: 5px; max-width: 420px; }
+  .cal-head { background: var(--beige-cal); display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 5px; font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+  .cal-nav { background: var(--muted); color: #fff; border-radius: 5px; padding: 4px 12px; font-size: 12px; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-th { text-align: center; font-size: 14px; font-weight: 600; padding: 4px 0; }
+  .cal-td { background: #fff; border-radius: 5px; text-align: center; padding: 10px 0; font-size: 16px; }
+  .cal-sat { color: var(--info); }
+  .cal-sun { color: var(--danger); }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .elevation-card { background: #fff; padding: 26px; text-align: center; border-radius: 0 20px; }
+  .elevation-label { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+  /* LAYOUT */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--peach-pink); margin-bottom: 6px; height: 24px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+  .width-bar { height: 28px; background: var(--beige-deep); margin-bottom: 8px; overflow: hidden; border-radius: 5px; }
+  .width-bar-inner { height: 100%; background: var(--peach-pink); }
+  .width-bar-label { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .width-bar-value { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-weight: 400; }
+
+  /* FOOTER */
+  .footer { background: var(--footer-pink); color: #fff; padding: 48px 24px; }
+  .footer-inner { max-width: 1020px; margin: 0 auto; display: flex; gap: 32px; flex-wrap: wrap; font-size: 16px; font-weight: 400; }
+  .colophon { padding: 32px 24px; font-size: 12px; font-weight: 400; color: var(--muted); line-height: 1.9; text-align: center; background: var(--cream); }
+  .colophon a { color: var(--peach-pink); }
+
+  @media (max-width: 769px) {
+    .nav-links { display: none; }
+    .section { padding: 48px 16px; }
+    .heading { font-size: 23px; }
+    .kv { height: 240px; }
+    .kv-copy { padding-left: 24px; }
+    .kv-title { font-size: 30px; }
+    .kv-note { display: none; }
+    .search-grid { grid-template-columns: 1fr; }
+    .nav-card, .searchbox { border-radius: 0 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="#">peach</a>
+  <ul class="nav-links">
+    <li><a href="#colors">予約・旅の準備</a></li>
+    <li><a href="#typography">空港・チェックイン</a></li>
+    <li><a href="#buttons">機内・サービス</a></li>
+    <li><a href="#cards">おすすめ情報</a></li>
+    <li><a href="#layout">ツアー</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="nav-sub" href="#">日本語 ▾</a>
+    <a class="btn-primary" href="#">ログイン/登録</a>
+  </div>
+</nav>
+
+<div class="notice">重要なお知らせ： 夏休み期間中の混雑について</div>
+
+<!-- KV -->
+<section class="kv">
+  <div class="kv-circle3"></div>
+  <div class="kv-circle1"></div>
+  <div class="kv-circle2"></div>
+  <div class="kv-copy">
+    <div class="kv-title">Peach<br><em>カイゼン</em><br>Log</div>
+  </div>
+  <div class="kv-note">「愛あるフライトを、すべての人に。」<br>お客さまの声に耳をすませながら、<br>Peach はみずから考え、少しずつ進化を重ねています。</div>
+</section>
+
+<!-- SEARCH -->
+<section class="section">
+  <div class="tabs">
+    <div class="tab is-active">フライト検索・ご予約</div>
+    <div class="tab">予約の確認</div>
+    <div class="tab">運航情報</div>
+  </div>
+  <div class="searchbox">
+    <div class="toggle"><span class="is-on">往復</span><span>片道</span></div>
+    <div class="search-grid">
+      <div class="form-group"><label class="form-label">出発地</label><input class="form-input" placeholder="出発地"></div>
+      <div class="form-group"><label class="form-label">目的地</label><input class="form-input" placeholder="目的地"></div>
+      <div class="form-group"><label class="form-label">往路出発日</label><input class="form-input" value="2026/08/21"></div>
+      <div class="form-group"><label class="form-label">復路出発日</label><input class="form-input" value="2026/08/25"></div>
+    </div>
+    <div style="text-align:center"><button class="btn-search">検索　›</button></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="heading">COLORS</div>
+
+  <div class="color-group-label">Brand — ピンクは 2 段</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e65080"></div><div class="color-swatch-info"><div class="color-swatch-name">Peach Pink</div><div class="color-swatch-hex">#e65080</div><div class="color-swatch-role">主要 CTA・アクティブタブ。サイトで最も強い色</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ef8da5"></div><div class="color-swatch-info"><div class="color-swatch-name">Coral Pink</div><div class="color-swatch-hex">#ef8da5</div><div class="color-swatch-role">トグル・アイコン・ドット。頻度は高いが強さは弱い</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e5869a"></div><div class="color-swatch-info"><div class="color-swatch-name">Footer Pink</div><div class="color-swatch-hex">#e5869a</div><div class="color-swatch-role">フッターの面。白抜き文字</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f9d0db"></div><div class="color-swatch-info"><div class="color-swatch-name">Pale Pink</div><div class="color-swatch-hex">#f9d0db</div><div class="color-swatch-role">導線カードのアイコン背景・ホバー面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fce7ed"></div><div class="color-swatch-info"><div class="color-swatch-name">Notice Pink</div><div class="color-swatch-hex">#fce7ed</div><div class="color-swatch-role">「重要なお知らせ」バーの面</div></div></div>
+  </div>
+
+  <div class="color-group-label">Base — 地は白ではなくクリーム</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff9f3"></div><div class="color-swatch-info"><div class="color-swatch-name">Cream</div><div class="color-swatch-hex">#fff9f3</div><div class="color-swatch-role">ページの基調。ドロワーの面色でもある</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f6ede4"></div><div class="color-swatch-info"><div class="color-swatch-name">Beige</div><div class="color-swatch-hex">#f6ede4</div><div class="color-swatch-role">導線グリッド・おすすめ情報の面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#eddfd4"></div><div class="color-swatch-info"><div class="color-swatch-name">Beige Deep</div><div class="color-swatch-hex">#eddfd4</div><div class="color-swatch-role">カレンダーの外枠・区切り面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; box-shadow: inset 0 0 0 1px #e2c3a6"></div><div class="color-swatch-info"><div class="color-swatch-name">White</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">カード・フォーム・入力欄の面のみ</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral — 文字はブラウン</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#6d564a"></div><div class="color-swatch-info"><div class="color-swatch-name">Brown Text</div><div class="color-swatch-hex">#6d564a</div><div class="color-swatch-role"><strong>基本テキスト色</strong>。黒も無彩色グレーも使わない</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c39378"></div><div class="color-swatch-info"><div class="color-swatch-name">Tan</div><div class="color-swatch-hex">#c39378</div><div class="color-swatch-role">ヘッダーのメニューアイコン</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e2c3a6"></div><div class="color-swatch-info"><div class="color-swatch-name">Border Tan</div><div class="color-swatch-hex">#e2c3a6</div><div class="color-swatch-role">カード 3px / チップ 2px / 入力欄 1px の枠</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d3ccc9"></div><div class="color-swatch-info"><div class="color-swatch-name">Inactive</div><div class="color-swatch-hex">#d3ccc9</div><div class="color-swatch-role">非選択タブの面・プレースホルダ</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#bf0008"></div><div class="color-swatch-info"><div class="color-swatch-name">Danger / Holiday</div><div class="color-swatch-hex">#bf0008</div><div class="color-swatch-role">カレンダーの日曜・祝日。エラーにも使う</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#5172aa"></div><div class="color-swatch-info"><div class="color-swatch-name">Info / Saturday</div><div class="color-swatch-hex">#5172aa</div><div class="color-swatch-role">カレンダーの土曜。青系はここにしか出ない</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- RADIUS -->
+<section class="section section--beige" id="radius">
+  <div class="section-inner">
+    <div class="heading">BORDER RADIUS — 対角の 2 隅だけを丸める</div>
+    <div class="radius-grid">
+      <div class="radius-card" style="border-radius:0 20px"><div class="radius-value">0px 20px</div><div class="radius-role">チップ・導線ボタン<br><strong>最頻出（23 箇所）</strong></div></div>
+      <div class="radius-card" style="border-radius:0 42px"><div class="radius-value">0px 42px</div><div class="radius-role">導線カード</div></div>
+      <div class="radius-card" style="border-radius:0 12px"><div class="radius-value">0px 12px</div><div class="radius-role">ヘッダーの主要 CTA</div></div>
+      <div class="radius-card" style="border-radius:5px"><div class="radius-value">5px</div><div class="radius-role">入力欄・カレンダーのセル<br>（対称・89 箇所）</div></div>
+      <div class="radius-card" style="border-radius:550px"><div class="radius-value">550px</div><div class="radius-role">タグ・ラベルのピル</div></div>
+      <div class="radius-card" style="border-radius:50%; padding:34px 14px"><div class="radius-value">50%</div><div class="radius-role">アイコン・ドット</div></div>
+    </div>
+    <p style="font-size:16px; font-weight:400; line-height:1.6; margin-top:24px;"><code style="font-family:var(--font-mono)">0px 20px</code> は「左上・右下 = 0 / 右上・左下 = 20px」。<strong>桃の葉のような非対称の輪郭が Peach の「かたち」そのもの</strong>で、4 隅対称に丸めることはしない。</p>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="heading">TYPOGRAPHY</div>
+
+  <div class="type-sample">
+    <div style="font-size:30px; font-weight:700; line-height:1.5;">おすすめ情報</div>
+    <div class="type-meta">30px / <strong>700</strong> / lh 1.5 (45px) / ls normal<span class="type-context">セクション見出し（u-weightB）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:22px; font-weight:600; line-height:1.5;">お知らせ</div>
+    <div class="type-meta">22px / 600 / lh 1.5 (33px) / ls normal<span class="type-context">サブ見出し（u-weightSB）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:18px; font-weight:600; line-height:1.6;">手続き可能な項目</div>
+    <div class="type-meta">18px / 600 / lh 1.6 (28.8px)<span class="type-context">リード・カード見出し（u-fontL u-weightSB）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.6; max-width:760px;">8月からの機内食やグッズ、機内誌が新しくなりました。本文は 16px / weight 400 / line-height 1.6 / letter-spacing normal。LCC の「誰でも読める」要件から、<strong>本文を 14px 以下にしません</strong>。字間はサイト全体で一切触らず、読みやすさは行間 1.6 と 16px のサイズで確保します。</div>
+    <div class="type-meta">16px / 400 / lh 1.6 (25.6px) / <strong>ls normal</strong><span class="type-context">本文（body 既定）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:600; line-height:1.6;">予約をお持ちのお客さま / Peach ポイントをお持ちのお客さま</div>
+    <div class="type-meta">16px / 600 / lh 1.6<span class="type-context">本文の強調（u-weightSB）— 400 ↔ 600 のコントラストで階層を作る</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:600; line-height:1.6;">予約番号がわからない場合</div>
+    <div class="type-meta">14px / 600 / lh 1.6 (22.4px)<span class="type-context">キャプション（u-fontS u-weightSB）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:10px; font-weight:600; line-height:1;">メニュー</div>
+    <div class="type-meta">10px / 600 / lh 1.0<span class="type-context">アイコン下のラベル — 最小サイズ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:Montserrat, sans-serif; font-size:20px; font-weight:600; line-height:1.6;">KIX &nbsp; MMB &nbsp; KUH &nbsp; 2026/08/13 &nbsp; ¥4,590</div>
+    <div class="type-meta">Montserrat がスタックの先頭。<strong>空港コード・日付・運賃の見え方を統一する</strong>ための指定<span class="type-context">欧文・数字</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- NAV CARDS -->
+<section class="section section--beige" id="cards">
+  <div class="section-inner">
+    <div class="heading-sub">導線グリッド</div>
+    <div class="card-grid">
+      <a class="nav-card" href="#"><span class="nav-card-icon"></span>搭乗の流れ<br>（国内線 / 国際線）</a>
+      <a class="nav-card" href="#"><span class="nav-card-icon"></span>運賃タイプ</a>
+      <a class="nav-card" href="#"><span class="nav-card-icon"></span>手荷物<br>（持ち込み/お預け）</a>
+      <a class="nav-card" href="#"><span class="nav-card-icon"></span>予約の変更・取消・払戻</a>
+      <a class="nav-card" href="#"><span class="nav-card-icon"></span>空港ガイド</a>
+    </div>
+    <p style="font-size:16px; font-weight:400; line-height:1.6; margin-top:24px;">カードは <code style="font-family:var(--font-mono)">border: 3px solid #e2c3a6</code> ＋ <code style="font-family:var(--font-mono)">border-radius: 0 42px</code>。<strong>影は落とさず、太枠と非対称の輪郭でカードを立てる</strong>。</p>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="heading">BUTTONS</div>
+  <div style="display:flex; gap:32px; flex-wrap:wrap; align-items:flex-start; margin-bottom:36px;">
+    <div style="text-align:center"><a class="btn-primary" href="#">ログイン/登録</a><div style="font-size:12px;color:var(--muted);margin-top:12px;line-height:1.7">Primary — #e65080 / radius 0 12px / 16px 700</div></div>
+    <div style="text-align:center"><button class="btn-search">検索　›</button><div style="font-size:12px;color:var(--muted);margin-top:12px;line-height:1.7">Search — radius 0 20px</div></div>
+    <div style="text-align:center"><a class="chip" href="#">路線・時刻表　›</a><div style="font-size:12px;color:var(--muted);margin-top:12px;line-height:1.7">Chip — 2px solid #e2c3a6 / radius 0 20px</div></div>
+    <div style="text-align:center"><div class="toggle"><span class="is-on">往復</span><span>片道</span></div><div style="font-size:12px;color:var(--muted);margin-top:12px;line-height:1.7">Toggle — 選択は #ef8da5（#e65080 は使わない）</div></div>
+    <div style="text-align:center"><span class="pill">2026年冬ダイヤ</span><div style="font-size:12px;color:var(--muted);margin-top:12px;line-height:1.7">Pill — #f6ede4 / radius 550px</div></div>
+  </div>
+  <div class="tabs" style="max-width:640px">
+    <div class="tab is-active">フライト検索・ご予約</div>
+    <div class="tab">予約の確認</div>
+    <div class="tab">運航情報</div>
+  </div>
+  <p style="font-size:16px; line-height:1.6; margin-top:16px;">非活性は<strong>グレーの面色 #d3ccc9</strong> で表す。枠線や透明度では表さない。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- PROMO -->
+<section class="section section--beige">
+  <div class="section-inner">
+    <div class="heading">おすすめ情報</div>
+    <div class="promo-grid">
+      <div class="promo-card"><div class="promo-photo"></div><div class="promo-body"><div class="promo-title">2026年冬ダイヤ販売中</div><div class="promo-text">一部路線のみ。冬の旅行計画はお早めに。</div></div></div>
+      <div class="promo-card"><div class="promo-photo"></div><div class="promo-body"><div class="promo-title">秋の行楽、どこ行く？</div><div class="promo-text">シルバーウィークの空席状況をチェック。</div></div></div>
+      <div class="promo-card"><div class="promo-photo"></div><div class="promo-body"><div class="promo-title">弾丸往復運賃</div><div class="promo-text">日帰り国内旅から、深夜便で行く海外弾丸旅まで。</div></div></div>
+    </div>
+    <div style="text-align:right; margin-top:20px"><a class="chip" href="#">一覧をチェック　›</a></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="heading">FORMS</div>
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:32px; align-items:start;">
+    <div>
+      <div class="form-group" style="margin-bottom:24px"><label class="form-label">出発地</label><input class="form-input" placeholder="出発地"><div class="form-state-label">デフォルト — 1px solid #e2c3a6 / radius 5px（<strong>入力欄だけは対称</strong>）</div></div>
+      <div class="form-group" style="margin-bottom:24px"><label class="form-label">目的地</label><input class="form-input form-input--focus" value="新千歳（札幌）"><div class="form-state-label">フォーカス — border #e65080</div></div>
+      <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" value="invalid@"><div class="form-state-label">エラー — border #bf0008（カレンダーの祝日色を流用する）</div></div>
+    </div>
+    <div>
+      <div class="cal">
+        <div class="cal-head"><span class="cal-nav">前の月</span>2026年 8月<span class="cal-nav" style="background:#fff; color:var(--brown)">次の月</span></div>
+        <div class="cal-grid">
+          <div class="cal-th">月</div><div class="cal-th">火</div><div class="cal-th">水</div><div class="cal-th">木</div><div class="cal-th">金</div><div class="cal-th cal-sat">土</div><div class="cal-th cal-sun">日</div>
+          <div class="cal-td">17</div><div class="cal-td">18</div><div class="cal-td">19</div><div class="cal-td">20</div><div class="cal-td">21</div><div class="cal-td cal-sat">22</div><div class="cal-td cal-sun">23</div>
+          <div class="cal-td">24</div><div class="cal-td">25</div><div class="cal-td">26</div><div class="cal-td">27</div><div class="cal-td">28</div><div class="cal-td cal-sat">29</div><div class="cal-td cal-sun">30</div>
+        </div>
+      </div>
+      <div class="form-state-label">土曜 #5172aa / 日曜・祝日 #bf0008 / 平日 #6d564a</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section section--beige" id="elevation">
+  <div class="section-inner">
+    <div class="heading">ELEVATION</div>
+    <div class="elevation-grid">
+      <div class="elevation-card"><div class="elevation-label">Level 0</div><div class="elevation-desc">none<br>カード・ボタン・チップすべて</div></div>
+      <div class="elevation-card" style="box-shadow:0 0 10px rgba(0,0,0,.1)"><div class="elevation-label">Level 1</div><div class="elevation-desc">0 0 10px rgba(0,0,0,.1)<br>固定ヘッダー・ドロワー（実測 3 箇所）</div></div>
+      <div class="elevation-card" style="border:3px solid var(--border-tan)"><div class="elevation-label">枠で立てる</div><div class="elevation-desc">3px solid #e2c3a6<br>カードの立体感はこれが担う</div></div>
+    </div>
+    <p style="font-size:16px; line-height:1.6; margin-top:24px;">奥行きは <strong>クリーム #fff9f3 × ベージュ #f6ede4 × ベージュ濃 #eddfd4 × 白 #ffffff</strong> の 4 段の面で作る。</p>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <div class="heading">LAYOUT</div>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:5px"></div><div class="spacing-value">XS 5</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:10px"></div><div class="spacing-value">S 10</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:15px"></div><div class="spacing-value">M 15</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">L 24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">XL 40</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:60px"></div><div class="spacing-value">XXL 60</div></div>
+  </div>
+  <div style="margin-bottom:20px"><div class="width-bar-label">最外コンテナ <span class="width-bar-value">1300px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:20px"><div class="width-bar-label">本体コンテンツ <span class="width-bar-value">1000–1020px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:78%"></div></div></div>
+  <div style="margin-bottom:20px"><div class="width-bar-label">狭カラム <span class="width-bar-value">650px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:50%"></div></div></div>
+  <p style="font-size:16px; line-height:1.6;">背景の円形モチーフ（桃の実）だけは <strong>1920px</strong> まで広げてブリードさせる。セクションの境界を矩形の罫線で切らず、円でぼかすのが Peach のレイアウト。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>企業情報</span><span>サステナビリティ</span><span>採用情報</span><span>プライバシーポリシー</span><span>サイトマップ</span>
+  </div>
+</footer>
+
+<div class="colophon">
+  Generated from <a href="https://www.flypeach.com/jp">flypeach.com</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-08-16）<br>
+  実サイトの書体は <code style="font-family:var(--font-mono)">Montserrat, "Noto Sans JP", 游ゴシック体, …</code> の<strong>欧文優先スタック</strong>。Montserrat と Noto Sans JP はどちらも Google Fonts からそのまま読み込めるため、<strong>代替フォントは使っていない</strong>。<br>
+  <code style="font-family:var(--font-mono)">letter-spacing</code> はサイト全体で <code style="font-family:var(--font-mono)">normal</code>、<code style="font-family:var(--font-mono)">font-feature-settings</code> も <code style="font-family:var(--font-mono)">normal</code>（palt を掛けない）。
+</div>
+
+</body>
+</html>

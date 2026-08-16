@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Hanako Web（ハナコ）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実サイトの CSS Custom Properties をそのまま === */
+    --c-white: #ffffff;
+    --c-light-gray: #eeeeee;
+    --c-dark-gray: #333333;
+    --c-black: #000000;
+    --c-blue-gray: #6f7f89;
+    --c-silver: #adb8c3;
+    --c-pale-gray: #d7dce1;
+
+    /* 6 色パステル（カテゴリごとに切り替わる） */
+    --c-pale-green:  #e3e8d3;
+    --c-pale-orange: #f8ecd9;
+    --c-pale-red:    #f2e5e2;
+    --c-pale-blue:   #dbe8e8;
+    --c-pale-yellow: #f8f8ed;
+    --c-pale-purple: #f2edf5;
+
+    --theme-color-1: var(--c-pale-green);
+    --theme-color-2: var(--c-pale-orange);
+    --theme-color-3: var(--c-pale-red);
+    --theme-color-4: var(--c-pale-blue);
+    --theme-color-5: var(--c-pale-yellow);
+    --theme-color-6: var(--c-pale-purple);
+
+    /* ★ ここを差し替えるとページ全体の面色が変わる */
+    --theme-color: var(--theme-color-4);
+
+    --theme-color-black: #333;
+    --theme-color-grey: #707070;
+    --theme-color-light: #a3a3a3;
+    --theme-color-mask: #adb8c3;
+    --theme-color-background: #fff;
+    --theme-color-background-dark: #6f7f89;
+    --theme-color-background-footer: #333;
+
+    --accent: #5889ac;   /* サイト唯一の彩度を持つ色。点でしか使わない */
+
+    /* === Layout tokens（実サイトの変数） === */
+    --theme-section-gap: 5rem;          /* 80px */
+    --theme-block-gap: 3rem;            /* 48px */
+    --theme-grid-gap: 3rem;             /* 48px */
+    --theme-section-max-width: 74rem;   /* 1184px */
+    --theme-p-max-width: 48rem;         /* 768px */
+
+    /* === Fonts === */
+    /* 実サイトは Web フォントを一切使わず OS 搭載フォントで組む。
+       游ゴシック → ヒラギノ Pro → メイリオ のスタックをそのまま再現。
+       欧文の Montserrat だけ Google Fonts から読み込める。 */
+    --font: 游ゴシック体, "Yu Gothic", YuGothic, "ヒラギノ角ゴ Pro",
+            "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, "MS Pゴシック", "MS PGothic", sans-serif;
+    --font-en: Montserrat, sans-serif;
+    --font-mix: Montserrat, 游ゴシック体, "Yu Gothic", YuGothic, "ヒラギノ角ゴ Pro",
+                "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, "MS Pゴシック", "MS PGothic", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--theme-color-background);
+    color: var(--c-black);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.55;
+    letter-spacing: 0.48px;   /* px 固定でグローバル。小さい文字ほど相対的に開く */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* NAV */
+  .nav { background: #fff; padding: 20px 24px 16px; text-align: center; position: relative; }
+  .nav-logo { font-family: var(--font-en); font-size: 30px; font-weight: 400; color: var(--c-silver); letter-spacing: 0.06em; text-decoration: none; display: inline-block; margin-bottom: 14px; }
+  .nav-links { display: flex; justify-content: center; gap: 22px; list-style: none; flex-wrap: wrap; }
+  .nav-links a { display: block; font-size: 16px; font-weight: 400; line-height: 1; color: var(--c-black); text-decoration: none; font-feature-settings: "palt"; }
+  .nav-links a small { display: block; font-size: 10px; font-weight: 400; line-height: 1.5; color: var(--c-dark-gray); margin-top: 5px; }
+  .nav-links a:hover { opacity: .55; }
+
+  /* HERO */
+  .hero { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  .hero-item { display: block; text-decoration: none; color: inherit; }
+  .hero-photo { height: 300px; background: linear-gradient(160deg, #cfd8d5, #a9b8bd); }
+  .hero-photo.tall { height: 360px; }
+  .hero-body { padding: 16px 20px 24px; }
+  .hero-title { font-size: 18px; font-weight: 700; line-height: 1.75; letter-spacing: 0.72px; }
+  .hero-meta { font-family: var(--font-en); font-size: 14px; font-weight: 400; line-height: 1.6; letter-spacing: normal; color: var(--c-silver); margin-top: 10px; font-feature-settings: "palt"; }
+
+  /* SECTIONS */
+  .section { padding: 5rem 24px; max-width: var(--theme-section-max-width); margin: 0 auto; }
+  .section--theme { background: var(--theme-color); max-width: none; }
+  .section--dark { background: var(--theme-color-background-dark); color: #fff; max-width: none; }
+  .section--silver { background: var(--c-silver); color: #fff; max-width: none; }
+  .section-inner { max-width: var(--theme-section-max-width); margin: 0 auto; }
+  .section-divider { border: none; border-top: 1px solid var(--c-pale-gray); margin: 0; }
+
+  .heading-en { font-family: var(--font-mix); font-size: 26px; font-weight: 400; line-height: 1.2; letter-spacing: 0.48px; margin-bottom: 40px; position: relative; padding-top: 20px; }
+  .heading-en::before { content: ""; position: absolute; top: 0; left: 0; width: 28px; border-top: 1px solid currentColor; }
+  .heading-en-solo { font-family: var(--font-en); font-size: 30px; font-weight: 400; line-height: 1.2; letter-spacing: 0.48px; font-feature-settings: "palt"; margin-bottom: 32px; }
+  .heading-sub { font-family: var(--font-mix); font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.64px; font-feature-settings: "palt"; margin-bottom: 20px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .color-swatch { background: #fff; border: 1px solid var(--c-pale-gray); }
+  .color-swatch-block { height: 78px; width: 100%; }
+  .color-swatch-info { padding: 12px 14px; border-top: 1px solid var(--c-pale-gray); }
+  .color-swatch-name { font-size: 14px; font-weight: 700; margin-bottom: 6px; line-height: 1.4; }
+  .color-swatch-hex { font-family: var(--font-mono); font-size: 12px; color: var(--theme-color-light); letter-spacing: normal; }
+  .color-swatch-role { font-size: 12px; font-weight: 400; color: var(--theme-color-grey); margin-top: 8px; line-height: 1.7; }
+  .color-group-label { font-family: var(--font-mix); font-size: 16px; font-weight: 400; letter-spacing: 0.64px; font-feature-settings: "palt"; margin: 32px 0 12px; }
+
+  /* THEME SWITCHER — 6 色パステルのデモ */
+  .theme-demo { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+  .theme-card { padding: 28px 18px; }
+  .theme-card-name { font-family: var(--font-mix); font-size: 16px; font-weight: 400; letter-spacing: 0.64px; font-feature-settings: "palt"; margin-bottom: 10px; }
+  .theme-card-hex { font-family: var(--font-mono); font-size: 12px; color: var(--theme-color-grey); letter-spacing: normal; }
+  .theme-card-var { font-family: var(--font-mono); font-size: 11px; color: var(--theme-color-light); letter-spacing: normal; margin-top: 6px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 32px; padding-bottom: 28px; border-bottom: 1px solid var(--c-pale-gray); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--theme-color-light); margin-top: 12px; line-height: 1.6; letter-spacing: normal; }
+  .type-context { display: inline-block; background: var(--theme-color); color: var(--c-dark-gray); font-family: var(--font); font-size: 11px; font-weight: 400; padding: 3px 10px; margin-left: 8px; letter-spacing: 0.48px; }
+
+  /* BUTTONS — すべて枠だけのゴーストピル */
+  .btn-ghost { display: inline-block; background: transparent; color: var(--c-dark-gray); border: 1px solid var(--c-dark-gray); border-radius: 43.5px; padding: 15px 30px; font-size: 15px; font-weight: 300; line-height: 1.5; letter-spacing: normal; text-decoration: none; cursor: pointer; }
+  .btn-ghost:hover { background: var(--c-dark-gray); color: #fff; }
+  .btn-ghost--invert { color: #fff; border-color: #fff; }
+  .btn-ghost--invert:hover { background: #fff; color: var(--c-dark-gray); }
+  .btn-en { display: inline-block; background: transparent; color: var(--c-dark-gray); border: 1px solid var(--c-dark-gray); border-radius: 999px; padding: 10px 20px; font-family: var(--font-mix); font-size: 14px; font-weight: 500; line-height: 1; letter-spacing: 1.4px; text-decoration: none; }
+  .btn-accent { display: inline-block; background: #fff; color: var(--accent); border: 1px solid var(--accent); border-radius: 99px; padding: 8px 14px; font-size: 11px; font-weight: 400; line-height: 1.55; text-decoration: none; }
+  .tag { display: inline-block; background: #fff; color: var(--c-black); border-radius: 99px; padding: 12px 16px; font-size: 14px; font-weight: 400; line-height: 1; letter-spacing: 0.48px; font-feature-settings: "palt"; text-decoration: none; }
+
+  /* TABS */
+  .rank-tabs { display: flex; gap: 6px; }
+  .rank-tab { font-family: var(--font-mix); font-size: 10px; font-weight: 400; line-height: 1.55; padding: 0 10px; border-radius: 5px; border: 1px solid var(--theme-color-light); color: var(--theme-color-light); background: transparent; }
+  .rank-tab.is-active { background: var(--c-black); border-color: var(--c-black); color: #fff; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 3rem; }
+  .card { background: transparent; }
+  .card-photo { height: 200px; background: linear-gradient(160deg, #dfe4de, #b6c1c4); }
+  .card-title { font-size: 18px; font-weight: 700; line-height: 1.75; letter-spacing: 0.72px; margin-top: 16px; }
+  .card-meta { font-family: var(--font-en); font-size: 14px; font-weight: 400; line-height: 1.6; letter-spacing: normal; color: var(--c-silver); margin-top: 10px; font-feature-settings: "palt"; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 24px; max-width: 460px; }
+  .form-label { display: block; font-size: 14px; font-weight: 400; margin-bottom: 8px; line-height: 1.55; }
+  .form-input { width: 100%; background: #fff; color: var(--c-dark-gray); border: 1px solid var(--c-pale-gray); border-radius: 5px; padding: 12px 16px; font-family: var(--font); font-size: 15px; font-weight: 300; line-height: 1.55; letter-spacing: 0.48px; outline: none; }
+  .form-input::placeholder { color: var(--theme-color-light); }
+  .form-input--focus { border-color: var(--c-dark-gray); }
+  .form-input--error { border-color: #cf2e2e; }
+  .form-textarea { min-height: 110px; }
+  .form-state-label { font-size: 12px; font-weight: 400; color: var(--theme-color-grey); margin-top: 8px; line-height: 1.7; }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .elevation-card { background: #fff; padding: 26px; text-align: center; border: 1px solid var(--c-pale-gray); }
+  .elevation-label { font-family: var(--font-mix); font-size: 16px; font-weight: 400; letter-spacing: 0.64px; margin-bottom: 8px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--theme-color-light); line-height: 1.6; letter-spacing: normal; }
+
+  /* LAYOUT */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--c-blue-gray); margin-bottom: 6px; height: 24px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; color: var(--theme-color-light); letter-spacing: normal; }
+  .width-bar { height: 28px; background: var(--theme-color); margin-bottom: 8px; overflow: hidden; }
+  .width-bar-inner { height: 100%; background: var(--c-blue-gray); }
+  .width-bar-label { font-family: var(--font-mix); font-size: 16px; font-weight: 400; letter-spacing: 0.64px; margin-bottom: 4px; }
+  .width-bar-value { font-family: var(--font-mono); font-size: 12px; color: var(--theme-color-light); letter-spacing: normal; }
+
+  /* FLOATING BAR */
+  .floatbar { background: var(--accent); color: #fff; padding: 12px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .floatbar-label { font-family: var(--font-mix); font-size: 14px; font-weight: 400; letter-spacing: 0.48px; }
+  .floatbar-item { font-size: 11px; font-weight: 500; border: 1px solid #fff; border-radius: 99px; padding: 6px 8px; letter-spacing: 0.48px; }
+
+  /* FOOTER */
+  .footer { background: var(--theme-color-background-footer); color: #fff; padding: 56px 24px 40px; text-align: center; }
+  .footer-logo { font-family: var(--font-en); font-size: 24px; font-weight: 400; color: var(--c-silver); letter-spacing: 0.06em; margin-bottom: 20px; }
+  .footer-note { font-size: 11px; font-weight: 300; line-height: 1.6; letter-spacing: 0.48px; max-width: 48rem; margin: 0 auto 16px; }
+  .footer-small { font-size: 10px; font-weight: 300; line-height: 1.6; letter-spacing: 0.48px; }
+  .colophon { padding: 32px 24px; font-size: 12px; font-weight: 400; color: var(--theme-color-grey); line-height: 1.9; text-align: center; }
+  .colophon a { color: var(--accent); }
+
+  @media (max-width: 769px) {
+    .nav-links { gap: 14px; }
+    .hero { grid-template-columns: 1fr; }
+    .section { padding: 3rem 16px; }
+    .heading-en { font-size: 20px; }
+    .heading-en-solo { font-size: 22px; }
+    .card-grid { gap: 2rem; }
+    .tag { padding: 14px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="#">Hanako</a>
+  <ul class="nav-links">
+    <li><a href="#colors">FOOD<small>おいしい</small></a></li>
+    <li><a href="#typography">TRAVEL<small>どこ行く？</small></a></li>
+    <li><a href="#buttons">FORTUNE<small>明日のわたし</small></a></li>
+    <li><a href="#cards">HEALTH<small>自分にやさしく</small></a></li>
+    <li><a href="#forms">LEARN<small>知る、考える</small></a></li>
+    <li><a href="#elevation">CULTURE<small>自分を耕す</small></a></li>
+    <li><a href="#layout">MAGAZINE<small>特集</small></a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <a class="hero-item" href="#">
+    <div class="hero-photo"></div>
+    <div class="hero-body">
+      <div class="hero-title">ラーメン、寿司、ジンギスカン。北海道のおいしいを全部食べたい</div>
+      <div class="hero-meta">2026.07.28</div>
+    </div>
+  </a>
+  <a class="hero-item" href="#">
+    <div class="hero-photo tall"></div>
+    <div class="hero-body">
+      <div class="hero-title">定番スポットからエスコンフィールド、花咲線、ニセコ、小樽 etc. 北海道ご褒美旅スポット</div>
+      <div class="hero-meta">2026.07.28</div>
+    </div>
+  </a>
+  <a class="hero-item" href="#">
+    <div class="hero-photo"></div>
+    <div class="hero-body">
+      <div class="hero-title">かわいい動物モチーフや、職人さんの手仕事が光る北海道土産が大集合！</div>
+      <div class="hero-meta">2026.07.28</div>
+    </div>
+  </a>
+</section>
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="heading-en">COLORS</div>
+
+  <div class="color-group-label">Theme Colors — 6 色パステル（カテゴリごとに --theme-color へ代入）</div>
+  <div class="theme-demo">
+    <div class="theme-card" style="background:#e3e8d3"><div class="theme-card-name">Pale Green</div><div class="theme-card-hex">#e3e8d3</div><div class="theme-card-var">--theme-color-1</div></div>
+    <div class="theme-card" style="background:#f8ecd9"><div class="theme-card-name">Pale Orange</div><div class="theme-card-hex">#f8ecd9</div><div class="theme-card-var">--theme-color-2</div></div>
+    <div class="theme-card" style="background:#f2e5e2"><div class="theme-card-name">Pale Red</div><div class="theme-card-hex">#f2e5e2</div><div class="theme-card-var">--theme-color-3</div></div>
+    <div class="theme-card" style="background:#dbe8e8"><div class="theme-card-name">Pale Blue</div><div class="theme-card-hex">#dbe8e8</div><div class="theme-card-var">--theme-color-4（このページの --theme-color）</div></div>
+    <div class="theme-card" style="background:#f8f8ed"><div class="theme-card-name">Pale Yellow</div><div class="theme-card-hex">#f8f8ed</div><div class="theme-card-var">--theme-color-5</div></div>
+    <div class="theme-card" style="background:#f2edf5"><div class="theme-card-name">Pale Purple</div><div class="theme-card-hex">#f2edf5</div><div class="theme-card-var">--theme-color-6</div></div>
+  </div>
+  <p style="font-size:16px; line-height:1.55; margin-top:20px;"><strong><code style="font-family:var(--font-mono); letter-spacing:normal;">--theme-color</code> という 1 つの変数を差し替えるだけでページ全体の面色が変わる。</strong>どれも明度が非常に高く彩度が低いのは、写真の色を邪魔しないため。</p>
+
+  <div class="color-group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; box-shadow: inset 0 0 0 1px #d7dce1"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ地色（--theme-color-background）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000000"></div><div class="color-swatch-info"><div class="color-swatch-name">Ink</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">本文と記事タイトル。Hanako は純黒を使う</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#333333"></div><div class="color-swatch-info"><div class="color-swatch-name">Dark Gray</div><div class="color-swatch-hex">#333333</div><div class="color-swatch-role">見出し・ボタンの枠と文字・フッターの面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#707070"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray</div><div class="color-swatch-hex">#707070</div><div class="color-swatch-role">補助テキスト</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#a3a3a3"></div><div class="color-swatch-info"><div class="color-swatch-name">Light Gray</div><div class="color-swatch-hex">#a3a3a3</div><div class="color-swatch-role">非選択タブの枠と文字</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#adb8c3"></div><div class="color-swatch-info"><div class="color-swatch-name">Silver</div><div class="color-swatch-hex">#adb8c3</div><div class="color-swatch-role">日付・メタ情報の文字色、ロゴ、Community の面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#6f7f89"></div><div class="color-swatch-info"><div class="color-swatch-name">Blue Gray</div><div class="color-swatch-hex">#6f7f89</div><div class="color-swatch-role">Videos セクションの濃色面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d7dce1"></div><div class="color-swatch-info"><div class="color-swatch-name">Pale Gray</div><div class="color-swatch-hex">#d7dce1</div><div class="color-swatch-role">区切り線・入力欄の枠</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#5889ac"></div><div class="color-swatch-info"><div class="color-swatch-name">Accent Blue</div><div class="color-swatch-hex">#5889ac</div><div class="color-swatch-role"><strong>サイト唯一の彩度を持つ色</strong>。点でしか使わない</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="heading-en">TYPOGRAPHY</div>
+
+  <div class="type-sample">
+    <div class="heading-en-solo" style="margin-bottom:0">Hanako Magazine Official</div>
+    <div class="type-meta"><strong>Montserrat 単独</strong> 30px / 400 / lh 1.0–1.2 / ls 0.48px / <strong>palt あり</strong><span class="type-context">欧文だけのセクション見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-mix); font-size:26px; font-weight:400; line-height:1.2; letter-spacing:0.48px;">New Articles</div>
+    <div class="type-meta">Montserrat + 和文 26px / 400 / lh 1.2 (31.2px) / ls 0.48px<span class="type-context">セクション見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:18px; font-weight:700; line-height:1.75; letter-spacing:0.72px; max-width:640px;">【福島】魅力が詰まったお土産43選｜「ままどおる」など長く愛される老舗銘菓、地元スーパーの人気商品まで</div>
+    <div class="type-meta">18px / <strong>700</strong> / <strong>lh 1.75 (31.5px)</strong> / ls 0.04em (0.72px) / palt なし<span class="type-context">記事タイトル — サイトで唯一の 700。行間が最も開く</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="heading-sub" style="margin-bottom:0">Hanako Magazine</div>
+    <div class="type-meta">Montserrat + 和文 16px / 400 / lh 1.2 (19.2px) / ls 0.04em (0.64px) / <strong>palt あり</strong><span class="type-context">小見出し（h4）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.55; letter-spacing:0.48px; max-width:48rem;">本文は 16px / weight 400 / line-height 1.55 / letter-spacing 0.48px。字間は em ではなく <strong>px 固定</strong>で書かれているため、サイズが小さいほど相対的に広がります（10px なら 0.048em）。小さい文字ほど字間が開くのが意図した設計です。本文には palt を掛けません。</div>
+    <div class="type-meta">16px / 400 / lh 1.55 (24.8px) / ls 0.03em (0.48px) / palt なし<span class="type-context">本文（body 既定）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-en); font-size:14px; font-weight:400; line-height:1.6; letter-spacing:normal; color:var(--c-silver); font-feature-settings:'palt';">2026.08.16　FOOD | 2026.08.15</div>
+    <div class="type-meta">Montserrat 単独 14px / 400 / lh 1.6 / ls normal / <strong>色 #adb8c3</strong><span class="type-context">日付・メタ — 本文の黒との差を大きく取る</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:15px; font-weight:300; line-height:1.5;">View More</div>
+    <div class="type-meta">15px / <strong>300（Light）</strong> / lh 1.5 (22.5px) / ls normal<span class="type-context">ボタン — weight 300 が Hanako の軽さの正体</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-mix); font-size:12px; font-weight:600; line-height:1; letter-spacing:1px;">Follow us!</div>
+    <div class="type-meta">Montserrat + 和文 12px / 600 / lh 1.0 / <strong>ls 0.083em (1px)</strong><span class="type-context">欧文ボタン — 欧文だけ字間を大きく開く</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:11px; font-weight:300; line-height:1.6; letter-spacing:0.48px;">2021年4月1日以降更新の記事内掲載商品価格は、原則税込価格です。</div>
+    <div class="type-meta">11px / <strong>300</strong> / lh 1.6 (17.6px) / ls 0.044em<span class="type-context">フッター注記</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- NEW ARTICLES（テーマ面色） -->
+<section class="section section--theme">
+  <div class="section-inner">
+    <div class="heading-en">New Articles</div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-photo"></div>
+        <div class="card-title">100カ国1000カ所以上のパワースポットの中から厳選！ 植島啓司さんのおすすめ18選</div>
+        <div class="card-meta">TRAVEL | 2026.08.15</div>
+      </div>
+      <div class="card">
+        <div class="card-photo"></div>
+        <div class="card-title">俳優・森七菜さん「人間って面白い。だから、お芝居はやめられない。」</div>
+        <div class="card-meta">CULTURE | 2026.08.14</div>
+      </div>
+      <div class="card">
+        <div class="card-photo"></div>
+        <div class="card-title">かわいすぎて悶絶必至！ 札幌で見つける「動物モチーフ」のほっこりお土産4選</div>
+        <div class="card-meta">FOOD | 2026.08.14</div>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:48px"><a class="btn-ghost" href="#">View More</a></div>
+
+    <div class="heading-sub" style="margin-top:64px">POPULAR TAGS</div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <a class="tag" href="#">#手土産</a>
+      <a class="tag" href="#">#シュークリーム</a>
+      <a class="tag" href="#">#北海道</a>
+      <a class="tag" href="#">#サステナブル</a>
+      <a class="tag" href="#">#カフェ</a>
+    </div>
+    <p style="font-size:16px; line-height:1.55; margin-top:24px;">パステル面（<code style="font-family:var(--font-mono); letter-spacing:normal;">--theme-color</code>）の上に<strong>白いピルを置く</strong>のが定型。画像には <code style="font-family:var(--font-mono); letter-spacing:normal;">border-radius</code> を付けない。</p>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- VIDEOS（濃色セクション） -->
+<section class="section section--dark">
+  <div class="section-inner">
+    <div class="heading-sub">Videos</div>
+    <div class="heading-en-solo">Pick Up</div>
+    <div class="card-grid">
+      <div class="card"><div class="card-photo" style="background:linear-gradient(160deg,#8b9aa2,#5f6e78)"></div><div class="card-title" style="color:#fff">森香澄の ヒミツの韓国</div><div class="card-meta">2026.08.12</div></div>
+      <div class="card"><div class="card-photo" style="background:linear-gradient(160deg,#8b9aa2,#5f6e78)"></div><div class="card-title" style="color:#fff">アイヌ文化を五感で楽しむ湖畔の一日</div><div class="card-meta">2026.08.09</div></div>
+    </div>
+    <div style="display:flex; gap:16px; align-items:center; margin-top:40px; flex-wrap:wrap;">
+      <a class="btn-ghost btn-ghost--invert" href="#">View More</a>
+      <div class="rank-tabs">
+        <span class="rank-tab is-active">DAILY</span>
+        <span class="rank-tab">WEEKLY</span>
+        <span class="rank-tab">MONTHLY</span>
+      </div>
+      <span style="font-size:14px; line-height:1.6;">← ランキングのタブだけが塗り（radius 5px）。ほかのボタンはすべて枠だけのピル</span>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="heading-en">BUTTONS</div>
+  <div style="display:flex; gap:32px; flex-wrap:wrap; align-items:flex-start;">
+    <div style="text-align:center"><a class="btn-ghost" href="#">View More</a><div style="font-size:12px;color:var(--theme-color-grey);margin-top:12px;line-height:1.7">Primary — 1px solid #333 / radius 43.5px / 15px weight 300</div></div>
+    <div style="text-align:center"><a class="btn-en" href="#">FOLLOW US!</a><div style="font-size:12px;color:var(--theme-color-grey);margin-top:12px;line-height:1.7">Secondary — Montserrat / ls 0.1em / radius 999px</div></div>
+    <div style="text-align:center"><a class="btn-accent" href="#">Old Issue</a><div style="font-size:12px;color:var(--theme-color-grey);margin-top:12px;line-height:1.7">Accent — 1px solid #5889ac / radius 99px</div></div>
+    <div style="text-align:center"><a class="tag" href="#">#手土産</a><div style="font-size:12px;color:var(--theme-color-grey);margin-top:12px;line-height:1.7">Tag — 白い面 / radius 99px / padding 12px 16px</div></div>
+    <div style="text-align:center"><span class="rank-tab is-active">DAILY</span><div style="font-size:12px;color:var(--theme-color-grey);margin-top:12px;line-height:1.7">Tab（唯一の塗り）— #000 / radius 5px</div></div>
+  </div>
+  <p style="font-size:16px; line-height:1.55; margin-top:28px; max-width:48rem;"><strong>ボタンに面色を塗らない。</strong>塗りボタンはランキングの選択タブだけで、それ以外はすべて <code style="font-family:var(--font-mono); letter-spacing:normal;">1px solid</code> のゴーストピル。濃色セクション上では枠と文字を白に反転する。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section section--theme" id="forms">
+  <div class="section-inner">
+    <div class="heading-en">FORMS</div>
+    <div class="form-group"><label class="form-label">キーワード検索</label><input class="form-input" type="text" placeholder="キーワードを入力"><div class="form-state-label">デフォルト — 1px solid #d7dce1 / radius 5px / <strong>weight 300</strong></div></div>
+    <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--focus" type="text" value="hanako@example.com"><div class="form-state-label">フォーカス — border #333333</div></div>
+    <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--error" type="text" value="invalid@"><div class="form-state-label">エラー — border #cf2e2e（WordPress プリセットの vivid-red）</div></div>
+    <div class="form-group"><label class="form-label">お問い合わせ内容</label><textarea class="form-input form-textarea" placeholder="ご用件をご記入ください"></textarea><div class="form-state-label">Textarea も radius 5px / weight 300</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="heading-en">ELEVATION</div>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0</div><div class="elevation-desc">none<br>カード・ボタン・タグすべて</div></div>
+    <div class="elevation-card" style="box-shadow:0 6px 9px rgba(0,0,0,.2)"><div class="elevation-label">WP Preset</div><div class="elevation-desc">0 6px 9px rgba(0,0,0,.2)<br><strong>変数にはあるが使っていない</strong></div></div>
+    <div class="elevation-card" style="background:var(--c-blue-gray); color:#fff; border:none"><div class="elevation-label">面で作る</div><div class="elevation-desc" style="color:#fff">#6f7f89 / #adb8c3 / #333333<br>濃色セクションの 3 段</div></div>
+  </div>
+  <p style="font-size:16px; line-height:1.55; margin-top:24px; max-width:48rem;">奥行きは <strong>白 × 6 色パステル × ブルーグレー #6f7f89 × シルバー #adb8c3 × ダークグレー #333333</strong> の面のコントラストだけで作る。写真そのものが最大の「面」であり、そこに影を足さない。</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- COMMUNITY -->
+<section class="section section--silver">
+  <div class="section-inner" style="text-align:center">
+    <div class="heading-en-solo" style="margin-bottom:16px">Join our Community</div>
+    <p style="font-size:16px; line-height:1.55; margin-bottom:28px;">編集後記やイベント情報など、Hanako の裏側をお届けします。</p>
+    <a class="btn-en" href="#" style="color:#fff; border-color:#fff;">FOLLOW US!</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <div class="heading-en">LAYOUT</div>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">XS 8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">S 16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">M 24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px"></div><div class="spacing-value">block / grid 48</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:80px"></div><div class="spacing-value">section 80</div></div>
+  </div>
+  <div style="margin-bottom:20px"><div class="width-bar-label">Section Max Width <span class="width-bar-value">74rem = 1184px（--theme-section-max-width）</span></div><div class="width-bar"><div class="width-bar-inner" style="width:100%"></div></div></div>
+  <div style="margin-bottom:20px"><div class="width-bar-label">本文カラム <span class="width-bar-value">48rem = 768px（--theme-p-max-width）</span></div><div class="width-bar"><div class="width-bar-inner" style="width:65%"></div></div></div>
+  <div style="margin-bottom:20px"><div class="width-bar-label">WP content-size <span class="width-bar-value">800px / wide-size 1280px</span></div><div class="width-bar"><div class="width-bar-inner" style="width:68%"></div></div></div>
+  <p style="font-size:16px; line-height:1.55; max-width:48rem;">セクション間 80px、ブロック間 48px、グリッドの溝 48px。<strong>溝が広いのがメディアらしい余白設計</strong>で、画像は角丸なしの矩形のまま並べる。</p>
+</section>
+
+<div class="floatbar">
+  <span class="floatbar-label">Today I feel...</span>
+  <span class="floatbar-item">【福島】魅力が詰まったお土産43選｜「ままどおる」…</span>
+  <span class="floatbar-item">100年以上地元民に愛され続けている〈マルト〉の人気商品8選</span>
+</div>
+
+<footer class="footer">
+  <div class="footer-logo">Hanako</div>
+  <div class="footer-note">2021年4月1日以降更新の記事内掲載商品価格は、原則税込価格です。</div>
+  <div class="footer-small">© 1945-2026 by Magazine House</div>
+</footer>
+
+<div class="colophon">
+  Generated from <a href="https://hanako.tokyo/">hanako.tokyo</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-08-16）<br>
+  実サイトは <strong>Web フォントを一切使わず</strong>、<code style="font-family:var(--font-mono); letter-spacing:normal;">游ゴシック体, "Yu Gothic", YuGothic, "ヒラギノ角ゴ Pro", …</code> の OS 搭載フォントで組む。ヒラギノは <strong>ProN ではなく Pro</strong>。<br>
+  欧文の <strong>Montserrat</strong> だけ Google Fonts から読み込めるため、このプレビューでも実サイトと同じ書体で表示される。<br>
+  和文の見え方は環境依存（macOS は游ゴシック、Windows は游ゴシック / メイリオ）。<code style="font-family:var(--font-mono); letter-spacing:normal;">font-weight: 300</code> は Windows でさらに細く落ちる点に注意。
+</div>
+
+</body>
+</html>
