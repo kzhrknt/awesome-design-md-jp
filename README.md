@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (456 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (459 sites)</a>
 </p>
 
 <table>
@@ -689,6 +689,11 @@
 <td align="center"><strong>Peach Aviation</strong><br><img src="design-md/peach/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>Hanako</strong><br><img src="design-md/hanako/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>スターフライヤー</strong><br><img src="design-md/starflyer/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>dancyu</strong><br><img src="design-md/dancyu/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ロート製薬</strong><br><img src="design-md/rohto/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1205,11 +1210,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [Mitsubishi Pencil / uni (三菱鉛筆)](https://www.mpuni.co.jp/) | Stationery / Writing Instruments | [DESIGN.md](design-md/mpuni/DESIGN.md) | [preview.html](design-md/mpuni/preview.html) |
 | [Peach Aviation (ピーチ)](https://www.flypeach.com/jp) | Airline / LCC | [DESIGN.md](design-md/peach/DESIGN.md) | [preview.html](design-md/peach/preview.html) |
 | [Hanako Web (ハナコ)](https://hanako.tokyo/) | Magazine / Lifestyle Media | [DESIGN.md](design-md/hanako/DESIGN.md) | [preview.html](design-md/hanako/preview.html) |
+| [STARFLYER (スターフライヤー)](https://www.starflyer.jp/) | Airline | [DESIGN.md](design-md/starflyer/DESIGN.md) | [preview.html](design-md/starflyer/preview.html) |
+| [dancyu (ダンチュウ)](https://dancyu.jp/) | Magazine / Food Media | [DESIGN.md](design-md/dancyu/DESIGN.md) | [preview.html](design-md/dancyu/preview.html) |
+| [ROHTO (ロート製薬)](https://www.rohto.co.jp/) | Pharmaceutical / Skincare | [DESIGN.md](design-md/rohto/DESIGN.md) | [preview.html](design-md/rohto/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (456 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (459 sites)</a>
 </p>
 
 <table>
@@ -1863,6 +1871,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>三菱鉛筆 uni</strong><br><img src="design-md/mpuni/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>Peach Aviation</strong><br><img src="design-md/peach/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>Hanako</strong><br><img src="design-md/hanako/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>スターフライヤー</strong><br><img src="design-md/starflyer/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>dancyu</strong><br><img src="design-md/dancyu/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ロート製薬</strong><br><img src="design-md/rohto/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

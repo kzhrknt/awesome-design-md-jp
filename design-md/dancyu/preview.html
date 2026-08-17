@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: dancyu（ダンチュウ）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実サイトは CSS 変数を持たないため実測値から起こした === */
+    --c-white:      #ffffff;
+    --c-ink:        #000000;   /* 本文・見出し。dancyu は純黒 */
+    --c-charcoal:   #262626;   /* 一覧バー・フッター */
+    --c-gray-text:  #4c4c4c;   /* 要約・リード */
+    --c-divider:    #cccccc;
+    --c-chip:       #e5e5e5;   /* AD バッジの面 */
+    --c-chip-text:  rgba(38, 38, 38, .5);
+
+    --c-red:        #cc0700;   /* ブランド赤 — CTA・日付・枠 */
+    --c-red-deep:   #950500;   /* 食いしん坊倶楽部セクションの全面 */
+    --c-coral:      #db524d;   /* カルーセルの非選択ドット */
+
+    --c-cream:      #f5efda;   /* 深紅の上のカード・検索ブロック */
+    --c-warm-white: #f5f2eb;   /* 記事内の紹介ブロック */
+
+    /* === Tokens === */
+    --radius: 0;               /* ★ 全要素 0。dancyu の絶対ルール */
+    --border-w: 2px;           /* 枠線は 2px */
+    --shadow: 10px 10px 60px rgba(4, 0, 0, .08);   /* 唯一の影 */
+
+    /* === Fonts === */
+    /* 和文は Web フォントを使わず OS 搭載フォント。Regular ではなく Medium を先頭に置くのが要点。 */
+    --font: "Yu Gothic Medium", "游ゴシック Medium", "Yu Gothic", 游ゴシック,
+            YuGothic, 游ゴシック体, "ヒラギノ角ゴ Pro W3", メイリオ, sans-serif;
+    --font-en: Lato, sans-serif;   /* 日付・AD バッジのみ */
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--c-white);
+    color: var(--c-ink);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: normal;
+    font-feature-settings: normal;   /* palt は使わない */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { display: flex; align-items: center; gap: 24px; padding: 16px 24px; flex-wrap: wrap; border-bottom: 1px solid var(--c-divider); }
+  .logo { line-height: 1.1; }
+  .logo-tag { font-size: 11px; font-weight: 700; }
+  .logo-name { font-size: 34px; font-weight: 700; letter-spacing: -1px; }
+  .gnav { display: flex; gap: 22px; list-style: none; margin-left: auto; flex-wrap: wrap; }
+  .gnav a { font-size: 15px; font-weight: 700; line-height: 1.53; color: var(--c-ink); text-decoration: none; }
+  .btn-join { display: inline-block; background: var(--c-red); color: #fff; border: none; border-radius: var(--radius); padding: 8px 12px; font-size: 12px; font-weight: 700; line-height: 1.6; letter-spacing: -1.2px; text-decoration: none; }
+  .btn-login { display: inline-block; background: #fff; color: var(--c-ink); border: 1px solid var(--c-ink); border-radius: var(--radius); padding: 8px 14px; font-size: 12px; font-weight: 700; line-height: 1.6; letter-spacing: -1.2px; text-decoration: none; }
+
+  /* SECTIONS */
+  .section { padding: 64px 40px; }
+  .section--cream { background: var(--c-cream); }
+  .section--deep { background: var(--c-red-deep); color: #fff; }
+  .h-sec { font-size: 30px; font-weight: 700; line-height: 1.6; margin-bottom: 32px; }
+  .h-sub { font-size: 17px; font-weight: 700; line-height: 2.47; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--c-divider); background: #fff; border-radius: var(--radius); }
+  .swatch-block { height: 76px; }
+  .swatch-info { padding: 12px 14px; border-top: 1px solid var(--c-divider); }
+  .swatch-name { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 12px; color: #888; }
+  .swatch-role { font-size: 12px; color: var(--c-gray-text); margin-top: 8px; line-height: 1.6; }
+  .group-label { font-size: 20px; font-weight: 700; line-height: 1.3; margin: 34px 0 14px; }
+  .group-label:first-of-type { margin-top: 0; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 30px; padding-bottom: 26px; border-bottom: 1px solid var(--c-divider); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: #999; margin-top: 12px; line-height: 1.6; }
+  .type-ctx { display: inline-block; background: var(--c-chip); color: #262626; font-family: var(--font); font-size: 11px; padding: 3px 10px; margin-left: 8px; }
+
+  /* ARTICLE */
+  .article { max-width: 760px; }
+  .article-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+  .date { font-family: var(--font-en); font-size: 14px; font-weight: 700; line-height: 1.29; color: var(--c-red); }
+  .series { font-size: 14px; line-height: 1.29; }
+  .article-title { font-size: 34px; font-weight: 700; line-height: 1.35; margin-bottom: 18px; }
+  .article-lead { font-size: 15px; line-height: 1.73; margin-bottom: 28px; }
+  .article-photo { height: 300px; background: linear-gradient(150deg, #c9a98a, #7a5233); margin-bottom: 12px; }
+  .article-caption { font-size: 12px; line-height: 2.17; color: var(--c-gray-text); margin-bottom: 28px; }
+  .article-body p { font-size: 15px; line-height: 1.73; margin-bottom: 22px; }
+  .intro-block { background: var(--c-warm-white); padding: 28px 30px; margin: 32px 0; }
+  .intro-name { font-size: 17px; font-weight: 700; line-height: 1.53; }
+  .intro-text { font-size: 13px; line-height: 1.69; margin-top: 10px; }
+  .shop-title { font-size: 17px; font-weight: 700; color: var(--c-red); line-height: 1.53; margin-bottom: 8px; }
+  .shop-row { font-size: 13px; line-height: 1.69; }
+  .btn-inline { display: block; background: var(--c-ink); color: #fff; border-radius: var(--radius); font-size: 15px; font-weight: 700; line-height: 54px; text-align: center; text-decoration: none; margin-top: 24px; }
+  .credit { font-size: 12px; line-height: 2.17; margin-top: 24px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 40px; }
+  .card { background: #fff; border-radius: var(--radius); }
+  .card-photo { height: 180px; background: linear-gradient(150deg, #d8c39d, #8a6a3f); }
+  .card-title { font-size: 22px; font-weight: 700; line-height: 1.27; margin-top: 16px; }
+  .card-text { font-size: 13px; line-height: 1.46; color: var(--c-gray-text); margin-top: 10px; }
+  .card-date { font-family: var(--font-en); font-size: 14px; font-weight: 700; color: var(--c-red); margin-top: 10px; }
+  .card--pickup { padding: 60px 50px; box-shadow: var(--shadow); }
+  .card--pickup .card-title { font-size: 26px; line-height: 1.31; }
+  .ad { display: inline-block; background: var(--c-chip); color: var(--c-chip-text); font-family: var(--font-en); font-size: 10px; line-height: 2.5; padding: 0 8px; border-radius: var(--radius); margin-right: 8px; }
+
+  /* BAR BUTTON */
+  .bar { display: block; background: var(--c-charcoal); color: #fff; border-radius: var(--radius); font-size: 18px; font-weight: 700; line-height: 80px; text-align: center; text-decoration: none; position: relative; }
+  .bar::after { content: "▶"; position: absolute; right: 30px; font-size: 12px; }
+
+  /* FEATURE — 深紅 + 縦組み */
+  .feature { background: var(--c-red-deep); color: #fff; padding: 64px 40px; display: flex; gap: 40px; align-items: flex-start; }
+  .feature-photo { flex: 1; height: 380px; background: linear-gradient(150deg, #b9584f, #5c1a16); }
+  .feature-side { display: flex; gap: 28px; align-items: flex-start; }
+  .feature-head { writing-mode: vertical-rl; font-size: 40px; font-weight: 700; line-height: 1.3; letter-spacing: normal; height: 380px; }
+  .feature-card { background: var(--c-cream); color: var(--c-ink); padding: 40px; width: 340px; }
+  .feature-card-title { font-size: 34px; font-weight: 700; line-height: 1.24; }
+  .feature-card-sub { font-size: 13px; font-weight: 700; line-height: 1.46; margin-top: 12px; }
+  .feature-card-text { font-size: 13px; line-height: 1.69; color: var(--c-gray-text); margin-top: 12px; }
+  .feature-more { display: inline-block; font-size: 13px; font-weight: 700; color: var(--c-red); text-decoration: none; margin-top: 20px; }
+  .feature-body { font-size: 18px; line-height: 1.61; margin-top: 24px; }
+
+  /* BUTTONS */
+  .btn-red-outline { display: inline-block; background: transparent; color: var(--c-red); border: var(--border-w) solid var(--c-red); border-radius: var(--radius); padding: 0 24px; font-size: 13px; font-weight: 700; line-height: 44px; text-decoration: none; }
+  .btn-white-outline { display: inline-block; background: transparent; color: #fff; border: var(--border-w) solid #fff; border-radius: var(--radius); padding: 0 24px; font-size: 14px; line-height: 44px; text-decoration: none; }
+  .btn-note { font-size: 12px; color: #777; margin-top: 12px; line-height: 1.7; }
+
+  /* DOTS */
+  .dots { display: flex; gap: 8px; align-items: center; }
+  .dot { width: 10px; height: 10px; background: var(--c-coral); }
+  .dot.is-active { background: #fff; box-shadow: inset 0 0 0 1px var(--c-divider); }
+
+  /* FORMS */
+  .search-block { background: var(--c-cream); padding: 40px; }
+  .search-label { font-size: 20px; font-weight: 700; line-height: 1.3; margin-bottom: 18px; }
+  .search-input { width: 100%; max-width: 520px; background: #fff; color: var(--c-ink); border: none; border-radius: var(--radius); padding: 12px; font-family: var(--font); font-size: 20px; line-height: 1.6; outline: none; }
+  .search-input--focus { box-shadow: inset 0 0 0 2px var(--c-ink); }
+  .search-input--error { box-shadow: inset 0 0 0 2px var(--c-red); }
+  .form-state { font-size: 12px; color: var(--c-gray-text); margin-top: 8px; line-height: 1.7; }
+  .tagline { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+  .tagline span { font-size: 14px; font-weight: 700; line-height: 1.6; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+  .elev-card { background: #fff; border: 1px solid var(--c-divider); padding: 26px; text-align: center; border-radius: var(--radius); }
+  .elev-name { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .elev-desc { font-family: var(--font-mono); font-size: 11px; color: #999; line-height: 1.6; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 30px; }
+  .space-item { text-align: center; }
+  .space-block { background: var(--c-charcoal); height: 22px; margin-bottom: 6px; }
+  .space-value { font-family: var(--font-mono); font-size: 11px; color: #999; }
+
+  /* SP NAV */
+  .spnav { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* FOOTER */
+  .footer { background: var(--c-charcoal); color: #fff; padding: 56px 40px 36px; }
+  .footer-btns { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 30px; }
+  .footer-links { display: flex; gap: 26px; flex-wrap: wrap; list-style: none; font-size: 13px; }
+  .footer-links a { color: #fff; text-decoration: none; }
+  .footer-copy { font-family: var(--font-en); font-size: 12px; color: #aaa; margin-top: 24px; }
+
+  .colophon { padding: 32px 40px; font-size: 12px; color: var(--c-gray-text); line-height: 1.9; text-align: center; }
+  .colophon a { color: var(--c-red); }
+  code { font-family: var(--font-mono); }
+
+  @media (max-width: 813px) {
+    .section, .feature, .footer { padding-left: 20px; padding-right: 20px; }
+    .h-sec { font-size: 22px; }
+    .article-title { font-size: 24px; }
+    .card--pickup { padding: 28px 22px; }
+    .feature { flex-direction: column; }
+    .feature-head { writing-mode: horizontal-tb; font-size: 28px; height: auto; }
+    .feature-card { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-tag">食こそエンターテインメント</div>
+    <div class="logo-name">dancyu</div>
+  </div>
+  <ul class="gnav">
+    <li><a href="#colors">プロが教えるレシピ</a></li>
+    <li><a href="#typography">厳選！店探し</a></li>
+    <li><a href="#article">食のストーリー</a></li>
+    <li><a href="#cards">連載一覧</a></li>
+  </ul>
+  <a class="btn-join" href="#buttons">倶楽部入会（無料）</a>
+  <a class="btn-login" href="#forms">ログイン</a>
+</header>
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="h-sec">COLORS</div>
+
+  <div class="group-label">Brand — 赤の 3 段階</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#cc0700"></div><div class="swatch-info"><div class="swatch-name">Brand Red</div><div class="swatch-hex">#cc0700</div><div class="swatch-role">主要 CTA・日付・見出しの強調・SP ナビの枠</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#950500"></div><div class="swatch-info"><div class="swatch-name">Deep Red</div><div class="swatch-hex">#950500</div><div class="swatch-role"><strong>「食いしん坊倶楽部」セクションの全面</strong></div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#db524d"></div><div class="swatch-info"><div class="swatch-name">Coral</div><div class="swatch-hex">#db524d</div><div class="swatch-role">カルーセルの非選択ドット。唯一の「弱い赤」</div></div></div>
+  </div>
+
+  <div class="group-label">Paper — 紙の色</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#f5efda"></div><div class="swatch-info"><div class="swatch-name">Cream</div><div class="swatch-hex">#f5efda</div><div class="swatch-role">深紅の上に置くカード、キーワード検索ブロック</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#f5f2eb"></div><div class="swatch-info"><div class="swatch-name">Warm White</div><div class="swatch-hex">#f5f2eb</div><div class="swatch-role">記事内「案内する人」ブロック</div></div></div>
+  </div>
+
+  <div class="group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#ffffff; box-shadow: inset 0 0 0 1px #cccccc"></div><div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">ページ地色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#000000"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#000000</div><div class="swatch-role"><strong>本文と見出し。dancyu は純黒を使う</strong></div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#262626"></div><div class="swatch-info"><div class="swatch-name">Charcoal</div><div class="swatch-hex">#262626</div><div class="swatch-role">一覧バー・フッターの面色</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#4c4c4c"></div><div class="swatch-info"><div class="swatch-name">Gray Text</div><div class="swatch-hex">#4c4c4c</div><div class="swatch-role">記事の要約・リード</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#cccccc"></div><div class="swatch-info"><div class="swatch-name">Divider</div><div class="swatch-hex">#cccccc</div><div class="swatch-role">罫線・区切り</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#e5e5e5"></div><div class="swatch-info"><div class="swatch-name">Chip Gray</div><div class="swatch-hex">#e5e5e5</div><div class="swatch-role">「AD」バッジの面。文字は rgba(38,38,38,.5)</div></div></div>
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section class="section section--cream" id="typography">
+  <div class="h-sec">TYPOGRAPHY</div>
+
+  <div class="type-sample">
+    <div style="font-size:34px; font-weight:700; line-height:1.35;">【知りたい、軽井沢エリアの行きつけ】湖のほとりのグロッサリーカフェ</div>
+    <div class="type-meta">34px / <strong>700</strong> / lh 1.35（46px） / ls normal<span class="type-ctx">記事タイトル（h1）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:26px; font-weight:700; line-height:1.31;">【マヨネーズと海苔が隠し味】カニカマでつくるクイックタルタル</div>
+    <div class="type-meta">26px / 700 / lh 1.31（34px）<span class="type-ctx">ピックアップ記事のカードタイトル</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:15px; font-weight:400; line-height:1.73; max-width:700px;">記事本文は 15px / weight 400 / line-height 1.73。トップの一覧（14px / 1.6）より意図的に大きく、行間も広く取ります。字間は <code>normal</code> のままで、<code>palt</code> は掛けません。角丸は全要素 0 で、枠線は 2px。この 2 つが dancyu の版面をつくっています。</div>
+    <div class="type-meta">15px / 400 / <strong>lh 1.73（26px）</strong> / ls normal / palt なし<span class="type-ctx">記事本文 — 最も読ませる行間</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:1.6; max-width:700px;">トップページの本文は 14px / line-height 1.6。一覧では少し詰めます。</div>
+    <div class="type-meta">14px / 400 / lh 1.6（22.4px）<span class="type-ctx">body 既定</span></div>
+  </div>
+  <div class="type-sample">
+    <span class="date">2026.08.08</span>　<span class="series">連載 : 私の行きつけ〜住む町の旨い店案内〜</span>
+    <div class="type-meta"><strong>Lato</strong> 14px / <strong>700</strong> / lh 1.29（18px） / <strong>色 #cc0700</strong><span class="type-ctx">日付 — ここだけ欧文フォントに切り替える</span></div>
+  </div>
+  <div class="type-sample">
+    <span style="font-size:12px; font-weight:700; line-height:1.6; letter-spacing:-1.2px;">倶楽部入会（無料）　ログイン　メニュー　検索</span>
+    <div class="type-meta">12px / 700 / lh 1.6 / <strong>ls -1.2px（-0.1em）</strong><span class="type-ctx">UI テキスト — 12px にだけ掛ける強いマイナス字間</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="writing-mode: vertical-rl; font-size:40px; font-weight:700; line-height:1.3; height:280px;">食いしん坊倶楽部</div>
+    <div class="type-meta">40px / 700 / lh 1.3（52px） / <strong>writing-mode: vertical-rl</strong><span class="type-ctx">特集セクションの縦組み見出し — サイトで唯一の縦書き</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:18px; font-weight:700; line-height:4.44; background:#262626; color:#fff; text-align:center;">一覧を見る</div>
+    <div class="type-meta">18px / 700 / <strong>line-height 80px</strong>（padding ではなく行高で高さを作る）<span class="type-ctx">全幅バー</span></div>
+  </div>
+</section>
+
+<!-- ARTICLE -->
+<section class="section" id="article">
+  <div class="h-sec">ARTICLE</div>
+  <div class="article">
+    <div class="article-meta">
+      <span class="date">2026.08.08</span>
+      <span class="series">連載 : 私の行きつけ〜住む町の旨い店案内〜</span>
+    </div>
+    <h1 class="article-title">【知りたい、軽井沢エリアの行きつけ⑦】手づくりのチュロスとドーナツにほっと和む、湖のほとりのグロッサリーカフェ</h1>
+    <div class="article-lead">その町の住人が長く通う店こそ、愛される名店に違いない。地元の食いしん坊が「行きつけ」と呼ぶ一軒を訪ねる連載。</div>
+    <div class="article-photo"></div>
+    <div class="article-caption">文：上島寿子　写真：鈴木泰介</div>
+    <div class="article-body">
+      <p>湖畔の道を折れると、木立の奥に小さな灯りが見える。焼きたてのチュロスの匂いが、扉を開ける前から届く。朝は近所の常連が新聞を広げ、昼は湖を歩いてきた旅人がドーナツをかじっていく。</p>
+      <p>「特別なことは何もしていないんです」と店主は言う。生地は前日から仕込み、揚げる直前まで冷蔵庫で休ませる。砂糖は控えめ、けれど衣はしっかり香ばしい。その加減が、毎日食べても飽きない理由だ。</p>
+    </div>
+
+    <div class="intro-block">
+      <div class="h-sub">案内する人</div>
+      <div class="intro-name">「ラ・カーサ・ディ・テツオ オオタ」オーナーシェフ　太田哲雄</div>
+      <div class="intro-text">長野県白馬村生まれ。イタリア、スペイン、ペルーで通算 10 年間の修業を経て独立。アマゾンカカオの生産者支援でも知られる。</div>
+    </div>
+
+    <div class="shop-title">店舗情報</div>
+    <div class="shop-row">【住所】長野県北佐久郡軽井沢町</div>
+    <div class="shop-row">【営業時間】9:00〜17:00（L.O. 16:30）</div>
+    <a class="btn-inline" href="#buttons">この連載のほかの記事を読む</a>
+    <div class="credit">文：上島寿子　写真：鈴木泰介</div>
+  </div>
+</section>
+
+<!-- PICKUP -->
+<section class="section" style="background:#fff">
+  <div class="h-sec">ピックアップ</div>
+  <div class="card-grid">
+    <div class="card card--pickup">
+      <div class="card-title">日曜は、ちらし寿司をつくる。【マヨネーズと海苔が隠し味】</div>
+      <div class="card-text">柑橘サワーとめくるめく創作点心の店や、ナチュラルワインの品揃えが光る一軒まで。</div>
+      <div class="card-date">2026.08.10</div>
+    </div>
+    <div class="card card--pickup">
+      <div class="card-title">心ふるえる酒2026【酒よし肴よしの新名店　曳舟】</div>
+      <div class="card-text">この数年、東京の町の酒場が劇的に進化している。感動の一軒を訪ねた。</div>
+      <div class="card-date">2026.08.09</div>
+    </div>
+  </div>
+  <p style="font-size:14px; line-height:1.6; margin-top:24px;">影は <code>10px 10px 60px rgba(4,0,0,.08)</code> の <strong>1 種類だけ</strong>。右下に大きくずらした、輪郭を持たない「にじみ」として効く。</p>
+</section>
+
+<!-- FEATURE — 深紅 + 縦組み -->
+<section class="feature">
+  <div class="feature-photo"></div>
+  <div class="feature-side">
+    <div class="feature-head">食いしん坊倶楽部</div>
+    <div>
+      <div class="feature-card">
+        <div class="feature-card-title">dancyu祭2026を開催しました！</div>
+        <div class="feature-card-sub">2026年4月に開催したイベントレポートです。</div>
+        <div class="feature-card-text">4月11日・12日の2日間にわたって新宿にて開催された「dancyu祭2026」。12回目を迎えた今年は、なんと来場者…</div>
+        <a class="feature-more" href="#">もっと見る　▶</a>
+      </div>
+      <div class="feature-body" style="max-width:340px;">深紅 <code style="color:#fff">#950500</code> の全面に、生成り <code style="color:#fff">#f5efda</code> のカードと縦組み見出しを重ねる。</div>
+    </div>
+  </div>
+</section>
+
+<a class="bar" href="#cards">一覧を見る</a>
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="h-sec">編集部のおすすめ</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-photo"></div>
+      <div class="card-title"><span class="ad">AD</span>繊細な脂のりの刺身とサクサク3種盛りフライ！</div>
+      <div class="card-text">dancyu食堂の夏メニューといえば、一年中いつでも食べたい一皿。</div>
+      <div class="card-date">2026.07.27</div>
+    </div>
+    <div class="card">
+      <div class="card-photo"></div>
+      <div class="card-title">【ちょいつまみの楽園・点心酒場】たれマニア店主による一皿</div>
+      <div class="card-text">柑橘サワーとめくるめく創作点心の店。</div>
+      <div class="card-date">2026.07.24</div>
+    </div>
+    <div class="card">
+      <div class="card-photo"></div>
+      <div class="card-title">【救急集中治療医は見た！】食いしん坊の思わぬ落とし穴</div>
+      <div class="card-text">食いしん坊倶楽部メンバーで医師の平松玄太郎さんが、食にまつわる危険を語る。</div>
+      <div class="card-date">2026.07.20</div>
+    </div>
+  </div>
+</section>
+
+<!-- BUTTONS -->
+<section class="section section--cream" id="buttons">
+  <div class="h-sec">BUTTONS</div>
+  <div style="display:flex; gap:32px; flex-wrap:wrap; align-items:flex-start;">
+    <div><a class="btn-join" href="#">倶楽部入会（無料）</a><div class="btn-note">Primary — #cc0700 塗り / radius <strong>0</strong> / 12px / ls -1.2px</div></div>
+    <div><a class="btn-login" href="#">ログイン</a><div class="btn-note">Secondary — 1px solid #000000 / radius 0</div></div>
+    <div><a class="btn-red-outline" href="#">入部はこちら（登録無料）</a><div class="btn-note">Red Outline — <strong>2px solid #cc0700</strong> / lh 44px</div></div>
+    <div style="background:#262626; padding:14px;"><a class="btn-white-outline" href="#">雑誌の予約購読はこちらから</a><div class="btn-note" style="color:#ccc">White Outline — 2px solid #ffffff（濃色の上）</div></div>
+    <div><span class="ad">AD</span><div class="btn-note">Badge — #e5e5e5 / Lato 10px / rgba(38,38,38,.5)</div></div>
+    <div><div class="dots"><span class="dot is-active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><div class="btn-note">Dots — 選択 #ffffff / 非選択 <strong>#db524d</strong></div></div>
+  </div>
+  <div style="margin-top:28px"><a class="bar" href="#" style="max-width:520px">一覧を見る</a></div>
+  <p style="font-size:14px; line-height:1.6; margin-top:24px; max-width:700px;"><strong>角を一切丸めない。</strong>枠線は 2px（ヘッダーの小さいボタンだけ 1px）。全幅バーの高さは padding ではなく <code>line-height: 80px</code> で作る。</p>
+</section>
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="h-sec">FORMS</div>
+  <div class="search-block">
+    <div class="search-label">キーワードで記事を探す</div>
+    <input class="search-input" type="text" placeholder="複数キーワードで検索できます">
+    <div class="form-state">デフォルト — 白面 / border なし / radius 0 / <strong>20px</strong>（検索の入力欄が大きいのが特徴）</div>
+    <div style="height:18px"></div>
+    <input class="search-input search-input--focus" type="text" value="たまご">
+    <div class="form-state">フォーカス — inset 2px の黒枠</div>
+    <div style="height:18px"></div>
+    <input class="search-input search-input--error" type="text" value="">
+    <div class="form-state">エラー — inset 2px の #cc0700</div>
+    <div class="tagline"><span>#たまご</span><span>#ちらし寿司</span><span>#にんにく</span><span>#日本酒</span><span>#焼酎</span><span>#長ねぎ</span></div>
+  </div>
+</section>
+
+<!-- ELEVATION -->
+<section class="section section--cream" id="elevation">
+  <div class="h-sec">ELEVATION</div>
+  <div class="elev-grid">
+    <div class="elev-card"><div class="elev-name">Level 0</div><div class="elev-desc">none<br>ボタン・バッジ・通常のカード・画像すべて</div></div>
+    <div class="elev-card" style="box-shadow:10px 10px 60px rgba(4,0,0,.08)"><div class="elev-name">Level 1</div><div class="elev-desc">10px 10px 60px rgba(4,0,0,.08)<br>ピックアップ記事・追従ヘッダーのみ</div></div>
+    <div class="elev-card" style="background:#950500; color:#fff; border:none"><div class="elev-name">面で作る</div><div class="elev-desc" style="color:#f5efda">#ffffff → #f5efda → #950500 → #262626</div></div>
+  </div>
+  <p style="font-size:14px; line-height:1.6; margin-top:20px; max-width:700px;">影の色が純黒ではなく <code>rgba(4, 0, 0, .08)</code>（わずかに赤み）。ブランド赤との相性を取っている。</p>
+</section>
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <div class="h-sec">LAYOUT</div>
+  <div class="space-row">
+    <div class="space-item"><div class="space-block" style="width:5px"></div><div class="space-value">XS 5</div></div>
+    <div class="space-item"><div class="space-block" style="width:10px"></div><div class="space-value">S 10</div></div>
+    <div class="space-item"><div class="space-block" style="width:20px"></div><div class="space-value">M 20</div></div>
+    <div class="space-item"><div class="space-block" style="width:40px"></div><div class="space-value">L 40</div></div>
+    <div class="space-item"><div class="space-block" style="width:60px"></div><div class="space-value">XL 60</div></div>
+  </div>
+  <p style="font-size:14px; line-height:1.6; max-width:700px; margin-bottom:20px;">実サイトは <strong><code>max-width</code> を持つコンテナが存在しない</strong>。セクションごとに % と vw で幅を決め、キービジュアルと特集は全幅（100vw）で写真を画面の端まで到達させる。主断点は <strong>813px</strong> という珍しい値。</p>
+  <div class="h-sub">SP ナビ（≤ 813px で出る）</div>
+  <div class="spnav">
+    <a class="btn-red-outline" href="#">プロが教えるレシピ</a>
+    <a class="btn-red-outline" href="#">厳選！店探し</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-btns">
+    <a class="btn-white-outline" href="#">PRESIDENT Storeで購入する</a>
+    <a class="btn-white-outline" href="#">雑誌の予約購読はこちらから</a>
+  </div>
+  <ul class="footer-links">
+    <li><a href="#">このサイトについて</a></li>
+    <li><a href="#">著者一覧</a></li>
+    <li><a href="#">個人情報の取り扱い</a></li>
+    <li><a href="#">広告掲載</a></li>
+  </ul>
+  <div class="footer-copy">© PRESIDENT Inc.</div>
+</footer>
+
+<div class="colophon">
+  Generated from <a href="https://dancyu.jp/">dancyu.jp</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-08-17）<br>
+  和文は <strong>Web フォントを使わず</strong>、<code>"Yu Gothic Medium", "游ゴシック Medium", "Yu Gothic", 游ゴシック, YuGothic, 游ゴシック体, "ヒラギノ角ゴ Pro W3", メイリオ</code> の OS 搭載フォントで組む。<br>
+  <strong>Regular ではなく Medium を先頭に置く</strong>のが要点で、Windows の游ゴシックが細く落ちる問題をフォント名指定で解決している。ヒラギノは <strong>ProN ではなく Pro</strong>。<br>
+  日付と「AD」バッジの <strong>Lato</strong> だけ Google Fonts から読み込めるため、このプレビューでも実サイトと同じ書体で表示される。
+</div>
+
+</body>
+</html>

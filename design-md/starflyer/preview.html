@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: STARFLYER（スターフライヤー）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,300;1,300;1,400&family=Shippori+Mincho:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実サイトは CSS 変数を持たないため実測値から起こした === */
+    --c-black:        #000000;   /* body の地色。ヘッダー・レール・フッター */
+    --c-near-black:   #1e1e1e;   /* 濃色セクション */
+    --c-charcoal:     #333333;   /* 白地の本文 */
+    --c-white:        #ffffff;   /* コンテンツ面 */
+    --c-red:          #990000;   /* 唯一の有彩色 */
+    --c-panel:        #f2f2f2;   /* 薄面セクション */
+    --c-badge:        #e6e6e6;   /* バッジ */
+    --c-btn-gray:     #efefef;   /* submit */
+    --c-border:       #d1d1d1;   /* 白ボタンの枠 */
+    --c-input-border: #cccccc;   /* 入力欄の枠 */
+    --c-ghost-border: #666666;   /* 黒地のゴースト枠 */
+    --c-muted:        #cccccc;   /* 黒地の補助テキスト */
+    --c-dot:          #737373;
+    --c-slate:        #40494f;   /* 予約フォームの面 */
+    --c-slate-blue:   #27384d;   /* 運航状況フォームの面 */
+    --c-sun:          #faf2f2;   /* 日曜列 */
+    --c-sat:          #f1f4fa;   /* 土曜列 */
+    --c-link-blue:    #003399;   /* 土曜の見出し。サイト唯一の青 */
+
+    /* === Layout === */
+    --w-section: 1000px;
+    --w-form: 755px;
+    --w-rail: 90px;
+    --radius: 3px;        /* サイト全体の既定 */
+    --radius-cta: 2px;    /* ヘッダー CTA だけ 2px */
+
+    /* === Fonts === */
+    /* 実務サイトは Web フォントを読み込まず OS 搭載フォントのみ。
+       ヒラギノは ProN ではなく Pro、しかもウェイト名込みの "ヒラギノ角ゴ Pro W3" 表記。 */
+    --font: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro",
+            メイリオ, Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+    /* ブランドサイトは Adobe Fonts の vdl-v7mincho / ivymode。
+       ドメインライセンスのためローカルでは表示できないので Google Fonts で代替する。
+       vdl-v7mincho → Shippori Mincho ／ ivymode → Josefin Sans（Light Italic） */
+    --font-brand-jp: "Shippori Mincho", "ヒラギノ明朝 ProN", "Hiragino Mincho ProN", serif;
+    --font-brand-en: "Josefin Sans", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--c-black);      /* ★ 地色は黒。白はこの上に載る面 */
+    color: var(--c-charcoal);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: normal;          /* 実務サイトは字間を一切開かない */
+    font-feature-settings: normal;   /* palt を使わない */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER — 黒いクロム */
+  .header { background: var(--c-black); color: #fff; box-shadow: 0 0 2px #777777; padding: 14px 24px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .header-logo { font-family: var(--font-brand-en); font-size: 22px; font-weight: 300; letter-spacing: 0.28em; color: #fff; text-decoration: none; }
+  .header-spacer { flex: 1; }
+  .header-links { display: flex; gap: 18px; list-style: none; font-size: 12px; }
+  .header-links a { color: #fff; text-decoration: none; }
+  .btn-cta { display: inline-block; background: var(--c-red); color: #fff; border: 1px solid var(--c-red); border-radius: var(--radius-cta); padding: 8px 14px; font-size: 12px; line-height: 1; text-decoration: none; }
+  .btn-login { display: inline-block; background: #fff; color: var(--c-charcoal); border: 1px solid #fff; border-radius: var(--radius-cta); padding: 8px 22px; font-size: 12px; line-height: 1; text-decoration: none; }
+
+  /* LAYOUT — 左レール + 白いコンテンツ面 */
+  .shell { display: flex; align-items: flex-start; }
+  .rail { width: var(--w-rail); background: var(--c-black); color: #fff; flex: none; box-shadow: 2px 0 6px -1px rgba(0,0,0,.2); }
+  .rail-item { display: block; padding: 16px 6px; text-align: center; font-size: 12px; line-height: 1.5; color: #fff; text-decoration: none; border-bottom: 1px solid #222; }
+  .rail-icon { display: block; height: 26px; margin-bottom: 6px; opacity: .85; }
+  .main { flex: 1; background: var(--c-white); min-width: 0; }
+
+  .section { max-width: var(--w-section); margin: 0 auto; padding: 80px 25px; }
+  .section--panel { background: var(--c-panel); max-width: none; }
+  .section--dark { background: var(--c-near-black); color: #fff; max-width: none; }
+  .section-inner { max-width: var(--w-section); margin: 0 auto; }
+
+  .h-sec { font-size: 28px; font-weight: 400; line-height: 1; letter-spacing: normal; margin-bottom: 40px; }
+  .section--dark .h-sec { color: #fff; }
+  .h-sub { font-size: 20px; font-weight: 400; line-height: 1.5; margin-bottom: 20px; }
+
+  /* ▸ マーカー */
+  .tri { position: relative; padding-left: 14px; text-decoration: none; color: inherit; display: inline-block; }
+  .tri::before { content: ""; position: absolute; left: 0; top: .55em; border-left: 5px solid currentColor; border-top: 4px solid transparent; border-bottom: 4px solid transparent; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--c-input-border); background: #fff; }
+  .swatch-block { height: 76px; }
+  .swatch-info { padding: 12px 14px; border-top: 1px solid var(--c-input-border); }
+  .swatch-name { font-size: 14px; font-weight: 400; margin-bottom: 6px; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 12px; color: #888; }
+  .swatch-role { font-size: 12px; color: #666; margin-top: 8px; line-height: 1.6; }
+  .group-label { font-size: 20px; font-weight: 400; margin: 34px 0 14px; }
+  .group-label:first-of-type { margin-top: 0; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 30px; padding-bottom: 26px; border-bottom: 1px solid #e6e6e6; }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: #999; margin-top: 12px; line-height: 1.6; }
+  .type-ctx { display: inline-block; background: var(--c-badge); color: #000; font-family: var(--font); font-size: 11px; padding: 3px 10px; margin-left: 8px; }
+
+  /* BUTTONS */
+  .btn-line { display: inline-block; background: #fff; color: #000; border: 1px solid var(--c-border); border-radius: var(--radius); padding: 10px 25px; font-size: 14px; line-height: 1.5; text-decoration: none; }
+  .btn-black { display: inline-block; background: #000; color: #fff; border: none; border-radius: var(--radius); padding: 10px 25px; font-size: 14px; line-height: 1.5; text-decoration: none; }
+  .btn-ghost { display: inline-block; background: transparent; color: var(--c-muted); border: 1px solid var(--c-ghost-border); border-radius: var(--radius); padding: 10px 25px; font-size: 14px; line-height: 1.5; text-decoration: none; }
+  .badge { display: inline-block; background: var(--c-badge); color: #000; border-radius: 0; padding: 3px 10px 4px; font-size: 12px; line-height: 1; }
+  .label-red { display: inline-block; background: var(--c-red); color: #fff; border-radius: 0; padding: 2px 8px; font-size: 10px; font-weight: 700; line-height: 1.5; }
+  .btn-note { font-size: 12px; color: #777; margin-top: 12px; line-height: 1.7; }
+
+  /* FARE TABLE */
+  .fare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 40px; margin-bottom: 32px; }
+  .fare-row { display: flex; gap: 14px; align-items: center; }
+  .fare-thumb { width: 80px; height: 54px; flex: none; background: linear-gradient(150deg, #7d8b96, #38424b); }
+  .fare-route { font-size: 14px; line-height: 1.5; }
+  .fare-price { font-size: 14px; line-height: 1.5; margin-top: 2px; }
+  .fare-price strong { color: var(--c-red); font-size: 26px; font-weight: 400; }
+  .fare-price em { color: var(--c-red); font-style: normal; font-size: 14px; }
+
+  table.cal { border-collapse: collapse; width: 100%; max-width: 620px; }
+  table.cal th, table.cal td { border: 1px solid var(--c-input-border); font-size: 12px; line-height: 1.5; padding: 8px 6px; text-align: center; font-weight: 400; }
+  table.cal th { color: var(--c-charcoal); }
+  table.cal th.sun { color: var(--c-red); }
+  table.cal th.sat { color: var(--c-link-blue); }
+  table.cal td.sun { background: var(--c-sun); }
+  table.cal td.sat { background: var(--c-sat); }
+  table.cal td .p { color: var(--c-red); font-size: 12px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 40px; }
+  .card-photo { height: 170px; background: linear-gradient(150deg, #6f7d88, #2c343b); }
+  .card-title { font-size: 18px; font-weight: 400; line-height: 1.5; margin-top: 14px; }
+  .card-text { font-size: 14px; line-height: 1.5; margin-top: 8px; color: var(--c-charcoal); }
+  .section--dark .card-text { color: var(--c-muted); }
+
+  /* FORMS */
+  .form-panel { background: var(--c-slate); color: #fff; padding: 28px; max-width: var(--w-form); }
+  .form-panel--flight { background: var(--c-slate-blue); }
+  .form-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .form-group { flex: 1; min-width: 200px; }
+  .form-label { display: block; font-size: 12px; line-height: 1.5; margin-bottom: 6px; color: #fff; }
+  .form-input, .form-select { width: 100%; height: 42px; background: #fff; color: #000; border: 1px solid var(--c-input-border); border-radius: var(--radius); padding: 0 17px 0 10px; font-family: var(--font); font-size: 13px; line-height: 1.15; outline: none; }
+  .form-input--focus { border-color: var(--c-charcoal); box-shadow: 0 0 0 1px var(--c-charcoal); }
+  .form-input--error { border-color: var(--c-red); }
+  .form-state { font-size: 12px; color: var(--c-muted); margin-top: 6px; line-height: 1.6; }
+  .form-submit { background: var(--c-red); color: #fff; border: 1px solid var(--c-red); border-radius: var(--radius-cta); padding: 12px 30px; font-family: var(--font); font-size: 14px; cursor: pointer; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .elev-card { background: #fff; border: 1px solid var(--c-input-border); padding: 24px; text-align: center; }
+  .elev-name { font-size: 18px; font-weight: 400; margin-bottom: 8px; }
+  .elev-desc { font-family: var(--font-mono); font-size: 11px; color: #999; line-height: 1.6; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 30px; }
+  .space-item { text-align: center; }
+  .space-block { background: var(--c-charcoal); height: 22px; margin-bottom: 6px; }
+  .space-value { font-family: var(--font-mono); font-size: 11px; color: #999; }
+  .wbar { height: 26px; background: var(--c-badge); margin-bottom: 8px; }
+  .wbar-in { height: 100%; background: var(--c-charcoal); }
+  .wbar-label { font-size: 18px; font-weight: 400; margin-bottom: 4px; }
+  .wbar-value { font-family: var(--font-mono); font-size: 12px; color: #999; }
+
+  /* BRAND SITE MODE */
+  .brand { background: #000; color: #fff; padding: 88px 25px; }
+  .brand-inner { max-width: var(--w-section); margin: 0 auto; }
+  .brand-nav { display: flex; gap: 44px; justify-content: center; margin-bottom: 64px; flex-wrap: wrap; }
+  .brand-nav a { font-family: var(--font-brand-en); font-style: italic; font-size: 18px; font-weight: 300; line-height: 1; letter-spacing: 0.12em; color: #fff; text-decoration: none; }
+  .brand-over { font-family: var(--font-brand-en); font-size: 12px; font-weight: 300; line-height: 1; letter-spacing: 0.5em; text-align: center; margin-bottom: 40px; }
+  .brand-copy { font-family: var(--font-brand-jp); font-size: 18px; font-weight: 300; line-height: 2.5; letter-spacing: 0.1em; text-align: center; }
+  .brand-body { font-family: var(--font-brand-jp); font-size: 13px; font-weight: 300; line-height: 1.92; letter-spacing: 0.1em; max-width: 560px; margin: 32px auto 0; }
+  .brand-btn { display: inline-flex; align-items: center; justify-content: center; width: 250px; height: 50px; border: 1px solid #fff; border-radius: 0; text-decoration: none; }
+  .brand-btn span { font-family: var(--font-brand-en); font-style: italic; font-size: 13px; font-weight: 300; letter-spacing: 0.1em; color: #fff; }
+  .brand-band { background: #fff; color: #000; text-align: center; padding: 40px 25px; }
+  .brand-band-label { font-family: var(--font-brand-jp); font-size: 20px; font-weight: 500; line-height: 1; letter-spacing: 0.12em; margin-bottom: 24px; }
+  .brand-btn--black { border-color: #000; width: 350px; height: 65px; }
+  .brand-btn--black span { color: #000; font-size: 18px; letter-spacing: 0.12em; }
+
+  /* FOOTER */
+  .footer { background: #000; color: #fff; padding: 56px 25px 30px; }
+  .footer-inner { max-width: var(--w-section); margin: 0 auto; }
+  .footer-head { font-size: 18px; font-weight: 400; margin-bottom: 26px; }
+  .footer-links { display: flex; gap: 30px; flex-wrap: wrap; list-style: none; font-size: 14px; margin-bottom: 30px; }
+  .footer-links a { color: #fff; text-decoration: none; }
+  .footer-note { border-top: 1px solid #333; padding-top: 20px; font-size: 12px; color: var(--c-muted); display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+
+  .colophon { background: #fff; padding: 32px 25px; font-size: 12px; color: #666; line-height: 1.9; text-align: center; }
+  .colophon a { color: var(--c-red); }
+  code { font-family: var(--font-mono); }
+
+  @media (max-width: 767px) {
+    .rail { display: none; }
+    .section { padding: 48px 16px; }
+    .h-sec { font-size: 22px; }
+    .fare-grid { grid-template-columns: 1fr; }
+    .brand-nav { gap: 20px; }
+    .brand-over { letter-spacing: 0.3em; }
+    .brand-btn--black { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-logo" href="#">STARFLYER</a>
+  <span class="header-spacer"></span>
+  <ul class="header-links">
+    <li><a href="#colors">よくある質問</a></li>
+    <li><a href="#typography">お問い合わせ</a></li>
+  </ul>
+  <a class="btn-cta" href="#buttons">マイレージ会員に入会する</a>
+  <a class="btn-login" href="#forms">ログイン</a>
+</header>
+
+<div class="shell">
+  <nav class="rail">
+    <a class="rail-item" href="#colors"><span class="rail-icon" style="background:linear-gradient(#fff,#bbb);"></span>航空券の<br>ご予約</a>
+    <a class="rail-item" href="#typography"><span class="rail-icon" style="background:linear-gradient(#fff,#bbb);"></span>予約確認<br>・変更</a>
+    <a class="rail-item" href="#buttons"><span class="rail-icon" style="background:linear-gradient(#fff,#bbb);"></span>航空券<br>＋宿泊</a>
+    <a class="rail-item" href="#cards"><span class="rail-icon" style="background:linear-gradient(#fff,#bbb);"></span>運航状況</a>
+    <a class="rail-item" href="#forms"><span class="rail-icon" style="background:linear-gradient(#fff,#bbb);"></span>オンライン<br>チェックイン</a>
+    <a class="rail-item" href="#layout"><span class="rail-icon" style="background:linear-gradient(#fff,#bbb);"></span>空席待ち</a>
+  </nav>
+
+  <main class="main">
+
+    <!-- COLORS -->
+    <section class="section" id="colors">
+      <div class="h-sec">COLORS</div>
+
+      <div class="group-label">Base — 黒いクロムと白い面</div>
+      <div class="color-grid">
+        <div class="swatch"><div class="swatch-block" style="background:#000000"></div><div class="swatch-info"><div class="swatch-name">Black</div><div class="swatch-hex">#000000</div><div class="swatch-role"><strong>body の地色</strong>。ヘッダー・左レール・フッター</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:#ffffff; box-shadow: inset 0 0 0 1px #d1d1d1"></div><div class="swatch-info"><div class="swatch-name">White</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">コンテンツ面。黒の上に載る矩形</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:#1e1e1e"></div><div class="swatch-info"><div class="swatch-name">Near Black</div><div class="swatch-hex">#1e1e1e</div><div class="swatch-role">濃色セクション。純黒とわずかに差をつける</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:#333333"></div><div class="swatch-info"><div class="swatch-name">Charcoal</div><div class="swatch-hex">#333333</div><div class="swatch-role">白地の本文</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:#40494f"></div><div class="swatch-info"><div class="swatch-name">Dark Slate</div><div class="swatch-hex">#40494f</div><div class="swatch-role">予約フォームの面</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:#27384d"></div><div class="swatch-info"><div class="swatch-name">Slate Blue</div><div class="swatch-hex">#27384d</div><div class="swatch-role">運航状況フォームの面</div></div></div>
+      </div>
+
+      <div class="group-label">Accent — 唯一の有彩色</div>
+      <div class="color-grid">
+        <div class="swatch"><div class="swatch-block" style="background:#990000"></div><div class="swatch-info"><div class="swatch-name">Dark Red</div><div class="swatch-hex">#990000</div><div class="swatch-role"><strong>サイト唯一の彩度を持つ色</strong>。CTA・運賃の金額・日曜列。明るい赤に振らない</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:#003399"></div><div class="swatch-info"><div class="swatch-name">Link Blue</div><div class="swatch-hex">#003399</div><div class="swatch-role">テーブルの土曜見出し。サイト唯一の青</div></div></div>
+      </div>
+
+      <div class="group-label">Neutral — 面・罫</div>
+      <div class="color-grid">
+        <div class="swatch"><div class="swatch-block" style="background:#f2f2f2"></div><div class="swatch-info"><div class="swatch-name">Panel Gray</div><div class="swatch-hex">#f2f2f2</div><div class="swatch-role">薄面セクション</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:#e6e6e6"></div><div class="swatch-info"><div class="swatch-name">Badge Gray</div><div class="swatch-hex">#e6e6e6</div><div class="swatch-role">バッジ・タグの面</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:#d1d1d1"></div><div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-hex">#d1d1d1</div><div class="swatch-role">白ボタンの枠</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:#cccccc"></div><div class="swatch-info"><div class="swatch-name">Input Border</div><div class="swatch-hex">#cccccc</div><div class="swatch-role">入力欄・セレクトの枠。黒地では補助テキストにも使う</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:#666666"></div><div class="swatch-info"><div class="swatch-name">Ghost Border</div><div class="swatch-hex">#666666</div><div class="swatch-role">黒地の上のゴーストボタンの枠</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:#faf2f2"></div><div class="swatch-info"><div class="swatch-name">Sunday Tint</div><div class="swatch-hex">#faf2f2</div><div class="swatch-role">カレンダー・運賃表の日曜列</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:#f1f4fa"></div><div class="swatch-info"><div class="swatch-name">Saturday Tint</div><div class="swatch-hex">#f1f4fa</div><div class="swatch-role">カレンダー・運賃表の土曜列</div></div></div>
+      </div>
+    </section>
+
+    <!-- TYPOGRAPHY -->
+    <section class="section section--panel" id="typography">
+      <div class="section-inner">
+        <div class="h-sec">TYPOGRAPHY — 実務サイト</div>
+
+        <div class="type-sample">
+          <div style="font-size:28px; font-weight:400; line-height:1;">運賃</div>
+          <div class="type-meta">28px / 400 / <strong>lh 1.0（28px）</strong> / ls normal<span class="type-ctx">セクション見出し — 行間を詰めきる</span></div>
+        </div>
+        <div class="type-sample">
+          <div style="font-size:20px; font-weight:400; line-height:1.5;">航空券＋ホテル</div>
+          <div class="type-meta">20px / 400 / lh 1.5（30px） / ls normal<span class="type-ctx">小見出し</span></div>
+        </div>
+        <div class="type-sample">
+          <div style="font-size:18px; font-weight:400; line-height:1.5;">東京へ行くならチェック！東京特集</div>
+          <div class="type-meta">18px / 400 / lh 1.5（27px）<span class="type-ctx">カードタイトル・リード</span></div>
+        </div>
+        <div class="type-sample">
+          <div style="font-size:14px; font-weight:400; line-height:1.5; max-width:640px;">本文は 14px / weight 400 / line-height 1.5 / letter-spacing normal。運賃表・時刻表・空席カレンダーを縦に積む実務サイトなので、字間を一切開かず情報密度を優先します。<code>font-feature-settings</code> も <code>normal</code> のままで、<code>palt</code> は掛けません。</div>
+          <div class="type-meta">14px / 400 / lh 1.5（21px） / ls normal / palt なし<span class="type-ctx">本文（body 既定）— 色 #333333</span></div>
+        </div>
+        <div class="type-sample">
+          <div style="font-size:12px; font-weight:400; line-height:1.5;">航空券の<br>ご予約</div>
+          <div class="type-meta">12px / 400 / lh 1.5（18px）<span class="type-ctx">左サイドレールの 2 行ラベル</span></div>
+        </div>
+        <div class="type-sample">
+          <span class="label-red">運航情報</span>
+          <div class="type-meta">10px / <strong>700</strong> / lh 1.5 / #990000 の面に白文字<span class="type-ctx">ラベルバッジ — サイトで唯一の 700</span></div>
+        </div>
+
+        <div class="h-sec" style="margin-top:56px">TYPOGRAPHY — ブランドサイト（/brand/）</div>
+        <div class="type-sample">
+          <div style="font-family:var(--font-brand-en); font-style:italic; font-size:18px; font-weight:300; line-height:1; letter-spacing:0.12em;">BRAND TOP　PRODUCT　MOVIE</div>
+          <div class="type-meta">IvyMode <em>italic</em> 18px / 300 / lh 1.0 / <strong>ls 0.12em（2.16px）</strong><span class="type-ctx">ブランドサイトのナビ</span></div>
+        </div>
+        <div class="type-sample">
+          <div style="font-family:var(--font-brand-en); font-size:12px; font-weight:300; line-height:1; letter-spacing:0.5em;">BRAND MOVIE</div>
+          <div class="type-meta">IvyMode 12px / 300 / <strong>ls 0.5em（6px）</strong><span class="type-ctx">オーバーライン — 実務サイトとは正反対の字間</span></div>
+        </div>
+        <div class="type-sample">
+          <div style="font-family:var(--font-brand-jp); font-size:18px; font-weight:300; line-height:2.5; letter-spacing:0.1em;">お客様へ最上級のホスピタリティを提供</div>
+          <div class="type-meta">VDL V7明朝 18px / 300 / <strong>lh 2.5（45px）</strong> / ls 0.1em<span class="type-ctx">ブランドコピー — 明朝・weight 300</span></div>
+        </div>
+        <div class="type-sample">
+          <div style="font-family:var(--font-brand-jp); font-size:13px; font-weight:300; line-height:1.92; letter-spacing:0.1em; max-width:560px;">ブランドコンセプト「Mother Comet」のもと、黒い機体・黒い革シート・黒い機内で統一されたスマート ラグジュアリーという価値を提供しています。</div>
+          <div class="type-meta">VDL V7明朝 13px / 300 / lh 1.92（25px） / ls 0.1em<span class="type-ctx">ブランド本文 — 実務サイトの 1.5 と分ける</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FARE -->
+    <section class="section" id="fare">
+      <div class="h-sec">運賃</div>
+      <div class="fare-grid">
+        <div class="fare-row">
+          <div class="fare-thumb"></div>
+          <div>
+            <div class="fare-route"><span class="tri">羽田（東京）⇔ 北九州</span></div>
+            <div class="fare-price">「そら旅」<strong>11,660</strong><em>円〜</em></div>
+          </div>
+        </div>
+        <div class="fare-row">
+          <div class="fare-thumb"></div>
+          <div>
+            <div class="fare-route"><span class="tri">羽田（東京）⇔ 福岡</span></div>
+            <div class="fare-price">「そら旅」<strong>9,900</strong><em>円〜</em></div>
+          </div>
+        </div>
+        <div class="fare-row">
+          <div class="fare-thumb"></div>
+          <div>
+            <div class="fare-route"><span class="tri">羽田（東京）⇔ 関西（大阪）</span></div>
+            <div class="fare-price">「そら旅」<strong>8,580</strong><em>円〜</em></div>
+          </div>
+        </div>
+        <div class="fare-row">
+          <div class="fare-thumb"></div>
+          <div>
+            <div class="fare-route"><span class="tri">中部（名古屋）⇔ 福岡</span></div>
+            <div class="fare-price">「そら旅」<strong>11,440</strong><em>円〜</em></div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center; margin-bottom:56px;"><a class="btn-line" href="#buttons">運賃一覧へ　▸</a></div>
+
+      <div class="h-sub">空席照会カレンダー</div>
+      <table class="cal">
+        <tr><th class="sun">日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th class="sat">土</th></tr>
+        <tr>
+          <td class="sun">1<div class="p">◎</div></td><td>2<div class="p">◎</div></td><td>3<div class="p">◯</div></td>
+          <td>4<div class="p">◎</div></td><td>5<div class="p">△</div></td><td>6<div class="p">◯</div></td><td class="sat">7<div class="p">△</div></td>
+        </tr>
+        <tr>
+          <td class="sun">8<div class="p">✕</div></td><td>9<div class="p">◎</div></td><td>10<div class="p">◎</div></td>
+          <td>11<div class="p">◯</div></td><td>12<div class="p">◎</div></td><td>13<div class="p">△</div></td><td class="sat">14<div class="p">◯</div></td>
+        </tr>
+      </table>
+      <p style="font-size:14px; line-height:1.5; margin-top:16px;">日曜列は <code>#faf2f2</code>、土曜列は <code>#f1f4fa</code> で塗り、見出しの文字色を日曜 <code>#990000</code> / 土曜 <code>#003399</code> にする。</p>
+    </section>
+
+    <!-- CAMPAIGN（濃色セクション） -->
+    <section class="section section--dark">
+      <div class="section-inner">
+        <div class="h-sec">キャンペーン情報</div>
+        <div class="card-grid">
+          <div>
+            <div class="card-photo"></div>
+            <div class="card-title" style="color:#fff"><span class="tri">2026年 夏休み 空席状況のご案内</span></div>
+            <div class="card-text">対象搭乗日 2026年7月17日〜8月21日。人気路線の空席状況をまとめてご案内します。</div>
+          </div>
+          <div>
+            <div class="card-photo"></div>
+            <div class="card-title" style="color:#fff"><span class="tri">臨時便運航 羽田(東京) ⇄ 福岡線</span></div>
+            <div class="card-text">8月21日(金)〜8月31日(月) 計30便を増設。詳しくはこちら。</div>
+          </div>
+        </div>
+        <div style="margin-top:36px"><a class="btn-ghost" href="#buttons">キャンペーン一覧へ　▸</a></div>
+      </div>
+    </section>
+
+    <!-- BUTTONS -->
+    <section class="section" id="buttons">
+      <div class="h-sec">BUTTONS</div>
+      <div style="display:flex; gap:32px; flex-wrap:wrap; align-items:flex-start;">
+        <div><a class="btn-cta" href="#">マイレージ会員に入会する</a><div class="btn-note">Primary — #990000 塗り / radius <strong>2px</strong> / 12px</div></div>
+        <div style="background:#000; padding:14px; "><a class="btn-login" href="#">ログイン</a><div class="btn-note" style="color:#ccc">Secondary — 白面 / radius 2px（黒地の上）</div></div>
+        <div><a class="btn-line" href="#">運賃一覧へ　▸</a><div class="btn-note">Tertiary — 1px solid #d1d1d1 / radius 3px / padding 10px 25px</div></div>
+        <div><a class="btn-black" href="#">詳しく見る</a><div class="btn-note">Black — #000 塗り / radius 3px</div></div>
+        <div style="background:#1e1e1e; padding:14px;"><a class="btn-ghost" href="#">キャンペーン一覧へ</a><div class="btn-note" style="color:#ccc">Ghost — 1px solid #666 / 文字 #cccccc（黒地）</div></div>
+        <div><span class="badge">マイレージ</span><div class="btn-note">Badge — #e6e6e6 / radius 0 / padding 3px 10px 4px</div></div>
+        <div><span class="label-red">運航情報</span><div class="btn-note">Label — #990000 / 10px / <strong>700</strong> / radius 0</div></div>
+      </div>
+      <p style="font-size:14px; line-height:1.5; margin-top:26px; max-width:640px;"><strong>radius は 3px が既定</strong>。ヘッダーの 2 つの CTA だけ 2px、ブランドサイトのボタンだけ 0。ピル（1000px）はごく一部のタグにしか出ない。</p>
+    </section>
+
+    <!-- CARDS -->
+    <section class="section section--panel" id="cards">
+      <div class="section-inner">
+        <div class="h-sec">航空券＋ホテル</div>
+        <div class="card-grid">
+          <div>
+            <div class="card-photo"></div>
+            <div class="card-title"><span class="tri">東京特集</span></div>
+            <div class="card-text">東京へ行くならチェック！早朝深夜便を使ってとことん東京を満喫しよう！</div>
+          </div>
+          <div>
+            <div class="card-photo"></div>
+            <div class="card-title"><span class="tri">おすすめホテル特集</span></div>
+            <div class="card-text">観光やビジネス、イベントなどの各シーンにあわせた東京・福岡のおすすめホテルで快適な滞在を。</div>
+          </div>
+          <div>
+            <div class="card-photo"></div>
+            <div class="card-title"><span class="tri">福岡特集</span></div>
+            <div class="card-text">福岡には美味しいものがいっぱい！地元民イチオシの福岡市内のグルメを中心にご紹介いたします。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORMS -->
+    <section class="section" id="forms">
+      <div class="h-sec">FORMS</div>
+      <div class="form-panel">
+        <div class="form-label" style="font-size:18px; margin-bottom:16px;">航空券の予約</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">出発地</label>
+            <select class="form-select"><option>羽田（東京）</option><option>北九州</option></select>
+            <div class="form-state">デフォルト — 高さ 42px / 1px solid #cccccc / radius 3px / 13px</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">到着地</label>
+            <input class="form-input form-input--focus" type="text" value="福岡">
+            <div class="form-state">フォーカス — border #333333</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">搭乗日</label>
+            <input class="form-input form-input--error" type="text" value="2026/13/45">
+            <div class="form-state">エラー — border #990000</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">人数</label>
+            <select class="form-select"><option>大人 1名</option></select>
+            <div class="form-state">濃色パネル #40494f の上でも<strong>入力欄の面は白のまま</strong>。反転させない</div>
+          </div>
+        </div>
+        <button class="form-submit">空席を検索する</button>
+      </div>
+
+      <div class="form-panel form-panel--flight" style="margin-top:24px">
+        <div class="form-label" style="font-size:18px; margin-bottom:16px;">運航状況を確認する</div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">出発地</label><select class="form-select"><option>羽田（東京）</option></select></div>
+          <div class="form-group"><label class="form-label">到着地</label><select class="form-select"><option>北九州</option></select></div>
+        </div>
+        <div class="form-state">運航状況フォームだけ面色が <code>#27384d</code>（青みの濃色）に変わる。</div>
+      </div>
+    </section>
+
+    <!-- ELEVATION -->
+    <section class="section section--panel" id="elevation">
+      <div class="section-inner">
+        <div class="h-sec">ELEVATION</div>
+        <div class="elev-grid">
+          <div class="elev-card"><div class="elev-name">Level 0</div><div class="elev-desc">none<br>カード・ボタン・テーブルすべて</div></div>
+          <div class="elev-card" style="box-shadow:0 0 2px #777777"><div class="elev-name">Header</div><div class="elev-desc">0 0 2px #777777<br>黒ヘッダーの下端を締める</div></div>
+          <div class="elev-card" style="box-shadow:2px 0 6px -1px rgba(0,0,0,.2)"><div class="elev-name">Rail</div><div class="elev-desc">2px 0 6px -1px rgba(0,0,0,.2)<br>追従レールの右エッジ</div></div>
+          <div class="elev-card" style="background:#1e1e1e; color:#fff; border:none"><div class="elev-name">面で作る</div><div class="elev-desc" style="color:#ccc">#000000 → #1e1e1e → #f2f2f2 → #ffffff</div></div>
+        </div>
+        <p style="font-size:14px; line-height:1.5; margin-top:20px; max-width:640px;">影は「浮かせる」ためではなく<strong>黒いクロムの境界を締める</strong>ために使う。コンテンツ側には一切落とさない。</p>
+      </div>
+    </section>
+
+    <!-- LAYOUT -->
+    <section class="section" id="layout">
+      <div class="h-sec">LAYOUT</div>
+      <div class="space-row">
+        <div class="space-item"><div class="space-block" style="width:5px"></div><div class="space-value">XS 5</div></div>
+        <div class="space-item"><div class="space-block" style="width:10px"></div><div class="space-value">S 10</div></div>
+        <div class="space-item"><div class="space-block" style="width:25px"></div><div class="space-value">M 25</div></div>
+        <div class="space-item"><div class="space-block" style="width:40px"></div><div class="space-value">L 40</div></div>
+        <div class="space-item"><div class="space-block" style="width:80px"></div><div class="space-value">XL 80</div></div>
+      </div>
+      <div style="margin-bottom:18px"><div class="wbar-label">セクション幅 <span class="wbar-value">1000px</span></div><div class="wbar"><div class="wbar-in" style="width:100%"></div></div></div>
+      <div style="margin-bottom:18px"><div class="wbar-label">カルーセル <span class="wbar-value">1020px（左右に 10px はみ出す）</span></div><div class="wbar"><div class="wbar-in" style="width:100%"></div></div></div>
+      <div style="margin-bottom:18px"><div class="wbar-label">フォーム <span class="wbar-value">755px</span></div><div class="wbar"><div class="wbar-in" style="width:75%"></div></div></div>
+      <div style="margin-bottom:18px"><div class="wbar-label">左サイドレール <span class="wbar-value">90px 固定・追従</span></div><div class="wbar"><div class="wbar-in" style="width:9%"></div></div></div>
+    </section>
+
+  </main>
+</div>
+
+<!-- BRAND SITE MODE -->
+<section class="brand">
+  <div class="brand-inner">
+    <nav class="brand-nav">
+      <a href="#">BRAND TOP</a><a href="#">PRODUCT</a><a href="#">MOVIE</a><a href="#">PROJECT</a>
+    </nav>
+    <div class="brand-over">BRAND MOVIE</div>
+    <div class="brand-copy">道を切り拓く創造的な精神にあふれる人。<br>お客様へ最上級のホスピタリティを提供</div>
+    <div class="brand-body">ブランドコンセプト「Mother Comet」のもと、黒い機体・黒い革シート・黒い機内で統一された、スマート ラグジュアリーという今までにない価値を提供しています。</div>
+    <div style="text-align:center; margin-top:44px">
+      <a class="brand-btn" href="#"><span>More PRODUCT</span></a>
+    </div>
+    <p style="font-family:var(--font-brand-jp); font-size:13px; font-weight:300; line-height:1.92; letter-spacing:0.1em; max-width:560px; margin:36px auto 0; color:#ccc;">同じドメインの中で、実務サイトとブランドサイトが<strong style="color:#fff">別のデザインシステム</strong>で動く。ここではゴシックも radius 3px も使わない。</p>
+  </div>
+</section>
+
+<div class="brand-band">
+  <div class="brand-band-label">空席照会・ご予約はこちら</div>
+  <a class="brand-btn brand-btn--black" href="#"><span>HOME</span></a>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-head"><span class="tri">株式会社スターフライヤー 企業・IR情報</span></div>
+    <ul class="footer-links">
+      <li><a class="tri" href="#">企業情報</a></li>
+      <li><a class="tri" href="#">株主・投資家情報</a></li>
+      <li><a class="tri" href="#">採用情報</a></li>
+      <li><a class="tri" href="#">お知らせ</a></li>
+      <li><a class="tri" href="#">プレスリリース</a></li>
+      <li><a class="tri" href="#">サステナビリティ</a></li>
+    </ul>
+    <div class="footer-note">
+      <span>サイトマップ ｜ サイトポリシー ｜ プライバシーポリシー ｜ ウェブサイト利用規約</span>
+      <span>Copyright © Star Flyer Inc. All Rights Reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="colophon">
+  Generated from <a href="https://www.starflyer.jp/">starflyer.jp</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-08-17）<br>
+  実務サイトは <strong>Web フォントを一切使わず</strong>、<code>"ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", メイリオ, …</code> の OS 搭載フォントで組む。ヒラギノは <strong>ProN ではなく Pro</strong>。<br>
+  ブランドサイトの <strong>VDL V7明朝（vdl-v7mincho）</strong> と <strong>IvyMode（ivymode）</strong> は Adobe Fonts のドメインライセンスのためここでは表示できない。<br>
+  代替として <strong>Shippori Mincho</strong>（和文明朝）と <strong>Josefin Sans Light Italic</strong>（欧文）を Google Fonts から読み込んでいる。字面は異なるが、<strong>明朝 × 細字 × 広い字間</strong>という設計意図は再現される。
+</div>
+
+</body>
+</html>
