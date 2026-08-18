@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (459 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (462 sites)</a>
 </p>
 
 <table>
@@ -694,6 +694,11 @@
 <td align="center"><strong>dancyu</strong><br><img src="design-md/dancyu/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>ロート製薬</strong><br><img src="design-md/rohto/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>MIMIGURI</strong><br><img src="design-md/mimiguri/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>鶴屋吉信</strong><br><img src="design-md/tsuruyayoshinobu/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>静嘉堂文庫美術館</strong><br><img src="design-md/seikado/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1213,11 +1218,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [STARFLYER (スターフライヤー)](https://www.starflyer.jp/) | Airline | [DESIGN.md](design-md/starflyer/DESIGN.md) | [preview.html](design-md/starflyer/preview.html) |
 | [dancyu (ダンチュウ)](https://dancyu.jp/) | Magazine / Food Media | [DESIGN.md](design-md/dancyu/DESIGN.md) | [preview.html](design-md/dancyu/preview.html) |
 | [ROHTO (ロート製薬)](https://www.rohto.co.jp/) | Pharmaceutical / Skincare | [DESIGN.md](design-md/rohto/DESIGN.md) | [preview.html](design-md/rohto/preview.html) |
+| [MIMIGURI (ミミグリ)](https://mimiguri.co.jp/) | Consulting / Organization Design | [DESIGN.md](design-md/mimiguri/DESIGN.md) | [preview.html](design-md/mimiguri/preview.html) |
+| [鶴屋吉信 (つるやよしのぶ)](https://www.tsuruyayoshinobu.jp/) | Japanese Confectionery | [DESIGN.md](design-md/tsuruyayoshinobu/DESIGN.md) | [preview.html](design-md/tsuruyayoshinobu/preview.html) |
+| [静嘉堂文庫美術館 (Seikado Bunko Art Museum)](https://www.seikado.or.jp/) | Museum / Art | [DESIGN.md](design-md/seikado/DESIGN.md) | [preview.html](design-md/seikado/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (459 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (462 sites)</a>
 </p>
 
 <table>
@@ -1876,6 +1884,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>スターフライヤー</strong><br><img src="design-md/starflyer/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>dancyu</strong><br><img src="design-md/dancyu/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>ロート製薬</strong><br><img src="design-md/rohto/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>MIMIGURI</strong><br><img src="design-md/mimiguri/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>鶴屋吉信</strong><br><img src="design-md/tsuruyayoshinobu/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>静嘉堂文庫美術館</strong><br><img src="design-md/seikado/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

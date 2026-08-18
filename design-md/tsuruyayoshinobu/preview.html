@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 鶴屋吉信（つるやよしのぶ）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実サイトは CSS 変数を持たないため実測値から起こした ===
+       サイトの色は黒と白の 2 色だけ。印象色（淡い水色・生成り）は
+       すべて商品写真の背景であって CSS の値ではない。 */
+    --c-ink:        #000000;            /* 本文・見出し・罫線のすべて。純黒 */
+    --c-paper:      #ffffff;            /* 地色・カードの面 */
+    --c-gray-btn:   #666666;            /* 「ページの先頭へ戻る」だけ */
+    --c-field:      rgba(0, 0, 0, .07); /* 入力欄の面（枠線は使わない） */
+    --c-hairline-soft: rgba(0, 0, 0, .25);
+
+    /* === Tokens === */
+    --radius: 0;                 /* ★ 全要素 0 */
+    --ls: .09375em;              /* ★ 全サイズ共通の字間（= 3/32） */
+    --lh-mincho: 1.5;            /* 明朝の見出し */
+    --lh-gothic: 1.71;           /* ゴシックの本文 */
+    --container: 1600px;
+    --gutter: 70px;
+    /* 影は em 基準。要素の font-size に比例して大きさが変わる */
+    --shadow: 0 0 1em rgba(0, 0, 0, .05), .267em .267em .333em rgba(0, 0, 0, .075);
+
+    /* === Fonts ===
+       実サイトの見出しは dnp-shuei-mincho-pr6n（DNP 秀英明朝 Pr6N / Adobe Fonts）。
+       ドメインライセンスのためローカルでは表示できないので、
+       ここでは Google Fonts の Shippori Mincho（字面・懐が近い和文明朝）に差し替えている。
+       本文側は実サイトと同じくシステムフォントをそのまま使う。 */
+    --font-mincho: "Shippori Mincho", dnp-shuei-mincho-pr6n, Georgia, "Yu Mincho",
+                   "Hiragino Mincho ProN", YuMincho, serif;
+    --font-gothic: -apple-system, "system-ui", Arial, sans-serif;
+    --font-mono:   SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--c-paper);
+    color: var(--c-ink);
+    font-family: var(--font-gothic);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: var(--lh-gothic);
+    letter-spacing: var(--ls);          /* ★ 全体に効かせる */
+    font-feature-settings: normal;      /* palt は使わない */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .mincho { font-family: var(--font-mincho); }
+
+  /* HEADER */
+  .header { display: flex; align-items: center; gap: 24px; padding: 22px var(--gutter); border-bottom: 1px solid var(--c-ink); flex-wrap: wrap; }
+  .logo { font-family: var(--font-mincho); font-size: 22px; font-weight: 500; line-height: 1.2; letter-spacing: .136em; }
+  .logo small { display: block; font-size: 11px; letter-spacing: var(--ls); font-weight: 400; margin-top: 4px; }
+  .gnav { display: flex; gap: 26px; list-style: none; margin-left: auto; flex-wrap: wrap; }
+  .gnav a { font-family: var(--font-mincho); font-size: 18px; font-weight: 500; line-height: 1.3; letter-spacing: var(--ls); color: var(--c-ink); text-decoration: none; }
+
+  /* NOTICE BAR */
+  .notice { padding: 14px var(--gutter); border-bottom: 1px solid var(--c-hairline-soft); }
+  .notice a { font-family: var(--font-mincho); font-size: 18px; font-weight: 500; line-height: 1.3; letter-spacing: var(--ls); color: var(--c-ink); text-decoration: underline; }
+
+  /* HERO */
+  .hero { display: flex; align-items: center; gap: 40px; padding: 56px var(--gutter) 64px; flex-wrap: wrap;
+          background: linear-gradient(180deg, #dcecef 0%, #cfe4e9 100%); }
+  .hero-photo { flex: 1 1 460px; height: 320px; border-radius: var(--radius);
+                background: radial-gradient(circle at 45% 45%, #f3efe6 0%, #d9cdb7 42%, #8a6a4a 43%, #6e4f36 70%, #5b4029 100%); }
+  .hero-copy { flex: 0 1 320px; }
+  .hero-catch { font-family: var(--font-mincho); font-size: 42px; font-weight: 400; line-height: var(--lh-mincho); letter-spacing: var(--ls); }
+  .hero-link { display: inline-block; font-family: var(--font-mincho); font-size: 18px; font-weight: 500; line-height: 1.3; letter-spacing: var(--ls); color: var(--c-ink); text-decoration: none; padding: 13.5px 0; border-bottom: 1px solid var(--c-ink); margin-top: 28px; }
+
+  /* SECTIONS */
+  .section { padding: 64px 0; border-top: 1px solid var(--c-ink); }
+  .section-inner { max-width: var(--container); margin-inline: auto; padding: 0 var(--gutter); }
+  .h-sec { font-family: var(--font-mincho); font-size: 36px; font-weight: 400; line-height: var(--lh-mincho); letter-spacing: var(--ls); margin-bottom: 36px; }
+  .h-sub { font-family: var(--font-mincho); font-size: 24px; font-weight: 400; line-height: var(--lh-mincho); letter-spacing: var(--ls); margin: 40px 0 18px; }
+  .group-label { font-family: var(--font-mincho); font-size: 20px; font-weight: 500; line-height: 1.2; letter-spacing: var(--ls); margin: 36px 0 16px; }
+  .group-label:first-of-type { margin-top: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 20px; }
+  .swatch { border: 1px solid var(--c-ink); border-radius: var(--radius); background: var(--c-paper); }
+  .swatch-block { height: 78px; }
+  .swatch-info { padding: 14px 16px; border-top: 1px solid var(--c-ink); }
+  .swatch-name { font-family: var(--font-mincho); font-size: 16px; font-weight: 500; line-height: 1.3; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: #666; margin-top: 6px; }
+  .swatch-role { font-size: 12px; line-height: var(--lh-gothic); margin-top: 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding-bottom: 24px; margin-bottom: 28px; border-bottom: 1px solid var(--c-hairline-soft); }
+  .type-sample:last-child { border-bottom: none; margin-bottom: 0; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; line-height: 1.7; color: #666; margin-top: 12px; }
+  .type-ctx { display: inline-block; font-family: var(--font-gothic); font-size: 11px; letter-spacing: var(--ls); color: var(--c-ink); border-bottom: 1px solid var(--c-ink); padding: 0 5.25px; margin-left: 8px; }
+
+  /* PRODUCT（組版サンプル） */
+  .product { display: flex; gap: 48px; flex-wrap: wrap; }
+  .product-photo { flex: 1 1 380px; height: 300px; border-radius: var(--radius);
+                   background: radial-gradient(circle at 50% 50%, #f6f1e4 0%, #e6dcc4 40%, #7d5a3c 41%, #5f4028 100%); }
+  .product-copy { flex: 1 1 380px; }
+  .product-name { font-family: var(--font-mincho); font-size: 20px; font-weight: 500; line-height: 1.2; letter-spacing: var(--ls); margin-bottom: 14px; }
+  .product-text { font-size: 14px; line-height: var(--lh-gothic); letter-spacing: var(--ls); }
+  .product-text + .product-text { margin-top: 18px; }
+
+  /* NEWS */
+  .news-list { list-style: none; }
+  .news-item { padding: 20px 0; border-bottom: 1px solid var(--c-hairline-soft); }
+  .tag { display: inline-block; font-size: 10.5px; line-height: 1.7; letter-spacing: .125em; padding: 0 5.25px; border-bottom: 1px solid var(--c-ink); }
+  .news-title { display: inline-block; font-size: 14px; font-weight: 600; line-height: var(--lh-gothic); letter-spacing: var(--ls); color: var(--c-ink); text-decoration: underline; margin-left: 14px; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .btn-text { display: inline-block; background: var(--c-paper); color: var(--c-ink); border: 1px solid var(--c-ink); border-radius: var(--radius); padding: 14px 17.5px; font-size: 14px; font-weight: 600; line-height: 1.2; letter-spacing: var(--ls); text-decoration: none; }
+  .btn-chip { display: inline-block; background: var(--c-paper); color: var(--c-ink); border: 1px solid var(--c-ink); border-radius: var(--radius); padding: 15px 30px; font-size: 15px; font-weight: 600; line-height: 1; letter-spacing: var(--ls); text-decoration: none; }
+  .btn-pref { display: inline-block; background: var(--c-ink); color: var(--c-paper); border-radius: var(--radius); padding: 10.8px 26px; font-size: 14.4px; font-weight: 700; line-height: 1; letter-spacing: var(--ls); text-decoration: none; }
+  .btn-top { display: inline-block; background: var(--c-gray-btn); color: var(--c-paper); border-radius: var(--radius); padding: 9px 18px; font-size: 12px; font-weight: 600; line-height: 1.5; letter-spacing: var(--ls); text-decoration: none; }
+  .btn-mincho { display: inline-block; font-family: var(--font-mincho); font-size: 18px; font-weight: 500; line-height: 1.3; letter-spacing: var(--ls); color: var(--c-ink); text-decoration: none; padding: 13.5px 0; border-bottom: 1px solid var(--c-ink); }
+  .btn-note { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; line-height: 1.7; color: #666; margin-top: 12px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 32px; }
+  .card { background: var(--c-paper); border-radius: var(--radius); font-size: 10.5px; box-shadow: var(--shadow); }
+  .card-photo { height: 170px; background: radial-gradient(circle at 50% 48%, #f3ede0 0%, #ded0b4 40%, #8d6a48 41%, #6a4a30 100%); }
+  .card-body { padding: 18px 18px 24px; }
+  .card-name { font-family: var(--font-mincho); font-size: 20px; font-weight: 500; line-height: 1.2; letter-spacing: var(--ls); }
+  .card-text { font-size: 14px; line-height: var(--lh-gothic); letter-spacing: var(--ls); margin-top: 10px; }
+
+  /* STORE（写真に重ねる店名） */
+  .store-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .store { position: relative; height: 180px; border-radius: var(--radius); display: flex; align-items: flex-end; padding: 20px;
+           background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.45)), linear-gradient(150deg, #b5a58c, #6d5b45); }
+  .store-name { font-family: var(--font-mincho); font-size: 22px; font-weight: 500; line-height: 1.2; letter-spacing: .136em; color: #fff; }
+  .store-name small { display: block; font-family: var(--font-gothic); font-size: 14px; font-weight: 400; letter-spacing: var(--ls); margin-top: 6px; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 32px; max-width: 900px; }
+  .field-label { display: block; font-family: var(--font-mincho); font-size: 17px; font-weight: 500; line-height: 1.2; letter-spacing: var(--ls); margin-bottom: 10px; }
+  .input { width: 100%; font-family: var(--font-gothic); font-size: 15.2px; line-height: 1.5; letter-spacing: -.025em; color: var(--c-ink);
+           background: var(--c-field); border: none; border-radius: var(--radius); padding: 12px 14px; }
+  .input::placeholder { color: rgba(0, 0, 0, .4); }
+  .input--focus { outline: 2px solid var(--c-ink); outline-offset: 2px; }
+  .input--error { box-shadow: inset 0 0 0 1px var(--c-ink); }
+  .form-state { font-size: 12px; line-height: var(--lh-gothic); letter-spacing: var(--ls); color: #555; margin-top: 8px; }
+  .form-error { font-size: 12px; line-height: var(--lh-gothic); letter-spacing: var(--ls); margin-top: 8px; border-bottom: 1px solid var(--c-ink); display: inline-block; padding: 0 5.25px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 26px; }
+  .elev-card { background: var(--c-paper); border-radius: var(--radius); padding: 26px; text-align: center; border: 1px solid var(--c-hairline-soft); }
+  .elev-card--s  { font-size: 9.75px; box-shadow: var(--shadow); border-color: transparent; }
+  .elev-card--m  { font-size: 10.5px; box-shadow: var(--shadow); border-color: transparent; }
+  .elev-card--l  { font-size: 15px;   box-shadow: var(--shadow); border-color: transparent; }
+  .elev-card--xl { font-size: 40.5px; box-shadow: var(--shadow); border-color: transparent; }
+  .elev-name { font-family: var(--font-mincho); font-size: 20px; font-weight: 500; line-height: 1.2; letter-spacing: var(--ls); }
+  .elev-desc { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; line-height: 1.7; color: #666; margin-top: 10px; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; margin-bottom: 26px; }
+  .space-item { text-align: center; }
+  .space-block { background: var(--c-ink); height: 20px; }
+  .space-value { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: #666; margin-top: 6px; }
+  .container-demo { border: 1px solid var(--c-hairline-soft); padding: 20px; }
+  .container-inner { background: var(--c-field); padding: 20px; text-align: center; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; color: #555; }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--c-ink); padding: 48px var(--gutter) 36px; }
+  .footer-links { display: flex; gap: 26px; flex-wrap: wrap; list-style: none; font-size: 14px; margin-bottom: 22px; }
+  .footer-links a { color: var(--c-ink); text-decoration: underline; letter-spacing: var(--ls); }
+  .footer-copy { font-size: 14px; font-weight: 600; line-height: 1; letter-spacing: .0625em; }
+
+  .colophon { padding: 30px var(--gutter) 48px; font-size: 12px; line-height: var(--lh-gothic); letter-spacing: var(--ls); color: #555; text-align: center; }
+  .colophon a { color: var(--c-ink); }
+  code { font-family: var(--font-mono); letter-spacing: 0; }
+
+  @media (max-width: 1023px) {
+    .header, .notice, .hero, .footer, .colophon { padding-left: 40.5px; padding-right: 40.5px; }
+    .section-inner { padding-left: 40.5px; padding-right: 40.5px; }
+    .hero-catch { font-size: 30px; }
+    .h-sec { font-size: 24px; }
+  }
+  @media (max-width: 600px) {
+    .header, .notice, .hero, .footer, .colophon { padding-left: 20px; padding-right: 20px; }
+    .section-inner { padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">鶴屋吉信<small>京菓匠　享和三年創業</small></div>
+  <ul class="gnav">
+    <li><a href="#colors">商品を探す</a></li>
+    <li><a href="#typography">店舗を探す</a></li>
+    <li><a href="#product">鶴屋吉信について</a></li>
+    <li><a href="#cards">ご利用用途</a></li>
+  </ul>
+</header>
+
+<div class="notice">
+  <a href="#news">【募集終了】「鶴屋吉信で京菓子をつくって食べてみよう！」開催のお知らせ</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-photo"></div>
+  <div class="hero-copy">
+    <div class="hero-catch">「ヨキモノ」を<br>創る</div>
+    <a class="hero-link" href="#buttons">公式オンラインショップでお買い物</a>
+  </div>
+</section>
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-inner">
+    <div class="h-sec">COLORS</div>
+
+    <div class="group-label">Base — サイトの色はこれだけ</div>
+    <div class="color-grid">
+      <div class="swatch"><div class="swatch-block" style="background:#000000"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#000000</div><div class="swatch-role"><strong>本文・見出し・罫線のすべて。</strong>グレーに逃がさず純黒を使う</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:#ffffff; box-shadow: inset 0 0 0 1px #000000"></div><div class="swatch-info"><div class="swatch-name">Paper</div><div class="swatch-hex">#ffffff</div><div class="swatch-role">地色・カードの面・ヘッダーの面</div></div></div>
+    </div>
+
+    <div class="group-label">Neutral — 数少ない中間色</div>
+    <div class="color-grid">
+      <div class="swatch"><div class="swatch-block" style="background:#666666"></div><div class="swatch-info"><div class="swatch-name">Gray Button</div><div class="swatch-hex">#666666</div><div class="swatch-role"><strong>「ページの先頭へ戻る」だけ。</strong>サイトで唯一の塗られた UI</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:rgba(0,0,0,.07)"></div><div class="swatch-info"><div class="swatch-name">Field</div><div class="swatch-hex">rgba(0, 0, 0, .07)</div><div class="swatch-role">入力欄の面。<strong>枠線ではなく薄い面で示す</strong></div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:rgba(0,0,0,.25)"></div><div class="swatch-info"><div class="swatch-name">Hairline Soft</div><div class="swatch-hex">rgba(0, 0, 0, .25)</div><div class="swatch-role">淡い区切り罫</div></div></div>
+    </div>
+
+    <div class="group-label">Photo — 色は写真が持つ</div>
+    <div class="color-grid">
+      <div class="swatch"><div class="swatch-block" style="background:linear-gradient(180deg,#dcecef,#cfe4e9)"></div><div class="swatch-info"><div class="swatch-name">（参考）淡い水色</div><div class="swatch-hex">写真の背景</div><div class="swatch-role"><strong>CSS の値ではない。</strong>商品写真の撮影背景として現れる</div></div></div>
+      <div class="swatch"><div class="swatch-block" style="background:#f6f1e4"></div><div class="swatch-info"><div class="swatch-name">（参考）生成り</div><div class="swatch-hex">写真の背景</div><div class="swatch-role">同上。<strong>実装でブランドカラーとして起こさないこと</strong></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-inner">
+    <div class="h-sec">TYPOGRAPHY</div>
+
+    <div class="type-sample">
+      <div class="mincho" style="font-size:42px; font-weight:400; line-height:1.5; letter-spacing:.09375em;">店舗を探す</div>
+      <div class="type-meta"><strong>明朝</strong> 42px / 400 / lh 1.5（63px） / <strong>ls .09375em（3.94px）</strong><span class="type-ctx">下層ページの見出し</span></div>
+    </div>
+    <div class="type-sample">
+      <div class="mincho" style="font-size:36px; font-weight:400; line-height:1.5; letter-spacing:.09375em;">ロングセラー・定番</div>
+      <div class="type-meta"><strong>明朝</strong> 36px / 400 / lh 1.5（54px） / ls .09375em（3.375px） / padding: 0 70px<span class="type-ctx">セクション見出し</span></div>
+    </div>
+    <div class="type-sample">
+      <div class="mincho" style="font-size:24px; font-weight:400; line-height:1.5; letter-spacing:.09375em;">ご利用用途</div>
+      <div class="type-meta">明朝 24px / 400 / lh 1.5（36px） / ls .09375em（2.25px）<span class="type-ctx">小見出し</span></div>
+    </div>
+    <div class="type-sample">
+      <div class="mincho" style="font-size:20px; font-weight:500; line-height:1.2; letter-spacing:.09375em;">本蕨</div>
+      <div class="type-meta">明朝 20px / <strong>500</strong> / lh 1.2 / ls .09375em（1.875px）<span class="type-ctx">商品名 — 700 は使わない</span></div>
+    </div>
+    <div class="type-sample">
+      <div class="mincho" style="font-size:18px; font-weight:500; line-height:1.3; letter-spacing:.09375em;">公式オンラインショップでお買い物</div>
+      <div class="type-meta">明朝 18px / 500 / lh 1.3（23.4px） / ls .09375em（1.6875px） / padding: 13.5px 0<span class="type-ctx">ナビ・明朝リンク</span></div>
+    </div>
+    <div class="type-sample">
+      <div style="font-size:17px; font-weight:600; line-height:1.71; letter-spacing:.09375em;">直営店舗の営業日時のお知らせ</div>
+      <div class="type-meta">ゴシック 17px / 600 / <strong>lh 1.71（29.14px）</strong> / ls .09375em（1.59375px）<span class="type-ctx">ニュース見出し</span></div>
+    </div>
+    <div class="type-sample">
+      <div style="font-size:14px; line-height:1.71; letter-spacing:.09375em; max-width:760px;">貴重な本蕨粉などを活かした“ぷるぷる”食感の生菓子です。本文はシステムフォント（<code>-apple-system, "system-ui", Arial, sans-serif</code>）で組み、行間 1.71・字間 .09375em を守ります。字間は px ではなく <strong>em</strong> で持つため、サイズが変わっても比率が崩れません。</div>
+      <div class="type-meta">ゴシック 14px / 400 / lh 1.71（24px） / ls .09375em（1.3125px）<span class="type-ctx">本文 — 明朝にしない</span></div>
+    </div>
+    <div class="type-sample">
+      <div style="font-size:15px; line-height:1.29; letter-spacing:.09375em;">鶴屋吉信 本店　京都・西陣</div>
+      <div class="type-meta">ゴシック 15px / 400 / lh 1.29 / ls .09375em（1.40625px）<span class="type-ctx">店舗一覧の行</span></div>
+    </div>
+    <div class="type-sample">
+      <span class="tag">トピックス</span>　<span class="tag">イベント</span>　<span class="tag">店舗</span>　<span class="tag">重要</span>
+      <div class="type-meta">ゴシック <strong>10.5px</strong> / 400 / lh 1.7 / <strong>ls .125em</strong> / <strong>border-bottom: 1px solid #000</strong> / padding: 0 5.25px<span class="type-ctx">カテゴリタグ — 塗らずに下線で示す</span></div>
+    </div>
+    <div class="type-sample">
+      <div class="store" style="height:120px;"><div class="store-name">鶴屋吉信 本店<small>京都・西陣</small></div></div>
+      <div class="type-meta">明朝 22px / 500 / lh 1.2 / <strong>ls .136em（3px）</strong> / 色 #fff<span class="type-ctx">写真に重ねる店名 — さらに開く</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT（組版サンプル） -->
+<section class="section" id="product">
+  <div class="section-inner">
+    <div class="h-sec">ロングセラー・定番</div>
+    <div class="product">
+      <div class="product-photo"></div>
+      <div class="product-copy">
+        <div class="product-name">つばらつばら</div>
+        <p class="product-text">薄く焼いた生地で粒あんを包んだ、しっとりとした半生菓子です。「つばらつばら」は万葉集にある言葉で、しみじみ、心ゆくままにという意味。名の通り、ゆっくりと味わっていただきたい一品です。</p>
+        <p class="product-text">見出しは明朝で立て、説明はゴシックで組む。書体で役割を分けることで、装飾を足さずに階層をつくります。字間は全サイズ共通の <code>.09375em</code>、行間は明朝 1.5 / ゴシック 1.71。</p>
+        <a class="btn-mincho" href="#buttons" style="margin-top:24px;">オンラインショップで購入する</a>
+      </div>
+    </div>
+
+    <div class="h-sub">最新情報</div>
+    <ul class="news-list" id="news">
+      <li class="news-item"><span class="tag">重要</span><a class="news-title" href="#news">弊社商品のインターネット上の転売につきまして</a></li>
+      <li class="news-item"><span class="tag">店舗</span><a class="news-title" href="#news">京都本店　お休み処・菓遊茶屋　8月の休業日のおしらせ</a></li>
+      <li class="news-item"><span class="tag">イベント</span><a class="news-title" href="#news">「旅するつばらつばら」第3回開催情報を掲載いたしました</a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-inner">
+    <div class="h-sec">BUTTONS</div>
+
+    <div class="group-label">Text Button（サイトの標準）</div>
+    <div class="btn-row">
+      <a class="btn-text" href="#buttons">すべての特集</a>
+      <a class="btn-text" href="#buttons">すべての最新情報</a>
+    </div>
+    <div class="btn-note">background: #fff / border: 1px solid #000 / radius 0 / padding: 14px 17.5px / 14px / 600 / ls .09375em</div>
+
+    <div class="group-label">Chip Button（絞り込み）</div>
+    <div class="btn-row">
+      <a class="btn-chip" href="#buttons">関西</a>
+      <a class="btn-chip" href="#buttons">関東</a>
+      <a class="btn-chip" href="#buttons">都道府県で探す</a>
+    </div>
+    <div class="btn-note">padding: 15px 30px / 15px / 600 / radius 0</div>
+
+    <div class="group-label">Prefecture Header（サイト唯一の黒ベタ）／ Back to Top（唯一のグレー塗り）</div>
+    <div class="btn-row">
+      <a class="btn-pref" href="#buttons">関東</a>
+      <a class="btn-top" href="#buttons">ページの先頭へ戻る</a>
+    </div>
+    <div class="btn-note">黒帯: #000 / #fff / 14.4px / <strong>700（サイトで唯一）</strong>　　TOP へ戻る: #666666 / 12px / 600</div>
+
+    <div class="group-label">Mincho Link（明朝の導線）</div>
+    <div class="btn-row">
+      <a class="btn-mincho" href="#buttons">公式オンラインショップでお買い物</a>
+    </div>
+    <div class="btn-note">明朝 18px / 500 / padding: 13.5px 0 / border-bottom: 1px solid #000。<strong>塗らない</strong></div>
+  </div>
+</section>
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-inner">
+    <div class="h-sec">CARDS</div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-photo"></div>
+        <div class="card-body">
+          <div class="card-name">本蕨</div>
+          <div class="card-text">貴重な本蕨粉などを活かした“ぷるぷる”食感の生菓子。</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-photo" style="background:radial-gradient(circle at 50% 48%,#fbf6ea 0%,#efe3c9 42%,#c9a86e 43%,#a9873f 100%);"></div>
+        <div class="card-body">
+          <div class="card-name">京観世</div>
+          <div class="card-text">こしあんの村雨と小豆羊羹を巻き上げた、渦模様の棹菓子。</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-photo" style="background:radial-gradient(circle at 50% 48%,#f7f1e2 0%,#e3d2b2 42%,#8f6f4c 43%,#6b4c30 100%);"></div>
+        <div class="card-body">
+          <div class="card-name">柚餅</div>
+          <div class="card-text">柚子の香りを求肥に閉じ込めた、創業以来の代表銘菓。</div>
+        </div>
+      </div>
+    </div>
+    <div class="btn-note">radius 0（画像も角丸なし）／影は em 基準。カードの font-size を変えると影も追従する</div>
+
+    <div class="group-label">店舗（写真に重ねる）</div>
+    <div class="store-grid">
+      <div class="store"><div class="store-name">鶴屋吉信 本店<small>京都・西陣</small></div></div>
+      <div class="store" style="background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.45)),linear-gradient(150deg,#a8a08e,#5f5647);"><div class="store-name">IRODORI<small>京都駅八条口</small></div></div>
+      <div class="store" style="background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.45)),linear-gradient(150deg,#b3a894,#6b5c46);"><div class="store-name">tubara cafe<small>京都・西陣</small></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-inner">
+    <div class="h-sec">FORMS</div>
+    <div class="form-grid">
+      <div>
+        <label class="field-label">商品を探す</label>
+        <input class="input" type="text" placeholder="キーワードを入力">
+        <div class="form-state">デフォルト — background: rgba(0,0,0,.07) / 枠線なし / radius 0 / ls -0.025em（入力欄だけマイナス字間）</div>
+      </div>
+      <div>
+        <label class="field-label">お名前</label>
+        <input class="input input--focus" type="text" value="鶴屋 吉信">
+        <div class="form-state">フォーカス — 黒の可視リング（実サイトは UA 既定のため、実装では明示する）</div>
+      </div>
+      <div>
+        <label class="field-label">メールアドレス</label>
+        <input class="input input--error" type="text" value="taro@">
+        <div><span class="form-error">メールアドレスの形式をご確認ください</span></div>
+        <div class="form-state">エラー — <strong>赤を足さず</strong>、内側 1px の黒罫と下線で示す</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-inner">
+    <div class="h-sec">ELEVATION</div>
+    <p class="product-text" style="margin-bottom:26px;">影は <code>em</code> 基準の 2 枚重ね。<strong>要素の font-size に比例して大きさが変わる</strong>ため、下の 4 枚はすべて同じ CSS で、font-size だけが 9.75 / 10.5 / 15 / 40.5px と異なります。</p>
+    <div class="elev-grid">
+      <div class="elev-card elev-card--s"><div class="elev-name">9.75px 基準</div><div class="elev-desc">0 0 9.75px rgba(0,0,0,.05), 2.6px 2.6px 3.25px rgba(0,0,0,.075)</div></div>
+      <div class="elev-card elev-card--m"><div class="elev-name">10.5px 基準</div><div class="elev-desc">最頻出（37 箇所）。商品カード</div></div>
+      <div class="elev-card elev-card--l"><div class="elev-name">15px 基準</div><div class="elev-desc">0 0 15px …, 4px 4px 5px …</div></div>
+      <div class="elev-card elev-card--xl"><div class="elev-name">40.5px 基準</div><div class="elev-desc">ヒーロー級のブロック</div></div>
+    </div>
+    <div class="btn-note">box-shadow: 0 0 1em rgba(0,0,0,.05), .267em .267em .333em rgba(0,0,0,.075) ／ <strong>px に書き直さないこと</strong></div>
+  </div>
+</section>
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-inner">
+    <div class="h-sec">LAYOUT</div>
+
+    <div class="group-label">Spacing Scale</div>
+    <div class="space-row">
+      <div class="space-item"><div class="space-block" style="width:5px"></div><div class="space-value">5</div></div>
+      <div class="space-item"><div class="space-block" style="width:12px"></div><div class="space-value">12</div></div>
+      <div class="space-item"><div class="space-block" style="width:25px"></div><div class="space-value">25</div></div>
+      <div class="space-item"><div class="space-block" style="width:40.5px"></div><div class="space-value">40.5（SP）</div></div>
+      <div class="space-item"><div class="space-block" style="width:54px"></div><div class="space-value">54</div></div>
+      <div class="space-item"><div class="space-block" style="width:70px"></div><div class="space-value">70（PC の左右）</div></div>
+    </div>
+
+    <div class="group-label">Container</div>
+    <div class="container-demo">
+      <div class="container-inner">max-width: 1600px ／ padding: 0 70px ／ margin-inline: auto</div>
+    </div>
+    <p class="product-text" style="margin-top:16px;">一般的な 1200px より広い <strong>1600px</strong>。写真を大きく見せるための設定です。ブレークポイントは <code>1024px</code> と <code>1280px</code> の 2 つだけ（モバイルファースト）。</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <ul class="footer-links">
+    <li><a href="#colors">会社概要</a></li>
+    <li><a href="#typography">個人情報保護方針</a></li>
+    <li><a href="#product">特定商取引法に基づく表記</a></li>
+    <li><a href="#forms">お問い合わせ</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 Tsuruya Yoshinobu</div>
+</footer>
+
+<div class="colophon">
+  このページは <a href="https://www.tsuruyayoshinobu.jp/">tsuruyayoshinobu.jp</a> の computed style 実測（2026-08-18）に基づくデザインシステムのショーケースです。<br>
+  実サイトの見出しは <code>dnp-shuei-mincho-pr6n</code>（DNP 秀英明朝 Pr6N / Adobe Fonts）。ドメインライセンスのためローカルでは表示できず、<br>
+  ここでは <code>Shippori Mincho</code> に差し替えています。本文は実サイトと同じくシステムフォントです。
+</div>
+
+</body>
+</html>

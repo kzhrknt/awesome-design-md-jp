@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 静嘉堂文庫美術館</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&family=EB+Garamond:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ★ 実サイトと同じく 1rem = 10px にする */
+  html { font-size: 62.5%; }
+
+  :root {
+    /* === Colors: 実サイトの :root 変数をそのまま採用 === */
+    --main-color:   #e5dfd5;   /* ★ ページ地色（生成り）。白ではない */
+    --sub-color:    #ffffff;   /* カード・ボタン・カレンダーの面 */
+    --point-color:  #003e7f;   /* 紺 — 見出し・ラベル・開館日ブロック */
+    --point-color2: #2c251f;   /* 焦茶 — 本文の文字色・イベントラベル */
+    --point-color3: #e0ba71;   /* 金 — 更新情報の強調のみ */
+    --notice-color: #e05803;   /* 橙 — 注意書き・休館日の二重線 */
+
+    /* 変数化されていない実測色 */
+    --ticket:      #a0371e;    /* チケット CTA */
+    --deep-red:    #910000;    /* ドロワー内のチケット項目 */
+    --chip-event:  #dbd455;    /* カレンダーのイベントチップ */
+
+    /* カレンダー */
+    --cal-closed:  #d8d8d8;
+    --cal-pink:    #f3e4ea;
+    --cal-mint:    #ebf3f3;
+    --cal-sun:     #dd0000;
+    --cal-sat:     #0000dd;
+    --cal-weekday: #333333;
+    --cal-date:    #777777;
+
+    /* 罫（影の代わり） */
+    --hairline:       #aaaaaa;
+    --hairline-light: #cccccc;
+    --scrim:          rgba(0, 0, 0, .8);
+    --img-gradient:   linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 50%, #2c251f 90%);
+
+    /* === Tokens === */
+    --lh: 1.8;          /* ★ 全体の基準 */
+    --ls: .08rem;       /* = 0.8px。px 固定で全サイズ共通 */
+    --radius-btn: 10px;
+    --radius-chip: 5px;
+    --container: 1200px;
+
+    /* === Fonts ===
+       和文は実サイトと同一（Shippori Mincho / Noto Sans JP、いずれも Google Fonts）。
+       英字の minion-pro（Adobe Fonts）だけはローカルで表示できないため、
+       オールドスタイルセリフの EB Garamond に差し替えている。 */
+    --mincho-font:  "Shippori Mincho", serif;
+    --gothic-font:  "Noto Sans JP", sans-serif;
+    --entitle-font: "EB Garamond", minion-pro, serif;
+    --cal-font:     "Helvetica Neue", Helvetica, "Hiragino Kaku Gothic ProN", Arial, Meiryo, sans-serif;
+    --font-mono:    SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--main-color);          /* ★ 生成り */
+    color: var(--point-color2);
+    font-family: var(--mincho-font);        /* ★ 既定が明朝 */
+    font-size: 1.4rem;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+    font-feature-settings: normal;          /* palt は使わない */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .gothic { font-family: var(--gothic-font); font-weight: 300; }
+
+  /* HEADER */
+  .header { display: flex; align-items: center; gap: 24px; padding: 16px 20px; background: var(--main-color); border-bottom: 1px solid var(--hairline); flex-wrap: wrap; }
+  .brand { font-family: var(--mincho-font); font-size: 2.4rem; font-weight: 500; line-height: 1.3; letter-spacing: .3rem; color: var(--point-color); }
+  .brand small { display: block; font-family: var(--gothic-font); font-size: 1.1rem; font-weight: 400; letter-spacing: .12rem; margin-top: 4px; }
+  .utility { display: flex; gap: 20px; list-style: none; margin-left: auto; flex-wrap: wrap; }
+  .utility a { font-family: var(--gothic-font); font-size: 1.2rem; font-weight: 400; letter-spacing: var(--ls); color: var(--point-color); text-decoration: none; }
+  .lang { font-family: var(--gothic-font); font-size: 1.2rem; font-weight: 700; letter-spacing: var(--ls); color: var(--point-color); background: var(--sub-color); border-radius: 30px; padding: 8px 20px; }
+  .openday { background: var(--point-color); color: var(--sub-color); padding: 10px 20px; text-align: center; font-family: var(--gothic-font); }
+  .openday .t1 { font-size: 1.2rem; font-weight: 500; letter-spacing: var(--ls); }
+  .openday .t2 { font-size: 1.8rem; font-weight: 500; letter-spacing: var(--ls); }
+  .openday .t3 { font-size: 1.4rem; font-weight: 500; letter-spacing: var(--ls); }
+
+  /* HERO */
+  .hero { position: relative; height: 340px; display: flex; align-items: center; justify-content: center; text-align: center; color: var(--sub-color);
+          background: var(--img-gradient), linear-gradient(150deg, #6d6257 0%, #4a4038 55%, #2c251f 100%); }
+  .hero-title { font-family: var(--mincho-font); font-size: 3.8rem; font-weight: 500; line-height: 1.2; letter-spacing: var(--ls); }
+  .hero-sub { font-family: var(--mincho-font); font-size: 2.4rem; font-weight: 400; line-height: 1.2; letter-spacing: var(--ls); margin-top: 10px; }
+  .hero-date { font-family: var(--mincho-font); font-size: 1.3rem; line-height: 1.5; letter-spacing: var(--ls); margin-top: 16px; }
+  .hero-credit { position: absolute; right: 16px; bottom: 12px; font-family: var(--mincho-font); font-size: 1rem; line-height: var(--lh); letter-spacing: var(--ls); }
+
+  /* SECTIONS */
+  .section { max-width: var(--container); margin: 0 auto; padding: 60px 20px; }
+  .section + .section { border-top: 1px solid var(--hairline); }
+  .en-title { font-family: var(--entitle-font); font-size: 2.4rem; line-height: 1; letter-spacing: .048rem; color: var(--point-color); }
+  .h-sec { font-family: var(--mincho-font); font-size: 3.6rem; font-weight: 400; line-height: var(--lh); letter-spacing: var(--ls); color: var(--point-color); margin-bottom: 30px; }
+  .h-sub { font-family: var(--mincho-font); font-size: 2.8rem; font-weight: 400; line-height: var(--lh); letter-spacing: var(--ls); color: var(--point-color); margin: 40px 0 20px; }
+  .group-label { font-family: var(--mincho-font); font-size: 1.8rem; font-weight: 500; line-height: var(--lh); letter-spacing: var(--ls); color: var(--point-color); margin: 36px 0 16px; }
+  .group-label:first-of-type { margin-top: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 20px; }
+  .swatch { background: var(--sub-color); border: 1px solid var(--hairline); border-radius: var(--radius-chip); overflow: hidden; }
+  .swatch-block { height: 76px; }
+  .swatch-info { padding: 14px 16px; border-top: 1px solid var(--hairline-light); }
+  .swatch-name { font-family: var(--mincho-font); font-size: 1.6rem; font-weight: 500; line-height: 1.4; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 1.1rem; letter-spacing: 0; color: #777; margin-top: 5px; }
+  .swatch-role { font-family: var(--gothic-font); font-size: 1.2rem; font-weight: 300; line-height: var(--lh); margin-top: 9px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding-bottom: 22px; margin-bottom: 26px; border-bottom: 1px solid var(--hairline); }
+  .type-sample:last-child { border-bottom: none; margin-bottom: 0; }
+  .type-meta { font-family: var(--font-mono); font-size: 1.1rem; letter-spacing: 0; line-height: 1.7; color: #6b6357; margin-top: 12px; }
+  .type-ctx { display: inline-block; font-family: var(--gothic-font); font-size: 1.1rem; font-weight: 400; letter-spacing: var(--ls); color: var(--point-color2); background: var(--sub-color); border-radius: var(--radius-chip); padding: 2px 8px; margin-left: 8px; }
+  .on-photo { background: var(--img-gradient), linear-gradient(150deg, #7a6d5f, #3a322b); color: var(--sub-color); padding: 26px 20px; }
+
+  /* EXHIBITION（組版サンプル） */
+  .exhibit { display: flex; gap: 32px; flex-wrap: wrap; }
+  .exhibit-photo { flex: 1 1 360px; height: 260px; background: linear-gradient(150deg, #b8ac93, #6a5c47); }
+  .exhibit-body { flex: 1 1 340px; }
+  .exhibit-title { font-family: var(--mincho-font); font-size: 2.8rem; font-weight: 400; line-height: 1.3; letter-spacing: var(--ls); color: var(--point-color); margin: 12px 0; }
+  .exhibit-text { font-family: var(--gothic-font); font-size: 1.4rem; font-weight: 300; line-height: var(--lh); letter-spacing: var(--ls); }
+  .exhibit-text + .exhibit-text { margin-top: 16px; }
+  .supplement { font-family: var(--gothic-font); font-size: 1.2rem; font-weight: 300; line-height: var(--lh); letter-spacing: var(--ls); margin-top: 14px; }
+  .attention { font-family: var(--gothic-font); font-size: 1.4rem; font-weight: 300; line-height: var(--lh); color: var(--notice-color); display: block; margin-top: 16px; }
+  .update-box strong { color: var(--point-color3); font-size: 1.6rem; }
+
+  /* BADGES */
+  .badge-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .label-exhibition { background: var(--point-color); color: var(--sub-color); border-radius: 0; padding: 8px; font-family: var(--mincho-font); font-size: 1.6rem; line-height: 1.4; letter-spacing: var(--ls); }
+  .label-lecture { background: var(--point-color2); color: var(--sub-color); border-radius: 0; padding: 8px; font-family: var(--mincho-font); font-size: 1.6rem; line-height: 1.4; letter-spacing: var(--ls); }
+  .status-now { background: var(--sub-color); color: var(--point-color); font-family: var(--mincho-font); font-size: 1.8rem; font-weight: 700; line-height: var(--lh); letter-spacing: var(--ls); padding: 0 8px; }
+  .status-preview { background: var(--sub-color); color: var(--point-color); border-radius: var(--radius-chip); padding: 0 5px; font-size: 1.4rem; }
+  .meta-chip { background: var(--sub-color); color: var(--point-color2); border-radius: var(--radius-chip); padding: 2px 6px; font-size: 1.4rem; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .white-btn { display: inline-flex; align-items: center; justify-content: center; width: 240px; height: 50px; background: var(--sub-color); color: var(--point-color2); border: none; border-radius: var(--radius-btn); font-family: var(--gothic-font); font-size: 1.6rem; font-weight: 400; letter-spacing: var(--ls); text-decoration: none; }
+  .white-btn.wide { width: 100%; max-width: 480px; }
+  .white-btn.white-line { border: 1px solid var(--sub-color); }
+  .ticket-btn { display: inline-flex; align-items: center; justify-content: space-between; width: 350px; height: 60px; background: var(--ticket); color: var(--sub-color); border-radius: 0 10px 10px 0; padding: 0 20px; font-family: var(--mincho-font); font-size: 1.8rem; letter-spacing: var(--ls); text-decoration: none; }
+  .nav-ticket { display: inline-flex; align-items: center; background: var(--deep-red); color: var(--sub-color); font-family: var(--mincho-font); font-size: 1.3rem; font-weight: 500; letter-spacing: var(--ls); padding: 10px 18px; text-decoration: none; }
+  .btn-note { font-family: var(--font-mono); font-size: 1.1rem; letter-spacing: 0; line-height: 1.7; color: #6b6357; margin-top: 12px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+  .card { background: var(--sub-color); border: 1px solid var(--hairline); }
+  .card-photo { height: 170px; background: linear-gradient(150deg, #a99b81, #5d5140); }
+  .card-body { padding: 18px 20px 22px; }
+  .card-title { font-family: var(--mincho-font); font-size: 2rem; font-weight: 500; line-height: 1.4; letter-spacing: var(--ls); color: var(--point-color); margin: 10px 0 8px; }
+  .card-date { font-family: var(--mincho-font); font-size: 1.3rem; line-height: 1.5; letter-spacing: var(--ls); margin-bottom: 16px; }
+
+  /* CALENDAR */
+  .cal { background: var(--sub-color); border: 1px solid var(--hairline); border-collapse: collapse; width: 100%; max-width: 620px; font-family: var(--cal-font); }
+  .cal th, .cal td { border: 1px solid var(--hairline); padding: 6px; vertical-align: top; }
+  .cal th { font-size: 1.62rem; font-weight: 700; line-height: 1.8; letter-spacing: var(--ls); background: var(--sub-color); }
+  .cal th.sun { color: var(--cal-sun); } .cal th.sat { color: var(--cal-sat); } .cal th.wd { color: var(--cal-weekday); }
+  .cal td { font-size: 1.8rem; font-weight: 400; line-height: 1.8; letter-spacing: var(--ls); color: var(--cal-date); height: 66px; }
+  .cal td.closed { background: var(--cal-closed); }
+  .cal td.pink { background: var(--cal-pink); }
+  .cal td.mint { background: var(--cal-mint); }
+  .cal .chip-ex { display: block; background: var(--point-color); color: #eee; font-size: 1.2rem; line-height: 1.6; padding: 0 4px; letter-spacing: var(--ls); }
+  .cal .chip-ev { display: block; background: var(--chip-event); color: #333; font-size: 1.2rem; line-height: 1.6; padding: 0 4px; letter-spacing: var(--ls); }
+  .cal del { position: relative; text-decoration: none; }
+  .cal del::before { content: ""; position: absolute; border-top: 4px double var(--notice-color); width: 100%; top: 50%; left: 0; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 28px; max-width: 900px; }
+  .field-label { display: block; font-family: var(--mincho-font); font-size: 1.8rem; font-weight: 500; line-height: var(--lh); letter-spacing: var(--ls); color: var(--point-color); margin-bottom: 8px; }
+  .input { width: 100%; font-family: var(--gothic-font); font-size: 1.4rem; font-weight: 300; line-height: var(--lh); letter-spacing: var(--ls); color: var(--point-color2);
+           background: var(--sub-color); border: 1px solid var(--hairline); border-radius: var(--radius-chip); padding: 12px 16px; }
+  .input::placeholder { color: #9a9184; }
+  .input--focus { border-color: var(--point-color); outline: 2px solid var(--point-color); outline-offset: 2px; }
+  .input--error { border-color: var(--notice-color); }
+  .form-state { font-family: var(--gothic-font); font-size: 1.2rem; font-weight: 300; line-height: var(--lh); letter-spacing: var(--ls); margin-top: 8px; }
+  .form-error { font-family: var(--gothic-font); font-size: 1.2rem; font-weight: 300; line-height: var(--lh); letter-spacing: var(--ls); color: var(--notice-color); margin-top: 8px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 22px; }
+  .elev-card { padding: 26px; text-align: center; }
+  .elev-0 { background: var(--main-color); border: 1px dashed var(--hairline); }
+  .elev-1 { background: var(--sub-color); }
+  .elev-1b { background: transparent; border: 1px solid var(--hairline); }
+  .elev-2 { background: var(--scrim); color: var(--sub-color); }
+  .elev-2b { background: var(--img-gradient), linear-gradient(150deg, #7a6d5f, #3a322b); color: var(--sub-color); }
+  .elev-name { font-family: var(--mincho-font); font-size: 1.8rem; font-weight: 500; line-height: var(--lh); letter-spacing: var(--ls); }
+  .elev-desc { font-family: var(--font-mono); font-size: 1.1rem; letter-spacing: 0; line-height: 1.7; color: #6b6357; margin-top: 8px; }
+  .elev-2 .elev-desc, .elev-2b .elev-desc { color: #ddd; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; margin-bottom: 26px; }
+  .space-item { text-align: center; }
+  .space-block { background: var(--point-color); height: 20px; }
+  .space-value { font-family: var(--font-mono); font-size: 1.1rem; letter-spacing: 0; color: #6b6357; margin-top: 6px; }
+  .container-demo { border: 1px solid var(--hairline); padding: 20px; }
+  .container-inner { background: var(--sub-color); padding: 20px; text-align: center; font-family: var(--font-mono); font-size: 1.2rem; letter-spacing: 0; color: #6b6357; }
+
+  /* FOOTER */
+  .footer { background: var(--point-color2); color: var(--sub-color); padding: 44px 20px 32px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-links { display: flex; gap: 24px; flex-wrap: wrap; list-style: none; margin-bottom: 20px; }
+  .footer-links a { font-family: var(--gothic-font); font-size: 1.2rem; font-weight: 400; letter-spacing: var(--ls); color: var(--sub-color); text-decoration: none; }
+  .footer-copy { font-family: var(--gothic-font); font-size: 1.2rem; font-weight: 300; letter-spacing: var(--ls); color: #cfc8bd; }
+
+  .colophon { padding: 30px 20px 40px; font-family: var(--gothic-font); font-size: 1.2rem; font-weight: 300; line-height: var(--lh); letter-spacing: var(--ls); text-align: center; }
+  .colophon a { color: var(--point-color); }
+  code { font-family: var(--font-mono); letter-spacing: 0; }
+
+  @media (max-width: 768px) {
+    .hero { height: 260px; }
+    .hero-title { font-size: 2.6rem; }
+    .h-sec { font-size: 2.4rem; }
+    .section { padding: 40px 15px; }
+    .ticket-btn { width: 100%; border-radius: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="brand">静嘉堂文庫美術館<small>SEIKADO BUNKO ART MUSEUM</small></div>
+  <ul class="utility">
+    <li><a href="#colors">リンク集</a></li>
+    <li><a href="#typography">サイトマップ</a></li>
+    <li><a href="#exhibit">プレスルーム</a></li>
+    <li><a href="#cards">ENGLISH</a></li>
+  </ul>
+  <span class="lang">LANGUAGE</span>
+  <div class="openday">
+    <div class="t1">本日は</div>
+    <div class="t2">開館日</div>
+    <div class="t3">10:00 - 17:00</div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <div class="hero-title">元禄! 師宣劇場</div>
+    <div class="hero-sub">十二ヶ月風俗図巻 大公開</div>
+    <div class="hero-date">［前期］6/27(土)〜7/26(日)　［後期］7/28(火)〜8/30(日)</div>
+  </div>
+  <div class="hero-credit">Photo by Keizo Kioku</div>
+</section>
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="en-title">Color</div>
+  <div class="h-sec">カラーパレット</div>
+
+  <div class="group-label">Base — 紙と面</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#e5dfd5"></div><div class="swatch-info"><div class="swatch-name">Main</div><div class="swatch-hex">#e5dfd5 / --main-color</div><div class="swatch-role"><strong>ページ地色（生成り）。白ではない。</strong>body に直接当たる</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#ffffff; box-shadow: inset 0 0 0 1px #aaaaaa"></div><div class="swatch-info"><div class="swatch-name">Sub</div><div class="swatch-hex">#ffffff / --sub-color</div><div class="swatch-role">カード・ボタン・カレンダーの面。<strong>地色ではなく「載せるもの」の色</strong></div></div></div>
+  </div>
+
+  <div class="group-label">Point — 差し色</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#003e7f"></div><div class="swatch-info"><div class="swatch-name">Point</div><div class="swatch-hex">#003e7f / --point-color</div><div class="swatch-role"><strong>紺 — サイトの主役色。</strong>見出し・展覧会ラベル・開館日ブロック</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#2c251f"></div><div class="swatch-info"><div class="swatch-name">Point2</div><div class="swatch-hex">#2c251f / --point-color2</div><div class="swatch-role">焦茶 — 本文の文字色・イベントラベル・暗幕</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#e0ba71"></div><div class="swatch-info"><div class="swatch-name">Point3</div><div class="swatch-hex">#e0ba71 / --point-color3</div><div class="swatch-role">金 — <strong>更新情報の強調 1 用途だけ</strong></div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#e05803"></div><div class="swatch-info"><div class="swatch-name">Notice</div><div class="swatch-hex">#e05803 / --notice-color</div><div class="swatch-role">橙 — 注意書き・休館日の二重取り消し線</div></div></div>
+  </div>
+
+  <div class="group-label">Accent — 変数化されていない実測色</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#a0371e"></div><div class="swatch-info"><div class="swatch-name">Ticket Red</div><div class="swatch-hex">#a0371e</div><div class="swatch-role">チケット購入 CTA のバー（350×60px・左下固定）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#910000"></div><div class="swatch-info"><div class="swatch-name">Deep Red</div><div class="swatch-hex">#910000</div><div class="swatch-role">ドロワー内のチケット関連項目の面</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#dbd455"></div><div class="swatch-info"><div class="swatch-name">Gold Chip</div><div class="swatch-hex">#dbd455</div><div class="swatch-role">カレンダーのイベントチップ。文字は #333</div></div></div>
+  </div>
+
+  <div class="group-label">Calendar / Neutral</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#d8d8d8"></div><div class="swatch-info"><div class="swatch-name">Closed</div><div class="swatch-hex">#d8d8d8</div><div class="swatch-role">休館日のセル</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#f3e4ea"></div><div class="swatch-info"><div class="swatch-name">Tint Pink</div><div class="swatch-hex">#f3e4ea</div><div class="swatch-role">日曜・特定日のセル</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#ebf3f3"></div><div class="swatch-info"><div class="swatch-name">Tint Mint</div><div class="swatch-hex">#ebf3f3</div><div class="swatch-role">平日のセル</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#aaaaaa"></div><div class="swatch-info"><div class="swatch-name">Hairline</div><div class="swatch-hex">#aaaaaa</div><div class="swatch-role"><strong>主役の罫線（123 箇所）。影の代わり</strong></div></div></div>
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="en-title">Typography</div>
+  <div class="h-sec">タイポグラフィ</div>
+
+  <div class="type-sample">
+    <div class="en-title">News</div>
+    <div style="font-family:var(--mincho-font); font-size:3.6rem; font-weight:400; line-height:1.8; letter-spacing:.08rem; color:#003e7f;">お知らせ</div>
+    <div class="type-meta">英字 <strong>Minion Pro 24px / ls 0.48px（0.02em）</strong>＋ 明朝 36px / 400 / lh 1.8（64.8px） / ls 0.8px / 色 #003e7f<span class="type-ctx">セクション見出し — 英字を上に置く</span></div>
+  </div>
+  <div class="type-sample on-photo">
+    <div style="font-family:var(--mincho-font); font-size:3.8rem; font-weight:500; line-height:1.2; letter-spacing:.08rem;">元禄! 師宣劇場</div>
+    <div style="font-family:var(--mincho-font); font-size:2.4rem; line-height:1.2; letter-spacing:.08rem; margin-top:8px;">十二ヶ月風俗図巻 大公開</div>
+    <div class="type-meta" style="color:#ddd;">明朝 38px / <strong>500</strong> / <strong>lh 1.2</strong>（写真の上だけ詰める） ＋ 24px / 400 / lh 1.2<span class="type-ctx">ヒーロー</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--mincho-font); font-size:2.8rem; font-weight:400; line-height:1.8; letter-spacing:.08rem; color:#003e7f;">関連イベント</div>
+    <div class="type-meta">明朝 28px / 400 / lh 1.8（50.4px） / ls 0.8px<span class="type-ctx">サブ見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--mincho-font); font-size:1.8rem; font-weight:500; line-height:1.8; letter-spacing:.08rem; color:#003e7f;">ご予約ならびにオンラインチケットのご購入</div>
+    <div class="type-meta">明朝 18px / <strong>500</strong> / lh 1.8（32.4px） / ls 0.8px<span class="type-ctx">小見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="gothic" style="font-size:1.4rem; line-height:1.8; letter-spacing:.08rem; max-width:760px;">本文は Noto Sans JP を <strong style="font-weight:300;">weight 300（Light）</strong>で組み、行間 1.8・字間 0.8px でゆったり流します。字間は em ではなく <code>px</code> 固定なので、大きい文字ほど相対的に締まって見えます。生成りの地色 <code>#e5dfd5</code> の上で、この軽さがサイトの静けさをつくっています。</div>
+    <div class="type-meta">ゴシック 14px / <strong>300</strong> / lh 1.8（25.2px） / ls 0.8px / 色 #2c251f<span class="type-ctx">本文 — 400 にしない</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="gothic" style="font-size:1.4rem; font-weight:400; line-height:1.5; letter-spacing:.08rem;">8/16(日)まで、ミュージアムショップにて企画展関連グッズを販売しております。</div>
+    <div class="type-meta">ゴシック 14px / 400 / <strong>lh 1.5</strong>（21px） / ls 0.8px<span class="type-ctx">お知らせ一覧 — 行間だけ詰める</span></div>
+  </div>
+  <div class="type-sample on-photo">
+    <div style="font-family:var(--mincho-font); font-size:1.8rem; line-height:1.8; letter-spacing:.18rem;">ミュージアムショップ</div>
+    <div class="type-meta" style="color:#ddd;">明朝 18px / 400 / lh 1.8 / <strong>ls 1.8px（0.1em）</strong><span class="type-ctx">写真上のキャプション — ここだけ開く</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="gothic supplement">※日時指定予約優先です。当日券の販売もございます。</div>
+    <span class="attention">※美術館入口は、明治安田ヴィレッジ 1 階となります。</span>
+    <div class="update-box gothic" style="font-size:1.4rem; font-weight:300; margin-top:12px;">更新情報：<strong>展覧会ページを更新しました</strong></div>
+    <div class="type-meta">補足 12px / 300 ／ 注意書き 14px / 色 <strong>#e05803</strong> ／ 強調 16px / 色 <strong>#e0ba71</strong><span class="type-ctx">補足・注意・更新情報</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--mincho-font); font-size:1rem; line-height:1.8; letter-spacing:.08rem;">菱川師宣「十二ヶ月風俗図巻」 江戸時代・17世紀　静嘉堂文庫美術館蔵</div>
+    <div class="type-meta">明朝 10px / 400 / lh 1.8（18px） / ls 0.8px（= <strong>0.08em</strong>）<span class="type-ctx">作品キャプション — 小さい文字ほど字間が開く</span></div>
+  </div>
+</section>
+
+<!-- EXHIBITION -->
+<section class="section" id="exhibit">
+  <div class="en-title">Exhibition</div>
+  <div class="h-sec">展覧会</div>
+  <div class="exhibit">
+    <div class="exhibit-photo"></div>
+    <div class="exhibit-body">
+      <div class="badge-row">
+        <span class="label-exhibition">展覧会</span>
+        <span class="status-now">開催中</span>
+        <span class="meta-chip">会期</span>
+      </div>
+      <h2 class="exhibit-title">元禄! 師宣劇場</h2>
+      <p class="exhibit-text">菱川師宣が描いた十二ヶ月の風俗を、前期・後期に分けて全場面公開します。元禄の江戸に生きた人々の一年を、絵巻の流れのままにたどる展覧会です。</p>
+      <p class="exhibit-text">見出しと UI は明朝、本文はゴシックの Light。書体で役割を分け、罫と面色だけで領域を仕切ります。影は使いません。</p>
+      <p class="supplement">※会期中、一部展示替えがあります。</p>
+      <div class="btn-row" style="margin-top:20px;">
+        <a class="white-btn" href="#buttons">詳しく見る</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="en-title">Component</div>
+  <div class="h-sec">ボタンとラベル</div>
+
+  <div class="group-label">White Button（サイトの標準）</div>
+  <div class="btn-row">
+    <a class="white-btn" href="#buttons">詳しく見る</a>
+    <a class="white-btn" href="#buttons">年間スケジュール</a>
+  </div>
+  <div class="btn-note">background: #fff / color: #2c251f / border-radius: 10px / 240×50px / Noto Sans JP 16px。<strong>影は付けない</strong></div>
+
+  <div class="group-label">Ticket CTA（左端だけ角ばる）／ ドロワー内のチケット項目</div>
+  <div class="btn-row">
+    <a class="ticket-btn" href="#buttons"><span>チケット購入・日時指定予約</span><span>→</span></a>
+    <a class="nav-ticket" href="#buttons">公式オンラインチケット</a>
+  </div>
+  <div class="btn-note">#a0371e / <strong>border-radius: 0 10px 10px 0</strong> / 350×60px / padding-left 20px。<strong>実サイトでは position: fixed で画面左下に常時表示する</strong>（SP では幅いっぱいのバー）</div>
+
+  <div class="group-label">Labels &amp; Status</div>
+  <div class="badge-row">
+    <span class="label-exhibition">展覧会</span>
+    <span class="label-lecture">イベント</span>
+    <span class="status-now">開催中</span>
+    <span class="status-preview">予告</span>
+    <span class="meta-chip">会期</span>
+    <span class="meta-chip">日程</span>
+  </div>
+  <div class="btn-note">大きいラベルは radius 0（padding 8px / 明朝 16px）、小さいステータスは radius 5px（14px）</div>
+</section>
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="en-title">Collection</div>
+  <div class="h-sec">所蔵品紹介</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-photo"></div>
+      <div class="card-body">
+        <span class="label-exhibition">展覧会</span>
+        <div class="card-title">曜変天目（稲葉天目）</div>
+        <div class="card-date">建窯・南宋時代（12〜13世紀）／国宝</div>
+        <a class="white-btn" href="#buttons">詳しく見る</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-photo" style="background:linear-gradient(150deg,#9fa8a0,#4b544c);"></div>
+      <div class="card-body">
+        <span class="label-lecture">イベント</span>
+        <div class="card-title">スライドトーク</div>
+        <div class="card-date">8/23(土) 14:00〜／申込不要</div>
+        <a class="white-btn" href="#buttons">詳しく見る</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-photo" style="background:linear-gradient(150deg,#b3a289,#665741);"></div>
+      <div class="card-body">
+        <span class="label-exhibition">展覧会</span>
+        <div class="card-title">民藝 SHOCK!!</div>
+        <div class="card-date">2026年9月20日(土)〜11月24日(月・休)</div>
+        <a class="white-btn" href="#buttons">詳しく見る</a>
+      </div>
+    </div>
+  </div>
+  <div class="btn-note">カードは #fff の面 ＋ 1px solid #aaa。<strong>box-shadow は使わない</strong></div>
+</section>
+
+<!-- CALENDAR -->
+<section class="section" id="calendar">
+  <div class="en-title">Calendar</div>
+  <div class="h-sec">開館日カレンダー</div>
+  <table class="cal">
+    <thead>
+      <tr><th class="sun">日</th><th class="wd">月</th><th class="wd">火</th><th class="wd">水</th><th class="wd">木</th><th class="wd">金</th><th class="sat">土</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="pink">2</td>
+        <td class="closed"><del>3</del></td>
+        <td class="mint">4<span class="chip-ex">元禄! 師宣劇場</span></td>
+        <td class="mint">5<span class="chip-ex">元禄! 師宣劇場</span></td>
+        <td class="mint">6</td>
+        <td class="mint">7</td>
+        <td class="mint">8<span class="chip-ev">スライドトーク</span></td>
+      </tr>
+      <tr>
+        <td class="pink">9</td>
+        <td class="closed"><del>10</del></td>
+        <td class="mint">11</td>
+        <td class="mint">12</td>
+        <td class="mint">13</td>
+        <td class="mint">14</td>
+        <td class="mint">15</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="btn-note">曜日ヘッダー 16.2px / 700（日 #dd0000・土 #0000dd・平日 #333）／日付 18px / #777 / lh 1.8<br>休館日は <code>&lt;del&gt;</code> に <code>border-top: 4px double #e05803</code> の二重線を重ねる。フォントはここだけ Helvetica Neue 系</div>
+</section>
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="en-title">Form</div>
+  <div class="h-sec">フォーム</div>
+  <div class="form-grid">
+    <div>
+      <label class="field-label">お名前</label>
+      <input class="input" type="text" placeholder="静嘉堂 太郎">
+      <div class="form-state">デフォルト — #fff / 1px solid #aaa / radius 5px / Noto Sans JP 14px 300</div>
+    </div>
+    <div>
+      <label class="field-label">ご来館日</label>
+      <input class="input input--focus" type="text" value="2026年8月23日">
+      <div class="form-state">フォーカス — border #003e7f ＋ 可視のフォーカスリング（実装では必ず明示する）</div>
+    </div>
+    <div>
+      <label class="field-label">メールアドレス</label>
+      <input class="input input--error" type="text" value="taro@">
+      <div class="form-error">メールアドレスの形式をご確認ください（#e05803）</div>
+      <div class="form-state">エラーは橙。<strong>赤 #dd0000 はカレンダーの日曜専用なので流用しない</strong></div>
+    </div>
+  </div>
+</section>
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="en-title">Depth</div>
+  <div class="h-sec">奥行き</div>
+  <p class="exhibit-text" style="margin-bottom:22px;"><strong>影を使わない（実測 0 件）。</strong>奥行きは「地色 → 白面 → 暗幕」の 3 段だけで表現します。</p>
+  <div class="elev-grid">
+    <div class="elev-card elev-0"><div class="elev-name">Level 0</div><div class="elev-desc">#e5dfd5 の地色そのまま</div></div>
+    <div class="elev-card elev-1"><div class="elev-name">Level 1</div><div class="elev-desc">#ffffff の面。生成りとの明度差で浮かせる</div></div>
+    <div class="elev-card elev-1b"><div class="elev-name">Level 1&#39;</div><div class="elev-desc">1px solid #aaaaaa の罫</div></div>
+    <div class="elev-card elev-2"><div class="elev-name">Level 2</div><div class="elev-desc">rgba(0,0,0,.8) の暗幕（ナビ展開時）</div></div>
+    <div class="elev-card elev-2b"><div class="elev-name">Level 2&#39;</div><div class="elev-desc">linear-gradient(to top, transparent 0%, transparent 50%, #2c251f 90%)</div></div>
+  </div>
+</section>
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <div class="en-title">Layout</div>
+  <div class="h-sec">レイアウト</div>
+
+  <div class="group-label">Spacing Scale（1rem = 10px）</div>
+  <div class="space-row">
+    <div class="space-item"><div class="space-block" style="width:4px"></div><div class="space-value">0.4rem</div></div>
+    <div class="space-item"><div class="space-block" style="width:8px"></div><div class="space-value">0.8rem</div></div>
+    <div class="space-item"><div class="space-block" style="width:20px"></div><div class="space-value">2rem</div></div>
+    <div class="space-item"><div class="space-block" style="width:40px"></div><div class="space-value">4rem</div></div>
+    <div class="space-item"><div class="space-block" style="width:60px"></div><div class="space-value">6rem</div></div>
+    <div class="space-item"><div class="space-block" style="width:100px"></div><div class="space-value">10rem</div></div>
+  </div>
+
+  <div class="group-label">Container</div>
+  <div class="container-demo">
+    <div class="container-inner">max-width: 1200px（本文ブロックは 1000px / 700px も併用）／ margin-inline: auto</div>
+  </div>
+  <p class="exhibit-text" style="margin-top:16px;">ブレークポイントは <code>1200px</code> / <code>768px</code> / <code>375px</code> / <code>320px</code> / <code>280px</code>。<strong>小型端末まで 3 段階で詰める</strong>のが特徴で、カレンダーが破綻しないようにしています。</p>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <ul class="footer-links">
+      <li><a href="#exhibit">展覧会</a></li>
+      <li><a href="#calendar">開館日カレンダー</a></li>
+      <li><a href="#cards">所蔵品紹介</a></li>
+      <li><a href="#forms">利用案内・アクセス</a></li>
+      <li><a href="#colors">ミュージアムショップ</a></li>
+    </ul>
+    <div class="footer-copy">公益財団法人 静嘉堂　静嘉堂＠丸の内（明治生命館 1 階）</div>
+  </div>
+</footer>
+
+<div class="colophon">
+  このページは <a href="https://www.seikado.or.jp/">seikado.or.jp</a> の computed style 実測（2026-08-18）に基づくデザインシステムのショーケースです。<br>
+  和文は実サイトと同じ <code>Shippori Mincho</code> ／ <code>Noto Sans JP</code>（ともに Google Fonts）。<br>
+  英字の <code>minion-pro</code>（Adobe Fonts）だけはローカルで表示できないため、<code>EB Garamond</code> に差し替えています。
+</div>
+
+</body>
+</html>

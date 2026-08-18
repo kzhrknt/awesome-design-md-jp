@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: MIMIGURI（ミミグリ）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Alegreya+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実サイトの :root 変数をそのまま採用 === */
+    --color-black1: #111111;   /* 本文・見出し・ボーダー・下線のすべて */
+    --color-gray1:  #707070;   /* 英語ラベル・フッター補助 */
+    --color-gray2:  #dddddd;   /* 区切り線・淡いボーダー */
+    --color-gray3:  #444444;   /* 補助テキスト（濃） */
+    --color-gray4:  #aaaaaa;   /* プレースホルダ・無効 */
+    --color-white1: #ffffff;   /* 背景・カード面・濃色上の文字 */
+    --color-red1:   #dd0000;   /* サイト唯一の有彩色。エラー専用 */
+    --scrim:        rgba(0, 0, 0, .7);   /* ヒーロー／ドロワーの暗幕 */
+
+    /* === Line height: サイトが持つ 3 トークンだけで統率する === */
+    --lh-s: 1.5;
+    --lh-m: 1.75;   /* ★ ほぼ全テキストがこれ */
+    --lh-l: 2;      /* 読ませる本文だけ */
+
+    /* === Weight === */
+    --fw-regular: 400;
+    --fw-medium:  500;
+    --fw-bold:    700;
+
+    /* === Tokens === */
+    --radius-card: 4px;    /* カード専用 */
+    --radius-pill: 50px;   /* CTA 専用 */
+    --shadow: 0 2px 6px rgba(0, 0, 0, .1);   /* サイト唯一の影 */
+    --container: 1200px;
+    --gutter: 40px;
+    --header-h: 97px;
+    --ease: cubic-bezier(.01, .65, .43, .98);
+
+    /* === Fonts ===
+       実サイト: 和文 TazuganeGothicStdN-Regular / -Bold（Monotype）
+                 欧文 PalatinoSansLTPro-Regular（Linotype）
+       いずれも商用ライセンスのためローカルでは表示できない。
+       ここでは Google Fonts の近似書体に差し替えている:
+         Tazugane Gothic  → Zen Kaku Gothic New（ヒューマニスト系の和文サンセリフ）
+         Palatino Sans    → Alegreya Sans（Zapf 系の温かいヒューマニストサンセリフ） */
+    --font-jp:      "Zen Kaku Gothic New", "TazuganeGothicStdN-Regular", sans-serif;
+    --font-jp-bold: "Zen Kaku Gothic New", "TazuganeGothicStdN-Bold", sans-serif;
+    --font-en:      "Alegreya Sans", "PalatinoSansLTPro-Regular", sans-serif;
+    --font-mono:    SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--color-white1);
+    color: var(--color-black1);
+    font-family: var(--font-jp);
+    font-size: 16px;
+    font-weight: var(--fw-regular);
+    line-height: var(--lh-m);          /* 1.75 */
+    letter-spacing: normal;
+    font-feature-settings: normal;     /* palt は使わない */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  b, strong, .bold { font-family: var(--font-jp-bold); font-weight: var(--fw-bold); }
+
+  /* HEADER */
+  .header { display: flex; align-items: center; gap: 28px; padding: 0 var(--gutter); height: var(--header-h); border-bottom: 1px solid var(--color-gray2); flex-wrap: wrap; }
+  .logo { font-family: var(--font-en); font-size: 22px; letter-spacing: .28em; }
+  .gnav { display: flex; gap: 26px; list-style: none; margin-left: auto; flex-wrap: wrap; }
+  .gnav a { font-size: 14px; line-height: var(--lh-m); color: var(--color-black1); text-decoration: none; }
+  .btn-cta { display: inline-block; background: transparent; color: var(--color-black1); border: 1px solid var(--color-black1); border-radius: var(--radius-pill); padding: 6px 24px; font-family: var(--font-jp-bold); font-size: 14px; font-weight: var(--fw-bold); line-height: var(--lh-m); text-decoration: none; transition: all .2s var(--ease); }
+  .btn-cta:hover { background: var(--color-black1); color: var(--color-white1); }
+  .btn-cta--inv { color: var(--color-white1); border-color: var(--color-white1); }
+  .btn-cta--inv:hover { background: var(--color-white1); color: var(--color-black1); }
+
+  /* HERO */
+  .hero { position: relative; padding: 96px var(--gutter) 104px; color: var(--color-white1);
+          background: linear-gradient(140deg, #7d8f7a 0%, #93a08d 28%, #b6a68f 55%, #8d9aa4 100%); overflow: hidden; }
+  .hero::after { content: ""; position: absolute; inset: 0; background: var(--scrim); opacity: .18; }
+  .hero-inner { position: relative; z-index: 1; max-width: var(--container); margin-inline: auto; }
+  .hero-catch { font-size: 30px; font-weight: var(--fw-regular); line-height: var(--lh-m); letter-spacing: 3px; }
+  .hero-title { font-family: var(--font-en); font-size: 72px; line-height: 1.1; letter-spacing: .04em; margin: 18px 0 26px; }
+  .hero-lead { font-size: 18px; line-height: var(--lh-l); }
+  .hero-cta { margin-top: 34px; }
+
+  /* SECTIONS */
+  .section { padding: 96px var(--gutter); max-width: calc(var(--container) + var(--gutter) * 2); margin-inline: auto; }
+  .section + .section { border-top: 1px solid var(--color-gray2); }
+  .en-label { font-family: var(--font-en); font-size: 14px; line-height: var(--lh-m); letter-spacing: .05em; color: var(--color-gray1); }
+  .h-sec { font-family: var(--font-jp-bold); font-size: 40px; font-weight: var(--fw-bold); line-height: var(--lh-m); margin: 6px 0 40px; }
+  .group-label { font-family: var(--font-jp-bold); font-size: 18px; font-weight: var(--fw-bold); line-height: var(--lh-m); margin: 40px 0 16px; }
+  .group-label:first-of-type { margin-top: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+  .swatch { border: 1px solid var(--color-gray2); border-radius: var(--radius-card); overflow: hidden; background: var(--color-white1); }
+  .swatch-block { height: 78px; }
+  .swatch-info { padding: 14px 16px; border-top: 1px solid var(--color-gray2); }
+  .swatch-name { font-family: var(--font-jp-bold); font-size: 14px; font-weight: var(--fw-bold); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 12px; color: var(--color-gray1); margin-top: 4px; }
+  .swatch-role { font-size: 12px; line-height: var(--lh-m); color: var(--color-gray3); margin-top: 8px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { padding-bottom: 26px; margin-bottom: 30px; border-bottom: 1px solid var(--color-gray2); }
+  .type-sample:last-child { border-bottom: none; margin-bottom: 0; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; line-height: 1.7; color: var(--color-gray1); margin-top: 14px; }
+  .type-ctx { display: inline-block; font-family: var(--font-jp); font-size: 11px; color: var(--color-gray3); border: 1px solid var(--color-gray2); border-radius: var(--radius-card); padding: 2px 10px; margin-left: 8px; }
+
+  /* LINK（グラデーション下線） */
+  .u-link { color: var(--color-black1); text-decoration: none;
+            background-image: linear-gradient(var(--color-black1), var(--color-black1));
+            background-repeat: no-repeat; background-position: 100% 100%; background-size: 0 1px;
+            transition: background-size .2s var(--ease), color .2s var(--ease); }
+  .u-link:hover { background-size: 100% 1px; }
+  .u-link--on { background-size: 100% 1px; }
+
+  /* SERVICE（組版サンプル） */
+  .service { max-width: 760px; }
+  .service-title { font-family: var(--font-jp-bold); font-size: 28px; font-weight: var(--fw-bold); line-height: var(--lh-m); margin-bottom: 20px; }
+  .service-body p { font-size: 18px; line-height: var(--lh-l); margin-bottom: 24px; }
+  .service-note { font-size: 12px; line-height: var(--lh-m); color: var(--color-gray1); }
+  .service-links { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 28px; font-size: 14px; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .btn-row--dark { background: linear-gradient(140deg, #6f7f6d, #8d9aa4); padding: 28px; border-radius: var(--radius-card); }
+  .btn-note { font-family: var(--font-mono); font-size: 11px; color: var(--color-gray1); margin-top: 12px; line-height: 1.7; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 48px; }
+  .card { background: var(--color-white1); border-radius: var(--radius-card); box-shadow: var(--shadow); overflow: hidden; }
+  .card-photo { height: 168px; background: linear-gradient(150deg, #a9b6a2, #cbbfa6); }
+  .card-body { padding: 22px 24px 26px; }
+  .card-tag { font-family: var(--font-jp-bold); font-size: 12px; font-weight: var(--fw-bold); line-height: var(--lh-m); }
+  .card-title { font-family: var(--font-jp-bold); font-size: 18px; font-weight: var(--fw-bold); line-height: var(--lh-m); margin: 6px 0 10px; }
+  .card-text { font-size: 14px; line-height: var(--lh-m); color: var(--color-gray3); }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 40px; max-width: 900px; }
+  .field-label { font-family: var(--font-jp-bold); font-size: 14px; font-weight: var(--fw-bold); line-height: var(--lh-m); margin-bottom: 8px; display: block; }
+  .req { color: var(--color-red1); margin-left: 6px; font-size: 12px; }
+  .input { width: 100%; font-family: var(--font-jp); font-size: 16px; line-height: var(--lh-m); color: var(--color-black1);
+           background: var(--color-white1); border: 1px solid var(--color-gray2); border-radius: var(--radius-card); padding: 12px 16px; }
+  .input::placeholder { color: var(--color-gray4); }
+  .input--focus { border-color: var(--color-black1); outline: 2px solid var(--color-black1); outline-offset: 2px; }
+  .input--error { border-color: var(--color-red1); }
+  .form-state { font-size: 12px; line-height: var(--lh-m); color: var(--color-gray1); margin-top: 8px; }
+  .form-error { font-size: 12px; line-height: var(--lh-m); color: var(--color-red1); margin-top: 8px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .elev-card { background: var(--color-white1); border: 1px solid var(--color-gray2); border-radius: var(--radius-card); padding: 28px; text-align: center; }
+  .elev-card--1 { border-color: transparent; box-shadow: var(--shadow); }
+  .elev-card--scrim { background: var(--scrim); color: var(--color-white1); border-color: transparent; }
+  .elev-name { font-family: var(--font-jp-bold); font-size: 18px; font-weight: var(--fw-bold); }
+  .elev-desc { font-family: var(--font-mono); font-size: 11px; line-height: 1.7; color: var(--color-gray1); margin-top: 8px; }
+  .elev-card--scrim .elev-desc { color: #ddd; }
+
+  /* LAYOUT */
+  .space-row { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; margin-bottom: 28px; }
+  .space-item { text-align: center; }
+  .space-block { background: var(--color-black1); height: 20px; }
+  .space-value { font-family: var(--font-mono); font-size: 11px; color: var(--color-gray1); margin-top: 6px; }
+  .layout-note { font-size: 14px; line-height: var(--lh-m); color: var(--color-gray3); }
+  .container-demo { border: 1px dashed var(--color-gray2); padding: 20px; border-radius: var(--radius-card); }
+  .container-inner { background: #f4f4f4; border-radius: var(--radius-card); padding: 20px; text-align: center; font-family: var(--font-mono); font-size: 12px; color: var(--color-gray3); }
+
+  /* FOOTER */
+  .footer { background: var(--color-white1); border-top: 1px solid var(--color-gray2); padding: 56px var(--gutter) 40px; }
+  .footer-inner { max-width: var(--container); margin-inline: auto; }
+  .footer-links { display: flex; gap: 26px; flex-wrap: wrap; list-style: none; font-size: 14px; margin-bottom: 24px; }
+  .footer-addr { font-size: 12px; line-height: var(--lh-m); color: var(--color-gray1); }
+
+  .colophon { padding: 32px var(--gutter) 48px; font-size: 12px; line-height: var(--lh-l); color: var(--color-gray1); text-align: center; }
+  code { font-family: var(--font-mono); }
+
+  @media (max-width: 768px) {
+    .header { height: 64px; gap: 16px; padding: 0 20px; }
+    .hero, .section, .footer, .colophon { padding-left: 20px; padding-right: 20px; }
+    .section { padding-top: 64px; padding-bottom: 64px; }
+    .hero-title { font-size: 40px; }
+    .h-sec { font-size: 26px; }
+    .card-grid { gap: 15px; }
+    .form-grid { gap: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">MIMIGURI</div>
+  <ul class="gnav">
+    <li><a href="#colors">提供サービス</a></li>
+    <li><a href="#typography">研究活動</a></li>
+    <li><a href="#service">企業情報</a></li>
+    <li><a href="#cards">採用情報</a></li>
+  </ul>
+  <a class="btn-cta" href="#buttons">お問い合わせ</a>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-catch">創造性の土壌を耕す</div>
+    <div class="hero-title">Cultivate the Creativity</div>
+    <div class="hero-lead">私たちは、人と組織の可能性を活かした新しい経営モデルを基盤に、<br>組織と社会の創造性の土壌を耕していきます。</div>
+    <div class="hero-cta"><a class="btn-cta btn-cta--inv" href="#buttons">お問い合わせ</a></div>
+  </div>
+</section>
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="en-label">Color Palette</div>
+  <div class="h-sec">COLORS</div>
+
+  <div class="group-label">Neutral — サイトの色はほぼこれだけ</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#111111"></div><div class="swatch-info"><div class="swatch-name">Black1</div><div class="swatch-hex">#111111 / --color-black1</div><div class="swatch-role"><strong>本文・見出し・ボーダー・下線のすべて。</strong>純黒 #000 は使わない</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#707070"></div><div class="swatch-info"><div class="swatch-name">Gray1</div><div class="swatch-hex">#707070 / --color-gray1</div><div class="swatch-role">英語ラベル・住所・コピーライト</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#444444"></div><div class="swatch-info"><div class="swatch-name">Gray3</div><div class="swatch-hex">#444444 / --color-gray3</div><div class="swatch-role">補助テキスト（濃いほう）</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#aaaaaa"></div><div class="swatch-info"><div class="swatch-name">Gray4</div><div class="swatch-hex">#aaaaaa / --color-gray4</div><div class="swatch-role">プレースホルダ・無効状態</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#dddddd"></div><div class="swatch-info"><div class="swatch-name">Gray2</div><div class="swatch-hex">#dddddd / --color-gray2</div><div class="swatch-role">区切り線・入力欄の枠</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#ffffff; box-shadow: inset 0 0 0 1px #dddddd"></div><div class="swatch-info"><div class="swatch-name">White1</div><div class="swatch-hex">#ffffff / --color-white1</div><div class="swatch-role">ページ背景・カードの面・濃色上の文字</div></div></div>
+  </div>
+
+  <div class="group-label">Semantic — 有彩色は 1 色だけ</div>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-block" style="background:#dd0000"></div><div class="swatch-info"><div class="swatch-name">Red1</div><div class="swatch-hex">#dd0000 / --color-red1</div><div class="swatch-role"><strong>サイト唯一の有彩色。</strong>エラー・必須マーク専用</div></div></div>
+    <div class="swatch"><div class="swatch-block" style="background:rgba(0,0,0,.7)"></div><div class="swatch-info"><div class="swatch-name">Scrim</div><div class="swatch-hex">rgba(0, 0, 0, .7)</div><div class="swatch-role">ヒーロー画像の暗幕・SP ドロワーの背面。<strong>影の代わりに階層を作る</strong></div></div></div>
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="en-label">Typography</div>
+  <div class="h-sec">TYPOGRAPHY</div>
+
+  <div class="type-sample">
+    <div style="font-family:var(--font-jp-bold); font-size:48px; font-weight:700; line-height:1.75;">提供サービス</div>
+    <div class="type-meta">和文 Bold 48px / <strong>700</strong> / lh 1.75（84px） / ls normal<span class="type-ctx">下層ページの h1</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-jp-bold); font-size:40px; font-weight:700; line-height:1.75;">人と組織の可能性を最大限に活かした新しい経営モデルへ</div>
+    <div class="type-meta">和文 Bold 40px / <strong>700</strong> / lh 1.75（70px） / ls normal<span class="type-ctx">セクション見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:30px; line-height:1.75; letter-spacing:3px;">創造性の土壌を耕す</div>
+    <div class="type-meta">和文 Regular 30px / 400 / lh 1.75（52.5px） / <strong>ls 3px（0.1em）</strong><span class="type-ctx">ヒーローのキャッチ — サイト唯一の広い字間</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-en); font-size:20px; line-height:1.75; letter-spacing:1px;">Creative Cultivation</div>
+    <div class="type-meta"><strong>欧文 Palatino Sans</strong> 20px / 400 / lh 1.75（35px） / <strong>ls 1px（0.05em）</strong><span class="type-ctx">英語リード</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-en); font-size:14px; line-height:1.75; letter-spacing:.7px; color:#707070;">PICKUP EVENT</div>
+    <div class="type-meta">欧文 Palatino Sans 14px / 400 / lh 1.75 / ls 0.7px（0.05em） / <strong>色 #707070</strong><span class="type-ctx">英語ラベル — 3 点セットで固定</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:18px; line-height:2; max-width:760px;">MIMIGURI は人と組織に対する深い洞察をもとに、経営とクリエイティブの両輪で伴走します。読ませる本文だけ <code>--lh-l: 2</code> に開き、それ以外のテキストは見出しもキャプションも <code>--lh-m: 1.75</code> で統一します。字間は <code>normal</code>、<code>palt</code> は掛けません。</div>
+    <div class="type-meta">和文 Regular 18px / 400 / <strong>lh 2.0（36px）</strong> / ls normal<span class="type-ctx">リード本文 — ここだけ --lh-l</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; line-height:1.75; max-width:760px;">body 既定は 16px / line-height 1.75。この 1.75 がサイト全体の基準で、見出しも同じ比率で組まれます。</div>
+    <div class="type-meta">和文 Regular 16px / 400 / lh 1.75（28px）<span class="type-ctx">body 既定</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-jp-bold); font-size:18px; font-weight:700; line-height:1.75;">次世代リーダーの育て方 ― サクセッションを考える</div>
+    <div class="type-meta">和文 Bold 18px / <strong>700</strong> / lh 1.75（31.5px）<span class="type-ctx">記事タイトル・カード見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; line-height:1.75;">2026年9月2日　チームの本音が回り出すファシリテーションの技法</div>
+    <div class="type-meta">和文 Regular 14px / 400 / lh 1.75（24.5px）<span class="type-ctx">メタ・ナビ・二次リンク</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; line-height:1.75; color:#707070;">〒113-0033 東京都文京区本郷</div>
+    <div class="type-meta">和文 Regular 12px / 400 / lh 1.75（21px） / 色 #707070<span class="type-ctx">キャプション</span></div>
+  </div>
+  <div class="type-sample">
+    <p style="font-size:16px; line-height:1.75;">リンクの下線は <code>text-decoration</code> ではなく背景のグラデーションで引きます。ホバーすると右から左へ伸びます → <a class="u-link" href="#service">CULTIBASE Radio</a>（マウスを乗せてください）。常時表示の状態はこちら → <a class="u-link u-link--on" href="#service">プライバシーポリシー</a></p>
+    <div class="type-meta">background-image: linear-gradient(#111,#111) / background-size: 0 1px → 100% 1px / transition .2s cubic-bezier(.01,.65,.43,.98)<span class="type-ctx">テキストリンク</span></div>
+  </div>
+</section>
+
+<!-- SERVICE（組版サンプル） -->
+<section class="section" id="service">
+  <div class="en-label">Business &amp; Service</div>
+  <div class="h-sec">組版サンプル</div>
+  <div class="service">
+    <h2 class="service-title">吸収合併によって生まれた、異なる二つの事業の重ね方</h2>
+    <div class="service-body">
+      <p>組織の創造性は、制度でも号令でもなく「土壌」から生まれます。何が育つかを決めるのは、日々の対話の質と、そこに置かれた問いのかたちです。私たちは経営の意思決定と現場の実感のあいだに橋を架け、両側から同時に耕していきます。</p>
+      <p>見出しも本文も同じ <code>line-height: 1.75</code> で組み、読ませる段落だけ <code>2.0</code> に開く。字間は <code>normal</code> のまま、<code>palt</code> は掛けない。装飾を足さずに、余白の量だけで階層をつくるのが MIMIGURI の版面です。</p>
+    </div>
+    <div class="service-links">
+      <a class="u-link" href="#cards">コンサルティングサービス</a>
+      <a class="u-link" href="#cards">多角化支援</a>
+      <a class="u-link" href="#cards">事業開発</a>
+    </div>
+    <p class="service-note" style="margin-top:24px;">※ セクション間は PC で margin-top 160px（章が変わるところは 320px）、SP で 100px。</p>
+  </div>
+</section>
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="en-label">Component</div>
+  <div class="h-sec">BUTTONS</div>
+
+  <div class="group-label">白地の上（枠だけのピル）</div>
+  <div class="btn-row">
+    <a class="btn-cta" href="#buttons">お問い合わせ</a>
+    <a class="btn-cta" href="#buttons">資料をダウンロード</a>
+  </div>
+  <div class="btn-note">background: transparent / border: 1px solid #111 / border-radius: 50px / padding: 6px 24px / 14px / 700 / transition .2s cubic-bezier(.01,.65,.43,.98)</div>
+
+  <div class="group-label">濃色の上（枠・文字ともに白へ反転）</div>
+  <div class="btn-row btn-row--dark">
+    <a class="btn-cta btn-cta--inv" href="#buttons">お問い合わせ</a>
+    <a class="btn-cta btn-cta--inv" href="#buttons">採用情報を見る</a>
+  </div>
+  <div class="btn-note">border-color / color を currentColor で切り替える。<strong>塗りボタンはサイトに存在しない</strong></div>
+</section>
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="en-label">Component</div>
+  <div class="h-sec">CARDS</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-photo"></div>
+      <div class="card-body">
+        <div class="card-tag">会員サービス</div>
+        <div class="card-title">CULTIBASE Lab</div>
+        <div class="card-text">人と組織の可能性を探究する学習コミュニティ。研究知と実践知を往復しながら、日々の問いを更新していきます。</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-photo" style="background:linear-gradient(150deg,#bfb39a,#9aa7ac);"></div>
+      <div class="card-body">
+        <div class="card-tag">記事</div>
+        <div class="card-title">ルールのデザイン</div>
+        <div class="card-text">制度をつくることは、関係をつくること。運用に乗る規範はどこから生まれるのかを考えます。</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-photo" style="background:linear-gradient(150deg,#a3b0a0,#c7bda6);"></div>
+      <div class="card-body">
+        <div class="card-tag">イベント</div>
+        <div class="card-title">次世代リーダーの育て方</div>
+        <div class="card-text">サクセッションを「選抜」ではなく「土壌づくり」として捉え直す 90 分。</div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-note">background: #fff / border-radius: 4px / box-shadow: 0 2px 6px rgba(0,0,0,.1) / overflow: hidden。PC は gap 48px、SP は 15px</div>
+</section>
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="en-label">Component</div>
+  <div class="h-sec">FORMS</div>
+  <div class="form-grid">
+    <div>
+      <label class="field-label">会社名</label>
+      <input class="input" type="text" placeholder="株式会社ミミグリ">
+      <div class="form-state">デフォルト — border: 1px solid #ddd / radius 4px / placeholder #aaa</div>
+    </div>
+    <div>
+      <label class="field-label">お名前<span class="req">必須</span></label>
+      <input class="input input--focus" type="text" value="山田 太郎">
+      <div class="form-state">フォーカス — border #111 ＋ 可視のフォーカスリング（実サイトは UA 既定のままなので、実装では必ず明示する）</div>
+    </div>
+    <div>
+      <label class="field-label">メールアドレス<span class="req">必須</span></label>
+      <input class="input input--error" type="text" value="taro@">
+      <div class="form-error">メールアドレスの形式が正しくありません（#dd0000）</div>
+    </div>
+  </div>
+</section>
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="en-label">Depth</div>
+  <div class="h-sec">ELEVATION</div>
+  <div class="elev-grid">
+    <div class="elev-card">
+      <div class="elev-name">Level 0</div>
+      <div class="elev-desc">none — 既定。セクション・ヘッダー・CTA すべて影なし</div>
+    </div>
+    <div class="elev-card elev-card--1">
+      <div class="elev-name">Level 1</div>
+      <div class="elev-desc">0 2px 6px rgba(0,0,0,.1) — カードのみ。radius 4px と必ずセット</div>
+    </div>
+    <div class="elev-card elev-card--scrim">
+      <div class="elev-name">Scrim</div>
+      <div class="elev-desc">rgba(0,0,0,.7) — 影で階層を作らず、暗幕で奥行きを示す</div>
+    </div>
+  </div>
+</section>
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <div class="en-label">Layout</div>
+  <div class="h-sec">LAYOUT</div>
+
+  <div class="group-label">Spacing Scale</div>
+  <div class="space-row">
+    <div class="space-item"><div class="space-block" style="width:10px"></div><div class="space-value">10</div></div>
+    <div class="space-item"><div class="space-block" style="width:16px"></div><div class="space-value">16</div></div>
+    <div class="space-item"><div class="space-block" style="width:20px"></div><div class="space-value">20</div></div>
+    <div class="space-item"><div class="space-block" style="width:32px"></div><div class="space-value">32</div></div>
+    <div class="space-item"><div class="space-block" style="width:40px"></div><div class="space-value">40</div></div>
+    <div class="space-item"><div class="space-block" style="width:48px"></div><div class="space-value">48</div></div>
+    <div class="space-item"><div class="space-block" style="width:100px"></div><div class="space-value">100（SP セクション間）</div></div>
+    <div class="space-item"><div class="space-block" style="width:160px"></div><div class="space-value">160（PC セクション間）</div></div>
+  </div>
+
+  <div class="group-label">Container</div>
+  <div class="container-demo">
+    <div class="container-inner">max-width: 1200px（box-content）＋ padding: 0 40px ／ margin-inline: auto</div>
+  </div>
+  <p class="layout-note" style="margin-top:16px;">グリッドは 2 カラムが基本（<code>mdMin:grid-cols-2</code>）。gutter は 48px / 40px / 20px。<strong>768px 以下で 1 カラムに落とし、gap を 15px / 10px に詰める。</strong></p>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <ul class="footer-links">
+      <li><a class="u-link" href="#colors">提供サービス</a></li>
+      <li><a class="u-link" href="#typography">研究活動</a></li>
+      <li><a class="u-link" href="#service">企業情報</a></li>
+      <li><a class="u-link" href="#cards">採用情報</a></li>
+      <li><a class="u-link" href="#forms">プライバシーポリシー</a></li>
+    </ul>
+    <div class="footer-addr">株式会社MIMIGURI<br>〒113-0033 東京都文京区本郷</div>
+  </div>
+</footer>
+
+<div class="colophon">
+  このページは <a class="u-link u-link--on" href="https://mimiguri.co.jp/">mimiguri.co.jp</a> の computed style 実測（2026-08-18）に基づくデザインシステムのショーケースです。<br>
+  実サイトの和文は <code>TazuganeGothicStdN-Regular / -Bold</code>（Monotype）、欧文は <code>PalatinoSansLTPro-Regular</code>（Linotype）。<br>
+  いずれも商用ライセンスのためローカルでは表示できず、ここでは <code>Zen Kaku Gothic New</code> と <code>Alegreya Sans</code> に差し替えています。
+</div>
+
+</body>
+</html>
