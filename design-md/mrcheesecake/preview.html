@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Mr. CHEESECAKE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測値（2026-08-20） === */
+    --slate: #5a686c;          /* 主色。主 CTA の面 */
+    --slate-dark: #4b5d62;     /* 副 CTA の面 */
+    --ink-slate: #484e4d;      /* リンク・アウトライン文字・帯・フッター */
+    --text: #252a2c;           /* 見出し・本文 */
+    --text-body: rgba(0,0,0,0.86);  /* body の既定色 */
+    --nav: #242a2d;
+    --muted: #768185;          /* 補足・バッジ */
+    --pale: #abbcc1;           /* 区切り・入力欄の枠 */
+    --surface: #f5f4f0;        /* 記事・店舗カード（わずかに黄み） */
+    --surface-gray: #f5f5f5;   /* 注記・商品概要 */
+    --surface-warm: #f7f5ef;   /* POPUP STORE */
+    --line: #ebebeb;
+    --line-2: #e9e9e8;
+    --gold: #ca8a12;           /* 「旗艦店」バッジだけ */
+    --cream: #fff2dc;          /* 抽選販売の告知だけ */
+    --announcement: rgba(83,91,94,0.898);
+    --white: #ffffff;
+
+    /* === Fonts 実測値 === */
+    --font-body: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+    --font-head: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;  /* 見出しも同じ */
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--text-body);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 300;              /* Light が既定 */
+    line-height: 1.8;
+    letter-spacing: 0.04em;
+    font-feature-settings: normal; /* palt を使わない */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { display: flex; align-items: center; gap: 40px; padding: 0 32px; height: 60px; border-bottom: 1px solid var(--line); }
+  .header-logo { font-size: 20px; font-weight: 700; letter-spacing: 0.08em; color: var(--text); text-decoration: none; }
+  .header-nav { display: flex; gap: 32px; list-style: none; }
+  .header-nav a { font-size: 14px; font-weight: 400; letter-spacing: 0.04em; color: var(--nav); text-decoration: none; }
+  .header-nav a:hover { color: var(--slate); }
+  .header-icons { margin-left: auto; display: flex; gap: 20px; color: var(--ink-slate); font-size: 18px; }
+
+  /* ANNOUNCEMENT */
+  .announcement { background: var(--announcement); color: var(--white); text-align: center; padding: 16px; font-size: 16px; font-weight: 400; letter-spacing: 0.04em; }
+
+  /* HERO */
+  .hero { padding: 120px 32px; text-align: left; }
+  .hero-inner { max-width: 1080px; margin: 0 auto; }
+  .hero-display { font-size: 32px; font-weight: 500; line-height: 1.5; letter-spacing: 0.10em; color: var(--text); }
+  .hero h1 { font-size: 22px; font-weight: 500; line-height: 1.6; letter-spacing: 0.04em; color: var(--text); margin-bottom: 32px; }
+  .hero p { font-size: 18px; font-weight: 300; line-height: 1.8; letter-spacing: 0.03em; color: var(--text); margin-bottom: 48px; }
+  .view-more { display: inline-block; font-size: 16px; font-weight: 400; letter-spacing: 0.10em; color: var(--ink-slate); text-decoration: none; border-bottom: 1px solid var(--ink-slate); padding-bottom: 8px; }
+
+  /* SECTIONS */
+  .section { padding: 80px 32px; max-width: 1080px; margin: 0 auto; }
+  .section-gray { background: var(--surface); padding: 80px 32px; }
+  .section-gray .section-inner { max-width: 1080px; margin: 0 auto; }
+  .section-label { font-size: 12px; font-weight: 500; letter-spacing: 0.13em; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; }
+  .section-title-en { font-size: 24px; font-weight: 500; line-height: 1.5; letter-spacing: 0.13em; color: var(--text); text-transform: uppercase; margin-bottom: 40px; }
+  .section-title-ja { font-size: 20px; font-weight: 500; line-height: 1.5; letter-spacing: 0.08em; color: var(--text); margin-bottom: 32px; }
+  .topics-band { background: var(--ink-slate); color: var(--white); font-size: 18px; font-weight: 500; letter-spacing: 0.13em; padding: 12px 24px; display: inline-block; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { background: var(--white); border: 1px solid var(--line); border-radius: 2px; overflow: hidden; }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; color: var(--text); }
+  .color-swatch-hex { font-size: 12px; font-family: var(--font-mono); color: var(--muted); }
+  .color-swatch-role { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.6; }
+  .color-group-label { font-size: 14px; font-weight: 500; letter-spacing: 0.08em; color: var(--ink-slate); margin: 32px 0 12px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 10px; line-height: 1.7; letter-spacing: normal; }
+  .type-context { display: inline-block; background: var(--surface); color: var(--ink-slate); font-size: 11px; padding: 2px 8px; margin-left: 8px; border-radius: 2px; font-family: var(--font-body); }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 11px; font-family: var(--font-mono); color: var(--muted); margin-top: 10px; letter-spacing: normal; }
+  .btn-primary { display: inline-block; position: relative; background: var(--slate); color: rgba(255,255,255,0.86); border: none; border-radius: 2px; padding: 0 40px 0 18px; line-height: 58px; font-family: var(--font-body); font-size: 16px; font-weight: 700; letter-spacing: 0.06em; text-decoration: none; cursor: pointer; }
+  .btn-primary::after { content: "→"; position: absolute; right: 18px; }
+  .btn-price { display: inline-block; position: relative; background: var(--slate); color: rgba(255,255,255,0.86); border: none; border-radius: 2px; padding: 0 40px 0 18px; line-height: 42px; font-size: 15px; font-weight: 700; letter-spacing: 0.06em; text-decoration: none; }
+  .btn-price::after { content: "→"; position: absolute; right: 18px; }
+  .btn-secondary { display: inline-block; position: relative; background: var(--slate-dark); color: rgba(255,255,255,0.86); border: none; border-radius: 2px; padding: 0 40px 0 18px; line-height: 42px; font-size: 14.4px; font-weight: 500; letter-spacing: 0.06em; text-decoration: none; }
+  .btn-tertiary { display: inline-block; background: rgba(90,104,108,0.1); color: var(--ink-slate); border: 1px solid var(--slate); border-radius: 2px; padding: 0 18px; line-height: 42px; font-size: 14.4px; font-weight: 500; letter-spacing: 0.06em; text-decoration: none; }
+  .btn-outline { display: inline-block; position: relative; background: transparent; color: var(--ink-slate); border: 1px solid rgba(85,95,95,0.4); border-radius: 2px; padding: 15px 40px 15px 24px; font-family: var(--font-body); font-size: 16px; font-weight: 400; letter-spacing: 0.03em; text-decoration: none; cursor: pointer; }
+  .btn-outline::after { content: "→"; position: absolute; right: 18px; }
+  .btn-register { display: inline-block; background: var(--ink-slate); color: var(--white); border: none; border-radius: 2px; padding: 12px 32px; font-family: var(--font-body); font-size: 16px; font-weight: 400; letter-spacing: 0.125em; cursor: pointer; }
+
+  /* BADGES */
+  .badge-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .badge { display: inline-block; border-radius: 4px; padding: 4px 8px; font-size: 12px; font-weight: 500; letter-spacing: 0.05em; }
+  .badge--type { background: var(--muted); color: var(--white); }
+  .badge--flagship { background: var(--gold); color: var(--white); }
+  .chip { display: inline-block; border: 1px solid var(--muted); border-radius: 24px; padding: 3px 12px; font-size: 12px; font-weight: 500; letter-spacing: 0.03em; color: var(--muted); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; }
+  .card { background: var(--white); border-radius: 2px; box-shadow: none; }
+  .card-thumb { height: 180px; background: var(--line-2); border-radius: 2px; margin-bottom: 16px; }
+  .card-chip { margin-bottom: 8px; }
+  .card-title { font-size: 16px; font-weight: 700; line-height: 1.5; letter-spacing: 0.04em; color: var(--text); margin-bottom: 12px; }
+  .card--article { background: var(--surface); border-radius: 2px; padding: 20px; }
+  .card--article .card-thumb { background: var(--line); }
+  .card--article h4 { font-size: 16px; font-weight: 500; line-height: 1.6; letter-spacing: 0.04em; color: var(--text-body); }
+  .card--note { background: var(--surface-gray); border-radius: 2px; padding: 24px; font-size: 16px; font-weight: 400; line-height: 1.6; }
+  .card--lottery { background: var(--cream); border-radius: 2px; padding: 32px; }
+  .card--lottery h4 { font-size: 20px; font-weight: 600; letter-spacing: 0.05em; line-height: 1.5; margin-bottom: 12px; color: var(--text); }
+
+  /* STORE */
+  .store-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+  .store-card { background: var(--surface); border-radius: 2px; padding: 24px; }
+  .store-badges { display: flex; gap: 8px; margin-bottom: 12px; }
+  .store-name { font-size: 15px; font-weight: 500; line-height: 1.8; letter-spacing: 0.04em; color: var(--text); }
+  .store-addr { font-size: 15px; font-weight: 400; line-height: 1.8; letter-spacing: 0.04em; color: var(--text); }
+
+  /* FORMS */
+  .form-group { margin-bottom: 24px; max-width: 420px; }
+  .form-label { display: block; font-size: 15px; font-weight: 500; letter-spacing: 0.04em; margin-bottom: 8px; color: var(--text); }
+  .form-input { width: 100%; background: var(--white); color: var(--ink-slate); border: 1px solid var(--pale); border-radius: 2px; padding: 12px 16px; font-family: var(--font-body); font-size: 18px; font-weight: 400; outline: none; }
+  .form-input--focus { border-color: var(--slate); }
+  .form-input--error { border-color: var(--gold); }
+  .form-state-label { font-size: 11px; font-family: var(--font-mono); color: var(--muted); margin-top: 6px; letter-spacing: normal; }
+
+  /* SURFACES */
+  .surface-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+  .surface-card { padding: 28px 16px; text-align: center; border: 1px solid var(--line); border-radius: 2px; box-shadow: none; }
+  .surface-label { font-size: 14px; font-weight: 500; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .surface-desc { font-family: var(--font-mono); font-size: 11px; letter-spacing: normal; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--slate); height: 28px; border-radius: 2px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 6px; letter-spacing: normal; }
+
+  /* WEIGHT LADDER */
+  .weight-table { border-collapse: collapse; width: 100%; }
+  .weight-table th, .weight-table td { font-size: 14px; text-align: left; padding: 12px; border-bottom: 1px solid var(--line); letter-spacing: 0.04em; }
+  .weight-table th { background: var(--surface); font-weight: 500; }
+
+  /* FOOTER */
+  .footer { background: var(--ink-slate); color: var(--white); padding: 40px 32px; text-align: center; font-size: 14px; font-weight: 300; letter-spacing: 0.04em; line-height: 1.8; }
+  .footer a { color: var(--cream); }
+
+  @media (max-width: 767px) {
+    .header-nav { display: none; }
+    .section, .section-gray { padding: 48px 20px; }
+    .hero { padding: 64px 20px; }
+    .hero-display { font-size: 24px; }
+    .hero h1 { font-size: 20px; }
+    .hero p { font-size: 16px; }
+    .section-title-en { font-size: 18px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-logo" href="#">Mr. CHEESECAKE</a>
+  <ul class="header-nav">
+    <li><a href="#colors">COLORS</a></li>
+    <li><a href="#typography">TYPOGRAPHY</a></li>
+    <li><a href="#products">ONLINE STORE</a></li>
+    <li><a href="#buttons">BUTTONS</a></li>
+    <li><a href="#store">STORE</a></li>
+    <li><a href="#forms">FORMS</a></li>
+  </ul>
+  <div class="header-icons"><span>🛒</span><span>👤</span></div>
+</header>
+
+<div class="announcement">Design System Preview — computed style 実測値（2026-08-20）</div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1><span class="hero-display">世界一じゃなく、</span><br>あなたの人生最高に。</h1>
+    <p>濃厚なのにスッと溶ける。<br>おいしい記憶をたどり、<br>シェフだからこその味わいを生み出す。<br>世界へ誇るトーキョーチーズケーキを。</p>
+    <a class="view-more" href="#colors">VIEW MORE</a>
+  </div>
+</section>
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title-en">Color Palette</h2>
+
+  <div class="color-group-label">Brand — スレートグレー</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#5a686c"></div><div class="color-swatch-info"><div class="color-swatch-name">Slate</div><div class="color-swatch-hex">#5a686c</div><div class="color-swatch-role">主色。主 CTA の面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#4b5d62"></div><div class="color-swatch-info"><div class="color-swatch-name">Slate Dark</div><div class="color-swatch-hex">#4b5d62</div><div class="color-swatch-role">副 CTA の面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#484e4d"></div><div class="color-swatch-info"><div class="color-swatch-name">Ink Slate</div><div class="color-swatch-hex">#484e4d</div><div class="color-swatch-role">リンク・アウトライン文字・帯・フッター</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text & Line</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#252a2c"></div><div class="color-swatch-info"><div class="color-swatch-name">Text</div><div class="color-swatch-hex">#252a2c</div><div class="color-swatch-role">見出し・本文</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(0,0,0,0.86)"></div><div class="color-swatch-info"><div class="color-swatch-name">Text（body 既定）</div><div class="color-swatch-hex">rgba(0,0,0,.86)</div><div class="color-swatch-role">純黒を避ける</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#768185"></div><div class="color-swatch-info"><div class="color-swatch-name">Muted</div><div class="color-swatch-hex">#768185</div><div class="color-swatch-role">補足・バッジ</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#abbcc1"></div><div class="color-swatch-info"><div class="color-swatch-name">Pale</div><div class="color-swatch-hex">#abbcc1</div><div class="color-swatch-role">区切り・入力欄の枠</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ebebeb"></div><div class="color-swatch-info"><div class="color-swatch-name">Line</div><div class="color-swatch-hex">#ebebeb</div><div class="color-swatch-role">区切り</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #ebebeb"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ地色</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5f4f0"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#f5f4f0</div><div class="color-swatch-role">記事・店舗カード。わずかに黄みがある</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5f5f5"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Gray</div><div class="color-swatch-hex">#f5f5f5</div><div class="color-swatch-role">注記・商品概要</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f7f5ef"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Warm</div><div class="color-swatch-hex">#f7f5ef</div><div class="color-swatch-role">POPUP STORE</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(83,91,94,0.898)"></div><div class="color-swatch-info"><div class="color-swatch-name">Announcement</div><div class="color-swatch-hex">rgba(83,91,94,.898)</div><div class="color-swatch-role">告知帯。赤や黄を使わない</div></div></div>
+  </div>
+
+  <div class="color-group-label">Accent — 暖色は 2 か所だけ</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ca8a12"></div><div class="color-swatch-info"><div class="color-swatch-name">Gold</div><div class="color-swatch-hex">#ca8a12</div><div class="color-swatch-role">「旗艦店」バッジだけ。サイト内で最も彩度が高い</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff2dc"></div><div class="color-swatch-info"><div class="color-swatch-name">Cream</div><div class="color-swatch-hex">#fff2dc</div><div class="color-swatch-role">抽選販売の告知だけ</div></div></div>
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section class="section-gray" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <h2 class="section-title-ja">Noto Sans JP 一択、weight 300 から始める</h2>
+
+  <div class="type-sample">
+    <div style="font-size:32px; font-weight:500; line-height:1.5; letter-spacing:0.10em; color:var(--text);">世界一じゃなく、</div>
+    <div class="type-meta">32px / 500 / line-height: 1.5 / letter-spacing: 0.10em<span class="type-context">ヒーロー 1 行目</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:22px; font-weight:500; line-height:1.6; letter-spacing:0.04em; color:var(--text);">あなたの人生最高に。 — Page Title</div>
+    <div class="type-meta">22px / 500 / line-height: 1.6 / letter-spacing: 0.04em</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:24px; font-weight:500; line-height:1.5; letter-spacing:0.13em; color:var(--text); text-transform:uppercase;">Online Store</div>
+    <div class="type-meta">18–24px / 500 / line-height: 1.5 / <strong>letter-spacing: 0.13em</strong> / 大文字<span class="type-context">英字セクション見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:20px; font-weight:500; line-height:1.5; letter-spacing:0.08em; color:var(--text);">香りが織りなす新しい体験 — 和文の見出し</div>
+    <div class="type-meta">18–20px / 500–600 / line-height: 1.5 / letter-spacing: 0.04–0.08em</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:18px; font-weight:300; line-height:1.8; letter-spacing:0.03em; color:var(--text);">リード文 — 濃厚なのにスッと溶ける。おいしい記憶をたどり、シェフだからこその味わいを生み出す。<strong style="font-weight:300;">weight 300 のまま、太らせない。</strong></div>
+    <div class="type-meta">18px / <strong>300（Light）</strong> / line-height: 1.8 / letter-spacing: 0.03em<span class="type-context">ヒーロー下</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.8; letter-spacing:0.04em; color:var(--text);">本文 — 行間 1.8 が既定。注記・箇条書きだけ 1.6 に詰める。字間は和文 0.04em、英字 0.13em の 2 段で覚える。</div>
+    <div class="type-meta">16px / 400 / line-height: 1.8 / letter-spacing: 0.04em</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:700; line-height:1.5; letter-spacing:0.04em; color:var(--text);">Mr. CHEESECAKE Classic — 商品名</div>
+    <div class="type-meta">16px / <strong>700</strong> ← 700 が出るのは商品名と価格だけ</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:18px; font-weight:600; letter-spacing:0.04em; color:var(--text-body);">¥4,779 (税込)</div>
+    <div class="type-meta">15–18px / 600–700 / letter-spacing: 0.04–0.06em<span class="type-context">価格</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:500; line-height:1.83; letter-spacing:0.03em; color:var(--muted);">オンライン限定 — Badge</div>
+    <div class="type-meta">12px / 500 / line-height: 1.83 / letter-spacing: 0.03em</div>
+  </div>
+
+  <div class="color-group-label" style="margin-top:32px;">Weight ladder — 使い分けは実質 3 段</div>
+  <table class="weight-table">
+    <tr><th>Weight</th><th>用途</th><th>サンプル</th></tr>
+    <tr><td>300 Light</td><td>body の既定・リード文・ナビ・フッター</td><td style="font-weight:300;">世界へ誇るトーキョーチーズケーキを。</td></tr>
+    <tr><td>400 Regular</td><td>本文・説明文・住所・注記</td><td style="font-weight:400;">世界へ誇るトーキョーチーズケーキを。</td></tr>
+    <tr><td>500 Medium</td><td>見出し・ラベル・小見出し（<strong>見出しはここで止まる</strong>）</td><td style="font-weight:500;">世界へ誇るトーキョーチーズケーキを。</td></tr>
+    <tr><td>600 / 700</td><td>価格と商品名<strong>だけ</strong></td><td style="font-weight:700;">世界へ誇るトーキョーチーズケーキを。</td></tr>
+  </table>
+
+  <p style="font-size:14px; line-height:1.8; color:var(--muted); margin-top:24px;">
+    <code style="font-family:var(--font-mono)">--font-body</code> と <code style="font-family:var(--font-mono)">--font-head</code> は同じ値（<code style="font-family:var(--font-mono)">"Noto Sans JP", sans-serif</code>）。
+    <strong>見出し用の書体を持たない。</strong>
+    <code style="font-family:var(--font-mono)">font-feature-settings</code> は全要素 <code style="font-family:var(--font-mono)">normal</code>——
+    palt を足すと「（税込）」の全角括弧が詰まって印象が変わる。
+  </p>
+</div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="section" id="products">
+  <div class="section-label">03 / Products</div>
+  <h2 class="section-title-en">Online Store</h2>
+  <div class="card-grid" style="margin-bottom:48px;">
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-chip"><span class="chip">オンライン限定</span></div>
+      <div class="card-title">Mr. CHEESECAKE Classic</div>
+      <a class="btn-price" href="#">¥3,996（税込）</a>
+    </div>
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-chip"><span class="chip">オンライン限定</span></div>
+      <div class="card-title">Week-end Citron</div>
+      <a class="btn-price" href="#">¥4,212（税込）</a>
+    </div>
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-chip"><span class="chip">ギフト</span></div>
+      <div class="card-title">Mr. CHEESECAKE Gift Box</div>
+      <a class="btn-price" href="#">¥5,076（税込）</a>
+    </div>
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-chip"><span class="chip">季節限定</span></div>
+      <div class="card-title">Financier &amp; Snow Ball</div>
+      <a class="btn-price" href="#">¥4,779（税込）</a>
+    </div>
+  </div>
+
+  <div style="text-align:center;"><a class="btn-outline" href="#">すべての商品をみる</a></div>
+
+  <div class="card--lottery" style="margin-top:48px;">
+    <h4>抽選販売</h4>
+    <p style="font-size:16px; font-weight:400; line-height:1.8;">人気の Week-end Citron が抽選販売となります。応募期間中にエントリーしてください。</p>
+  </div>
+</section>
+
+<!-- STORE -->
+<section class="section-gray" id="store">
+<div class="section-inner">
+  <div class="section-label">04 / Store</div>
+  <h2 class="section-title-en">Store</h2>
+  <div class="store-grid">
+    <div class="store-card">
+      <div class="store-badges"><span class="badge badge--flagship">旗艦店</span><span class="badge badge--type">カフェ・テイクアウト</span></div>
+      <div class="store-name">GINZA SIX店</div>
+      <div class="store-addr">〒104-0061 東京都中央区銀座6-10-1 GINZA SIX B2F</div>
+    </div>
+    <div class="store-card">
+      <div class="store-badges"><span class="badge badge--type">テイクアウト</span></div>
+      <div class="store-name">羽田空港店</div>
+      <div class="store-addr">〒144-0041 東京都大田区羽田空港2-6-5 第2ターミナル 2F</div>
+    </div>
+    <div class="store-card">
+      <div class="store-badges"><span class="badge badge--type">テイクアウト</span></div>
+      <div class="store-name">グランスタ東京店</div>
+      <div class="store-addr">〒100-0005 東京都千代田区丸の内1-9-1 JR東京駅構内 B1F</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">05 / Buttons &amp; Badges</div>
+  <h2 class="section-title-en">Buttons</h2>
+  <p style="font-size:14px; line-height:1.8; color:var(--muted); margin-bottom:32px;">
+    padding が左右非対称（<code style="font-family:var(--font-mono)">0 40px 0 18px</code> / <code style="font-family:var(--font-mono)">15px 40px 15px 24px</code>）。
+    <strong>右側に矢印アイコンを置くための余白。</strong>radius は全部 2px。
+  </p>
+
+  <div class="button-row" style="margin-bottom:40px;">
+    <div class="button-item"><a class="btn-primary" href="#">カートに追加</a><div class="button-label">Primary — #5a686c / radius 2px<br>文字 rgba(255,255,255,.86)</div></div>
+    <div class="button-item"><a class="btn-price" href="#">¥3,996（税込）</a><div class="button-label">Price — 価格そのものがボタン</div></div>
+  </div>
+  <div class="button-row" style="margin-bottom:40px;">
+    <div class="button-item"><a class="btn-secondary" href="#">選択する</a><div class="button-label">Secondary — #4b5d62</div></div>
+    <div class="button-item"><a class="btn-tertiary" href="#">カートに進む</a><div class="button-label">Tertiary — rgba(90,104,108,.1) ＋ 1px solid</div></div>
+    <div class="button-item"><a class="btn-outline" href="#">記事をもっと読む</a><div class="button-label">Outline — 1px rgba(85,95,95,.4)</div></div>
+  </div>
+  <div class="button-row" style="margin-bottom:40px;">
+    <div class="button-item"><a class="view-more" href="#">VIEW MORE</a><div class="button-label">Text Link — 下に 1px の罫 / ls 0.10em</div></div>
+    <div class="button-item"><button class="btn-register">登録</button><div class="button-label">Register — #484e4d / ls 0.125em</div></div>
+  </div>
+
+  <div class="color-group-label">Badges — 塗り 4px（店舗の種別）／ ピル 24px（入手経路）</div>
+  <div class="badge-row">
+    <span class="badge badge--flagship">旗艦店</span>
+    <span class="badge badge--type">カフェ・テイクアウト</span>
+    <span class="badge badge--type">テイクアウト</span>
+    <span class="chip">オンライン限定</span>
+    <span class="chip">季節限定</span>
+  </div>
+</section>
+
+<!-- FORMS -->
+<section class="section-gray" id="forms">
+<div class="section-inner">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title-en">Mail Magazine</h2>
+  <div class="form-group"><label class="form-label">お名前</label><input class="form-input" type="text" placeholder="山田 太郎"><div class="form-state-label">デフォルト — border: 1px solid #abbcc1 / radius: 2px / font-size: 18px</div></div>
+  <div class="form-group"><label class="form-label">メールアドレス</label><input class="form-input form-input--focus" type="text" value="info@mr-cheesecake.com"><div class="form-state-label">フォーカス — border-color: #5a686c</div></div>
+  <div class="form-group"><label class="form-label">郵便番号</label><input class="form-input form-input--error" type="text" value="000"><div class="form-state-label">エラー — border-color: #ca8a12（原色の赤を使わない）</div></div>
+  <button class="btn-register">登録</button>
+</div>
+</section>
+
+<!-- SURFACES -->
+<section class="section" id="surfaces">
+  <div class="section-label">07 / Depth — 影を持たない</div>
+  <h2 class="section-title-en">Surfaces &amp; Spacing</h2>
+  <p style="font-size:14px; line-height:1.8; color:var(--muted); margin-bottom:24px;">
+    <code style="font-family:var(--font-mono)">box-shadow</code> は全要素 <code style="font-family:var(--font-mono)">none</code>。
+    <strong><code style="font-family:var(--font-mono)">border-radius: 2px</code> が唯一の「立体感」。</strong>
+  </p>
+  <div class="surface-grid" style="margin-bottom:40px;">
+    <div class="surface-card" style="background:#ffffff"><div class="surface-label">地</div><div class="surface-desc">#ffffff</div></div>
+    <div class="surface-card" style="background:#f5f4f0"><div class="surface-label">記事・店舗</div><div class="surface-desc">#f5f4f0</div></div>
+    <div class="surface-card" style="background:#f5f5f5"><div class="surface-label">注記</div><div class="surface-desc">#f5f5f5</div></div>
+    <div class="surface-card" style="background:#f7f5ef"><div class="surface-label">POPUP</div><div class="surface-desc">#f7f5ef</div></div>
+    <div class="surface-card" style="background:#fff2dc"><div class="surface-label">抽選告知</div><div class="surface-desc">#fff2dc</div></div>
+    <div class="surface-card" style="background:#484e4d; color:#fff; border-color:#484e4d"><div class="surface-label">TOPICS・フッター</div><div class="surface-desc">#484e4d</div></div>
+  </div>
+
+  <div style="margin-bottom:40px;"><span class="topics-band">TOPICS</span></div>
+
+  <div class="color-group-label">Spacing Scale</div>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:18px"></div><div class="spacing-value">18</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">40</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:80px"></div><div class="spacing-value">80（セクション間）</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://mr-cheesecake.com/">Mr. CHEESECAKE</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-08-20）
+</footer>
+
+</body>
+</html>

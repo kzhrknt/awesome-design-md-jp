@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 山口情報芸術センター［YCAM］</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測値（2026-08-20） === */
+    --teal: #176e71;          /* 主色。実装値（CSS 変数 --ycam-color-main は #176a71） */
+    --teal-var: #176a71;      /* :root が宣言している値。実際には使われていない */
+    --teal-deep: #0f494b;     /* フッター・お知らせ見出しの帯 */
+    --teal-text: #0a494b;     /* 「ページ上部へ戻る」の文字 */
+    --teal-pale: #c8eced;     /* 上部へ戻る帯・上映日見出し */
+    --teal-pale2: #c8edee;    /* サブナビゲーション（もう 1 トーン） */
+    --teal-faint: #ebf4f4;    /* ページャ非現在地 */
+    --orange: #ba4a00;        /* 副色。--ycam-color-sub と一致 */
+    --ink: #333333;           /* 既定の文字色 */
+    --gray-surface: #f1f1f1;  /* 非活性タブ・ドロップダウン */
+    --gray-card: #f8f8f8;
+    --gray-card2: #f7f7f7;
+    --gray-disabled: #666666; /* 「準備中」バッジ */
+    --blue-external: #004b9e; /* 外部サイトへ出るボタンだけ */
+    --scrim: rgba(0,0,0,0.6);
+    --white: #ffffff;
+
+    /* === Fonts 実測値 === */
+    /* 先頭の YakuHanJPs は約物半角フォント（ローカルでは読み込めないため以降で代替） */
+    --font-base: YakuHanJPs, "Open Sans", LinotypeUnivers, Univers, "Helvetica Neue", Helvetica, Roboto,
+                 "Noto Sans", "Droid Sans", Verdana,
+                 游ゴシック体, YuGothic, "游ゴシック Medium", "Yu Gothic Medium", 游ゴシック, "Yu Gothic",
+                 "Noto Sans CJK JP", "Noto Sans JP",
+                 "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", メイリオ, Meiryo, "ＭＳ Ｐゴシック", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Root font-size: 流体（1344px 未満 16px → 1840px 以上 20px） === */
+    --root-1440: 16.6px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* このプレビューは 1440px 幅・ルート 16.6px 相当を再現する */
+  html { font-size: 16px; }
+  @media (min-width: 1344px) { html { font-size: calc(16px + 1 * ((100vw - 1344px) / 160)); } }
+  @media (min-width: 1504px) { html { font-size: calc(17px + 1 * ((100vw - 1504px) / 176)); } }
+  @media (min-width: 1680px) { html { font-size: calc(18px + 2 * ((100vw - 1680px) / 160)); } }
+  @media (min-width: 1840px) { html { font-size: 20px; } }
+
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font-base);
+    font-size: 1rem; font-weight: 400; line-height: 1.75;
+    letter-spacing: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* このサイトの字詰めは、この 1 クラスに集約されている */
+  .u-text-palt { font-feature-settings: "palt"; letter-spacing: -0.05em; }
+
+  /* HEADER（3 段構成） */
+  .util-bar { display: flex; align-items: stretch; justify-content: space-between; background: var(--white); border-bottom: 1px solid var(--gray-surface); }
+  .util-left { display: flex; align-items: stretch; }
+  .today-link { background: var(--teal); color: var(--white); font-size: 0.8rem; font-weight: 700; padding: 0.6rem 0.8rem; text-decoration: none; }
+  .today-status { color: var(--orange); font-size: 0.8rem; font-weight: 700; padding: 0.6rem 0.8rem; align-self: center; }
+  .util-right { display: flex; gap: 1.5rem; align-items: center; padding: 0 1.5rem; }
+  .util-right a { color: var(--ink); font-size: 0.8rem; font-weight: 400; text-decoration: none; }
+  .util-right a:hover { color: var(--teal); }
+
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; }
+  .nav-brand { display: flex; align-items: baseline; gap: 0.6rem; text-decoration: none; color: var(--ink); }
+  .nav-mark { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border: 2px solid var(--ink); font-size: 0.75rem; font-weight: 700; }
+  .nav-brand-ja { font-size: 1.25rem; font-weight: 700; letter-spacing: 0.25em; }
+  .nav-brand-en { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.02em; display: block; }
+  .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+  .nav-links a { font-size: 1.05rem; font-weight: 400; color: var(--ink); text-decoration: none; }
+  .nav-links a:hover { color: var(--teal); }
+
+  /* HERO */
+  .hero { padding: 3rem 2rem; background: var(--gray-surface); }
+  .hero-inner { max-width: 1200px; margin: 0 auto; }
+  .hero-metas { display: flex; gap: 0.5rem; margin-bottom: 0.8rem; }
+  .hero h1 { font-size: 2.25rem; font-weight: 400; line-height: 1.333; margin-bottom: 0.5rem; }
+  .hero p.lead { font-size: 1.125rem; font-weight: 500; line-height: 1.5; margin-bottom: 1.5rem; }
+  .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  /* SECTIONS */
+  .section { padding: 3rem 2rem; max-width: 1200px; margin: 0 auto; }
+  .section-rule { border: none; border-top: 2px solid var(--teal); max-width: 1200px; margin: 0 auto; }
+  .section-label { font-size: 0.8rem; font-weight: 700; color: var(--teal); margin-bottom: 0.5rem; }
+  .section-title { font-size: 2rem; font-weight: 700; line-height: 1.75; margin-bottom: 1.5rem; }
+  .section-gray { background: var(--gray-card); padding: 3rem 2rem; }
+  .section-gray .section-inner { max-width: 1200px; margin: 0 auto; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
+  .color-swatch { border: 1px solid var(--gray-surface); background: var(--white); }
+  .color-swatch-block { height: 4.5rem; width: 100%; }
+  .color-swatch-info { padding: 0.6rem 0.75rem; }
+  .color-swatch-name { font-size: 0.8rem; font-weight: 700; margin-bottom: 0.15rem; }
+  .color-swatch-hex { font-size: 0.75rem; color: var(--gray-disabled); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 0.7rem; color: var(--gray-disabled); margin-top: 0.2rem; line-height: 1.5; }
+  .color-group-label { font-size: 0.875rem; font-weight: 700; color: var(--teal); margin: 1.5rem 0 0.6rem; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 1.75rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--gray-surface); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 0.75rem; color: var(--gray-disabled); margin-top: 0.5rem; line-height: 1.6; }
+  .type-context { display: inline-block; background: var(--teal-faint); color: var(--teal); font-size: 0.7rem; padding: 0.1rem 0.5rem; margin-left: 0.5rem; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: flex-start; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 0.75rem; color: var(--gray-disabled); margin-top: 0.5rem; }
+  .btn-primary { display: inline-block; background: var(--teal); color: var(--white); padding: 1rem; border: none; border-radius: 3px; font-family: var(--font-base); font-size: 1rem; font-weight: 700; text-decoration: none; cursor: pointer; }
+  .btn-primary:hover { background: var(--teal-deep); }
+  .btn-primary--s { padding: 0.85rem; font-size: 0.85rem; }
+  .btn-outline { display: inline-block; background: var(--white); color: var(--teal); padding: 0.8rem 2rem; border: 2px solid var(--teal); border-radius: 0; font-family: var(--font-base); font-size: 1rem; font-weight: 700; text-decoration: none; cursor: pointer; }
+  .btn-outline:hover { background: var(--teal-faint); }
+  .btn-external { display: inline-block; background: var(--blue-external); color: var(--white); padding: 0.34rem 2.21rem 0.34rem 0.85rem; border-radius: 3px; font-size: 0.85rem; font-weight: 700; text-decoration: none; position: relative; }
+  .btn-external::after { content: "↗"; position: absolute; right: 0.85rem; }
+  .skiplink { display: inline-block; background: var(--white); color: var(--teal); padding: 0.8rem 2rem; font-size: 1.125rem; font-weight: 700; text-decoration: underline; }
+
+  /* HEADING TAB（このサイト固有） */
+  .heading-tab { display: inline-block; background: var(--teal); color: var(--white); border-radius: 3px 3px 0 0; padding: 0.25rem 1rem; font-size: 1rem; font-weight: 700; }
+  .heading-tab-body { border: 1px solid var(--gray-surface); border-top: 3px solid var(--teal); padding: 1rem; font-size: 1rem; font-weight: 500; line-height: 1.75; }
+
+  /* BADGES */
+  .badge-row { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+  .badge { display: inline-block; border-radius: 0; font-size: 0.875rem; font-weight: 700; padding: 0.2rem 0.5rem; }
+  .badge--open { background: var(--orange); color: var(--white); border: 1px solid var(--orange); }
+  .badge--soon { background: var(--gray-disabled); color: var(--white); }
+  .badge--cat { background: var(--teal); color: var(--white); font-size: 0.8rem; padding: 0.1rem 0.75rem; }
+  .badge--left { background: var(--white); color: var(--ink); border: 1px solid var(--orange); font-weight: 400; }
+  .badge--ticket { background: var(--white); color: var(--ink); border: 1px solid var(--teal); font-weight: 400; }
+  .badge--place { background: var(--white); color: var(--teal); border: 1px solid var(--teal); font-size: 0.75rem; padding: 0.1rem 1rem; }
+
+  /* TABS */
+  .tabs { display: flex; }
+  .tab { padding: 0.5rem 1.25rem; font-size: 1rem; font-weight: 700; background: var(--gray-surface); color: var(--teal); border: none; font-family: var(--font-base); cursor: pointer; }
+  .tab.is-current { background: var(--teal); color: var(--white); }
+
+  /* PAGINATION */
+  .pager { display: flex; gap: 0.4rem; }
+  .pager span { display: inline-flex; align-items: center; justify-content: center; min-width: 2.2rem; height: 2.2rem; font-size: 1.125rem; font-weight: 700; background: var(--teal-faint); color: var(--teal); }
+  .pager span.is-current { background: var(--teal); color: var(--white); border-radius: 3px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+  .card { background: var(--white); }
+  .card-thumb { height: 8.5rem; background: var(--teal-pale); display: flex; align-items: flex-end; justify-content: flex-start; padding: 0.5rem; }
+  .card-credit { background: var(--scrim); color: var(--white); font-size: 0.75rem; font-weight: 700; padding: 0.5rem; }
+  .card-kanmuri { font-size: 0.875rem; font-weight: 500; margin-top: 0.75rem; }
+  .card-title { font-size: 1rem; font-weight: 700; color: var(--teal); text-decoration: underline; margin-top: 0.25rem; display: inline-block; }
+  .card-date { font-size: 1rem; font-weight: 500; margin-top: 0.5rem; }
+  .card-badges { margin-top: 0.5rem; display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .card--news { background: var(--gray-card); padding: 1rem; }
+  .card--rel { background: var(--gray-card2); padding: 1rem; }
+
+  /* ARTICLE */
+  .article { max-width: 720px; }
+  .article h1 { font-size: 2.25rem; font-weight: 400; line-height: 1.333; margin-bottom: 0.5rem; }
+  .article .kanmuri { font-size: 1.125rem; font-weight: 500; line-height: 1.5; margin-bottom: 1.5rem; }
+  .article h2 { font-size: 1.875rem; font-weight: 700; line-height: 1.333; margin: 2rem 0 1rem; }
+  .article p { font-size: 1rem; font-weight: 500; line-height: 2.0; letter-spacing: normal; font-feature-settings: normal; margin-bottom: 1rem; }
+  .article table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+  .article th, .article td { font-size: 1rem; line-height: 1.75; text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--gray-surface); }
+  .article th { font-weight: 700; width: 8rem; }
+  .article td { font-weight: 500; }
+
+  /* SCHEDULE（上映スケジュール） */
+  .schedule { border-left: 3px solid var(--teal); padding-left: 1rem; }
+  .schedule-row { display: flex; gap: 1.5rem; align-items: baseline; padding: 0.75rem 0; border-bottom: 1px dashed var(--gray-surface); }
+  .schedule-time { font-size: 1.5rem; font-weight: 700; }
+  .schedule-time small { font-size: 1rem; font-weight: 500; color: var(--gray-disabled); }
+  .schedule-title { font-size: 1rem; font-weight: 700; color: var(--teal); text-decoration: underline; }
+  .schedule-kanmuri { font-size: 0.875rem; font-weight: 500; display: block; }
+  .day-head { background: var(--teal-pale); padding: 0.75rem 1rem; font-size: 1rem; font-weight: 500; margin-bottom: 0.5rem; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 1.25rem; max-width: 26rem; }
+  .form-label { display: block; font-size: 1rem; font-weight: 500; margin-bottom: 0.4rem; }
+  .form-input { width: 100%; background: var(--white); color: var(--ink); border: 1px solid var(--gray-disabled); border-radius: 3px; padding: 0.5rem 0.85rem; font-family: var(--font-base); font-size: 1rem; font-weight: 500; outline: none; }
+  .form-input--focus { border: 2px solid var(--teal); outline: 2px solid var(--teal); outline-offset: -2px; }
+  .form-input--error { border: 2px solid var(--orange); }
+  .form-state-label { font-size: 0.75rem; color: var(--gray-disabled); margin-top: 0.3rem; }
+  .form-error { font-size: 0.875rem; font-weight: 700; color: var(--orange); margin-top: 0.3rem; }
+
+  /* ELEVATION（= 面色） */
+  .surface-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+  .surface-card { padding: 1.5rem 1rem; text-align: center; border: 1px solid var(--gray-surface); box-shadow: none; }
+  .surface-label { font-size: 0.875rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .surface-desc { font-family: var(--font-mono); font-size: 0.7rem; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 0.75rem; flex-wrap: wrap; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--teal); height: 1.75rem; }
+  .spacing-value { font-family: var(--font-mono); font-size: 0.7rem; color: var(--gray-disabled); margin-top: 0.4rem; }
+
+  /* ROOT SCALE */
+  .scale-table { border-collapse: collapse; width: 100%; }
+  .scale-table th, .scale-table td { font-size: 0.875rem; text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--gray-surface); }
+  .scale-table th { font-weight: 700; background: var(--teal-faint); color: var(--teal); }
+  .scale-table td { font-family: var(--font-mono); }
+
+  /* BACK TO TOP + FOOTER */
+  .go2top { background: var(--teal-pale); color: var(--teal-text); text-align: center; padding: 1.6rem 0 1.45rem; font-size: 1rem; }
+  .footer { background: var(--teal-deep); color: var(--white); padding: 2rem; text-align: center; font-size: 0.875rem; line-height: 1.75; }
+  .footer a { color: var(--teal-pale); }
+
+  @media (max-width: 1023px) {
+    .nav-links { display: none; }
+    .section { padding: 2.5rem 1.25rem; }
+    .section-gray { padding: 2.5rem 1.25rem; }
+  }
+  @media (max-width: 544px) {
+    .hero h1, .article h1 { font-size: 1.75rem; }
+    .card-grid { grid-template-columns: 1fr; }
+    .util-right { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skiplink" href="#main">skip to main content</a>
+
+<div class="util-bar">
+  <div class="util-left">
+    <a class="today-link u-text-palt" href="#">きょうのYCAM ▶</a>
+    <span class="today-status u-text-palt">本日は開館日です</span>
+  </div>
+  <div class="util-right">
+    <a class="u-text-palt" href="#">アクセス</a>
+    <a class="u-text-palt" href="#">お知らせ</a>
+    <a class="u-text-palt" href="#">学校・教育機関の方へ</a>
+    <a class="u-text-palt" href="#">企業・研究機関の方へ</a>
+    <a class="u-text-palt" href="#">日本語 ／ English</a>
+  </div>
+</div>
+
+<nav class="nav" id="main">
+  <a class="nav-brand" href="#">
+    <span class="nav-mark">Y</span>
+    <span>
+      <span class="nav-brand-ja">山口情報芸術センター</span>
+      <span class="nav-brand-en">Yamaguchi Center for Arts and Media</span>
+    </span>
+  </a>
+  <ul class="nav-links">
+    <li><a class="u-text-palt" href="#colors">Colors</a></li>
+    <li><a class="u-text-palt" href="#typography">Typography</a></li>
+    <li><a class="u-text-palt" href="#article">Event</a></li>
+    <li><a class="u-text-palt" href="#buttons">Buttons</a></li>
+    <li><a class="u-text-palt" href="#cards">Cards</a></li>
+    <li><a class="u-text-palt" href="#forms">Forms</a></li>
+    <li><a class="u-text-palt" href="#surfaces">Surfaces</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-metas">
+      <span class="badge badge--open u-text-palt">イベント</span>
+      <span class="badge badge--ticket u-text-palt">前売り券販売中</span>
+    </div>
+    <h1 class="u-text-palt">Design System Preview<br>山口情報芸術センター［YCAM］</h1>
+    <p class="lead u-text-palt">DESIGN.md から抽出したデザイントークンのカタログ。computed style 実測値（2026-08-20）に基づく。</p>
+    <div class="hero-buttons">
+      <a class="btn-primary u-text-palt" href="#">イベントカレンダーを見る</a>
+      <a class="btn-outline u-text-palt" href="#">YCAMについて詳しく見る</a>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-label u-text-palt">01 / Colors</div>
+  <h2 class="section-title u-text-palt">カラーパレット — teal と orange の 2 色</h2>
+
+  <div class="color-group-label u-text-palt">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#176e71"></div><div class="color-swatch-info"><div class="color-swatch-name">YCAM Teal</div><div class="color-swatch-hex">#176e71</div><div class="color-swatch-role">主色。ボタン・見出しタブ・リンク・現在地</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#176a71"></div><div class="color-swatch-info"><div class="color-swatch-name">（変数の値）</div><div class="color-swatch-hex">#176a71</div><div class="color-swatch-role">--ycam-color-main の宣言値。実装は左の #176e71</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ba4a00"></div><div class="color-swatch-info"><div class="color-swatch-name">YCAM Orange</div><div class="color-swatch-hex">#ba4a00</div><div class="color-swatch-role">副色。開催中・本日は開館日です</div></div></div>
+  </div>
+
+  <div class="color-group-label u-text-palt">Teal Scale（面色）</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0f494b"></div><div class="color-swatch-info"><div class="color-swatch-name">Deep Teal</div><div class="color-swatch-hex">#0f494b</div><div class="color-swatch-role">フッター・お知らせ見出し</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0a494b"></div><div class="color-swatch-info"><div class="color-swatch-name">Teal Text</div><div class="color-swatch-hex">#0a494b</div><div class="color-swatch-role">ページ上部へ戻るの文字</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c8eced"></div><div class="color-swatch-info"><div class="color-swatch-name">Pale Teal</div><div class="color-swatch-hex">#c8eced</div><div class="color-swatch-role">上部へ戻る帯・上映日見出し</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c8edee"></div><div class="color-swatch-info"><div class="color-swatch-name">Pale Teal 2</div><div class="color-swatch-hex">#c8edee</div><div class="color-swatch-role">サブナビ。2 トーン混在（統一推奨）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ebf4f4"></div><div class="color-swatch-info"><div class="color-swatch-name">Faint Teal</div><div class="color-swatch-hex">#ebf4f4</div><div class="color-swatch-role">ページャ非現在地</div></div></div>
+  </div>
+
+  <div class="color-group-label u-text-palt">Neutral</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#333333"></div><div class="color-swatch-info"><div class="color-swatch-name">Ink</div><div class="color-swatch-hex">#333333</div><div class="color-swatch-role">既定の文字色。純黒ではない</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#666666"></div><div class="color-swatch-info"><div class="color-swatch-name">Disabled</div><div class="color-swatch-hex">#666666</div><div class="color-swatch-role">「準備中」バッジ</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f1f1f1"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Gray</div><div class="color-swatch-hex">#f1f1f1</div><div class="color-swatch-role">非活性タブ・ドロップダウン</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f8f8f8"></div><div class="color-swatch-info"><div class="color-swatch-name">Card Gray</div><div class="color-swatch-hex">#f8f8f8</div><div class="color-swatch-role">お知らせカード</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f7f7f7"></div><div class="color-swatch-info"><div class="color-swatch-name">Card Gray 2</div><div class="color-swatch-hex">#f7f7f7</div><div class="color-swatch-role">関連イベントカード</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #f1f1f1"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ地色</div></div></div>
+  </div>
+
+  <div class="color-group-label u-text-palt">External / Scrim</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#004b9e"></div><div class="color-swatch-info"><div class="color-swatch-name">External Blue</div><div class="color-swatch-hex">#004b9e</div><div class="color-swatch-role">外部サイトへ出るボタンだけ</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(0,0,0,0.6)"></div><div class="color-swatch-info"><div class="color-swatch-name">Scrim</div><div class="color-swatch-hex">rgba(0,0,0,.6)</div><div class="color-swatch-role">写真の上の撮影クレジット</div></div></div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label u-text-palt">02 / Typography — 実測値</div>
+  <h2 class="section-title u-text-palt">タイポグラフィ階層</h2>
+
+  <p style="font-size:0.875rem; line-height:1.75; color:#666; margin-bottom:1.5rem;">
+    実サイトのフォントスタックは先頭が <code style="font-family:var(--font-mono)">YakuHanJPs</code>（約物半角フォント）。
+    このプレビューではローカル環境に無いため以降のフォントで代替表示している。
+    <strong>本番実装では必ず先頭に置く。</strong>Univers（Linotype）も同様に代替される。
+  </p>
+
+  <div class="type-sample">
+    <div class="u-text-palt" style="font-size:2.25rem; font-weight:400; line-height:1.333;">ページタイトル — Page Title（h1）</div>
+    <div class="type-meta">2.25rem（37.35px @1440） / 400 / line-height: 1.333 / letter-spacing: -0.05em / palt: あり<span class="type-context">詳細ページ</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="u-text-palt" style="font-size:2rem; font-weight:700; line-height:1.75;">セクション見出し — Section Head</div>
+    <div class="type-meta">2rem（33.2px @1440） / 400 or 700 / line-height: 1.75 / letter-spacing: -0.05em / palt: あり<span class="type-context">トップ</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="u-text-palt" style="font-size:1.875rem; font-weight:700; line-height:1.333;">記事内リード見出し — Sub Head</div>
+    <div class="type-meta">1.875rem（31.125px @1440） / 700 / line-height: 1.333 / letter-spacing: -0.05em / palt: あり<span class="type-context">詳細ページ</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="u-text-palt" style="font-size:1.5rem; font-weight:700; line-height:1.75;">小見出し — Heading 3</div>
+    <div class="type-meta">1.5rem（24.9px @1440） / 700 / line-height: 1.75 / letter-spacing: -0.05em / palt: あり</div>
+  </div>
+  <div class="type-sample">
+    <span class="heading-tab u-text-palt">見出しタブ（プロフィール）</span>
+    <div class="type-meta">1rem / 700 / 面 #176e71 / border-radius: 3px 3px 0 0 ← このサイト固有の形<span class="type-context">詳細ページ</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="u-text-palt" style="font-size:1rem; font-weight:500; line-height:1.75;">本文 — Body。既定の行間は 1.75 で、見出し・ラベル・ナビと同じく palt と letter-spacing: -0.05em が当たる。日本語を詰めて塊にする組み方。</div>
+    <div class="type-meta">1rem（16.6px @1440） / 500 / line-height: 1.75 / letter-spacing: -0.05em / palt: あり</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:1rem; font-weight:500; line-height:2.0; letter-spacing:normal; font-feature-settings:normal;">読み物本文 — 読ませる文章には palt を当てない。letter-spacing は normal に戻し、行間を 2.0 に広げる。フリージャズ、即興演奏、ノイズ音楽、映画音楽など、多岐にわたる活動を続けてきた音楽家の集大成。</div>
+    <div class="type-meta">1rem / 500 / line-height: 2.0 / letter-spacing: normal / <strong>palt: なし</strong><span class="type-context">イベント詳細の説明文</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="u-text-palt" style="font-size:0.875rem; font-weight:500; line-height:1.75; color:#333;">補足 — Caption（0.875rem）</div>
+    <div class="type-meta">0.875rem（14.525px @1440） / 400 or 500 / letter-spacing: -0.05em</div>
+  </div>
+  <div class="type-sample">
+    <div class="u-text-palt" style="font-size:0.75rem; font-weight:700; line-height:1.5;">バッジ・クレジット — Tiny（0.75rem）</div>
+    <div class="type-meta">0.75rem（12.45px @1440） / 500 or 700 / letter-spacing: -0.05em（フッター見出しのみ -0.033em）</div>
+  </div>
+
+  <div class="color-group-label u-text-palt" style="margin-top:2rem;">Root font-size は画面幅で伸びる</div>
+  <table class="scale-table">
+    <tr><th>Viewport</th><th>Root font-size</th><th>1rem の実寸</th><th>2rem（Section Head）</th></tr>
+    <tr><td>≤ 1343px</td><td>16px（固定）</td><td>16px</td><td>32px</td></tr>
+    <tr><td>1440px</td><td>16.6px</td><td>16.6px</td><td>33.2px</td></tr>
+    <tr><td>1504px</td><td>17px</td><td>17px</td><td>34px</td></tr>
+    <tr><td>1680px</td><td>18px</td><td>18px</td><td>36px</td></tr>
+    <tr><td>≥ 1840px</td><td>20px（頭打ち）</td><td>20px</td><td>40px</td></tr>
+  </table>
+</section>
+
+<hr class="section-rule">
+
+<!-- EVENT / ARTICLE -->
+<section class="section-gray" id="article">
+<div class="section-inner">
+  <div class="section-label u-text-palt">03 / Event — 詳細ページの組版</div>
+  <h2 class="section-title u-text-palt">イベント詳細の組版サンプル</h2>
+  <div class="article">
+    <div class="hero-metas"><span class="badge badge--open u-text-palt">開催中</span><span class="badge badge--place u-text-palt">館外</span></div>
+    <p class="kanmuri u-text-palt">大友良英＋YCAM新作展</p>
+    <h1 class="u-text-palt">即興！</h1>
+    <p>音楽家・大友良英の集大成となる大規模展。136 日間にわたって、演奏・展示・ワークショップが日替わりで立ち上がる。読ませる本文なので palt を外し、行間を 2.0 に広げている。</p>
+    <h2 class="u-text-palt">展示作品について</h2>
+    <p>フリージャズ、即興演奏、ノイズ音楽、映画音楽。ジャンルを横断してきた活動を、YCAM のスタジオ空間そのものを楽器として使う形で再構成する。</p>
+
+    <span class="heading-tab u-text-palt">料金</span>
+    <div class="heading-tab-body u-text-palt">一般 1,200 円／学生 800 円／18 歳以下無料</div>
+
+    <table style="margin-top:1.5rem;">
+      <tr><th class="u-text-palt">会場</th><td class="u-text-palt">スタジオA</td></tr>
+      <tr><th class="u-text-palt">会期</th><td class="u-text-palt">2026年10月17日（土）〜2027年3月1日（月）</td></tr>
+      <tr><th class="u-text-palt">特設ウェブサイト</th><td><a class="btn-external u-text-palt" href="#">特設ウェブサイト</a></td></tr>
+    </table>
+  </div>
+</div>
+</section>
+
+<hr class="section-rule">
+
+<!-- SCHEDULE -->
+<section class="section" id="schedule">
+  <div class="section-label u-text-palt">04 / Schedule</div>
+  <h2 class="section-title u-text-palt">きょうのYCAM — 上映スケジュール</h2>
+  <div class="day-head u-text-palt">8月24日（月）</div>
+  <div class="schedule">
+    <div class="schedule-row">
+      <div class="schedule-time u-text-palt">15:10 <small>〜16:48</small></div>
+      <div>
+        <span class="schedule-kanmuri u-text-palt">静かなる大きな覚悟</span>
+        <a class="schedule-title u-text-palt" href="#">決断するとき</a>
+      </div>
+    </div>
+    <div class="schedule-row" style="border-bottom:none;">
+      <div class="schedule-time u-text-palt">17:10 <small>〜18:27</small></div>
+      <div>
+        <span class="schedule-kanmuri u-text-palt">映画上映／時代の大きなうねりの中で</span>
+        <a class="schedule-title u-text-palt" href="#">アメリと雨の物語《日本語字幕版》</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label u-text-palt">05 / Buttons & Badges</div>
+  <h2 class="section-title u-text-palt">ボタン・バッジ・タブ</h2>
+
+  <div class="button-row" style="margin-bottom:2rem;">
+    <div class="button-item"><a class="btn-primary u-text-palt" href="#">前売り券販売・申込受付があるイベント一覧</a><div class="button-label">Primary — #176e71 / radius 3px / padding 1rem</div></div>
+    <div class="button-item"><a class="btn-primary btn-primary--s u-text-palt" href="#">きょうのYCAMを見る</a><div class="button-label">Primary（小） — padding 0.85rem</div></div>
+  </div>
+  <div class="button-row" style="margin-bottom:2rem;">
+    <div class="button-item"><a class="btn-outline u-text-palt" href="#">YCAMについて詳しく見る</a><div class="button-label">Outline — 2px solid / radius 0px</div></div>
+    <div class="button-item"><a class="btn-external u-text-palt" href="#">特設ウェブサイト</a><div class="button-label">External — #004b9e / radius 3px</div></div>
+  </div>
+
+  <div class="color-group-label u-text-palt">Badges（全部 radius 0px）</div>
+  <div class="badge-row" style="margin-bottom:2rem;">
+    <span class="badge badge--open u-text-palt">開催中</span>
+    <span class="badge badge--open u-text-palt">映画上映</span>
+    <span class="badge badge--soon u-text-palt">準備中</span>
+    <span class="badge badge--cat u-text-palt">プレスリリース</span>
+    <span class="badge badge--left u-text-palt">あと4日</span>
+    <span class="badge badge--ticket u-text-palt">前売り券販売中</span>
+    <span class="badge badge--place u-text-palt">館外</span>
+  </div>
+
+  <div class="color-group-label u-text-palt">Tabs</div>
+  <div class="tabs" style="margin-bottom:2rem;">
+    <button class="tab is-current u-text-palt">すべて</button>
+    <button class="tab u-text-palt">お知らせ</button>
+    <button class="tab u-text-palt">プレスリリース</button>
+  </div>
+
+  <div class="color-group-label u-text-palt">Pagination</div>
+  <div class="pager">
+    <span class="is-current">1</span><span>2</span><span>3</span><span>4</span>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-label u-text-palt">06 / Cards</div>
+  <h2 class="section-title u-text-palt">カードコンポーネント（影も枠もない）</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-thumb"><span class="card-credit u-text-palt">撮影：丸尾隆一（YCAM）</span></div>
+      <div class="card-kanmuri u-text-palt">大友良英＋YCAM新作展「即興！」先行展示</div>
+      <a class="card-title u-text-palt" href="#">without records</a>
+      <div class="card-date u-text-palt">2026年7月24日（金）〜2027年3月1日（月）</div>
+      <div class="card-badges"><span class="badge badge--open u-text-palt">開催中</span></div>
+    </div>
+    <div class="card card--news">
+      <div class="card-kanmuri u-text-palt" style="margin-top:0;">記事の公開日 2026年7月</div>
+      <a class="card-title u-text-palt" href="#">YCAM爆音映画祭2026の上映作品を発表しました</a>
+      <div class="card-badges"><span class="badge badge--cat u-text-palt">プレスリリース</span></div>
+    </div>
+    <div class="card card--rel">
+      <div class="card-kanmuri u-text-palt" style="margin-top:0;">関連イベント</div>
+      <a class="card-title u-text-palt" href="#">Filament＋YCAM</a>
+      <div class="card-badges"><span class="badge badge--soon u-text-palt">準備中</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-label u-text-palt">07 / Forms</div>
+  <h2 class="section-title u-text-palt">フォーム要素</h2>
+  <p style="font-size:0.875rem; color:#666; line-height:1.75; margin-bottom:1.5rem;">
+    実サイトは <code style="font-family:var(--font-mono)">&lt;select&gt;</code> に必ず <code style="font-family:var(--font-mono)">&lt;label&gt;</code>（「言語を切り替える」「表示するお知らせのカテゴリを切り替える」）を付けている。
+  </p>
+  <div class="form-group"><label class="form-label u-text-palt">お名前</label><input class="form-input" type="text" placeholder="山口 太郎"><div class="form-state-label">デフォルト — border: 1px solid #666666 / radius: 3px</div></div>
+  <div class="form-group"><label class="form-label u-text-palt">メールアドレス</label><input class="form-input form-input--focus" type="text" value="info@ycam.jp"><div class="form-state-label">フォーカス — 2px solid #176e71 ＋ outline-offset: -2px</div></div>
+  <div class="form-group"><label class="form-label u-text-palt">申込人数</label><input class="form-input form-input--error" type="text" value="0"><div class="form-error u-text-palt">1 名以上を入力してください</div><div class="form-state-label">エラー — 2px solid #ba4a00</div></div>
+</section>
+
+<hr class="section-rule">
+
+<!-- SURFACES -->
+<section class="section" id="surfaces">
+  <div class="section-label u-text-palt">08 / Depth — 影を持たない</div>
+  <h2 class="section-title u-text-palt">階層は面色でつくる（box-shadow: none）</h2>
+  <div class="surface-grid">
+    <div class="surface-card" style="background:#ffffff"><div class="surface-label u-text-palt">地</div><div class="surface-desc">#ffffff</div></div>
+    <div class="surface-card" style="background:#f8f8f8"><div class="surface-label u-text-palt">お知らせ</div><div class="surface-desc">#f8f8f8</div></div>
+    <div class="surface-card" style="background:#f1f1f1"><div class="surface-label u-text-palt">非活性タブ</div><div class="surface-desc">#f1f1f1</div></div>
+    <div class="surface-card" style="background:#ebf4f4"><div class="surface-label u-text-palt">ページャ</div><div class="surface-desc">#ebf4f4</div></div>
+    <div class="surface-card" style="background:#c8eced"><div class="surface-label u-text-palt">上部へ戻る帯</div><div class="surface-desc">#c8eced</div></div>
+    <div class="surface-card" style="background:#176e71; color:#fff; border-color:#176e71"><div class="surface-label u-text-palt">ボタン・現在地</div><div class="surface-desc">#176e71</div></div>
+    <div class="surface-card" style="background:#0f494b; color:#fff; border-color:#0f494b"><div class="surface-label u-text-palt">フッター</div><div class="surface-desc">#0f494b</div></div>
+  </div>
+
+  <div class="color-group-label u-text-palt" style="margin-top:2rem;">Spacing Scale（rem — 画面幅で伸びる）</div>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:0.25rem"></div><div class="spacing-value">0.25rem<br>4.15px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:0.5rem"></div><div class="spacing-value">0.5rem<br>8.3px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:0.8rem"></div><div class="spacing-value">0.8rem<br>13.28px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:1rem"></div><div class="spacing-value">1rem<br>16.6px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:1.5rem"></div><div class="spacing-value">1.5rem<br>24.9px</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:2rem"></div><div class="spacing-value">2rem<br>33.2px</div></div>
+  </div>
+</section>
+
+<div class="go2top u-text-palt">▲ ページ上部へ戻る</div>
+
+<footer class="footer">
+  Generated from <a href="https://www.ycam.jp/">山口情報芸術センター［YCAM］</a> DESIGN.md — awesome-design-md-jp / computed style 実測値（2026-08-20）
+</footer>
+
+</body>
+</html>

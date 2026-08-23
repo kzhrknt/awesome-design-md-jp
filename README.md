@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (462 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (465 sites)</a>
 </p>
 
 <table>
@@ -699,6 +699,11 @@
 <td align="center"><strong>鶴屋吉信</strong><br><img src="design-md/tsuruyayoshinobu/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>静嘉堂文庫美術館</strong><br><img src="design-md/seikado/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>YCAM</strong><br><img src="design-md/ycam/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ココマイスター</strong><br><img src="design-md/cocomeister/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Mr. CHEESECAKE</strong><br><img src="design-md/mrcheesecake/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1221,11 +1226,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [MIMIGURI (ミミグリ)](https://mimiguri.co.jp/) | Consulting / Organization Design | [DESIGN.md](design-md/mimiguri/DESIGN.md) | [preview.html](design-md/mimiguri/preview.html) |
 | [鶴屋吉信 (つるやよしのぶ)](https://www.tsuruyayoshinobu.jp/) | Japanese Confectionery | [DESIGN.md](design-md/tsuruyayoshinobu/DESIGN.md) | [preview.html](design-md/tsuruyayoshinobu/preview.html) |
 | [静嘉堂文庫美術館 (Seikado Bunko Art Museum)](https://www.seikado.or.jp/) | Museum / Art | [DESIGN.md](design-md/seikado/DESIGN.md) | [preview.html](design-md/seikado/preview.html) |
+| [YCAM (山口情報芸術センター)](https://www.ycam.jp/) | Media Art Center / Culture | [DESIGN.md](design-md/ycam/DESIGN.md) | [preview.html](design-md/ycam/preview.html) |
+| [COCOMEISTER (ココマイスター)](https://cocomeister.jp/) | Leather Goods / E-Commerce | [DESIGN.md](design-md/cocomeister/DESIGN.md) | [preview.html](design-md/cocomeister/preview.html) |
+| [Mr. CHEESECAKE](https://mr-cheesecake.com/) | D2C / Sweets | [DESIGN.md](design-md/mrcheesecake/DESIGN.md) | [preview.html](design-md/mrcheesecake/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (462 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (465 sites)</a>
 </p>
 
 <table>
@@ -1889,6 +1897,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>MIMIGURI</strong><br><img src="design-md/mimiguri/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>鶴屋吉信</strong><br><img src="design-md/tsuruyayoshinobu/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>静嘉堂文庫美術館</strong><br><img src="design-md/seikado/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>YCAM</strong><br><img src="design-md/ycam/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ココマイスター</strong><br><img src="design-md/cocomeister/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Mr. CHEESECAKE</strong><br><img src="design-md/mrcheesecake/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
