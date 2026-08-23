@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (465 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (468 sites)</a>
 </p>
 
 <table>
@@ -704,6 +704,11 @@
 <td align="center"><strong>ココマイスター</strong><br><img src="design-md/cocomeister/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>Mr. CHEESECAKE</strong><br><img src="design-md/mrcheesecake/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>山崎実業</strong><br><img src="design-md/yamajitsu/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>アユーラ</strong><br><img src="design-md/ayura/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ファクトリエ</strong><br><img src="design-md/factelier/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1229,11 +1234,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [YCAM (山口情報芸術センター)](https://www.ycam.jp/) | Media Art Center / Culture | [DESIGN.md](design-md/ycam/DESIGN.md) | [preview.html](design-md/ycam/preview.html) |
 | [COCOMEISTER (ココマイスター)](https://cocomeister.jp/) | Leather Goods / E-Commerce | [DESIGN.md](design-md/cocomeister/DESIGN.md) | [preview.html](design-md/cocomeister/preview.html) |
 | [Mr. CHEESECAKE](https://mr-cheesecake.com/) | D2C / Sweets | [DESIGN.md](design-md/mrcheesecake/DESIGN.md) | [preview.html](design-md/mrcheesecake/preview.html) |
+| [山崎実業 (Yamazaki Home)](https://www.yamajitsu.co.jp/) | Housewares / E-Commerce | [DESIGN.md](design-md/yamajitsu/DESIGN.md) | [preview.html](design-md/yamajitsu/preview.html) |
+| [アユーラ (AYURA)](https://www.ayura.co.jp/) | Cosmetics / Skincare | [DESIGN.md](design-md/ayura/DESIGN.md) | [preview.html](design-md/ayura/preview.html) |
+| [ファクトリエ (Factelier)](https://factelier.com/) | Apparel / D2C | [DESIGN.md](design-md/factelier/DESIGN.md) | [preview.html](design-md/factelier/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (465 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (468 sites)</a>
 </p>
 
 <table>
@@ -1902,6 +1910,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>YCAM</strong><br><img src="design-md/ycam/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>ココマイスター</strong><br><img src="design-md/cocomeister/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>Mr. CHEESECAKE</strong><br><img src="design-md/mrcheesecake/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>山崎実業</strong><br><img src="design-md/yamajitsu/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>アユーラ</strong><br><img src="design-md/ayura/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ファクトリエ</strong><br><img src="design-md/factelier/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

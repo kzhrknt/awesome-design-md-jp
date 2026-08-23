@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 山崎実業（Yamazaki Home）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@300;400;500;700&family=Yantramanav:wght@300;400;500;700&family=Roboto:wght@400;500&family=Heebo:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測値（2026-08-23） === */
+    --ink:            #4e4e56;  /* 既定の文字色。--ss-color-text-primary と一致 */
+    --ink-strong:     #3d3d43;  /* セクション見出し・カート系ボタンの面 */
+    --ink-strongest:  #35353a;  /* 商品名 */
+    --muted:          #626267;  /* ページネーションの数字 */
+    --subtle:         #7e7e88;  /* アウトライン枠・COMING SOON の面 */
+    --caption:        #9e9eaa;  /* 品番・補足 */
+    --border:         #d9d9d9;
+    --border-pale:    #d0d0d0;  /* セカンダリボタンの枠 */
+    --border-faint:   #c1c1c1;
+    --surface:        #f4f4f6;
+    --surface-alt:    #f7f7f9;
+    --surface-dark:   #26373e;  /* フッター・About セクション */
+    --fill-black:     #000000;  /* プライマリボタン・選択中バリアント */
+    --white:          #ffffff;
+
+    /* バッジ = サイト唯一の彩度 */
+    --badge-new:      #aa2b2b;
+    --badge-best:     #c3a856;
+    --badge-soon:     #7e7e88;
+
+    /* 部分的な差し色 */
+    --accent-brown:   #734e30;
+    --accent-beige:   #e7d0a9;
+    --accent-lav:     #dcdce3;
+
+    /* === Fonts 実測値（4 書体すべて Google Fonts で実物が使える） === */
+    --font-base:  "IBM Plex Sans JP", sans-serif;
+    --font-badge: Yantramanav, sans-serif;   /* バッジ・英字ボタン・大見出し */
+    --font-nav:   Roboto, sans-serif;        /* ナビ・セクション見出し */
+    --font-num:   Heebo, sans-serif;         /* 数値・キャプション */
+    --font-mono:  SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    --focus-ring: 0 0 0 0.3rem #ffffff, 0 0 0.5rem 0.4rem rgba(78, 78, 86, 0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* このサイトのルートは 10px（Shopify Dawn の 62.5% ベース）。1rem = 10px */
+  html { font-size: 10px; }
+
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font-base);
+    font-size: 1.6rem;          /* = 16px */
+    font-weight: 400;
+    line-height: 1.7;           /* 27.2px */
+    letter-spacing: normal;
+    /* palt が body からグローバルに継承される — このサイト最大の特徴 */
+    font-feature-settings: "palt";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .topbar { background: var(--surface); text-align: center; font-size: 1.3rem; padding: 0.8rem; letter-spacing: 0.02em; }
+  .nav { display: flex; align-items: center; gap: 3.2rem; padding: 1.6rem 4.8rem; border-bottom: 1px solid var(--border); }
+  .nav-logo { display: inline-flex; align-items: center; justify-content: center; width: 6rem; height: 4.4rem; border: 1px solid var(--ink); font-family: var(--font-badge); font-size: 1.2rem; letter-spacing: 0.05em; }
+  .nav-links { display: flex; gap: 2.4rem; list-style: none; }
+  .nav-links a { font-family: var(--font-nav); font-size: 1.5rem; line-height: 1.2; color: var(--ink); text-decoration: none; }
+  .nav-links a:hover { color: var(--ink-strongest); }
+
+  /* SECTIONS */
+  .section { padding: 4.8rem; max-width: 1440px; margin: 0 auto; }
+  .section-alt { background: var(--surface-alt); }
+  .section-label { font-family: var(--font-nav); font-size: 1.2rem; font-weight: 500; color: var(--subtle); letter-spacing: 0.08em; margin-bottom: 0.6rem; }
+  .section-title { font-family: var(--font-nav); font-size: 2.7rem; font-weight: 500; line-height: 1.2; color: var(--ink); margin-bottom: 2.4rem; }
+  /* PICK UP 見出しだけ palt を解除している（実サイトの s-pickup__header） */
+  .section-title-ja { font-size: 2.4rem; font-weight: 400; line-height: 1.3; color: var(--ink-strong); font-feature-settings: normal; margin-bottom: 2.4rem; }
+
+  /* HERO */
+  .hero { position: relative; background: var(--surface-alt); padding: 6.4rem 4.8rem; text-align: center; }
+  .hero-en { font-family: var(--font-badge); font-size: 2.6rem; font-weight: 500; line-height: 1.2; color: var(--ink); }
+  .hero-ja { font-size: 1.4rem; line-height: 1.4; letter-spacing: 0.05em; color: var(--ink); margin-top: 0.8rem; }
+  .hero-pager { display: inline-block; margin-top: 2.4rem; background: rgba(255,255,255,0.65); color: var(--muted); border-radius: 11px; padding: 2px 10px 0; font-family: var(--font-num); font-size: 1.3rem; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 0.8rem; margin-bottom: 1.6rem; }
+  .color-swatch { border: 1px solid var(--border); background: var(--white); }
+  .color-swatch-block { height: 4.8rem; width: 100%; }
+  .color-swatch-info { padding: 0.8rem 1rem; }
+  .color-swatch-name { font-size: 1.3rem; line-height: 1.3; margin-bottom: 0.2rem; }
+  .color-swatch-hex { font-family: var(--font-mono); font-size: 1.2rem; color: var(--caption); }
+  .color-swatch-role { font-size: 1.1rem; color: var(--subtle); margin-top: 0.3rem; line-height: 1.4; }
+  .color-group-label { font-family: var(--font-nav); font-size: 1.4rem; font-weight: 500; color: var(--ink-strong); margin: 2.4rem 0 0.8rem; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 2.4rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 1.2rem; color: var(--caption); margin-top: 0.8rem; line-height: 1.6; }
+  .t-display   { font-size: 4rem;   font-weight: 400; line-height: 1.3; }
+  .t-section   { font-family: var(--font-nav); font-size: 2.7rem; font-weight: 500; line-height: 1.2; }
+  .t-h2        { font-size: 2.4rem; font-weight: 400; line-height: 1.3; font-feature-settings: normal; }
+  .t-product   { font-size: 1.8rem; font-weight: 400; line-height: 1.3; letter-spacing: 0.06em; color: var(--ink-strongest); }
+  .t-body      { font-size: 1.6rem; font-weight: 400; line-height: 1.7; }
+  .t-sub       { font-size: 1.5rem; font-weight: 400; line-height: 1.5; letter-spacing: 0.02em; }
+  .t-list      { font-size: 1.4rem; font-weight: 400; line-height: 1.5; letter-spacing: 0.02em; }
+  .t-caption   { font-size: 1.3rem; font-weight: 400; line-height: 1.3; letter-spacing: 0.02em; }
+  .t-num       { font-family: var(--font-num); font-size: 1.2rem; font-weight: 300; line-height: 1.2; color: var(--caption); }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 2rem; flex-wrap: wrap; align-items: flex-start; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 1.1rem; color: var(--subtle); margin-top: 0.8rem; line-height: 1.4; }
+  .btn { font-family: var(--font-base); cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn-primary   { background: var(--fill-black); color: var(--white); border: 1px solid var(--fill-black); border-radius: 0; padding: 2px 13px; font-size: 1.4rem; font-weight: 400; }
+  .btn-cart      { background: var(--ink-strong); color: var(--white); border: 1px solid var(--ink-strong); border-radius: 2px; padding: 12px 18px; font-size: 1.3rem; }
+  /* サイトで唯一 border-radius が付くパーツ */
+  .btn-outlined  { background: transparent; color: var(--ink); border: 1px solid var(--subtle); border-radius: 3px; padding: 1.5px 16px 0; font-family: var(--font-badge); font-size: 1.5rem; letter-spacing: 0.05em; }
+  .btn-outlined-ja { background: transparent; color: var(--ink); border: 1px solid var(--subtle); border-radius: 3px; padding: 1.4px 16px 0; font-size: 1.4rem; }
+  .btn-secondary { background: var(--white); color: var(--ink-strong); border: 1px solid var(--border-pale); border-radius: 3px; padding: 0 16px; font-size: 1.4rem; line-height: 3.2; }
+  .btn:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+  .on-dark { background: var(--surface-dark); padding: 3.2rem; margin-top: 2.4rem; }
+  .btn-outlined-invert { background: transparent; color: var(--white); border: 1px solid var(--white); border-radius: 3px; padding: 1.4px 16px 0; font-size: 1.4rem; text-decoration: none; display: inline-block; }
+  .on-dark .button-label { color: #b9b9c4; }
+
+  /* BADGES — 角丸ゼロ。CSS 変数 --badge-corner-radius: 4rem とは食い違う */
+  .badge { display: inline-block; color: var(--white); border-radius: 0; padding: 1px 5px 0; font-family: var(--font-badge); letter-spacing: 0.02em; }
+  .badge-new  { background: var(--badge-new);  font-size: 1.1rem; }
+  .badge-best { background: var(--badge-best); font-size: 1rem; }
+  .badge-soon { background: var(--badge-soon); font-size: 1rem; }
+
+  /* VARIANT SELECTOR */
+  .variant-row { display: flex; gap: 0.8rem; }
+  .variant { border: 1px solid var(--fill-black); border-radius: 0; padding: 5px; font-size: 1.4rem; background: transparent; color: var(--fill-black); cursor: pointer; font-family: var(--font-base); }
+  .variant.is-selected { background: var(--fill-black); color: var(--white); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6.5px; }
+  .card { background: var(--white); border-radius: 0; box-shadow: none; text-align: left; }
+  .card-media { background: var(--surface-alt); aspect-ratio: 1 / 1; position: relative; display: flex; align-items: center; justify-content: center; }
+  .card-media-note { font-family: var(--font-num); font-size: 1.2rem; font-weight: 300; color: var(--caption); }
+  .card-badges { position: absolute; top: 0; left: 0; display: flex; gap: 2px; }
+  .card-body { padding: 1.2rem 0 0; }
+  .card-series { font-family: var(--font-badge); font-size: 1.1rem; letter-spacing: 0.08em; color: var(--subtle); }
+  .card-title { font-size: 1.8rem; font-weight: 400; line-height: 1.3; letter-spacing: 0.06em; color: var(--ink-strongest); margin: 0.4rem 0; }
+  .card-sku { font-family: var(--font-num); font-size: 1.2rem; font-weight: 300; color: var(--caption); }
+  .card-price { font-family: var(--font-num); font-size: 1.5rem; font-weight: 400; color: var(--ink); margin-top: 0.6rem; }
+
+  /* SKELETON */
+  .skeleton-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6.5px; }
+  .skeleton { height: 10rem; background: linear-gradient(90deg, #e8e8e8 25%, #f5f5f5 50%, #e8e8e8 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+  .skeleton-text { height: 1.4rem; margin-top: 0.8rem; background: linear-gradient(90deg, rgba(200,200,200,.3) 25%, rgba(200,200,200,.5) 50%, rgba(200,200,200,.3) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+  /* FORMS */
+  .form-row { margin-bottom: 2rem; max-width: 45rem; }
+  .form-label { display: block; font-size: 1.4rem; letter-spacing: 0.02em; margin-bottom: 0.6rem; }
+  .form-input { width: 100%; background: var(--white); border: 1px solid rgba(78,78,86,0.55); border-radius: 0; padding: 1.2rem 1.4rem; font-family: var(--font-base); font-size: 1.6rem; color: var(--ink); font-feature-settings: "palt"; }
+  .form-input::placeholder { color: var(--caption); }
+  .form-input:focus { outline: none; box-shadow: var(--focus-ring); }
+  .form-input.is-focus { box-shadow: var(--focus-ring); }
+  .form-input.is-error { border-color: var(--badge-new); }
+  .form-error { font-size: 1.3rem; color: var(--badge-new); margin-top: 0.5rem; letter-spacing: 0.02em; }
+  .form-hint { font-size: 1.3rem; color: var(--caption); margin-top: 0.5rem; letter-spacing: 0.02em; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6rem; }
+  .elev-item { background: var(--white); border: 1px solid var(--border); padding: 2.4rem; }
+  .elev-0 { box-shadow: none; }
+  .elev-1 { box-shadow: 0 0 25px rgba(0,0,0,0.2); }
+  .elev-focus { box-shadow: var(--focus-ring); }
+  .elev-name { font-size: 1.4rem; margin-bottom: 0.4rem; }
+  .elev-code { font-family: var(--font-mono); font-size: 1.1rem; color: var(--caption); line-height: 1.5; word-break: break-all; }
+
+  /* SURFACES */
+  .surface-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.6rem; }
+  .surface-item { padding: 2.4rem 1.6rem; font-size: 1.3rem; letter-spacing: 0.02em; }
+
+  /* LAYOUT */
+  .layout-table { width: 100%; border-collapse: collapse; font-size: 1.4rem; }
+  .layout-table th, .layout-table td { border: 1px solid var(--border); padding: 1rem 1.2rem; text-align: left; letter-spacing: 0.02em; }
+  .layout-table th { background: var(--surface); font-weight: 400; color: var(--ink-strong); }
+  .layout-table td.mono { font-family: var(--font-mono); font-size: 1.2rem; }
+
+  /* NOTE */
+  .note { background: var(--surface); border-left: 3px solid var(--badge-new); padding: 1.6rem 2rem; font-size: 1.4rem; line-height: 1.7; margin-top: 2.4rem; }
+  .note strong { font-weight: 700; }
+
+  /* FOOTER */
+  .footer { background: var(--surface-dark); color: #dcdce3; padding: 8.2rem 4.8rem 4.8rem; }
+  .footer-inner { max-width: 1440px; margin: 0 auto; }
+  .footer-title { font-family: var(--font-badge); font-size: 2.6rem; font-weight: 500; line-height: 1.2; color: var(--white); }
+  .footer-text { font-size: 1.4rem; line-height: 1.7; letter-spacing: 0.05em; margin-top: 1.2rem; max-width: 60rem; }
+  .footer-actions { margin-top: 2.4rem; }
+</style>
+</head>
+<body>
+
+<div class="topbar">3,980円以上のご購入で送料無料 ※沖縄・離島は対象外</div>
+
+<nav class="nav">
+  <span class="nav-logo">Yamazaki</span>
+  <ul class="nav-links">
+    <li><a href="#colors">TOP</a></li>
+    <li><a href="#typography">New Arrivals</a></li>
+    <li><a href="#buttons">Best Sellers</a></li>
+    <li><a href="#cards">Column</a></li>
+    <li><a href="#layout">About</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <p class="hero-en">Yamazaki Home, Simplified</p>
+  <p class="hero-ja">暮らしの「ちょっと不便」を、道具で解く。</p>
+  <div><span class="hero-pager">2 / 5</span></div>
+</section>
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <p class="section-label">01 — COLORS</p>
+  <h2 class="section-title">無彩色 ＋ バッジ 3 色だけ</h2>
+
+  <p class="color-group-label">Neutral（UI の全部）</p>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#4e4e56"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">#4e4e56</div><div class="color-swatch-role">既定の文字色。青みを含んだグレー</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#3d3d43"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Strong</div><div class="color-swatch-hex">#3d3d43</div><div class="color-swatch-role">セクション見出し・カート系ボタン</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#35353a"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Strongest</div><div class="color-swatch-hex">#35353a</div><div class="color-swatch-role">商品名</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#626267"></div><div class="color-swatch-info"><div class="color-swatch-name">Muted</div><div class="color-swatch-hex">#626267</div><div class="color-swatch-role">ページネーションの数字</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#7e7e88"></div><div class="color-swatch-info"><div class="color-swatch-name">Subtle</div><div class="color-swatch-hex">#7e7e88</div><div class="color-swatch-role">アウトライン枠・COMING SOON</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#9e9eaa"></div><div class="color-swatch-info"><div class="color-swatch-name">Caption</div><div class="color-swatch-hex">#9e9eaa</div><div class="color-swatch-role">品番・補足（Heebo 12px w300）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d9d9d9"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#d9d9d9</div><div class="color-swatch-role">区切り線</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f4f4f6"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#f4f4f6</div><div class="color-swatch-role">通知バー・淡い面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f7f7f9"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Alt</div><div class="color-swatch-hex">#f7f7f9</div><div class="color-swatch-role">ランキングの下地</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#26373e"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Dark</div><div class="color-swatch-hex">#26373e</div><div class="color-swatch-role">フッター・About。唯一「色」を持つ面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000000"></div><div class="color-swatch-info"><div class="color-swatch-name">Fill Black</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">プライマリボタン・選択中バリアント</div></div></div>
+  </div>
+
+  <p class="color-group-label">Badge（サイト唯一の彩度）</p>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#aa2b2b"></div><div class="color-swatch-info"><div class="color-swatch-name">NEW</div><div class="color-swatch-hex">#aa2b2b</div><div class="color-swatch-role">朱に寄せた深い赤。純赤にしない</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c3a856"></div><div class="color-swatch-info"><div class="color-swatch-name">BEST SELLER</div><div class="color-swatch-hex">#c3a856</div><div class="color-swatch-role">くすんだ金。レビュー星と同色</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#7e7e88"></div><div class="color-swatch-info"><div class="color-swatch-name">COMING SOON</div><div class="color-swatch-hex">#7e7e88</div><div class="color-swatch-role">入荷予定</div></div></div>
+  </div>
+
+  <p class="color-group-label">Accent（部分的な差し色）</p>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#734e30"></div><div class="color-swatch-info"><div class="color-swatch-name">Brown</div><div class="color-swatch-hex">#734e30</div><div class="color-swatch-role">木目シリーズの帯</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e7d0a9"></div><div class="color-swatch-info"><div class="color-swatch-name">Beige</div><div class="color-swatch-hex">#e7d0a9</div><div class="color-swatch-role">上記と対になる淡色</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dcdce3"></div><div class="color-swatch-info"><div class="color-swatch-name">Lavender Gray</div><div class="color-swatch-hex">#dcdce3</div><div class="color-swatch-role">カテゴリカードの下地</div></div></div>
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section class="section section-alt" id="typography" style="max-width:none">
+<div style="max-width:1440px;margin:0 auto">
+  <p class="section-label">02 — TYPOGRAPHY</p>
+  <h2 class="section-title">和文も欧文も IBM Plex Sans JP 1 書体</h2>
+
+  <div class="type-sample">
+    <div class="t-display">収納は、暮らしの設計だ</div>
+    <div class="type-meta">Display / IBM Plex Sans JP 40px w400 / lh 1.3 (52px) / ls normal / #4e4e56</div>
+  </div>
+  <div class="type-sample">
+    <div class="t-section">TOP RANKING</div>
+    <div class="type-meta">Section (欧文) / Roboto 27px w500 / lh 1.2 (32.4px) / ls normal</div>
+  </div>
+  <div class="type-sample">
+    <div class="t-h2">PICK UP — 今月のおすすめ</div>
+    <div class="type-meta">Heading 2 / IBM Plex Sans JP 24px w400 / lh 1.3 (31.2px) / <strong>font-feature-settings: normal（palt をここだけ解除）</strong> / #3d3d43</div>
+  </div>
+  <div class="type-sample">
+    <div class="t-product">tower マグネットキッチンペーパーホルダー</div>
+    <div class="type-meta">Product Name / IBM Plex Sans JP 18px w400 / lh 1.3 (23.4px) / <strong>ls 0.06em (1.08px)</strong> / #35353a</div>
+  </div>
+  <div class="type-sample">
+    <div class="t-body">スチールに粉体塗装を施し、キッチンの油汚れにも耐える仕上げにしています。マグネットで冷蔵庫の側面に固定でき、調理台の上を占有しません。ホワイトとブラックの 2 色展開です。</div>
+    <div class="type-meta">Body / IBM Plex Sans JP 16px w400 / <strong>lh 1.7 (27.2px)</strong> / ls normal / #4e4e56</div>
+  </div>
+  <div class="type-sample">
+    <div class="t-sub">サイズと素材について</div>
+    <div class="type-meta">Sub Heading / 15px w400 / lh 1.5 (22.5px) / ls 0.02em (0.3px)</div>
+  </div>
+  <div class="type-sample">
+    <div class="t-list">キッチン収納 ／ バス・サニタリー ／ 玄関収納</div>
+    <div class="type-meta">List Item / 14px w400 / lh 1.5 (21px) / ls 0.02em (0.28px)</div>
+  </div>
+  <div class="type-sample">
+    <div class="t-caption">※ 商品の色味はご覧の環境により実物と異なる場合があります</div>
+    <div class="type-meta">Caption / 13px w400 / lh 1.3 (16.9px) / ls 0.02em (0.26px)</div>
+  </div>
+  <div class="type-sample">
+    <div class="t-num">品番：1842 / 1843</div>
+    <div class="type-meta">Caption (数値) / <strong>Heebo</strong> 12px <strong>w300</strong> / lh 1.2 (14.4px) / #9e9eaa — サイト唯一の Light</div>
+  </div>
+  <div class="type-sample">
+    <span class="badge badge-new">NEW</span>
+    <span class="badge badge-best">BEST SELLER</span>
+    <span class="badge badge-soon">COMING SOON</span>
+    <div class="type-meta">Badge / <strong>Yantramanav</strong> 10–11px w400 / ls 0.02em / border-radius: <strong>0px</strong> / padding: 1px 5px 0</div>
+  </div>
+
+  <div class="note">
+    <strong>ウェイトを振らない。</strong> 実サイトのトップページに <code>font-weight: 700</code> は 1 箇所もない。和文はすべて 400 で、500 が付くのは欧文見出し（Roboto / Yantramanav）だけ、300 は Heebo のキャプションだけ。階層はサイズと色でつくる。
+  </div>
+</div>
+</section>
+
+<!-- PRODUCT -->
+<section class="section" id="cards">
+  <p class="section-label">03 — PRODUCT</p>
+  <h2 class="section-title">商品グリッド（角丸ゼロ・影なし）</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-media"><span class="card-media-note">product image</span><div class="card-badges"><span class="badge badge-new">NEW</span></div></div>
+      <div class="card-body">
+        <div class="card-series">TOWER</div>
+        <div class="card-title">マグネットキッチンペーパーホルダー</div>
+        <div class="card-sku">品番：1842</div>
+        <div class="card-price">￥1,980</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-media"><span class="card-media-note">product image</span><div class="card-badges"><span class="badge badge-best">BEST SELLER</span></div></div>
+      <div class="card-body">
+        <div class="card-series">TOSCA</div>
+        <div class="card-title">キッチン自立式コーナーラック</div>
+        <div class="card-sku">品番：2439</div>
+        <div class="card-price">￥3,300</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-media"><span class="card-media-note">product image</span><div class="card-badges"><span class="badge badge-soon">COMING SOON</span></div></div>
+      <div class="card-body">
+        <div class="card-series">PLATE</div>
+        <div class="card-title">スリムタオルハンガー</div>
+        <div class="card-sku">品番：3021</div>
+        <div class="card-price">￥2,200</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-media"><span class="card-media-note">product image</span></div>
+      <div class="card-body">
+        <div class="card-series">TOWER</div>
+        <div class="card-title">レンジ上棚</div>
+        <div class="card-sku">品番：1990</div>
+        <div class="card-price">￥4,400</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="color-group-label">Skeleton（読み込み中のシマー）</p>
+  <div class="skeleton-row">
+    <div><div class="skeleton"></div><div class="skeleton-text"></div></div>
+    <div><div class="skeleton"></div><div class="skeleton-text"></div></div>
+    <div><div class="skeleton"></div><div class="skeleton-text"></div></div>
+    <div><div class="skeleton"></div><div class="skeleton-text"></div></div>
+  </div>
+</section>
+
+<!-- BUTTONS -->
+<section class="section section-alt" id="buttons" style="max-width:none">
+<div style="max-width:1440px;margin:0 auto">
+  <p class="section-label">04 — BUTTONS</p>
+  <h2 class="section-title">角丸は 0px。3px はアウトラインだけ</h2>
+
+  <div class="button-row">
+    <div class="button-item"><button class="btn btn-primary">Add to Cart</button><div class="button-label">Primary<br>#000000 / radius 0</div></div>
+    <div class="button-item"><button class="btn btn-cart">カートに移動 +</button><div class="button-label">Cart<br>#3d3d43 / radius 2px</div></div>
+    <div class="button-item"><a class="btn btn-outlined" href="#buttons">VIEW MORE</a><div class="button-label">Outlined（欧文）<br>radius 3px / Yantramanav</div></div>
+    <div class="button-item"><a class="btn btn-outlined-ja" href="#buttons">山崎実業について</a><div class="button-label">Outlined（和文）<br>radius 3px</div></div>
+    <div class="button-item"><button class="btn btn-secondary">買い物を続ける</button><div class="button-label">Secondary<br>#d0d0d0 枠 / radius 3px</div></div>
+  </div>
+
+  <p class="color-group-label">Variant Selector（カラー選択）</p>
+  <div class="variant-row">
+    <button class="variant is-selected">ホワイト</button>
+    <button class="variant">ブラック</button>
+    <button class="variant">ナチュラル</button>
+  </div>
+  <div class="button-label" style="text-align:left;margin-top:0.8rem">選択中は #000000 ベタ。<strong>border-radius: 0px</strong>（CSS 変数 <code>--variant-pills-radius: 40px</code> とは食い違う）</div>
+
+  <div class="on-dark">
+    <div class="button-row">
+      <div class="button-item"><a class="btn-outlined-invert" href="#buttons">VIEW ALL</a><div class="button-label">濃い面の上では枠と文字を白に</div></div>
+      <div class="button-item"><a class="btn-outlined-invert" href="#buttons">Yamazakiのニュースレター配信登録</a><div class="button-label">#26373e の上</div></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>CSS 変数と実装値が食い違う。</strong> <code>--badge-corner-radius: 4.0rem（= 40px）</code> と <code>--variant-pills-radius: 40px</code> が宣言されているが、<strong>実装はどちらも <code>border-radius: 0px</code></strong>。変数を信じて pill を作ると実サイトと別物になる。一方 <code>--font-body-family</code> / <code>--font-heading-family</code> / <code>--ss-color-text-primary: #4E4E56</code> は実装と一致する。
+  </div>
+</div>
+</section>
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <p class="section-label">05 — FORMS</p>
+  <h2 class="section-title">フォーム要素（3 状態）</h2>
+
+  <div class="form-row">
+    <label class="form-label" for="f1">メールアドレス</label>
+    <input class="form-input" id="f1" type="email" placeholder="yamazaki@example.com">
+    <div class="form-hint">ニュースレターの配信に使用します</div>
+  </div>
+  <div class="form-row">
+    <label class="form-label" for="f2">メールアドレス（フォーカス）</label>
+    <input class="form-input is-focus" id="f2" type="email" value="yamazaki@example.com">
+    <div class="form-hint">2 重リング：白の内輪 ＋ rgba(78,78,86,.3) の外輪</div>
+  </div>
+  <div class="form-row">
+    <label class="form-label" for="f3">メールアドレス（エラー）</label>
+    <input class="form-input is-error" id="f3" type="email" value="yamazaki@">
+    <div class="form-error">メールアドレスの形式が正しくありません</div>
+  </div>
+</section>
+
+<!-- ELEVATION -->
+<section class="section section-alt" id="elevation" style="max-width:none">
+<div style="max-width:1440px;margin:0 auto">
+  <p class="section-label">06 — ELEVATION</p>
+  <h2 class="section-title">影を持たないことがルール</h2>
+  <div class="elev-grid">
+    <div class="elev-item elev-0"><div class="elev-name">Level 0 — 既定</div><div class="elev-code">box-shadow: none;</div><div class="button-label" style="text-align:left">ボタン・カード・画像すべて</div></div>
+    <div class="elev-item elev-1"><div class="elev-name">Level 1 — 固定タブ</div><div class="elev-code">box-shadow: 0 0 25px rgba(0,0,0,0.2);</div><div class="button-label" style="text-align:left">画面端のお気に入りタブのみ</div></div>
+    <div class="elev-item elev-focus"><div class="elev-name">Focus ring</div><div class="elev-code">0 0 0 .3rem #fff, 0 0 .5rem .4rem rgba(78,78,86,.3)</div><div class="button-label" style="text-align:left">1rem = 10px なので内側 3px</div></div>
+  </div>
+
+  <p class="color-group-label">階層は面色でつくる</p>
+  <div class="surface-grid">
+    <div class="surface-item" style="background:#ffffff;border:1px solid var(--border)">#ffffff — 地</div>
+    <div class="surface-item" style="background:#f7f7f9">#f7f7f9 — ランキング</div>
+    <div class="surface-item" style="background:#f4f4f6">#f4f4f6 — 通知バー</div>
+    <div class="surface-item" style="background:#26373e;color:#ffffff">#26373e — フッター</div>
+  </div>
+</div>
+</section>
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <p class="section-label">07 — LAYOUT</p>
+  <h2 class="section-title">1rem = 10px（Shopify Dawn の 62.5% ベース）</h2>
+  <table class="layout-table">
+    <tr><th style="width:22%">項目</th><th style="width:26%">値</th><th>備考</th></tr>
+    <tr><td>Root font-size</td><td class="mono">10px</td><td><strong>rem を 16px 基準で読むと 1.6 倍ずれる</strong></td></tr>
+    <tr><td>Body font-size</td><td class="mono">16px (1.6rem)</td><td>375px〜1920px で固定。流体タイポグラフィなし</td></tr>
+    <tr><td>Container</td><td class="mono">1440px</td><td>ワイドセクションは 1890px</td></tr>
+    <tr><td>Card width</td><td class="mono">250px</td><td>記事幅は 450px</td></tr>
+    <tr><td>Gutter</td><td class="mono">6.5px</td><td>最頻出。写真同士を近づける詰めたガター</td></tr>
+    <tr><td>Breakpoints</td><td class="mono">750px / 990px</td><td>主軸。ほかに 480px / 768px / 1024px</td></tr>
+    <tr><td>Border radius</td><td class="mono">0px</td><td>アウトラインボタンのみ 3px、ページャのみ 11px</td></tr>
+    <tr><td>font-feature-settings</td><td class="mono">"palt"</td><td><strong>body からグローバル継承</strong>。解除は PICK UP 見出しのみ</td></tr>
+  </table>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="footer-title">Yamazaki Home, Simplified</p>
+    <p class="footer-text">奈良から、暮らしの道具をつくっています。tower・tosca・plate — シリーズごとに素材と表情は違っても、「置き場所が決まると暮らしが軽くなる」という考え方は同じです。</p>
+    <div class="footer-actions"><a class="btn-outlined-invert" href="#colors">Yamazakiのニュースレター配信登録</a></div>
+  </div>
+</footer>
+
+</body>
+</html>

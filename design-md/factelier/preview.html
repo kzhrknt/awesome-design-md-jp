@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ファクトリエ（Factelier）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;700&family=Noto+Serif+JP:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測値（2026-08-23） === */
+    --ink:          #222222;  /* 既定の文字色。かつプライマリボタンの面 */
+    --ink-nav:      #333333;  /* グローバルナビ・スライダー現在地 */
+    --ink-weak:     #444444;  /* 非選択のトグル */
+    --border:       #c9c9c9;  /* カテゴリチップの枠 */
+    --border-pale:  #cccccc;  /* スライダードット・罫線 */
+    --divider:      #d2d3d5;  /* セクション見出しの下線 */
+    --surface:      #ebecee;  /* セクション面（最頻出） */
+    --surface-alt:  #e8eaed;  /* お知らせ帯 */
+    --surface-faint:#fcfcfc;  /* 検索パネル */
+    --dark:         #394045;  /* 言語切替バー */
+    --dark-strong:  #212729;  /* 言語切替の選択中 */
+    --white:        #ffffff;
+
+    /* 性別カテゴリ（低彩度） */
+    --men:          #b9c9cb;
+    --women:        #bdbcc7;
+
+    /* ランキング（くすませた金・銀・銅・灰） */
+    --rank1:        #dfd260;
+    --rank2:        #c0c0c0;
+    --rank3:        #ba9585;
+    --rank4:        #999999;
+
+    /* 局所的な差し色 */
+    --accent-teal:  #4fc3c6;
+    --accent-terra: #c48865;
+
+    /* === Fonts 実測値 === */
+    /* 実サイトは Avenir が先頭（macOS / iOS 同梱、Web フォント読み込みなし）。
+       Windows / Android では 2 番目の游ゴシックが欧文も描く。
+       このプレビューでは Avenir の代替に Nunito Sans（幾何学ヒューマニスト）を当てる。 */
+    --font-base:  Avenir, "Nunito Sans", 游ゴシック体, YuGothic, "游ゴシック Medium", "Yu Gothic Medium",
+                  "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "Noto Sans JP", sans-serif;
+    --font-serif: "Noto Serif JP", 游明朝, YuMincho, "ヒラギノ明朝 ProN", serif;
+    --font-mono:  SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 16px; }
+
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font-base);
+    font-size: 12px;              /* body の既定は 12px。本文は 14px */
+    font-weight: 400;
+    line-height: 1.8;
+    letter-spacing: 0.24px;       /* 固定 px を全体に一律で当てる（em にしない） */
+    font-feature-settings: normal; /* palt は使わない */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .topbar { background: var(--surface-alt); text-align: center; font-size: 12px; padding: 6px; }
+  .util { display: flex; justify-content: flex-end; gap: 1rem; padding: 8px 24px; font-size: 12px; letter-spacing: 1.6px; }
+  .nav { display: flex; align-items: center; gap: 2rem; padding: 16px 24px; border-bottom: 1px solid var(--border-pale); }
+  .nav-logo { display: flex; align-items: center; gap: 8px; }
+  .nav-dot { width: 10px; height: 10px; border-radius: 50%; background: #d0272d; }
+  .nav-logo-text { font-size: 20px; font-weight: 700; letter-spacing: 1.6px; color: var(--ink); }
+  .nav-logo-sub { font-size: 9px; letter-spacing: 1.6px; color: var(--ink-weak); display: block; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 500; line-height: 1; letter-spacing: 0.24px; color: var(--ink-nav); text-decoration: none; }
+  .nav-links a:hover { color: var(--ink); }
+
+  /* HERO */
+  .hero { background: var(--surface); padding: 64px 24px; text-align: center; }
+  .hero-title { font-size: 32px; font-weight: 700; line-height: 1.4; letter-spacing: 0.24px; color: var(--ink); }
+  .hero-sub { font-size: 14px; font-weight: 400; line-height: 1.8; letter-spacing: 0.24px; color: var(--ink); margin-top: 12px; }
+  .hero-actions { margin-top: 24px; }
+
+  /* SECTIONS */
+  .section { padding: 56px 24px; max-width: 1200px; margin: 0 auto; }
+  .section-gray { background: var(--surface); }
+  .section-label { font-size: 11px; letter-spacing: 1.6px; color: var(--ink-weak); margin-bottom: 6px; }
+  .section-title { font-size: 18px; font-weight: 700; line-height: 1.4; letter-spacing: 0.24px; color: var(--ink); border-bottom: 1px solid var(--divider); padding-bottom: 12px; margin-bottom: 28px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .color-swatch { border: 1px solid var(--border-pale); background: var(--white); }
+  .color-swatch-block { height: 68px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 700; line-height: 1.4; margin-bottom: 2px; }
+  .color-swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--ink-weak); letter-spacing: 0; }
+  .color-swatch-role { font-size: 11px; color: var(--ink-weak); margin-top: 4px; line-height: 1.6; }
+  .color-group-label { font-size: 14px; font-weight: 700; color: var(--ink); margin: 28px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--border-pale); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink-weak); margin-top: 8px; line-height: 1.7; letter-spacing: 0; }
+  .t-page    { font-size: 32px;   font-weight: 700; line-height: 1.4; letter-spacing: normal; }
+  .t-head    { font-size: 18px;   font-weight: 700; line-height: 1.4; letter-spacing: 0.24px; }
+  .t-nav-l   { font-size: 16px;   font-weight: 500; line-height: 1.4; letter-spacing: 0.24px; }
+  .t-toggle  { font-size: 16px;   font-weight: 400; line-height: 1.4; letter-spacing: 1.6px; }
+  .t-body-b  { font-size: 14px;   font-weight: 700; line-height: 1.8; letter-spacing: 0.24px; }
+  .t-body    { font-size: 14px;   font-weight: 400; line-height: 1.8; letter-spacing: 0.24px; }
+  .t-nav     { font-size: 14px;   font-weight: 500; line-height: 1;   letter-spacing: 0.24px; }
+  .t-chip    { font-size: 14.4px; font-weight: 400; line-height: 1.4; letter-spacing: 0.24px; }
+  .t-serif   { font-family: var(--font-serif); font-size: 14.4px; font-weight: 400; line-height: 1.6; letter-spacing: 0.24px; }
+  .t-base    { font-size: 12px;   font-weight: 400; line-height: 1.6; letter-spacing: 0.24px; }
+  .t-gender  { font-size: 11.52px; font-weight: 700; line-height: 1.4; letter-spacing: 1.3824px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 11px; color: var(--ink-weak); margin-top: 8px; line-height: 1.6; }
+  .btn { font-family: var(--font-base); cursor: pointer; display: inline-block; text-decoration: none; }
+  .btn-primary   { background: var(--ink); color: var(--white); border: 1px solid var(--ink); border-radius: 0; padding: 8px 16px; font-size: 16px; font-weight: 400; letter-spacing: 1.6px; }
+  .btn-toggle    { background: var(--white); color: var(--ink-weak); border: 1px solid var(--ink-weak); border-radius: 0; padding: 8px 16px; font-size: 16px; font-weight: 400; letter-spacing: 1.6px; }
+  /* 浮かせる pill — 影は「押せる」ことを示すためだけに使う */
+  .btn-float     { background: var(--white); color: var(--ink); border: 1px solid var(--ink); border-radius: 16px; padding: 10px 24px; font-size: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+  /* pill を作りたいときは 900px と書く — このサイトの流儀 */
+  .btn-chip      { background: var(--white); color: var(--ink); border: 1px solid var(--border); border-radius: 900px; padding: 11.52px 31.68px; font-size: 14.4px; }
+  .btn-more      { background: transparent; color: #000000; border: 1px solid #000000; border-radius: 0; padding: 7.2px 21.6px; font-family: var(--font-serif); font-size: 14.4px; }
+  .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  /* BADGES */
+  .badge-gender { display: inline-block; color: var(--white); border-radius: 0; padding: 2.88px 7.2px; font-size: 11.52px; font-weight: 700; letter-spacing: 1.3824px; }
+  .badge-men   { background: var(--men); }
+  .badge-women { background: var(--women); }
+
+  /* RANKING RIBBON — background-color は透明のまま background-image で三角を作る */
+  .rank { display: inline-block; background-color: transparent; color: var(--white); border-radius: 0; padding: 3.6px 5.76px; font-size: 14.4px; font-weight: 700; letter-spacing: 0.24px; min-width: 34px; }
+  .rank-1 { background-image: linear-gradient(135deg, #dfd260 50%, rgba(0,0,0,0) 0); }
+  .rank-2 { background-image: linear-gradient(135deg, #c0c0c0 50%, rgba(0,0,0,0) 0); }
+  .rank-3 { background-image: linear-gradient(135deg, #ba9585 50%, rgba(0,0,0,0) 0); }
+  .rank-4 { background-image: linear-gradient(135deg, #999999 50%, rgba(0,0,0,0) 0); }
+
+  /* SLIDER */
+  .dots { display: flex; gap: 8px; align-items: center; }
+  .dot { width: 40px; height: 3px; border-radius: 2px; background: var(--border-pale); }
+  .dot.is-current { background: var(--ink-nav); }
+  .arrow { width: 40px; height: 40px; border-radius: 50%; background: var(--white); border: none; box-shadow: 0 1px 4px rgb(144,144,144), 0 2px 4px rgba(0,0,0,0.3); cursor: pointer; font-size: 14px; color: var(--ink); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 36px 2%; }
+  .card { background: var(--white); border-radius: 0; box-shadow: none; }
+  .card-media { background: var(--surface); aspect-ratio: 3 / 4; position: relative; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--ink-weak); }
+  .card-rank { position: absolute; top: 0; left: 0; }
+  .card-body { padding: 10px 0 0; }
+  .card-meta { display: flex; gap: 4px; margin-bottom: 6px; }
+  .card-title { font-size: 14px; font-weight: 400; line-height: 1.8; letter-spacing: 0.24px; color: var(--ink); }
+  .card-factory { font-size: 12px; line-height: 1.6; letter-spacing: 0.24px; color: var(--ink-weak); margin-top: 2px; }
+  .card-price { font-size: 14px; font-weight: 700; letter-spacing: 0.24px; margin-top: 6px; }
+
+  /* FORMS */
+  .form-row { margin-bottom: 22px; max-width: 420px; }
+  .form-label { display: block; font-size: 14px; font-weight: 700; letter-spacing: 0.24px; margin-bottom: 6px; }
+  .form-input { width: 100%; background: var(--white); border: 1px solid var(--border); border-radius: 0; padding: 10px 12px; font-family: var(--font-base); font-size: 14px; color: var(--ink); letter-spacing: 0.24px; }
+  .form-input::placeholder { color: var(--border); }
+  .form-input:focus { outline: none; border-color: var(--ink); }
+  .form-input.is-focus { border-color: var(--ink); }
+  .form-input.is-error { border-color: #c0392b; }
+  .form-error { font-size: 12px; color: #c0392b; margin-top: 5px; letter-spacing: 0.24px; }
+  .form-hint  { font-size: 12px; color: var(--ink-weak); margin-top: 5px; letter-spacing: 0.24px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .elev-item { background: var(--white); border: 1px solid var(--border-pale); padding: 20px; }
+  .elev-0 { box-shadow: none; }
+  .elev-1 { box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+  .elev-2 { box-shadow: 0 1px 4px rgb(144,144,144), 0 2px 4px rgba(0,0,0,0.3); }
+  .elev-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .elev-code { font-family: var(--font-mono); font-size: 11px; color: var(--ink-weak); line-height: 1.6; letter-spacing: 0; word-break: break-all; }
+
+  /* SURFACES */
+  .surface-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .surface-item { padding: 22px 14px; font-size: 12px; letter-spacing: 0.24px; border: 1px solid var(--border-pale); }
+
+  /* RADIUS SCALE */
+  .radius-row { display: flex; gap: 20px; flex-wrap: wrap; }
+  .radius-box { width: 110px; height: 64px; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; }
+
+  /* LAYOUT */
+  .layout-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .layout-table th, .layout-table td { border: 1px solid var(--border-pale); padding: 10px 12px; text-align: left; letter-spacing: 0.24px; }
+  .layout-table th { background: var(--surface); font-weight: 700; }
+  .layout-table td.mono { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; }
+
+  .note { background: var(--surface); border-left: 3px solid var(--ink); padding: 16px 20px; font-size: 14px; line-height: 1.9; letter-spacing: 0.24px; margin-top: 24px; }
+  .note strong { font-weight: 700; }
+  .note code { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; }
+
+  /* LANGUAGE BAR */
+  .lang-bar { display: inline-flex; align-items: center; background: var(--dark); color: var(--white); padding: 8px 24px 8px 32px; font-family: -apple-system, "system-ui", "Segoe UI", Roboto, sans-serif; font-size: 12px; font-weight: 500; letter-spacing: normal; }
+
+  /* FOOTER */
+  .footer { background: var(--surface); padding: 56px 24px 40px; }
+  .footer-inner { max-width: 1200px; margin: 0 auto; text-align: center; }
+  .footer-logo { display: inline-flex; align-items: center; gap: 8px; }
+  .footer-text { font-size: 14px; line-height: 1.8; letter-spacing: 0.24px; color: var(--ink); margin-top: 14px; max-width: 690px; margin-left: auto; margin-right: auto; }
+</style>
+</head>
+<body>
+
+<div class="topbar">【重要】HITOYOSHI オーダーシャツ　受付再開について</div>
+<div class="util"><span>SEARCH</span><span>|</span><span>MAIL MAGAZINE</span></div>
+
+<nav class="nav">
+  <span class="nav-logo">
+    <span class="nav-dot"></span>
+    <span><span class="nav-logo-text">FACTELIER</span><span class="nav-logo-sub">ALL MADE IN JAPAN</span></span>
+  </span>
+  <ul class="nav-links">
+    <li><a href="#colors">MEN</a></li>
+    <li><a href="#typography">WOMEN</a></li>
+    <li><a href="#buttons">BABY</a></li>
+    <li><a href="#cards">GIFT</a></li>
+    <li><a href="#forms">ABOUT US</a></li>
+    <li><a href="#elevation">FACTORY</a></li>
+    <li><a href="#layout">CONTACT</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <p class="hero-title">ほんものづくり</p>
+  <p class="hero-sub">日本の職人と技術がうんだ、ほんものの服。</p>
+  <div class="hero-actions"><a class="btn btn-more" href="#colors">MORE</a></div>
+  <div class="dots" style="justify-content:center;margin-top:28px">
+    <span class="dot"></span><span class="dot is-current"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+  </div>
+</section>
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <p class="section-label">01 — COLORS</p>
+  <h2 class="section-title">白地に #222222 の 1 色。装飾色を持たない</h2>
+
+  <p class="color-group-label">Neutral（UI の基幹）</p>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#222222"></div><div class="color-swatch-info"><div class="color-swatch-name">Text / Fill</div><div class="color-swatch-hex">#222222</div><div class="color-swatch-role">文字色とプライマリの面色を兼ねる。純黒は使わない</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#333333"></div><div class="color-swatch-info"><div class="color-swatch-name">Nav</div><div class="color-swatch-hex">#333333</div><div class="color-swatch-role">グローバルナビ・スライダー現在地</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#444444"></div><div class="color-swatch-info"><div class="color-swatch-name">Weak</div><div class="color-swatch-hex">#444444</div><div class="color-swatch-role">非選択のトグル</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c9c9c9"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#c9c9c9</div><div class="color-swatch-role">カテゴリチップの枠</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#cccccc"></div><div class="color-swatch-info"><div class="color-swatch-name">Border Pale</div><div class="color-swatch-hex">#cccccc</div><div class="color-swatch-role">スライダードット・罫線</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d2d3d5"></div><div class="color-swatch-info"><div class="color-swatch-name">Divider</div><div class="color-swatch-hex">#d2d3d5</div><div class="color-swatch-role">セクション見出しの下線</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ebecee"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#ebecee</div><div class="color-swatch-role">唯一のセクション面色（最頻出）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e8eaed"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Alt</div><div class="color-swatch-hex">#e8eaed</div><div class="color-swatch-role">お知らせ帯</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#394045"></div><div class="color-swatch-info"><div class="color-swatch-name">Dark</div><div class="color-swatch-hex">#394045</div><div class="color-swatch-role">言語切替バー</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#212729"></div><div class="color-swatch-info"><div class="color-swatch-name">Dark Strong</div><div class="color-swatch-hex">#212729</div><div class="color-swatch-role">言語切替の選択中</div></div></div>
+  </div>
+
+  <p class="color-group-label">Gender（性別カテゴリ — 低彩度）</p>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#b9c9cb"></div><div class="color-swatch-info"><div class="color-swatch-name">MEN</div><div class="color-swatch-hex">#b9c9cb</div><div class="color-swatch-role">青灰。ステレオタイプな彩度を使わない</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#bdbcc7"></div><div class="color-swatch-info"><div class="color-swatch-name">WOMEN</div><div class="color-swatch-hex">#bdbcc7</div><div class="color-swatch-role">藤。MEN と明度を揃える</div></div></div>
+  </div>
+
+  <p class="color-group-label">Ranking（順位リボン — くすませた金銀銅）</p>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dfd260"></div><div class="color-swatch-info"><div class="color-swatch-name">1 位</div><div class="color-swatch-hex">#dfd260</div><div class="color-swatch-role">くすんだ黄。純金色にしない</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c0c0c0"></div><div class="color-swatch-info"><div class="color-swatch-name">2 位</div><div class="color-swatch-hex">#c0c0c0</div><div class="color-swatch-role">銀</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ba9585"></div><div class="color-swatch-info"><div class="color-swatch-name">3 位</div><div class="color-swatch-hex">#ba9585</div><div class="color-swatch-role">赤みを抑えたテラコッタ</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#999999"></div><div class="color-swatch-info"><div class="color-swatch-name">4–5 位</div><div class="color-swatch-hex">#999999</div><div class="color-swatch-role">灰</div></div></div>
+  </div>
+
+  <p class="color-group-label">Accent（局所的な差し色）</p>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#4fc3c6"></div><div class="color-swatch-info"><div class="color-swatch-name">Teal</div><div class="color-swatch-hex">#4fc3c6</div><div class="color-swatch-role">特集バナー等の局所</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c48865"></div><div class="color-swatch-info"><div class="color-swatch-name">Terracotta</div><div class="color-swatch-hex">#c48865</div><div class="color-swatch-role">同上</div></div></div>
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section class="section section-gray" id="typography" style="max-width:none">
+<div style="max-width:1200px;margin:0 auto">
+  <p class="section-label">02 — TYPOGRAPHY</p>
+  <h2 class="section-title">Avenir が和文チェーンの先頭。字間は 0.24px の固定 px</h2>
+
+  <div class="type-sample">
+    <div class="t-page">メンズ トップス一覧</div>
+    <div class="type-meta">Page Title / "Hiragino Kaku Gothic ProN" 32px w700 / ls normal<br>※ 実サイトは<strong>フォールバックなしの単独指定</strong>で環境依存。新規実装ではチェーンを書く</div>
+  </div>
+  <div class="type-sample">
+    <div class="t-head">工場から、直接。</div>
+    <div class="type-meta">Heading / Avenir + 和文 18px w700 / ls 0.24px (0.013em)</div>
+  </div>
+  <div class="type-sample">
+    <div class="t-nav-l">MEN / WOMEN / BABY</div>
+    <div class="type-meta">Nav（大）/ 16px w500 / ls 0.24px — ドロワーナビ</div>
+  </div>
+  <div class="type-sample">
+    <div class="t-toggle">MEN</div>
+    <div class="type-meta">Toggle / 16px w400 / <strong>ls 1.6px（0.1em）</strong> — 例外的に字間を開く 2 箇所のうち 1 つ</div>
+  </div>
+  <div class="type-sample">
+    <div class="t-body-b">なめらかコットン 100%</div>
+    <div class="type-meta">Body（強）/ 14px w700 / lh 1.8 (25.2px) / ls 0.24px</div>
+  </div>
+  <div class="type-sample">
+    <div class="t-body">熊本の工場で、縫製から仕上げまで一貫して手がけています。糸の番手と編み地の密度を調整し、洗濯を繰り返しても型崩れしにくい生地に仕上げました。着るほどに body になじみます。</div>
+    <div class="type-meta">Body / 14px w400 / <strong>lh 1.8 (25.2px)</strong> / ls 0.24px (0.017em) — <strong>本文はここ</strong></div>
+  </div>
+  <div class="type-sample">
+    <div class="t-nav">SEARCH　MAIL MAGAZINE</div>
+    <div class="type-meta">Nav / 14px w500 / lh 1.0 / ls 0.24px</div>
+  </div>
+  <div class="type-sample">
+    <div class="t-chip">Tシャツ・カットソー</div>
+    <div class="type-meta">Chip / 14.4px w400 / ls 0.24px</div>
+  </div>
+  <div class="type-sample">
+    <div class="t-serif">MORE — ほんものづくり</div>
+    <div class="type-meta">明朝 / <strong>"Noto Serif JP", 游明朝, YuMincho, "ヒラギノ明朝 ProN"</strong> 14.4px w400 — 惹句ボタン専用</div>
+  </div>
+  <div class="type-sample">
+    <div class="t-base">※ 表示価格はすべて税込です</div>
+    <div class="type-meta">Base / Caption / <strong>12px</strong> w400 / ls 0.24px (0.02em) — <code>body</code> の既定値</div>
+  </div>
+  <div class="type-sample">
+    <span class="badge-gender badge-men">MEN</span>
+    <span class="badge-gender badge-women">WOMEN</span>
+    <div class="type-meta">Gender Badge / 11.52px <strong>w700</strong> / <strong>ls 1.3824px（0.12em）</strong> / radius 0</div>
+  </div>
+
+  <div class="note">
+    <strong><code>letter-spacing</code> は <code>0.24px</code> の固定 px。</strong> em ではないので、12px では 0.02em、18px では 0.013em と実効値が変わる。<strong>大きい文字ほど相対的に字間が詰まる</strong>のが設計意図。em に置き換えない。<br>
+    例外的に開くのは <strong>トグル（0.1em）と性別バッジ（0.12em）の 2 箇所だけ</strong>。
+  </div>
+</div>
+</section>
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <p class="section-label">03 — BUTTONS</p>
+  <h2 class="section-title">角丸を用途で 4 段に割る</h2>
+
+  <div class="button-row">
+    <div class="button-item"><button class="btn btn-primary">MEN</button><div class="button-label">Primary（選択中）<br>#222222 / radius 0 / ls 1.6px</div></div>
+    <div class="button-item"><button class="btn btn-toggle">WOMEN</button><div class="button-label">Toggle（非選択）<br>白地 / 1px #444444 / radius 0</div></div>
+    <div class="button-item"><a class="btn btn-float" href="#buttons">来店予約</a><div class="button-label">浮かせる pill<br>radius 16px / shadow 0 1px 4px</div></div>
+    <div class="button-item"><a class="btn btn-chip" href="#buttons">Tシャツ・カットソー</a><div class="button-label">Chip<br><strong>radius 900px</strong> / 1px #c9c9c9</div></div>
+    <div class="button-item"><a class="btn btn-more" href="#buttons">MORE</a><div class="button-label">惹句（明朝）<br>透明 / 1px #000 / radius 0</div></div>
+  </div>
+
+  <p class="color-group-label">Border Radius Scale</p>
+  <div class="radius-row">
+    <div class="radius-box" style="border-radius:0">0px<br>ボタン</div>
+    <div class="radius-box" style="border-radius:2px">2px<br>ドット</div>
+    <div class="radius-box" style="border-radius:16px">16px<br>浮かせる pill</div>
+    <div class="radius-box" style="border-radius:900px">900px<br>チップ</div>
+    <div class="radius-box" style="border-radius:50%">50%<br>矢印</div>
+  </div>
+
+  <p class="color-group-label">Ranking Ribbon</p>
+  <div class="button-row" style="align-items:center">
+    <div class="button-item"><span class="rank rank-1">1</span><div class="button-label">#dfd260</div></div>
+    <div class="button-item"><span class="rank rank-2">2</span><div class="button-label">#c0c0c0</div></div>
+    <div class="button-item"><span class="rank rank-3">3</span><div class="button-label">#ba9585</div></div>
+    <div class="button-item"><span class="rank rank-4">4</span><div class="button-label">#999999</div></div>
+  </div>
+
+  <p class="color-group-label">Slider</p>
+  <div class="button-row" style="align-items:center">
+    <div class="button-item"><button class="arrow">‹</button><div class="button-label">矢印<br>radius 50% / 影 2 段重ね</div></div>
+    <div class="button-item"><span class="dots"><span class="dot"></span><span class="dot is-current"></span><span class="dot"></span></span><div class="button-label">ドット<br>radius 2px（丸ではなく短い棒）</div></div>
+  </div>
+
+  <p class="color-group-label">Language Bar</p>
+  <div class="lang-bar">🌐　日本語</div>
+  <div class="button-label" style="text-align:left;margin-top:6px">WOVN の翻訳ウィジェット由来。フォントも <code>-apple-system, "system-ui", …</code> と別系統。<strong>ブランドの設計として扱わない</strong></div>
+
+  <div class="note">
+    <strong>ランキングリボンは <code>background-color</code> が透明のまま。</strong> <code>background-image: linear-gradient(135deg, #dfd260 50%, transparent 0)</code> で左上に三角を作る。<strong><code>background-color</code> だけを見ると金・銀・銅の 4 色が全部取れない</strong>。三角形は border トリックではなくグラデーションで作る。
+  </div>
+</section>
+
+<!-- PRODUCT -->
+<section class="section section-gray" id="cards" style="max-width:none">
+<div style="max-width:1200px;margin:0 auto">
+  <p class="section-label">04 — PRODUCT</p>
+  <h2 class="section-title">商品グリッド（gap: 36px 2%）</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-media">product image<span class="card-rank"><span class="rank rank-1">1</span></span></div>
+      <div class="card-body">
+        <div class="card-meta"><span class="badge-gender badge-men">MEN</span></div>
+        <div class="card-title">なめらかコットン クルーネックT</div>
+        <div class="card-factory">熊本 / HITOYOSHI</div>
+        <div class="card-price">￥8,800</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-media">product image<span class="card-rank"><span class="rank rank-2">2</span></span></div>
+      <div class="card-body">
+        <div class="card-meta"><span class="badge-gender badge-women">WOMEN</span></div>
+        <div class="card-title">シルクコットン ボートネックブラウス</div>
+        <div class="card-factory">山形 / 佐藤繊維</div>
+        <div class="card-price">￥16,500</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-media">product image<span class="card-rank"><span class="rank rank-3">3</span></span></div>
+      <div class="card-body">
+        <div class="card-meta"><span class="badge-gender badge-men">MEN</span></div>
+        <div class="card-title">セルヴィッチデニム ストレート</div>
+        <div class="card-factory">岡山 / 児島</div>
+        <div class="card-price">￥19,800</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-media">product image<span class="card-rank"><span class="rank rank-4">4</span></span></div>
+      <div class="card-body">
+        <div class="card-meta"><span class="badge-gender badge-women">WOMEN</span></div>
+        <div class="card-title">ウォッシャブルウール ニット</div>
+        <div class="card-factory">新潟 / 五泉</div>
+        <div class="card-price">￥14,300</div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:32px"><a class="btn btn-chip" href="#cards">もっと見る</a></div>
+</div>
+</section>
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <p class="section-label">05 — FORMS</p>
+  <h2 class="section-title">フォーム要素（3 状態）</h2>
+  <div class="form-row">
+    <label class="form-label" for="f1">メールアドレス</label>
+    <input class="form-input" id="f1" type="email" placeholder="factelier@example.com">
+    <div class="form-hint">メールマガジンの配信に使用します</div>
+  </div>
+  <div class="form-row">
+    <label class="form-label" for="f2">メールアドレス（フォーカス）</label>
+    <input class="form-input is-focus" id="f2" type="email" value="factelier@example.com">
+    <div class="form-hint">枠線を #222222 に締める</div>
+  </div>
+  <div class="form-row">
+    <label class="form-label" for="f3">メールアドレス（エラー）</label>
+    <input class="form-input is-error" id="f3" type="email" value="factelier@">
+    <div class="form-error">メールアドレスの形式が正しくありません</div>
+  </div>
+</section>
+
+<!-- ELEVATION -->
+<section class="section section-gray" id="elevation" style="max-width:none">
+<div style="max-width:1200px;margin:0 auto">
+  <p class="section-label">06 — ELEVATION</p>
+  <h2 class="section-title">影は「押せる」ことを示すためだけに使う</h2>
+  <div class="elev-grid">
+    <div class="elev-item elev-0"><div class="elev-name">Level 0 — 既定</div><div class="elev-code">box-shadow: none;</div><div class="button-label" style="text-align:left">カード・バッジ・チップ・ボタン</div></div>
+    <div class="elev-item elev-1"><div class="elev-name">Level 1 — 浮かせる pill</div><div class="elev-code">box-shadow: 0 1px 4px rgba(0,0,0,0.2);</div><div class="button-label" style="text-align:left">来店予約・アクセス</div></div>
+    <div class="elev-item elev-2"><div class="elev-name">Level 2 — スライダー矢印</div><div class="elev-code">0 1px 4px rgb(144,144,144), 0 2px 4px rgba(0,0,0,0.3)</div><div class="button-label" style="text-align:left">2 段重ね</div></div>
+  </div>
+  <p class="color-group-label">Surfaces</p>
+  <div class="surface-grid">
+    <div class="surface-item" style="background:#ffffff">#ffffff — 地</div>
+    <div class="surface-item" style="background:#ebecee">#ebecee — セクション</div>
+    <div class="surface-item" style="background:#e8eaed">#e8eaed — お知らせ帯</div>
+    <div class="surface-item" style="background:#394045;color:#ffffff">#394045 — 言語バー</div>
+  </div>
+</div>
+</section>
+
+<!-- LAYOUT -->
+<section class="section" id="layout">
+  <p class="section-label">07 — LAYOUT</p>
+  <h2 class="section-title">コンテナ 1200px / ガターは %</h2>
+  <table class="layout-table">
+    <tr><th style="width:24%">項目</th><th style="width:26%">値</th><th>備考</th></tr>
+    <tr><td>Root font-size</td><td class="mono">16px</td><td>375px〜1920px で固定</td></tr>
+    <tr><td>Body font-size</td><td class="mono">12px</td><td><strong>本文は 14px</strong>。12px はキャプション用</td></tr>
+    <tr><td>Container</td><td class="mono">1200px</td><td>ワイドは 1090px、記事幅は 690px</td></tr>
+    <tr><td>Grid gap</td><td class="mono">36px 2%</td><td>横ガターは px ではなく %</td></tr>
+    <tr><td>Breakpoints</td><td class="mono">480 / 600 / 767 / 992 / 1200 / 1400px</td><td>1200px がコンテナ幅と一致</td></tr>
+    <tr><td>Border radius</td><td class="mono">0 / 2px / 16px / 900px / 50%</td><td>用途で使い分ける</td></tr>
+    <tr><td>Letter spacing</td><td class="mono">0.24px</td><td><strong>固定 px を全体に一律</strong></td></tr>
+    <tr><td>font-feature-settings</td><td class="mono">normal</td><td>palt を使わない</td></tr>
+  </table>
+
+  <div class="note">
+    <strong><code>Avenir</code> は macOS / iOS 限定。</strong> Web フォントとして読み込んでいないため、<strong>Windows / Android では 2 番目の游ゴシックが欧文も描く</strong>。この差は仕様として受け入れられている。再現時は幾何学サンセリフ（Nunito Sans / Montserrat 等）を代替に当てる。<br>
+    <em>このプレビューでは Avenir の代替に Nunito Sans を使用している。</em><br>
+    <strong>タッチターゲット</strong>: チップの <code>padding: 11.52px 31.68px</code> は高さ約 40px で WCAG 基準（44px）をわずかに下回る。新規実装では縦 padding を 14px 前後に上げる。
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-logo"><span class="nav-dot"></span><span><span class="nav-logo-text">FACTELIER</span><span class="nav-logo-sub">ALL MADE IN JAPAN</span></span></span>
+    <p class="footer-text">世界に誇る、ファクトリーブランド。工場と直接つながることで、つくり手の名前と技術を明らかにしたまま服を届けています。</p>
+  </div>
+</footer>
+
+</body>
+</html>
