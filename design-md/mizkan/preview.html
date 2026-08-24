@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ミツカン（Mizkan）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測値 ＋ bundle.css / header.css の grep（2026-08-24） === */
+    --green: #009933;        /* 主色。CSS では #093 と 3 桁で書かれ 487 回出現 */
+    --green-alt: #009e41;    /* メガメニューの小見出し文字。7 回 */
+    --green-deep: #149933;   /* グラデ・ホバーの深緑 */
+    --orange: #ec870e;       /* 誘導ボタンの 2px 罫。20 回。面には塗らない */
+    --orange-light: #ec8725;
+    --alert: #ec0e18;        /* 「お知らせ」見出し・注意喚起の枠。14 回 */
+    --pdf-red: #ec0e0e;      /* PDF バッジの面。6 回 */
+    --yellow-green: #8cc63e;
+    --text: #333333;         /* body の既定色 */
+    --text-nav: #212121;     /* ヘッダー／メガメニュー */
+    --line: #d1d1d1;
+    --line-pale: #c7c7c7;
+    --surface-gray: #f5f5f5; /* 最頻の面。63 回 */
+    --surface-warm: #f8f8f5; /* 特集セクション。わずかに黄緑み。25 回 */
+    --surface-pale: #f2f2f2;
+    --mint: #ccebd6;         /* アイコンの円形背景 */
+    --cream: #fff6e3;
+    --cream-green: #f7f7e9;
+    --pale-yellow: #fbf8d9;
+    --pale-blue: #e2f5f8;
+    --white: #ffffff;
+
+    /* === Fonts 実測値 ===
+       和文の実指定は ヒラギノ角ゴ ProN → 游ゴシック → Noto Sans CJK JP。
+       ローカル表示用に Noto Sans JP（Google Fonts）を代替として補っている。
+       Lato は実サイトと同一の書体。 */
+    --font-body: Lato, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-nav:  "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: normal;
+    font-feature-settings: normal;  /* palt を使わない */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* UTILITY BAR — 灰の面 #f5f5f5・radius 0 */
+  .utility { background: var(--surface-gray); display: flex; justify-content: flex-end; gap: 1px; padding: 8px 32px; }
+  .utility a { font-family: var(--font-nav); font-size: 14px; font-weight: 400; letter-spacing: 0.05em; color: var(--text-nav); text-decoration: none; padding: 0 6px; border-left: 1px solid var(--line); }
+  .utility a:first-child { border-left: none; }
+
+  /* HEADER */
+  .header { display: flex; align-items: center; gap: 32px; padding: 14px 32px; border-bottom: 1px solid var(--line); }
+  .header-logo { font-family: var(--font-body); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--green); text-decoration: none; }
+  .header-logo small { display: block; font-size: 9px; font-weight: 400; letter-spacing: 0; color: var(--green); }
+  .header-nav { display: flex; gap: 28px; list-style: none; }
+  .header-nav a { font-family: var(--font-nav); font-size: 16px; font-weight: 400; letter-spacing: 0.05em; color: var(--text); text-decoration: none; }
+  .header-nav a:hover { color: var(--green); }
+  .header-search { margin-left: auto; display: flex; }
+
+  /* HERO */
+  .hero { padding: 56px 32px; }
+  .hero-inner { max-width: 1200px; margin: 0 auto; }
+  .hero h1 { font-size: 32px; font-weight: 700; line-height: 1.4; color: var(--text); margin-bottom: 16px; }
+  .hero p { font-size: 16px; font-weight: 400; line-height: 1.8; color: var(--text); margin-bottom: 32px; max-width: 640px; }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 1200px; margin: 0 auto; }
+  .section-warm { background: var(--surface-warm); padding: 64px 32px; }
+  .section-warm .section-inner { max-width: 1200px; margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--green); letter-spacing: 0.08em; margin-bottom: 10px; }
+  /* ミツカンで最も特徴的なパターン: 見出しの左に緑の縦罫 */
+  .section-title { font-size: 24px; font-weight: 700; line-height: 1.4; color: var(--text); border-left: 4px solid var(--green); padding-left: 16px; margin-bottom: 32px; }
+  .section-title--alert { font-size: 18px; font-weight: 700; line-height: 1.0; color: var(--alert); border-left: none; padding-left: 0; }
+
+  /* お知らせ枠（赤の 1px 罫） */
+  .notice { border: 1px solid var(--alert); padding: 20px 24px; text-align: center; margin-bottom: 8px; }
+  .notice-title { font-size: 18px; font-weight: 700; line-height: 1.0; color: var(--alert); margin-bottom: 14px; }
+  .notice-item { font-size: 16px; color: var(--text); }
+  .notice-item a { color: var(--text); text-decoration: underline; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 8px; }
+  .color-swatch { background: var(--white); border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; color: var(--text); }
+  .color-swatch-hex { font-size: 12px; font-family: var(--font-mono); color: #777; }
+  .color-swatch-role { font-size: 11px; color: #777; margin-top: 4px; line-height: 1.6; }
+  .color-group-label { font-family: var(--font-nav); font-size: 14px; font-weight: 700; color: var(--text); margin: 28px 0 12px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid #e8e8e8; }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; color: #777; margin-top: 10px; line-height: 1.7; letter-spacing: normal; }
+  .type-context { display: inline-block; background: var(--mint); color: #1a5c33; font-family: var(--font-nav); font-size: 11px; padding: 2px 8px; margin-left: 8px; border-radius: 3px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+  .button-item { text-align: center; }
+  .button-label { font-family: var(--font-mono); font-size: 11px; color: #777; margin-top: 10px; }
+  /* 主 CTA: 白地 ＋ オレンジ 2px 罫 ＋ radius 3px */
+  .btn-primary { display: inline-block; background: var(--white); color: var(--text); border: 2px solid var(--orange); border-radius: 3px; padding: 14px 40px; font-family: var(--font-body); font-size: 16px; font-weight: 400; text-decoration: none; cursor: pointer; }
+  .btn-primary:hover { border-color: var(--orange-light); }
+  .btn-search { display: inline-block; background: var(--green); color: var(--white); border: 1px solid var(--green); border-radius: 3px; padding: 10px 24px; font-family: var(--font-body); font-size: 16px; font-weight: 400; cursor: pointer; }
+  .btn-utility { display: inline-block; background: var(--surface-gray); color: var(--text-nav); border: none; border-radius: 0; padding: 8px 6px; font-family: var(--font-nav); font-size: 14px; font-weight: 400; letter-spacing: 0.05em; text-decoration: none; }
+  .btn-text { display: inline-block; font-family: var(--font-nav); font-size: 16px; color: var(--text); text-decoration: none; border-bottom: 1px solid var(--text); padding-bottom: 4px; }
+  .btn-text::after { content: " →"; color: var(--green); }
+
+  /* BADGES */
+  .badge-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .badge { display: inline-block; font-family: var(--font-nav); border-radius: 4px; font-size: 12px; font-weight: 700; color: var(--white); }
+  .badge--green { background: var(--green); padding: 5px 10px; }
+  .badge--pdf { background: var(--pdf-red); padding: 0 4px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .card { background: var(--white); border: none; border-radius: 0; box-shadow: none; }
+  .card-thumb { height: 150px; background: var(--surface-pale); border-radius: 6px; margin-bottom: 14px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; color: #aaa; }
+  .card-thumb--mint { background: var(--mint); }
+  .card-thumb--cream { background: var(--cream); }
+  .card-thumb--yellow { background: var(--pale-yellow); }
+  .card-thumb--blue { background: var(--pale-blue); }
+  .card-title { font-size: 18.72px; font-weight: 700; line-height: 1.4; color: var(--text); margin-bottom: 8px; }
+  .card-title--sm { font-size: 15px; font-weight: 700; line-height: 1.6; color: var(--text); margin-bottom: 8px; }
+  .card-desc { font-size: 14px; font-weight: 400; line-height: 1.5; color: var(--text); }
+
+  /* MEGA MENU */
+  .mega { border: 1px solid var(--line); padding: 24px 32px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+  .mega-col h4 { font-family: var(--font-nav); font-size: 15px; font-weight: 700; line-height: 1.5; color: var(--green-alt); margin-bottom: 10px; }
+  .mega-col p { font-family: var(--font-nav); font-size: 14px; font-weight: 400; line-height: 1.5; letter-spacing: -0.107em; color: var(--text-nav); margin-bottom: 12px; }
+  .mega-col ul { list-style: none; }
+  .mega-col li a { font-family: var(--font-nav); font-size: 12px; font-weight: 400; line-height: 1.5; letter-spacing: -0.033em; color: var(--text-nav); text-decoration: none; display: block; padding: 4px 0; }
+  .mega-col li a:hover { color: var(--green); }
+
+  /* RECIPE ARTICLE */
+  .article { max-width: 720px; }
+  .article h3 { font-size: 24px; font-weight: 700; line-height: 1.4; color: var(--text); margin-bottom: 20px; }
+  .article p { font-size: 16px; line-height: 1.8; margin-bottom: 20px; }
+  .article .lead { background: var(--cream-green); padding: 20px 24px; font-size: 15px; line-height: 1.7; margin-bottom: 24px; }
+  .article ol { margin: 0 0 24px 20px; }
+  .article ol li { font-size: 16px; line-height: 1.8; margin-bottom: 10px; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 24px; max-width: 420px; }
+  .form-label { display: block; font-family: var(--font-nav); font-size: 15px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+  .form-row { display: flex; gap: 0; }
+  .form-input { flex: 1; background: var(--white); color: var(--text); border: 1px solid var(--line); border-radius: 3px 0 0 3px; padding: 10px 9px; font-family: var(--font-body); font-size: 16px; outline: none; }
+  .form-input--single { border-radius: 3px; width: 100%; }
+  .form-input--focus { border-color: var(--green); }
+  .form-input--error { border-color: var(--alert); }
+  .form-append { background: var(--green); color: var(--white); border: 1px solid var(--green); border-radius: 0 3px 3px 0; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+  .form-state-label { font-family: var(--font-mono); font-size: 11px; color: #777; margin-top: 6px; }
+  .form-error-msg { font-family: var(--font-nav); font-size: 13px; color: var(--alert); margin-top: 6px; }
+
+  /* SURFACES */
+  .surface-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; }
+  .surface-card { padding: 28px 16px; text-align: center; border: 1px solid #e8e8e8; border-radius: 3px; box-shadow: none; }
+  .surface-label { font-family: var(--font-nav); font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .surface-desc { font-family: var(--font-mono); font-size: 11px; color: #777; }
+
+  /* ELEVATION */
+  .elev-note { background: var(--surface-gray); border-left: 4px solid var(--green); padding: 20px 24px; font-size: 15px; line-height: 1.8; }
+  .elev-stack { display: flex; gap: 0; margin-top: 20px; border: 1px solid var(--line); }
+  .elev-step { flex: 1; padding: 32px 12px; text-align: center; font-family: var(--font-mono); font-size: 11px; color: #555; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--green); height: 28px; border-radius: 3px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; color: #777; margin-top: 6px; }
+
+  /* TABLE */
+  .spec-table { border-collapse: collapse; width: 100%; }
+  .spec-table th, .spec-table td { font-family: var(--font-nav); font-size: 14px; text-align: left; padding: 12px; border-bottom: 1px solid #e8e8e8; }
+  .spec-table th { background: var(--surface-warm); font-weight: 700; }
+  .spec-table td code { font-family: var(--font-mono); font-size: 12px; }
+
+  /* FOOTER */
+  .footer { background: var(--text); color: var(--white); padding: 32px; text-align: center; font-family: var(--font-nav); font-size: 13px; font-weight: 700; line-height: 1.8; }
+  .footer span { font-weight: 400; }
+
+  @media (max-width: 767px) {
+    .header-nav, .utility { display: none; }
+    .section, .section-warm { padding: 40px 20px; }
+    .hero { padding: 40px 20px; }
+    .hero h1 { font-size: 24px; }
+    .section-title { font-size: 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .mega { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="utility">
+  <a href="#">業務用サイト</a>
+  <a href="#">ミツカングループについて</a>
+  <a href="#">製造所固有記号一覧</a>
+</div>
+
+<header class="header">
+  <a class="header-logo" href="#">mizkan<small>やがて、いのちに変わるもの。</small></a>
+  <ul class="header-nav">
+    <li><a href="#colors">おうちレシピ</a></li>
+    <li><a href="#typography">商品情報</a></li>
+    <li><a href="#buttons">企業情報</a></li>
+    <li><a href="#cards">お客様相談センター</a></li>
+    <li><a href="#forms">公式通販</a></li>
+  </ul>
+  <div class="header-search">
+    <input class="form-input" style="width:180px" placeholder="サイト内検索">
+    <button class="form-append">検索</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Design System Preview — ミツカン</h1>
+    <p>白地 ＋ 緑の罫。ブランド色は <code>#093</code>（＝ <code>#009933</code>）の 1 色で、CSS 上の実出現は 487 回。影は 1 か所も使わず、階層は面色と余白だけで作る。以下はすべて computed style の実測値（2026-08-24 取得）。</p>
+    <a class="btn-primary" href="#colors">デザイントークンを見る</a>
+  </div>
+</section>
+
+<!-- 01 COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">Color Palette</h2>
+
+  <div class="color-group-label">Brand — 緑 1 色に絞る</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#009933"></div><div class="color-swatch-info"><div class="color-swatch-name">Mizkan Green</div><div class="color-swatch-hex">#009933</div><div class="color-swatch-role">主色。CSS では #093 と 3 桁で書かれ 487 回出現</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#009e41"></div><div class="color-swatch-info"><div class="color-swatch-name">Green Alt</div><div class="color-swatch-hex">#009e41</div><div class="color-swatch-role">メガメニューの小見出し文字。7 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#149933"></div><div class="color-swatch-info"><div class="color-swatch-name">Green Deep</div><div class="color-swatch-hex">#149933</div><div class="color-swatch-role">グラデーション・ホバー</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#8cc63e"></div><div class="color-swatch-info"><div class="color-swatch-name">Yellow Green</div><div class="color-swatch-hex">#8cc63e</div><div class="color-swatch-role">図版・イラストの差し色</div></div></div>
+  </div>
+
+  <div class="color-group-label">Accent — オレンジは「線」、赤は「注意」だけ</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ec870e"></div><div class="color-swatch-info"><div class="color-swatch-name">CTA Orange</div><div class="color-swatch-hex">#ec870e</div><div class="color-swatch-role">誘導ボタンの 2px 罫。20 回。面には塗らない</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ec0e18"></div><div class="color-swatch-info"><div class="color-swatch-name">Alert Red</div><div class="color-swatch-hex">#ec0e18</div><div class="color-swatch-role">「お知らせ」見出しと注意喚起の枠。14 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ec0e0e"></div><div class="color-swatch-info"><div class="color-swatch-name">PDF Red</div><div class="color-swatch-hex">#ec0e0e</div><div class="color-swatch-role">PDF バッジの面。6 回</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text & Line</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#333333"></div><div class="color-swatch-info"><div class="color-swatch-name">Text</div><div class="color-swatch-hex">#333333</div><div class="color-swatch-role">body の既定色・本文・見出し</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#212121"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Nav</div><div class="color-swatch-hex">#212121</div><div class="color-swatch-role">ヘッダー／メガメニュー。15 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d1d1d1"></div><div class="color-swatch-info"><div class="color-swatch-name">Line</div><div class="color-swatch-hex">#d1d1d1</div><div class="color-swatch-role">区切り線</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c7c7c7"></div><div class="color-swatch-info"><div class="color-swatch-name">Line Pale</div><div class="color-swatch-hex">#c7c7c7</div><div class="color-swatch-role">補助罫</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface — 階層はこの 4 色で作る</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #e8e8e8"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ地色</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f8f8f5"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Warm</div><div class="color-swatch-hex">#f8f8f5</div><div class="color-swatch-role">特集セクション。わずかに黄緑み。25 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5f5f5"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Gray</div><div class="color-swatch-hex">#f5f5f5</div><div class="color-swatch-role">ユーティリティ帯・汎用。63 回で最頻</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f2f2f2"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Pale</div><div class="color-swatch-hex">#f2f2f2</div><div class="color-swatch-role">画像プレースホルダ。21 回</div></div></div>
+  </div>
+
+  <div class="color-group-label">Tint — バナー・アイコンの淡色</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ccebd6"></div><div class="color-swatch-info"><div class="color-swatch-name">Mint</div><div class="color-swatch-hex">#ccebd6</div><div class="color-swatch-role">アイコンの円形背景。#093 を薄めた面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fff6e3"></div><div class="color-swatch-info"><div class="color-swatch-name">Cream</div><div class="color-swatch-hex">#fff6e3</div><div class="color-swatch-role">キャンペーン告知の面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f7f7e9"></div><div class="color-swatch-info"><div class="color-swatch-name">Cream Green</div><div class="color-swatch-hex">#f7f7e9</div><div class="color-swatch-role">レシピ関連ブロック</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fbf8d9"></div><div class="color-swatch-info"><div class="color-swatch-name">Pale Yellow</div><div class="color-swatch-hex">#fbf8d9</div><div class="color-swatch-role">バナー内の面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e2f5f8"></div><div class="color-swatch-info"><div class="color-swatch-name">Pale Blue</div><div class="color-swatch-hex">#e2f5f8</div><div class="color-swatch-role">バナー内の面</div></div></div>
+  </div>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section-warm" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <h2 class="section-title">Lato 先頭の欧文優先スタック。見出しは line-height 1.0</h2>
+
+  <div class="type-sample">
+    <div style="font-size:24px; font-weight:700; line-height:1.4; color:var(--text); border-left:4px solid var(--green); padding-left:16px;">おすすめ特集</div>
+    <div class="type-meta">24px / 700 / line-height: normal ／ Lato + 和文<span class="type-context">main.main — 左に緑の縦罫</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-nav); font-size:24px; font-weight:700; line-height:1.0; letter-spacing:0.01em; color:var(--text);">ミツカン365</div>
+    <div class="type-meta">24px / 700 / line-height: 24px (1.0) / letter-spacing: 0.24px (0.01em)<span class="type-context">バナー内見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:18px; font-weight:700; line-height:1.0; color:var(--alert);">お知らせ</div>
+    <div class="type-meta">18px / 700 / line-height: 18px (1.0) / color: #ec0e18<span class="type-context">Alert Heading</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:18.72px; font-weight:700; line-height:1.4; color:var(--text);">いつもの味　ぽん！と変えよう</div>
+    <div class="type-meta">18.72px / 700 / line-height: normal<span class="type-context">特集カードの見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:15px; font-weight:700; line-height:1.6; color:var(--text);">ゆずの果汁にこだわった濃厚で華やかな香り</div>
+    <div class="type-meta">15px / 700 / line-height: 24px (1.6)<span class="type-context">2 行想定のカード見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-nav); font-size:21px; font-weight:700; line-height:1.0; color:var(--text);">おうちレシピ</div>
+    <div class="type-meta">21px / 700 / line-height: 21px (1.0) ／ Lato を外した和文優先<span class="type-context">nav — メガメニューの親項目</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-nav); font-size:16px; font-weight:400; line-height:1.0; letter-spacing:0.05em; color:var(--text);">商品情報</div>
+    <div class="type-meta">16px / 400 / line-height: 16px (1.0) / letter-spacing: 0.8px (0.05em)<span class="type-context">nav — グローバルナビ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-nav); font-size:14px; font-weight:700; line-height:1.0; letter-spacing:0.05em; color:var(--text-nav);">業務用サイト</div>
+    <div class="type-meta">14px / 700 / line-height: 14px (1.0) / letter-spacing: 0.7px (0.05em)<span class="type-context">nav — ユーティリティ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.5; color:var(--text);">酢は、料理の味をととのえるだけでなく、素材のうまみを引き出します。ミツカンは 1804 年の創業以来、酢づくりの技を受け継いできました。</div>
+    <div class="type-meta">16px / 400 / line-height: normal / color: #333333<span class="type-context">body の既定</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-nav); font-size:14px; font-weight:400; line-height:1.5; letter-spacing:-0.107em; color:var(--text-nav);">また食べたいが見つかる。ミツカンからのお知らせ</div>
+    <div class="type-meta">14px / 400 / line-height: 21px (1.5) / letter-spacing: -1.5px (-0.107em) ← <strong>負の字間</strong><span class="type-context">nav — メガメニューの説明文</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-nav); font-size:12px; font-weight:400; line-height:1.5; letter-spacing:-0.033em; color:var(--text-nav);">酢 ／ 調味酢 ／ 追いがつおつゆ ／ 納豆</div>
+    <div class="type-meta">12px / 400 / line-height: 18px (1.5) / letter-spacing: -0.4px (-0.033em)<span class="type-context">nav — 商品カテゴリの細目</span></div>
+  </div>
+
+  <div class="color-group-label">font-family（実測 3 種）</div>
+  <table class="spec-table">
+    <tr><th style="width:26%">対象</th><th>指定</th></tr>
+    <tr><td>本文・見出し（main 配下）</td><td><code>Lato, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans CJK JP", "Hiragino Sans", sans-serif</code></td></tr>
+    <tr><td>ヘッダー・ナビ・フッター</td><td><code>"Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans CJK JP", "Hiragino Sans", sans-serif</code></td></tr>
+    <tr><td>一部の見出し</td><td><code>"Hiragino Kaku Gothic ProN", YuGothic, "Yu Gothic", "Hiragino Sans", sans-serif</code></td></tr>
+  </table>
+  <p style="font-size:13px; color:#777; margin-top:12px; line-height:1.8;">
+    ※ このプレビューでは和文を Google Fonts の <strong>Noto Sans JP</strong> で代替している（実サイトはヒラギノ角ゴ ProN → 游ゴシック → Noto Sans CJK JP の順で OS フォントに任せる）。<br>
+    ※ <strong>Lato は実サイトと同一の書体</strong>で、Google Fonts から読み込んでいる。数字・アルファベットの表示は実サイトと一致する。<br>
+    ※ <code>font-feature-settings</code> は全要素 <code>normal</code>。<strong>palt を使わない</strong>（商品名の括弧・中黒が詰まりすぎるため）。
+  </p>
+</div>
+</section>
+
+<!-- 03 RECIPE ARTICLE -->
+<section class="section" id="article">
+  <div class="section-label">03 / Recipe — 組版サンプル</div>
+  <h2 class="section-title">おすすめレシピ</h2>
+
+  <div class="article">
+    <h3>白だしで作る かんたん茶碗蒸し</h3>
+    <div class="lead">プロが使う味 白だし 地鶏昆布を使えば、だしを引かなくても料亭のような一杯に。卵液の割合さえ覚えれば失敗しません。</div>
+    <p>茶碗蒸しは「卵 1 に対してだし 3」が基本の比率です。白だしは 100ml あたり大さじ 1 弱を目安に加えると、塩気がちょうどよくまとまります。</p>
+    <ol>
+      <li>卵 2 個をときほぐし、白だし 大さじ2 ＋ 水 300ml と合わせる。</li>
+      <li>ざるでこして、器に静かに注ぐ。</li>
+      <li>蒸気の上がった蒸し器で、弱火で 12〜15 分。</li>
+      <li>竹串を刺して澄んだ汁が出たら火を止める。</li>
+    </ol>
+    <p>仕上げに三つ葉とゆずの皮をのせると、香りが立ちます。すが入ってしまうときは、火が強すぎるサインです。</p>
+    <a class="btn-primary" href="#">おすすめレシピはこちら</a>
+  </div>
+</section>
+
+<!-- 04 BUTTONS -->
+<section class="section-warm" id="buttons">
+<div class="section-inner">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">主 CTA は「塗り」ではなく「オレンジの 2px 罫」</h2>
+
+  <div class="button-row" style="margin-bottom:36px;">
+    <div class="button-item">
+      <a class="btn-primary" href="#">おすすめレシピはこちら</a>
+      <div class="button-label">Primary<br>白地 / 2px solid #ec870e / radius 3px<br>16px / 400</div>
+    </div>
+    <div class="button-item">
+      <button class="btn-search">検索</button>
+      <div class="button-label">Search<br>#009933 塗り / 1px solid #009933<br>radius 3px / 16px</div>
+    </div>
+    <div class="button-item">
+      <a class="btn-utility" href="#">業務用サイト</a>
+      <div class="button-label">Utility<br>#f5f5f5 / radius 0px<br>14px / 400 / ls 0.05em</div>
+    </div>
+    <div class="button-item">
+      <a class="btn-text" href="#">キャンペーン一覧</a>
+      <div class="button-label">Text Link<br>下線 ＋ 緑の矢印</div>
+    </div>
+  </div>
+
+  <div class="color-group-label">Badges — 緑の塗りはバッジにだけ使う</div>
+  <div class="badge-row">
+    <span class="badge badge--green">商品</span>
+    <span class="badge badge--green">キャンペーン他</span>
+    <span class="badge badge--green">企業</span>
+    <span class="badge badge--pdf">PDF</span>
+    <span style="font-family:var(--font-mono); font-size:11px; color:#777;">green: padding 5px 10px / radius 4px / 12px・700　｜　pdf: padding 0 4px / radius 4px</span>
+  </div>
+
+  <div class="color-group-label" style="margin-top:36px;">Notice — 赤の 1px 罫</div>
+  <div class="notice">
+    <div class="notice-title">お知らせ</div>
+    <div class="notice-item"><span class="badge badge--pdf">PDF</span> <a href="#">【お知らせ】品質保証体制の強化について</a> <span style="color:#777; font-size:14px;">[227kb]</span></div>
+  </div>
+</div>
+</section>
+
+<!-- 05 CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">おすすめ特集 — 4 カラム・影なし</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-thumb card-thumb--mint">image</div>
+      <div class="card-title--sm">いつもの味　ぽん！と変えよう</div>
+      <div class="card-desc">味ぽんを使ったレシピをたくさんご紹介します</div>
+    </div>
+    <div class="card">
+      <div class="card-thumb card-thumb--cream">image</div>
+      <div class="card-title--sm">ゆずの果汁にこだわった濃厚で華やかな香り</div>
+      <div class="card-desc">一つひとつ厳選し手摘みした高知県産ゆずを 100% 使用しています</div>
+    </div>
+    <div class="card">
+      <div class="card-thumb card-thumb--yellow">image</div>
+      <div class="card-title--sm">プロが使う味　白だし　地鶏昆布</div>
+      <div class="card-desc">昆布と鰹のあわせだしに、鶏がらのコクと旨み広がる白だしです</div>
+    </div>
+    <div class="card">
+      <div class="card-thumb card-thumb--blue">image</div>
+      <div class="card-title--sm">お酢が引き出す果実のおいしさ</div>
+      <div class="card-desc">すっきり、だけどちゃんと甘い。わたしだけの新果実体験</div>
+    </div>
+  </div>
+
+  <div class="color-group-label" style="margin-top:44px;">Mega Menu — 負の字間で詰めるカラム</div>
+  <div class="mega">
+    <div class="mega-col">
+      <h4>商品カテゴリ</h4>
+      <p>また食べたいが見つかる。ミツカンからのお知らせ</p>
+      <ul>
+        <li><a href="#">酢</a></li>
+        <li><a href="#">調味酢</a></li>
+        <li><a href="#">追いがつおつゆ</a></li>
+        <li><a href="#">納豆</a></li>
+      </ul>
+    </div>
+    <div class="mega-col">
+      <h4>ブランド・スペシャルサイト</h4>
+      <ul>
+        <li><a href="#">味ぽん</a></li>
+        <li><a href="#">カンタン酢</a></li>
+        <li><a href="#">金のつぶ</a></li>
+        <li><a href="#">ZENB</a></li>
+      </ul>
+    </div>
+    <div class="mega-col">
+      <h4>企業情報</h4>
+      <ul>
+        <li><a href="#">企業理念</a></li>
+        <li><a href="#">ミツカンの歴史</a></li>
+        <li><a href="#">国内事業概要</a></li>
+        <li><a href="#">MIM（ミツカンミュージアム）</a></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 06 FORMS -->
+<section class="section-warm" id="forms">
+<div class="section-inner">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">Default / Focus / Error</h2>
+
+  <div class="form-group">
+    <label class="form-label">サイト内検索</label>
+    <div class="form-row">
+      <input class="form-input" placeholder="レシピ・商品を探す">
+      <button class="form-append">検索</button>
+    </div>
+    <div class="form-state-label">Default — border: 1px solid #d1d1d1 / radius 3px / padding 10px 9px / 16px</div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">メールアドレス</label>
+    <input class="form-input form-input--single form-input--focus" value="recipe@example.com">
+    <div class="form-state-label">Focus — border-color: #009933</div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">お問い合わせ内容</label>
+    <input class="form-input form-input--single form-input--error" value="">
+    <div class="form-error-msg">必須項目です。内容をご入力ください。</div>
+    <div class="form-state-label">Error — border-color: #ec0e18</div>
+  </div>
+</div>
+</section>
+
+<!-- 07 ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">box-shadow を 1 か所も使わない</h2>
+
+  <div class="elev-note">
+    ミツカンのサイトは <strong>全要素 <code>box-shadow: none</code></strong>（実測）。階層は面色の切り替えと余白だけで作る。
+  </div>
+  <div class="elev-stack">
+    <div class="elev-step" style="background:#ffffff;">#ffffff<br>地</div>
+    <div class="elev-step" style="background:#f8f8f5;">#f8f8f5<br>特集セクション</div>
+    <div class="elev-step" style="background:#f5f5f5;">#f5f5f5<br>ユーティリティ帯</div>
+    <div class="elev-step" style="background:#f2f2f2;">#f2f2f2<br>補助ブロック</div>
+  </div>
+
+  <div class="color-group-label" style="margin-top:36px;">Surface</div>
+  <div class="surface-grid">
+    <div class="surface-card" style="background:#ffffff;"><div class="surface-label">Background</div><div class="surface-desc">#ffffff</div></div>
+    <div class="surface-card" style="background:#f8f8f5;"><div class="surface-label">Surface Warm</div><div class="surface-desc">#f8f8f5</div></div>
+    <div class="surface-card" style="background:#f5f5f5;"><div class="surface-label">Surface Gray</div><div class="surface-desc">#f5f5f5</div></div>
+    <div class="surface-card" style="background:#f2f2f2;"><div class="surface-label">Surface Pale</div><div class="surface-desc">#f2f2f2</div></div>
+    <div class="surface-card" style="background:#ccebd6;"><div class="surface-label">Mint</div><div class="surface-desc">#ccebd6</div></div>
+  </div>
+</section>
+
+<!-- 08 LAYOUT -->
+<section class="section-warm" id="layout">
+<div class="section-inner">
+  <div class="section-label">08 / Layout</div>
+  <h2 class="section-title">Spacing ／ Radius ／ Container</h2>
+
+  <div class="color-group-label">Spacing Scale</div>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">XS 4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:6px"></div><div class="spacing-value">S 6</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:10px"></div><div class="spacing-value">M 10</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:20px"></div><div class="spacing-value">L 20</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">XL 40</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:50px"></div><div class="spacing-value">XXL 50</div></div>
+  </div>
+
+  <div class="color-group-label" style="margin-top:32px;">Radius — ピルは 1 つもない</div>
+  <table class="spec-table">
+    <tr><th style="width:22%">値</th><th>用途</th></tr>
+    <tr><td><code>0px</code></td><td>ユーティリティボタン、本文ブロック</td></tr>
+    <tr><td><code>3px</code></td><td>主 CTA、検索ボタン、入力欄</td></tr>
+    <tr><td><code>4px</code></td><td>緑バッジ、PDF バッジ</td></tr>
+    <tr><td><code>6px</code></td><td>画像リンク</td></tr>
+    <tr><td><code>10px</code></td><td>メガメニューの項目</td></tr>
+  </table>
+
+  <div class="color-group-label" style="margin-top:32px;">Container / Grid / Breakpoints</div>
+  <table class="spec-table">
+    <tr><th style="width:22%">項目</th><th>値</th></tr>
+    <tr><td>Max Width</td><td><code>1200px</code> 相当 / padding-x <code>20px</code></td></tr>
+    <tr><td>特集カード</td><td>4 カラム（gutter 約 24px）</td></tr>
+    <tr><td>メガメニュー</td><td>3〜4 カラム</td></tr>
+    <tr><td>Mobile</td><td>≤ 767px — 1 カラム。メガメニューはドロワー</td></tr>
+    <tr><td>Tablet</td><td>768–1024px — カード 2 カラム</td></tr>
+    <tr><td>Desktop</td><td>&gt; 1024px — カード 4 カラム</td></tr>
+  </table>
+</div>
+</section>
+
+<footer class="footer">
+  ミツカン Design System Preview<br>
+  <span>computed style 実測（2026-08-24 取得。トップ ＋ /company/）＋ bundle.css / header.css の grep に基づく</span>
+</footer>
+
+</body>
+</html>

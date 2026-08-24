@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: UPSIDER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測値（2026-08-24） === */
+    --grad-start: #f5833e;   /* 主 CTA グラデーション開始 */
+    --grad-end:   #fead48;   /* 主 CTA グラデーション終了 */
+    --cta: linear-gradient(90deg, #f5833e 0%, #fead48 100%);
+    --ink:        #1f1f1f;   /* body の既定色・見出し・フッターの面 */
+    --ink-link:   #1f2937;   /* ナビリンク・白ボタンのラベル */
+    --ink-btn:    #27272a;   /* 追従 CTA の白ボタンラベル */
+    --black:      #000000;   /* 斜め分割の片側 */
+    --gray-dark:  #373737;   /* アクティブなドット */
+    --gray-chip:  #6b6b6b;   /* 特徴チップの面 */
+    --gray-mid:   #9c9c9c;   /* 注釈・非アクティブなドット */
+    --surface:    #f3f3f3;   /* 比較セクションの面 */
+    --border:     rgba(0,0,0,0.12);
+    --shadow-gray: rgb(203,203,203);  /* 不透明な灰の影 */
+    --white: #ffffff;
+
+    /* 黒セクション: 同系色の黒 2 枚を 108.58 度で切り替える */
+    --dark-split: linear-gradient(108.58deg, #000000 0%, #000000 49.99%, #1f1f1f 49.99%, #1f1f1f 100%);
+
+    /* === Fonts 実測値 ===
+       見出し・CTA は Noto Sans JP（実サイトと同一・Google Fonts）。
+       本文は游ゴシック先頭のシステムスタック（実サイトと同一）。
+       STEP ラベルのみ Inter。 */
+    --font-head: "Noto Sans JP", sans-serif;
+    --font-body: 游ゴシック体, YuGothic, 游ゴシック, "Yu Gothic", "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", Arial, メイリオ, Meiryo, sans-serif;
+    --font-en:   Inter, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;              /* body の既定。本文ブロックは 1.75 */
+    letter-spacing: normal;
+    font-feature-settings: normal; /* palt を使わない */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { display: flex; align-items: center; gap: 28px; padding: 20px 40px; }
+  .header-logo { font-family: var(--font-en); font-size: 22px; font-weight: 700; letter-spacing: 0.02em; color: var(--ink); text-decoration: none; }
+  .header-nav { display: flex; gap: 24px; list-style: none; }
+  .header-nav a { font-size: 14.4px; font-weight: 400; line-height: 1.5; color: var(--ink-link); text-decoration: none; }
+  .header-nav a:hover { color: var(--grad-start); }
+  .header-actions { margin-left: auto; display: flex; gap: 12px; align-items: center; }
+  .header-login { font-size: 14.4px; color: var(--ink-link); text-decoration: none; }
+
+  /* HERO */
+  .hero { padding: 80px 40px 100px; }
+  .hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  .hero h1 { font-family: var(--font-head); font-size: 64px; font-weight: 700; line-height: 1.3; letter-spacing: 0.04em; color: var(--ink); margin-bottom: 28px; }
+  .hero ul { list-style: none; margin-bottom: 40px; }
+  .hero ul li { font-size: 24px; font-weight: 400; line-height: 1.5; color: var(--ink); }
+  .hero-visual { background: var(--surface); border-radius: 0; height: 380px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 12px; color: var(--gray-mid); }
+
+  /* PROOF */
+  .proof { padding: 24px 40px 64px; text-align: center; }
+  .proof p { font-size: 30px; font-weight: 700; line-height: 1.5; color: var(--ink); }
+  .proof small { display: block; font-size: 12px; font-weight: 400; line-height: 1.5; color: var(--gray-mid); margin-top: 8px; }
+
+  /* SECTIONS */
+  .section { padding: 100px 40px; max-width: 1200px; margin: 0 auto; }
+  .section-gray { background: var(--surface); padding: 100px 40px; }
+  .section-gray .section-inner, .section-dark .section-inner { max-width: 1200px; margin: 0 auto; }
+  /* 黒セクション: 斜め分割 ＋ 上下 160px */
+  .section-dark { background-image: var(--dark-split); padding: 160px 40px; color: var(--white); }
+  .section-dark h2 { font-family: var(--font-head); font-size: 48px; font-weight: 700; line-height: 1.5; color: var(--white); margin-bottom: 32px; }
+  .section-dark h3 { font-size: 30px; font-weight: 700; line-height: 1.5; color: var(--white); margin-bottom: 20px; }
+  .section-dark h4 { font-size: 24px; font-weight: 700; line-height: 1.75; color: var(--white); margin-bottom: 12px; }
+  .section-dark p { font-size: 16px; font-weight: 400; line-height: 1.75; color: var(--white); }
+  .section-label { font-family: var(--font-en); font-size: 14px; font-weight: 700; line-height: 1.5; color: var(--gray-mid); letter-spacing: 0.04em; margin-bottom: 12px; }
+  .section-title { font-family: var(--font-head); font-size: 48px; font-weight: 700; line-height: 1.5; color: var(--ink); margin-bottom: 40px; }
+  .section-title--sm { font-family: var(--font-head); font-size: 36px; font-weight: 700; line-height: 1.5; color: var(--ink); margin-bottom: 32px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+  .color-swatch { background: var(--white); border: 1px solid var(--border); border-radius: 0; overflow: hidden; }
+  .color-swatch-block { height: 76px; width: 100%; }
+  .color-swatch-info { padding: 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; color: var(--ink); }
+  .color-swatch-hex { font-size: 11px; font-family: var(--font-mono); color: var(--gray-mid); word-break: break-all; }
+  .color-swatch-role { font-size: 11px; color: var(--gray-mid); margin-top: 6px; line-height: 1.6; }
+  .color-group-label { font-family: var(--font-head); font-size: 16px; font-weight: 700; color: var(--ink); margin: 36px 0 14px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; color: var(--gray-mid); margin-top: 12px; line-height: 1.7; letter-spacing: normal; }
+  .type-context { display: inline-block; background: var(--gray-chip); color: var(--white); font-family: var(--font-body); font-size: 11px; padding: 2px 10px; margin-left: 8px; border-radius: 100px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+  .button-item { text-align: center; }
+  .button-label { font-family: var(--font-mono); font-size: 11px; color: var(--gray-mid); margin-top: 12px; line-height: 1.7; }
+  .btn-primary { display: inline-block; background-image: var(--cta); background-color: transparent; color: var(--white); border: 0 solid #e5e7eb; border-radius: 30px; padding: 18px 56px; font-family: var(--font-head); font-size: 20px; font-weight: 400; text-decoration: none; cursor: pointer; box-shadow: 0 5px 15px var(--shadow-gray); }
+  .btn-primary--sm { border-radius: 20px; padding: 10px 28px; font-size: 16px; box-shadow: none; }
+  .btn-primary--float { border-radius: 100px; padding: 22px 64px; font-size: 24px; box-shadow: 0 0 24px rgb(0,0,0); }
+  .btn-outline { display: inline-block; background: var(--white); color: var(--ink-link); border: 1px solid var(--border); border-radius: 20px; padding: 10px 28px; font-family: var(--font-head); font-size: 16px; font-weight: 400; text-decoration: none; cursor: pointer; }
+  .btn-ghost { display: inline-block; background: var(--white); color: var(--ink-link); border: none; border-radius: 30px; padding: 18px 48px; font-family: var(--font-head); font-size: 20px; font-weight: 400; text-decoration: none; cursor: pointer; box-shadow: 0 5px 15px var(--shadow-gray); }
+  .btn-more { display: inline-block; background: var(--white); color: var(--ink-btn); border: none; border-radius: 100px; padding: 14px 40px; font-family: var(--font-head); font-size: 16px; font-weight: 400; text-decoration: none; cursor: pointer; box-shadow: 0 4px 24px var(--shadow-gray); }
+
+  /* CHIPS & DOTS */
+  .chip-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .chip { display: inline-block; background: var(--gray-chip); color: var(--white); border-radius: 100px; padding: 4px 16px; font-size: 12px; font-weight: 400; line-height: 1.5; }
+  .dot-row { display: flex; gap: 10px; align-items: center; margin-top: 20px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--gray-mid); }
+  .dot--active { background: var(--gray-dark); }
+
+  /* CTA BAR（追従） */
+  .cta-bar { background-image: var(--dark-split); padding: 24px 40px; display: flex; gap: 24px; align-items: center; justify-content: center; }
+  .cta-bar-label { font-size: 20px; font-weight: 500; line-height: 1.75; color: var(--white); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .card { background: var(--white); border: none; border-radius: 0; box-shadow: none; padding: 40px; }
+  .card h4 { font-size: 16px; font-weight: 700; line-height: 1.75; color: var(--ink); margin-bottom: 12px; }
+  .card p { font-size: 16px; font-weight: 400; line-height: 1.75; color: var(--ink); }
+  .card--problem { background: var(--white); }
+  .card--solution { background: var(--white); }
+
+  /* STEPS */
+  .step-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .step-label { font-family: var(--font-en); font-size: 14px; font-weight: 700; line-height: 1.5; color: var(--ink); margin-bottom: 10px; }
+  .step h4 { font-size: 24px; font-weight: 700; line-height: 1.5; color: var(--ink); margin-bottom: 12px; }
+  .step p { font-size: 16px; font-weight: 400; line-height: 1.75; color: var(--ink); }
+
+  /* CASE */
+  .case { border-top: 1px solid var(--border); padding-top: 32px; }
+  .case h3 { font-size: 24px; font-weight: 700; line-height: 1.5; color: var(--ink); margin-bottom: 8px; }
+  .case .role { font-size: 16px; font-weight: 700; line-height: 1.75; color: var(--ink); margin-bottom: 16px; }
+  .case p { font-size: 16px; font-weight: 400; line-height: 1.75; color: var(--ink); margin-bottom: 16px; }
+
+  /* BIG NUMBER */
+  .bignum { font-size: 36px; font-weight: 400; line-height: 1.5; color: var(--ink); }  /* 太らせずに拡大する */
+  .bignum--wide { font-size: 30px; font-weight: 400; line-height: 2.25; color: var(--ink); }
+
+  /* FORMS */
+  .form-group { margin-bottom: 28px; max-width: 460px; }
+  .form-label { display: block; font-size: 16px; font-weight: 700; line-height: 1.75; margin-bottom: 8px; color: var(--ink); }
+  .form-input { width: 100%; background: transparent; color: var(--ink); border: none; border-bottom: 1px solid var(--border); border-radius: 0; padding: 12.5px 16px 12.5px 0; font-family: var(--font-body); font-size: 16px; outline: none; }
+  .form-input--focus { border-bottom: 1px solid var(--grad-start); }
+  .form-input--error { border-bottom: 1px solid var(--grad-start); background: #fff7f0; }
+  .form-state-label { font-family: var(--font-mono); font-size: 11px; color: var(--gray-mid); margin-top: 8px; }
+  .form-error-msg { font-size: 13px; color: var(--grad-start); margin-top: 8px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 24px; }
+  .elev-card { background: var(--white); border: 1px solid var(--border); padding: 28px 20px; text-align: center; border-radius: 100px; }
+  .elev-card--1 { box-shadow: 0 5px 15px var(--shadow-gray); border: none; }
+  .elev-card--2 { box-shadow: 0 4px 24px var(--shadow-gray); border: none; }
+  .elev-card--3 { box-shadow: 0 0 24px rgb(0,0,0); border: none; }
+  .elev-name { font-family: var(--font-head); font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .elev-value { font-family: var(--font-mono); font-size: 11px; color: var(--gray-mid); }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background-image: var(--cta); height: 28px; border-radius: 100px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; color: var(--gray-mid); margin-top: 8px; }
+
+  /* TABLE */
+  .spec-table { border-collapse: collapse; width: 100%; }
+  .spec-table th, .spec-table td { font-size: 14px; text-align: left; padding: 14px; border-bottom: 1px solid var(--border); }
+  .spec-table th { background: var(--surface); font-weight: 700; font-family: var(--font-head); }
+  .spec-table td code { font-family: var(--font-mono); font-size: 12px; }
+
+  /* FOOTER */
+  .footer { background: var(--ink); color: var(--white); padding: 48px 40px; text-align: center; font-size: 16px; font-weight: 400; line-height: 1.75; }
+  .footer small { display: block; color: var(--gray-mid); font-size: 12px; line-height: 1.5; margin-top: 10px; }
+
+  @media (max-width: 767px) {
+    .header-nav { display: none; }
+    .section, .section-gray { padding: 64px 20px; }
+    .section-dark { padding: 64px 20px; }
+    .hero { padding: 40px 20px 56px; }
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 32px; }
+    .hero ul li { font-size: 18px; }
+    .section-title, .section-dark h2 { font-size: 24px; }
+    .section-title--sm, .section-dark h3 { font-size: 20px; }
+    .card-grid, .step-grid { grid-template-columns: 1fr; }
+    .proof p { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-logo" href="#">UPSIDER</a>
+  <ul class="header-nav">
+    <li><a href="#colors">COLORS</a></li>
+    <li><a href="#typography">TYPOGRAPHY</a></li>
+    <li><a href="#buttons">BUTTONS</a></li>
+    <li><a href="#cards">CARDS</a></li>
+    <li><a href="#forms">FORMS</a></li>
+  </ul>
+  <div class="header-actions">
+    <a class="header-login" href="#">ログイン</a>
+    <a class="btn-outline" href="#">お問い合わせ</a>
+    <a class="btn-primary btn-primary--sm" href="#">お申し込み</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <h1>デザイン<br>システム</h1>
+      <ul>
+        <li>Noto Sans JP ＋ 游ゴシックの 2 本立て</li>
+        <li>有彩色はオレンジのグラデ 1 系統だけ</li>
+        <li>影はボタンにしか落とさない</li>
+      </ul>
+      <div class="button-row">
+        <a class="btn-ghost" href="#colors">資料ダウンロード</a>
+        <a class="btn-primary" href="#buttons">お申し込み</a>
+      </div>
+    </div>
+    <div class="hero-visual">hero visual</div>
+  </div>
+</section>
+
+<div class="proof">
+  <p>computed style 実測値にもとづくプレビュー</p>
+  <small>* 2026-08-24 取得。LP トップ ＋ /lp/function/</small>
+</div>
+
+<!-- 01 COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / COLORS</div>
+  <h2 class="section-title">白と黒の 2 極 ＋ オレンジ 1 点</h2>
+
+  <div class="color-group-label">Brand — グラデーションでしか使わない</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background-image:linear-gradient(90deg,#f5833e 0%,#fead48 100%)"></div><div class="color-swatch-info"><div class="color-swatch-name">UPSIDER Orange</div><div class="color-swatch-hex">linear-gradient(90deg, #f5833e 0%, #fead48 100%)</div><div class="color-swatch-role">主 CTA の面。<strong>background-image で塗る</strong>（background-color は透明のまま）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5833e"></div><div class="color-swatch-info"><div class="color-swatch-name">Grad Start</div><div class="color-swatch-hex">#f5833e</div><div class="color-swatch-role">グラデーション開始</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fead48"></div><div class="color-swatch-info"><div class="color-swatch-name">Grad End</div><div class="color-swatch-hex">#fead48</div><div class="color-swatch-role">グラデーション終了</div></div></div>
+  </div>
+
+  <div class="color-group-label">Ink — 黒は 3 段階</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1f1f1f"></div><div class="color-swatch-info"><div class="color-swatch-name">Ink</div><div class="color-swatch-hex">#1f1f1f</div><div class="color-swatch-role">body の既定色・見出し・フッターの面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1f2937"></div><div class="color-swatch-info"><div class="color-swatch-name">Ink Link</div><div class="color-swatch-hex">#1f2937</div><div class="color-swatch-role">ナビリンク・白ボタンのラベル</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#27272a"></div><div class="color-swatch-info"><div class="color-swatch-name">Ink Button</div><div class="color-swatch-hex">#27272a</div><div class="color-swatch-role">追従 CTA の白ボタンラベル</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000000"></div><div class="color-swatch-info"><div class="color-swatch-name">Black</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">斜め分割セクションの片側</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#373737"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray Dark</div><div class="color-swatch-hex">#373737</div><div class="color-swatch-role">アクティブなドット</div></div></div>
+  </div>
+
+  <div class="color-group-label">Gray & Surface</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#6b6b6b"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray Chip</div><div class="color-swatch-hex">#6b6b6b</div><div class="color-swatch-role">特徴チップの面（白文字）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#9c9c9c"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray Mid</div><div class="color-swatch-hex">#9c9c9c</div><div class="color-swatch-role">注釈テキスト・非アクティブなドット</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f3f3f3"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#f3f3f3</div><div class="color-swatch-role">比較セクションの面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid rgba(0,0,0,.12)"></div><div class="color-swatch-info"><div class="color-swatch-name">Background</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">ページ地色</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(0,0,0,0.12)"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">rgba(0,0,0,0.12)</div><div class="color-swatch-role">アウトラインボタンの罫</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgb(203,203,203)"></div><div class="color-swatch-info"><div class="color-swatch-name">Shadow</div><div class="color-swatch-hex">rgb(203,203,203)</div><div class="color-swatch-role"><strong>不透明な灰</strong>の影。rgba ではない</div></div></div>
+  </div>
+
+  <div class="color-group-label">Dark Section — ベタ塗りにしない</div>
+  <div style="background-image:var(--dark-split); height:180px; display:flex; align-items:center; justify-content:center;">
+    <div style="text-align:center;">
+      <div style="font-family:var(--font-head); font-size:24px; font-weight:700; color:#fff; line-height:1.5;">同系色の黒 2 枚を 108.58 度で切り替える</div>
+      <div class="color-swatch-hex" style="color:#9c9c9c; margin-top:10px;">linear-gradient(108.58deg, #000 0 49.99%, #1f1f1f 49.99% 100%)</div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section-gray" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / TYPOGRAPHY</div>
+  <h2 class="section-title">見出しは Noto Sans JP、本文は游ゴシック</h2>
+
+  <div class="type-sample">
+    <div style="font-family:var(--font-head); font-size:64px; font-weight:700; line-height:1.3; letter-spacing:0.04em; color:var(--ink);">上場のための<br>法人カード</div>
+    <div class="type-meta">64px / 700 / line-height: 83.2px (1.3) / letter-spacing: 2.56px (0.04em) ／ "Noto Sans JP"<span class="type-context">h1 — 字間を当てるのはここだけ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-head); font-size:48px; font-weight:700; line-height:1.5; color:var(--ink);">従来の法人カードの課題</div>
+    <div class="type-meta">48px / 700 / line-height: 72px (1.5) / letter-spacing: normal ／ "Noto Sans JP", sans-serif<span class="type-context">h2</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-head); font-size:36px; font-weight:700; line-height:1.5; color:var(--ink);">貴社の組織体制に合わせたカード運用</div>
+    <div class="type-meta">36px / 700 / line-height: 54px (1.5)<span class="type-context">h2（黒セクション）</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="bignum">日本最高レベルの利用先限定機能</div>
+    <div class="type-meta">36px / <strong>400</strong> / line-height: 54px (1.5) ／ 游ゴシック — <strong>太らせずにサイズだけ上げる</strong><span class="type-context">h3</span></div>
+  </div>
+  <div class="type-sample">
+    <div class="bignum--wide">最大10億円の利用限度額</div>
+    <div class="type-meta">30px / 400 / line-height: 67.5px (<strong>2.25</strong>) — 1 行の見出しを縦に浮かせる<span class="type-context">h3</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:30px; font-weight:700; line-height:1.5; color:var(--ink);">10万社を超す企業様が導入しています<sup>*</sup></div>
+    <div class="type-meta">30px / 700 / line-height: 45px (1.5)<span class="type-context">リード</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:24px; font-weight:700; line-height:1.5; color:var(--ink);">お申し込みから最短当日にご利用いただけます。</div>
+    <div class="type-meta">24px / 700 / line-height: 36px (1.5)<span class="type-context">リード（小）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.75; color:var(--ink); max-width:680px;">Web でご利用のお申し込み、支払い口座のご登録をいただくだけで審査を開始します。電子帳簿保存法・インボイス制度にも対応しており、証憑の保管や仕訳の作業を一連の流れの中で完結できます。</div>
+    <div class="type-meta">16px / 400 / line-height: 28px (<strong>1.75</strong>) ／ 游ゴシックスタック<span class="type-context">本文</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14.4px; font-weight:400; line-height:1.5; color:var(--ink-link);">導入事例 ／ お役立ち資料 ／ お役立ち記事 ／ セミナー</div>
+    <div class="type-meta">14.4px / 400 / line-height: 21.6px (1.5) / color: #1f2937<span class="type-context">ヘッダーナビ</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:var(--font-en); font-size:14px; font-weight:700; line-height:1.5; color:var(--ink);">STEP01</div>
+    <div class="type-meta">14px / 700 / line-height: 21px (1.5) ／ <strong>Inter, sans-serif</strong><span class="type-context">英字ラベル専用</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:400; line-height:1.5; color:var(--gray-mid);">* 当社が提供する全サービスのリリースからの登録企業数の合計</div>
+    <div class="type-meta">12px / 400 / line-height: 18px (1.5) / color: #9c9c9c<span class="type-context">注釈</span></div>
+  </div>
+
+  <div class="color-group-label">font-family（実測）</div>
+  <table class="spec-table">
+    <tr><th style="width:24%">対象</th><th>指定</th></tr>
+    <tr><td>ヒーロー見出し h1</td><td><code>"Noto Sans JP"</code> ← <strong>generic family を持たない。再現時は <code>, sans-serif</code> を必ず足す</strong></td></tr>
+    <tr><td>セクション見出し・CTA</td><td><code>"Noto Sans JP", sans-serif</code></td></tr>
+    <tr><td>本文・2次見出し</td><td><code>游ゴシック体, YuGothic, 游ゴシック, "Yu Gothic", "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", Arial, メイリオ, Meiryo, sans-serif</code></td></tr>
+    <tr><td>英字ラベル</td><td><code>Inter, sans-serif</code></td></tr>
+  </table>
+  <p style="font-size:13px; color:var(--gray-mid); margin-top:14px; line-height:1.8;">
+    ※ <strong>Noto Sans JP と Inter は実サイトと同一の書体</strong>で、Google Fonts から読み込んでいる。本文の游ゴシックは OS フォントに任せるため、環境により表示が異なる。<br>
+    ※ <code>font-feature-settings</code> は全要素 <code>normal</code>。<strong>palt を使わない</strong>（「最大10億円」など数字と和文の混植が多く、詰めると桁が読みにくくなるため）。
+  </p>
+</div>
+</section>
+
+<!-- 03 DARK SECTION -->
+<section class="section-dark">
+<div class="section-inner">
+  <h2>UPSIDERカードで<br>不正利用の発生可能性をほぼゼロに</h2>
+  <h4>半数以上の企業が過去 3 年間に何らかの不正を経験している</h4>
+  <p style="max-width:680px;">利用先を限定できるカードを 1 枚ずつ発行し、限度額と用途を組織単位で管理する。証憑の提出漏れは自動で検知し、月末の締め作業を待たずに気づける状態をつくる。</p>
+  <div style="margin-top:40px;"><a class="btn-primary btn-primary--float" href="#buttons">お申し込み</a></div>
+</div>
+</section>
+
+<!-- 04 BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / BUTTONS</div>
+  <h2 class="section-title">radius は場所ごとに違うが、すべてピル</h2>
+
+  <div class="button-row" style="margin-bottom:44px;">
+    <div class="button-item">
+      <a class="btn-primary btn-primary--sm" href="#">お申し込み</a>
+      <div class="button-label">Primary（ヘッダー）<br>radius 20px / 16px / shadow なし</div>
+    </div>
+    <div class="button-item">
+      <a class="btn-primary" href="#">お申し込み</a>
+      <div class="button-label">Primary（ヒーロー）<br>radius 30px / 20px<br>0 5px 15px rgb(203,203,203)</div>
+    </div>
+    <div class="button-item">
+      <a class="btn-primary btn-primary--float" href="#">お申し込み</a>
+      <div class="button-label">Primary（追従）<br>radius 100px / 24px<br>0 0 24px rgb(0,0,0)</div>
+    </div>
+  </div>
+
+  <div class="button-row" style="margin-bottom:44px;">
+    <div class="button-item">
+      <a class="btn-outline" href="#">お問い合わせ</a>
+      <div class="button-label">Secondary<br>白 ＋ 1px solid rgba(0,0,0,.12)<br>radius 20px / 文字 #1f2937</div>
+    </div>
+    <div class="button-item">
+      <a class="btn-ghost" href="#">資料ダウンロード</a>
+      <div class="button-label">Tertiary<br>白・罫なし ＋ 影のみ<br>radius 30px / 20px</div>
+    </div>
+    <div class="button-item">
+      <a class="btn-more" href="#">もっと見る</a>
+      <div class="button-label">More<br>radius 100px / 16px<br>0 4px 24px rgb(203,203,203)</div>
+    </div>
+  </div>
+
+  <div class="color-group-label">Chips ＆ Dots</div>
+  <div class="chip-row">
+    <span class="chip">高い限度額</span>
+    <span class="chip">対応スピード</span>
+    <span class="chip">不正利用の抑止</span>
+    <span style="font-family:var(--font-mono); font-size:11px; color:var(--gray-mid);">#6b6b6b / 白文字 12px / radius 100px / padding 4px 16px</span>
+  </div>
+  <div class="dot-row">
+    <span class="dot dot--active"></span><span class="dot"></span><span class="dot"></span>
+    <span style="font-family:var(--font-mono); font-size:11px; color:var(--gray-mid); margin-left:8px;">active #373737 ／ 非アクティブ #9c9c9c ／ radius 50%</span>
+  </div>
+
+  <div class="color-group-label">CTA Bar（追従）</div>
+</section>
+<div class="cta-bar">
+  <span class="cta-bar-label">まずはサービスを知りたい方</span>
+  <a class="btn-ghost" href="#">資料ダウンロード</a>
+  <a class="btn-primary btn-primary--float" href="#">お申し込み</a>
+</div>
+
+<!-- 05 CARDS -->
+<section class="section-gray" id="cards">
+<div class="section-inner">
+  <div class="section-label">05 / CARDS</div>
+  <h2 class="section-title--sm">課題と解決 — カードには影を落とさない</h2>
+
+  <div class="card-grid">
+    <div class="card card--problem">
+      <h4>課題</h4>
+      <p>部署ごとに 1 枚のカードを共有しているため、誰がいつ何に使ったのかが月末まで分からない。限度額の引き上げにも申請から数週間かかる。</p>
+    </div>
+    <div class="card card--solution">
+      <h4>UPSIDER なら</h4>
+      <p>用途ごとにカードを即時発行し、限度額を 1 枚単位で設定できる。利用は発生した時点で明細に載り、証憑の提出も同じ画面で完結する。</p>
+    </div>
+  </div>
+
+  <div class="color-group-label">Steps</div>
+  <div class="step-grid">
+    <div class="step">
+      <div class="step-label">STEP01</div>
+      <h4>お申し込み</h4>
+      <p>Web でご利用のお申し込みと支払い口座のご登録をいただきます。</p>
+    </div>
+    <div class="step">
+      <div class="step-label">STEP02</div>
+      <h4>審査</h4>
+      <p>最短当日で審査結果をご連絡します。決算書のご提出は不要です。</p>
+    </div>
+    <div class="step">
+      <div class="step-label">STEP03</div>
+      <h4>ご利用開始</h4>
+      <p>バーチャルカードはその場で発行され、すぐにご利用いただけます。</p>
+    </div>
+  </div>
+
+  <div class="color-group-label">Case</div>
+  <div class="case">
+    <h3>株式会社SODA</h3>
+    <div class="role">代表 内山さん</div>
+    <p>限度額の相談に即座に応じてもらえるので、広告出稿の意思決定を止めずに済むようになりました。月末の精算に費やしていた時間も、実質ゼロに近づいています。</p>
+    <a class="btn-more" href="#">すべて見る</a>
+  </div>
+</div>
+</section>
+
+<!-- 06 FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / FORMS</div>
+  <h2 class="section-title--sm">入力欄は枠を持たない</h2>
+
+  <div class="form-group">
+    <label class="form-label">会社名</label>
+    <input class="form-input" placeholder="株式会社アップサイダー">
+    <div class="form-state-label">Default — border なし / 下線 1px rgba(0,0,0,.12) / padding 12.5px 16px 12.5px 0 / radius 0</div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">メールアドレス</label>
+    <input class="form-input form-input--focus" value="finance@example.co.jp">
+    <div class="form-state-label">Focus — 下線を #f5833e に</div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">電話番号</label>
+    <input class="form-input form-input--error" value="">
+    <div class="form-error-msg">必須項目です。</div>
+    <div class="form-state-label">Error — 下線 #f5833e ＋ 淡いオレンジの面</div>
+  </div>
+</section>
+
+<!-- 07 ELEVATION -->
+<section class="section-gray" id="elevation">
+<div class="section-inner">
+  <div class="section-label">07 / ELEVATION</div>
+  <h2 class="section-title--sm">影はボタンだけに落とす</h2>
+
+  <div class="elev-grid">
+    <div class="elev-card"><div class="elev-name">Level 0</div><div class="elev-value">none — カード・セクション</div></div>
+    <div class="elev-card elev-card--1"><div class="elev-name">Level 1</div><div class="elev-value">0 5px 15px rgb(203,203,203)</div></div>
+    <div class="elev-card elev-card--2"><div class="elev-name">Level 2</div><div class="elev-value">0 4px 24px rgb(203,203,203)</div></div>
+    <div class="elev-card elev-card--3"><div class="elev-name">Level 3</div><div class="elev-value">0 0 24px rgb(0,0,0)</div></div>
+  </div>
+  <p style="font-size:13px; color:var(--gray-mid); margin-top:20px; line-height:1.8;">影の色は <strong>不透明な灰 <code>rgb(203,203,203)</code></strong>（<code>rgba</code> ではない）。追従 CTA だけ黒の全周影。カードやセクションには一切落とさない。</p>
+</div>
+</section>
+
+<!-- 08 LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">08 / LAYOUT</div>
+  <h2 class="section-title--sm">Spacing ／ Radius ／ Container</h2>
+
+  <div class="color-group-label">Spacing Scale</div>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">XS 4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">S 16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">M 24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:64px"></div><div class="spacing-value">L 64</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:120px"></div><div class="spacing-value">XL 120</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:160px"></div><div class="spacing-value">XXL 160</div></div>
+  </div>
+
+  <div class="color-group-label">Radius</div>
+  <table class="spec-table">
+    <tr><th style="width:22%">値</th><th>用途</th></tr>
+    <tr><td><code>0px</code></td><td>カード、入力欄、セクション</td></tr>
+    <tr><td><code>20px</code></td><td>ヘッダーのボタン（Primary / Secondary）</td></tr>
+    <tr><td><code>30px</code></td><td>ヒーローのボタン</td></tr>
+    <tr><td><code>50%</code></td><td>カルーセルのドット</td></tr>
+    <tr><td><code>100px</code></td><td>追従 CTA、チップ、「もっと見る」</td></tr>
+  </table>
+
+  <div class="color-group-label">Container / Grid / Breakpoints</div>
+  <table class="spec-table">
+    <tr><th style="width:22%">項目</th><th>値</th></tr>
+    <tr><td>Max Width</td><td><code>1200px</code> / padding-x <code>16px</code></td></tr>
+    <tr><td>ヒーロー</td><td>左テキスト / 右ビジュアルの 2 分割</td></tr>
+    <tr><td>黒セクション</td><td>上下 padding <code>160px</code></td></tr>
+    <tr><td>Mobile</td><td>≤ 767px — 1 カラム。ナビはドロワー</td></tr>
+    <tr><td>Tablet</td><td>768–1023px — ヒーローを縦積みに</td></tr>
+    <tr><td>Desktop</td><td>≥ 1024px — ヒーロー 2 分割 ＋ ナビ展開</td></tr>
+  </table>
+</section>
+
+<footer class="footer">
+  UPSIDER Design System Preview
+  <small>computed style 実測（2026-08-24 取得。https://up-sider.com/lp/ ＋ /lp/function/）に基づく</small>
+</footer>
+
+</body>
+</html>
