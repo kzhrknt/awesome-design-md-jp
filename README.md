@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (474 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (477 sites)</a>
 </p>
 
 <table>
@@ -719,6 +719,11 @@
 <td align="center"><strong>SUZURI</strong><br><img src="design-md/suzuri/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>食べチョク</strong><br><img src="design-md/tabechoku/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>Hacoa</strong><br><img src="design-md/hacoa/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>GOOD NATURE STATION</strong><br><img src="design-md/goodnature/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>TableCheck</strong><br><img src="design-md/tablecheck/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1253,11 +1258,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [hacomono](https://www.hacomono.jp/) | SaaS / Wellness Management | [DESIGN.md](design-md/hacomono/DESIGN.md) | [preview.html](design-md/hacomono/preview.html) |
 | [SUZURI (スズリ)](https://suzuri.jp/) | E-Commerce / Marketplace | [DESIGN.md](design-md/suzuri/DESIGN.md) | [preview.html](design-md/suzuri/preview.html) |
 | [食べチョク (Tabechoku)](https://www.tabechoku.com/) | E-Commerce / Food | [DESIGN.md](design-md/tabechoku/DESIGN.md) | [preview.html](design-md/tabechoku/preview.html) |
+| [Hacoa (ハコア)](https://www.hacoa.com/) | Craft / Wooden Goods | [DESIGN.md](design-md/hacoa/DESIGN.md) | [preview.html](design-md/hacoa/preview.html) |
+| [GOOD NATURE STATION](https://goodnaturestation.com/) | Retail / Hotel Complex | [DESIGN.md](design-md/goodnature/DESIGN.md) | [preview.html](design-md/goodnature/preview.html) |
+| [TableCheck (テーブルチェック)](https://www.tablecheck.com/ja/) | Restaurant Booking SaaS | [DESIGN.md](design-md/tablecheck/DESIGN.md) | [preview.html](design-md/tablecheck/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (474 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (477 sites)</a>
 </p>
 
 <table>
@@ -1941,6 +1949,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>hacomono</strong><br><img src="design-md/hacomono/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>SUZURI</strong><br><img src="design-md/suzuri/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>食べチョク</strong><br><img src="design-md/tabechoku/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>Hacoa</strong><br><img src="design-md/hacoa/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>GOOD NATURE STATION</strong><br><img src="design-md/goodnature/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>TableCheck</strong><br><img src="design-md/tablecheck/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

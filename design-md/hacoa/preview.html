@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Hacoa（ハコア）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測 ＋ 読み込まれる CSS 923KB の grep（2026-08-28）=== */
+    --amber:      #dd9933;  /* 唯一の彩度。リンク 30 個 + H3。CSS には 0 回（インライン注入） */
+    --bark:       #352f26;  /* ヘッダー右の外部リンクボタン。CSS 13 回 */
+    --warm-gray:  #a39b8d;  /* フッターのナビゲーションボタン。CSS 10 回 */
+    --dark:       #333333;  /* 汎用ボタン・フッター見出しの帯。CSS 24 回 */
+    --darker:     #222222;  /* Global Site バナー。CSS 17 回 */
+
+    --ink:        #000000;  /* 本文。グレーに逃がさない */
+    --ink-2:      #2d2d2d;  /* h4 / h5。CSS 7 回 */
+    --on-photo:   #ffffff;
+    --on-photo-2: #cccccc;  /* 下層ページのリード文 */
+
+    --surface:    #fafafa;  /* カードの地。CSS 20 回 */
+    --line:       #dddddd;  /* 区切り線。CSS 181 回 */
+    --line-2:     #cccccc;  /* CSS 44 回 */
+    --field:      #c1c1c1;  /* textarea の枠 */
+    --white:      #ffffff;
+
+    /* Scrim（写真の上に敷く暗幕） */
+    --scrim:      rgba(0, 0, 0, 0.3);
+    --scrim-deep: rgba(0, 0, 0, 0.5);
+
+    /* === Fonts: --tcd-font-type1〜3 をそのまま。Web フォントは読まない設計なので
+           Noto を末尾に足して非 macOS 環境の見えを担保している === */
+    --font-gothic: Arial, "Hiragino Sans", "Yu Gothic Medium", "Meiryo", "Noto Sans JP", sans-serif;
+    --font-mincho: "Times New Roman", Times, "Yu Mincho", "游明朝", "游明朝体", "Hiragino Mincho Pro", "Noto Serif JP", serif;
+    --font-mono:   SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Radius: pill と小角丸を役割で使い分ける === */
+    --r-pill:  9999px;
+    --r-pill2: 60px;   /* 写真の上のゴーストピル */
+    --r-sm:    4px;    /* CSS 32 回。小さな矩形ボタン */
+    --r-xs:    3px;    /* CSS 22 回 */
+
+    /* === Shadow: ほとんど使わない === */
+    --shadow:      0 0 10px 0 rgba(0, 0, 0, 0.15);
+    --shadow-head: 0 6px 6px -6px #cccccc;
+    --shadow-card: 1px 1px 3px 0 rgba(2, 2, 2, 0.23);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font-gothic);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 2.4;              /* 36px / 15px。このサイトの標準 */
+    letter-spacing: normal;        /* 効かせるのはグローバルナビの 0.03em だけ */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER — 70px 固定、ナビは line-height 70px */
+  .header { height: 70px; display: flex; align-items: center; gap: 28px; padding: 0 28px; background: var(--white); border-bottom: 1px solid var(--line); }
+  .header-logo { font-size: 22px; font-weight: 400; letter-spacing: 0.18em; color: var(--ink); text-decoration: none; }
+  .header-nav { display: flex; gap: 22px; margin-left: 12px; }
+  .header-nav a { font-size: 14px; font-weight: 400; letter-spacing: 0.03em; color: var(--ink); text-decoration: none; }
+  .header-right { margin-left: auto; display: flex; gap: 2px; }
+  .header-ext { background: var(--bark); color: var(--white); font-size: 13px; font-weight: 700; line-height: 1; padding: 12px 16px; text-decoration: none; border-radius: 0; }
+
+  /* HERO — 全幅写真 + スクリム + 明朝の大見出し */
+  .hero { position: relative; min-height: 420px; display: flex; align-items: center; justify-content: center; text-align: center;
+          background: linear-gradient(135deg, #8a6a45 0%, #5f4a30 45%, #3a2e1f 100%); }
+  .hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(12,12,12,.3) 0%, rgba(0,0,0,.3) 100%); }
+  .hero-inner { position: relative; padding: 64px 24px; }
+  .hero h1 { font-family: var(--font-mincho); font-size: 36px; font-weight: 600; line-height: 1.4; color: var(--on-photo); margin-bottom: 22px; }
+  .hero p { font-size: 16px; font-weight: 400; line-height: 2.0; color: var(--on-photo); }
+
+  /* SECTIONS — コンテンツ幅 850px */
+  .section { padding: 64px 24px; max-width: 850px; margin: 0 auto; }
+  .section-alt { background: var(--surface); }
+  .section-alt .section-inner { padding: 64px 24px; max-width: 850px; margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; line-height: 1.6; letter-spacing: 0.08em; color: #999; margin-bottom: 6px; }
+  .section-title { font-size: 26px; font-weight: 600; line-height: 1.5; color: var(--dark); margin-bottom: 28px; }
+  .note { font-size: 13px; line-height: 1.9; color: #666; margin-top: 14px; }
+  .note code, code { font-family: var(--font-mono); font-size: 12px; background: #f0f0f0; padding: 1px 5px; border-radius: var(--r-xs); }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  .swatch { background: var(--white); border: 1px solid var(--line); overflow: hidden; }
+  .swatch-chip { height: 74px; }
+  .swatch-body { padding: 10px 12px 12px; line-height: 1.6; }
+  .swatch-name { font-size: 13px; font-weight: 700; color: var(--ink-2); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 12px; color: #777; }
+  .swatch-use { font-size: 11px; line-height: 1.7; color: #888; margin-top: 4px; }
+  .warn { border-left: 3px solid var(--amber); background: #fdf7ee; padding: 14px 16px; margin-top: 20px; font-size: 13px; line-height: 1.9; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 190px 1fr; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; line-height: 1.7; color: #888; }
+  .t-hero    { font-family: var(--font-mincho); font-size: 36px; font-weight: 600; line-height: 1.4; color: var(--ink); }
+  .t-h1      { font-size: 40px; font-weight: 400; line-height: 1.4; color: var(--ink); }
+  .t-h2      { font-size: 34px; font-weight: 400; line-height: 1.5; color: var(--ink); }
+  .t-h2s     { font-size: 22px; font-weight: 600; line-height: 1.5; color: var(--dark); }
+  .t-h2f     { font-size: 18px; font-weight: 450; line-height: 1.0; color: var(--ink-2); }
+  .t-h3      { font-size: 16px; font-weight: 600; line-height: 1.3; color: var(--amber); }
+  .t-h4      { font-size: 16px; font-weight: 700; color: var(--ink-2); }
+  .t-body    { font-size: 15px; font-weight: 400; line-height: 2.4; color: var(--ink); }
+  .t-nav     { font-size: 14px; font-weight: 400; letter-spacing: 0.03em; color: var(--ink); }
+  .t-cap     { font-size: 13px; font-weight: 400; line-height: 1.5; color: #666; }
+  .t-foot    { font-size: 10px; font-weight: 400; line-height: 1.6; color: #888; }
+
+  /* ARTICLE — ニュース一覧の 2 カラム組版 */
+  .news { border-top: 1px solid var(--line); }
+  .news-row { display: grid; grid-template-columns: 92px 1fr; gap: 24px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+  .news-date { font-size: 15px; line-height: 2.4; color: var(--ink); }
+  .news-text { font-size: 15px; line-height: 2.4; color: var(--ink); }
+  .news-text a { color: var(--amber); text-decoration: none; }
+  .prose p { margin-bottom: 26px; }
+  .prose h3 { font-size: 22px; font-weight: 600; line-height: 1.5; color: var(--dark); margin: 34px 0 14px; }
+
+  /* PHOTO BLOCK — 全幅写真 + ゴーストピル */
+  .photo-band { position: relative; min-height: 320px; display: flex; align-items: center; justify-content: center; text-align: center;
+                background: linear-gradient(120deg, #7d6a48 0%, #6d573a 40%, #443626 100%); }
+  .photo-band::before { content: ""; position: absolute; inset: 0; background: var(--scrim); }
+  .photo-inner { position: relative; padding: 56px 24px; }
+  .photo-inner h2 { font-size: 34px; font-weight: 400; line-height: 1.5; color: var(--on-photo); margin-bottom: 14px; }
+  .photo-inner p { font-size: 16px; line-height: 2.0; color: var(--on-photo); margin-bottom: 28px; }
+  .photo-split { display: grid; grid-template-columns: 1fr 1fr; }
+  .photo-half { position: relative; min-height: 260px; display: flex; align-items: flex-end; padding: 28px; }
+  .photo-half:nth-child(1) { background: linear-gradient(140deg, #8b7550, #4f4030); }
+  .photo-half:nth-child(2) { background: linear-gradient(140deg, #6f6a50, #3c3a2a); }
+  .photo-half::before { content: ""; position: absolute; inset: 0; background: var(--scrim); }
+  .photo-half span { position: relative; font-size: 34px; font-weight: 400; line-height: 1.5; color: var(--on-photo); }
+
+  /* BUTTONS */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 22px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; cursor: pointer; font-family: var(--font-gothic); }
+  .btn-ghost   { background: transparent; color: var(--on-photo); border: 1px solid var(--on-photo); border-radius: var(--r-pill2); font-size: 16px; font-weight: 600; line-height: 3.2; padding: 0 20px; }
+  .btn-outline { background: transparent; color: var(--ink); border: 2px solid var(--ink); border-radius: var(--r-pill); font-size: 16px; font-weight: 700; line-height: 1; padding: 10.672px 21.28px; }
+  .btn-solid   { background: var(--ink); color: var(--white); border: none; border-radius: var(--r-pill); font-size: 16px; font-weight: 700; line-height: 1; padding: 12.672px 23.328px; }
+  .btn-invert  { background: var(--white); color: var(--ink); border: 2px solid var(--ink); border-radius: 30px; font-size: 16px; font-weight: 700; line-height: 1; padding: 10.672px 21.28px; }
+  .btn-flat    { background: var(--dark); color: var(--white); border: none; border-radius: var(--r-sm); font-size: 13px; font-weight: 400; line-height: 1.5; padding: 7px 14px; }
+  .btn-footer  { background: var(--warm-gray); color: var(--white); border: none; border-radius: 0; font-size: 14px; font-weight: 400; line-height: 1.5; padding: 14px 20px 12px; }
+  .btn-bark    { background: var(--bark); color: var(--white); border: none; border-radius: 0; font-size: 15px; font-weight: 700; line-height: 1.5; padding: 12px 18px; }
+  .on-dark { background: linear-gradient(120deg, #6d573a, #3a2e1f); padding: 26px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 24px; }
+  .card { background: var(--white); border-radius: 0; box-shadow: none; }
+  .card-photo { height: 170px; background: linear-gradient(135deg, #a98d63, #6b5638); }
+  .card-body { padding: 16px 0 0; }
+  .card-title { font-size: 16px; font-weight: 700; line-height: 1.6; color: var(--ink-2); }
+  .card-text { font-size: 15px; line-height: 2.0; color: var(--ink); margin-top: 6px; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .field label { display: block; font-size: 15px; font-weight: 700; line-height: 1.8; color: var(--ink-2); margin-bottom: 6px; }
+  .field input, .field textarea { width: 100%; background: var(--white); color: var(--ink); border: 1px solid var(--field); border-radius: 0; font-family: var(--font-gothic); font-size: 15px; line-height: 1.8; padding: 10px 12px; }
+  .field input:focus, .field textarea:focus { outline: 2px solid var(--amber); outline-offset: 1px; }
+  .field.is-focus input { outline: 2px solid var(--amber); outline-offset: 1px; }
+  .field.is-error input { border-color: #ed2c00; }
+  .field .msg { font-size: 13px; line-height: 1.8; color: #ed2c00; margin-top: 4px; }
+  .field .hint { font-size: 13px; line-height: 1.8; color: #888; margin-top: 4px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+  .elev { background: var(--white); border: 1px solid var(--line); padding: 20px; min-height: 116px; }
+  .elev-1 { box-shadow: var(--shadow); }
+  .elev-2 { box-shadow: var(--shadow-head); }
+  .elev-3 { box-shadow: var(--shadow-card); }
+  .elev-0 { box-shadow: none; }
+  .elev b { display: block; font-size: 14px; font-weight: 700; line-height: 1.8; color: var(--ink-2); }
+  .elev code { display: block; margin-top: 6px; font-size: 11px; line-height: 1.7; background: none; padding: 0; color: #777; }
+
+  /* LAYOUT */
+  .layout-demo { border: 1px dashed var(--line-2); padding: 14px; }
+  .layout-bar { background: var(--surface); border: 1px solid var(--line); text-align: center; font-family: var(--font-mono); font-size: 12px; line-height: 3.4; color: #777; }
+  .layout-split { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-top: 12px; }
+  .layout-split div { background: linear-gradient(135deg, #a98d63, #6b5638); color: var(--white); text-align: center; font-family: var(--font-mono); font-size: 12px; line-height: 5; }
+  .layout-split div:nth-child(2) { background: linear-gradient(135deg, #8b8a68, #4b4a36); }
+  .scale-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.9; }
+  .scale-table th, .scale-table td { border-bottom: 1px solid var(--line); padding: 10px 8px; text-align: left; }
+  .scale-table th { font-weight: 700; color: var(--ink-2); font-size: 13px; }
+  .scale-table td:first-child { font-family: var(--font-mono); font-size: 12px; }
+
+  /* FOOTER */
+  .footer { background: var(--dark); color: var(--white); padding: 40px 24px 20px; }
+  .footer-inner { max-width: 850px; margin: 0 auto; }
+  .footer h2 { font-size: 18px; font-weight: 450; line-height: 1.0; color: var(--white); margin-bottom: 18px; }
+  .footer-nav { display: flex; flex-wrap: wrap; gap: 2px; margin-bottom: 22px; }
+  .footer-copy { font-size: 10px; line-height: 1.6; color: #bbb; }
+
+  @media (max-width: 768px) {
+    .type-row { grid-template-columns: 1fr; gap: 6px; }
+    .news-row { grid-template-columns: 1fr; gap: 4px; }
+    .photo-split, .layout-split { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 26px; }
+    .t-h1 { font-size: 26px; } .t-h2 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-logo" href="#">Hacoa</a>
+  <nav class="header-nav">
+    <a href="#">Profile</a><a href="#">Story</a><a href="#">Product Episode</a><a href="#">Contact</a>
+  </nav>
+  <div class="header-right">
+    <a class="header-ext" href="#">オンラインストア</a>
+    <a class="header-ext" href="#">直営店</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>2001年「Hacoa」は誕生しました</h1>
+    <p>
+      木はさまざまな要素を含んだ完成した素材で<br>
+      それぞれの香りや温かい感触があります<br>
+      デザインから製作まで一貫して行っているブランドです
+    </p>
+  </div>
+</section>
+
+<!-- 01 COLORS -->
+<section class="section-alt" id="colors">
+<div class="section-inner">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">彩度を持つのはアンバー 1 色だけ</h2>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#dd9933"></div><div class="swatch-body"><div class="swatch-name">Hacoa Amber</div><div class="swatch-hex">#dd9933</div><div class="swatch-use">リンク（実測 30 個）・H3。CSS には 0 回でインライン注入</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#352f26"></div><div class="swatch-body"><div class="swatch-name">Bark Brown</div><div class="swatch-hex">#352f26</div><div class="swatch-use">ヘッダー右の外部リンクボタン。CSS 13 回</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#a39b8d"></div><div class="swatch-body"><div class="swatch-name">Warm Gray</div><div class="swatch-hex">#a39b8d</div><div class="swatch-use">フッターのナビゲーションボタン。CSS 10 回</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Dark</div><div class="swatch-hex">#333333</div><div class="swatch-use">「さらに読み込む」・フッター見出しの帯。CSS 24 回</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Ink</div><div class="swatch-hex">#000000</div><div class="swatch-use">本文。グレーに逃がさず真っ黒を使う</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#2d2d2d"></div><div class="swatch-body"><div class="swatch-name">Ink 2</div><div class="swatch-hex">#2d2d2d</div><div class="swatch-use">h4 / h5。CSS 7 回</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fafafa"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#fafafa</div><div class="swatch-use">カードの地。CSS 20 回</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#dddddd"></div><div class="swatch-body"><div class="swatch-name">Line</div><div class="swatch-hex">#dddddd</div><div class="swatch-use">一覧の区切り線。CSS 181 回</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:linear-gradient(120deg,#6d573a,#3a2e1f)"></div><div class="swatch-body"><div class="swatch-name">Scrim</div><div class="swatch-hex">rgba(0,0,0,.3) / .5</div><div class="swatch-use">写真の上に必ず敷く暗幕</div></div></div>
+  </div>
+  <div class="warn">
+    <strong>⚠️ 抽出データで最多の <code>#c49a51</code>（61 回）はブランド色ではない。</strong><br>
+    正体は Popup Maker プラグインの閉じるボタンで、実寸 0×0px の不可視要素。CSS 全文を検索しても <code>c49a51</code> は 0 回。
+    同じく <code>box-shadow</code> の上位 2 件（61 回ずつ）と、<code>#408bd1</code>（Instagram 埋め込みの「フォロー」）も除外すること。
+  </div>
+</div>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <h2 class="section-title">見出しは明朝とゴシックの 2 本立て。本文は line-height 2.4</h2>
+
+  <div class="type-row">
+    <div class="type-meta">Hero H2 / 明朝<br>36px / 600 / lh 1.4<br>--tcd-font-type2</div>
+    <div class="t-hero">木の温もりを、暮らしの道具に</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Section H1<br>40px / 400 / lh 1.4</div>
+    <div class="t-h1">たくさんの「あなた」と</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Section H2<br>34px / 400 / lh 1.5</div>
+    <div class="t-h2">Hacoa の歩み</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Sub H2<br>22px / 600 / lh 1.5 / #333</div>
+    <div class="t-h2s">越前の木地師がつくる</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Footer H2<br>18px / <strong>450</strong> / lh 1.0</div>
+    <div class="t-h2f">Hacoa 関連サイト</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">H3（アクセント）<br>16px / 600 / lh 1.3 / #dd9933</div>
+    <div class="t-h3">hacoa.japan</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">H4 / H5<br>16px / 700 / #2d2d2d</div>
+    <div class="t-h4">お取り扱いについて</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Body<br>15px / 400 / <strong>lh 2.4</strong></div>
+    <div class="t-body">1枚の四角い板もさまざまな曲線で構成されていて、それ以上のボリュームを感じさせるような生き生きとした構造を持っています。そんな領域にとらわれない、空間全体へのアプローチを視野に入れたものづくりを行っています。</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Global Nav<br>14px / 400 / ls 0.03em</div>
+    <div class="t-nav">Product Episode</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Caption<br>13px / 400 / lh 1.5</div>
+    <div class="t-cap">※ 天然木のため木目・色味に個体差があります</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Copyright<br>10px / 400 / lh 1.6</div>
+    <div class="t-foot">© Yamaguchi Kogei Co., Ltd. All Rights Reserved.</div>
+  </div>
+
+  <p class="note">
+    <code>letter-spacing</code> の宣言は CSS 全文で <strong>4 個だけ</strong>。効いているのはグローバルナビの <code>0.03em</code> のみで、見出しも本文も <code>normal</code>。
+    <code>font-feature-settings</code> の宣言は <strong>0 個</strong>（＝ <code>palt</code> を使わない）。
+    行間は <code>2</code>（58 回）・<code>1.5</code>（53 回）・<code>2.4</code>（41 回）・<code>1.4</code>（38 回）の順に多い。
+  </p>
+</section>
+
+<!-- 03 ARTICLE -->
+<section class="section-alt" id="article">
+<div class="section-inner">
+  <div class="section-label">03 / Article — 組版サンプル</div>
+  <h2 class="section-title">News：日付とタイトルの 2 カラム</h2>
+  <div class="news">
+    <div class="news-row"><div class="news-date">2026/08/24</div><div class="news-text">【新商品】木の温もりを持ち歩く。折り畳み式木製ノートパソコンスタンド「<a href="#">LAPTOP STAND SLIM</a>」の販売を開始致しました</div></div>
+    <div class="news-row"><div class="news-date">2026/06/22</div><div class="news-text">【新商品】木の温もりと、アルミの機能美。視線と空間を整える木製モニタースタンド「<a href="#">Monitor Stand</a>」の販売を開始致しました</div></div>
+    <div class="news-row"><div class="news-date">2026/05/29</div><div class="news-text">【新商品】ついばむように、すっと開ける。小鳥モチーフの木製段ボールカッター「<a href="#">Box Opener</a>」の販売を開始致しました</div></div>
+  </div>
+
+  <div class="prose" style="margin-top:40px">
+    <h3>無垢材を削り出すということ</h3>
+    <p>Hacoa の製品は、福井県鯖江市の工房で一つずつ削り出されます。突板や集成材ではなく無垢材を使うため、同じ型でも木目と色味は一枚ごとに違います。塗装は木の呼吸を止めない範囲にとどめ、使い込むほど手の脂で艶が出るように設計しています。</p>
+    <p>木は完成した素材です。人がつくるのは形だけで、質感も香りも、素材の側にもとから備わっている。だから設計は「足す」より「削る」方向に向かいます。</p>
+  </div>
+</div>
+</section>
+
+<section class="photo-band">
+  <div class="photo-inner">
+    <h2>商品開発</h2>
+    <p>木地職人の伝統の技を継承しつつ、現代の価値観に合わせたものづくりを</p>
+    <a class="btn btn-ghost" href="#">商品開発について</a>
+  </div>
+</section>
+<div class="photo-split">
+  <div class="photo-half"><span>Haco - air</span></div>
+  <div class="photo-half"><span>直営店</span></div>
+</div>
+
+<!-- 04 BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">CTA は pill、UI 部品は小角丸</h2>
+
+  <div class="on-dark">
+    <div class="btn-row" style="margin-bottom:0">
+      <a class="btn btn-ghost" href="#">Hacoa の歩み</a>
+      <a class="btn btn-ghost" href="#">Brand Episode</a>
+    </div>
+  </div>
+  <p class="note">① ゴーストピル（写真の上・最頻出）: <code>transparent / #fff / 1px solid #fff / radius 60px / 16px 600 / padding 0 20px</code></p>
+
+  <div class="btn-row" style="margin-top:26px">
+    <a class="btn btn-outline" href="#">もっと見る</a>
+    <a class="btn btn-solid" href="#">オンラインストアへ</a>
+    <a class="btn btn-invert" href="#">直営店を探す</a>
+  </div>
+  <p class="note">② アウトラインピル <code>2px solid #000 / radius 9999px / 16px 700</code>　③ ソリッドピル <code>#000 / radius 9999px / padding 12.672px 23.328px</code>　④ 反転ピル <code>#fff 面 + 2px solid #000 / radius 30px</code></p>
+
+  <div class="btn-row" style="margin-top:26px">
+    <a class="btn btn-flat" href="#">さらに読み込む</a>
+    <a class="btn btn-footer" href="#">企業情報</a>
+    <a class="btn btn-bark" href="#">リクルート</a>
+  </div>
+  <p class="note">⑤ フラット矩形 <code>#333 / radius 4px / 13px 400</code>　⑥ フッターナビ <code>#a39b8d / radius 0 / padding 14px 20px 12px</code>　⑦ ヘッダー外部リンク <code>#352f26 / radius 0 / 15px 700</code></p>
+</section>
+
+<!-- 05 CARDS -->
+<section class="section-alt" id="cards">
+<div class="section-inner">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">枠も影も角丸も付けない。写真の矩形をそのまま見せる</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">Wooden Keyboard</div><div class="card-text">キーひとつずつを無垢材から削り出したフルサイズキーボード。</div></div></div>
+    <div class="card"><div class="card-photo" style="background:linear-gradient(135deg,#8b7550,#4f4030)"></div><div class="card-body"><div class="card-title">Card Case</div><div class="card-text">紙の名刺の厚みに合わせて、内側を 0.1mm 単位で調整しています。</div></div></div>
+    <div class="card"><div class="card-photo" style="background:linear-gradient(135deg,#9d8c66,#5b4c32)"></div><div class="card-body"><div class="card-title">Wall Clock</div><div class="card-text">木口を見せる仕立て。年輪がそのまま文字盤の表情になります。</div></div></div>
+  </div>
+  <p class="note">カードは <code>border-radius: 0</code> / <code>box-shadow: none</code> / 枠なし。カード同士は余白だけで分ける。面色を持つバッジは存在しない。</p>
+</div>
+</section>
+
+<!-- 06 FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">Default / Focus / Error</h2>
+  <div class="form-grid">
+    <div class="field">
+      <label for="f1">お名前</label>
+      <input id="f1" type="text" placeholder="山口 太郎">
+      <div class="hint">Default: <code>1px solid #c1c1c1</code> / radius 0</div>
+    </div>
+    <div class="field is-focus">
+      <label for="f2">メールアドレス</label>
+      <input id="f2" type="text" value="info@example.com">
+      <div class="hint">Focus: 独自のフォーカスリングは無い。ここでは <code>outline: 2px solid #dd9933</code> で代替</div>
+    </div>
+    <div class="field is-error">
+      <label for="f3">電話番号</label>
+      <input id="f3" type="text" value="0778-">
+      <div class="msg">電話番号を正しく入力してください</div>
+    </div>
+  </div>
+  <div class="field" style="margin-top:24px">
+    <label for="f4">お問い合わせ内容</label>
+    <textarea id="f4" rows="4" placeholder="ご記入ください"></textarea>
+  </div>
+  <p class="note">実サイトの <code>input[type=text]</code> は UA 既定のまま（<code>2px inset</code>）で、上書きされているのは <code>textarea</code> の <code>1px solid #c1c1c1</code> のみ。実装時は全入力欄をこの見た目に揃える。</p>
+</section>
+
+<!-- 07 ELEVATION -->
+<section class="section-alt" id="elevation">
+<div class="section-inner">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">影はほとんど使わない。立体感は「写真 ＋ スクリム」で作る</h2>
+  <div class="elev-grid">
+    <div class="elev elev-0"><b>none（既定）</b><code>カード・ボタンは影なし</code></div>
+    <div class="elev elev-1"><b>汎用の浮き</b><code>0 0 10px 0 rgba(0,0,0,.15)</code></div>
+    <div class="elev elev-2"><b>ヘッダーの下辺</b><code>0 6px 6px -6px #cccccc</code></div>
+    <div class="elev elev-3"><b>カードの浮き</b><code>1px 1px 3px 0 rgba(2,2,2,.23)</code></div>
+  </div>
+  <p class="note">純黒より 2 だけ明るい <code>rgba(2, 2, 2, …)</code> を使うのがテーマの流儀。<strong>ランタイムで最多の影（61 回）は非表示ポップアップのもの</strong>なので参考にしない。</p>
+</div>
+</section>
+
+<!-- 08 LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">08 / Layout</div>
+  <h2 class="section-title">850px の本文と、全幅の写真を交互に積む</h2>
+  <div class="layout-demo">
+    <div class="layout-bar">コンテンツ幅 850px（1440px ビューポートで実測 21 要素）</div>
+    <div class="layout-split">
+      <div>720px（50%）</div>
+      <div>720px（50%）</div>
+    </div>
+  </div>
+  <table class="scale-table" style="margin-top:28px">
+    <tr><th>用途</th><th>値</th><th>備考</th></tr>
+    <tr><td>コンテンツ幅</td><td>850px</td><td>本文・ニュース一覧</td></tr>
+    <tr><td>2 カラム分割</td><td>720px</td><td>ビューポートの 50%。写真セクション</td></tr>
+    <tr><td>写真セクション</td><td>100%</td><td>全幅ブリード</td></tr>
+    <tr><td>モーダル</td><td>460px</td><td>—</td></tr>
+    <tr><td>ヘッダー高さ</td><td>70px</td><td>ナビは line-height: 70px</td></tr>
+  </table>
+  <h3 style="font-size:18px;font-weight:700;line-height:1.8;color:var(--ink-2);margin:34px 0 10px">Radius Scale</h3>
+  <table class="scale-table">
+    <tr><th>値</th><th>CSS 出現</th><th>用途</th></tr>
+    <tr><td>4px</td><td>32 回</td><td>小さな矩形ボタン・入力欄</td></tr>
+    <tr><td>5px / 3px</td><td>22 / 22 回</td><td>カード内の小要素・タグ</td></tr>
+    <tr><td>40px</td><td>20 回</td><td>中サイズのピル</td></tr>
+    <tr><td>100% / 50%</td><td>12 / 10 回</td><td>アイコン・アバター</td></tr>
+    <tr><td>9999px / 30px</td><td>5 / 4 回</td><td>CTA ピル</td></tr>
+  </table>
+  <p class="note">pill（9999px / 60px / 40px / 30px）と小角丸（3〜5px）を役割で使い分ける。統一しようとすると印象が変わる。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <h2>Hacoa 関連サイト</h2>
+    <div class="footer-nav">
+      <a class="btn btn-footer" href="#">企業情報</a>
+      <a class="btn btn-footer" href="#">SDGs</a>
+      <a class="btn btn-footer" href="#">Hacoa の歩み</a>
+    </div>
+    <p class="footer-copy">この preview は awesome-design-md-jp のデザインシステム再現サンプルです。Hacoa 公式サイトではありません。</p>
+  </div>
+</footer>
+
+</body>
+</html>

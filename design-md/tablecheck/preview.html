@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: TableCheck（テーブルチェック）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400&family=Noto+Sans+JP:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 実サイトの CSS Custom Properties（282 個）から抜粋。2026-08-28 実測 === */
+    --brand-static: #7935d2;  /* ブランド紫。実測値。--purple-700(#7832d2) とは 1 トーン違う */
+    --purple-50:    #f7efff;  /* 選択中チップの面・ユーティリティヘッダーの地 */
+    --purple-100:   #f1e5ff;
+    --purple-150:   #e2ccff;  /* --light-purple */
+    --purple-600:   #8e4ae7;  /* 選択中チップの枠 */
+    --purple-700:   #7832d2;  /* ⚠️ 宣言値。ボタン等には使わない */
+    --purple-800:   #54268e;
+    --purple-900:   #3d1f62;
+
+    --grey-50:      #fdfdfd;
+    --grey-100:     #f9f9f9;  /* セクションの地 */
+    --grey-150:     #f7f7f7;
+    --grey-200:     #eeeeee;
+    --grey-300:     #e5e5e5;  /* 枠。UI の骨格 */
+    --grey-400:     #dbdbdb;
+    --grey-500:     #cecece;
+    --grey-600:     #bfbfbf;
+    --grey-700:     #989898;
+    --grey-750:     #666666;  /* 補助テキスト */
+    --grey-800:     #4b4b4b;
+    --grey-900:     #292929;  /* 本文の色 かつ 主 CTA の面色 */
+    --grey-950:     #1e1e1e;
+    --white:        #ffffff;
+
+    --info-700:     #0066cc;  /* --light-blue */
+    --success-700:  #067900;
+    --warning-700:  #926b07;
+    --orange-600:   #bf7d33;
+    --red-status:   #e50303;
+    --rating-color: #f69709;
+
+    --badge-pink:    #ffc2b9;
+    --badge-purple:  #c4a1f4;
+    --badge-blue:    #b0e1ff;
+    --badge-green-1: #b6e0d6;
+    --badge-green-2: #3dc5b4;
+    --badge-cream:   #ffe5b0;
+
+    --ai-color-1: #a50ff080;
+    --ai-color-2: #f85c7980;
+    --ai-color-3: #8d6fe980;
+    --ai-color-4: #3c64ff80;
+
+    --lighter-grey-border: #0000001a;
+
+    /* === Fonts: --font-family をそのまま。ロケール別に先頭が差し替わる設計 === */
+    --font-family: "IBM Plex Sans", "IBM Plex Sans", "Noto Sans", -apple-system, BlinkMacSystemFont,
+      "system-ui", "Segoe UI", Roboto, Oxygen, Ubuntu, "Helvetica Neue",
+      "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3", "Yu Gothic UI", "Yu Gothic", 游ゴシック体,
+      "Meiryo UI", Meiryo, メイリオ, "Noto Sans JP",
+      "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif, system-ui;
+    --font-family-monospace: "IBM Plex Mono", Menlo, Monaco, Consolas, "Courier New", monospace;
+
+    /* === Radius === */
+    --border-radius-micro:   2px;
+    --border-radius-small:   4px;   /* CSS 参照 140 回。ボタン・バッジ */
+    --border-radius-medium:  8px;
+    --border-radius-large:   8px;   /* CSS 参照 123 回。カード・入力欄 */
+    --border-radius-x-large: 16px;
+    --border-radius-full:    999px; /* 絞り込みチップ */
+
+    /* === Spacing === */
+    --spacing-l1: 4px;  --spacing-l2: 8px;  --spacing-l3: 12px; --spacing-l4: 16px;
+    --spacing-l5: 24px; --spacing-l6: 32px; --spacing-l7: 40px; --spacing-l8: 48px;
+
+    /* === Elevation: 2 層構造 ＋ 負のスプレッド === */
+    --elevation-small-raised:  0 1px 2px -1px rgb(0 0 0 / .2), 0 2px 6px -2px rgb(0 0 0 / .1);
+    --elevation-medium-raised: 0 1px 4px -1px rgb(0 0 0 / .2), 0 2px 6px -2px rgb(0 0 0 / .1);
+    --elevation-large-raised:  0 2px 8px -1px rgb(0 0 0 / .2), 0 2px 12px -4px rgb(0 0 0 / .1);
+    --elevation-light-small:   0 0 3px 0 rgba(0, 0, 0, .1);
+    --elevation-dark-large:    0 0 12px rgba(0, 0, 0, .8);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--grey-900);
+    font-family: var(--font-family);
+    font-size: 16px;                 /* --body-1-font-size */
+    font-weight: 400;
+    line-height: 24px;               /* --body-1-line-height。px 固定 */
+    letter-spacing: normal;          /* 明示的に normal */
+    font-feature-settings: normal;   /* palt の継承を切る */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .utility { background: var(--purple-50); display: flex; justify-content: flex-end; gap: 20px; padding: 6px 24px; }
+  .utility a { font-size: 12px; line-height: 18px; color: #000; text-decoration: none; }
+  .header { display: flex; align-items: center; gap: 20px; padding: 12px 24px; background: var(--white); border-bottom: 1px solid var(--grey-300); }
+  .header-logo { display: flex; align-items: center; gap: 8px; font-size: 22px; font-weight: 600; color: var(--grey-900); text-decoration: none; }
+  .header-logo i { width: 18px; height: 18px; border: 3px solid var(--brand-static); border-radius: 3px; display: inline-block; }
+  .search { flex: 1; max-width: 430px; display: flex; align-items: center; gap: 10px; background: var(--grey-100); border: 1px solid var(--grey-300); border-radius: var(--border-radius-large); padding: 10px 14px; }
+  .search input { flex: 1; background: transparent; border: none; outline: none; font-family: var(--font-family); font-size: 16px; line-height: 24px; color: #000; }
+  .search input::placeholder { color: var(--grey-600); }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 16px; font-size: 14px; }
+
+  /* HERO */
+  .hero { background: var(--grey-100); padding: 56px 24px 64px; }
+  .hero-inner { max-width: 1120px; margin: 0 auto; }
+  .hero h1 { font-size: 36px; font-weight: 600; line-height: 44px; color: var(--grey-900); margin-bottom: 24px; }
+  .hero h1 .ai {
+    background: linear-gradient(105deg, var(--brand-static) 0%, var(--brand-static) 45%,
+      var(--ai-color-1) 55%, var(--ai-color-2) 65%, var(--ai-color-3) 75%, var(--ai-color-4) 85%, var(--brand-static) 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: var(--brand-static);
+  }
+
+  /* SECTIONS */
+  .section { max-width: 1120px; margin: 0 auto; padding: 56px 24px; }
+  .section-alt { background: var(--grey-100); }
+  .section-label { font-family: var(--font-family-monospace); font-size: 12px; line-height: 18px; letter-spacing: normal; color: var(--grey-750); margin-bottom: 6px; }
+  .section-title { font-size: 24px; font-weight: 400; line-height: 32px; color: var(--grey-900); margin-bottom: 8px; }
+  .section-sub { font-size: 14px; line-height: 20px; color: var(--grey-750); margin-bottom: 28px; }
+  .note { font-size: 14px; line-height: 22px; color: var(--grey-750); margin-top: 16px; }
+  code { font-family: var(--font-family-monospace); font-size: 12px; background: var(--grey-150); border-radius: var(--border-radius-micro); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 12px; }
+  .swatch { background: var(--white); border: 1px solid var(--grey-300); border-radius: var(--border-radius-large); overflow: hidden; }
+  .swatch-chip { height: 68px; }
+  .swatch-body { padding: 10px 12px 12px; }
+  .swatch-name { font-size: 14px; font-weight: 600; line-height: 20px; }
+  .swatch-hex { font-family: var(--font-family-monospace); font-size: 12px; line-height: 18px; color: var(--grey-750); }
+  .swatch-use { font-size: 12px; line-height: 18px; color: var(--grey-700); margin-top: 4px; }
+  .scale-row { display: flex; border-radius: var(--border-radius-small); overflow: hidden; margin-bottom: 8px; }
+  .scale-row span { flex: 1; height: 40px; display: flex; align-items: flex-end; justify-content: center; font-family: var(--font-family-monospace); font-size: 10px; padding-bottom: 3px; }
+  .warn { border-left: 4px solid var(--brand-static); background: var(--purple-50); border-radius: var(--border-radius-small); padding: 14px 18px; margin-top: 22px; font-size: 14px; line-height: 22px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 210px 1fr; gap: 24px; padding: 16px 0; border-bottom: 1px solid var(--grey-300); align-items: baseline; }
+  .type-meta { font-family: var(--font-family-monospace); font-size: 11px; line-height: 17px; color: var(--grey-750); }
+  .t-headline { font-size: 54px; font-weight: 700; line-height: 64px; }
+  .t-h1 { font-size: 36px; font-weight: 600; line-height: 44px; }
+  .t-h2 { font-size: 24px; font-weight: 400; line-height: 32px; }
+  .t-h3 { font-size: 20px; font-weight: 600; line-height: 24px; }
+  .t-h4 { font-size: 20px; font-weight: 400; line-height: 24px; }
+  .t-h5 { font-size: 16px; font-weight: 600; line-height: 24px; }
+  .t-b1 { font-size: 16px; font-weight: 400; line-height: 24px; }
+  .t-b2 { font-size: 14px; font-weight: 400; line-height: 20px; color: var(--grey-750); }
+  .t-label { font-size: 14px; font-weight: 600; line-height: 20px; }
+  .t-small { font-size: 12px; font-weight: 400; line-height: 18px; color: var(--grey-750); }
+
+  /* RESTAURANT LIST */
+  .list-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .list-card { background: var(--white); border: 1px solid var(--grey-300); border-radius: var(--border-radius-large); padding: 12px; }
+  .list-item { display: grid; grid-template-columns: 78px 1fr; gap: 12px; padding: 10px 0; align-items: center; }
+  .list-thumb { width: 78px; height: 64px; border-radius: var(--border-radius-small); background: linear-gradient(135deg, #d9c7a8, #8a6f4c); }
+  .list-name { font-size: 16px; font-weight: 400; line-height: 22.4px; color: var(--grey-900); }
+  .list-genre { font-size: 14px; font-weight: 400; line-height: 19.6px; color: var(--grey-750); }
+  .list-cta { display: block; margin-top: 10px; text-align: center; }
+
+  /* BUTTONS / CHIPS / BADGES */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; cursor: pointer; font-family: var(--font-family); }
+  .btn-primary   { background: var(--grey-900); color: var(--white); border: 1px solid var(--grey-900); border-radius: var(--border-radius-small); font-size: 16px; font-weight: 400; line-height: 24px; padding: 9px 11px; }
+  .btn-primary-s { background: var(--grey-900); color: var(--white); border: 1px solid var(--grey-900); border-radius: var(--border-radius-small); font-size: 14px; font-weight: 400; line-height: 20px; padding: 9px 11px; }
+  .btn-secondary { background: var(--white); color: var(--grey-900); border: 1px solid var(--grey-300); border-radius: var(--border-radius-large); font-size: 16px; font-weight: 400; line-height: 24px; padding: 12px; }
+  .btn-text      { background: transparent; color: var(--grey-900); border: none; border-radius: var(--border-radius-small); font-size: 14px; font-weight: 400; line-height: 20px; padding: 8px; }
+  .chip { display: inline-flex; align-items: center; border-radius: var(--border-radius-full); font-size: 14px; font-weight: 400; line-height: 20px; padding: 7px 11px; text-decoration: none; cursor: pointer; }
+  .chip-on  { background: var(--purple-50); color: var(--grey-900); border: 1px solid var(--purple-600); }
+  .chip-off { background: var(--white); color: var(--grey-750); border: 1px solid var(--grey-300); }
+  .badge { display: inline-flex; align-items: center; background: var(--white); color: var(--grey-900); border: 1px solid var(--grey-300); border-radius: var(--border-radius-small); font-size: 12px; font-weight: 600; line-height: 16px; padding: 4px 6px; }
+  .badge-fill { border: none; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .card { background: var(--white); border: 1px solid var(--grey-300); border-radius: var(--border-radius-large); padding: 12px; }
+  .card-photo { aspect-ratio: 16 / 10; border-radius: var(--border-radius-small); background: linear-gradient(135deg, #cbb79a, #7c6244); margin-bottom: 12px; }
+  .card-title { font-size: 16px; font-weight: 600; line-height: 24px; }
+  .card-text { font-size: 14px; line-height: 19.6px; color: var(--grey-750); margin-top: 4px; }
+  .card-tags { display: flex; gap: 6px; margin-top: 10px; }
+  .promo { background: var(--badge-green-1); border: 1px solid var(--grey-300); border-radius: var(--border-radius-large); padding: 20px; }
+  .float-card { background: rgba(255, 255, 255, .7); border: 1px solid var(--lighter-grey-border); border-radius: var(--border-radius-large); padding: 8px 12px 12px; }
+  .on-photo { background: linear-gradient(135deg, #c7a97c, #6d5638); padding: 28px; border-radius: var(--border-radius-x-large); }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+  .field label { display: block; font-size: 14px; font-weight: 600; line-height: 20px; margin-bottom: 6px; }
+  .field .wrap { display: flex; align-items: center; gap: 10px; background: var(--white); border: 1px solid var(--grey-300); border-radius: var(--border-radius-large); padding: 10px 12px; }
+  .field .wrap input, .field .wrap select { flex: 1; background: transparent; border: none; outline: none; font-family: var(--font-family); font-size: 16px; line-height: 24px; color: #000; height: 24px; }
+  .field.is-focus .wrap { box-shadow: 0 0 0 2px var(--purple-600); }
+  .field.is-error .wrap { box-shadow: 0 0 0 1px var(--red-status); border-color: var(--red-status); }
+  .field .msg { font-size: 12px; line-height: 18px; color: var(--red-status); margin-top: 6px; }
+  .field .hint { font-size: 12px; line-height: 18px; color: var(--grey-750); margin-top: 6px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
+  .elev { background: var(--white); border: 1px solid var(--grey-300); border-radius: var(--border-radius-large); padding: 16px; min-height: 108px; }
+  .elev b { display: block; font-size: 14px; font-weight: 600; line-height: 20px; }
+  .elev code { display: block; margin-top: 6px; font-size: 11px; line-height: 17px; background: none; padding: 0; color: var(--grey-750); }
+  .e1 { box-shadow: var(--elevation-small-raised); }
+  .e2 { box-shadow: var(--elevation-medium-raised); }
+  .e3 { box-shadow: var(--elevation-large-raised); }
+  .e4 { box-shadow: var(--elevation-light-small); }
+
+  /* LAYOUT */
+  .layout-demo { border: 1px dashed var(--grey-400); border-radius: var(--border-radius-large); padding: 12px; }
+  .layout-bar { background: var(--grey-150); border-radius: var(--border-radius-small); text-align: center; font-family: var(--font-family-monospace); font-size: 12px; line-height: 40px; color: var(--grey-750); }
+  .layout-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 12px; }
+  .layout-cols div { background: var(--purple-50); border: 1px solid var(--purple-150); border-radius: var(--border-radius-small); text-align: center; font-family: var(--font-family-monospace); font-size: 12px; line-height: 56px; color: var(--purple-800); }
+  .spacing-row { display: flex; align-items: flex-end; gap: 10px; margin-top: 8px; }
+  .spacing-row div { background: var(--brand-static); border-radius: var(--border-radius-micro); }
+  .spacing-row span { font-family: var(--font-family-monospace); font-size: 11px; color: var(--grey-750); display: block; text-align: center; margin-top: 4px; }
+  .scale-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 22px; }
+  .scale-table th, .scale-table td { border-bottom: 1px solid var(--grey-300); padding: 10px 8px; text-align: left; }
+  .scale-table th { font-size: 14px; font-weight: 600; line-height: 20px; }
+  .scale-table td:first-child { font-family: var(--font-family-monospace); font-size: 12px; }
+
+  /* FOOTER */
+  .footer { background: var(--grey-950); color: var(--white); padding: 40px 24px 24px; }
+  .footer-inner { max-width: 1120px; margin: 0 auto; }
+  .footer h3 { font-size: 16px; font-weight: 600; line-height: 24px; margin-bottom: 12px; }
+  .footer p { font-size: 12px; line-height: 18px; color: var(--grey-600); }
+
+  @media (max-width: 900px) { .list-grid, .card-grid, .layout-cols { grid-template-columns: 1fr; } }
+  @media (max-width: 768px) {
+    .type-row { grid-template-columns: 1fr; gap: 6px; }
+    .t-headline { font-size: 32px; line-height: 40px; }
+    .t-h1, .hero h1 { font-size: 26px; line-height: 34px; }
+    .search { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="utility">
+  <a href="#">レストラン・飲食店の方へ</a>
+  <a href="#">ヘルプ</a>
+</div>
+<header class="header">
+  <a class="header-logo" href="#"><i></i>TableCheck</a>
+  <div class="search"><span>🔍</span><input type="text" placeholder="今夜銀座で寿司 2 人"></div>
+  <div class="header-right">
+    <span>📍 日本</span><span>🌐 JA</span>
+    <a class="btn btn-primary-s" href="#">ログイン</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>全国の人気<br><span class="ai">レストラン</span>を探す</h1>
+    <div class="btn-row">
+      <a class="chip chip-on" href="#">東京</a>
+      <a class="chip chip-off" href="#">大阪</a>
+      <a class="chip chip-off" href="#">京都</a>
+      <a class="chip chip-off" href="#">名古屋</a>
+      <a class="chip chip-off" href="#">横浜</a>
+      <a class="chip chip-off" href="#">福岡</a>
+    </div>
+  </div>
+</section>
+
+<!-- 01 COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">紫は差し色だけ。CTA は黒</h2>
+  <p class="section-sub">CSS Custom Properties は 282 個。色は 6 系統 × 8〜12 段でトークン化されている。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#7935d2"></div><div class="swatch-body"><div class="swatch-name">Brand Static</div><div class="swatch-hex">#7935d2</div><div class="swatch-use">ロゴ・見出しの強調語・Pay バナー。<strong>ボタンには使わない</strong></div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#292929"></div><div class="swatch-body"><div class="swatch-name">Grey 900</div><div class="swatch-hex">#292929</div><div class="swatch-use">本文の色 かつ 主 CTA の面色</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e5e5e5"></div><div class="swatch-body"><div class="swatch-name">Grey 300</div><div class="swatch-hex">#e5e5e5</div><div class="swatch-use">カード・入力欄・非選択チップの枠。UI の骨格</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#666666"></div><div class="swatch-body"><div class="swatch-name">Grey 750</div><div class="swatch-hex">#666666</div><div class="swatch-use">補助テキスト</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f9f9f9"></div><div class="swatch-body"><div class="swatch-name">Grey 100</div><div class="swatch-hex">#f9f9f9</div><div class="swatch-use">セクションの地</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f7efff"></div><div class="swatch-body"><div class="swatch-name">Purple 50</div><div class="swatch-hex">#f7efff</div><div class="swatch-use">選択中チップの面・ユーティリティヘッダー</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#8e4ae7"></div><div class="swatch-body"><div class="swatch-name">Purple 600</div><div class="swatch-hex">#8e4ae7</div><div class="swatch-use">選択中チップの枠</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f69709"></div><div class="swatch-body"><div class="swatch-name">Rating</div><div class="swatch-hex">#f69709</div><div class="swatch-use">★ の色（--rating-color）</div></div></div>
+  </div>
+
+  <h3 class="t-h5" style="margin:28px 0 10px">Purple Scale</h3>
+  <div class="scale-row">
+    <span style="background:#f7efff">50</span><span style="background:#f1e5ff">100</span><span style="background:#e2ccff">150</span>
+    <span style="background:#dcc1ff">200</span><span style="background:#b080ee;color:#fff">300</span><span style="background:#a56eec;color:#fff">400</span>
+    <span style="background:#9f60f1;color:#fff">500</span><span style="background:#8e4ae7;color:#fff">600</span><span style="background:#7832d2;color:#fff">700</span>
+    <span style="background:#54268e;color:#fff">800</span><span style="background:#3d1f62;color:#fff">900</span><span style="background:#31194e;color:#fff">950</span>
+  </div>
+  <h3 class="t-h5" style="margin:20px 0 10px">Grey Scale</h3>
+  <div class="scale-row">
+    <span style="background:#fdfdfd">50</span><span style="background:#f9f9f9">100</span><span style="background:#f7f7f7">150</span>
+    <span style="background:#eeeeee">200</span><span style="background:#e5e5e5">300</span><span style="background:#dbdbdb">400</span>
+    <span style="background:#cecece">500</span><span style="background:#bfbfbf">600</span><span style="background:#989898;color:#fff">700</span>
+    <span style="background:#666666;color:#fff">750</span><span style="background:#4b4b4b;color:#fff">800</span><span style="background:#3a3a3a;color:#fff">850</span>
+    <span style="background:#292929;color:#fff">900</span><span style="background:#1e1e1e;color:#fff">950</span>
+  </div>
+  <h3 class="t-h5" style="margin:20px 0 10px">Semantic 700 / Badge</h3>
+  <div class="scale-row">
+    <span style="background:#0066cc;color:#fff">info</span><span style="background:#067900;color:#fff">success</span>
+    <span style="background:#926b07;color:#fff">warning</span><span style="background:#af5d00;color:#fff">orange</span>
+    <span style="background:#e50303;color:#fff">error</span>
+  </div>
+  <div class="scale-row">
+    <span style="background:#ffc2b9">pink</span><span style="background:#c4a1f4">purple</span><span style="background:#b0e1ff">blue</span>
+    <span style="background:#b6e0d6">green1</span><span style="background:#3dc5b4">green2</span><span style="background:#006c63;color:#fff">green3</span>
+    <span style="background:#ffe5b0">cream</span>
+  </div>
+
+  <div class="warn">
+    <strong>⚠️ トークンの値をそのまま実装しない。</strong>
+    ブランド紫は <code>--brand-static: #7935d2</code>（実測値）を使う。<code>--purple-700: #7832d2</code> は 1 トーンずれる。
+    また <code>--h1-line-height: 48px</code> の宣言に対し実測は <strong>44px</strong>、<code>--swiper-theme-color: #007aff</code> は Swiper の既定値で TableCheck の色ではない。
+  </div>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section-alt">
+<div class="section" id="typography">
+  <div class="section-label">02 / Typography — トークン実測</div>
+  <h2 class="section-title">IBM Plex Sans 先頭の欧文優先。行間は px 固定</h2>
+  <p class="section-sub">和文 Web フォントは読み込まず、ヒラギノ角ゴ ProN → Yu Gothic UI → 游ゴシック体 → Meiryo UI の OS フォントに任せる。</p>
+
+  <div class="type-row"><div class="type-meta">headline<br>54px / 700 / lh 64px</div><div class="t-headline">予約をもっと自由に</div></div>
+  <div class="type-row"><div class="type-meta">h1<br>36px / 600 / lh 48px<br>（<strong>実測 44px</strong>）</div><div class="t-h1">全国の人気レストランを探す</div></div>
+  <div class="type-row"><div class="type-meta">h2<br>24px / <strong>400</strong> / lh 32px</div><div class="t-h2">人気の条件から探す</div></div>
+  <div class="type-row"><div class="type-meta">h3<br>20px / 600 / lh 24px</div><div class="t-h3">ジャンルから探す</div></div>
+  <div class="type-row"><div class="type-meta">h4<br>20px / <strong>400</strong> / lh 24px</div><div class="t-h4">エリアから探す</div></div>
+  <div class="type-row"><div class="type-meta">h5<br>16px / 600 / lh 24px</div><div class="t-h5">ダイナースクラブ フランス レストランウィーク</div></div>
+  <div class="type-row"><div class="type-meta">body-1<br>16px / 400 / lh 24px</div><div class="t-b1">フランス料理をとことん楽しむ 1 ヶ月間。今年のコーステーマは「サステナブルフレンチ」です。</div></div>
+  <div class="type-row"><div class="type-meta">body-2<br>14px / 400 / lh 20px / #666</div><div class="t-b2">環境にやさしい取り組みとフランス料理ならではの魅力が調和した特別コースをお楽しみいただけます。</div></div>
+  <div class="type-row"><div class="type-meta">label<br>14px / <strong>600</strong> / lh 20px</div><div class="t-label">ご来店人数</div></div>
+  <div class="type-row"><div class="type-meta">small<br>12px / 400 / lh 18px</div><div class="t-small">2026 年 9 月 18 日 – 2026 年 10 月 18 日</div></div>
+
+  <p class="note">
+    <code>line-height</code> を比率ではなく <strong>px で持つ</strong>（16px→24px / 14px→20px）。カードの高さを揃えるための実装なので、比率に置き換えるとグリッドが崩れる。
+    <code>letter-spacing</code> は <strong>すべて <code>normal</code></strong>（明示的に宣言）、<code>font-feature-settings: normal</code> も 3 箇所で明示して <code>palt</code> の継承を切っている。
+  </p>
+</div>
+</section>
+
+<!-- 03 PRODUCT -->
+<section class="section" id="product">
+  <div class="section-label">03 / Product — 組版サンプル</div>
+  <h2 class="section-title">人気の条件から探す</h2>
+  <p class="section-sub">カードの中にさらに 3 段の店舗リストが入る。1120px に 3 列。</p>
+  <div class="list-grid">
+    <div class="list-card">
+      <div class="list-item"><div class="list-thumb"></div><div><div class="list-name">Restaurant Naz</div><div class="list-genre">🍽 イタリア料理, 現代イタリアン</div></div></div>
+      <div class="list-item"><div class="list-thumb" style="background:linear-gradient(135deg,#e6ddd0,#a89a86)"></div><div><div class="list-name">プレゼンテ スギ （PRESENT…</div><div class="list-genre">🍽 イタリア料理, パスタ, インタ…</div></div></div>
+      <div class="list-item"><div class="list-thumb" style="background:linear-gradient(135deg,#c98b6a,#7a3f2c)"></div><div><div class="list-name">静龍苑</div><div class="list-genre">🍽 焼肉</div></div></div>
+      <a class="btn btn-primary-s list-cta" href="#">6 店舗すべてを表示</a>
+    </div>
+    <div class="list-card">
+      <div class="list-item"><div class="list-thumb" style="background:linear-gradient(135deg,#e8e4de,#b3aa9c)"></div><div><div class="list-name">銀座 ちかみつ 六丁目</div><div class="list-genre">🍽 焼肉</div></div></div>
+      <div class="list-item"><div class="list-thumb" style="background:linear-gradient(135deg,#d99a6c,#8a4a2c)"></div><div><div class="list-name">薈 YORONIKU</div><div class="list-genre">🍽 焼肉, ホルモン焼き</div></div></div>
+      <div class="list-item"><div class="list-thumb" style="background:linear-gradient(135deg,#cf7b62,#7d3324)"></div><div><div class="list-name">炭火焼ホルモンぐう築地</div><div class="list-genre">🍽 焼肉, ホルモン焼き, 居酒屋</div></div></div>
+      <a class="btn btn-primary-s list-cta" href="#">10 店舗すべてを表示</a>
+    </div>
+    <div class="list-card">
+      <div class="list-item"><div class="list-thumb" style="background:linear-gradient(135deg,#f0ead9,#bfae86)"></div><div><div class="list-name">ガストロノミー “ジョエル・…</div><div class="list-genre">🍽 フランス料理, 現代フレンチ</div></div></div>
+      <div class="list-item"><div class="list-thumb" style="background:linear-gradient(135deg,#eeeae2,#b9b0a0)"></div><div><div class="list-name">HOMMAGE</div><div class="list-genre">🍽 フランス料理</div></div></div>
+      <div class="list-item"><div class="list-thumb" style="background:linear-gradient(135deg,#6b5b46,#332a20)"></div><div><div class="list-name">Restaurant Ryuzu</div><div class="list-genre">🍽 フランス料理</div></div></div>
+      <a class="btn btn-primary-s list-cta" href="#">7 店舗すべてを表示</a>
+    </div>
+  </div>
+  <p class="note">店舗名・ジャンルは 1 行で <code>text-overflow: ellipsis</code>。日本語の途中で切ることを許容する。</p>
+</section>
+
+<!-- 04 BUTTONS -->
+<section class="section-alt">
+<div class="section" id="buttons">
+  <div class="section-label">04 / Buttons · Chips · Badges</div>
+  <h2 class="section-title">CTA は黒・radius 4px・weight 400。チップだけ pill</h2>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">すべてのレストランを見る</a>
+    <a class="btn btn-primary-s" href="#">6 店舗すべてを表示</a>
+    <a class="btn btn-secondary" href="#">他のエリアを探す</a>
+    <a class="btn btn-text" href="#">キャンセル</a>
+  </div>
+  <p class="note">① プライマリ <code>#292929 / 白文字 / 1px solid #292929 / radius 4px / 16px 400 / padding 9px 11px</code>　② セカンダリ <code>1px solid #e5e5e5 / radius 8px / padding 12px</code>　③ テキスト <code>radius 4px / padding 8px</code></p>
+
+  <h3 class="t-h5" style="margin:28px 0 10px">Chips（絞り込み・pill）</h3>
+  <div class="btn-row">
+    <a class="chip chip-on" href="#">東京</a>
+    <a class="chip chip-off" href="#">大阪</a>
+    <a class="chip chip-off" href="#">京都</a>
+    <a class="chip chip-off" href="#">名古屋</a>
+    <a class="chip chip-off" href="#">札幌</a>
+    <a class="chip chip-off" href="#">沖縄</a>
+  </div>
+  <p class="note">選択中は「面 <code>#f7efff</code> ／ 枠 <code>1px solid #8e4ae7</code> ／ 文字 <code>#292929</code>」、非選択は「面 <code>#fff</code> ／ 枠 <code>1px solid #e5e5e5</code> ／ 文字 <code>#666</code>」。radius は <code>999px</code>。</p>
+
+  <h3 class="t-h5" style="margin:28px 0 10px">Badges（属性表示・radius 4px / weight 600）</h3>
+  <div class="btn-row">
+    <span class="badge">居酒屋</span><span class="badge">飲み会</span><span class="badge">大人数向け</span>
+    <span class="badge">カフェ</span><span class="badge">銀座</span><span class="badge">落ち着いた</span>
+    <span class="badge badge-fill" style="background:var(--badge-green-1)">Fastpass</span>
+    <span class="badge badge-fill" style="background:var(--badge-cream)">TableCheck Pay</span>
+  </div>
+  <p class="note">チップ（pill / 400 / 絞り込み）とバッジ（4px / 600 / 表示専用）は別物。混同しない。</p>
+</div>
+</section>
+
+<!-- 05 CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">枠 1px + radius 8px。既定では影を持たない</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-photo"></div>
+      <div class="card-title">APERO AOYAMA Wine Bar</div>
+      <div class="card-text">ワインとフレンチの小皿を、青山のカウンターで。</div>
+      <div class="card-tags"><span class="badge">フレンチ</span><span class="badge">ワイン</span></div>
+    </div>
+    <div class="card">
+      <div class="card-photo" style="background:linear-gradient(135deg,#b98a5e,#6a4529)"></div>
+      <div class="card-title">ルグドゥノム ブション リヨネ</div>
+      <div class="card-text">リヨンの郷土料理を一皿ずつ。予約は 2 ヶ月先まで。</div>
+      <div class="card-tags"><span class="badge">フランス料理</span><span class="badge">記念日</span></div>
+    </div>
+    <div class="promo">
+      <span class="badge" style="background:#fff">2026 年 9 月 18 日 – 10 月 18 日</span>
+      <h3 class="t-h3" style="margin:10px 0 6px">ダイナースクラブ フランス レストランウィーク 2026</h3>
+      <p class="t-b2" style="color:var(--grey-900)">フランス料理をとことん楽しむ 1 ヶ月間。</p>
+      <a class="btn btn-primary-s" style="margin-top:12px" href="#">すべてのレストランを見る</a>
+    </div>
+  </div>
+
+  <h3 class="t-h5" style="margin:28px 0 10px">写真の上に重ねる半透明カード</h3>
+  <div class="on-photo">
+    <div class="float-card" style="max-width:280px">
+      <div class="t-label">居酒屋 金曜日 夜</div>
+      <div class="card-tags"><span class="badge">居酒屋</span><span class="badge">飲み会</span><span class="badge">大人数向け</span></div>
+    </div>
+  </div>
+  <p class="note">半透明カードは <code>rgba(255,255,255,.7)</code> の面 ＋ <code>1px solid var(--lighter-grey-border)</code>（<code>#0000001a</code>）／ radius 8px。</p>
+</section>
+
+<!-- 06 FORMS -->
+<section class="section-alt">
+<div class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">Default / Focus / Error</h2>
+  <p class="section-sub">外枠のコンテナが枠と角丸を持ち、<code>input</code> 自体は完全に透明。フォーカスリングは <code>box-shadow</code> のスプレッドで描く。</p>
+  <div class="form-grid">
+    <div class="field">
+      <label for="t1">お名前</label>
+      <div class="wrap"><input id="t1" type="text" placeholder="山田 太郎"></div>
+      <div class="hint">Default: <code>1px solid #e5e5e5</code> / radius 8px</div>
+    </div>
+    <div class="field is-focus">
+      <label for="t2">メールアドレス</label>
+      <div class="wrap"><input id="t2" type="text" value="reserve@example.com"></div>
+      <div class="hint">Focus: <code>box-shadow: 0 0 0 2px var(--focus)</code>（border は太らせない）</div>
+    </div>
+    <div class="field is-error">
+      <label for="t3">電話番号</label>
+      <div class="wrap"><input id="t3" type="text" value="03-"></div>
+      <div class="msg">電話番号を正しく入力してください</div>
+    </div>
+  </div>
+  <div class="form-grid" style="margin-top:20px">
+    <div class="field">
+      <label for="t4">ご来店人数</label>
+      <div class="wrap"><select id="t4"><option>2 名</option><option>4 名</option><option>6 名</option></select></div>
+    </div>
+    <div class="field">
+      <label for="t5">ご来店時刻</label>
+      <div class="wrap"><select id="t5"><option>17:00</option><option>17:30</option><option>18:00</option></select></div>
+    </div>
+  </div>
+  <p class="note"><code>input</code> の <code>font-size</code> は <strong>16px を死守する</strong>（iOS の自動ズーム回避）。</p>
+</div>
+</section>
+
+<!-- 07 ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">2 層構造 ＋ 負のスプレッド</h2>
+  <p class="section-sub">近い小さな影と遠い大きな影を重ね、どちらも負のスプレッドで要素の外にはみ出させない。</p>
+  <div class="elev-grid">
+    <div class="elev e1"><b>--elevation-small-raised</b><code>0 1px 2px -1px rgb(0 0 0 / .2),<br>0 2px 6px -2px rgb(0 0 0 / .1)</code></div>
+    <div class="elev e2"><b>--elevation-medium-raised</b><code>0 1px 4px -1px rgb(0 0 0 / .2),<br>0 2px 6px -2px rgb(0 0 0 / .1)</code></div>
+    <div class="elev e3"><b>--elevation-large-raised</b><code>0 2px 8px -1px rgb(0 0 0 / .2),<br>0 2px 12px -4px rgb(0 0 0 / .1)</code></div>
+    <div class="elev e4"><b>--elevation-light-small</b><code>0 0 3px 0 rgba(0, 0, 0, .1)</code></div>
+  </div>
+  <p class="note">実測で最も多いのは <code>--elevation-small-raised</code>（14 箇所）。カードは既定で影を持たず、浮くもの（ドロップダウン・ポップオーバー）にだけ当てる。</p>
+</section>
+
+<!-- 08 LAYOUT -->
+<section class="section-alt">
+<div class="section" id="layout">
+  <div class="section-label">08 / Layout</div>
+  <h2 class="section-title">1120px・3 列。radius は 4 / 8 / 999px の 3 種で足りる</h2>
+  <div class="layout-demo">
+    <div class="layout-bar">コンテンツ幅 1120px（内側のグリッド 1088px）</div>
+    <div class="layout-cols"><div>3 列</div><div>3 列</div><div>3 列</div></div>
+  </div>
+
+  <h3 class="t-h5" style="margin:28px 0 8px">Spacing Scale（--spacing-l1〜l8）</h3>
+  <div class="spacing-row">
+    <div><div style="width:4px;height:4px;background:var(--brand-static)"></div><span>4</span></div>
+    <div><div style="width:8px;height:8px;background:var(--brand-static)"></div><span>8</span></div>
+    <div><div style="width:12px;height:12px;background:var(--brand-static)"></div><span>12</span></div>
+    <div><div style="width:16px;height:16px;background:var(--brand-static)"></div><span>16</span></div>
+    <div><div style="width:24px;height:24px;background:var(--brand-static)"></div><span>24</span></div>
+    <div><div style="width:32px;height:32px;background:var(--brand-static)"></div><span>32</span></div>
+    <div><div style="width:40px;height:40px;background:var(--brand-static)"></div><span>40</span></div>
+    <div><div style="width:48px;height:48px;background:var(--brand-static)"></div><span>48</span></div>
+  </div>
+
+  <h3 class="t-h5" style="margin:28px 0 8px">Radius Scale</h3>
+  <table class="scale-table">
+    <tr><th>トークン</th><th>値</th><th>CSS 参照</th><th>用途</th></tr>
+    <tr><td>--border-radius-micro</td><td>2px</td><td>—</td><td>極小の装飾</td></tr>
+    <tr><td>--border-radius-small</td><td><strong>4px</strong></td><td><strong>140 回</strong></td><td><strong>ボタン・バッジ</strong></td></tr>
+    <tr><td>--border-radius-medium</td><td>8px</td><td>8 回</td><td>（large と同値）</td></tr>
+    <tr><td>--border-radius-large</td><td><strong>8px</strong></td><td><strong>123 回</strong></td><td><strong>カード・入力欄</strong></td></tr>
+    <tr><td>--border-radius-x-large</td><td>16px</td><td>6 回</td><td>ヒーロー画像・大きなパネル</td></tr>
+    <tr><td>--border-radius-full</td><td><strong>999px</strong></td><td>17 回</td><td><strong>絞り込みチップ</strong></td></tr>
+  </table>
+
+  <h3 class="t-h5" style="margin:28px 0 8px">Z-index Scale</h3>
+  <p class="t-b2"><code>--z-index-1: 10</code> / <code>--z-index-2: 20</code> / <code>--z-index-3: 30</code> / <code>--z-index-4: 40</code> — 10 刻みの 4 段だけ。</p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <h3>TableCheck</h3>
+    <p>この preview は awesome-design-md-jp のデザインシステム再現サンプルです。TableCheck 公式サイトではありません。</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: GOOD NATURE STATION</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Noto+Sans+JP:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測 ＋ 読み込まれる CSS 335KB の grep（2026-08-28）=== */
+    --green:      #009b4c;  /* 彩度を持つ唯一の色。CSS 13 回 */
+    --green-dark: #009249;  /* ホバー・プレスの暗い対。CSS 12 回 */
+    --ink:        #221715;  /* 本文とすべての文字。赤みを持つ黒 */
+    --ink-90:     rgba(34, 23, 21, 0.9);
+
+    --utility:    #f2f2f2;  /* 最上部のユーティリティバー */
+    --table-head: #efefef;  /* フロアガイドの行見出し */
+    --chip:       rgba(226, 226, 226, 0.5);  /* カテゴリチップ（半透明） */
+    --border:     #969696;  /* セレクトボックス・アウトラインの枠 */
+    --rule:       #c3c3c3;  /* セクションの区切り線 */
+    --muted:      #9a9a9a;  /* ナビの非選択・補助テキスト */
+    --white:      #ffffff;
+
+    /* === Fonts: 和文優先。游ゴシックの 5 表記を全部並べて OS 差を吸収する。
+           Noto Sans JP は非 macOS/Windows 環境の保険として末尾に足している === */
+    --font-jp:   游ゴシック体, YuGothic, "游ゴシック Medium", "Yu Gothic Medium", 游ゴシック, "Yu Gothic", "Noto Sans JP", sans-serif;
+    --font-en:   Lato, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Radius: 全コンポーネント 0。丸めるのは丸アイコンの 50% だけ === */
+    --r: 0;
+
+    /* === Shadow: 浮くパネルにだけ 1 種 === */
+    --shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font-jp);
+    font-size: 16px;
+    font-weight: 500;              /* ← 游ゴシック Medium を確実に当てる。400 に落とさない */
+    line-height: 1.5;              /* 24px / 16px */
+    letter-spacing: normal;        /* 本文には字間を入れない */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* UTILITY BAR + HEADER */
+  .utility { display: flex; align-items: center; gap: 26px; height: 56px; padding: 0 24px; background: var(--utility); font-size: 16px; font-weight: 700; }
+  .utility a { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); text-decoration: none; font-weight: 500; }
+  .utility a::before { content: ""; width: 12px; height: 12px; border: 2px solid var(--green); border-radius: 50%; }
+  .utility .close { margin-left: auto; font-size: 20px; color: var(--ink); }
+  .burger { position: absolute; top: 56px; right: 0; z-index: 2; width: 76px; height: 76px; background: var(--ink); display: flex; align-items: center; justify-content: center; }
+  .burger span { display: block; width: 26px; height: 2px; background: var(--white); box-shadow: 0 7px 0 var(--white), 0 -7px 0 var(--white); }
+
+  /* HERO — 2×2 の写真タイル */
+  .hero { position: relative; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 200px 200px; }
+  .hero > div:nth-child(1) { background: linear-gradient(140deg, #5b7a4a, #2f4a2a); }
+  .hero > div:nth-child(2) { background: linear-gradient(140deg, #e7e2d8, #cfc6b6); }
+  .hero > div:nth-child(3) { background: linear-gradient(140deg, #a89b86, #6c6152); }
+  .hero > div:nth-child(4) { background: linear-gradient(140deg, #e2622a, #f0a24a); }
+  .hero-copy { position: absolute; top: 28px; left: 32px; color: var(--white); font-size: 22px; font-weight: 500; line-height: 1.5; letter-spacing: 0.1em; text-shadow: 0 1px 8px rgba(0,0,0,.35); }
+  .hero-logo { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; pointer-events: none; }
+  .hero-logo b { font-family: var(--font-en); font-size: 56px; font-weight: 700; letter-spacing: 0.16em; color: var(--white); line-height: 1.1; text-shadow: 0 2px 14px rgba(0,0,0,.3); }
+  .hero-logo small { font-family: var(--font-en); font-size: 26px; font-weight: 700; letter-spacing: 0.16em; color: var(--white); text-shadow: 0 2px 14px rgba(0,0,0,.3); }
+
+  /* SECTIONS — 外枠 1440px / 内枠 1288px（左右 76px） */
+  .section { max-width: 1440px; margin: 0 auto; padding: 64px 76px; }
+  .section-alt { background: #fafafa; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 8px; }
+  .section-title { font-family: var(--font-en); font-size: 48px; font-weight: 700; line-height: 1.33; letter-spacing: 0.16em; color: var(--ink); margin-bottom: 8px; }
+  .section-sub { font-size: 16px; font-weight: 500; line-height: 1.5; color: var(--ink); margin-bottom: 32px; }
+  .note { font-size: 13px; font-weight: 500; line-height: 1.69; color: #666; margin-top: 16px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: #f0f0f0; padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+  .swatch { background: var(--white); border: 1px solid #e2e2e2; border-radius: 0; overflow: hidden; }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 10px 12px 14px; }
+  .swatch-name { font-size: 13px; font-weight: 700; line-height: 1.6; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 12px; color: #777; }
+  .swatch-use { font-size: 11px; font-weight: 500; line-height: 1.7; color: #888; margin-top: 4px; }
+  .warn { border-left: 4px solid var(--green); background: #f2f8f4; padding: 14px 18px; margin-top: 22px; font-size: 13px; font-weight: 500; line-height: 1.85; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 220px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid #e2e2e2; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; line-height: 1.7; color: #888; }
+  .t-en-h   { font-family: var(--font-en); font-size: 48px; font-weight: 700; line-height: 1.33; letter-spacing: 0.16em; }
+  .t-jp-h   { font-size: 42px; font-weight: 700; line-height: 1.5; letter-spacing: 0.12em; }
+  .t-date   { font-family: var(--font-en); font-size: 26px; font-weight: 700; line-height: 1.81; letter-spacing: 0.05em; }
+  .t-lead   { font-size: 22px; font-weight: 500; line-height: 1.5; letter-spacing: 0.1em; }
+  .t-card   { font-size: 18px; font-weight: 700; line-height: 1.67; }
+  .t-body   { font-size: 16px; font-weight: 500; line-height: 1.5; }
+  .t-table  { font-size: 16px; font-weight: 500; line-height: 1.81; }
+  .t-nav    { font-family: var(--font-en); font-size: 13px; font-weight: 700; line-height: 2.38; letter-spacing: 0.16em; }
+  .t-small  { font-size: 13px; font-weight: 500; line-height: 1.69; }
+  .t-meta   { font-family: var(--font-en); font-size: 12px; font-weight: 400; line-height: 1.08; letter-spacing: 0.06em; }
+  .t-cap    { font-family: var(--font-en); font-size: 10px; font-weight: 400; line-height: 1.0; letter-spacing: 0.05em; }
+
+  /* ARTICLE / CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .card { background: var(--white); border: none; border-radius: 0; box-shadow: none; }
+  .card-photo { aspect-ratio: 4 / 3; background: linear-gradient(140deg, #6f8f5a, #35502e); }
+  .card-date { font-family: var(--font-en); font-size: 12px; font-weight: 400; letter-spacing: 0.06em; color: var(--ink); margin-top: 12px; }
+  .card-title { font-size: 18px; font-weight: 700; line-height: 1.67; color: var(--ink); margin-top: 4px; }
+  .chip { display: inline-block; background: var(--chip); color: var(--ink); border-radius: 0; font-size: 13px; font-weight: 700; line-height: 1.7; padding: 2px 12px; margin-top: 10px; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; cursor: pointer; font-family: var(--font-jp); border-radius: 0; }
+  .btn-primary   { background: var(--green); color: var(--white); border: 2px solid var(--green); font-size: 14px; font-weight: 700; letter-spacing: 0.04em; line-height: 1.43; padding: 16px 16px 15px; }
+  .btn-primary-s { background: var(--green); color: var(--white); border: 2px solid var(--green); font-size: 14px; font-weight: 700; letter-spacing: 0.04em; line-height: 1.43; padding: 11px 16px; }
+  .btn-primary-l { background: var(--green); color: var(--white); border: 2px solid var(--green); font-size: 16px; font-weight: 700; letter-spacing: 0.04em; line-height: 1.5; padding: 22px 10px; }
+  .btn-primary:hover, .btn-primary-s:hover, .btn-primary-l:hover { background: var(--green-dark); border-color: var(--green-dark); }
+  .btn-outline   { background: transparent; color: var(--white); border: 2px solid var(--green); font-size: 13px; font-weight: 700; line-height: 1.7; padding: 12px 20px; }
+  .btn-dark      { background: var(--ink); color: var(--white); border: none; font-size: 14px; font-weight: 500; line-height: 1.5; padding: 23px 36px 20px; }
+  .on-dark { background: linear-gradient(140deg, #4a6b3d, #24361f); padding: 28px; margin-top: 22px; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; }
+  .field label { display: block; font-size: 14px; font-weight: 700; line-height: 1.6; margin-bottom: 8px; }
+  .field input, .field select, .field textarea { width: 100%; background: transparent; color: var(--ink); border: 1px solid var(--border); border-radius: 0; font-family: var(--font-jp); font-size: 16px; font-weight: 500; line-height: 1.5; padding: 14px 12px; }
+  .field.is-focus input { outline: 2px solid var(--green); outline-offset: 1px; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid var(--green); outline-offset: 1px; }
+  .field.is-error input { border-color: #bf2318; }
+  .field .msg { font-size: 13px; font-weight: 500; line-height: 1.69; color: #bf2318; margin-top: 6px; }
+  .field .hint { font-size: 13px; font-weight: 500; line-height: 1.69; color: #888; margin-top: 6px; }
+
+  /* TABLE */
+  .floor { width: 100%; border-collapse: collapse; font-size: 16px; font-weight: 500; line-height: 1.81; }
+  .floor th, .floor td { border-bottom: 1px solid #e2e2e2; padding: 12px 14px; text-align: left; }
+  .floor th { background: var(--table-head); font-weight: 700; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
+  .elev { background: var(--white); border: 1px solid #e2e2e2; padding: 20px; min-height: 112px; border-radius: 0; }
+  .elev-1 { box-shadow: var(--shadow); }
+  .elev-0 { box-shadow: none; }
+  .elev b { display: block; font-size: 14px; font-weight: 700; line-height: 1.7; }
+  .elev code { display: block; margin-top: 6px; font-size: 11px; background: none; padding: 0; color: #777; }
+
+  /* LAYOUT */
+  .layout-demo { border: 1px dashed var(--rule); padding: 12px; }
+  .layout-bar { background: var(--table-head); text-align: center; font-family: var(--font-mono); font-size: 12px; line-height: 3.4; color: #777; }
+  .layout-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 12px; }
+  .layout-cols div { background: linear-gradient(140deg, #6f8f5a, #35502e); color: var(--white); text-align: center; font-family: var(--font-mono); font-size: 12px; line-height: 4.5; }
+  .scale-table { width: 100%; border-collapse: collapse; font-size: 15px; font-weight: 500; line-height: 1.8; }
+  .scale-table th, .scale-table td { border-bottom: 1px solid #e2e2e2; padding: 10px 8px; text-align: left; }
+  .scale-table th { font-size: 13px; font-weight: 700; }
+  .scale-table td:first-child { font-family: var(--font-mono); font-size: 12px; }
+
+  /* FOOTER */
+  .footer { display: grid; grid-template-columns: 40% 1fr; }
+  .footer-photo { min-height: 280px; background: linear-gradient(140deg, #9a9a92, #5c5c56); }
+  .footer-body { padding: 48px 76px; }
+  .footer-body a { display: block; font-size: 16px; font-weight: 500; line-height: 2.5; color: var(--ink); text-decoration: none; }
+  .footer-copy { font-size: 13px; font-weight: 500; line-height: 1.69; color: var(--muted); margin-top: 26px; }
+
+  @media (max-width: 1100px) { .card-grid, .layout-cols { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 768px) {
+    .section { padding: 44px 24px; }
+    .section-title { font-size: 28px; }
+    .type-row { grid-template-columns: 1fr; gap: 6px; }
+    .card-grid, .layout-cols, .footer { grid-template-columns: 1fr; }
+    .t-en-h { font-size: 28px; } .t-jp-h { font-size: 24px; letter-spacing: 0.08em; }
+    .footer-body { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div style="position:relative">
+  <div class="utility">
+    <span>こちらをお探しですか？</span>
+    <a href="#">オンラインショップ</a>
+    <a href="#">GOOD NATURE HOTEL</a>
+    <span class="close">✕</span>
+  </div>
+  <div class="burger"><span></span></div>
+  <section class="hero">
+    <div></div><div></div><div></div><div></div>
+    <div class="hero-copy">信じられるものだけを、美味しく、楽しく。<br>人も地球も元気にする<br>“GOOD NATURE”なモノ・コトが集まる場所</div>
+    <div class="hero-logo"><b>GOOD NATURE</b><small>STATION</small></div>
+  </section>
+</div>
+
+<!-- 01 COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">COLORS</h2>
+  <p class="section-sub">彩度を持つのはブランドグリーン 1 色。黒は <code>#000000</code> ではなく赤みのある <code>#221715</code>。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#009b4c"></div><div class="swatch-body"><div class="swatch-name">GOOD NATURE Green</div><div class="swatch-hex">#009b4c</div><div class="swatch-use">主 CTA・アウトラインの枠・丸アイコン。CSS 13 回</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#009249"></div><div class="swatch-body"><div class="swatch-name">Green Dark</div><div class="swatch-hex">#009249</div><div class="swatch-use">ホバー・プレスの暗い対。CSS 12 回</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#221715"></div><div class="swatch-body"><div class="swatch-name">Ink</div><div class="swatch-hex">#221715</div><div class="swatch-use">本文・見出し・パンくず・ハンバーガー。赤みを持つ黒</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f2f2f2"></div><div class="swatch-body"><div class="swatch-name">Utility Bar</div><div class="swatch-hex">#f2f2f2</div><div class="swatch-use">最上部の「こちらをお探しですか？」帯</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#efefef"></div><div class="swatch-body"><div class="swatch-name">Table Head</div><div class="swatch-hex">#efefef</div><div class="swatch-use">フロアガイドの行見出し</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:rgba(226,226,226,.5)"></div><div class="swatch-body"><div class="swatch-name">Chip</div><div class="swatch-hex">rgba(226,226,226,.5)</div><div class="swatch-use">カテゴリチップ。半透明なので写真の上でも使える</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#969696"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#969696</div><div class="swatch-use">セレクトボックス・アウトラインの枠</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#9a9a9a"></div><div class="swatch-body"><div class="swatch-name">Muted</div><div class="swatch-hex">#9a9a9a</div><div class="swatch-use">ナビの非選択・補助テキスト</div></div></div>
+  </div>
+  <div class="warn">
+    <strong>⚠️ CSS 上で緑として最多の <code>#40b87c</code>（23 回）は 1 箇所も描画されていない。</strong>
+    WordPress プラグインの既定値なので使わない。同じく <code>#dee5ec</code> は WOVN 言語切替ウィジェット、<code>#d22d3b</code> はミシュランのロゴ、
+    <code>#27313b</code> / <code>#bf2318</code> / <code>#0970af</code> などはブロックエディタの既定パレット（未使用）。
+  </div>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section-alt">
+<div class="section" id="typography">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <h2 class="section-title">TYPOGRAPHY</h2>
+  <p class="section-sub">欧文は Lato に 0.16em、和文は游ゴシック Medium に 0.04〜0.12em。本文は <code>normal</code>。</p>
+
+  <div class="type-row"><div class="type-meta">Section H2（英字）<br>Lato / 48px / 700<br>lh 1.33 / ls <strong>0.16em</strong></div><div class="t-en-h">TOPICS</div></div>
+  <div class="type-row"><div class="type-meta">Page H2（和文）<br>42px / 700<br>lh 1.5 / ls <strong>0.12em</strong></div><div class="t-jp-h">営業時間・フロアガイド</div></div>
+  <div class="type-row"><div class="type-meta">Date（大きく見せる）<br>Lato / 26px / 700<br>lh 1.81 / ls 0.05em</div><div class="t-date">2026.06.18</div></div>
+  <div class="type-row"><div class="type-meta">Hero Lead<br>22px / 500<br>lh 1.5 / ls <strong>0.1em</strong></div><div class="t-lead">人も地球も元気にする場所</div></div>
+  <div class="type-row"><div class="type-meta">Card Title<br>18px / <strong>700</strong><br>lh 1.67 / ls normal</div><div class="t-card">街中のビルに宿る里山を体感「中庭グリーンウォールウォッチング」</div></div>
+  <div class="type-row"><div class="type-meta">Body<br>16px / <strong>500</strong><br>lh 1.5 / ls normal</div><div class="t-body">オーガニックや自然由来にこだわった食材、コスメ、そして宿泊。京都・河原町の一棟に、心地よい暮らしのための選択肢を集めました。</div></div>
+  <div class="type-row"><div class="type-meta">Table Cell<br>16px / 500 / lh 1.81</div><div class="t-table">1F ／ GOOD NATURE MARKET ／ 10:00–20:00</div></div>
+  <div class="type-row"><div class="type-meta">Nav（英字）<br>Lato / 13px / 700<br>lh 2.38 / ls <strong>0.16em</strong></div><div class="t-nav">MARKET　RESTAURANT　HOTEL</div></div>
+  <div class="type-row"><div class="type-meta">Small<br>13px / 500 / lh 1.69</div><div class="t-small">営業時間・定休日は店舗により異なります</div></div>
+  <div class="type-row"><div class="type-meta">Meta（英字）<br>Lato / 12px / 400 / ls 0.06em</div><div class="t-meta">2026.08.17　EXPERIENCE</div></div>
+  <div class="type-row"><div class="type-meta">Caption（英字）<br>Lato / 10px / 400 / ls 0.05em</div><div class="t-cap">© BIOSTYLE Co.,Ltd.</div></div>
+
+  <p class="note">
+    本文の <code>font-weight</code> は <strong>500</strong>。400 に落とすと Windows で游ゴシック Regular が当たり極端に細くなる。
+    <code>font-feature-settings</code> の宣言は <strong>0 個</strong>（＝ <code>palt</code> を使わない）で、字間はすべて <code>letter-spacing</code> で作る。
+  </p>
+</div>
+</section>
+
+<!-- 03 CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">03 / Cards — 4 列グリッド</div>
+  <h2 class="section-title">TOPICS</h2>
+  <p class="section-sub">「画像 → 日付（Lato・ピリオド区切り）→ タイトル → チップ」。枠も影も付けない。</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-photo"></div><div class="card-date">2026.06.18</div><div class="card-title">街中のビルに宿る里山を体感「中庭グリーンウォールウォッチング」</div><span class="chip">experience</span></div>
+    <div class="card"><div class="card-photo" style="background:linear-gradient(140deg,#c9b98f,#7d6c46)"></div><div class="card-date">2026.06.18</div><div class="card-title">植物園のヤシの葉で編む「小さなかご作り」</div><span class="chip">experience</span></div>
+    <div class="card"><div class="card-photo" style="background:linear-gradient(140deg,#e2622a,#a8391a)"></div><div class="card-date">2026.04.02</div><div class="card-title">ベジフルバッグ ＜8/15＞</div><span class="chip">event</span></div>
+    <div class="card"><div class="card-photo" style="background:linear-gradient(140deg,#8a9a76,#43523a)"></div><div class="card-date">2026.07.03</div><div class="card-title">7/18（土）＜いととめのぼたもち＞販売方法について</div><span class="chip">shop</span></div>
+  </div>
+  <p class="note">チップは <code>rgba(226,226,226,.5)</code> の半透明グレー、<code>border-radius: 0</code>、13px / 700 / <code>padding: 2px 12px</code>。カテゴリは <code>#MARKET</code> のようにハッシュタグ表記でも使う。</p>
+</section>
+
+<!-- 04 BUTTONS -->
+<section class="section-alt">
+<div class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">BUTTONS</h2>
+  <p class="section-sub">全部 <code>border-radius: 0</code>。面と同色の <code>2px solid</code> 枠を持たせ、ホバーで面を透明にすればアウトラインへ変わる。</p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">ポイントアプリのご案内</a>
+    <a class="btn btn-primary-s" href="#">もっと見る</a>
+    <a class="btn btn-primary-l" href="#">GOOD NATURE ブランドサイト</a>
+  </div>
+  <p class="note">① プライマリ <code>#009b4c / 白文字 / 2px solid #009b4c / radius 0 / 14px 700 / ls 0.04em / padding 16px 16px 15px</code>（小: <code>11px 16px</code>／大: 16px・<code>22px 10px</code>）</p>
+
+  <div class="on-dark">
+    <div class="btn-row">
+      <a class="btn btn-outline" href="#">MARKET</a>
+      <a class="btn btn-outline" href="#">RESTAURANT &amp; CAFE</a>
+      <a class="btn btn-outline" href="#">HOTEL</a>
+    </div>
+  </div>
+  <p class="note">② アウトライン（写真・暗い面の上）<code>transparent / 白文字 / 2px solid #009b4c / radius 0 / 13px 700</code></p>
+
+  <div class="btn-row" style="margin-top:22px">
+    <span class="btn btn-dark">営業時間・定休日は店舗により異なります　営業時間 →</span>
+  </div>
+  <p class="note">③ ダークバー <code>#221715 / 白文字 / radius 0 / 14px 500 / padding 23px 36px 20px</code>。写真の上に置くお知らせ枠。</p>
+</div>
+</section>
+
+<!-- 05 FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div>
+  <h2 class="section-title">FORMS</h2>
+  <p class="section-sub">Default / Focus / Error。角丸は付けない。</p>
+  <div class="form-grid">
+    <div class="field">
+      <label for="g1">お名前</label>
+      <input id="g1" type="text" placeholder="京阪 花子">
+      <div class="hint">Default: <code>1px solid #969696</code> / radius 0</div>
+    </div>
+    <div class="field is-focus">
+      <label for="g2">メールアドレス</label>
+      <input id="g2" type="text" value="hello@example.com">
+      <div class="hint">Focus: <code>outline: 2px solid #009b4c</code></div>
+    </div>
+    <div class="field is-error">
+      <label for="g3">電話番号</label>
+      <input id="g3" type="text" value="075-">
+      <div class="msg">電話番号を正しく入力してください</div>
+    </div>
+  </div>
+  <div class="field" style="margin-top:24px;max-width:520px">
+    <label for="g4">フロアを選択</label>
+    <select id="g4"><option>1F ／ MARKET</option><option>2F ／ RESTAURANT</option><option>3F ／ COSME</option></select>
+  </div>
+</section>
+
+<!-- 06 TABLE -->
+<section class="section-alt">
+<div class="section" id="table">
+  <div class="section-label">06 / Table — フロアガイド</div>
+  <h2 class="section-title">FLOOR GUIDE</h2>
+  <table class="floor">
+    <tr><th>フロア</th><th>店舗</th><th>営業時間</th></tr>
+    <tr><td>1F</td><td>GOOD NATURE MARKET</td><td>10:00 – 20:00</td></tr>
+    <tr><td>2F</td><td>RESTAURANT &amp; CAFE</td><td>11:00 – 22:00</td></tr>
+    <tr><td>3F</td><td>COSME / NEMOHAMO・RAU</td><td>11:00 – 20:00</td></tr>
+    <tr><td>4–9F</td><td>GOOD NATURE HOTEL KYOTO</td><td>チェックイン 15:00</td></tr>
+  </table>
+  <p class="note">セルは 16px / 500 / <code>line-height: 29px</code>（1.81）。行見出しの面は <code>#efefef</code>。</p>
+</div>
+</section>
+
+<!-- 07 ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">ELEVATION</h2>
+  <p class="section-sub">影はほとんど使わない。階層はグリッドと余白で作る。</p>
+  <div class="elev-grid">
+    <div class="elev elev-0"><b>none（既定）</b><code>カード・ボタン・チップはすべて影なし</code></div>
+    <div class="elev elev-1"><b>浮くパネル</b><code>0 2px 4px 0 rgba(0,0,0,.2)</code>（CSS 8 回）</div>
+  </div>
+  <p class="note">ページ全体でランタイムに描画されている影は 2 種類だけ。カードは余白とグリッドだけで分離する。</p>
+</section>
+
+<!-- 08 LAYOUT -->
+<section class="section-alt">
+<div class="section" id="layout">
+  <div class="section-label">08 / Layout</div>
+  <h2 class="section-title">LAYOUT</h2>
+  <p class="section-sub">外枠 1440px、内枠 1288px（左右 76px パディング）、カードは 4 列。</p>
+  <div class="layout-demo">
+    <div class="layout-bar">外枠 1440px ／ 内枠 1288px（左右 76px）</div>
+    <div class="layout-cols"><div>288px</div><div>288px</div><div>288px</div><div>288px</div></div>
+  </div>
+  <table class="scale-table" style="margin-top:28px">
+    <tr><th>用途</th><th>値</th><th>備考</th></tr>
+    <tr><td>外枠</td><td>1440px</td><td><code>max-width</code>。実測 18 要素</td></tr>
+    <tr><td>内枠</td><td>1288px</td><td>左右 76px パディング</td></tr>
+    <tr><td>2 カラム分割</td><td>720px</td><td>ヒーローの 2×2 タイル</td></tr>
+    <tr><td>ハンバーガー</td><td>76 × 76px</td><td><code>#221715</code> の正方形・角丸なし</td></tr>
+    <tr><td>ユーティリティバー</td><td>高さ 56px</td><td><code>#f2f2f2</code></td></tr>
+  </table>
+  <h3 style="font-size:18px;font-weight:700;line-height:1.67;margin:34px 0 10px">Radius Scale</h3>
+  <table class="scale-table">
+    <tr><th>値</th><th>用途</th></tr>
+    <tr><td>0</td><td><strong>ボタン・チップ・カード・入力欄・バナー — 全部</strong></td></tr>
+    <tr><td>50%</td><td>丸アイコン（ユーティリティバーのグリーンの丸）のみ</td></tr>
+  </table>
+  <p class="note">1 箇所でも角丸を入れると、施設の直角の印象が崩れる。</p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-photo"></div>
+  <div class="footer-body">
+    <a href="#">お問い合わせ</a>
+    <a href="#">企業情報</a>
+    <a href="#">サイトポリシー</a>
+    <a href="#">GOOD NATURE ブランドサイト</a>
+    <p class="footer-copy">この preview は awesome-design-md-jp のデザインシステム再現サンプルです。GOOD NATURE STATION 公式サイトではありません。</p>
+  </div>
+</footer>
+
+</body>
+</html>
