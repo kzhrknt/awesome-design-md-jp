@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (471 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (474 sites)</a>
 </p>
 
 <table>
@@ -714,6 +714,11 @@
 <td align="center"><strong>UPSIDER</strong><br><img src="design-md/upsider/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>シャトレーゼ</strong><br><img src="design-md/chateraise/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>hacomono</strong><br><img src="design-md/hacomono/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>SUZURI</strong><br><img src="design-md/suzuri/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>食べチョク</strong><br><img src="design-md/tabechoku/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1245,11 +1250,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [ミツカン (Mizkan)](https://www.mizkan.co.jp/) | Food / Corporate | [DESIGN.md](design-md/mizkan/DESIGN.md) | [preview.html](design-md/mizkan/preview.html) |
 | [UPSIDER](https://up-sider.com/lp/) | Fintech / SaaS | [DESIGN.md](design-md/upsider/DESIGN.md) | [preview.html](design-md/upsider/preview.html) |
 | [シャトレーゼ (CHATERAISE)](https://www.chateraise.co.jp/) | Confectionery / E-Commerce | [DESIGN.md](design-md/chateraise/DESIGN.md) | [preview.html](design-md/chateraise/preview.html) |
+| [hacomono](https://www.hacomono.jp/) | SaaS / Wellness Management | [DESIGN.md](design-md/hacomono/DESIGN.md) | [preview.html](design-md/hacomono/preview.html) |
+| [SUZURI (スズリ)](https://suzuri.jp/) | E-Commerce / Marketplace | [DESIGN.md](design-md/suzuri/DESIGN.md) | [preview.html](design-md/suzuri/preview.html) |
+| [食べチョク (Tabechoku)](https://www.tabechoku.com/) | E-Commerce / Food | [DESIGN.md](design-md/tabechoku/DESIGN.md) | [preview.html](design-md/tabechoku/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (471 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (474 sites)</a>
 </p>
 
 <table>
@@ -1928,6 +1936,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>ミツカン</strong><br><img src="design-md/mizkan/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>UPSIDER</strong><br><img src="design-md/upsider/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>シャトレーゼ</strong><br><img src="design-md/chateraise/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>hacomono</strong><br><img src="design-md/hacomono/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>SUZURI</strong><br><img src="design-md/suzuri/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>食べチョク</strong><br><img src="design-md/tabechoku/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

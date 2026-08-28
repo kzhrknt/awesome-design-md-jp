@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 食べチョク（Tabechoku）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測 ＋ user-*.css（731KB）の grep（2026-08-28）===
+       トーナルスケールは Material 3 と同じ「0 が黒・100 が白」。数字が大きいほど明るい。 */
+    --gold-30:  #564101;
+    --gold-40:  #715c1b;
+    --gold-50:  #8b7533;
+    --gold-60:  #9f8745;  /* 文字色。明朝の見出し・チップの文字。CSS 出現 138 回 */
+    --gold-70:  #cab270;  /* 面色。ボタン・バッジ・タブ。CSS 出現 154 回 */
+    --gold-80:  #decda2;
+    --gold-90:  #f0e8d5;  /* 淡い面。16 回 */
+    --gold-95:  #f5f1eb;  /* 生成りの面。80 回 */
+    --gold-99:  #fcfaf8;
+    --cream:    #f5f3e9;  /* トップ専用の生成り（top.css）。実測 34 回 */
+
+    --orange-50: #f45800;  /* 「お知らせ」バッジ。告知にだけ使う */
+    --orange-60: #ff711f;
+    --red-40:    #c30d23;  /* エラーの文字。19 回 */
+    --red-50:    #db3347;  /* 小バッジの面。16 回 */
+    --yellow:    #ffdd57;  /* Bulma 既定の注意ラベル。20 回 */
+
+    --gray-20:  #212121;   /* 本文の既定色。125 回 */
+    --gray-30:  #333333;
+    --gray-60:  #858585;   /* 非選択ナビ・補助。80 回 */
+    --gray-70:  #b8b8b8;   /* プレースホルダ。49 回 */
+    --gray-80:  #d9d9d9;
+    --gray-90:  #ededed;   /* セカンダリボタンの面 */
+    --gray-95:  #f2f2f2;   /* 汎用の面・入力欄。181 回 */
+    --gray-99:  #f9f9f9;   /* 最も淡い面。49 回 */
+    --line:     #e9e9e9;   /* 罫・チップの面。実測 109 回 */
+    --brown:    #403a39;   /* ヘッダーのアイコンバッジ */
+    --white:    #ffffff;
+
+    /* === Fonts 実測 ===
+       ゴシックはヒラギノ角ゴ **Pro**（ProN ではない）。Web フォントは読み込まない。
+       明朝は Noto Serif JP を OS に任せる（ここでは Google Fonts から読み込んで再現）。 */
+    --font: "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", Meiryo, メイリオ, Osaka, "MS PGothic", arial, helvetica, "Lucida Grande", "Noto Sans JP", sans-serif;
+    --font-serif: "Noto Serif JP", serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--gray-20);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;                 /* 21px / 14px */
+    letter-spacing: 0.5px;            /* px 指定。実測値そのまま */
+    font-feature-settings: normal;    /* palt を使わない */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { display: flex; align-items: center; gap: 20px; padding: 12px 24px; background: var(--white); border-bottom: 1px solid var(--line); }
+  .header-logo { font-family: var(--font-serif); font-size: 22px; font-weight: 700; letter-spacing: 0.04em; color: var(--gold-60); text-decoration: none; }
+  .header-logo small { display: block; font-family: var(--font); font-size: 9px; font-weight: 400; letter-spacing: 0.15em; color: var(--gray-60); }
+  .header-search { flex: 1; max-width: 460px; }
+  .header-right { margin-left: auto; display: flex; gap: 8px; }
+
+  .headernav { display: flex; gap: 28px; padding: 0 24px; border-bottom: 1px solid var(--line); }
+  .headernav a { font-size: 14px; font-weight: 700; line-height: 1.4; letter-spacing: 0.1px; color: var(--gray-60); text-decoration: none; padding: 12px 0; }
+  .headernav a.is-active { color: var(--gold-60); box-shadow: inset 0 -2px var(--gold-60); }
+
+  /* RIBBON */
+  .ribbon { display: inline-block; background: var(--gold-60); color: var(--gray-20); border-radius: 9px 0 0; padding: 8px 8px 8px 12px; font-size: 14px; font-weight: 400; letter-spacing: 0.5px; }
+
+  /* NOTICE */
+  .notice { display: flex; align-items: center; gap: 10px; background: var(--gold-95); padding: 12px 24px; font-size: 14px; letter-spacing: 0.5px; }
+
+  /* HERO */
+  .hero { padding: 48px 24px 56px; }
+  .hero-inner { max-width: 1240px; margin: 0 auto; }
+  .hero h1 { font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: normal; margin-bottom: 14px; }
+  .hero p { font-size: 16px; font-weight: 400; line-height: 1.5; letter-spacing: 0.5px; max-width: 780px; margin-bottom: 28px; }
+
+  /* SECTIONS */
+  .section { padding: 56px 24px; max-width: 1240px; margin: 0 auto; }
+  .section-alt { background: var(--gold-95); }
+  .section-alt .section-inner { padding: 56px 24px; max-width: 1240px; margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--gray-60); letter-spacing: 0.08em; margin-bottom: 8px; }
+  .section-title { font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: normal; margin-bottom: 26px; }
+  /* 食べチョクで最も特徴的なパターン: 金色の明朝で中央揃えの小見出し */
+  .serif-heading { font-family: var(--font-serif); font-size: 14px; font-weight: 700; line-height: 1.4; letter-spacing: 0.1px; color: var(--gold-60); text-align: center; display: flex; gap: 8px; justify-content: center; align-items: center; margin-bottom: 8px; }
+  .serif-heading::before, .serif-heading::after { content: ""; width: 40px; height: 1px; background: var(--gold-80); }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+  .color-swatch { background: var(--white); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+  .color-swatch-block { height: 68px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 600; letter-spacing: 0.5px; }
+  .color-swatch-hex { font-size: 12px; font-family: var(--font-mono); color: var(--gray-60); }
+  .color-swatch-role { font-size: 11px; color: var(--gray-60); margin-top: 4px; line-height: 1.4; letter-spacing: 0.5px; }
+  .color-group-label { font-size: 16px; font-weight: 700; letter-spacing: 0.5px; margin: 28px 0 12px; }
+
+  /* TONAL SCALE */
+  .scale { display: flex; border-radius: 4px; overflow: hidden; margin-bottom: 4px; }
+  .scale div { flex: 1; height: 42px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0; }
+  .scale-name { font-size: 13px; font-weight: 700; letter-spacing: 0.5px; margin: 14px 0 6px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 22px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; color: var(--gray-60); margin-top: 8px; line-height: 1.6; letter-spacing: 0; }
+  .type-context { display: inline-block; background: var(--gold-95); color: var(--gold-60); font-size: 11px; font-weight: 600; padding: 2px 8px; margin-left: 8px; border-radius: 14px; letter-spacing: 0.4px; }
+
+  /* BUTTONS */
+  .btn { display: inline-block; font-family: var(--font); font-size: 14px; font-weight: 700; line-height: 1.0; letter-spacing: 0.5px; text-decoration: none; cursor: pointer; border: 0; border-radius: 4px; padding: 12px 10px; }
+  .btn-primary { background: var(--gold-70); color: var(--white); }
+  .btn-secondary { background: var(--gray-90); color: var(--gray-20); }
+  .btn-large { font-size: 16px; padding: 16px; }
+  .btn-outline { background: var(--white); color: #000; border: 1px solid #ddd; border-radius: 8px; padding: 14px 20px; font-size: 16px; }
+  .btn-cream { background: var(--cream); color: #000; border-radius: 0; padding: 13px 16px; }
+  .btn-mini { background: var(--gold-70); color: var(--white); border-radius: 24px; padding: 1px 6px; font-size: 12px; font-weight: 600; letter-spacing: normal; }
+  .btn-mini-outline { background: var(--white); color: var(--gold-70); border: 1px solid var(--gold-70); border-radius: 24px; padding: 1px 6px; font-size: 12px; font-weight: 600; letter-spacing: normal; }
+
+  .button-row { display: flex; gap: 18px; flex-wrap: wrap; align-items: flex-start; }
+  .button-item { text-align: center; }
+  .button-label { font-family: var(--font-mono); font-size: 11px; color: var(--gray-60); margin-top: 10px; line-height: 1.7; letter-spacing: 0; }
+
+  /* CHIPS */
+  .chip-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .chip-trend { background: var(--gold-70); color: var(--white); border-radius: 20px; padding: 8px 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.4px; }
+  .chip-prize { background: var(--gold-70); color: var(--white); border-radius: 16px; padding: 4px 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.4px; }
+  .chip-news  { background: var(--orange-50); color: var(--white); border-radius: 4px; padding: 4px 8px; font-size: 14px; font-weight: 700; letter-spacing: 0.1px; }
+  .chip-ship  { background: var(--gold-95); color: #000; border-radius: 20px; padding: 4px 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+  .chip-emo   { background: var(--gold-95); color: var(--gold-60); border-radius: 14px; padding: 4px 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; }
+  .chip-size  { background: var(--line); color: #000; border: 1px solid var(--line); border-radius: 16px; padding: 2px 8px; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; }
+  .chip-area  { background: var(--gray-99); color: var(--gray-20); border: 1px solid var(--line); border-radius: 28px; padding: 10px 14px; font-size: 14px; font-weight: 700; letter-spacing: 0.5px; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 4px; }
+  .tab { border-radius: 8px 8px 0 0; padding: 12px 52px 10px; font-size: 14px; font-weight: 400; letter-spacing: 0.5px; text-decoration: none; }
+  .tab-on { background: var(--gold-70); color: var(--white); }
+  .tab-off { background: var(--white); color: var(--gold-60); border: 1px solid var(--line); border-bottom: none; }
+
+  /* PAGINATION */
+  .pager { display: flex; gap: 6px; align-items: center; }
+  .pager a { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 1px solid var(--gold-70); border-radius: 4px; font-size: 12px; font-weight: 400; letter-spacing: 0.4px; color: var(--gold-60); text-decoration: none; }
+  .pager a.is-current { background: var(--gold-70); color: var(--white); font-weight: 700; }
+
+  /* PRODUCT CARDS */
+  .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .product { background: var(--white); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+  .product-thumb { height: 140px; display: flex; align-items: center; justify-content: center; font-size: 38px; }
+  .product-body { padding: 12px; }
+  .product-name { font-size: 16px; font-weight: 700; line-height: 1.5; letter-spacing: 0.15px; margin-bottom: 6px; }
+  .product-farm { font-size: 14px; font-weight: 400; line-height: 1.5; letter-spacing: 0.5px; color: var(--gray-60); margin-bottom: 8px; }
+  .product-price { font-size: 16px; font-weight: 700; letter-spacing: 0.5px; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; max-width: 900px; }
+  .form-label { display: block; font-size: 14px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .form-input { width: 100%; background: var(--gray-95); border: 1px solid var(--gray-95); border-radius: 4px; padding: 11px 12px; font-family: var(--font); font-size: 14px; letter-spacing: 0.5px; color: #000; }
+  .form-input::placeholder { color: var(--gray-70); }
+  .form-input.is-focus { background: var(--white); border-color: var(--gold-70); box-shadow: inset 0 0 0 2px var(--gold-60); outline: none; }
+  .form-input.is-error { background: var(--white); border-color: var(--red-40); }
+  .form-help { font-size: 12px; color: var(--gray-60); margin-top: 4px; letter-spacing: 0.5px; }
+  .form-error { font-size: 12px; color: var(--red-40); font-weight: 600; margin-top: 4px; letter-spacing: 0.5px; }
+
+  /* TABLE */
+  .spec-table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--white); }
+  .spec-table th, .spec-table td { border: 1px solid var(--line); padding: 9px 12px; text-align: left; vertical-align: top; line-height: 1.5; letter-spacing: 0.25px; }
+  .spec-table th { background: var(--gold-95); font-weight: 600; }
+  .spec-table code { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; }
+
+  /* ELEVATION */
+  .elev-row { display: flex; gap: 40px; flex-wrap: wrap; }
+  .elev-box { width: 170px; height: 96px; background: var(--white); border-radius: 4px; }
+  .elev-0 { border: 1px solid var(--line); }
+  .elev-1 { box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1); }
+  .elev-2 { box-shadow: 2px 2px 6px rgba(0,0,0,.15); }
+  .elev-3 { box-shadow: inset 0 0 0 2px var(--gold-60); }
+
+  /* ARTICLE */
+  .article { background: var(--white); border: 1px solid var(--line); border-radius: 4px; padding: 36px 44px; max-width: 760px; }
+  .article h3 { font-size: 16px; font-weight: 700; line-height: 1.5; letter-spacing: 0.5px; margin-bottom: 14px; }
+  .article h4 { font-size: 16px; font-weight: 600; line-height: 1.6; letter-spacing: 0.5px; margin: 20px 0 10px; }
+  .article p { font-size: 14px; line-height: 1.6; letter-spacing: 0.25px; margin-bottom: 14px; }
+  .article .caption { font-size: 11px; line-height: 1.4; letter-spacing: 0.5px; color: var(--gray-60); }
+
+  .note { font-size: 13px; color: var(--gray-60); line-height: 1.7; margin-top: 12px; letter-spacing: 0.25px; }
+  .note strong { color: var(--gray-20); }
+
+  /* SNS */
+  .sns-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .sns { display: inline-flex; align-items: center; gap: 8px; background: var(--white); color: #222; border-radius: 30px; padding: 6px 6px 6px 18px; font-size: 13px; font-weight: 700; letter-spacing: normal; text-decoration: none; }
+
+  /* FOOTER */
+  .footer { background: var(--gold-95); padding: 40px 24px; }
+  .footer-inner { max-width: 1240px; margin: 0 auto; display: flex; gap: 48px; flex-wrap: wrap; }
+  .footer h4 { font-family: var(--font-serif); font-size: 14px; font-weight: 700; color: var(--gold-60); margin-bottom: 8px; letter-spacing: 0.1px; }
+  .footer ul { list-style: none; }
+  .footer li { font-size: 13px; line-height: 1.9; letter-spacing: 0.5px; }
+
+  @media screen and (max-width: 768px) {
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+    .form-grid { grid-template-columns: 1fr; }
+    .section-title { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-logo" href="#">食べチョク<small>TABE CHOKU</small></a>
+  <div class="header-search"><input class="form-input" placeholder="商品／生産者を探す"></div>
+  <div class="header-right">
+    <a class="btn btn-primary" href="#buttons">ログイン</a>
+    <a class="btn btn-secondary" href="#buttons">新規会員登録</a>
+  </div>
+</header>
+
+<nav class="headernav">
+  <a class="is-active" href="#colors">ホーム</a>
+  <a href="#typography">今が旬</a>
+  <a href="#product">コレクション</a>
+  <a href="#buttons">レシピ</a>
+</nav>
+
+<div class="notice"><span class="chip-news">お知らせ</span> 天候による配送への影響について</div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <span class="ribbon">初めての方へ</span>
+    <h1 style="margin-top:20px;">Design System Preview — 食べチョク</h1>
+    <p>ブランド色は「金茶」1 系統。<code>--Color-Primary-Gold-70: #cab270</code>（CSS 出現 154 回）を<strong>面</strong>に、<code>Gold-60: #9f8745</code>（138 回）を<strong>文字</strong>に使い分ける。トーナルスケールは Material 3 と同じ「0 が黒・100 が白」で、<strong>数字が大きいほど明るい</strong>。以下はすべて computed style と <code>user-*.css</code>（731KB）の実測値（2026-08-28 取得）。</p>
+    <div class="button-row">
+      <a class="btn btn-primary btn-large" href="#colors">デザイントークンを見る</a>
+      <a class="btn btn-secondary btn-large" href="#typography">タイポグラフィ</a>
+    </div>
+  </div>
+</section>
+
+<!-- 01 COLORS -->
+<section class="section-alt" id="colors">
+<div class="section-inner">
+  <div class="section-label">01 / Colors</div>
+  <div class="serif-heading">Color Palette</div>
+  <h2 class="section-title" style="text-align:center;">面は Gold-70、文字は Gold-60</h2>
+
+  <div class="color-group-label">Primary Gold — 13 段のトーナルスケール（0 が黒・100 が白）</div>
+  <div class="scale">
+    <div style="background:#241b00; color:#fff">10</div><div style="background:#3f2f00; color:#fff">20</div><div style="background:#564101; color:#fff">30</div><div style="background:#715c1b; color:#fff">40</div><div style="background:#8b7533; color:#fff">50</div><div style="background:#9f8745; color:#fff">60</div><div style="background:#cab270">70</div><div style="background:#decda2">80</div><div style="background:#f0e8d5">90</div><div style="background:#f5f1eb">95</div><div style="background:#fcfaf8">99</div>
+  </div>
+  <div class="color-grid" style="margin-top:14px;">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#9f8745"></div><div class="color-swatch-info"><div class="color-swatch-name">Gold-60</div><div class="color-swatch-hex">#9f8745</div><div class="color-swatch-role"><strong>文字色</strong>。明朝の見出し・チップの文字・ページネーション。138 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#cab270"></div><div class="color-swatch-info"><div class="color-swatch-name">Gold-70</div><div class="color-swatch-hex">#cab270</div><div class="color-swatch-role"><strong>面色</strong>。ボタン・バッジ・タブ・現在ページ。154 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f0e8d5"></div><div class="color-swatch-info"><div class="color-swatch-name">Gold-90</div><div class="color-swatch-hex">#f0e8d5</div><div class="color-swatch-role">淡い面。16 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5f1eb"></div><div class="color-swatch-info"><div class="color-swatch-name">Gold-95</div><div class="color-swatch-hex">#f5f1eb</div><div class="color-swatch-role">生成りの面。バッジ・お知らせ帯・レビューチップ。80 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f5f3e9"></div><div class="color-swatch-info"><div class="color-swatch-name">Cream</div><div class="color-swatch-hex">#f5f3e9</div><div class="color-swatch-role">トップ専用の生成り（top.css）。実測 34 回</div></div></div>
+  </div>
+
+  <div class="color-group-label">Accent — オレンジは告知、赤は注意だけ</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f45800"></div><div class="color-swatch-info"><div class="color-swatch-name">Orange-50</div><div class="color-swatch-hex">#f45800</div><div class="color-swatch-role">「お知らせ」バッジの面。<strong>セールではなく告知に使う</strong></div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c30d23"></div><div class="color-swatch-info"><div class="color-swatch-name">Red-40</div><div class="color-swatch-hex">#c30d23</div><div class="color-swatch-role">エラー・警告の文字。19 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#db3347"></div><div class="color-swatch-info"><div class="color-swatch-name">Red-50</div><div class="color-swatch-hex">#db3347</div><div class="color-swatch-role">小バッジの面。16 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffdd57"></div><div class="color-swatch-info"><div class="color-swatch-name">Bulma Yellow</div><div class="color-swatch-hex">#ffdd57</div><div class="color-swatch-role">Bulma 既定の注意ラベル（黒文字）。20 回</div></div></div>
+  </div>
+
+  <div class="color-group-label">Gray — 面の 6 段</div>
+  <div class="scale">
+    <div style="background:#121212; color:#fff">10</div><div style="background:#212121; color:#fff">20</div><div style="background:#333333; color:#fff">30</div><div style="background:#474747; color:#fff">40</div><div style="background:#616161; color:#fff">50</div><div style="background:#858585; color:#fff">60</div><div style="background:#b8b8b8">70</div><div style="background:#d9d9d9">80</div><div style="background:#ededed">90</div><div style="background:#f2f2f2">95</div><div style="background:#f9f9f9">99</div>
+  </div>
+  <div class="color-grid" style="margin-top:14px;">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#212121"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray-20</div><div class="color-swatch-hex">#212121</div><div class="color-swatch-role">本文の既定色。125 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#858585"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray-60</div><div class="color-swatch-hex">#858585</div><div class="color-swatch-role">非選択のナビ・補助テキスト。80 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ededed"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray-90</div><div class="color-swatch-hex">#ededed</div><div class="color-swatch-role"><strong>セカンダリボタンの面</strong></div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f2f2f2"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray-95</div><div class="color-swatch-hex">#f2f2f2</div><div class="color-swatch-role">汎用の面・入力欄の地。<strong>181 回</strong></div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e9e9e9"></div><div class="color-swatch-info"><div class="color-swatch-name">Line</div><div class="color-swatch-hex">#e9e9e9</div><div class="color-swatch-role">罫・サイズチップの面。実測 109 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f9f9f9"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray-99</div><div class="color-swatch-hex">#f9f9f9</div><div class="color-swatch-role">産地チップの地。49 回</div></div></div>
+  </div>
+  <p class="note"><strong>⚠️ トーナルスケールの向きに注意。</strong> <code>Gold-70</code>（<code>#cab270</code>）は <code>Gold-60</code>（<code>#9f8745</code>）より<strong>明るい</strong>。「数字が大きいほど濃い」他システムの慣習とは逆向き。</p>
+</div>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <div class="serif-heading">Typography</div>
+  <h2 class="section-title" style="text-align:center;">ヒラギノ角ゴ Pro ＋ 金色の明朝見出し</h2>
+
+  <div class="type-sample">
+    <div class="serif-heading" style="margin-bottom:0;">一覧から探す</div>
+    <div class="type-meta">14px / 700 / line-height: 19.6px (1.4) / letter-spacing: .1px / color: #9f8745 / <strong>font-family: "Noto Serif JP", serif</strong> ＋ text-align: center<span class="type-context">食べチョクで最も特徴的なパターン</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:24px; font-weight:700; line-height:1.4; letter-spacing:normal;">みんなが感動した商品</div>
+    <div class="type-meta">24px / 700 / line-height: 33.6px (1.4) / letter-spacing: normal<span class="type-context">h2 — セクション大見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:700; line-height:1.5; letter-spacing:0.5px;">朝どれとうもろこし 10 本セット</div>
+    <div class="type-meta">16px / 700 / line-height: 24px (1.5) / letter-spacing: .5px (0.031em)<span class="type-context">h3 — 商品名</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:600; line-height:1.6; letter-spacing:0.5px; color:#000;">生産者から直接お届けします</div>
+    <div class="type-meta">16px / <strong>600</strong> / line-height: 25.6px (1.6) / letter-spacing: .5px<span class="type-context">h4 — 600 を使う</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.5; letter-spacing:0.5px;">食べチョクは、農家・漁師から直接食材を購入できる産直通販サイトです。市場を通さないため、収穫してから食卓に届くまでの時間が短く、鮮度の高い状態で味わえます。</div>
+    <div class="type-meta">16px / 400 / line-height: 24px (1.5) / letter-spacing: .5px (0.031em)<span class="type-context">説明文</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:1.5; letter-spacing:0.5px;">全国 11,896 軒の生産者が登録し、42,363 点の商品が並んでいます。産地・こだわり・食べ方まで、生産者本人の言葉で紹介されています。</div>
+    <div class="type-meta">14px / 400 / line-height: 21px (1.5) / letter-spacing: .5px (0.036em) / color: #212121<span class="type-context">body の既定</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:1.6; letter-spacing:0.25px; color:#000;">今年は例年より 2 週間ほど早く実が付きました。皮が薄く、生でもかじれるほど甘みが強い品種です。届いたその日に、まず 1 本そのまま食べてみてください。</div>
+    <div class="type-meta">14px / 400 / line-height: 22.4px (1.6) / letter-spacing: .25px (0.018em)<span class="type-context">商品説明（生産者の言葉）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:13px; font-weight:600; line-height:1.5; letter-spacing:0.5px; color:#000;">送料は産地ごとに異なります</div>
+    <div class="type-meta">13px / 600 / line-height: 19.5px (1.5) / letter-spacing: .5px (0.038em)<span class="type-context">Caption</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:11px; font-weight:400; line-height:1.4; letter-spacing:0.5px; color:#000;">※ 天候・収穫状況により、お届け日が前後する場合があります</div>
+    <div class="type-meta">11px / 400 / line-height: 15.4px (1.4) / letter-spacing: .5px (0.045em)<span class="type-context">Micro</span></div>
+  </div>
+
+  <div class="color-group-label">letter-spacing は px で 5 段階</div>
+  <table class="spec-table" style="margin-bottom:16px;">
+    <tr><th style="width:14%">px 値</th><th style="width:16%">CSS 出現</th><th style="width:34%">主な適用サイズ</th><th>em 換算</th></tr>
+    <tr><td><code>.5px</code></td><td>111 回</td><td>10〜16px の本文・ラベル</td><td>0.031〜0.05em</td></tr>
+    <tr><td><code>.4px</code></td><td><strong>152 回</strong></td><td>12px のチップ</td><td>0.033em</td></tr>
+    <tr><td><code>.25px</code></td><td>87 回</td><td>14px の商品説明</td><td>0.018em</td></tr>
+    <tr><td><code>.15px</code></td><td>109 回</td><td>16px の見出し</td><td>0.009em</td></tr>
+    <tr><td><code>.1px</code></td><td>66 回</td><td>14px の太字・明朝見出し</td><td>0.007em</td></tr>
+  </table>
+  <p class="note"><strong>小さい文字ほど em 換算で字間が広がる</strong>設計（10px で 0.05em、16px で 0.009em）。px のまま移植すると比率が壊れるので、<strong>em に換算してから使う</strong>こと。</p>
+
+  <div class="color-group-label">font-family（実測 3 種）</div>
+  <table class="spec-table">
+    <tr><th style="width:26%">対象</th><th>指定</th></tr>
+    <tr><td>本文・見出し</td><td><code>"Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", Meiryo, メイリオ, Osaka, "MS PGothic", arial, helvetica, "Lucida Grande", sans-serif</code></td></tr>
+    <tr><td>金色のセクション見出し</td><td><code>"Noto Serif JP", serif</code> ＋ <code>color: #9f8745</code> ＋ <code>text-align: center</code></td></tr>
+    <tr><td>一部の小バッジ・数字</td><td><code>Arial, sans-serif</code>（22 回）</td></tr>
+  </table>
+  <p class="note">
+    ※ <strong>ProN ではなく Pro</strong>。旧字体の字形（<code>辻</code> <code>葛</code> 等）が JIS90 系になる。Apple 日本語サイトと同じ選択。<br>
+    ※ Windows 向けにメイリオ → MS Pゴシックまで下げるレガシー寄りのスタックだが、<strong>先頭がヒラギノなので Mac / iOS では正しく組まれる</strong>（メイリオ先頭のスタックとは別物）。<br>
+    ※ 明朝は Web フォントではなく OS の Noto Serif JP に任せる。このプレビューでは Google Fonts から読み込んで再現している。<br>
+    ※ <code>font-feature-settings: normal</code>。<strong>palt を使わず、<code>letter-spacing</code> で調整する</strong>。
+  </p>
+</section>
+
+<!-- 03 PRODUCT -->
+<section class="section-alt" id="product">
+<div class="section-inner">
+  <div class="section-label">03 / Product — 組版サンプル</div>
+  <div class="serif-heading">今が旬</div>
+  <h2 class="section-title" style="text-align:center;">産直の食材</h2>
+
+  <div class="tabs" style="margin-bottom:0;">
+    <a class="tab tab-on" href="#">商品(42,363件)</a>
+    <a class="tab tab-off" href="#">生産者(11,896件)</a>
+  </div>
+
+  <div class="chip-row" style="margin:20px 0;">
+    <span class="chip-area">長野県</span>
+    <span class="chip-area">青森県</span>
+    <span class="chip-area">北海道</span>
+    <span class="btn-mini">変更</span>
+    <span class="btn-mini">決定</span>
+    <span class="btn-mini-outline">リセット</span>
+  </div>
+
+  <div class="product-grid">
+    <div class="product">
+      <div class="product-thumb" style="background:#f0e8d5">🌽</div>
+      <div class="product-body">
+        <div class="chip-row" style="margin-bottom:8px;"><span class="chip-prize">グランプリ受賞商品</span></div>
+        <div class="product-name">朝どれ とうもろこし 10本</div>
+        <div class="product-farm">長野県 佐久市 ／ 山あい農園</div>
+        <div class="chip-row" style="margin-bottom:8px;"><span class="chip-size">約5kg</span><span class="chip-ship">すぐに出荷</span></div>
+        <div class="product-price">¥3,980</div>
+      </div>
+    </div>
+    <div class="product">
+      <div class="product-thumb" style="background:#f5f1eb">🍑</div>
+      <div class="product-body">
+        <div class="chip-row" style="margin-bottom:8px;"><span class="chip-trend">トレンド</span></div>
+        <div class="product-name">完熟あかつき桃 6玉</div>
+        <div class="product-farm">福島県 伊達市 ／ 三代目の果樹園</div>
+        <div class="chip-row" style="margin-bottom:8px;"><span class="chip-size">約1.8kg</span><span class="chip-emo">嬉しい</span></div>
+        <div class="product-price">¥4,200</div>
+      </div>
+    </div>
+    <div class="product">
+      <div class="product-thumb" style="background:#f9f9f9">🐟</div>
+      <div class="product-body">
+        <div class="chip-row" style="margin-bottom:8px;"><span class="chip-prize">グランプリ受賞商品</span></div>
+        <div class="product-name">朝獲れ 鮮魚おまかせセット</div>
+        <div class="product-farm">長崎県 平戸市 ／ 平戸の漁師</div>
+        <div class="chip-row" style="margin-bottom:8px;"><span class="chip-size">約2kg</span><span class="chip-emo">すごい</span></div>
+        <div class="product-price">¥5,400</div>
+      </div>
+    </div>
+    <div class="product">
+      <div class="product-thumb" style="background:#f2f2f2">🥬</div>
+      <div class="product-body">
+        <div class="chip-row" style="margin-bottom:8px;"><span class="chip-ship">すぐに出荷</span></div>
+        <div class="product-name">旬の野菜セット 8〜10品</div>
+        <div class="product-farm">愛知県 田原市 ／ 渥美のはたけ</div>
+        <div class="chip-row" style="margin-bottom:8px;"><span class="chip-size">約500g</span><span class="chip-emo">嬉しい</span></div>
+        <div class="product-price">¥2,980</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; justify-content:center; margin-top:28px;">
+    <div class="pager">
+      <a class="is-current" href="#">1</a><a href="#">2</a><a href="#">3</a><a href="#">4</a><a href="#">5</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 04 ARTICLE -->
+<section class="section" id="article">
+  <div class="section-label">04 / Producer — 組版サンプル</div>
+  <div class="serif-heading">生産者の声</div>
+  <h2 class="section-title" style="text-align:center;">山あい農園さんのとうもろこし</h2>
+
+  <div class="article" style="margin:0 auto;">
+    <h3>標高 800m の寒暖差が、甘さをつくる</h3>
+    <p>佐久盆地の東の斜面で、家族 3 人でとうもろこしを育てています。夜になると気温が 15 度近くまで下がるので、日中に光合成でつくった糖が実にたまります。</p>
+    <h4>収穫は夜明け前から</h4>
+    <p>とうもろこしは、収穫した瞬間から糖が落ちはじめます。だから午前 4 時に畑へ入り、実の温度が上がらないうちにもぎ取って、その日のうちに冷蔵便で出します。市場を通さない食べチョクだから、翌日には食卓に届きます。</p>
+    <p>届いたら、まず 1 本を生のままかじってみてください。皮が薄いので、そのまま噛めます。残りは皮ごとレンジで 5 分。ゆでるより甘みが逃げません。</p>
+    <p class="caption">※ 天候・収穫状況により、お届け日が前後する場合があります。</p>
+    <div class="button-row" style="margin-top:20px;">
+      <a class="btn btn-primary btn-large" href="#">この商品を見る</a>
+      <a class="btn btn-secondary btn-large" href="#">生産者ページへ</a>
+    </div>
+  </div>
+</section>
+
+<!-- 05 BUTTONS -->
+<section class="section-alt" id="buttons">
+<div class="section-inner">
+  <div class="section-label">05 / Buttons</div>
+  <div class="serif-heading">Buttons</div>
+  <h2 class="section-title" style="text-align:center;">radius 4px。形は変えず面色で優先度を落とす</h2>
+
+  <div class="button-row" style="margin-bottom:32px;">
+    <div class="button-item">
+      <a class="btn btn-primary" href="#">ログイン</a>
+      <div class="button-label">Primary<br>#cab270 / #fff / radius 4px<br>padding 12px 10px / 14px / 700 / ls .5px</div>
+    </div>
+    <div class="button-item">
+      <a class="btn btn-secondary" href="#">新規会員登録</a>
+      <div class="button-label">Secondary<br>#ededed / #212121 / radius 4px<br><strong>形は Primary と同一</strong></div>
+    </div>
+    <div class="button-item">
+      <a class="btn btn-primary btn-large" href="#">すべての定期便を見る</a>
+      <div class="button-label">Primary (large)<br>padding 16px / 16px / 700</div>
+    </div>
+    <div class="button-item">
+      <a class="btn btn-secondary btn-large" href="#">すべてのレシピを見る</a>
+      <div class="button-label">Secondary (large)<br>padding 16px / 16px / 700</div>
+    </div>
+    <div class="button-item">
+      <a class="btn btn-outline" href="#">食べチョクとは？</a>
+      <div class="button-label">Outline<br>#fff / 1px solid #ddd<br><strong>radius 8px</strong> / padding 0 20px</div>
+    </div>
+    <div class="button-item">
+      <a class="btn btn-cream" href="#">すべての商品を見る</a>
+      <div class="button-label">Text CTA<br>#f5f3e9 / <strong>radius 0px</strong><br>padding 13px 16px / 14px / 700</div>
+    </div>
+    <div class="button-item">
+      <span class="ribbon">初めての方へ</span>
+      <div class="button-label">Ribbon<br>#9f8745（文字色の金を面に使う唯一の例）<br><strong>radius 9px 0 0</strong></div>
+    </div>
+  </div>
+
+  <div class="color-group-label">Chips &amp; Badges</div>
+  <div class="chip-row" style="margin-bottom:12px;">
+    <span class="chip-trend">トレンド</span>
+    <span class="chip-prize">グランプリ受賞商品</span>
+    <span class="chip-news">お知らせ</span>
+    <span class="chip-ship">すぐに出荷</span>
+    <span class="chip-emo">嬉しい</span>
+    <span class="chip-emo">すごい</span>
+    <span class="chip-size">約1.8kg</span>
+    <span class="chip-area">長野県</span>
+  </div>
+  <table class="spec-table">
+    <tr><th>種別</th><th>面</th><th>文字</th><th>Radius</th><th>Padding</th><th>Size</th></tr>
+    <tr><td>トレンド</td><td><code>#cab270</code></td><td><code>#ffffff</code></td><td><strong>20px</strong></td><td>8px 12px</td><td>12px / 700 / .4px</td></tr>
+    <tr><td>グランプリ受賞商品</td><td><code>#cab270</code></td><td><code>#ffffff</code></td><td>16px</td><td>4px 8px</td><td>12px / 700 / .4px</td></tr>
+    <tr><td>お知らせ</td><td><code>#f45800</code></td><td><code>#ffffff</code></td><td>4px</td><td>4px 8px</td><td>14px / 700 / .1px</td></tr>
+    <tr><td>すぐに出荷</td><td><code>#f5f1eb</code></td><td><code>#000000</code></td><td>20px</td><td>4px 6px</td><td>10px / 700 / .5px</td></tr>
+    <tr><td>レビュー感情</td><td><code>#f5f1eb</code></td><td><code>#9f8745</code></td><td>14px</td><td>0 8px 0 0</td><td>12px / 600 / .5px</td></tr>
+    <tr><td>サイズ</td><td><code>#e9e9e9</code></td><td><code>#000000</code></td><td>16px ＋ 1px solid #e9e9e9</td><td>0 8px</td><td>10px / 600 / .5px</td></tr>
+    <tr><td>産地</td><td><code>#f9f9f9</code></td><td><code>#212121</code></td><td><strong>28px</strong> ＋ 1px solid #e9e9e9</td><td>10px 14px</td><td>14px / 700 / .5px</td></tr>
+  </table>
+
+  <div class="color-group-label">SNS Buttons — 枠線だけ各社のブランド色</div>
+  <div class="sns-row">
+    <a class="sns" style="border:1px solid #000000" href="#">X</a>
+    <a class="sns" style="border:1px solid #d92938" href="#">Instagram</a>
+    <a class="sns" style="border:1px solid #1877f2" href="#">Facebook</a>
+    <a class="sns" style="border:1px solid #06c755" href="#">LINE</a>
+  </div>
+  <p class="note">面は白、文字は <code>#222222</code>、radius <strong>30px</strong>、padding <code>6px 6px 6px 18px</code>、13px / 700。<strong>色は枠線にだけ乗せる。</strong></p>
+</div>
+</section>
+
+<!-- 06 FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <div class="serif-heading">Forms</div>
+  <h2 class="section-title" style="text-align:center;">Default / Focus / Error</h2>
+
+  <div class="form-grid" style="margin:0 auto;">
+    <div>
+      <label class="form-label">お届け先</label>
+      <input class="form-input" placeholder="都道府県を選択">
+      <div class="form-help">Default — #f2f2f2 の面 / radius 4px</div>
+    </div>
+    <div>
+      <label class="form-label">お名前</label>
+      <input class="form-input is-focus" value="食部 直子">
+      <div class="form-help">Focus — inset 0 0 0 2px #9f8745（金の内側 2px 罫）</div>
+    </div>
+    <div>
+      <label class="form-label">メールアドレス</label>
+      <input class="form-input is-error" value="tabechoku.example">
+      <div class="form-error">メールアドレスの形式で入力してください</div>
+    </div>
+  </div>
+  <p class="note" style="text-align:center;">プレースホルダは <code>#b8b8b8</code>（Gray-70）。エラーの文字は <code>#c30d23</code>（Red-40）。</p>
+</section>
+
+<!-- 07 ELEVATION -->
+<section class="section-alt" id="elevation">
+<div class="section-inner">
+  <div class="section-label">07 / Elevation</div>
+  <div class="serif-heading">Elevation</div>
+  <h2 class="section-title" style="text-align:center;">影の宣言は全 CSS で 12 個しかない</h2>
+
+  <div class="elev-row" style="justify-content:center;">
+    <div class="button-item">
+      <div class="elev-box elev-0"></div>
+      <div class="button-label">Level 0<br><code>none</code> ＋ 1px solid #e9e9e9<br><strong>既定。カードは罫で区切る</strong></div>
+    </div>
+    <div class="button-item">
+      <div class="elev-box elev-1"></div>
+      <div class="button-label">Level 1<br><code>0 2px 3px rgba(10,10,10,.1),<br>0 0 0 1px rgba(10,10,10,.1)</code><br><strong>Bulma 既定</strong>。3 回</div>
+    </div>
+    <div class="button-item">
+      <div class="elev-box elev-2"></div>
+      <div class="button-label">Level 2<br><code>2px 2px 6px rgba(0,0,0,.15)</code><br>2 回</div>
+    </div>
+    <div class="button-item">
+      <div class="elev-box elev-3"></div>
+      <div class="button-label">Selected<br><code>inset 0 0 0 2px #9f8745</code><br>1 回／<strong>金の内側 2px 罫</strong></div>
+    </div>
+  </div>
+  <p class="note" style="text-align:center;"><strong>カードに影を付けない。</strong> 代わりに <code>1px solid #e9e9e9</code> の罫か、生成り <code>#f5f1eb</code> の面で区切る。</p>
+</div>
+</section>
+
+<!-- 08 LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">08 / Layout</div>
+  <div class="serif-heading">Layout</div>
+  <h2 class="section-title" style="text-align:center;">radius 4px が既定。ピルはチップ専用</h2>
+
+  <table class="spec-table" style="margin-bottom:28px;">
+    <tr><th>Value</th><th>出現</th><th>用途</th></tr>
+    <tr><td><code>4px</code></td><td><strong>149 回</strong></td><td><strong>ボタン・カード・入力欄・バッジ。既定</strong></td></tr>
+    <tr><td><code>50%</code></td><td>105 回</td><td>アイコンの円・アバター</td></tr>
+    <tr><td><code>8px</code></td><td>38 回</td><td>アウトラインボタン・大きめのカード</td></tr>
+    <tr><td><code>16px</code></td><td>38 回</td><td>チップ</td></tr>
+    <tr><td><code>20px</code></td><td>15 回</td><td>ピル型チップ</td></tr>
+    <tr><td><code>12px</code> / <code>10px</code></td><td>各 12 回</td><td>中サイズ</td></tr>
+    <tr><td><code>0</code></td><td>10 回</td><td>セクション帯・テキスト CTA</td></tr>
+  </table>
+
+  <div class="color-group-label">Container &amp; Breakpoints</div>
+  <table class="spec-table">
+    <tr><th>項目</th><th>値</th><th>出現</th></tr>
+    <tr><td>Container</td><td><code>1240px</code></td><td>5 回（他に 1200px / 1000px）</td></tr>
+    <tr><td>記事系の狭いブロック</td><td><code>700px</code> / <code>600px</code> / <code>500px</code> / <code>400px</code></td><td>—</td></tr>
+    <tr><td>Desktop</td><td><code>min-width: 769px</code></td><td><strong>421 回</strong></td></tr>
+    <tr><td>Mobile</td><td><code>max-width: 768px</code></td><td><strong>284 回</strong></td></tr>
+    <tr><td>中間</td><td><code>max-width: 960px</code> / <code>min-width: 961px</code></td><td>10 回 / 9 回</td></tr>
+    <tr><td>Wide</td><td><code>min-width: 1239px</code></td><td>4 回</td></tr>
+    <tr><td>Small Mobile</td><td><code>max-width: 414px</code></td><td>4 回</td></tr>
+  </table>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <h4>さがす</h4>
+      <ul><li>すべての商品</li><li>すべての生産者</li><li>カテゴリー一覧</li><li>今が旬</li></ul>
+    </div>
+    <div>
+      <h4>食べチョクについて</h4>
+      <ul><li>食べチョクとは？</li><li>食べチョク基準</li><li>品質保証について</li></ul>
+    </div>
+    <div>
+      <h4>サービス</h4>
+      <ul><li>定期便</li><li>ギフト</li><li>レシピ</li></ul>
+    </div>
+    <div>
+      <h4>ヘルプ</h4>
+      <ul><li>よくある質問</li><li>お問い合わせ</li><li>配送・送料について</li></ul>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

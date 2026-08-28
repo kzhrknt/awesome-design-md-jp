@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: hacomono</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測 ＋ template.css の grep（2026-08-27）===
+       有彩色は 1 つも存在しない。すべて無彩色。 */
+    --black:        #1a1a1a;  /* 主色。CSS 出現 90 回。主 CTA の面・本文・見出し */
+    --gray-cta:     #767676;  /* 副 CTA の面。23 回。主 CTA と形は同一 */
+    --gray-chip:    #4f4f4f;  /* チップの文字。4 回 */
+    --gray-muted:   #818181;  /* 補助テキスト。6 回 */
+    --gray-pale:    #b0b0b0;  /* パンくず・注記 */
+    --line:         #d2d2d2;  /* 罫。39 回 */
+    --line-pale:    #d9d9d9;  /* 補助罫。3 回 */
+    --bg-top:       #e9ebee;  /* トップのページ地。11 回 */
+    --bg-sub:       #f7f6f6;  /* 下層のページ地。わずかに赤み。21 回 */
+    --panel:        #eff1f4;  /* パネル・フッター。30 回で最頻の面 */
+    --surface:      #f2f2f2;  /* 汎用灰。8 回 */
+    --chip:         #dadada;  /* タグチップの面。4 回 */
+    --shadow-face:  #ebedef;  /* オフセット影に使う面。3 回 */
+    --white:        #ffffff;
+
+    /* === Fonts 実測 ===
+       実サイトの和文スタックは "Yu Gothic", "游ゴシック", YuGothic, "游ゴシック体", sans-serif の 1 本きり。
+       Web フォントを読み込まないため表示は OS 依存。
+       このプレビューでは游ゴシックの字面に近い Zen Kaku Gothic New（Google Fonts）を
+       末尾に補い、游ゴシック搭載環境では実サイトと同じ見え方になるようにしている。 */
+    --font: "Yu Gothic", "游ゴシック", YuGothic, "游ゴシック体", "Zen Kaku Gothic New", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Radius 実測（rem 指定）=== */
+    --r-btn:  6px;    /* 0.375rem。20 回 */
+    --r-card: 8px;    /* 0.5rem。55 回で最頻 */
+    --r-chip: 2px;    /* チップ。ピルにしない */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-top);
+    color: var(--black);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.6;                 /* 実サイトの本文。body の 1.15 は使わない */
+    letter-spacing: normal;
+    font-feature-settings: normal;    /* palt を使わない */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER — 白の面 */
+  .header { display: flex; align-items: center; gap: 32px; padding: 16px 32px; background: var(--white); }
+  .header-logo { font-size: 20px; font-weight: 700; letter-spacing: 0.04em; color: var(--black); text-decoration: none; }
+  .header-nav { display: flex; gap: 26px; list-style: none; }
+  .header-nav a { font-size: 14px; font-weight: 700; color: var(--black); text-decoration: none; }
+  .header-cta { margin-left: auto; display: flex; gap: 12px; }
+
+  /* HERO */
+  .hero { padding: 56px 32px 64px; }
+  .hero-inner { max-width: 1200px; margin: 0 auto; }
+  .hero h1 { font-size: 40px; font-weight: 700; line-height: 1.2; letter-spacing: 0.04em; margin-bottom: 20px; }
+  .hero p { font-size: 15px; font-weight: 400; line-height: 1.7; max-width: 720px; margin-bottom: 32px; }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 1200px; margin: 0 auto; }
+  .section-alt { background: var(--bg-sub); }
+  .section-alt .section-inner { padding: 64px 32px; max-width: 1200px; margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--gray-muted); letter-spacing: 0.08em; margin-bottom: 10px; }
+  .section-title { font-size: 28px; font-weight: 700; line-height: 1.4; letter-spacing: 0.04em; margin-bottom: 32px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  .color-swatch { background: var(--white); border: 1px solid var(--line); border-radius: var(--r-btn); overflow: hidden; }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+  .color-swatch-hex { font-size: 12px; font-family: var(--font-mono); color: var(--gray-muted); }
+  .color-swatch-role { font-size: 11px; color: var(--gray-muted); margin-top: 4px; line-height: 1.6; }
+  .color-group-label { font-size: 14px; font-weight: 700; margin: 28px 0 12px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 26px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; color: var(--gray-muted); margin-top: 10px; line-height: 1.7; }
+  .type-context { display: inline-block; background: var(--chip); color: var(--gray-chip); font-size: 11px; font-weight: 700; padding: 3px 11px 4px; margin-left: 8px; border-radius: var(--r-chip); }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+  .button-item { text-align: center; }
+  .button-label { font-family: var(--font-mono); font-size: 11px; color: var(--gray-muted); margin-top: 10px; line-height: 1.7; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font); font-size: 14px; font-weight: 700; line-height: 1.5; text-decoration: none; cursor: pointer; border-radius: var(--r-btn); padding: 14px 12px 14px 24px; border: 0; }
+  .btn::after { content: "→"; font-weight: 400; }
+  .btn-primary { background: var(--black); color: var(--white); }
+  .btn-secondary { background: var(--gray-cta); color: var(--white); }
+  .btn-outline { background: var(--white); color: var(--black); border: 1px solid var(--black); }
+  .btn-plain { background: var(--white); color: var(--black); border: 1px solid var(--black); border-radius: 4px; padding: 16px 13px 16px 32px; }
+  .btn-wide { background: var(--white); color: var(--black); border: 1px solid var(--black); padding: 14px 32px; }
+  .btn-wide::after { content: ""; }
+
+  /* CHIPS */
+  .chip-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .chip { display: inline-block; background: var(--chip); color: var(--gray-chip); font-size: 12px; font-weight: 700; padding: 3px 11px 4px; border-radius: var(--r-chip); }
+  .badge { display: inline-block; background: var(--gray-cta); color: var(--white); font-size: 13px; font-weight: 700; padding: 6px; border-radius: 5px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .card { background: var(--white); border-radius: var(--r-card); overflow: hidden; }
+  .card-thumb { height: 130px; background: var(--surface); border-radius: 8px 8px 0 0; }
+  .card-body { padding: 20px 24px 24px; }
+  .card h3 { font-size: 18px; font-weight: 700; line-height: 1.5; margin-bottom: 10px; }
+  .card p { font-size: 14px; line-height: 1.6; color: var(--black); }
+  .card-meta { font-size: 12px; color: var(--gray-muted); margin-top: 12px; }
+
+  .navcard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .navcard { background: var(--panel); border-radius: var(--r-btn); padding: 36px 24px 24px 36px; font-size: 16px; font-weight: 400; color: var(--black); text-decoration: none; display: block; }
+
+  /* ELEVATION */
+  .elev-row { display: flex; gap: 48px; flex-wrap: wrap; }
+  .elev-item { text-align: center; }
+  .elev-box { width: 180px; height: 110px; background: var(--white); border-radius: var(--r-card); }
+  .elev-1 { box-shadow: 20px 20px 0 0 var(--bg-sub); }
+  .elev-1b { box-shadow: 20px 20px 0 0 var(--panel); }
+  .elev-2 { box-shadow: 0 4px 24px rgba(0,0,0,0.25); }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 900px; }
+  .form-label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .form-input { width: 100%; background: var(--white); border: 1px solid var(--line); border-radius: var(--r-btn); padding: 12px 14px; font-family: var(--font); font-size: 14px; color: var(--black); }
+  .form-input::placeholder { color: var(--gray-pale); }
+  .form-input.is-focus { border-color: var(--black); outline: 2px solid var(--line); outline-offset: 1px; }
+  .form-input.is-error { border-color: var(--gray-chip); }
+  .form-help { font-size: 12px; color: var(--gray-muted); margin-top: 6px; }
+  .form-error { font-size: 12px; color: var(--gray-chip); font-weight: 700; margin-top: 6px; }
+
+  /* TABLE */
+  .spec-table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--white); border-radius: var(--r-card); overflow: hidden; }
+  .spec-table th, .spec-table td { border: 1px solid var(--line); padding: 10px 14px; text-align: left; vertical-align: top; }
+  .spec-table th { background: var(--panel); font-weight: 700; }
+  .spec-table code { font-family: var(--font-mono); font-size: 12px; }
+
+  /* ARTICLE */
+  .article { background: var(--white); border-radius: var(--r-card); padding: 40px 48px; max-width: 760px; }
+  .article h3 { font-size: 24px; font-weight: 700; line-height: 1.5; margin-bottom: 16px; }
+  .article .lead { font-size: 15px; line-height: 1.7; margin-bottom: 20px; }
+  .article p { font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+  .article ul { margin: 0 0 16px 1.4em; }
+  .article li { font-size: 14px; line-height: 1.6; margin-bottom: 6px; }
+
+  .note { font-size: 13px; color: var(--gray-muted); line-height: 1.8; margin-top: 14px; }
+  .note strong { color: var(--black); }
+
+  /* FOOTER */
+  .footer { background: var(--panel); padding: 48px 32px; }
+  .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; gap: 48px; flex-wrap: wrap; }
+  .footer h4 { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+  .footer ul { list-style: none; }
+  .footer li { font-size: 12px; font-weight: 500; line-height: 2; }
+
+  @media screen and (max-width: 767px) {
+    .hero h1 { font-size: 26px; }
+    .section-title { font-size: 20px; }
+    .card-grid, .navcard-grid, .form-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-logo" href="#">hacomono</a>
+  <ul class="header-nav">
+    <li><a href="#colors">機能</a></li>
+    <li><a href="#typography">導入事例</a></li>
+    <li><a href="#buttons">業種別活用</a></li>
+    <li><a href="#cards">料金プラン</a></li>
+  </ul>
+  <div class="header-cta">
+    <a class="btn btn-primary" href="#buttons">資料・デモを見る</a>
+    <a class="btn btn-secondary" href="#forms">お問い合わせ</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Design System Preview<br>hacomono</h1>
+    <p>有彩色を 1 色も持たない完全モノクローム。CSS に現れる色は <code>#1a1a1a</code> <code>#767676</code> <code>#eff1f4</code> …とすべて無彩色で、青も緑も赤も 1 回も出てこない。和文の <code>font-family</code> 宣言はサイト全体で 1 つ、游ゴシック 1 本きり。以下はすべて computed style と <code>template.css</code> の実測値（2026-08-27 取得）。</p>
+    <div class="chip-row">
+      <span class="chip">#パーソナルジム</span>
+      <span class="chip">#サッカー・バスケットボールスクール</span>
+      <span class="chip">#公共施設</span>
+    </div>
+  </div>
+</section>
+
+<!-- 01 COLORS -->
+<section class="section-alt" id="colors">
+<div class="section-inner">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">有彩色ゼロ。明度だけで優先度を表す</h2>
+
+  <div class="color-group-label">Brand — この 2 色が CTA の優先度を決める</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1a1a1a"></div><div class="color-swatch-info"><div class="color-swatch-name">hacomono Black</div><div class="color-swatch-hex">#1a1a1a</div><div class="color-swatch-role">主色。CSS 出現 90 回。主 CTA の面・本文・見出し</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#767676"></div><div class="color-swatch-info"><div class="color-swatch-name">Secondary Gray</div><div class="color-swatch-hex">#767676</div><div class="color-swatch-role">副 CTA の面。23 回。主 CTA と形は完全に同一</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#4f4f4f"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Gray</div><div class="color-swatch-hex">#4f4f4f</div><div class="color-swatch-role">タグチップの文字。4 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#818181"></div><div class="color-swatch-info"><div class="color-swatch-name">Muted</div><div class="color-swatch-hex">#818181</div><div class="color-swatch-role">補助テキスト。6 回</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface — 地 → パネル → カードの 3 段で階層を作る</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e9ebee"></div><div class="color-swatch-info"><div class="color-swatch-name">BG Top</div><div class="color-swatch-hex">#e9ebee</div><div class="color-swatch-role">トップのページ地。11 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f7f6f6"></div><div class="color-swatch-info"><div class="color-swatch-name">BG Sub</div><div class="color-swatch-hex">#f7f6f6</div><div class="color-swatch-role">下層のページ地。わずかに赤み。21 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#eff1f4"></div><div class="color-swatch-info"><div class="color-swatch-name">Panel</div><div class="color-swatch-hex">#eff1f4</div><div class="color-swatch-role">パネル・フッター。30 回で最頻の面</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #d2d2d2"></div><div class="color-swatch-info"><div class="color-swatch-name">Card</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">カード・アウトラインボタンの地。100 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f2f2f2"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#f2f2f2</div><div class="color-swatch-role">画像プレースホルダ。8 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dadada"></div><div class="color-swatch-info"><div class="color-swatch-name">Chip</div><div class="color-swatch-hex">#dadada</div><div class="color-swatch-role">タグチップの面。4 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ebedef"></div><div class="color-swatch-info"><div class="color-swatch-name">Shadow Face</div><div class="color-swatch-hex">#ebedef</div><div class="color-swatch-role">オフセット影に使う面。3 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#d2d2d2"></div><div class="color-swatch-info"><div class="color-swatch-name">Line</div><div class="color-swatch-hex">#d2d2d2</div><div class="color-swatch-role">罫。39 回</div></div></div>
+  </div>
+
+  <div class="color-group-label">⚠️ CSS 変数は使ってはいけない</div>
+  <table class="spec-table">
+    <tr><th style="width:30%">宣言されている変数</th><th style="width:24%">値</th><th>実装</th></tr>
+    <tr><td><code>--color-base-primary</code></td><td><code>#012677</code>（濃紺）</td><td><strong>未使用</strong>。HTML 中の <code>012677</code> は宣言の 1 回のみ</td></tr>
+    <tr><td><code>--color-base-secondary</code></td><td><code>#FDD247</code>（黄）</td><td><strong>未使用</strong></td></tr>
+    <tr><td><code>--color-base-footerBackground</code></td><td><code>#011748</code>（濃紺）</td><td><strong>未使用</strong>。実際のフッターは <code>#eff1f4</code></td></tr>
+    <tr><td><code>--border-radius-button</code></td><td><code>200px</code>（ピル）</td><td><strong>未使用</strong>。実装は <strong>6px</strong></td></tr>
+    <tr><td><code>--font-family-ja</code></td><td><code>YakuHanJP, "Noto Sans JP", …</code></td><td><strong>未使用</strong>。実装は游ゴシック 1 本</td></tr>
+  </table>
+  <p class="note">これらはすべて <code>sdk.gig.goleadgrid.com</code> から読み込まれる <strong>LeadGrid（CMS）のテーマ既定値</strong>。HTML 中に <code>leadgrid</code> の文字列が 143 回出現する。<strong>変数を見て実装すると、紺と黄のピル UI という別物のサイトができあがる。</strong></p>
+</div>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <h2 class="section-title">游ゴシック 1 本。字間は見出しだけ 0.04em</h2>
+
+  <div class="type-sample">
+    <div style="font-size:40px; font-weight:700; line-height:1.2; letter-spacing:0.04em;">理想の運営はこれひとつで</div>
+    <div class="type-meta">40px / 700 / line-height: 48px (1.2) / letter-spacing: 1.6px (0.04em)<span class="type-context">Display</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:36px; font-weight:700; line-height:1.6;">店舗・施設・スクールの<br>あらゆる業務をオンラインで完結</div>
+    <div class="type-meta">36px / 700 / line-height: 57.6px (1.6) / letter-spacing: normal<span class="type-context">h2 — 2 行想定はゆったり</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:36px; font-weight:700; line-height:1.15;">導入事例</div>
+    <div class="type-meta">36px / 700 / line-height: 41.4px (1.15) / letter-spacing: normal<span class="type-context">h2 — 1 行は詰める</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:28px; font-weight:700; line-height:1.4; letter-spacing:0.04em;">開業導入率 No.1</div>
+    <div class="type-meta">28px / 700 / line-height: 39.2px (1.4) / letter-spacing: 1.12px (0.04em)<span class="type-context">h2 — 小さめの見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:32px; font-weight:700; line-height:1.15;">機能</div>
+    <div class="type-meta">32px / 700 / line-height: 36.8px (1.15) / letter-spacing: normal<span class="type-context">h1 — 下層のページタイトル</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:24px; font-weight:700; line-height:1.5;">予約・決済・会員管理をひとつに</div>
+    <div class="type-meta">24px / 700 / line-height: 36px (1.5)<span class="type-context">h3 — カード見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:18px; font-weight:700; line-height:1.5;">オンライン入会でスタッフの負担を減らす</div>
+    <div class="type-meta">18px / 700 / line-height: 27px (1.5)<span class="type-context">h3</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:15px; font-weight:400; line-height:1.7;">入会手続き、月会費の決済、予約の受付、会員情報の管理まで、店舗運営に必要な業務を 1 つのシステムにまとめます。紙とエクセルで分かれていた作業がなくなり、スタッフは接客に時間を使えるようになります。</div>
+    <div class="type-meta">15px / 400 / line-height: 25.5px (1.7) / color: #1a1a1a<span class="type-context">本文（機能ページ）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:400; line-height:1.6;">全国のフィットネスジム・スイミングスクール・公共施設で導入されています。業種を問わず、同じ 1 つのシステムで運営できます。</div>
+    <div class="type-meta">14px / 400 / line-height: 22.4px (1.6)<span class="type-context">本文（トップ）</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.15;">この行間（1.15）は body の初期値。日本語本文にそのまま使うと行が団子になる。</div>
+    <div class="type-meta">16px / 400 / line-height: 18.4px (<strong>1.15</strong>) ← <strong>body の既定値。本文には使わない</strong><span class="type-context">⚠️ 罠</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:400; line-height:1.5; color:#b0b0b0;">TOP ＞ 機能 ＞ 予約管理</div>
+    <div class="type-meta">12px / 400 / line-height: 18px (1.5) / color: #b0b0b0<span class="type-context">パンくず</span></div>
+  </div>
+
+  <div class="color-group-label">font-family（CSS 全体でこの 1 つだけ）</div>
+  <table class="spec-table">
+    <tr><th style="width:26%">対象</th><th>指定</th></tr>
+    <tr><td>サイト全体</td><td><code>"Yu Gothic", "游ゴシック", YuGothic, "游ゴシック体", sans-serif</code></td></tr>
+  </table>
+  <p class="note">
+    ※ <code>template.css</code>（390KB）に含まれる <code>font-family</code> 宣言は 4 つで、うち 2 つは <code>monospace</code>、1 つは <code>inherit</code>。<strong>和文スタックはこの 1 本きり</strong>。<br>
+    ※ 4 つの別名を並べるのは <strong>Windows と macOS で参照名が違う</strong>ため。1 つに減らすと片方で当たらない。<br>
+    ※ <code>yakuhanjp.css</code> は CDN から読み込まれているが、<strong>和文スタックに <code>YakuHanJP</code> が入っていないので約物半角は効いていない</strong>。<br>
+    ※ このプレビューでは游ゴシック非搭載環境向けに <strong>Zen Kaku Gothic New</strong>（Google Fonts）を末尾に補っている。<br>
+    ※ <code>font-feature-settings</code> は全要素 <code>normal</code>。<strong>palt を使わない</strong>。<br>
+    ※ <code>letter-spacing: 0.04em</code> は CSS 中 17 回宣言。<strong>見出し専用で、本文は <code>normal</code></strong>。
+  </p>
+</section>
+
+<!-- 03 ARTICLE -->
+<section class="section-alt" id="article">
+<div class="section-inner">
+  <div class="section-label">03 / Case Study — 組版サンプル</div>
+  <h2 class="section-title">導入事例</h2>
+
+  <div class="article">
+    <h3>紙の入会申込書をなくし、受付の待ち時間を 15 分短縮</h3>
+    <div class="lead">総合フィットネスクラブ 8 店舗を運営する事業者の事例。入会手続きをオンラインに移したことで、フロントの業務時間が 1 日あたり約 3 時間削減された。</div>
+    <p>これまでは入会希望者に紙の申込書を書いてもらい、スタッフが会員管理システムへ手入力していました。繁忙期には受付に列ができ、最大で 20 分ほど待たせてしまうこともありました。</p>
+    <p>WEB 入会を導入してからは、来店前にスマートフォンで手続きが完了します。フロントでは本人確認とロッカーの案内だけで済むようになりました。</p>
+    <ul>
+      <li>入会手続きの平均所要時間：20 分 → 5 分</li>
+      <li>フロント業務の削減：1 日あたり約 3 時間</li>
+      <li>入会申込書の印刷コスト：年間で約 40 万円削減</li>
+    </ul>
+    <p>決済も同じシステムで完結するため、月会費の請求漏れや二重請求の確認作業もなくなりました。</p>
+    <a class="btn btn-outline" href="#buttons">詳しく見る</a>
+  </div>
+</div>
+</section>
+
+<!-- 04 BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">形を変えず、面の明度だけで優先度を落とす</h2>
+
+  <div class="button-row" style="margin-bottom:40px;">
+    <div class="button-item">
+      <a class="btn btn-primary" href="#">資料・デモを見る</a>
+      <div class="button-label">Primary<br>#1a1a1a / #fff / radius 6px<br>padding 14px 12px 14px 24px<br>14px / 700</div>
+    </div>
+    <div class="button-item">
+      <a class="btn btn-secondary" href="#">お問い合わせ</a>
+      <div class="button-label">Secondary<br>#767676 / #fff / radius 6px<br><strong>padding・サイズは Primary と同一</strong></div>
+    </div>
+    <div class="button-item">
+      <a class="btn btn-outline" href="#">詳しく見る</a>
+      <div class="button-label">Outline<br>#fff / 1px solid #1a1a1a<br>radius 6px / 14px / 700</div>
+    </div>
+    <div class="button-item">
+      <a class="btn btn-wide" href="#">hacomonoとは</a>
+      <div class="button-label">Outline (wide)<br>padding 14px 32px<br>アイコン無し</div>
+    </div>
+    <div class="button-item">
+      <button class="btn btn-plain">もっと見る</button>
+      <div class="button-label">Load more<br><strong>radius 4px</strong>（他の 6px と違う）<br>padding 16px 13px 16px 32px</div>
+    </div>
+  </div>
+
+  <div class="color-group-label">Chips &amp; Badges — radius 2px / 5px。ピルにしない</div>
+  <div class="chip-row" style="margin-bottom:10px;">
+    <span class="chip">#パーソナルジム</span>
+    <span class="chip">#スイミングスクール</span>
+    <span class="chip">#公共施設</span>
+    <span class="badge">オプション機能</span>
+  </div>
+  <p class="note">chip: <code>#dadada</code> / <code>#4f4f4f</code> / radius <strong>2px</strong> / padding <code>3px 11px 4px</code>（上下非対称）/ 12px・700　｜　badge: <code>#767676</code> / <code>#fff</code> / radius 5px / padding 6px / 13px・700</p>
+
+  <div class="color-group-label">Large CTA — フッター上の 2 枚組</div>
+  <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:20px; max-width:840px;">
+    <a href="#" style="background:#1a1a1a; color:#fff; border-radius:6px; padding:34px 32px; font-size:16px; font-weight:400; text-decoration:none; display:block;">資料・デモダウンロード<br><span style="font-size:13px;">hacomono の機能と料金がわかる資料をお送りします</span></a>
+    <a href="#" style="background:#767676; color:#fff; border-radius:6px; padding:34px 32px; font-size:16px; font-weight:400; text-decoration:none; display:block;">お問い合わせ<br><span style="font-size:13px;">hacomono に関するご相談を承ります</span></a>
+  </div>
+</section>
+
+<!-- 05 CARDS -->
+<section class="section-alt" id="cards">
+<div class="section-inner">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">カードは radius 8px、パネルは 6px</h2>
+
+  <div class="card-grid" style="margin-bottom:36px;">
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-body">
+        <h3>WEB 入会で受付を無人化する</h3>
+        <p>来店前にスマートフォンで手続きが完了。フロントは本人確認だけで済みます。</p>
+        <div class="card-meta">2026.08.20 ／ 機能紹介</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-body">
+        <h3>月会費の決済を自動化する</h3>
+        <p>クレジットカード・口座振替に対応。請求漏れと二重請求の確認作業がなくなります。</p>
+        <div class="card-meta">2026.08.12 ／ 機能紹介</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-body">
+        <h3>予約枠をリアルタイムで管理する</h3>
+        <p>レッスンの空き状況が会員アプリに即時反映。電話での問い合わせが減ります。</p>
+        <div class="card-meta">2026.07.30 ／ 導入事例</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group-label">Nav Cards — #eff1f4 の面 / radius 6px / padding 36px 24px 24px 36px（左右非対称）</div>
+  <div class="navcard-grid">
+    <a class="navcard" href="#">機能</a>
+    <a class="navcard" href="#">導入事例</a>
+    <a class="navcard" href="#">料金プラン</a>
+    <a class="navcard" href="#">よくある質問</a>
+  </div>
+</div>
+</section>
+
+<!-- 06 FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">Default / Focus / Error</h2>
+
+  <div class="form-grid">
+    <div>
+      <label class="form-label">施設名</label>
+      <input class="form-input" placeholder="例）hacomono フィットネス 渋谷店">
+      <div class="form-help">Default — 1px solid #d2d2d2 / radius 6px</div>
+    </div>
+    <div>
+      <label class="form-label">お名前</label>
+      <input class="form-input is-focus" value="箱本 太郎">
+      <div class="form-help">Focus — border #1a1a1a ＋ outline #d2d2d2</div>
+    </div>
+    <div>
+      <label class="form-label">メールアドレス</label>
+      <input class="form-input is-error" value="hacomono.example">
+      <div class="form-error">メールアドレスの形式で入力してください</div>
+    </div>
+  </div>
+  <p class="note">※ hacomono は<strong>エラー色に赤を使わない</strong>（CSS に有彩色が存在しない）。エラーは <code>#4f4f4f</code> の太字とボーダーの濃さで示す。</p>
+</section>
+
+<!-- 07 ELEVATION -->
+<section class="section-alt" id="elevation">
+<div class="section-inner">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">影はブラーを持たない。面をずらして重ねる</h2>
+
+  <div class="elev-row">
+    <div class="elev-item">
+      <div class="elev-box"></div>
+      <div class="button-label">Level 0<br><code>none</code><br>ほぼすべての要素</div>
+    </div>
+    <div class="elev-item">
+      <div class="elev-box elev-1"></div>
+      <div class="button-label">Level 1<br><code>20px 20px 0 0 #f7f6f6</code><br><strong>ブラー 0</strong>。CSS 2 回</div>
+    </div>
+    <div class="elev-item">
+      <div class="elev-box elev-1b"></div>
+      <div class="button-label">Level 1'<br><code>1.25rem 1.25rem 0 0 #eff1f4</code><br>同上（rem 指定版）。2 回</div>
+    </div>
+    <div class="elev-item">
+      <div class="elev-box elev-2"></div>
+      <div class="button-label">Level 2<br><code>0 4px 24px rgba(0,0,0,.25)</code><br><strong>CSS 全体で唯一のぼかし影</strong>。2 回</div>
+    </div>
+  </div>
+  <p class="note"><strong>カードにふわっとした影を付けない。</strong> hacomono らしさは「ずらした単色の面」にある。</p>
+</div>
+</section>
+
+<!-- 08 LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">08 / Layout</div>
+  <h2 class="section-title">radius / spacing / breakpoint</h2>
+
+  <div class="color-group-label">Radius Scale（rem 指定・CSS 出現順）</div>
+  <table class="spec-table" style="margin-bottom:28px;">
+    <tr><th>宣言</th><th>px</th><th>出現</th><th>用途</th></tr>
+    <tr><td><code>0.5rem</code></td><td>8px</td><td><strong>55 回</strong></td><td>カード・画像</td></tr>
+    <tr><td><code>0.375rem</code></td><td>6px</td><td>20 回</td><td><strong>ボタン・パネル</strong></td></tr>
+    <tr><td><code>1.25rem</code></td><td>20px</td><td>19 回</td><td>大きめのブロック</td></tr>
+    <tr><td><code>0.25rem</code></td><td>4px</td><td>17 回</td><td>小さいボタン</td></tr>
+    <tr><td><code>50%</code></td><td>—</td><td>16 回</td><td>アイコンの円</td></tr>
+    <tr><td><code>0.3125rem</code></td><td>5px</td><td>6 回</td><td>バッジ</td></tr>
+    <tr><td><code>0.5rem 0.5rem 0 0</code></td><td>8px 上端のみ</td><td>6 回</td><td>画像付きカードの頭</td></tr>
+  </table>
+  <p class="note" style="margin-bottom:28px;"><strong>ピル（9999px / 200px）は 1 つも無い。</strong></p>
+
+  <div class="color-group-label">Spacing（gap の実出現）</div>
+  <table class="spec-table" style="margin-bottom:28px;">
+    <tr><th>Token</th><th>Value</th><th>出現</th></tr>
+    <tr><td>XS</td><td><code>0.375rem</code>（6px）</td><td>15 回</td></tr>
+    <tr><td>S</td><td><code>0.5rem</code>（8px）</td><td>23 回</td></tr>
+    <tr><td>M</td><td><code>0.75rem</code>（12px）</td><td><strong>32 回で最頻</strong></td></tr>
+    <tr><td>L</td><td><code>1.25rem</code>（20px）</td><td>21 回</td></tr>
+    <tr><td>XL</td><td><code>1.5rem</code>（24px）</td><td>17 回</td></tr>
+    <tr><td>XXL</td><td><code>2rem</code>（32px）</td><td>14 回</td></tr>
+  </table>
+
+  <div class="color-group-label">Container &amp; Breakpoints</div>
+  <table class="spec-table">
+    <tr><th>項目</th><th>値</th><th>備考</th></tr>
+    <tr><td>Container</td><td><code>75rem</code>（1200px）</td><td>7 回。狭いブロックは <code>50rem</code>（800px、6 回）、最大 <code>90rem</code>（1440px、2 回）</td></tr>
+    <tr><td>Mobile</td><td><code>max-width: 767px</code></td><td><strong>739 回</strong>。実質これ 1 本</td></tr>
+    <tr><td>Desktop</td><td><code>min-width: 768px</code></td><td>10 回のみ</td></tr>
+  </table>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <h4>hacomono</h4>
+      <ul><li>機能</li><li>料金プラン</li><li>導入事例</li></ul>
+    </div>
+    <div>
+      <h4>業種別活用</h4>
+      <ul><li>フィットネスジム</li><li>スイミングスクール</li><li>公共施設</li></ul>
+    </div>
+    <div>
+      <h4>サポート</h4>
+      <ul><li>よくある質問</li><li>お問い合わせ</li><li>サポートサイト</li></ul>
+    </div>
+    <div>
+      <h4>会社情報</h4>
+      <ul><li>会社概要</li><li>採用情報</li><li>ニュース</li></ul>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

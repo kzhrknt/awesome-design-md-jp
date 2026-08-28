@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: SUZURI（スズリ）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Noto+Sans+JP:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測 ＋ nachiguro.css の grep（2026-08-27）=== */
+    --blue:          #067bbf;  /* 主 CTA の面。CSS 出現 1002 回。トークン値 #007bbb とは別値 */
+    --blue-token:    #007bbb;  /* --color-primary-500。New! バッジ等 */
+    --blue-600:      #006fa8;  /* リンクになる小見出し */
+    --blue-900:      #00507a;  /* 淡い青バッジの文字 */
+    --blue-50:       #e6f2f8;  /* 淡い青バッジの面 */
+    --like:          #bf2213;  /* いいね数の文字。CSS 出現 1960 回で全色トップ */
+    --campaign:      #2058e5;  /* 法人 CTA・FAB。nachiguro.css には 0 回＝SUZURI 独自 */
+
+    /* Nachiguro semantic 500 */
+    --secondary-500: #e54918;
+    --secondary-600: #ce4216;  /* ランキング 3 位（銅） */
+    --success-500:   #4bae4f;
+    --warning-500:   #fbca4d;  /* ランキング 1 位（金） */
+    --danger-500:    #e83929;
+
+    /* Nachiguro default（ニュートラル） */
+    --default-25:    #f7f7f7;  /* 一覧ページの地。49 回 */
+    --default-50:    #efefef;  /* セクションの面。37 回 */
+    --default-75:    #dfdfdf;  /* セグメント／区切り線。16 回 */
+    --default-100:   #d0d0d0;  /* ランキング 4 位以降の枠 */
+    --default-200:   #b0b0b0;  /* ランキング 2 位（銀） */
+    --default-300:   #909090;  /* 補助テキスト */
+    --default-900:   #3f3f3f;  /* 本文の既定色 */
+
+    --heading:       #393c41;  /* 見出し。本文より青みが強い。25 回 */
+    --nav:           #3a3e40;  /* ヘッダー内のリンク */
+    --outline-label: #63686b;  /* 枠線ボタンのラベル・アイコン。1144 回 */
+    --white:         #ffffff;
+
+    /* === Fonts 実測 ===
+       実サイトと同じ Open Sans + Noto Sans JP を Google Fonts から読み込んでいる。
+       アイコンは "Nachiguro Icons"（ペパボ専用フォント）で、ここでは絵文字・記号で代用。 */
+    --font: "Open Sans", "Noto Sans JP", -apple-system, "system-ui", Roboto, "Lucida Grande", Helvetica, Arial, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Radius: .5rem(8px) が 322 回で圧倒的 === */
+    --r: 8px;
+
+    /* === Shadow: ボタンの既定。最後の 1 本が下辺の押し込み === */
+    --shadow-btn: 0 -0.1px 1px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.12), 0 0 transparent, 0 0 rgba(255,255,255,.5), 0 -2px rgba(0,0,0,.24);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--default-900);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.8;              /* 28.8px / 16px */
+    letter-spacing: normal;        /* 全要素 normal */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { display: flex; align-items: center; gap: 16px; padding: 12px 24px; background: var(--white); border-bottom: 1px solid var(--default-75); }
+  .header-logo { font-size: 21px; font-weight: 700; line-height: 1.14; letter-spacing: 0.06em; color: var(--nav); text-decoration: none; }
+  .header-logo small { display: block; font-size: 9px; font-weight: 400; letter-spacing: 0.04em; color: var(--outline-label); }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+
+  /* HERO */
+  .hero { padding: 44px 24px 52px; }
+  .hero-inner { max-width: 1200px; margin: 0 auto; }
+  .hero h1 { font-size: 26px; font-weight: 700; line-height: 1.54; color: var(--heading); margin-bottom: 14px; }
+  .hero p { font-size: 16px; font-weight: 400; line-height: 1.8; max-width: 760px; margin-bottom: 28px; }
+
+  /* SECTIONS */
+  .section { padding: 56px 24px; max-width: 1200px; margin: 0 auto; }
+  .section-alt { background: var(--default-25); }
+  .section-alt .section-inner { padding: 56px 24px; max-width: 1200px; margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--default-300); letter-spacing: 0.08em; margin-bottom: 8px; }
+  .section-title { font-size: 26px; font-weight: 700; line-height: 1.54; color: var(--heading); margin-bottom: 28px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+  .color-swatch { background: var(--white); border: 1px solid var(--default-75); border-radius: var(--r); overflow: hidden; }
+  .color-swatch-block { height: 68px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 700; line-height: 1.4; color: var(--heading); }
+  .color-swatch-hex { font-size: 12px; font-family: var(--font-mono); color: var(--default-300); }
+  .color-swatch-role { font-size: 11px; color: var(--default-300); margin-top: 4px; line-height: 1.6; }
+  .color-group-label { font-size: 21px; font-weight: 700; line-height: 1.52; color: var(--heading); margin: 32px 0 12px; }
+
+  /* TONAL SCALE */
+  .scale { display: flex; border-radius: var(--r); overflow: hidden; margin-bottom: 6px; }
+  .scale div { flex: 1; height: 44px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 10px; }
+  .scale-name { font-size: 13px; font-weight: 700; color: var(--heading); margin: 14px 0 6px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--default-75); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; color: var(--default-300); margin-top: 8px; line-height: 1.7; }
+  .type-context { display: inline-block; background: var(--blue-50); color: var(--blue-900); font-size: 11px; font-weight: 700; padding: 2px 8px; margin-left: 8px; border-radius: var(--r); }
+
+  /* BUTTONS — .ncgr-button の骨格を再現 */
+  .btn {
+    display: inline-flex; justify-content: center; align-items: center; gap: .25rem;
+    height: 40px; padding: 0 16px;
+    border-radius: var(--r);
+    font-family: var(--font); font-size: 16px; font-weight: 400; line-height: 24px;
+    white-space: nowrap; text-overflow: ellipsis; overflow: hidden;
+    text-decoration: none; cursor: pointer;
+    border: 1px solid rgba(0,0,0,0);
+    box-shadow: var(--shadow-btn);
+    background-color: transparent;
+  }
+  .btn-primary { background-image: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0)), linear-gradient(#067bbf, #067bbf); color: var(--white); }
+  .btn-primary:hover { background-image: linear-gradient(rgba(255,255,255,.08), rgba(255,255,255,.08)), linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0)), linear-gradient(#067bbf, #067bbf); }
+  .btn-outline { background-image: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0)), linear-gradient(#fff, #fff); color: var(--outline-label); border: 1px solid rgba(57,60,65,0.2); }
+  .btn-outline:hover { background-image: linear-gradient(rgba(255,255,255,.08), rgba(255,255,255,.08)), linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0)), linear-gradient(#63686b, #63686b); color: var(--white); border-color: var(--outline-label); }
+  .btn-ghost { background-image: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0)), linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0)); color: var(--outline-label); box-shadow: none; }
+  .btn-ghost-blue { background-image: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0)), linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0)); color: var(--blue); box-shadow: none; }
+  .btn-segment { background-image: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0)), linear-gradient(#dfdfdf, #dfdfdf); color: var(--default-900); font-size: 14px; }
+  .btn-campaign { background-image: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0)), linear-gradient(#2058e5, #2058e5); color: var(--white); font-size: 14px; }
+  .btn-chat { background-image: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0)), linear-gradient(#3f3f3f, #3f3f3f); color: var(--white); height: auto; padding: 6px 12px 6px 8px; border-radius: 20px; font-size: 13px; font-weight: 600; line-height: 1.8; box-shadow: none; }
+
+  .button-row { display: flex; gap: 18px; flex-wrap: wrap; align-items: flex-start; }
+  .button-item { text-align: center; }
+  .button-label { font-family: var(--font-mono); font-size: 11px; color: var(--default-300); margin-top: 10px; line-height: 1.7; }
+
+  /* BADGES */
+  .badge-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .badge-new { display: inline-block; background: var(--blue-token); color: var(--white); font-size: 12px; font-weight: 400; line-height: 1.8; padding: 4px 8px; border-radius: 500px; }
+  .badge-pop { display: inline-block; background: var(--blue-50); color: var(--blue-900); font-size: 12px; font-weight: 700; line-height: 1.5; padding: 4px 8px; border-radius: 0; }
+
+  /* RANKING */
+  .rank-row { display: flex; gap: 18px; align-items: center; }
+  .rank { width: 32px; height: 32px; border-radius: 32px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: var(--white); }
+  .rank-1 { background: var(--warning-500); }
+  .rank-2 { background: var(--default-200); }
+  .rank-3 { background: var(--secondary-600); }
+  .rank-4 { background: var(--white); color: var(--default-900); border: 1px solid var(--default-100); }
+
+  /* PRODUCT CARDS */
+  .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .product { background: var(--white); border-radius: var(--r); overflow: hidden; }
+  .product-thumb { height: 150px; border-radius: var(--r); display: flex; align-items: center; justify-content: center; font-size: 34px; }
+  .product-name { font-size: 13px; font-weight: 700; line-height: 1.8; color: var(--default-900); margin-top: 8px; }
+  .product-shop { font-size: 13px; font-weight: 400; line-height: 1.8; color: var(--default-300); }
+  .product-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+  .product-price { font-size: 16px; font-weight: 700; color: var(--default-900); }
+  .product-like { font-size: 13px; font-weight: 700; color: var(--like); }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; max-width: 900px; }
+  .form-label { display: block; font-size: 16px; font-weight: 400; line-height: 1.8; color: var(--default-900); margin-bottom: 6px; }
+  .form-input { width: 100%; background: var(--white); border: 1px solid rgba(57,60,65,0.2); border-radius: var(--r); padding: 8px 12px; height: 40px; font-family: var(--font); font-size: 16px; color: var(--nav); }
+  .form-input::placeholder { color: rgba(0,0,0,0.2); }
+  .form-input.is-focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(6,123,191,.2); outline: none; }
+  .form-input.is-error { border-color: var(--like); }
+  .form-search { background: var(--default-75); border: none; }
+  .form-help { font-size: 13px; color: var(--default-300); margin-top: 4px; line-height: 1.8; }
+  .form-error { font-size: 13px; color: var(--like); font-weight: 700; margin-top: 4px; line-height: 1.8; }
+
+  /* TABLE */
+  .spec-table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--white); }
+  .spec-table th, .spec-table td { border: 1px solid var(--default-75); padding: 9px 12px; text-align: left; vertical-align: top; line-height: 1.6; }
+  .spec-table th { background: var(--default-50); font-weight: 700; color: var(--heading); }
+  .spec-table code { font-family: var(--font-mono); font-size: 12px; }
+
+  /* ELEVATION */
+  .elev-row { display: flex; gap: 40px; flex-wrap: wrap; }
+  .elev-box { width: 170px; height: 96px; background: var(--white); border-radius: var(--r); }
+  .elev-1 { box-shadow: 0 -0.1px 1px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.12), 0 0 transparent; }
+  .elev-1b { box-shadow: var(--shadow-btn); }
+  .elev-2 { box-shadow: inset 0 -2px rgba(0,0,0,.24); }
+
+  .note { font-size: 13px; color: var(--default-300); line-height: 1.8; margin-top: 12px; }
+  .note strong { color: var(--default-900); }
+
+  /* FOOTER */
+  .footer { background: var(--default-50); padding: 40px 24px; }
+  .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; gap: 48px; flex-wrap: wrap; }
+  .footer h4 { font-size: 16px; font-weight: 700; color: var(--heading); margin-bottom: 8px; }
+  .footer ul { list-style: none; }
+  .footer li { font-size: 13px; line-height: 1.8; color: var(--default-900); }
+
+  @media screen and (max-width: 768px) {
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+    .form-grid { grid-template-columns: 1fr; }
+    .section-title { font-size: 21px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-logo" href="#">SUZURI<small>by GMOペパボ</small></a>
+  <a class="btn btn-segment" href="#buttons">自分用につくる</a>
+  <a class="btn btn-segment" href="#buttons">ショップで販売する</a>
+  <a class="btn btn-campaign" href="#buttons">法人ノベルティをつくる</a>
+  <div class="header-right">
+    <input class="form-input form-search" style="width:200px" placeholder="キーワード検索">
+    <a class="btn btn-ghost" href="#forms">ログイン</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Design System Preview — SUZURI</h1>
+    <p>GMO ペパボ共通のデザインシステム <strong>Nachiguro（なちぐろ）</strong> の上に構築されている。面色はすべて二重の <code>linear-gradient</code> で塗られ、<code>background-color</code> は透明のまま。<code>border-radius: .5rem</code>（8px）が CSS 中 322 回で圧倒的。以下はすべて computed style と <code>nachiguro.css</code>（1.89MB）の実測値（2026-08-27 取得）。</p>
+    <div class="button-row">
+      <a class="btn btn-primary" href="#colors">デザイントークンを見る</a>
+      <a class="btn btn-outline" href="#typography">タイポグラフィ</a>
+    </div>
+  </div>
+</section>
+
+<!-- 01 COLORS -->
+<section class="section-alt" id="colors">
+<div class="section-inner">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">白地にグレー、青は 1 点だけ</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#067bbf"></div><div class="color-swatch-info"><div class="color-swatch-name">SUZURI Blue</div><div class="color-swatch-hex">#067bbf</div><div class="color-swatch-role">主 CTA の面・リンク。CSS 出現 1002 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#007bbb"></div><div class="color-swatch-info"><div class="color-swatch-name">Primary 500（token）</div><div class="color-swatch-hex">#007bbb</div><div class="color-swatch-role">New! バッジ。<strong>ボタンには使われない</strong></div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#bf2213"></div><div class="color-swatch-info"><div class="color-swatch-name">Like Red</div><div class="color-swatch-hex">#bf2213</div><div class="color-swatch-role">いいね数の文字。<strong>1960 回で全色トップ</strong></div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#2058e5"></div><div class="color-swatch-info"><div class="color-swatch-name">Campaign Blue</div><div class="color-swatch-hex">#2058e5</div><div class="color-swatch-role">法人 CTA・FAB。nachiguro.css には 0 回＝SUZURI 独自</div></div></div>
+  </div>
+
+  <div class="color-group-label">Nachiguro Tonal Scale — 6 系統 × 12 段</div>
+  <div class="scale-name">Primary（--color-primary-*）</div>
+  <div class="scale">
+    <div style="background:#f2f8fc">25</div><div style="background:#e6f2f8">50</div><div style="background:#cce5f1">75</div><div style="background:#b3d7eb">100</div><div style="background:#80bddd">200</div><div style="background:#4da3cf">300</div><div style="background:#268fc5; color:#fff">400</div><div style="background:#007bbb; color:#fff">500</div><div style="background:#006fa8; color:#fff">600</div><div style="background:#006296; color:#fff">700</div><div style="background:#005683; color:#fff">800</div><div style="background:#00507a; color:#fff">900</div>
+  </div>
+  <div class="scale-name">Secondary（--color-secondary-*）</div>
+  <div class="scale">
+    <div style="background:#fef6f3">25</div><div style="background:#fcede8">50</div><div style="background:#fadbd1">75</div><div style="background:#f7c8ba">100</div><div style="background:#f2a48c">200</div><div style="background:#ed805d">300</div><div style="background:#e9643b; color:#fff">400</div><div style="background:#e54918; color:#fff">500</div><div style="background:#ce4216; color:#fff">600</div><div style="background:#b73a13; color:#fff">700</div><div style="background:#a03311; color:#fff">800</div><div style="background:#952f10; color:#fff">900</div>
+  </div>
+  <div class="scale-name">Success / Warning / Danger（500 のみ抜粋）</div>
+  <div class="scale">
+    <div style="background:#edf7ed">S50</div><div style="background:#4bae4f; color:#fff">S500</div><div style="background:#317133; color:#fff">S900</div>
+    <div style="background:#fffaed">W50</div><div style="background:#fbca4d">W500</div><div style="background:#a38332; color:#fff">W900</div>
+    <div style="background:#fdebea">D50</div><div style="background:#e83929; color:#fff">D500</div><div style="background:#97251b; color:#fff">D900</div>
+  </div>
+  <div class="scale-name">Default（--color-default-*）</div>
+  <div class="scale">
+    <div style="background:#f7f7f7">25</div><div style="background:#efefef">50</div><div style="background:#dfdfdf">75</div><div style="background:#d0d0d0">100</div><div style="background:#b0b0b0">200</div><div style="background:#909090; color:#fff">300</div><div style="background:#797979; color:#fff">400</div><div style="background:#616161; color:#fff">500</div><div style="background:#575757; color:#fff">600</div><div style="background:#4e4e4e; color:#fff">700</div><div style="background:#444444; color:#fff">800</div><div style="background:#3f3f3f; color:#fff">900</div>
+  </div>
+
+  <div class="color-group-label">Text — 4 色を使い分ける</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#3f3f3f"></div><div class="color-swatch-info"><div class="color-swatch-name">Body</div><div class="color-swatch-hex">#3f3f3f</div><div class="color-swatch-role">body の既定色（--color-label）</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#393c41"></div><div class="color-swatch-info"><div class="color-swatch-name">Heading</div><div class="color-swatch-hex">#393c41</div><div class="color-swatch-role">h2 / h3。本文より青みが強い。25 回</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#63686b"></div><div class="color-swatch-info"><div class="color-swatch-name">Outline Label</div><div class="color-swatch-hex">#63686b</div><div class="color-swatch-role">枠線ボタンのラベル・アイコン。<strong>1144 回</strong></div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#909090"></div><div class="color-swatch-info"><div class="color-swatch-name">Secondary Label</div><div class="color-swatch-hex">#909090</div><div class="color-swatch-role">日付・件数（--color-default-300）</div></div></div>
+  </div>
+
+  <div class="color-group-label">⚠️ トークンの値をそのまま実装しない</div>
+  <table class="spec-table">
+    <tr><th style="width:24%">見た目</th><th style="width:28%">トークンの宣言</th><th style="width:20%">CSS 中の実出現</th><th>実装値</th></tr>
+    <tr><td>主 CTA の青</td><td><code>--color-primary-500: #007bbb</code></td><td><strong>1 回</strong>（宣言のみ）</td><td><code>#067bbf</code> が <strong>1002 回</strong></td></tr>
+    <tr><td>いいねの赤</td><td><code>--color-danger-500: #e83929</code></td><td>宣言のみ</td><td><code>#bf2213</code> が <strong>1960 回</strong></td></tr>
+    <tr><td>枠線ボタンの文字</td><td><code>--color-default-*</code> 経由</td><td>—</td><td><code>#63686b</code> が <strong>1144 回</strong></td></tr>
+  </table>
+  <p class="note">ビルド時に色が焼き込まれており、<strong>変数を読んで <code>#007bbb</code> で実装すると 1 トーンずれる</strong>。必ず computed style の実測値を採用すること。<br>
+  また、ページ最上部の GMO グループ帯（<code>#30f4c5</code>）と最下部のグループフッター（<code>#005bac</code>）は<strong>全社共通ウィジェットで SUZURI の色ではない</strong>。</p>
+</div>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <h2 class="section-title">Open Sans 先頭の欧文優先。本文は line-height 1.8</h2>
+
+  <div class="type-sample">
+    <div style="font-size:26px; font-weight:700; line-height:1.54; color:#393c41;">人気のアイテム</div>
+    <div class="type-meta">26px / 700 / line-height: 40px (1.54) / color: #393c41<span class="type-context">h2 — セクション大見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:21px; font-weight:700; line-height:1.52; color:#393c41;">クリエイターを探す</div>
+    <div class="type-meta">21px / 700 / line-height: 32px (1.52) / color: #393c41<span class="type-context">h3 — ブロック見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:21px; font-weight:700; line-height:1.14; color:#3a3e40;">SUZURI</div>
+    <div class="type-meta">21px / 700 / line-height: 24px (1.14) / color: #3a3e40<span class="type-context">header — ロゴ・ナビ見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:700; line-height:1.8; color:#006fa8;">オリジナルグッズのつくりかた</div>
+    <div class="type-meta">16px / 700 / line-height: 28.8px (1.8) / color: #006fa8<span class="type-context">h3 — リンクになる小見出し</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.8;">画像を 1 枚アップロードするだけで、T シャツ・スマホケース・マグカップなど 50 種類以上のアイテムに自動で反映されます。在庫を持たずに販売でき、注文が入ってから 1 点ずつ製造して発送します。</div>
+    <div class="type-meta">16px / 400 / line-height: 28.8px (<strong>1.8</strong>) / color: #3f3f3f / letter-spacing: normal<span class="type-context">body の既定</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.5;">リスト内やボタン内はこちらの 1.5（24px 固定）。CSS 中 line-height: 1.5rem が 96 回で最頻。</div>
+    <div class="type-meta">16px / 400 / line-height: 24px (1.5)<span class="type-context">list / button</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:13px; font-weight:700; line-height:1.8;">スタンダードTシャツ</div>
+    <div style="font-size:13px; font-weight:400; line-height:1.8; color:#909090;">まるまるショップ ／ 2026年8月20日</div>
+    <div class="type-meta">13px / 700 (商品名) ・ 13px / 400 / color #909090 (補足) ／ どちらも line-height: 23.4px (1.8)<span class="type-context">product card</span></div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:700; line-height:48px; color:#3a3e40;">Tシャツ　パーカー　スマホケース　ステッカー</div>
+    <div class="type-meta">14px / 700 / line-height: 48px<span class="type-context">nav.category-navigation</span></div>
+  </div>
+
+  <div class="color-group-label">font-family（実測 3 種）</div>
+  <table class="spec-table">
+    <tr><th style="width:26%">対象</th><th>指定</th></tr>
+    <tr><td>サイト全体</td><td><code>"Open Sans", "Noto Sans JP", apple-system, "system-ui", Roboto, "Lucida Grande", Helvetica, Arial, sans-serif</code></td></tr>
+    <tr><td>アイコン</td><td><code>"Nachiguro Icons"</code>（ペパボ専用のアイコンフォント。CSS 中 22 回）</td></tr>
+    <tr><td>ペパボ共通フッター</td><td><code>"Noto Sans JP", -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif</code></td></tr>
+  </table>
+  <p class="note">
+    ※ <strong>欧文優先</strong>。<code>Open Sans</code> を先頭に置き、価格・件数・クリエイター名の欧文を Open Sans で組む。和文は Noto Sans JP に落ちる。<br>
+    ※ <strong>フッターだけ和文優先</strong>（ペパボ共通コンポーネント）。1 サイト内で 2 つの方針が同居している。<br>
+    ※ <code>letter-spacing</code> は CSS 中の宣言 21 個が<strong>すべて <code>normal</code></strong>。日本語でも字間を触らない。<br>
+    ※ <code>font-feature-settings</code> の宣言が<strong>1 つも無い</strong>（＝ <code>palt</code> を使わない）。<br>
+    ※ このプレビューは実サイトと同じ Open Sans + Noto Sans JP を Google Fonts から読み込んでいる。アイコンだけ記号で代用。
+  </p>
+</section>
+
+<!-- 03 PRODUCT -->
+<section class="section-alt" id="product">
+<div class="section-inner">
+  <div class="section-label">03 / Product — 組版サンプル</div>
+  <h2 class="section-title">Tシャツ（メンズ・レディース）</h2>
+
+  <div class="button-row" style="margin-bottom:20px;">
+    <button class="btn btn-outline">カラー絞り込み</button>
+    <button class="btn btn-outline">サイズ</button>
+    <button class="btn btn-outline">人気順</button>
+    <button class="btn btn-ghost-blue">条件をクリア</button>
+    <button class="btn btn-primary">この条件で絞り込む</button>
+  </div>
+
+  <div class="product-grid">
+    <div class="product">
+      <div class="product-thumb" style="background:#efefef">🐈</div>
+      <div class="product-name">ねこがのびてるTシャツ</div>
+      <div class="product-shop">のびねこ商店</div>
+      <div class="product-foot"><span class="product-price">¥3,080</span><span class="product-like">♥ 11.2K</span></div>
+    </div>
+    <div class="product">
+      <div class="product-thumb" style="background:#dfdfdf">🍜</div>
+      <div class="product-name">深夜の中華スープ</div>
+      <div class="product-shop">まかない工房</div>
+      <div class="product-foot"><span class="product-price">¥3,080</span><span class="product-like">♥ 792</span></div>
+    </div>
+    <div class="product">
+      <div class="product-thumb" style="background:#e6f2f8">🏔</div>
+      <div class="product-name">山に登るときのTシャツ</div>
+      <div class="product-shop">アウトドア小屋</div>
+      <div class="product-foot"><span class="product-price">¥3,300</span><span class="product-like">♥ 348</span></div>
+    </div>
+    <div class="product">
+      <div class="product-thumb" style="background:#f7f7f7">🦔</div>
+      <div class="product-name">はりねずみビッグT</div>
+      <div class="product-shop">とげとげ舎</div>
+      <div class="product-foot"><span class="product-price">¥4,180</span><span class="product-like">♥ 96</span></div>
+    </div>
+  </div>
+
+  <div class="color-group-label">Ranking Medals — 金・銀・銅、4 位から白地</div>
+  <div class="rank-row">
+    <div class="rank rank-1">1</div>
+    <div class="rank rank-2">2</div>
+    <div class="rank rank-3">3</div>
+    <div class="rank rank-4">4</div>
+    <div class="rank rank-4">5</div>
+    <span class="note" style="margin:0;">1 位 <code>#fbca4d</code>（warning-500）／ 2 位 <code>#b0b0b0</code>（default-200）／ 3 位 <code>#ce4216</code>（secondary-600）／ 4 位〜 白地 ＋ <code>1px solid #d0d0d0</code>。すべて radius 32px・14px / 700</span>
+  </div>
+</div>
+</section>
+
+<!-- 04 BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">高さ 40px・radius 8px・weight 400。面は二重グラデーション</h2>
+
+  <div class="button-row" style="margin-bottom:32px;">
+    <div class="button-item">
+      <a class="btn btn-primary" href="#">自分用につくる</a>
+      <div class="button-label">Primary<br>linear-gradient(#067bbf,#067bbf)<br>radius 8px / h 40px / 16px / <strong>400</strong></div>
+    </div>
+    <div class="button-item">
+      <button class="btn btn-outline">ショップで販売する</button>
+      <div class="button-label">Outline<br>白地 / 文字 #63686b<br>1px solid rgba(57,60,65,.2)</div>
+    </div>
+    <div class="button-item">
+      <a class="btn btn-ghost" href="#">お問い合わせ・ご相談</a>
+      <div class="button-label">Ghost<br>面なし / 文字 #63686b</div>
+    </div>
+    <div class="button-item">
+      <button class="btn btn-ghost-blue">条件をクリア</button>
+      <div class="button-label">Ghost (blue)<br>面なし / 文字 #067bbf</div>
+    </div>
+    <div class="button-item">
+      <a class="btn btn-segment" href="#">自分用につくる</a>
+      <div class="button-label">Segmented<br>#dfdfdf / 文字 #3f3f3f<br>14px / 400</div>
+    </div>
+    <div class="button-item">
+      <a class="btn btn-campaign" href="#">法人ノベルティをつくる</a>
+      <div class="button-label">Campaign<br>#2058e5（SUZURI 独自）</div>
+    </div>
+    <div class="button-item">
+      <button class="btn btn-chat">💬 チャットで探す</button>
+      <div class="button-label">Chat<br>#3f3f3f / radius 20px<br>13px / 600 / padding 6px 12px 6px 8px</div>
+    </div>
+  </div>
+
+  <div class="color-group-label">Badges</div>
+  <div class="badge-row" style="margin-bottom:10px;">
+    <span class="badge-new">New!</span>
+    <span class="badge-pop">人気アイテム</span>
+  </div>
+  <p class="note">New!: <code>#007bbb</code> / 白文字 / radius <strong>500px</strong>（ピル）/ padding 4px 8px / 12px・400　｜　人気アイテム: <code>#e6f2f8</code> / <code>#00507a</code> / radius <strong>0px</strong>（角）/ padding 4px 8px / 12px・700</p>
+
+  <div class="color-group-label">.ncgr-button の骨格</div>
+  <table class="spec-table">
+    <tr><th style="width:26%">プロパティ</th><th>値</th></tr>
+    <tr><td>height</td><td><code>2.5rem</code>（40px）。大は <code>3rem</code>（48px）／ <code>3.5rem</code>（56px）</td></tr>
+    <tr><td>padding</td><td><code>0</code>（高さで決め、上下 padding を持たない）</td></tr>
+    <tr><td>border-radius</td><td><code>.5rem</code>（8px）</td></tr>
+    <tr><td>font-size / weight / line-height</td><td><code>1rem</code> / <code>400</code> / <code>1.5rem</code></td></tr>
+    <tr><td>gap</td><td><code>.25rem</code>（アイコンとラベルの間）</td></tr>
+    <tr><td>白背景の塗り方</td><td><code>background-image: linear-gradient(色, 色)</code> の<strong>二重指定</strong>。<code>background-color</code> は透明のまま</td></tr>
+    <tr><td>hover</td><td>色を差し替えず <code>linear-gradient(rgba(255,255,255,.08), rgba(255,255,255,.08))</code> を<strong>1 枚重ねる</strong></td></tr>
+    <tr><td>text 制御</td><td><code>white-space: nowrap</code> ＋ <code>text-overflow: ellipsis</code>。<strong>ラベルは 8 文字前後に収める</strong></td></tr>
+  </table>
+</section>
+
+<!-- 05 FORMS -->
+<section class="section-alt" id="forms">
+<div class="section-inner">
+  <div class="section-label">05 / Forms</div>
+  <h2 class="section-title">Default / Focus / Error</h2>
+
+  <div class="form-grid">
+    <div>
+      <label class="form-label">ショップ名</label>
+      <input class="form-input" placeholder="のびねこ商店">
+      <div class="form-help">Default — 1px solid rgba(57,60,65,.2) / radius 8px / h 40px</div>
+    </div>
+    <div>
+      <label class="form-label">アイテム名</label>
+      <input class="form-input is-focus" value="ねこがのびてるTシャツ">
+      <div class="form-help">Focus — border #067bbf ＋ 2px のリング</div>
+    </div>
+    <div>
+      <label class="form-label">価格</label>
+      <input class="form-input is-error" value="0">
+      <div class="form-error">価格は 100 円以上で設定してください</div>
+    </div>
+  </div>
+  <p class="note">検索バーだけ面色が <code>#dfdfdf</code>（<code>--color-search-bar-background</code>）。プレースホルダは <code>rgba(0,0,0,0.2)</code>（<code>--color-placeholder-text</code>）。</p>
+</div>
+</section>
+
+<!-- 06 ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">06 / Elevation</div>
+  <h2 class="section-title">浮かせるためではなく「縁」を作るために使う</h2>
+
+  <div class="elev-row">
+    <div class="button-item">
+      <div class="elev-box"></div>
+      <div class="button-label">Level 0<br><code>none</code><br>1160 回</div>
+    </div>
+    <div class="button-item">
+      <div class="elev-box elev-1"></div>
+      <div class="button-label">Level 1<br><code>0 -.1px 1px rgba(0,0,0,.12),<br>0 1px 2px rgba(0,0,0,.12)</code><br><strong>420 回</strong>／ボタンの既定</div>
+    </div>
+    <div class="button-item">
+      <div class="elev-box elev-1b"></div>
+      <div class="button-label">Level 1'<br>上に <code>0 -2px rgba(0,0,0,.24)</code> を追加<br>308 回／<strong>下辺の押し込み</strong></div>
+    </div>
+    <div class="button-item">
+      <div class="elev-box elev-2"></div>
+      <div class="button-label">Level 2<br><code>inset 0 -2px rgba(0,0,0,.24)</code><br>308 回／押された状態</div>
+    </div>
+  </div>
+  <p class="note"><code>0 -2px rgba(0,0,0,.24)</code> が下辺だけを暗くし、物理的なボタンの厚みを表現する。</p>
+</section>
+
+<!-- 07 LAYOUT -->
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">07 / Layout</div>
+  <h2 class="section-title">radius は 8px にほぼ統一</h2>
+
+  <table class="spec-table" style="margin-bottom:28px;">
+    <tr><th>宣言</th><th>px</th><th>出現</th><th>用途</th></tr>
+    <tr><td><code>.5rem</code></td><td><strong>8px</strong></td><td><strong>322 回</strong></td><td><strong>ボタン・カード・入力欄・チップ。既定</strong></td></tr>
+    <tr><td><code>1.25rem</code></td><td>20px</td><td>104 回</td><td>大きめのブロック</td></tr>
+    <tr><td><code>1rem</code></td><td>16px</td><td>53 回</td><td>中サイズ</td></tr>
+    <tr><td><code>1.75rem</code></td><td>28px</td><td>52 回</td><td>丸め強め</td></tr>
+    <tr><td><code>1.5rem</code></td><td>24px</td><td>52 回</td><td>丸め強め</td></tr>
+    <tr><td><code>.75rem</code></td><td>12px</td><td>52 回</td><td>小さめ</td></tr>
+    <tr><td><code>.25rem</code></td><td>4px</td><td>12 回</td><td>最小</td></tr>
+    <tr><td><code>0</code></td><td>—</td><td>17 回</td><td>角バッジ</td></tr>
+  </table>
+
+  <div class="color-group-label">Breakpoints（nachiguro.css の実出現）</div>
+  <table class="spec-table">
+    <tr><th>Query</th><th>出現</th><th>用途</th></tr>
+    <tr><td><code>max-width: 768px</code></td><td>22 回</td><td>1 カラム。ヘッダーのセグメントを畳む</td></tr>
+    <tr><td><code>min-width: 1280px</code></td><td>21 回</td><td>商品グリッド 7〜8 列</td></tr>
+    <tr><td><code>min-width: 720px</code></td><td>16 回</td><td>グリッド 4 列</td></tr>
+    <tr><td><code>min-width: 540px</code></td><td>16 回</td><td>グリッド 3 列</td></tr>
+    <tr><td><code>max-width: 480px</code></td><td>14 回</td><td>グリッド 2 列</td></tr>
+    <tr><td><code>min-width: 768px</code></td><td>5 回</td><td>通常レイアウト</td></tr>
+  </table>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <h4>つくる</h4>
+      <ul><li>自分用につくる</li><li>ショップで販売する</li><li>法人ノベルティ</li></ul>
+    </div>
+    <div>
+      <h4>さがす</h4>
+      <ul><li>Tシャツ</li><li>スマホケース</li><li>ステッカー</li><li>バッグ</li></ul>
+    </div>
+    <div>
+      <h4>ヘルプ</h4>
+      <ul><li>よくある質問</li><li>お問い合わせ</li><li>配送について</li></ul>
+    </div>
+    <div>
+      <h4>SUZURI について</h4>
+      <ul><li>ブランドアセット</li><li>広告ポリシー</li><li>AIへの取り組み</li></ul>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
