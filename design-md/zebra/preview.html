@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ZEBRA（ゼブラ）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Satisfy&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: CSS Custom Properties（--var-*）をそのまま採用。2026-08-30 実測 === */
+    --primary:        #fa051c;  /* --var-color-primary。リンク・ホバー・フォーカスも兼ねる */
+    --text-primary:   #141414;  /* --var-color-text-primary。純黒は使わない */
+    --text-secondly:  #555555;  /* --var-color-text-secondly */
+    --backdrop:       #f8f8f8;  /* --var-color-backdrop-primary。トップのユニーク背景 18 件 */
+    --gray-bg:        #fafafa;  /* --var-color-gray-bg */
+    --gray:           #d9d9d9;  /* --var-color-gray。ボタン・タイルの枠 */
+    --gray-border:    #e2e2e2;  /* --var-color-gray-border */
+    --gray-item:      #cccccc;  /* --var-color-gray-item */
+    --disabled:       #efefef;  /* --var-color-disabled */
+    --white:          #ffffff;  /* --var-base-bg */
+
+    /* ラベル色 */
+    --label-company:  #fa051c;
+    --label-product:  #263da6;
+    --label-other:    #141414;
+
+    /* Semantic（すべて「極薄の面色」。文字色には使わない） */
+    --success:        #e9f3e6;
+    --error:          #fff5f5;
+    --information:    #e5f2f7;
+    --warning:        #fff5cc;
+
+    /* 製品ブランドのサブパレット */
+    --sarasa:         #fb8323;  --sarasa-2:     #fff2e5;
+    --blen:           #0d9384;  --blen-2:       #f2faf9;
+    --delguard:       #0a3190;  --delguard-2:   #f0f5ff;
+    --mildliner:      #53bbff;  --mildliner-2:  #f0f9ff;
+    --mackee:         #141414;  --mackee-2:     #f4f4f4;
+
+    /* === Fonts: --var-font-sans-serif / --var-font-second-language をそのまま === */
+    --font-sans:   "Zen Kaku Gothic New", sans-serif;
+    --font-second: "Satisfy", cursive;
+    --font-mono:   SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Radius: 既定は 0。角丸を許すのはラベル(2px)とアイコン(50%)だけ === */
+    --r-none:  0;
+    --r-label: 2px;
+    --r-sm:    3px;
+    --r-round: 50%;
+
+    /* === Shadow: 実効宣言は 1 種類のみ === */
+    --shadow-header: 0 1px 2px 0 rgba(0, 0, 0, .16);
+    --shadow-inset:  inset 0 -1px 0 rgba(0, 0, 0, .25);
+
+    /* Spacing（--var-scale-layout*） */
+    --sp-8:  8px;
+    --sp-20: 20px;
+    --sp-32: 32px;
+    --sp-36: 36px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.68;            /* 26.88px / 16px。このサイトの基準 */
+    letter-spacing: normal;       /* 本文には字間を入れない */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { display: flex; align-items: center; gap: 26px; padding: 0 32px; height: 64px; background: var(--white); border-bottom: 1px solid var(--gray-border); }
+  .header-logo { font-size: 22px; font-weight: 700; letter-spacing: .06em; color: var(--primary); text-decoration: none; }
+  .header-nav { display: flex; gap: 22px; }
+  .header-nav a { font-size: 14px; font-weight: 500; letter-spacing: .057em; color: var(--text-primary); text-decoration: none; }
+  .header-right { margin-left: auto; display: flex; }
+  .header-right a { font-size: 14px; font-weight: 400; color: var(--text-primary); text-decoration: none; padding: 16px 10px; background: var(--white); }
+
+  /* BRAND SLIDER（ヘッダー直下の製品ブランド帯） */
+  .brandbar { display: grid; grid-template-columns: repeat(5, 1fr); border-bottom: 1px solid var(--gray-border); background: var(--white); }
+  .brandbar div { text-align: center; padding: 14px 6px; font-size: 14px; font-weight: 500; border-right: 1px solid var(--gray-border); }
+  .brandbar div:last-child { border-right: 0; }
+  .brandbar span { display: block; height: 6px; margin: 0 auto 10px; width: 62%; border-radius: 3px; }
+
+  /* HERO — モノクロのタイル + 赤の図形 */
+  .hero { display: grid; grid-template-columns: repeat(5, 1fr); grid-auto-rows: 150px; }
+  .hero div { position: relative; background: linear-gradient(135deg, #dcdcdc, #8f8f8f); }
+  .hero div:nth-child(2n) { background: linear-gradient(140deg, #cfcfcf, #6f6f6f); }
+  .hero div:nth-child(3n) { background: linear-gradient(120deg, #e4e4e4, #a2a2a2); }
+  .hero div::before { content: ""; position: absolute; left: 34%; top: 14%; width: 16px; height: 46px; background: var(--primary); transform: rotate(12deg); }
+  .hero div::after  { content: ""; position: absolute; left: 30%; top: 68%; width: 22px; height: 22px; border-radius: 50%; background: var(--primary); }
+  .hero .hero-end { display: flex; align-items: center; justify-content: center; background: var(--backdrop); }
+  .hero .hero-end::before, .hero .hero-end::after { display: none; }
+  .hero-slogan { text-align: center; }
+  .hero-slogan small { display: block; font-size: 13px; font-weight: 500; letter-spacing: .05em; }
+  .hero-slogan b { font-size: 26px; font-weight: 700; letter-spacing: .08em; color: var(--primary); }
+
+  /* SECTIONS — コンテンツ幅 1170px */
+  .section { padding: 64px 32px; max-width: 1170px; margin: 0 auto; }
+  .section-alt { background: var(--backdrop); }
+  .section-alt .section-inner { padding: 64px 32px; max-width: 1170px; margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; color: #999; margin-bottom: 4px; }
+  .en-title { font-family: var(--font-second); font-size: 40px; line-height: .46; color: var(--primary); margin: 10px 0 18px; }
+  .section-lead { font-size: 16px; font-weight: 500; line-height: 1.38; letter-spacing: .04em; margin-bottom: 28px; }
+  .note { font-size: 13px; line-height: 1.9; color: #666; margin-top: 14px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--white); border: 1px solid var(--gray-border); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+  .swatch { background: var(--white); border: 1px solid var(--gray); }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 10px 12px 12px; line-height: 1.6; }
+  .swatch-name { font-size: 13px; font-weight: 700; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 12px; color: #777; }
+  .swatch-use { font-size: 11px; line-height: 1.7; color: #888; margin-top: 4px; }
+  .brand-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 18px; }
+  .brand-card { border: 1px solid var(--gray); }
+  .brand-card .top { height: 46px; }
+  .brand-card .bot { height: 26px; }
+  .brand-card p { padding: 10px 12px; font-size: 13px; font-weight: 500; }
+  .brand-card p span { display: block; font-family: var(--font-mono); font-size: 11px; color: #888; }
+  .warn { border-left: 3px solid var(--primary); background: var(--white); border-top: 1px solid var(--gray-border); border-right: 1px solid var(--gray-border); border-bottom: 1px solid var(--gray-border); padding: 14px 16px; margin-top: 20px; font-size: 13px; line-height: 1.9; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 210px 1fr; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--gray-border); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; line-height: 1.7; color: #888; }
+  .t-page  { font-family: var(--font-second); font-size: 44px; font-weight: 500; line-height: 1; letter-spacing: .05em; color: var(--primary); }
+  .t-sec   { font-family: var(--font-second); font-size: 40px; font-weight: 400; line-height: .46; color: var(--primary); }
+  .t-secjp { font-size: 26px; font-weight: 500; line-height: 1.68; }
+  .t-cta   { font-size: 40px; font-weight: 500; line-height: .55; color: var(--primary); }
+  .t-card  { font-size: 18px; font-weight: 500; line-height: 1.67; }
+  .t-cat   { font-size: 18.72px; font-weight: 700; line-height: 1.4; }
+  .t-body  { font-size: 16px; font-weight: 400; line-height: 1.68; }
+  .t-ui    { font-size: 16px; font-weight: 500; line-height: 1.38; letter-spacing: .04em; }
+  .t-s     { font-size: 15px; font-weight: 500; line-height: 1.8; }
+  .t-nav   { font-size: 14px; font-weight: 500; line-height: 1.68; letter-spacing: .057em; }
+  .t-chip  { font-size: 12px; font-weight: 500; }
+  .t-icon  { font-size: 10px; font-weight: 500; line-height: 1.68; }
+  .t-copy  { font-size: 12px; font-weight: 700; line-height: 1.68; letter-spacing: .019em; color: rgba(20,20,20,.5); }
+
+  /* PRODUCT / ARTICLE */
+  .news { border-top: 1px solid var(--gray-border); }
+  .news-row { display: grid; grid-template-columns: 108px 96px 1fr; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--gray-border); align-items: center; }
+  .news-date { font-size: 14px; font-weight: 500; color: var(--text-secondly); }
+  .news-row a { font-size: 16px; font-weight: 500; color: var(--text-primary); text-decoration: none; }
+  .label { display: inline-block; padding: 3px 4px; border-radius: var(--r-label); border: 1px solid currentColor; background: transparent; font-size: 12px; font-weight: 500; line-height: 1.4; text-align: center; width: 100%; }
+  .label-company { color: var(--label-company); }
+  .label-product { color: var(--label-product); }
+  .label-other   { color: var(--label-other); }
+  .prose p { margin-bottom: 22px; }
+  .prose h3 { font-size: 18px; font-weight: 500; line-height: 1.67; margin: 30px 0 10px; }
+
+  /* CATEGORY TILE */
+  .tile-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 36px; }
+  .tile { border: 1px solid var(--gray); border-radius: var(--r-none); padding: 36px 27px 45px; background: transparent; text-decoration: none; color: var(--text-primary); position: relative; }
+  .tile b { display: block; font-size: 18.72px; font-weight: 700; line-height: 1.4; }
+  .tile span { display: block; margin-top: 6px; font-size: 14px; font-weight: 500; letter-spacing: .057em; color: var(--text-secondly); }
+  .tile i { position: absolute; right: 18px; bottom: 18px; width: 46px; height: 6px; border-radius: 3px; background: var(--gray); display: block; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 22px; }
+  .btn { display: inline-flex; align-items: center; justify-content: space-between; gap: 24px; font-family: var(--font-sans); cursor: pointer; text-decoration: none; }
+  .btn-standard { background: var(--white); color: var(--text-primary); border: 1px solid var(--gray); border-radius: var(--r-none); padding: 20px 30px; font-size: 16px; font-weight: 500; min-width: 280px; }
+  .btn-standard::after { content: "→"; color: var(--primary); }
+  .btn-disabled { background: var(--disabled); color: #999; border: 1px solid var(--gray); border-radius: var(--r-none); padding: 20px 30px; font-size: 16px; font-weight: 500; min-width: 220px; cursor: not-allowed; }
+  .tabs { display: grid; grid-template-columns: repeat(3, 1fr); max-width: 660px; }
+  .tabs a { text-decoration: none; text-align: center; padding: 30px 20px; font-size: 18px; font-weight: 500; background: var(--backdrop); color: var(--text-primary); border-radius: var(--r-none); }
+  .tabs a.is-active { background: var(--white); color: var(--primary); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 36px; }
+  .card { background: var(--white); border: 1px solid var(--gray); border-radius: var(--r-none); box-shadow: none; }
+  .card-photo { height: 160px; background: linear-gradient(135deg, #e6e6e6, #9a9a9a); }
+  .card-body { padding: 20px 24px 24px; }
+  .card-title { font-size: 18px; font-weight: 500; line-height: 1.67; }
+  .card-text { font-size: 14px; font-weight: 500; line-height: 1.67; color: var(--text-secondly); margin-top: 8px; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .field label { display: block; font-size: 14px; font-weight: 500; letter-spacing: .057em; margin-bottom: 6px; }
+  .field input, .field textarea { width: 100%; background: var(--white); color: var(--text-primary); border: 1px solid var(--gray); border-radius: var(--r-none); font-family: var(--font-sans); font-size: 16px; line-height: 1.68; padding: 12px 16px; }
+  .field input:focus, .field textarea:focus { outline: 2px solid var(--primary); outline-offset: 0; }
+  .field.is-focus input { outline: 2px solid var(--primary); }
+  .field.is-error input { border-color: var(--primary); background: var(--error); }
+  .field .msg { font-size: 13px; line-height: 1.8; color: var(--primary); margin-top: 4px; }
+  .field .hint { font-size: 13px; line-height: 1.8; color: var(--text-secondly); margin-top: 4px; }
+  .semantic { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 24px; }
+  .semantic div { padding: 14px 16px; font-size: 14px; font-weight: 500; color: var(--text-primary); border: 1px solid var(--gray-border); }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+  .elev { background: var(--white); border: 1px solid var(--gray); padding: 20px; min-height: 110px; }
+  .elev-0 { box-shadow: none; }
+  .elev-1 { box-shadow: var(--shadow-header); }
+  .elev-2 { box-shadow: var(--shadow-inset); }
+  .elev b { display: block; font-size: 14px; font-weight: 700; line-height: 1.8; }
+  .elev code { display: block; margin-top: 6px; font-size: 11px; line-height: 1.7; background: none; border: 0; padding: 0; color: #777; }
+
+  /* LAYOUT */
+  .layout-demo { border: 1px dashed var(--gray-item); padding: 14px; }
+  .layout-bar { background: var(--backdrop); border: 1px solid var(--gray); text-align: center; font-family: var(--font-mono); font-size: 12px; line-height: 3.4; color: #777; }
+  .layout-split { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 36px; margin-top: 12px; }
+  .layout-split div { border: 1px solid var(--gray); text-align: center; font-family: var(--font-mono); font-size: 12px; line-height: 5; color: #777; }
+  .scale-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.9; }
+  .scale-table th, .scale-table td { border-bottom: 1px solid var(--gray-border); padding: 10px 8px; text-align: left; }
+  .scale-table th { font-weight: 700; font-size: 13px; }
+  .scale-table td:first-child { font-family: var(--font-mono); font-size: 12px; }
+
+  /* FOOTER */
+  .footer { background: var(--backdrop); padding: 40px 32px 24px; margin-top: 40px; }
+  .footer-inner { max-width: 1170px; margin: 0 auto; }
+  .footer p.ttl { font-size: 15px; font-weight: 500; letter-spacing: .1em; margin-bottom: 14px; }
+  .footer-nav { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 22px; }
+  .footer-nav a { font-size: 14px; font-weight: 500; letter-spacing: .057em; color: var(--text-primary); text-decoration: none; }
+  .footer-copy { font-size: 12px; font-weight: 700; letter-spacing: .019em; color: rgba(20,20,20,.5); }
+
+  @media (max-width: 768px) {
+    .type-row { grid-template-columns: 1fr; gap: 6px; }
+    .news-row { grid-template-columns: 1fr; gap: 4px; }
+    .tile-grid, .layout-split { grid-template-columns: 1fr 1fr; }
+    .hero { grid-template-columns: repeat(2, 1fr); }
+    .brandbar { grid-template-columns: repeat(3, 1fr); }
+    .t-page, .t-sec { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-logo" href="#">ZEBRA</a>
+  <nav class="header-nav">
+    <a href="#">商品情報</a><a href="#">特集</a><a href="#">企業情報</a><a href="#">サステナビリティ</a><a href="#">報道資料</a><a href="#">お問い合わせ</a>
+  </nav>
+  <div class="header-right"><a href="#">採用情報</a><a href="#">GLOBAL</a></div>
+</header>
+
+<div class="brandbar">
+  <div><span style="background:var(--sarasa)"></span>サラサ</div>
+  <div><span style="background:var(--blen)"></span>ブレン</div>
+  <div><span style="background:var(--mildliner)"></span>マイルドライナー</div>
+  <div><span style="background:var(--delguard)"></span>デルガード</div>
+  <div><span style="background:var(--mackee)"></span>マッキー</div>
+</div>
+
+<section class="hero">
+  <div></div><div></div><div></div><div></div>
+  <div class="hero-end"><div class="hero-slogan"><small>かく、その先のこと。</small><b>ZEBRA</b></div></div>
+</section>
+
+<!-- 01 COLORS -->
+<section class="section-alt" id="colors">
+<div class="section-inner">
+  <div class="section-label">01 / Colors</div>
+  <div class="en-title">Colors</div>
+  <p class="section-lead">有彩色は赤 1 色。トップページのユニーク背景色は <code>#f8f8f8</code> と <code>#fa051c</code> の 2 色しかない。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#fa051c"></div><div class="swatch-body"><div class="swatch-name">Zebra Red</div><div class="swatch-hex">#fa051c</div><div class="swatch-use">--var-color-primary。リンク・ホバー・フォーカス・企業ラベルを 1 色で兼ねる</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#141414"></div><div class="swatch-body"><div class="swatch-name">Ink Black</div><div class="swatch-hex">#141414</div><div class="swatch-use">--var-color-text-primary。純黒 #000 は使わない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#555555"></div><div class="swatch-body"><div class="swatch-name">Sub Text</div><div class="swatch-hex">#555555</div><div class="swatch-use">--var-color-text-secondly</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f8f8f8;border-bottom:1px solid #d9d9d9"></div><div class="swatch-body"><div class="swatch-name">Backdrop</div><div class="swatch-hex">#f8f8f8</div><div class="swatch-use">--var-color-backdrop-primary。非アクティブなタブ・セクションの地</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#d9d9d9"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#d9d9d9</div><div class="swatch-use">--var-color-gray。ボタン・カテゴリタイルの枠（実測で最多）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#263da6"></div><div class="swatch-body"><div class="swatch-name">Label Product</div><div class="swatch-hex">#263da6</div><div class="swatch-use">--var-color-label-product。赤の対になる唯一の有彩色</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#efefef"></div><div class="swatch-body"><div class="swatch-name">Disabled</div><div class="swatch-hex">#efefef</div><div class="swatch-use">--var-color-disabled</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffffff;border-bottom:1px solid #d9d9d9"></div><div class="swatch-body"><div class="swatch-name">Base BG</div><div class="swatch-hex">#ffffff</div><div class="swatch-use">--var-base-bg。ページ背景（根拠: html）</div></div></div>
+  </div>
+
+  <p class="section-lead" style="margin-top:32px">製品ブランドのサブパレット — 「主色 ＋ 極薄の対」で 1 セット</p>
+  <div class="brand-grid">
+    <div class="brand-card"><div class="top" style="background:var(--sarasa)"></div><div class="bot" style="background:var(--sarasa-2)"></div><p>サラサ<span>#fb8323 / #fff2e5</span></p></div>
+    <div class="brand-card"><div class="top" style="background:var(--blen)"></div><div class="bot" style="background:var(--blen-2)"></div><p>ブレン<span>#0d9384 / #f2faf9</span></p></div>
+    <div class="brand-card"><div class="top" style="background:var(--delguard)"></div><div class="bot" style="background:var(--delguard-2)"></div><p>デルガード<span>#0a3190 / #f0f5ff</span></p></div>
+    <div class="brand-card"><div class="top" style="background:var(--mildliner)"></div><div class="bot" style="background:var(--mildliner-2)"></div><p>マイルドライナー<span>#53bbff / #f0f9ff</span></p></div>
+    <div class="brand-card"><div class="top" style="background:var(--mackee)"></div><div class="bot" style="background:var(--mackee-2)"></div><p>マッキー<span>#141414 / #f4f4f4</span></p></div>
+  </div>
+
+  <div class="warn">
+    <b>ブランド色として拾ってはいけない色</b><br>
+    <code>#007aff</code> は <code>--swiper-theme-color</code>（Swiper.js の既定）。<code>rgb(0,163,224)</code> は <code>--var-highlight-color</code>（テキスト選択色）。どちらも画面上には出てこない。
+  </div>
+</div>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <div class="en-title">Typography</div>
+  <p class="section-lead">和文は Zen Kaku Gothic New 単独、英字の飾り見出しだけ Satisfy。どちらも Google Fonts なので実サイトと同じ書体で再現できる。</p>
+
+  <div class="type-row"><div class="type-meta">Page Title（英）<br>Satisfy 44px / 500<br>lh 1.0 / ls .05em<br>#fa051c</div><div class="t-page">Product</div></div>
+  <div class="type-row"><div class="type-meta">Section Title（英）<br>Satisfy 40px / 400<br>lh 0.46 / ls normal<br>#fa051c</div><div class="t-sec">Products</div></div>
+  <div class="type-row"><div class="type-meta">Section Title（和）<br>26px / 500<br>lh 1.68</div><div class="t-secjp">新商品のご案内</div></div>
+  <div class="type-row"><div class="type-meta">CTA Title<br>40px / 500 / lh 0.55<br>#fa051c</div><div class="t-cta">Catalog</div></div>
+  <div class="type-row"><div class="type-meta">Card Title<br>18px / 500 / lh 1.67</div><div class="t-card">スタイラスツーウェイ</div></div>
+  <div class="type-row"><div class="type-meta">Category Title<br>18.72px / 700 / lh 1.4</div><div class="t-cat">ボールペン</div></div>
+  <div class="type-row"><div class="type-meta">Body<br>16px / 400 / lh 1.68<br>ls normal</div><div class="t-body">かくことは、考えること。ゼブラは 1897 年の創業以来、書き味の追求を通じて、人の思考と表現を支える筆記具をつくり続けてきました。インクの粘度、ペン先の内部構造、軸の重心。手が意識しない領域まで設計する。</div></div>
+  <div class="type-row"><div class="type-meta">Body（UI）<br>16px / 500 / lh 1.38<br>ls 0.04em</div><div class="t-ui">セクションのリード文には字間 0.04em を入れる</div></div>
+  <div class="type-row"><div class="type-meta">Text S<br>15px / 500 / lh 1.8</div><div class="t-s">Web 上でゼブラ商品カタログを閲覧することができます。</div></div>
+  <div class="type-row"><div class="type-meta">Nav / Label<br>14px / 500 / lh 1.68<br>ls 0.057em</div><div class="t-nav">商品情報／特集／企業情報</div></div>
+  <div class="type-row"><div class="type-meta">Chip<br>12px / 500</div><div><span class="label label-company" style="width:auto;padding:3px 8px">企業情報</span> <span class="label label-product" style="width:auto;padding:3px 8px">商品情報</span></div></div>
+  <div class="type-row"><div class="type-meta">Icon Label<br>10px / 500 / lh 1.68</div><div class="t-icon">検索</div></div>
+  <div class="type-row"><div class="type-meta">Copyright<br>12px / 700 / lh 1.68<br>rgba(20,20,20,.5)</div><div class="t-copy">Copyright ZEBRA CO., LTD. All Rights Reserved.</div></div>
+
+  <p class="note"><code>1.68</code> がこのサイトの基準行間（body の 26.88 / 16）。カードやカテゴリだけ <code>1.4</code> に締める。<code>font-feature-settings</code> の宣言は 0 個で、<code>palt</code> は使わない。</p>
+</section>
+
+<!-- 03 PRODUCT -->
+<section class="section-alt" id="article">
+<div class="section-inner">
+  <div class="section-label">03 / Product — 組版サンプル</div>
+  <div class="en-title">News</div>
+  <p class="section-lead">ニュース一覧は「日付 ＋ 枠だけのラベル ＋ タイトル」の 3 カラム。ラベルだけが radius 2px を持つ。</p>
+
+  <div class="news">
+    <div class="news-row"><div class="news-date">2026.08.28</div><div><span class="label label-product">商品情報</span></div><div><a href="#">水性ゲルインクボールペン「サラサグランド」に限定 3 色を追加</a></div></div>
+    <div class="news-row"><div class="news-date">2026.08.14</div><div><span class="label label-company">企業情報</span></div><div><a href="#">コーポレートスローガンを「かく、その先のこと。」にリニューアルしました</a></div></div>
+    <div class="news-row"><div class="news-date">2026.07.30</div><div><span class="label label-other">その他</span></div><div><a href="#">夏季休業期間のお知らせ</a></div></div>
+  </div>
+
+  <div class="prose" style="max-width:760px;margin-top:40px">
+    <h3>ペン先から 1mm 手前の設計</h3>
+    <p>ボールペンの書き味は、ボールとチップの隙間、インクの粘度、そして軸がたわむ量で決まります。ゼブラは「かく」という行為そのものを分解し、手が意識しない領域まで数値で管理しています。</p>
+    <p>本文の行間は 1.68、字間は <code>normal</code>。日本語サイトとしては標準的な設定で、読みやすさを主張しすぎないのがこのサイトの方針です。</p>
+  </div>
+
+  <p class="section-lead" style="margin-top:44px">カテゴリタイル — 1px の罫だけで区切る（radius 0）</p>
+  <div class="tile-grid">
+    <a class="tile" href="#"><b>ボールペン</b><span>BALLPOINT PEN</span><i></i></a>
+    <a class="tile" href="#"><b>マーカー</b><span>MARKER</span><i></i></a>
+    <a class="tile" href="#"><b>シャープペン</b><span>MECHANICAL PENCIL</span><i></i></a>
+    <a class="tile" href="#"><b>修正具</b><span>CORRECTION</span><i></i></a>
+  </div>
+</div>
+</section>
+
+<!-- 04 BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <div class="en-title">Buttons</div>
+  <p class="section-lead">押せる面はすべて直角。ピルは 1 つも存在せず、影も付けない。</p>
+
+  <div class="btn-row">
+    <a class="btn btn-standard" href="#">詳しくみる</a>
+    <a class="btn btn-standard" href="#">記事一覧</a>
+    <span class="btn btn-disabled">受付を終了しました</span>
+  </div>
+
+  <p class="note" style="margin-bottom:12px">タブ — 下線やインジケータを持たず、面色と文字色の反転だけで状態を示す</p>
+  <div class="tabs">
+    <a class="is-active" href="#">カテゴリーから探す</a>
+    <a href="#">オススメから探す</a>
+    <a href="#">用途から探す</a>
+  </div>
+
+  <p class="note">標準 CTA は <code>padding: 20px 30px</code> ＋ <code>1px solid #d9d9d9</code> ＋ 右向き矢印。ホバーでは色を変えず矢印を右に動かす。</p>
+</section>
+
+<!-- 05 CARDS -->
+<section class="section-alt" id="cards">
+<div class="section-inner">
+  <div class="section-label">05 / Cards</div>
+  <div class="en-title">Cards</div>
+  <p class="section-lead">カードも radius 0・影なし。奥行きは罫線と面色だけで作る。</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">サラサクリップ</div><div class="card-text">なめらかな書き味のジェルボールペン。全 20 色。</div></div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">マイルドライナー</div><div class="card-text">目に優しい、おだやかな色の蛍光ペン。</div></div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">ブレン</div><div class="card-text">書くとき、ブレない。振動を抑える構造。</div></div></div>
+  </div>
+</div>
+</section>
+
+<!-- 06 FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <div class="en-title">Forms</div>
+  <p class="section-lead">入力欄も直角。フォーカスは枠ではなくアウトライン（<code>--var-focus-outline-color: #fa051c</code>）で示す。</p>
+  <div class="form-grid">
+    <div class="field">
+      <label for="f1">お名前</label>
+      <input id="f1" type="text" placeholder="山田 太郎">
+      <div class="hint">デフォルト状態</div>
+    </div>
+    <div class="field is-focus">
+      <label for="f2">メールアドレス</label>
+      <input id="f2" type="text" value="info@example.com">
+      <div class="hint">フォーカス状態（outline 2px solid #fa051c）</div>
+    </div>
+    <div class="field is-error">
+      <label for="f3">電話番号</label>
+      <input id="f3" type="text" value="03-">
+      <div class="msg">電話番号を正しく入力してください</div>
+    </div>
+  </div>
+  <div class="field" style="margin-top:24px">
+    <label for="f4">お問い合わせ内容</label>
+    <textarea id="f4" rows="4" placeholder="ご記入ください"></textarea>
+  </div>
+
+  <p class="note" style="margin-top:26px">Semantic の 4 色は「極薄の面色」であって文字色ではない。テキストは <code>#141414</code> のまま面だけを染める。</p>
+  <div class="semantic">
+    <div style="background:var(--success)">成功 — #e9f3e6</div>
+    <div style="background:var(--error)">エラー — #fff5f5</div>
+    <div style="background:var(--information)">情報 — #e5f2f7</div>
+    <div style="background:var(--warning)">警告 — #fff5cc</div>
+  </div>
+</section>
+
+<!-- 07 ELEVATION -->
+<section class="section-alt" id="elevation">
+<div class="section-inner">
+  <div class="section-label">07 / Elevation</div>
+  <div class="en-title">Elevation</div>
+  <p class="section-lead">実効する <code>box-shadow</code> は 2 種類だけ。カードもボタンも Level 0。</p>
+  <div class="elev-grid">
+    <div class="elev elev-0"><b>Level 0 — 既定</b><code>box-shadow: none;</code></div>
+    <div class="elev elev-1"><b>Level 1 — 固定ヘッダー</b><code>0 1px 2px 0 rgba(0,0,0,.16)</code></div>
+    <div class="elev elev-2"><b>Level 2 — 入力欄の内側罫</b><code>inset 0 -1px 0 rgba(0,0,0,.25)</code></div>
+  </div>
+  <p class="note">影を足すと別のサイトになる。奥行きは <code>#f8f8f8</code> の面と <code>#d9d9d9</code> の 1px 罫で表現する。</p>
+</div>
+</section>
+
+<!-- 08 LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">08 / Layout</div>
+  <div class="en-title">Layout</div>
+  <p class="section-lead">コンテンツ幅 1170px。カテゴリタイルは 4 カラム、gap 28px 36px。</p>
+  <div class="layout-demo">
+    <div class="layout-bar">max-width: 1170px</div>
+    <div class="layout-split"><div>1 / 4</div><div>2 / 4</div><div>3 / 4</div><div>4 / 4</div></div>
+  </div>
+
+  <h3 style="font-size:18px;font-weight:500;line-height:1.67;margin:34px 0 10px">Spacing Scale（--var-scale-layout*）</h3>
+  <table class="scale-table">
+    <tr><th>Token</th><th>変数</th><th>Value</th></tr>
+    <tr><td>XS</td><td>--var-scale-layout8</td><td>8px (0.5rem)</td></tr>
+    <tr><td>S</td><td>--var-scale-layout20</td><td>20px (1.25rem)</td></tr>
+    <tr><td>M</td><td>--var-scale-layout32</td><td>32px (2rem)</td></tr>
+    <tr><td>L</td><td>--var-scale-layout36</td><td>36px (2.25rem)</td></tr>
+    <tr><td>XL</td><td>—</td><td>60px（セクション間）</td></tr>
+  </table>
+
+  <h3 style="font-size:18px;font-weight:500;line-height:1.67;margin:34px 0 10px">Radius Scale</h3>
+  <table class="scale-table">
+    <tr><th>値</th><th>CSS 出現</th><th>用途</th></tr>
+    <tr><td>0</td><td>23 回</td><td><b>既定</b>。ボタン・カード・タイル・入力欄</td></tr>
+    <tr><td>3px</td><td>8 回</td><td>フォーム内の小パーツ</td></tr>
+    <tr><td>50%</td><td>5 回</td><td>アイコン</td></tr>
+    <tr><td>2px</td><td>4 回</td><td>ラベル（<code>.m-label</code>）</td></tr>
+  </table>
+  <p class="note">pill（9999px）は 1 つも存在しない。CTA を丸めると、このサイトではなくなる。</p>
+
+  <h3 style="font-size:18px;font-weight:500;line-height:1.67;margin:34px 0 10px">Breakpoints（モバイルファースト）</h3>
+  <table class="scale-table">
+    <tr><th>Name</th><th>Width</th><th>宣言回数</th></tr>
+    <tr><td>Mobile</td><td>&lt; 440px</td><td>37</td></tr>
+    <tr><td>PC 分岐</td><td>≥ 769px</td><td><b>349</b></td></tr>
+    <tr><td>Desktop</td><td>≥ 1025px</td><td>73</td></tr>
+    <tr><td>Wide</td><td>≥ 1268px</td><td>3</td></tr>
+  </table>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="ttl">商品情報</p>
+    <div class="footer-nav">
+      <a href="#">ボールペン</a><a href="#">マーカー</a><a href="#">シャープペン</a><a href="#">修正具</a><a href="#">企業情報</a><a href="#">採用情報</a>
+    </div>
+    <p class="footer-copy">この preview は awesome-design-md-jp のデザインシステム再現サンプルです。ゼブラ公式サイトではありません。</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (477 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (480 sites)</a>
 </p>
 
 <table>
@@ -724,6 +724,11 @@
 <td align="center"><strong>GOOD NATURE STATION</strong><br><img src="design-md/goodnature/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>TableCheck</strong><br><img src="design-md/tablecheck/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>ZEBRA</strong><br><img src="design-md/zebra/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>よーじや</strong><br><img src="design-md/yojiya/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>サクラクレパス</strong><br><img src="design-md/craypas/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1261,11 +1266,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [Hacoa (ハコア)](https://www.hacoa.com/) | Craft / Wooden Goods | [DESIGN.md](design-md/hacoa/DESIGN.md) | [preview.html](design-md/hacoa/preview.html) |
 | [GOOD NATURE STATION](https://goodnaturestation.com/) | Retail / Hotel Complex | [DESIGN.md](design-md/goodnature/DESIGN.md) | [preview.html](design-md/goodnature/preview.html) |
 | [TableCheck (テーブルチェック)](https://www.tablecheck.com/ja/) | Restaurant Booking SaaS | [DESIGN.md](design-md/tablecheck/DESIGN.md) | [preview.html](design-md/tablecheck/preview.html) |
+| [ZEBRA (ゼブラ)](https://www.zebra.co.jp/) | Stationery / Corporate | [DESIGN.md](design-md/zebra/DESIGN.md) | [preview.html](design-md/zebra/preview.html) |
+| [よーじや (YOJIYA)](https://www.yojiya.co.jp/) | Cosmetics / Kyoto Heritage | [DESIGN.md](design-md/yojiya/DESIGN.md) | [preview.html](design-md/yojiya/preview.html) |
+| [サクラクレパス (SAKURA)](https://www.craypas.co.jp/) | Art Materials / Stationery | [DESIGN.md](design-md/craypas/DESIGN.md) | [preview.html](design-md/craypas/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (477 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (480 sites)</a>
 </p>
 
 <table>
@@ -1954,6 +1962,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>Hacoa</strong><br><img src="design-md/hacoa/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>GOOD NATURE STATION</strong><br><img src="design-md/goodnature/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>TableCheck</strong><br><img src="design-md/tablecheck/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>ZEBRA</strong><br><img src="design-md/zebra/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>よーじや</strong><br><img src="design-md/yojiya/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>サクラクレパス</strong><br><img src="design-md/craypas/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: サクラクレパス（SAKURA）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: computed style 実測 ＋ 読み込まれる CSS 1.18MB の grep（2026-08-30）=== */
+    --brand-red: #ff0302;  /* NEW バッジ・カテゴリ見出し・行頭の丸ポチ。CSS 18 回 */
+    --cta-red:   #cb0201;  /* 主 CTA の面色。CSS 9 回 */
+    --band-red:  #d90000;  /* 全幅の赤い帯 */
+    --crimson:   #9a0816;  /* メガメニュー内のリンク文字。CSS 4 回 */
+
+    --ink:       #000000;  /* body の既定色。このサイトは純黒を使う */
+    --ink-2:     #333333;  /* h3・ナビ・チップの文字 */
+    --ink-3:     #54544c;  /* 商品名・記事タイトル。わずかに緑を含む墨色。CSS 11 回 */
+    --white:     #ffffff;
+
+    --chip-bg:   #ffe4e4;  /* ニュースのカテゴリチップ。トップのユニーク背景色 1 位（57 回） */
+    --outline:   #ff8080;  /* アウトラインボタンの枠。CSS 10 回 */
+    --surface:   #f7f7f7;  /* スライダーの操作領域。CSS 9 回 */
+
+    /* 画材の色（カテゴリ・タグ） */
+    --cat-watch: #3090c1;  /* 観る */
+    --cat-exp:   #d41c19;  /* 体験 */
+    --cat-know:  #005330;  /* 知る */
+    --tag-cyan:  #12b4e0;
+    --tag-pink:  #f069a8;
+    --menu-edu:  #feffb2;  /* 教職員 */
+    --menu-corp: #366d91;  /* 企業情報 */
+    --menu-rec:  #7dd78f;  /* 採用情報 */
+
+    /* === Fonts: Web フォントを読み込まない OS フォントスタック。
+           非 macOS/Windows 環境の見えを担保するため Noto Sans JP を末尾に足している === */
+    --font-gothic: "Yu Gothic Medium", "游ゴシック Medium", YuGothic, 游ゴシック体,
+                   "ヒラギノ角ゴ Pro W3", メイリオ, "Noto Sans JP", sans-serif;
+    --font-mono:   SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Radius: 統一トークンを持たない。役割ごとに選ぶ === */
+    --r-btn:    8px;    /* CSS 85 回。主 CTA */
+    --r-btn2:   7px;    /* ヘッダー CTA */
+    --r-card:   16px;   /* CSS 64 回 */
+    --r-card2:  10px;   /* CSS 59 回 */
+    --r-chip:   20px;   /* CSS 53 回。チップ・タブ */
+    --r-pill:   30px;   /* アウトラインピル */
+    --r-round:  50%;    /* CSS 58 回。NEW バッジ・丸ポチ */
+    --r-tag:    0;      /* ハッシュタグは角丸を持たない */
+
+    /* === Shadow: 積極的に使う === */
+    --shadow-btn:   0 5px 10px 0 rgba(0, 0, 0, .1);      /* CSS 72 回 */
+    --shadow-card:  0 10px 10px -6px rgba(0, 0, 0, .25); /* CSS 96 回（最多） */
+    --shadow-head:  0 2px 15px 0 rgba(0, 0, 0, .1);      /* CSS 18 回 */
+    --shadow-modal: 0 5px 10px 3px rgba(0, 0, 0, .3);    /* CSS 20 回 */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font-gothic);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;              /* 24px / 16px。このサイトの基準 */
+    letter-spacing: normal;        /* 字間は見出しにだけ入れる */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { display: flex; align-items: center; gap: 26px; padding: 12px 24px; background: var(--white); box-shadow: var(--shadow-head); position: relative; z-index: 2; }
+  .header-logo { display: inline-flex; align-items: center; justify-content: center; width: 62px; height: 62px; background: var(--brand-red); color: var(--white); font-size: 13px; font-weight: 700; letter-spacing: .06em; text-decoration: none; }
+  .header-nav { display: flex; gap: 22px; }
+  .header-nav a { font-size: 16px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .header-right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+  .btn-shop { background: var(--white); color: #ff0000; border: 2px solid #ff0000; border-radius: var(--r-btn2); padding: 12px 18px; font-size: 13px; font-weight: 700; line-height: 1.3; text-align: center; text-decoration: none; }
+  .btn-contact { background: #ff0000; color: var(--white); border: 0; border-radius: var(--r-btn2); padding: 20px 24px; font-size: 16px; font-weight: 700; line-height: 1; text-decoration: none; }
+
+  /* HERO */
+  .hero { display: grid; grid-template-columns: 1fr 2fr 1fr; align-items: center; gap: 16px; padding: 24px; background: var(--white); }
+  .hero > div { height: 230px; border-radius: var(--r-card2); background: linear-gradient(135deg, #e8e8e8, #b6b6b6); }
+  .hero > .main { height: 320px; position: relative; display: flex; align-items: center; justify-content: center; text-align: center;
+                background: linear-gradient(120deg, #8fb98f 0%, #4f8f5c 55%, #2c5f3a 100%); box-shadow: var(--shadow-card); }
+  .hero > .main h1 { position: relative; font-size: 32px; font-weight: 700; line-height: 1.3; letter-spacing: .1em; color: var(--white); }
+  .hero > .main p { position: relative; margin-top: 10px; font-size: 16px; font-weight: 700; color: var(--white); }
+
+  /* SECTIONS — コンテンツ幅 1152px */
+  .section { padding: 64px 24px; max-width: 1152px; margin: 0 auto; }
+  .section-alt { background: var(--surface); }
+  .section-alt .section-inner { padding: 64px 24px; max-width: 1152px; margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; color: #999; margin-bottom: 6px; }
+  .section-title { font-size: 32px; font-weight: 700; line-height: 1.5; letter-spacing: .05em; margin-bottom: 24px; }
+  .section-title-en { font-size: 32px; font-weight: 700; line-height: 1.5; letter-spacing: .15em; margin-bottom: 24px; }
+  .cat-title { display: inline-flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 700; line-height: 1; color: var(--brand-red); margin-bottom: 18px; }
+  .cat-title::before { content: ""; width: 14px; height: 14px; border-radius: 50%; background: var(--brand-red); }
+  .note { font-size: 13px; line-height: 1.9; color: #666; margin-top: 14px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--white); border: 1px solid #e2e2e2; padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+  .swatch { background: var(--white); border-radius: var(--r-card2); box-shadow: var(--shadow-btn); overflow: hidden; }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 10px 14px 14px; line-height: 1.6; }
+  .swatch-name { font-size: 13px; font-weight: 700; color: var(--ink-2); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 12px; color: #777; }
+  .swatch-use { font-size: 11px; line-height: 1.7; color: #888; margin-top: 4px; }
+  .warn { border-left: 4px solid var(--brand-red); background: var(--chip-bg); padding: 16px 18px; margin-top: 22px; font-size: 13px; line-height: 1.9; border-radius: 0 var(--r-btn) var(--r-btn) 0; }
+  .red-table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 1.9; margin-top: 18px; background: var(--white); }
+  .red-table th, .red-table td { border-bottom: 1px solid #e2e2e2; padding: 9px 10px; text-align: left; }
+  .red-table th { font-weight: 700; font-size: 12px; color: var(--ink-2); }
+  .red-table td:first-child { font-family: var(--font-mono); font-size: 12px; }
+  .red-dot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; vertical-align: -2px; margin-right: 6px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 210px 1fr; gap: 20px; padding: 18px 0; border-bottom: 1px solid #e2e2e2; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; line-height: 1.7; color: #888; }
+  .t-sec    { font-size: 32px; font-weight: 700; line-height: 1.5; letter-spacing: .05em; }
+  .t-secen  { font-size: 32px; font-weight: 700; line-height: 1.5; letter-spacing: .15em; }
+  .t-hero   { font-size: 32px; font-weight: 700; line-height: 1.3; letter-spacing: .1em; }
+  .t-page   { font-size: 26px; font-weight: 700; line-height: 1.3; letter-spacing: .1em; }
+  .t-mega   { font-size: 26px; font-weight: 700; line-height: 1.5; }
+  .t-cat    { font-size: 20px; font-weight: 700; line-height: 1; color: var(--brand-red); }
+  .t-cta    { font-size: 18px; font-weight: 700; line-height: 1.5; }
+  .t-h3     { font-size: 18px; font-weight: 700; line-height: 1.5; color: var(--ink-2); }
+  .t-h3s    { font-size: 16px; font-weight: 700; line-height: 1.5; color: var(--ink-3); }
+  .t-body   { font-size: 16px; font-weight: 400; line-height: 1.5; }
+  .t-long   { font-size: 16px; font-weight: 400; line-height: 1.8125; }
+  .t-nav    { font-size: 16px; font-weight: 700; line-height: 1.5; }
+  .t-tag    { font-size: 14px; font-weight: 400; }
+  .t-chip   { font-size: 12px; font-weight: 700; color: var(--ink-2); }
+
+  /* PRODUCT LIST */
+  .prod-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+  .prod { text-decoration: none; color: var(--ink-3); }
+  .prod-thumb { position: relative; height: 180px; border-radius: var(--r-card); background: linear-gradient(135deg, #efefef, #c4c4c4); box-shadow: var(--shadow-card); }
+  .badge-new { position: absolute; left: -12px; top: -12px; width: 56px; height: 56px; padding: 17px 0; border: 2px solid var(--white); border-radius: 50px; background: var(--brand-red); color: var(--white); font-size: 18px; font-weight: 700; line-height: 1; text-align: center; }
+  .prod-name { display: block; margin-top: 14px; font-size: 16px; font-weight: 700; line-height: 1.5; text-align: center; }
+  .prod-name::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: var(--brand-red); vertical-align: 1px; }
+
+  /* NEWS */
+  .news { margin-top: 12px; }
+  .news-row { display: grid; grid-template-columns: 110px 96px 1fr; gap: 18px; padding: 16px 0; border-bottom: 1px solid #e2e2e2; align-items: center; }
+  .news-date { font-size: 14px; color: var(--ink-3); }
+  .news-row a { font-size: 16px; font-weight: 700; color: var(--ink-3); text-decoration: none; }
+  .news-row a::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: var(--brand-red); vertical-align: 1px; }
+  .chip { display: inline-block; width: 100%; text-align: center; background: var(--chip-bg); color: var(--ink-2); border-radius: var(--r-chip); padding: 4px 15px; font-size: 12px; font-weight: 700; line-height: 1.6; }
+  .prose p { margin-bottom: 22px; }
+  .prose h3 { font-size: 18px; font-weight: 700; line-height: 1.5; color: var(--ink-2); margin: 32px 0 12px; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 22px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-family: var(--font-gothic); text-decoration: none; cursor: pointer; }
+  .btn-primary { background: var(--cta-red); color: var(--white); border: 0; border-radius: var(--r-btn); padding: 15px 30px; font-size: 18px; font-weight: 700; box-shadow: var(--shadow-btn); min-width: 320px; justify-content: space-between; }
+  .btn-primary::after { content: "＋"; font-size: 16px; }
+  .btn-outline { background: transparent; color: var(--ink-2); border: 1px solid var(--outline); border-radius: var(--r-pill); padding: 8px 30px; font-size: 16px; font-weight: 700; justify-content: space-between; min-width: 260px; }
+  .btn-outline::after { content: "→"; }
+  .btn-header { background: var(--white); color: #ff0000; border: 2px solid #ff0000; border-radius: var(--r-btn2); padding: 12px 22px; font-size: 14px; font-weight: 700; }
+  .tabs { display: flex; gap: 12px; }
+  .tabs a { min-width: 140px; text-align: center; padding: 6px 0; border-radius: var(--r-chip); font-size: 16px; font-weight: 700; text-decoration: none; color: var(--ink); }
+  .tabs a.is-active { background: #fe0000; color: var(--white); }
+  .cat-pills { display: flex; gap: 14px; flex-wrap: wrap; }
+  .cat-pill { color: var(--white); border-radius: 18.5px; padding: 5px 50px; font-size: 16px; font-weight: 700; }
+  .tag-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag { color: var(--white); border-radius: var(--r-tag); padding: 4px 15px 6px; font-size: 14px; font-weight: 400; }
+
+  /* MEGA MENU BANDS */
+  .mega { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 24px; border-radius: var(--r-card2); overflow: hidden; }
+  .mega div { padding: 26px 22px; font-size: 26px; font-weight: 700; line-height: 1.5; }
+  .mega div span { display: block; margin-top: 6px; font-size: 16px; font-weight: 400; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px 30px; }
+  .card { background: var(--white); border-radius: var(--r-card); box-shadow: var(--shadow-card); overflow: hidden; }
+  .card-photo { height: 170px; background: linear-gradient(135deg, #e2e2e2, #b0b0b0); }
+  .card-body { padding: 16px 18px 22px; }
+  .card-date { font-size: 13px; color: var(--ink-3); }
+  .card-title { font-size: 16px; font-weight: 700; line-height: 1.5; color: var(--ink-3); margin-top: 4px; }
+  .card-title::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: var(--brand-red); vertical-align: 1px; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .field label { display: block; font-size: 16px; font-weight: 700; line-height: 1.8; color: var(--ink-2); margin-bottom: 6px; }
+  .field input, .field textarea { width: 100%; background: var(--white); color: var(--ink); border: 1px solid #cccccc; border-radius: var(--r-btn); font-family: var(--font-gothic); font-size: 16px; line-height: 1.5; padding: 12px 16px; }
+  .field input:focus, .field textarea:focus { outline: 2px solid var(--brand-red); outline-offset: 1px; }
+  .field.is-focus input { outline: 2px solid var(--brand-red); outline-offset: 1px; }
+  .field.is-error input { border-color: var(--cta-red); background: var(--chip-bg); }
+  .field .msg { font-size: 13px; line-height: 1.8; color: var(--cta-red); margin-top: 4px; }
+  .field .hint { font-size: 13px; line-height: 1.8; color: #888; margin-top: 4px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 22px; }
+  .elev { background: var(--white); border-radius: var(--r-card2); padding: 20px; min-height: 118px; }
+  .elev-0 { box-shadow: none; border: 1px solid #e2e2e2; }
+  .elev-1 { box-shadow: var(--shadow-btn); }
+  .elev-2 { box-shadow: var(--shadow-card); }
+  .elev-3 { box-shadow: var(--shadow-head); }
+  .elev-4 { box-shadow: var(--shadow-modal); }
+  .elev b { display: block; font-size: 14px; font-weight: 700; line-height: 1.8; color: var(--ink-2); }
+  .elev code { display: block; margin-top: 6px; font-size: 11px; line-height: 1.7; background: none; border: 0; padding: 0; color: #777; }
+
+  /* BAND */
+  .band { background: var(--band-red); color: var(--white); padding: 56px 24px; text-align: center; margin-top: 48px; }
+  .band h2 { font-size: 32px; font-weight: 700; line-height: 1.5; letter-spacing: .15em; }
+  .band p { margin-top: 10px; font-size: 16px; font-weight: 700; }
+
+  /* LAYOUT */
+  .layout-demo { border: 1px dashed #cccccc; padding: 14px; border-radius: var(--r-card2); }
+  .layout-bar { background: var(--surface); border-radius: var(--r-btn); text-align: center; font-family: var(--font-mono); font-size: 12px; line-height: 3.4; color: #777; }
+  .layout-split { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-top: 12px; }
+  .layout-split div { background: var(--surface); border-radius: var(--r-card2); text-align: center; font-family: var(--font-mono); font-size: 12px; line-height: 5; color: #777; }
+  .scale-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.9; }
+  .scale-table th, .scale-table td { border-bottom: 1px solid #e2e2e2; padding: 10px 8px; text-align: left; }
+  .scale-table th { font-weight: 700; font-size: 13px; color: var(--ink-2); }
+  .scale-table td:first-child { font-family: var(--font-mono); font-size: 12px; }
+
+  /* FOOTER */
+  .footer { background: var(--surface); padding: 40px 24px 24px; }
+  .footer-inner { max-width: 1152px; margin: 0 auto; }
+  .footer-nav { display: flex; flex-wrap: wrap; gap: 22px; margin-bottom: 22px; }
+  .footer-nav a { font-size: 16px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .footer-copy { font-size: 12px; line-height: 1.8; color: #888; }
+
+  @media (max-width: 767px) {
+    .type-row { grid-template-columns: 1fr; gap: 6px; }
+    .news-row { grid-template-columns: 1fr; gap: 4px; }
+    .hero { grid-template-columns: 1fr; }
+    .prod-grid, .card-grid, .layout-split, .mega { grid-template-columns: 1fr 1fr; }
+    .t-sec, .t-secen, .section-title, .section-title-en { font-size: 22px; }
+    .btn-primary { min-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-logo" href="#">SAKURA</a>
+  <nav class="header-nav">
+    <a href="#">商品を探す</a><a href="#">教職員の皆さま</a><a href="#">法人のお客さま</a><a href="#">企業情報</a><a href="#">サステナビリティ</a><a href="#">採用情報</a>
+  </nav>
+  <div class="header-right">
+    <a class="btn-shop" href="#">ONLINE<br>SHOP</a>
+    <a class="btn-contact" href="#">お問い合わせ</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div></div>
+  <div class="main">
+    <div>
+      <h1>「こころ」のある「色」を通じて</h1>
+      <p>教育・文化・環境に貢献します。</p>
+    </div>
+  </div>
+  <div></div>
+</section>
+
+<!-- 01 COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">白地に赤 1 色 ＋ 画材の色</h2>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#ff0302"></div><div class="swatch-body"><div class="swatch-name">Sakura Red</div><div class="swatch-hex">#ff0302</div><div class="swatch-use">NEW バッジ・カテゴリ見出し・行頭の丸ポチ。CSS 18 回</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#cb0201"></div><div class="swatch-body"><div class="swatch-name">Deep Red</div><div class="swatch-hex">#cb0201</div><div class="swatch-use">主 CTA の面色。CSS 9 回</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#d90000"></div><div class="swatch-body"><div class="swatch-name">Band Red</div><div class="swatch-hex">#d90000</div><div class="swatch-use">全幅の赤い帯</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffe4e4"></div><div class="swatch-body"><div class="swatch-name">Chip Surface</div><div class="swatch-hex">#ffe4e4</div><div class="swatch-use">ニュースのカテゴリチップ。トップのユニーク背景色 1 位（57 回）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ff8080"></div><div class="swatch-body"><div class="swatch-name">Outline</div><div class="swatch-hex">#ff8080</div><div class="swatch-use">アウトラインボタンの枠。黒やグレーの枠は使わない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Ink</div><div class="swatch-hex">#000000</div><div class="swatch-use">body の既定色。このサイトは純黒を使う</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#54544c"></div><div class="swatch-body"><div class="swatch-name">Ink 3</div><div class="swatch-hex">#54544c</div><div class="swatch-use">商品名・記事タイトル。わずかに緑を含む墨色。CSS 11 回</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#9a0816"></div><div class="swatch-body"><div class="swatch-name">Crimson</div><div class="swatch-hex">#9a0816</div><div class="swatch-use">メガメニュー内のリンク文字。CSS 4 回</div></div></div>
+  </div>
+
+  <div class="warn">
+    <b>⚠️ 赤が 5 種類混在している</b><br>
+    主因は <b>CSS キーワード <code>red</code> を 82 箇所</b>（うち <code>background-color:red</code> 10 回）使っていること。新規実装では <code>#ff0302</code>（ブランド／バッジ）と <code>#cb0201</code>（押せる面）の 2 色に整理する。
+  </div>
+  <table class="red-table">
+    <tr><th>色</th><th>出所</th><th>使われている場所</th></tr>
+    <tr><td><span class="red-dot" style="background:#ff0302"></span>#ff0302</td><td>CSS 18 回</td><td>NEW バッジ（56px の正円）・カテゴリ見出し</td></tr>
+    <tr><td><span class="red-dot" style="background:#cb0201"></span>#cb0201</td><td>CSS 9 回</td><td>主 CTA（radius 8px ＋ 影）</td></tr>
+    <tr><td><span class="red-dot" style="background:#fe0000"></span>#fe0000</td><td>CSS 10 回</td><td>タブの選択状態「ALL」</td></tr>
+    <tr><td><span class="red-dot" style="background:#ff0000"></span>red (#ff0000)</td><td><b>キーワード 82 回</b></td><td>ヘッダーの「お問い合わせ」・ONLINE SHOP の枠</td></tr>
+    <tr><td><span class="red-dot" style="background:#d90000"></span>#d90000</td><td>CSS 1 回</td><td>全幅の赤い帯</td></tr>
+  </table>
+
+  <h3 class="cat-title" style="margin-top:38px">画材の色（カテゴリ・タグ・メガメニュー）</h3>
+  <div class="cat-pills" style="margin-bottom:16px">
+    <span class="cat-pill" style="background:var(--cat-watch)">観る</span>
+    <span class="cat-pill" style="background:var(--cat-exp)">体験</span>
+    <span class="cat-pill" style="background:var(--cat-know)">知る</span>
+  </div>
+  <div class="tag-row">
+    <span class="tag" style="background:var(--tag-cyan)">＃補充できる</span>
+    <span class="tag" style="background:var(--tag-pink)">＃手帳向け</span>
+    <span class="tag" style="background:var(--tag-cyan)">＃イラスト</span>
+    <span class="tag" style="background:var(--tag-pink)">＃水彩</span>
+    <span class="tag" style="background:var(--tag-cyan)">＃幼児</span>
+  </div>
+  <div class="mega">
+    <div style="background:var(--menu-edu);color:var(--ink)">教職員の皆さま<span>#feffb2</span></div>
+    <div style="background:var(--menu-corp);color:var(--white)">企業情報<span>#366d91</span></div>
+    <div style="background:var(--menu-rec);color:var(--ink)">採用情報<span>#7dd78f</span></div>
+  </div>
+  <p class="note">分類のための色であって、押せることを示す色ではない。<b>UI の骨格（ボタン・見出し）には赤しか使わない</b>。</p>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography — 実測値</div>
+  <h2 class="section-title">Web フォントを読み込まず、OS のフォントに任せる</h2>
+
+  <div class="type-row"><div class="type-meta">Section Title<br>32px / 700 / lh 1.5<br>ls 0.05em</div><div class="t-sec">おすすめ商品</div></div>
+  <div class="type-row"><div class="type-meta">Section Title（英）<br>32px / 700 / lh 1.5<br>ls 0.15em</div><div class="t-secen">SAKURA PRESS</div></div>
+  <div class="type-row"><div class="type-meta">Hero Title<br>32px / 700 / lh 1.3<br>ls 0.1em</div><div class="t-hero">「こころ」のある「色」</div></div>
+  <div class="type-row"><div class="type-meta">Page Title<br>26px / 700 / lh 1.3<br>ls 0.1em</div><div class="t-page">ピックアップ商品</div></div>
+  <div class="type-row"><div class="type-meta">Mega Menu Title<br>26px / 700 / lh 1.5</div><div class="t-mega">教職員の皆さま</div></div>
+  <div class="type-row"><div class="type-meta">Category Title<br>20px / 700 / lh 1.0<br>#ff0302 ＋ 丸アイコン</div><div><span class="cat-title" style="margin:0">カテゴリから探す</span></div></div>
+  <div class="type-row"><div class="type-meta">CTA / Badge<br>18px / 700</div><div class="t-cta">もっと見る</div></div>
+  <div class="type-row"><div class="type-meta">H3<br>18px / 700 / lh 1.5<br>#333333</div><div class="t-h3">幼稚園・保育園の先生方へ</div></div>
+  <div class="type-row"><div class="type-meta">H3（商品名）<br>16px / 700 / lh 1.5<br>#54544c</div><div class="t-h3s">SAKURA craft_lab 010</div></div>
+  <div class="type-row"><div class="type-meta">Body<br>16px / 400 / lh 1.5<br>ls normal</div><div class="t-body">クレパスは 1925 年、クレヨンとパステルの長所をあわせ持つ描画材として生まれました。伸びのよさと重ね塗りのしやすさを両立し、子どもから画家まで使われています。</div></div>
+  <div class="type-row"><div class="type-meta">Body（記事本文）<br>16px / 400 / lh 1.8125</div><div class="t-long">行長の長い記事本文では、実サイトも行間を 1.8125 まで上げています。日本語本文の 1.5 は下限に近いので、読ませるブロックでは広げてください。</div></div>
+  <div class="type-row"><div class="type-meta">Nav / Link<br>16px / 700 / lh 1.5</div><div class="t-nav">商品を探す</div></div>
+  <div class="type-row"><div class="type-meta">Tag<br>14px / 400</div><div class="t-tag">＃補充できる</div></div>
+  <div class="type-row"><div class="type-meta">Chip<br>12px / 700</div><div><span class="chip" style="width:auto;padding:4px 15px">お知らせ</span></div></div>
+
+  <p class="note"><b>⚠️ Windows の游ゴシック問題</b>：<code>"Yu Gothic Medium"</code> は <code>font-weight: 700</code> で合成太字になる環境がある。このサイトは見出しの多くが 700 なので、Windows では想定より太く潰れて見える可能性がある。<br>
+  <b>⚠️ <code>palt</code> は CSS に 106 箇所あるが効いていない</b>。宣言先はすべて採用・スタッフ紹介系のコンポーネントで、トップ・商品ページの computed は全要素 <code>normal</code>。</p>
+</div>
+</section>
+
+<!-- 03 PRODUCT -->
+<section class="section" id="article">
+  <div class="section-label">03 / Product — 組版サンプル</div>
+  <h2 class="section-title">NEW バッジは 56px の正円</h2>
+  <div class="prod-grid">
+    <a class="prod" href="#"><div class="prod-thumb"><span class="badge-new">NEW</span></div><span class="prod-name">ボールサイン プリズム</span></a>
+    <a class="prod" href="#"><div class="prod-thumb"><span class="badge-new">NEW</span></div><span class="prod-name">インタリオシャープ05 限定セット</span></a>
+    <a class="prod" href="#"><div class="prod-thumb"></div><span class="prod-name">SAKURA craft_lab 010</span></a>
+    <a class="prod" href="#"><div class="prod-thumb"></div><span class="prod-name">クーピーペンシル 12 色</span></a>
+  </div>
+
+  <h3 class="cat-title" style="margin-top:44px">SAKURA PRESS</h3>
+  <div class="news">
+    <div class="news-row"><div class="news-date">2026.08.06</div><div><span class="chip">特集</span></div><div><a href="#">紙粘土「きまるねんど」で手作りクイズ！ 作り方をやさしく解説</a></div></div>
+    <div class="news-row"><div class="news-date">2026.06.18</div><div><span class="chip">お知らせ</span></div><div><a href="#">第 36 回 全日本アートサロン絵画大賞展 作品募集</a></div></div>
+    <div class="news-row"><div class="news-date">2026.03.23</div><div><span class="chip">リリース</span></div><div><a href="#">ピグマで描く、月間ダイアリーひとマス絵日記</a></div></div>
+  </div>
+
+  <div class="btn-row" style="justify-content:center;margin-top:28px"><a class="btn btn-primary" href="#">もっと見る</a></div>
+
+  <div class="prose" style="max-width:760px;margin-top:36px">
+    <h3>クレパスという発明</h3>
+    <p>クレヨンは硬く、パステルは粉が落ちる。その両方を解決するために、1925 年にクレパスは生まれました。以来 100 年、日本の図画工作の時間はこの描画材とともにあります。</p>
+    <p>本文の行間は 1.5、字間は <code>normal</code>。字間を入れるのは見出しだけで、和文見出しは 0.05em、英字見出しは 0.15em まで開けます。</p>
+  </div>
+</section>
+
+<!-- 04 BUTTONS -->
+<section class="section-alt" id="buttons">
+<div class="section-inner">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">押せる面は浮かせる</h2>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">もっと詳しく商品を探す</a>
+    <a class="btn btn-header" href="#">ONLINE SHOP</a>
+  </div>
+  <div class="btn-row">
+    <a class="btn btn-outline" href="#">「美術研究会・研修会」情報</a>
+    <a class="btn btn-outline" href="#">学校・保育向けカタログ</a>
+  </div>
+  <p class="note" style="margin-bottom:12px">タブ — 選択状態だけ面を塗る（radius 20px）</p>
+  <div class="tabs">
+    <a class="is-active" href="#">ALL</a>
+    <a href="#">お知らせ</a>
+    <a href="#">リリース</a>
+  </div>
+  <p class="note">主 CTA は <code>#cb0201</code> ／ radius 8px ／ <code>box-shadow: 0 5px 10px 0 rgba(0,0,0,.1)</code>。アウトラインの枠は淡い赤 <code>#ff8080</code>。<b>ハッシュタグだけ角丸を持たない（radius 0）</b>。</p>
+</div>
+</section>
+
+<!-- 05 CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">カードの影は 0 10px 10px -6px</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-date">2026.08.06</div><div class="card-title">紙粘土「きまるねんど」で手作りクイズ</div></div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-date">2024.07.04</div><div class="card-title">子どもの絵の発達について</div></div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-date">2026.03.23</div><div class="card-title">ピグマで描く、月間ダイアリーひとマス絵日記</div></div></div>
+  </div>
+  <p class="note"><code>0 10px 10px -6px rgba(0,0,0,.25)</code> は CSS 出現 96 回でサイト最多。カードの角丸は 8〜16px。</p>
+</section>
+
+<!-- 06 FORMS -->
+<section class="section-alt" id="forms">
+<div class="section-inner">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">入力欄の角丸は 8px</h2>
+  <div class="form-grid">
+    <div class="field">
+      <label for="f1">お名前</label>
+      <input id="f1" type="text" placeholder="桜井 太郎">
+      <div class="hint">デフォルト状態</div>
+    </div>
+    <div class="field is-focus">
+      <label for="f2">メールアドレス</label>
+      <input id="f2" type="text" value="info@example.com">
+      <div class="hint">フォーカス状態（outline 2px solid #ff0302）</div>
+    </div>
+    <div class="field is-error">
+      <label for="f3">電話番号</label>
+      <input id="f3" type="text" value="06-">
+      <div class="msg">電話番号を正しく入力してください</div>
+    </div>
+  </div>
+  <div class="field" style="margin-top:24px">
+    <label for="f4">お問い合わせ内容</label>
+    <textarea id="f4" rows="4" placeholder="ご記入ください"></textarea>
+  </div>
+</div>
+</section>
+
+<!-- 07 ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">影で階層を作る</h2>
+  <div class="elev-grid">
+    <div class="elev elev-0"><b>Level 0 — フラット</b><code>box-shadow: none;</code></div>
+    <div class="elev elev-1"><b>Level 1 — ボタン（72 回）</b><code>0 5px 10px 0 rgba(0,0,0,.1)</code></div>
+    <div class="elev elev-2"><b>Level 2 — カード（96 回）</b><code>0 10px 10px -6px rgba(0,0,0,.25)</code></div>
+    <div class="elev elev-3"><b>Level 3 — ヘッダー（18 回）</b><code>0 2px 15px 0 rgba(0,0,0,.1)</code></div>
+    <div class="elev elev-4"><b>Level 4 — モーダル（20 回）</b><code>0 5px 10px 3px rgba(0,0,0,.3)</code></div>
+  </div>
+</section>
+
+<section class="band">
+  <h2>SAKURA CRAFT_LAB</h2>
+  <p>全幅の赤い帯（#d90000）で場面を切り替える</p>
+</section>
+
+<!-- 08 LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">08 / Layout</div>
+  <h2 class="section-title">コンテンツ幅 1152px</h2>
+  <div class="layout-demo">
+    <div class="layout-bar">max-width: 1152px</div>
+    <div class="layout-split"><div>1 / 4</div><div>2 / 4</div><div>3 / 4</div><div>4 / 4</div></div>
+  </div>
+
+  <h3 style="font-size:18px;font-weight:700;line-height:1.5;color:var(--ink-2);margin:34px 0 10px">Radius Scale</h3>
+  <table class="scale-table">
+    <tr><th>値</th><th>CSS 出現</th><th>用途</th></tr>
+    <tr><td>8px</td><td>85 回</td><td>主 CTA・入力欄</td></tr>
+    <tr><td>16px</td><td>64 回</td><td>カード</td></tr>
+    <tr><td>10px</td><td>59 回</td><td>ヒーロー・スウォッチ</td></tr>
+    <tr><td>50%</td><td>58 回</td><td>NEW バッジ・行頭の丸ポチ</td></tr>
+    <tr><td>20px</td><td>53 回</td><td>チップ・タブ</td></tr>
+    <tr><td>30px / 9999px</td><td>14 回</td><td>アウトラインピル</td></tr>
+    <tr><td>0</td><td>8 回</td><td><b>ハッシュタグ</b></td></tr>
+  </table>
+
+  <h3 style="font-size:18px;font-weight:700;line-height:1.5;color:var(--ink-2);margin:34px 0 10px">Breakpoints（PC ファースト）</h3>
+  <table class="scale-table">
+    <tr><th>Name</th><th>Width</th><th>宣言回数</th></tr>
+    <tr><td>Mobile</td><td>≤ 767px</td><td><b>1028</b>（主分岐）</td></tr>
+    <tr><td>Tablet</td><td>≥ 768px</td><td>457</td></tr>
+    <tr><td>Desktop</td><td>≤ 1279px</td><td>193</td></tr>
+    <tr><td>Wide</td><td>≥ 1600px</td><td>6</td></tr>
+  </table>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-nav">
+      <a href="#">商品を探す</a><a href="#">教職員の皆さま</a><a href="#">法人のお客さま</a><a href="#">企業情報</a><a href="#">サステナビリティ</a><a href="#">採用情報</a>
+    </div>
+    <p class="footer-copy">この preview は awesome-design-md-jp のデザインシステム再現サンプルです。サクラクレパス公式サイトではありません。</p>
+  </div>
+</footer>
+
+</body>
+</html>
