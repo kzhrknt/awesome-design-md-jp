@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (480 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (483 sites)</a>
 </p>
 
 <table>
@@ -729,6 +729,11 @@
 <td align="center"><strong>よーじや</strong><br><img src="design-md/yojiya/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>サクラクレパス</strong><br><img src="design-md/craypas/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>DNP</strong><br><img src="design-md/dnp/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>有隣堂</strong><br><img src="design-md/yurindo/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>帝国ホテル</strong><br><img src="design-md/imperialhotel/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1269,11 +1274,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [ZEBRA (ゼブラ)](https://www.zebra.co.jp/) | Stationery / Corporate | [DESIGN.md](design-md/zebra/DESIGN.md) | [preview.html](design-md/zebra/preview.html) |
 | [よーじや (YOJIYA)](https://www.yojiya.co.jp/) | Cosmetics / Kyoto Heritage | [DESIGN.md](design-md/yojiya/DESIGN.md) | [preview.html](design-md/yojiya/preview.html) |
 | [サクラクレパス (SAKURA)](https://www.craypas.co.jp/) | Art Materials / Stationery | [DESIGN.md](design-md/craypas/DESIGN.md) | [preview.html](design-md/craypas/preview.html) |
+| [DNP (大日本印刷)](https://www.dnp.co.jp/) | Printing / Corporate | [DESIGN.md](design-md/dnp/DESIGN.md) | [preview.html](design-md/dnp/preview.html) |
+| [有隣堂 (YURINDO)](https://www.yurindo.co.jp/) | Bookstore / Retail | [DESIGN.md](design-md/yurindo/DESIGN.md) | [preview.html](design-md/yurindo/preview.html) |
+| [帝国ホテル (Imperial Hotel)](https://www.imperialhotel.co.jp/) | Hotel / Hospitality | [DESIGN.md](design-md/imperialhotel/DESIGN.md) | [preview.html](design-md/imperialhotel/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (480 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (483 sites)</a>
 </p>
 
 <table>
@@ -1967,6 +1975,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>ZEBRA</strong><br><img src="design-md/zebra/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>よーじや</strong><br><img src="design-md/yojiya/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>サクラクレパス</strong><br><img src="design-md/craypas/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>DNP</strong><br><img src="design-md/dnp/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>有隣堂</strong><br><img src="design-md/yurindo/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>帝国ホテル</strong><br><img src="design-md/imperialhotel/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

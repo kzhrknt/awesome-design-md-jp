@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: DNP（大日本印刷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 2026-08-31 実測（www.dnp.co.jp / corporate / news） === */
+    --primary:        #1432aa;  /* DNP Blue。見出し・主要CTA・ナビの面色。uniqueBackgrounds 最多 13 件 */
+    --primary-2:      #5365ac;  /* ニュース種別バッジ。ニュース一覧では 79 件 */
+    --accent:         #e13000;  /* 「お問合わせ」専用。他のCTAに広げない */
+
+    --white:          #ffffff;  /* ページ背景（body に明示指定） */
+    --surface-blue:   #e6f1fb;  /* 事業領域チップ・注目リンクの淡い面 */
+    --surface-blue-2: #e8f1fa;  /* セクション見出し帯 */
+    --surface-gray:   #f9f9f9;  /* ヘッダーのユーティリティ・セレクトの面 */
+    --surface-bluegray:#eeeff3; /* ニュースの日付カラム・パンくずの帯 */
+
+    --text-primary:   #333333;  /* 本文。純黒は使わない */
+    --text-secondary: #555555;  /* 補助リンク・ラベル */
+    --border:         #666666;  /* アウトラインボタンの枠。DNP の枠は濃い */
+    --border-light:   #8c8c8c;  /* セレクトボックスの枠 */
+    --dot:            #787878;  /* カルーセルの非アクティブドット */
+
+    /* === Fonts ===
+       本文は実サイトどおり Noto Sans JP。
+       見出しの「秀英角ゴシック金 B JIS2004」は DNP 自社書体（Web フォントとして実ロードされる）で
+       ローカル環境には無いため、骨格が近い Zen Kaku Gothic New 700/900 を代替に置く。
+       YakuHanJP（約物半角）も同様に再現できないので、preview では省いている。 */
+    --font-sans:    "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", メイリオ, Meiryo, sans-serif;
+    --font-heading: "Zen Kaku Gothic New", "Noto Sans JP", "ヒラギノ角ゴ ProN", メイリオ, Meiryo, sans-serif;
+    --font-num:     Arial, "ヒラギノ角ゴ ProN", メイリオ, Meiryo, sans-serif;
+    --font-mono:    SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Radius: すべて 0。角丸を持つのはカルーセルのドットだけ === */
+    --r-none:  0;
+    --r-dot:   10px;
+
+    /* === Shadow: 使わない === */
+    --shadow-none: none;
+
+    /* Spacing */
+    --sp-4:  4px;  --sp-10: 10px; --sp-16: 16px;
+    --sp-20: 20px; --sp-25: 25px; --sp-48: 48px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;           /* 24px / 16px。実サイトの本文基準 */
+    letter-spacing: normal;     /* このサイトは全要素 normal。絶対に足さない */
+    font-feature-settings: normal; /* palt は 0 件 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { display: flex; align-items: center; gap: 24px; padding: 0 20px; height: 64px; background: var(--white); border-bottom: 1px solid var(--surface-bluegray); }
+  .header-logo { font-family: var(--font-heading); font-size: 26px; font-weight: 900; color: var(--primary); text-decoration: none; letter-spacing: .02em; }
+  .header-logo small { display: block; font-family: var(--font-sans); font-size: 9px; font-weight: 400; color: var(--text-secondary); letter-spacing: .02em; }
+  .header-nav { display: flex; gap: 20px; margin-left: 12px; }
+  .header-nav a { font-size: 14px; font-weight: 400; line-height: 1.2; color: var(--text-primary); text-decoration: none; }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .header-util { background: var(--surface-gray); color: var(--text-secondary); font-size: 14px; padding: 8px 12px; border: 1px solid var(--border-light); }
+
+  /* HERO */
+  .hero { position: relative; height: 300px; background: linear-gradient(120deg, #cfd8e8, #8a9ab8 60%, #6f80a0); display: flex; align-items: center; }
+  .hero-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
+  .hero-copy { display: inline-block; background: var(--white); color: var(--primary); font-family: var(--font-heading); font-size: 40px; font-weight: 900; line-height: 1.3; padding: 4px 10px; }
+  .hero-sub { display: inline-block; background: var(--white); color: var(--text-primary); font-size: 16px; line-height: 1.5; padding: 4px 10px; margin-top: 10px; }
+  .hero-dots { position: absolute; right: 24px; bottom: 20px; display: flex; gap: 8px; }
+  .hero-dots i { width: 10px; height: 10px; border-radius: var(--r-dot); background: var(--dot); display: block; }
+  .hero-dots i.on { background: var(--primary); }
+
+  /* SECTIONS — コンテンツ幅 1200px */
+  .section { padding: 56px 20px; max-width: 1200px; margin: 0 auto; }
+  .section-alt { background: var(--surface-blue-2); }
+  .section-alt .section-inner { padding: 56px 20px; max-width: 1200px; margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: #8a8a8a; margin-bottom: 6px; }
+  .section-title { font-family: var(--font-heading); font-size: 32px; font-weight: 700; line-height: 1.3; color: var(--primary); margin-bottom: 8px; }
+  .section-lead { font-size: 16px; line-height: 1.6; margin-bottom: 28px; }
+  .note { font-size: 13px; line-height: 1.8; color: #666; margin-top: 14px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--surface-gray); border: 1px solid var(--border-light); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+  .swatch { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-none); }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 10px 12px 12px; line-height: 1.6; }
+  .swatch-name { font-size: 13px; font-weight: 700; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 12px; color: #777; }
+  .swatch-use { font-size: 11px; line-height: 1.7; color: #888; margin-top: 4px; }
+  .warn { border-left: 4px solid var(--accent); background: var(--white); border-top: 1px solid var(--border-light); border-right: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); padding: 14px 16px; margin-top: 20px; font-size: 13px; line-height: 1.9; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 230px 1fr; gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--surface-bluegray); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; line-height: 1.7; color: #888; }
+  .t-page { font-family: var(--font-heading); font-size: 40px; font-weight: 700; line-height: 1.3; color: var(--primary); }
+  .t-sec  { font-family: var(--font-heading); font-size: 32px; font-weight: 700; line-height: 1.3; color: var(--primary); }
+  .t-lead { font-family: var(--font-heading); font-size: 30px; font-weight: 700; line-height: 1.5; color: var(--primary); }
+  .t-sub  { font-family: var(--font-heading); font-size: 28px; font-weight: 700; line-height: 1.8; color: var(--text-primary); }
+  .t-card { font-family: var(--font-heading); font-size: 20px; font-weight: 700; line-height: 1.3; color: var(--primary); }
+  .t-call { font-size: 20px; font-weight: 700; line-height: 1.5; }
+  .t-link { font-size: 18px; font-weight: 600; line-height: 1.85; color: var(--primary); }
+  .t-body { font-size: 16px; font-weight: 400; line-height: 1.5; }
+  .t-nav  { font-size: 14px; font-weight: 400; line-height: 1.2; }
+  .t-badge{ font-size: 12px; font-weight: 400; }
+
+  /* NEWS */
+  .news { border-top: 1px solid var(--surface-bluegray); }
+  .news-row { display: grid; grid-template-columns: 140px 130px 1fr; gap: 20px; align-items: center; border-bottom: 1px solid var(--surface-bluegray); }
+  .news-date { background: var(--surface-bluegray); font-family: var(--font-num); font-size: 14px; color: var(--text-secondary); padding: 18px 12px; text-align: center; }
+  .badge { display: inline-block; background: var(--primary-2); color: #fff; font-size: 12px; padding: 4px 10px; border-radius: var(--r-none); }
+  .news-row a { font-size: 16px; color: var(--text-primary); text-decoration: none; line-height: 1.6; padding: 18px 0; display: block; }
+  .prose p { margin-bottom: 20px; line-height: 1.6; }
+  .prose h3 { font-family: var(--font-heading); font-size: 28px; font-weight: 700; line-height: 1.8; margin: 28px 0 8px; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 20px; }
+  .btn { display: inline-block; font-family: var(--font-sans); text-decoration: none; cursor: pointer; border-radius: var(--r-none); position: relative; }
+  .btn-primary  { background: var(--primary); color: #fff; border: 0; padding: 12px 48px 12px 16px; font-size: 14px; font-weight: 700; }
+  .btn-primary::after { content: "→"; position: absolute; right: 16px; }
+  .btn-accent   { background: var(--accent); color: #fff; border: 0; padding: 12px 40px 12px 14px; font-size: 14px; font-weight: 400; }
+  .btn-accent::after { content: "→"; position: absolute; right: 14px; }
+  .btn-outline  { background: var(--white); color: var(--text-primary); border: 1px solid var(--border); padding: 10px 25px 10px 20px; font-size: 16px; font-weight: 700; }
+  .btn-chip     { background: var(--surface-blue); color: var(--primary); border: 0; padding: 10px 16px; font-size: 16px; font-weight: 400; }
+  .navcard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 8px; }
+  .navcard { display: block; background: transparent; border: 1px solid var(--border); border-radius: var(--r-none); padding: 25px 34px 25px 120px; font-size: 16px; font-weight: 700; color: var(--text-primary); text-decoration: none; position: relative; }
+  .navcard i { position: absolute; left: 34px; top: 50%; transform: translateY(-50%); width: 56px; height: 56px; background: var(--surface-blue); display: block; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-none); box-shadow: var(--shadow-none); }
+  .card-photo { height: 130px; background: linear-gradient(135deg, #d5deee, #8493b4); }
+  .card-body { padding: 16px 20px 20px; }
+  .card-title { font-family: var(--font-heading); font-size: 20px; font-weight: 700; line-height: 1.3; color: var(--primary); }
+  .card-text { font-size: 16px; line-height: 1.6; margin-top: 8px; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .field label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .field input, .field select, .field textarea { width: 100%; background: var(--surface-gray); color: var(--text-primary); border: 1px solid var(--border-light); border-radius: var(--r-none); font-family: var(--font-sans); font-size: 14px; line-height: 1.5; padding: 12px 36px 12px 12px; }
+  .field.is-focus input { outline: 2px solid var(--primary); outline-offset: 0; background: var(--white); }
+  .field.is-error input { border-color: var(--accent); background: #fff5f2; }
+  .field .msg  { font-size: 13px; line-height: 1.8; color: var(--accent); margin-top: 4px; }
+  .field .hint { font-size: 13px; line-height: 1.8; color: var(--text-secondary); margin-top: 4px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .elev { background: var(--white); padding: 20px; min-height: 110px; }
+  .elev-0 { border: 0; box-shadow: none; background: var(--surface-gray); }
+  .elev-1 { border: 1px solid var(--border); box-shadow: none; }
+  .elev-2 { border: 0; box-shadow: none; background: var(--surface-blue); }
+  .elev b { display: block; font-size: 14px; font-weight: 700; line-height: 1.8; }
+  .elev code { display: block; margin-top: 6px; font-size: 11px; line-height: 1.7; background: none; border: 0; padding: 0; color: #777; }
+
+  /* LAYOUT */
+  .layout-demo { border: 1px dashed var(--border-light); padding: 14px; }
+  .layout-bar { background: var(--surface-blue); border: 1px solid var(--border); text-align: center; font-family: var(--font-mono); font-size: 12px; line-height: 3.4; color: #55618f; }
+  .layout-split { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 12px; }
+  .layout-split div { border: 1px solid var(--border); text-align: center; font-family: var(--font-mono); font-size: 12px; line-height: 5; color: #777; }
+  .scale-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.9; margin-top: 24px; }
+  .scale-table th, .scale-table td { border-bottom: 1px solid var(--surface-bluegray); padding: 10px 8px; text-align: left; }
+  .scale-table th { font-weight: 700; font-size: 13px; background: var(--surface-bluegray); }
+  .scale-table td:first-child { font-family: var(--font-mono); font-size: 12px; }
+
+  /* FOOTER */
+  .footer { background: var(--surface-gray); padding: 40px 20px 24px; margin-top: 40px; border-top: 1px solid var(--border-light); }
+  .footer-inner { max-width: 1200px; margin: 0 auto; }
+  .footer p.ttl { font-family: var(--font-heading); font-size: 20px; font-weight: 700; color: var(--primary); margin-bottom: 14px; }
+  .footer-nav { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 22px; }
+  .footer-nav a { font-size: 14px; color: var(--text-primary); text-decoration: none; }
+  .footer-copy { font-size: 12px; color: var(--text-secondary); }
+
+  @media (max-width: 767px) {
+    .type-row { grid-template-columns: 1fr; gap: 6px; }
+    .news-row { grid-template-columns: 1fr; gap: 4px; }
+    .card-grid, .layout-split, .navcard-grid, .elev-grid { grid-template-columns: 1fr 1fr; }
+    .t-page, .t-sec, .hero-copy { font-size: 28px; }
+    .navcard { padding: 20px 20px 20px 90px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-logo" href="#">DNP<small>大日本印刷</small></a>
+  <nav class="header-nav">
+    <a href="#">DNPがめざす姿</a><a href="#">会社案内</a><a href="#">事業紹介</a><a href="#">技術／研究開発</a><a href="#">投資家情報</a><a href="#">ニュース</a>
+  </nav>
+  <div class="header-right">
+    <span class="header-util">Worldwide</span>
+    <a class="btn btn-accent" href="#">お問合わせ</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div><span class="hero-copy">未来のあたりまえをつくる。</span></div>
+    <div><span class="hero-sub">持続可能なより良い社会、より心豊かな暮らしの実現に向けて、</span></div>
+    <div><span class="hero-sub">新しい価値を創出し続けていきます。</span></div>
+  </div>
+  <div class="hero-dots"><i class="on"></i><i></i><i></i><i></i></div>
+</section>
+
+<!-- 01 COLORS -->
+<section class="section-alt" id="colors">
+<div class="section-inner">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">Color Palette</h2>
+  <p class="section-lead">DNP ブルー1色でブランドを立て、面は白と極薄のブルーグレーだけで構成する。オレンジは「お問合わせ」1箇所のための色。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#1432aa"></div><div class="swatch-body"><div class="swatch-name">DNP Blue</div><div class="swatch-hex">#1432aa</div><div class="swatch-use">見出し文字・主要CTA・ナビの面色。最多 13 件</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#5365ac"></div><div class="swatch-body"><div class="swatch-name">Blue Secondary</div><div class="swatch-hex">#5365ac</div><div class="swatch-use">ニュース種別バッジ。一覧では 79 件</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e13000"></div><div class="swatch-body"><div class="swatch-name">Accent Orange</div><div class="swatch-hex">#e13000</div><div class="swatch-use">「お問合わせ」専用。他へ広げない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffffff;border-bottom:1px solid #666"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-use">ページ背景（body に明示指定）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e6f1fb"></div><div class="swatch-body"><div class="swatch-name">Surface Blue</div><div class="swatch-hex">#e6f1fb</div><div class="swatch-use">事業領域チップ・注目リンクの面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e8f1fa"></div><div class="swatch-body"><div class="swatch-name">Surface Blue 2</div><div class="swatch-hex">#e8f1fa</div><div class="swatch-use">セクション見出し帯</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f9f9f9"></div><div class="swatch-body"><div class="swatch-name">Surface Gray</div><div class="swatch-hex">#f9f9f9</div><div class="swatch-use">ユーティリティ領域・セレクトの面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#eeeff3"></div><div class="swatch-body"><div class="swatch-name">Surface Blue Gray</div><div class="swatch-hex">#eeeff3</div><div class="swatch-use">日付カラム・パンくずの帯</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#333333</div><div class="swatch-use">本文。純黒は使わない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#555555"></div><div class="swatch-body"><div class="swatch-name">Text Secondary</div><div class="swatch-hex">#555555</div><div class="swatch-use">補助リンク・ラベル</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#666666"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#666666</div><div class="swatch-use">アウトラインボタンの枠。枠が濃い</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#787878"></div><div class="swatch-body"><div class="swatch-name">Carousel Dot</div><div class="swatch-hex">#787878</div><div class="swatch-use">非アクティブ。アクティブは #1432aa</div></div></div>
+  </div>
+  <div class="warn"><b>#0000ff は設計色ではない。</b> 一部の <code>&lt;a&gt;</code> / <code>&lt;p&gt;</code> の computed に <code>rgb(0, 0, 255)</code> が出るが、これらは直下が <code>&lt;img&gt;</code> だけでテキストノードを持たないバナーリンク。文字が描画されないので画面には出ない。ブランドの青として採用してはいけない。</div>
+</div>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">Typography</h2>
+  <p class="section-lead">見出しは DNP 自社書体の <b>秀英角ゴシック金 B JIS2004</b>、本文は Noto Sans JP。すべてのスタックの先頭には約物半角の <code>YakuHanJP</code> が置かれる。<b>字間は全要素 <code>normal</code>、<code>palt</code> は 0 件。</b></p>
+
+  <div class="type-row"><div class="type-meta">Page Title<br>秀英角ゴシック金 / 40px / 700<br>lh 1.3 / ls normal / #1432aa</div><div class="t-page">事業を通じて社会課題を解決する</div></div>
+  <div class="type-row"><div class="type-meta">Section Heading<br>秀英角ゴシック金 / 32px / 700<br>lh 1.3 / ls normal / #1432aa</div><div class="t-sec">DNPのことがすぐにわかる</div></div>
+  <div class="type-row"><div class="type-meta">Lead<br>秀英角ゴシック金 / 30px / 700<br>lh 1.5 / ls normal / #1432aa</div><div class="t-lead">未来のあたりまえをつくる。</div></div>
+  <div class="type-row"><div class="type-meta">Sub Heading (h3)<br>秀英角ゴシック金 / 28px / 700<br>lh 1.8 / ls normal / #333333</div><div class="t-sub">P&amp;I イノベーション</div></div>
+  <div class="type-row"><div class="type-meta">Card Title<br>秀英角ゴシック金 / 20px / 700<br>lh 1.3 / ls normal / #1432aa</div><div class="t-card">メディカル・ヘルスケア</div></div>
+  <div class="type-row"><div class="type-meta">Callout<br>Noto Sans JP / 20px / 700<br>lh 1.5 / ls normal</div><div class="t-call">印刷技術と情報技術を掛け合わせる</div></div>
+  <div class="type-row"><div class="type-meta">Link Label<br>Noto Sans JP / 18px / 600<br>lh 1.85 / ls normal / #1432aa</div><div class="t-link">事業紹介を見る</div></div>
+  <div class="type-row"><div class="type-meta">Body<br>Noto Sans JP / 16px / 400<br>lh 1.5（長文は 1.6）/ ls normal</div><div class="t-body">DNPは1876年の創業以来、印刷で培った技術と情報を扱う力を掛け合わせ、社会と生活者の課題に応えてきました。文字組みは字間を入れず、行間だけで読みやすさを確保しています。</div></div>
+  <div class="type-row"><div class="type-meta">Nav / Utility<br>Noto Sans JP / 14px / 400<br>lh 1.2 / ls normal</div><div class="t-nav">投資家情報　サステナビリティ　採用</div></div>
+  <div class="type-row"><div class="type-meta">Badge<br>Noto Sans JP / 12px / 400</div><div class="t-badge"><span class="badge">ニュースリリース</span></div></div>
+
+  <p class="note"><code>body</code> 自体は <code>font-size: 16px / line-height: 16px</code>（＝1.0）というリセット値。<b>行間は各コンポーネントが個別に持つ</b>ので、<code>body</code> の値を本文の行間として引き継いではいけない。</p>
+</section>
+
+<!-- 03 NEWS / ARTICLE -->
+<section class="section-alt" id="article">
+<div class="section-inner">
+  <div class="section-label">03 / News &amp; Article</div>
+  <h2 class="section-title">ニュース一覧の組版</h2>
+  <p class="section-lead">日付カラムは <code>#eeeff3</code> の帯、種別は <code>#5365ac</code> のバッジ。角丸はどこにも入れない。</p>
+
+  <div class="news">
+    <div class="news-row"><div class="news-date">2026年8月27日</div><div><span class="badge">ニュースリリース</span></div><a href="#">環境配慮パッケージの新シリーズを開発、食品向けに供給を開始</a></div>
+    <div class="news-row"><div class="news-date">2026年8月26日</div><div><span class="badge">研究開発</span></div><a href="#">次世代ディスプレイ向け光学フィルムの生産技術を確立</a></div>
+    <div class="news-row"><div class="news-date">2026年8月18日</div><div><span class="badge">企業情報</span></div><a href="#">2026年10月に創業150周年を迎えます</a></div>
+  </div>
+
+  <div class="prose" style="max-width:760px;margin-top:36px">
+    <h3>P&amp;Iとは</h3>
+    <p>「P&amp;I」は Printing（印刷）と Information（情報）を掛け合わせた、DNPの強みを表す言葉です。150年近く積み上げてきた微細加工と表面処理の技術に、情報を安全に扱う仕組みを重ねることで、これまでになかった価値を生み出していきます。</p>
+    <p>本文の行間は 1.6、字間は入れません。日本語の可読性は字間ではなく行間と1行の長さで確保する、という方針が全ページで一貫しています。</p>
+  </div>
+</div>
+</section>
+
+<!-- 04 BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">Buttons</h2>
+  <p class="section-lead">すべて <code>border-radius: 0</code>。矢印・アイコン分の余白は <code>padding</code> の左右非対称で確保する。</p>
+
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">一覧を見る</a>
+    <a class="btn btn-accent" href="#">お問合わせ</a>
+    <a class="btn btn-outline" href="#">会社案内をダウンロード</a>
+    <a class="btn btn-chip" href="#">コラボレーション</a>
+    <a class="btn btn-chip" href="#">メディカル・ヘルスケア</a>
+  </div>
+  <p class="note">Primary は <code>padding: 12px 48px 12px 16px</code>。右の 48px は矢印アイコンの領域。Accent は <code>12px 40px 12px 14px</code>、Outline は <code>10px 25px 10px 20px</code>。</p>
+
+  <div class="navcard-grid">
+    <a class="navcard" href="#"><i></i>DNPがめざす姿</a>
+    <a class="navcard" href="#"><i></i>技術／研究開発</a>
+    <a class="navcard" href="#"><i></i>サステナビリティ</a>
+  </div>
+  <p class="note">Large Nav Card は <code>padding: 25px 34px 25px 120px</code>。左の 120px がアイコンの領域。</p>
+</section>
+
+<!-- 05 CARDS -->
+<section class="section-alt" id="cards">
+<div class="section-inner">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">Cards</h2>
+  <p class="section-lead">影を使わず、<code>1px solid #666666</code> の枠だけで面を切る。</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">5分でわかるDNP</div><p class="card-text">事業内容や数字など、会社の全体像を簡潔に紹介しています。</p></div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">150th Anniversary</div><p class="card-text">2026年10月、DNPは創業150周年を迎えます。</p></div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">未来のあたりまえ</div><p class="card-text">これまで「未来のあたりまえ」をつくってきたDNPの姿勢を紹介します。</p></div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">P&amp;Iイノベーション</div><p class="card-text">多くのパートナーの皆さまとともに、新しい価値を創造していきます。</p></div></div>
+  </div>
+</div>
+</section>
+
+<!-- 06 FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">Forms</h2>
+  <p class="section-lead">入力欄も角丸なし。面は <code>#f9f9f9</code>、枠は <code>1px solid #8c8c8c</code>。</p>
+  <div class="form-grid">
+    <div class="field"><label>会社名</label><input type="text" value="株式会社サンプル"><p class="hint">全角で入力してください</p></div>
+    <div class="field is-focus"><label>お名前（フォーカス）</label><input type="text" value="大日本 太郎"><p class="hint">フォーカスリングは #1432aa</p></div>
+    <div class="field is-error"><label>メールアドレス（エラー）</label><input type="text" value="taro@"><p class="msg">メールアドレスの形式が正しくありません</p></div>
+    <div class="field"><label>お問合わせ種別</label><select><option>製品・サービスについて</option><option>採用について</option><option>取材について</option></select><p class="hint">セレクトの面は #f9f9f9</p></div>
+  </div>
+</section>
+
+<!-- 07 ELEVATION -->
+<section class="section-alt" id="elevation">
+<div class="section-inner">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">Depth &amp; Elevation</h2>
+  <p class="section-lead"><b>このサイトは影を使わない。</b> DOM 全走査で見つかる <code>box-shadow</code> は白のインセット（実質リセット）だけ。層は面色と枠線で作る。</p>
+  <div class="elev-grid">
+    <div class="elev elev-0"><b>Level 0 — 面色だけ</b><code>background: #f9f9f9; box-shadow: none;</code></div>
+    <div class="elev elev-1"><b>Level 1 — 枠線</b><code>border: 1px solid #666666; box-shadow: none;</code></div>
+    <div class="elev elev-2"><b>Level 2 — ブルーの面</b><code>background: #e6f1fb; box-shadow: none;</code></div>
+  </div>
+</div>
+</section>
+
+<!-- 08 LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">08 / Layout</div>
+  <h2 class="section-title">Layout</h2>
+  <p class="section-lead">コンテナ幅 1200px。おすすめコンテンツは4カラム、ニュースは日付カラム＋本文の2分割。</p>
+  <div class="layout-demo">
+    <div class="layout-bar">max-width: 1200px</div>
+    <div class="layout-split"><div>1 / 4</div><div>2 / 4</div><div>3 / 4</div><div>4 / 4</div></div>
+  </div>
+  <table class="scale-table">
+    <tr><th>Token</th><th>Value</th><th>用途</th></tr>
+    <tr><td>XS</td><td>4px</td><td>バッジの縦 padding</td></tr>
+    <tr><td>S</td><td>10px</td><td>チップ・ボタンの縦 padding</td></tr>
+    <tr><td>M</td><td>16px</td><td>ボタンの左 padding</td></tr>
+    <tr><td>L</td><td>20px</td><td>グリッドの gutter、カード内側</td></tr>
+    <tr><td>XL</td><td>25px</td><td>大型ナビカードの縦 padding</td></tr>
+    <tr><td>XXL</td><td>48px</td><td>ボタン右のアイコン領域</td></tr>
+  </table>
+  <table class="scale-table">
+    <tr><th>Breakpoint</th><th>Width</th><th>説明</th></tr>
+    <tr><td>Mobile</td><td>≤ 767px</td><td>1カラム。ナビはドロワー</td></tr>
+    <tr><td>Tablet</td><td>768–1279px</td><td>2カラムまで縮退</td></tr>
+    <tr><td>Desktop</td><td>≥ 1280px</td><td>4カラム / max-width 1200px</td></tr>
+  </table>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="ttl">DNP 大日本印刷株式会社</p>
+    <nav class="footer-nav">
+      <a href="#">DNPがめざす姿</a><a href="#">会社案内</a><a href="#">事業紹介</a><a href="#">技術／研究開発</a><a href="#">投資家情報</a><a href="#">サステナビリティ</a><a href="#">採用</a><a href="#">ニュース</a>
+    </nav>
+    <p class="footer-copy">この preview は DESIGN.md の値を確認するためのショーケースです。実サイトの複製ではありません。</p>
+  </div>
+</footer>
+
+</body>
+</html>

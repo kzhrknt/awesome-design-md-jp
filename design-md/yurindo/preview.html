@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 有隣堂（YURINDO）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Zen+Kaku+Gothic+Antique:wght@500;700&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: 2026-08-31 実測（www.yurindo.co.jp / store/bookstore / topics） === */
+    --primary:        #007d48;  /* Yurindo Green。CTA・見出しの差し色・リンク色。43 件 */
+    --deep-green:     #274633;  /* フッター周辺の濃い面 */
+    --sage:           #a8c5b8;  /* 淡い緑の罫線 */
+
+    --bg:             #f8f5ee;  /* ページ背景。白ではない（body に明示指定） */
+    --mint:           #f3faf7;  /* 最多の面色（88件）。チップ・タブ・丸アイコンの地 */
+    --mint-border:    #c2d9c8;  /* 上記チップの枠。ミント地とセットで使う */
+    --cream:          #f5f0e4;  /* カテゴリ帯・方眼背景の地 */
+    --ivory:          #fbfaf2;  /* セクション見出しブロックの最も淡い面 */
+    --white:          #ffffff;  /* カードの面。クリーム地の上で「浮き」になる */
+
+    --stock-yes:      #2b6295;  /* 「在庫がある」バッジ */
+    --stock-no:       #a35c1b;  /* 「在庫がない」バッジ */
+
+    --text-primary:   #2e2a2a;  /* 本文。わずかに赤みのある墨色 */
+    --text-input:     #444746;  /* 入力欄の文字 */
+    --grid-rule:      #dad6cb;  /* 32px 方眼の罫線 */
+
+    /* === Fonts ===
+       本文の Noto Sans JP と欧文の Work Sans は実サイトと同じ（Google Fonts で入手可能）。
+       見出しの toppan-bunkyu-gothic-pr6n（凸版文久ゴシック / Adobe Fonts）はドメイン
+       ライセンスのためローカルで表示できない。明朝の骨格を持つ人文系ゴシックなので、
+       Google Fonts では Zen Kaku Gothic Antique が最も近い（明朝に振ると太さが合わない）。
+       実サイトのフォールバックが serif である点は下の宣言でも踏襲している。 */
+    --font-sans:    "Noto Sans JP", sans-serif;
+    --font-heading: "Zen Kaku Gothic Antique", serif;
+    --font-en:      "Work Sans", sans-serif;
+    --font-mono:    SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Radius: --radius:8px が唯一の自前変数。実際は 4px が最多（213件） === */
+    --r-xs:    4px;
+    --r-sm:    8px;
+    --r-md:    12px;
+    --r-lg:    16px;
+    --r-pill:  999px;
+    --r-round: 50%;
+
+    /* Spacing */
+    --sp-8: 8px; --sp-12: 12px; --sp-16: 16px;
+    --sp-24: 24px; --sp-32: 32px; --sp-48: 48px;
+
+    /* 32px 方眼（有隣堂しか知らない世界などのブロック背景） */
+    --grid-paper:
+      repeating-linear-gradient(90deg, var(--grid-rule), var(--grid-rule) 1px, transparent 0, transparent 32px),
+      repeating-linear-gradient(0deg,  var(--grid-rule), var(--grid-rule) 1px, var(--cream) 0, var(--cream) 32px);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 18px;
+    font-weight: 500;              /* 基準は 400 ではなく 500 */
+    line-height: 1.9;              /* 34.2px / 18px */
+    letter-spacing: .08em;         /* 1.44px / 18px */
+    font-feature-settings: "palt"; /* 全体にかかっている。letter-spacing とセットで使う */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { display: flex; align-items: center; gap: 24px; padding: 14px 32px; background: var(--bg); }
+  .header-logo { font-family: var(--font-heading); font-size: 30px; font-weight: 700; color: var(--primary); text-decoration: none; letter-spacing: .06em; }
+  .header-nav { display: flex; gap: 22px; margin-left: auto; }
+  .header-nav a { font-family: var(--font-heading); font-size: 16px; font-weight: 700; line-height: 1; letter-spacing: .06em; color: var(--text-primary); text-decoration: none; }
+  .header-search { display: flex; }
+  .header-search input { border: 1px solid var(--mint-border); border-right: 0; border-radius: var(--r-sm) 0 0 var(--r-sm); background: var(--white); font-family: var(--font-sans); font-size: 16px; font-weight: 500; color: var(--text-input); padding: 8px 12px; width: 150px; }
+  .header-search button { border: 0; border-radius: 0 var(--r-sm) var(--r-sm) 0; background: var(--primary); color: #fff; font-family: var(--font-sans); font-size: 16px; font-weight: 500; padding: 8px 16px; cursor: pointer; }
+
+  /* HERO */
+  .hero { position: relative; height: 300px; margin: 0 32px; border-radius: var(--r-lg); background: linear-gradient(135deg, #e8e2d3, #c6bda6 55%, #9d9884); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .hero-copy { background: var(--white); font-family: var(--font-heading); font-size: 40px; font-weight: 700; line-height: 1.4; letter-spacing: .06em; padding: 6px 16px; }
+  .hero-dots { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; align-items: center; }
+  .hero-dots i { width: 8px; height: 8px; border-radius: var(--r-round); background: var(--sage); display: block; }
+  .hero-dots i.on { background: var(--primary); }
+
+  /* QUICK NAV */
+  .quicknav { max-width: 1360px; margin: 28px auto 0; padding: 0 32px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; background: var(--white); border-radius: var(--r-sm); }
+  .quicknav-inner { max-width: 1360px; margin: 28px auto 0; background: var(--white); border-radius: var(--r-sm); padding: 24px 32px; display: grid; grid-template-columns: repeat(4, 1fr); }
+  .qn { text-align: center; text-decoration: none; color: var(--text-primary); border-right: 1px solid var(--mint-border); }
+  .qn:last-child { border-right: 0; }
+  .qn i { display: block; width: 56px; height: 56px; margin: 0 auto 12px; border-radius: var(--r-round); background: var(--mint); border: 1px solid var(--mint-border); }
+  .qn b { display: block; font-family: var(--font-sans); font-size: 19px; font-weight: 500; line-height: 1.26; letter-spacing: .045em; color: var(--primary); }
+  .qn span { display: block; font-family: var(--font-en); font-size: 16px; font-weight: 500; line-height: 1; letter-spacing: .04em; color: var(--text-primary); margin-top: 6px; }
+
+  /* SECTIONS */
+  .section { padding: 56px 32px; max-width: 1360px; margin: 0 auto; }
+  .section-alt { background: var(--cream); }
+  .section-alt .section-inner { padding: 56px 32px; max-width: 1360px; margin: 0 auto; }
+  .section-grid { background: var(--grid-paper); }
+  .section-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; color: #97907f; margin-bottom: 6px; }
+  .section-title { font-family: var(--font-heading); font-size: 40px; font-weight: 700; line-height: 1.4; letter-spacing: .06em; margin-bottom: 10px; }
+  .section-lead { font-size: 18px; font-weight: 500; line-height: 1.9; letter-spacing: .08em; margin-bottom: 28px; }
+  .note { font-size: 15px; line-height: 1.6; letter-spacing: .03em; color: #6e6862; margin-top: 14px; }
+  code { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0; background: var(--white); border: 1px solid var(--mint-border); border-radius: var(--r-xs); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+  .swatch { background: var(--white); border-radius: var(--r-sm); overflow: hidden; }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 12px 14px 14px; line-height: 1.6; letter-spacing: .02em; }
+  .swatch-name { font-size: 14px; font-weight: 500; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; color: #7d766f; }
+  .swatch-use { font-size: 12px; line-height: 1.6; color: #8b847d; margin-top: 4px; }
+  .warn { border-left: 4px solid var(--primary); background: var(--white); border-radius: 0 var(--r-sm) var(--r-sm) 0; padding: 16px 18px; margin-top: 20px; font-size: 15px; line-height: 1.8; letter-spacing: .03em; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--mint-border); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; line-height: 1.7; letter-spacing: 0; color: #8b847d; }
+  .t-hero { font-family: var(--font-heading); font-size: 40px; font-weight: 700; line-height: 1.4; letter-spacing: .06em; }
+  .t-art  { font-family: var(--font-heading); font-size: 38px; font-weight: 700; line-height: 1.21; letter-spacing: .08em; }
+  .t-h2   { font-family: var(--font-heading); font-size: 29px; font-weight: 700; line-height: 1.45; letter-spacing: .04em; }
+  .t-h3   { font-family: var(--font-heading); font-size: 23px; font-weight: 700; line-height: 1.52; letter-spacing: .03em; }
+  .t-h4   { font-family: var(--font-sans); font-size: 19px; font-weight: 500; line-height: 1.26; letter-spacing: .045em; color: var(--primary); }
+  .t-lead { font-size: 27px; font-weight: 500; line-height: 1.19; letter-spacing: .06em; }
+  .t-body { font-size: 18px; font-weight: 500; line-height: 1.9; letter-spacing: .08em; }
+  .t-nav  { font-family: var(--font-heading); font-size: 16px; font-weight: 700; line-height: 1; letter-spacing: .06em; }
+  .t-link { font-size: 15px; font-weight: 500; line-height: 1.6; letter-spacing: .035em; color: var(--primary); }
+  .t-small{ font-size: 14px; font-weight: 500; line-height: 1.9; letter-spacing: .1em; }
+  .t-en   { font-family: var(--font-en); font-size: 16px; font-weight: 500; line-height: 1; letter-spacing: .04em; }
+
+  /* ARTICLE */
+  .prose { max-width: 760px; }
+  .prose p { margin-bottom: 24px; }
+  .prose h3 { font-family: var(--font-heading); font-size: 28px; font-weight: 700; line-height: 1.39; letter-spacing: .06em; margin: 32px 0 12px; }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 20px; }
+  .btn { display: inline-block; font-family: var(--font-sans); text-decoration: none; cursor: pointer; position: relative; }
+  .btn-pill    { background: var(--primary); color: #fff; border: 0; border-radius: var(--r-pill); padding: 8px 52px 8px 24px; font-size: 16px; font-weight: 500; letter-spacing: .04em; }
+  .btn-pill::after { content: "→"; position: absolute; right: 24px; }
+  .btn-rounded { background: var(--primary); color: #fff; border: 0; border-radius: 28px; padding: 16px 24px; font-size: 16px; font-weight: 500; letter-spacing: .03em; }
+  .tab-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .tab { border-radius: var(--r-sm); border: 1px solid var(--primary); padding: 10px 22px; font-size: 18px; font-weight: 500; letter-spacing: .02em; text-decoration: none; background: var(--white); color: var(--primary); }
+  .tab.is-active { background: var(--primary); color: #fff; }
+  .chip { display: inline-block; background: var(--mint); color: var(--primary); border: 1px solid var(--mint-border); border-radius: var(--r-xs); padding: 2px 8px; font-size: 16px; font-weight: 500; letter-spacing: .04em; text-decoration: none; }
+  .icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: var(--mint); color: var(--primary); border: 1px solid var(--mint-border); border-radius: var(--r-round); font-size: 19px; text-decoration: none; }
+  .badge { display: inline-block; color: #fff; border-radius: var(--r-xs); padding: 0 6px 2px; font-size: 17px; font-weight: 500; letter-spacing: .025em; }
+  .badge-yes { background: var(--stock-yes); }
+  .badge-no  { background: var(--stock-no); }
+  .sidetab-row { display: flex; gap: 0; flex-direction: column; align-items: flex-end; max-width: 280px; margin-left: auto; }
+  .sidetab { display: block; width: 240px; color: #fff; border-radius: var(--r-sm) 0 0 var(--r-sm); padding: 14px 20px; font-size: 16px; font-weight: 500; letter-spacing: .04em; text-decoration: none; margin-bottom: 8px; }
+  .sidetab.green { background: rgba(0, 125, 72, .9); }
+  .sidetab.navy  { background: rgba(41, 68, 84, .9); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+  .card { background: var(--white); border-radius: var(--r-sm); overflow: hidden; box-shadow: none; }
+  .card-photo { height: 150px; background: linear-gradient(135deg, #e4ddcd, #b6ab93); }
+  .card-body { padding: 20px 24px; }
+  .card-title { font-family: var(--font-heading); font-size: 23px; font-weight: 700; line-height: 1.52; letter-spacing: .03em; }
+  .card-text { font-size: 15px; font-weight: 500; line-height: 1.6; letter-spacing: .03em; color: #6e6862; margin-top: 8px; }
+  .card-footer { background: var(--primary); color: #fff; border-radius: 0 0 var(--r-sm) var(--r-sm); padding: 12px 0; text-align: center; font-size: 17px; font-weight: 700; letter-spacing: .1em; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .field label { display: block; font-family: var(--font-heading); font-size: 17px; font-weight: 700; letter-spacing: .025em; color: var(--primary); margin-bottom: 6px; }
+  .field input, .field select, .field textarea { width: 100%; background: var(--white); color: var(--text-input); border: 1px solid var(--mint-border); border-radius: var(--r-xs); font-family: var(--font-sans); font-size: 16px; font-weight: 500; line-height: 1.9; padding: 8px 10px; }
+  .field.is-focus input { outline: 2px solid var(--primary); outline-offset: 0; }
+  .field.is-error input { border-color: var(--stock-no); background: #fdf6ef; }
+  .field .msg  { font-size: 15px; line-height: 1.6; letter-spacing: .03em; color: var(--stock-no); margin-top: 4px; }
+  .field .hint { font-size: 15px; line-height: 1.6; letter-spacing: .03em; color: #8b847d; margin-top: 4px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .elev { padding: 20px; min-height: 118px; border-radius: var(--r-sm); }
+  .elev-0 { background: var(--bg); border: 1px dashed var(--sage); }
+  .elev-1 { background: var(--white); }
+  .elev-2 { background: var(--mint); border: 1px solid var(--mint-border); }
+  .elev-3 { background: rgba(46, 42, 42, .9); color: #fff; }
+  .elev b { display: block; font-size: 15px; font-weight: 500; line-height: 1.8; letter-spacing: .03em; }
+  .elev code { display: block; margin-top: 6px; font-size: 11px; line-height: 1.7; background: none; border: 0; padding: 0; color: inherit; opacity: .75; }
+
+  /* LAYOUT */
+  .layout-demo { border: 1px dashed var(--sage); border-radius: var(--r-sm); padding: 14px; background: var(--white); }
+  .layout-bar { background: var(--mint); border: 1px solid var(--mint-border); border-radius: var(--r-xs); text-align: center; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; line-height: 3.4; color: #4b7a63; }
+  .layout-split { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 12px; }
+  .layout-split div { background: var(--cream); border-radius: var(--r-xs); text-align: center; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; line-height: 5; color: #8b847d; }
+  .scale-table { width: 100%; border-collapse: collapse; font-size: 16px; font-weight: 500; line-height: 1.9; letter-spacing: .09em; margin-top: 24px; background: var(--white); border-radius: var(--r-sm); overflow: hidden; }
+  .scale-table th, .scale-table td { border-bottom: 1px solid var(--mint-border); padding: 10px 14px; text-align: left; }
+  .scale-table th { font-family: var(--font-heading); font-weight: 700; font-size: 14px; letter-spacing: .05em; color: var(--primary); background: var(--mint); }
+  .scale-table td:first-child { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0; }
+
+  /* FOOTER */
+  .footer { background: var(--deep-green); color: #fff; padding: 44px 32px 26px; margin-top: 48px; }
+  .footer-inner { max-width: 1360px; margin: 0 auto; }
+  .footer p.ttl { font-family: var(--font-heading); font-size: 24px; font-weight: 700; letter-spacing: .1em; margin-bottom: 16px; }
+  .footer-nav { display: flex; flex-wrap: wrap; gap: 22px; margin-bottom: 22px; }
+  .footer-nav a { font-size: 15px; font-weight: 500; letter-spacing: .035em; color: #fff; text-decoration: none; opacity: .9; }
+  .footer-copy { font-size: 14px; font-weight: 500; letter-spacing: .1em; opacity: .7; }
+
+  @media (max-width: 767px) {
+    .type-row { grid-template-columns: 1fr; gap: 6px; }
+    .quicknav-inner, .elev-grid, .layout-split { grid-template-columns: 1fr 1fr; }
+    .qn { border-right: 0; margin-bottom: 20px; }
+    .t-hero, .section-title, .hero-copy { font-size: 26px; }
+    .t-art { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-logo" href="#">有隣堂</a>
+  <nav class="header-nav">
+    <a href="#">店舗</a><a href="#">新着・人気</a><a href="#">お買物ガイド</a><a href="#">YouTubeなど</a><a href="#">出版物</a><a href="#">求人情報</a>
+  </nav>
+  <div class="header-search"><input type="text" placeholder="キーワードから探す"><button>検索</button></div>
+</header>
+
+<section class="hero">
+  <span class="hero-copy">本は心の旅路</span>
+  <div class="hero-dots"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+</section>
+
+<div class="quicknav-inner">
+  <a class="qn" href="#"><i></i><b>店舗一覧</b><span>shop list</span></a>
+  <a class="qn" href="#"><i></i><b>新着情報</b><span>information</span></a>
+  <a class="qn" href="#"><i></i><b>ランキング</b><span>ranking</span></a>
+  <a class="qn" href="#"><i></i><b>お買物ガイド</b><span>shopping guide</span></a>
+</div>
+
+<!-- 01 COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">Color Palette</h2>
+  <p class="section-lead">白ではなく生成りのクリーム地をページ背景に敷き、その上に白のカードを浮かべる。深緑1色でアクセントを付ける。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#007d48"></div><div class="swatch-body"><div class="swatch-name">Yurindo Green</div><div class="swatch-hex">#007d48</div><div class="swatch-use">CTA・見出しの差し色・リンク色。43 件</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#274633"></div><div class="swatch-body"><div class="swatch-name">Deep Green</div><div class="swatch-hex">#274633</div><div class="swatch-use">フッター周辺の濃い面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#a8c5b8"></div><div class="swatch-body"><div class="swatch-name">Sage</div><div class="swatch-hex">#a8c5b8</div><div class="swatch-use">罫線・区切り</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f8f5ee"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#f8f5ee</div><div class="swatch-use">ページ背景。<b>白ではない</b></div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f3faf7"></div><div class="swatch-body"><div class="swatch-name">Mint Tint</div><div class="swatch-hex">#f3faf7</div><div class="swatch-use">最多の面色（88件）。チップ・タブの地</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#c2d9c8"></div><div class="swatch-body"><div class="swatch-name">Mint Border</div><div class="swatch-hex">#c2d9c8</div><div class="swatch-use">チップの枠。ミント地とセットで使う</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f5f0e4"></div><div class="swatch-body"><div class="swatch-name">Cream Surface</div><div class="swatch-hex">#f5f0e4</div><div class="swatch-use">カテゴリ帯・方眼背景の地</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fbfaf2"></div><div class="swatch-body"><div class="swatch-name">Ivory</div><div class="swatch-hex">#fbfaf2</div><div class="swatch-use">最も淡い面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffffff;border-bottom:1px solid #c2d9c8"></div><div class="swatch-body"><div class="swatch-name">White</div><div class="swatch-hex">#ffffff</div><div class="swatch-use">カードの面。クリーム地の上で「浮き」になる</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#2b6295"></div><div class="swatch-body"><div class="swatch-name">Stock Available</div><div class="swatch-hex">#2b6295</div><div class="swatch-use">「在庫がある」バッジ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#a35c1b"></div><div class="swatch-body"><div class="swatch-name">Stock None</div><div class="swatch-hex">#a35c1b</div><div class="swatch-use">「在庫がない」バッジ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#2e2a2a"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#2e2a2a</div><div class="swatch-use">本文。わずかに赤みのある墨色</div></div></div>
+  </div>
+  <div class="warn"><b>WordPress のプリセット色は全部未使用。</b> <code>--wp--preset--color--*</code>（vivid-red / luminous-vivid-orange 等）と <code>--wp--preset--shadow--*</code> はテーマ既定として宣言されているだけで、実サイトでは1箇所も描画されない。自前の変数は <code>--radius: 8px</code> ひとつだけ。</div>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">Typography</h2>
+  <p class="section-lead">見出しは <b>凸版文久ゴシック</b>（明朝の骨格を持つ人文系ゴシック）、本文は Noto Sans JP の <b>ウェイト 500</b>。<code>palt</code> をサイト全体に当てたうえで <code>letter-spacing: .08em</code> で空け直す、二段構えの字間設計。</p>
+
+  <div class="type-row"><div class="type-meta">Hero Heading<br>凸版文久ゴシック / 40px / 600<br>lh 1.4 / ls .06em</div><div class="t-hero">本は心の旅路</div></div>
+  <div class="type-row"><div class="type-meta">Article H2<br>凸版文久ゴシック / 38px / 600<br>lh 1.21 / ls .08em</div><div class="t-art">有隣堂しか知らない世界</div></div>
+  <div class="type-row"><div class="type-meta">Section H2<br>凸版文久ゴシック / 29px / 600<br>lh 1.45 / ls .04em</div><div class="t-h2">新着・特典・イベント</div></div>
+  <div class="type-row"><div class="type-meta">H3 (card)<br>凸版文久ゴシック / 23px / 600<br>lh 1.52 / ls .03em</div><div class="t-h3">BASEGATE 横浜関内店</div></div>
+  <div class="type-row"><div class="type-meta">H4 (label)<br>Noto Sans JP / 19px / 500<br>lh 1.26 / ls .045em / #007d48</div><div class="t-h4">店舗一覧</div></div>
+  <div class="type-row"><div class="type-meta">Lead<br>Noto Sans JP / 27px / 500<br>lh 1.19 / ls .06em</div><div class="t-lead">6周年記念ステッカーを配布します</div></div>
+  <div class="type-row"><div class="type-meta">Body（基準）<br>Noto Sans JP / 18px / <b>500</b><br>lh 1.9 / ls .08em / palt</div><div class="t-body">1909年、横浜に生まれた書店です。本と文具と雑貨を扱いながら、その街に必要な棚をつくることを続けてきました。行間は 1.9、字間は 0.08em。詰めてから空け直すことで、和文の字面が均一に整います。</div></div>
+  <div class="type-row"><div class="type-meta">Nav Label<br>凸版文久ゴシック / 16px / 600<br>lh 1.0 / ls .06em</div><div class="t-nav">お買物ガイド　出版物　求人情報</div></div>
+  <div class="type-row"><div class="type-meta">Nav Link<br>Noto Sans JP / 15px / 500<br>lh 1.6 / ls .035em / #007d48</div><div class="t-link">すべての記事一覧を見る</div></div>
+  <div class="type-row"><div class="type-meta">Small<br>Noto Sans JP / 14px / 500<br>lh 1.9 / ls .1em</div><div class="t-small">※ 在庫状況は各店舗にお問い合わせください</div></div>
+  <div class="type-row"><div class="type-meta">Eyebrow (EN)<br>Work Sans / 16px / 500<br>lh 1.0 / ls .04em</div><div class="t-en">shopping guide</div></div>
+
+  <p class="note"><code>font-weight: 400</code> はほぼ登場しない。基準は <b>500</b>、見出しは <b>600</b>、ロゴまわりだけ 700。</p>
+</div>
+</section>
+
+<!-- 03 ARTICLE -->
+<section class="section section-grid" id="article">
+  <div class="section-label">03 / Article</div>
+  <h2 class="section-title">記事の組版</h2>
+  <p class="section-lead">このセクションの地は <b>32px 方眼</b>の <code>repeating-linear-gradient</code>。方眼紙のモチーフで、コンテンツ紹介ブロックに使われる。</p>
+  <div class="chip-row">
+    <a class="chip" href="#">本・文具・雑貨</a><a class="chip" href="#">特典</a><a class="chip" href="#">有隣堂しか知らない世界</a><a class="chip" href="#">イベント</a>
+  </div>
+  <div class="prose">
+    <p>毎週火曜に更新している動画チャンネルは、書店員が自分の好きなものを語るだけの番組から始まりました。売り場に立つ人が何を面白がっているのかを、そのまま外に出す。それが結果として棚の説明になっている、というのが続いている理由だと思います。</p>
+    <h3>棚は誰がつくるのか</h3>
+    <p>本文は 18px / 行間 1.9 / 字間 0.08em。日本語サイトとしてはかなり広い設定で、紙の書籍に近い密度になります。見出しだけを明朝寄りのゴシックにすることで、本文との対比が生まれます。</p>
+  </div>
+</section>
+
+<!-- 04 BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">Buttons &amp; Chips</h2>
+  <p class="section-lead">角丸は 4px（小）/ 8px（標準）/ 16px（大）/ 999px（ピル）から選ぶ。チップは「ミント地＋ミント枠＋緑文字」の3点セット。</p>
+
+  <div class="btn-row">
+    <a class="btn btn-pill" href="#">詳しく見る</a>
+    <a class="btn btn-rounded" href="#">アルバイト募集中</a>
+    <a class="icon-btn" href="#">→</a>
+    <span class="badge badge-yes">在庫がある</span>
+    <span class="badge badge-no">在庫がない</span>
+  </div>
+  <p class="note">Primary Pill は <code>padding: 8px 52px 8px 24px</code>。右の 52px は矢印アイコンの領域。</p>
+
+  <div class="tab-row">
+    <a class="tab is-active" href="#">すべて</a><a class="tab" href="#">本・文具・雑貨</a><a class="tab" href="#">カフェと食品</a><a class="tab" href="#">イベント</a><a class="tab" href="#">特典</a>
+  </div>
+  <p class="note">タブは <code>border-radius: 8px</code>。アクティブは緑ベタ、非アクティブは白地＋緑枠＋緑文字。</p>
+
+  <div class="sidetab-row" style="margin-top:28px">
+    <a class="sidetab green" href="#">店舗一覧 — 有隣堂のお店を探す</a>
+    <a class="sidetab navy" href="#">在庫検索 — 商品の在庫を探す</a>
+  </div>
+  <p class="note">右端の固定タブは <code>rgba(0,125,72,.9)</code> / <code>rgba(41,68,84,.9)</code>、角丸は <code>8px 0 0 8px</code>（左だけ丸める）。</p>
+</section>
+
+<!-- 05 CARDS -->
+<section class="section-alt" id="cards">
+<div class="section-inner">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">Cards</h2>
+  <p class="section-lead">影は使わない。<b>クリーム地に白のカードを置くこと自体が「浮き」</b>になる。</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">アトレ恵比寿店</div><p class="card-text">駅直結。文具と実用書の棚が広く、平日の夜も遅くまで開いています。</p></div><div class="card-footer">店舗詳細</div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">BASEGATE 横浜関内店</div><p class="card-text">カフェを併設した旗艦店。イベントスペースでは著者イベントを定期開催。</p></div><div class="card-footer">店舗詳細</div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">BACON Books &amp; cafe</div><p class="card-text">本を読みながら過ごせる書店とカフェ。オールデイダイニング 1909 を併設。</p></div><div class="card-footer">店舗詳細</div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">有隣堂 大阪梅北店</div><p class="card-text">関西1号店。神奈川の書店が届ける棚づくりを、そのまま持ち込みました。</p></div><div class="card-footer">店舗詳細</div></div>
+  </div>
+</div>
+</section>
+
+<!-- 06 FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">Forms</h2>
+  <p class="section-lead">入力欄は白地＋ミント枠＋<code>border-radius: 4px</code>。ラベルは凸版文久ゴシックの緑。</p>
+  <div class="form-grid">
+    <div class="field"><label>お名前</label><input type="text" value="有隣 花子"><p class="hint">全角で入力してください</p></div>
+    <div class="field is-focus"><label>ご希望の店舗（フォーカス）</label><input type="text" value="BASEGATE 横浜関内店"><p class="hint">フォーカスリングは #007d48</p></div>
+    <div class="field is-error"><label>メールアドレス（エラー）</label><input type="text" value="hanako@"><p class="msg">メールアドレスの形式が正しくありません</p></div>
+    <div class="field"><label>お問い合わせ種別</label><select><option>店舗について</option><option>在庫について</option><option>出版物について</option></select><p class="hint">セレクトも同じ枠・同じ角丸</p></div>
+  </div>
+</section>
+
+<!-- 07 ELEVATION -->
+<section class="section-alt" id="elevation">
+<div class="section-inner">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">Depth &amp; Elevation</h2>
+  <p class="section-lead"><b>影で階層を作らない。</b> 面色と角丸だけで層を表す。WordPress の <code>--wp--preset--shadow--*</code> は宣言のみで未使用。</p>
+  <div class="elev-grid">
+    <div class="elev elev-0"><b>Level 0 — 地</b><code>background: #f8f5ee</code></div>
+    <div class="elev elev-1"><b>Level 1 — カード</b><code>background: #fff; border-radius: 8px</code></div>
+    <div class="elev elev-2"><b>Level 2 — チップ</b><code>background: #f3faf7; border: 1px solid #c2d9c8</code></div>
+    <div class="elev elev-3"><b>Level 3 — オーバーレイ</b><code>background: rgba(46,42,42,.9)</code></div>
+  </div>
+</div>
+</section>
+
+<!-- 08 LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">08 / Layout</div>
+  <h2 class="section-title">Layout</h2>
+  <p class="section-lead">コンテナ幅 1360px（フルブリード寄りは 1440px）。カードは最小 260px の auto-fill グリッド。</p>
+  <div class="layout-demo">
+    <div class="layout-bar">max-width: 1360px</div>
+    <div class="layout-split"><div>260px min</div><div>260px min</div><div>260px min</div><div>260px min</div></div>
+  </div>
+  <table class="scale-table">
+    <tr><th>Token</th><th>Value</th><th>用途</th></tr>
+    <tr><td>XS</td><td>8px</td><td>チップの左右 padding、ピルの縦 padding</td></tr>
+    <tr><td>S</td><td>12px</td><td>カードフッターの縦 padding</td></tr>
+    <tr><td>M</td><td>16px</td><td>丸ボタンの縦 padding</td></tr>
+    <tr><td>L</td><td>24px</td><td>グリッドの gutter、カード内側</td></tr>
+    <tr><td>XL</td><td>32px</td><td>大型カードの内側</td></tr>
+    <tr><td>XXL</td><td>48px</td><td>最大カードの左右 padding</td></tr>
+  </table>
+  <table class="scale-table">
+    <tr><th>Radius</th><th>Value</th><th>実測件数</th></tr>
+    <tr><td>XS</td><td>4px</td><td>213 件（最多）</td></tr>
+    <tr><td>SM</td><td>8px</td><td>56 件（<code>--radius</code>）</td></tr>
+    <tr><td>Pill</td><td>999px</td><td>30 件</td></tr>
+    <tr><td>Round</td><td>50%</td><td>28 件</td></tr>
+    <tr><td>LG</td><td>16px</td><td>14 件</td></tr>
+  </table>
+  <table class="scale-table">
+    <tr><th>Breakpoint</th><th>Width</th><th>説明</th></tr>
+    <tr><td>Mobile</td><td>≤ 767px</td><td>1カラム。固定タブは下端へ</td></tr>
+    <tr><td>Tablet</td><td>768–1179px</td><td>2カラム</td></tr>
+    <tr><td>Desktop</td><td>1180–1439px</td><td>3〜4カラム / max-width 1360px</td></tr>
+    <tr><td>Wide</td><td>≥ 1440px</td><td>4カラム / max-width 1440px</td></tr>
+  </table>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="ttl">有隣堂</p>
+    <nav class="footer-nav">
+      <a href="#">店舗一覧</a><a href="#">新着・人気</a><a href="#">お買物ガイド</a><a href="#">出版物</a><a href="#">求人情報</a><a href="#">法人のお客様</a><a href="#">企業情報</a><a href="#">よくあるご質問</a>
+    </nav>
+    <p class="footer-copy">この preview は DESIGN.md の値を確認するためのショーケースです。実サイトの複製ではありません。</p>
+  </div>
+</footer>
+
+</body>
+</html>

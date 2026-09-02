@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 帝国ホテル（Imperial Hotel）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Judson:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: CSS Custom Properties（--COLOR_*）を実測と突き合わせて採用。2026-08-31 === */
+    --gold:            #856c34;  /* --COLOR_BRAND_PRIMARY。CTA・見出しの差し色。実測 18 件で最多 */
+    --gold-hover:      #755f2d;  /* --COLOR_BRAND_PRIMARY_HOVER / --COLOR_BACKGROUND_BUTTON_HOVER */
+    --gold-muted:      #927f56;  /* 一部の小さな「詳細を見る」 */
+    --gold-dark:       #4d422a;  /* スクロールトップボタン */
+
+    --bg:              #ffffff;  /* --COLOR_BACKGROUND_LIGHT。ページ背景 */
+    --surface:         #f5f5f5;  /* --COLOR_BACKGROUND_LIGHT_2。下層で 19 件と支配的 */
+    --surface-dark:    #1a1a1a;  /* --COLOR_BACKGROUND_DARK。ヘッダー・フッター */
+    --surface-dark-h:  #2e2e2e;  /* --COLOR_BACKGROUND_DARK_HOVER */
+    --backdrop:        #1a1a1a80;/* --COLOR_BACKDROP */
+    --carousel-overlay:#1a1a1a99;/* --COLOR_CAROUSEL_OVERLAY / _CONTROLS */
+
+    --text:            #1a1a1a;  /* --COLOR_FOREGROUND_DARK。純黒は使わない */
+    --text-disabled:   #707070;  /* --COLOR_FOREGROUND_DISABLED */
+    --on-dark-2:       #cccccc;  /* --COLOR_FOREGROUND_LIGHT_2 */
+    --outline:         #7a7a7a;  /* --COLOR_OUTLINE_DARK。主要な罫線・非アクティブドット */
+    --outline-light:   #e6e6e6;  /* --COLOR_OUTLINE_DARK_2。淡い区切り線 */
+    --outline-dark:    #4d4d4d;  /* --COLOR_OUTLINE_DARK_3。黒地の上の罫線 */
+    --disabled-bg:     #f5f5f5;  /* --COLOR_BACKGROUND_BUTTON_DISABLED */
+    --disabled-bg-2:   #e3e3e3;  /* --COLOR_BACKGROUND_BUTTON_DISABLED_2 */
+
+    /* Semantic（フォーム検証用） */
+    --success-dark: #1c7560;  --success-light: #e2f8f3;
+    --danger-dark:  #a60034;  --danger-light:  #ffdde7;
+    --warning-dark: #7a6800;  --warning-light: #fff9d8;
+    --info-dark:    #003acc;  --info-light:    #e0e9ff;
+
+    /* === Fonts ===
+       実サイトと同じ3系統。Noto Serif JP と Judson は Google Fonts で入手できるため、
+       preview でも本物が表示される。本文のヒラギノ角ゴ Pro は macOS のみなので、
+       フォールバックの Noto Sans JP が他環境では効く（実サイトの宣言どおり）。 */
+    --font-sans:  "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro", "Noto Sans JP",
+                  游ゴシック体, YuGothic, 游ゴシック, "Yu Gothic", メイリオ, Meiryo, sans-serif;
+    --font-serif: "Noto Serif JP", serif;   /* 見出し・ボタンのラベル・テーブル見出し */
+    --font-roman: Judson, serif;            /* 英字の飾り見出し。ls .2em で組む */
+    --font-mono:  SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Radius: 主要 CTA は 0。角丸は周辺 UI にしか出ない === */
+    --r-none: 0;
+    --r-sm:   2px;
+    --r-dot:  10px;
+
+    /* === Shadow: 宣言の --BOX_SHADOW は実測 0 件。描画されるのは次の3種 === */
+    --shadow-inset:  inset 0 20px 20px -20px rgba(26, 21, 10, .1);
+    --shadow-header: 0 -2px 20px rgba(26, 21, 10, .1);
+    --shadow-panel:  1px 2px 8px rgba(61, 63, 69, .24);
+    --text-shadow:   1px 1px 5px rgba(0, 0, 0, .5);
+
+    /* Spacing */
+    --sp-module: 64px;  /* --SIZE_MODULE_MARGIN */
+    --sp-nested: 24px;  /* --SIZE_NESTED_MODULE_MARGIN */
+    --sp-4: 4px; --sp-10: 10px; --sp-14: 14px; --sp-32: 32px;
+
+    --transition: .3s cubic-bezier(.25, .8, .25, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 2;             /* --LINE_HEIGHT: 2。トークンで固定 */
+    letter-spacing: normal;     /* 本文だけは字間を入れない */
+    font-feature-settings: normal; /* palt は 0 件 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { background: var(--surface-dark); color: #fff; padding: 18px 32px; display: flex; align-items: center; gap: 28px; }
+  .header-logo { font-family: var(--font-roman); font-size: 22px; font-weight: 700; letter-spacing: .2em; color: #fff; text-decoration: none; }
+  .header-nav { display: flex; gap: 24px; margin-left: auto; }
+  .header-nav a { font-family: var(--font-serif); font-size: 14px; font-weight: 500; line-height: 1.5; letter-spacing: .05em; color: #fff; text-decoration: none; }
+
+  /* HERO */
+  .hero { position: relative; height: 340px; background: linear-gradient(160deg, #6a5a3e, #3b3222 55%, #241f16); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 56px; }
+  .hero-copy { font-family: var(--font-serif); font-size: 26px; font-weight: 500; line-height: 2; letter-spacing: .2em; color: #fff; text-shadow: var(--text-shadow); }
+  .hero-dots { position: absolute; right: 28px; bottom: 22px; display: flex; gap: 8px; }
+  .hero-dots i { width: 10px; height: 10px; border-radius: var(--r-dot); background: var(--outline); display: block; }
+  .hero-dots i.on { background: var(--gold); }
+
+  /* SECTIONS — 外枠 1440px / 本文 984px */
+  .section { padding: var(--sp-module) 32px; max-width: 984px; margin: 0 auto; }
+  .section-alt { background: var(--surface); box-shadow: var(--shadow-inset); }
+  .section-alt .section-inner { padding: var(--sp-module) 32px; max-width: 984px; margin: 0 auto; }
+  .section-en { font-family: var(--font-roman); font-size: 34px; font-weight: 700; line-height: 1.6; letter-spacing: .2em; color: var(--gold); text-align: center; margin-bottom: 6px; }
+  .section-title { font-family: var(--font-serif); font-size: 28px; font-weight: 600; line-height: 1.8; letter-spacing: .05em; text-align: center; margin-bottom: 14px; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: #9a9a9a; margin-bottom: 6px; text-align: center; }
+  .section-lead { font-family: var(--font-serif); font-size: 22px; font-weight: 500; line-height: 2; letter-spacing: .05em; text-align: center; margin-bottom: 36px; }
+  .eyebrow { font-family: var(--font-roman); font-size: 16px; font-weight: 700; line-height: 1.6; letter-spacing: .2em; color: var(--gold); }
+  .note { font-size: 14px; line-height: 2.5; color: #6d6d6d; margin-top: 14px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--surface); border: 1px solid var(--outline-light); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+  .swatch { background: var(--bg); border: 1px solid var(--outline-light); border-radius: var(--r-none); }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 10px 12px 12px; line-height: 1.6; }
+  .swatch-name { font-family: var(--font-serif); font-size: 13px; font-weight: 600; letter-spacing: .05em; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 12px; color: #7d7d7d; }
+  .swatch-use { font-size: 11px; line-height: 1.8; color: #8b8b8b; margin-top: 4px; }
+  .warn { border-left: 4px solid var(--gold); background: var(--bg); border-top: 1px solid var(--outline-light); border-right: 1px solid var(--outline-light); border-bottom: 1px solid var(--outline-light); padding: 16px 18px; margin-top: 22px; font-size: 14px; line-height: 2; }
+  .decl-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.8; margin-top: 18px; }
+  .decl-table th, .decl-table td { border-bottom: 1px solid var(--outline-light); padding: 9px 10px; text-align: left; }
+  .decl-table th { font-family: var(--font-serif); font-size: 14px; font-weight: 600; letter-spacing: .05em; color: var(--gold); }
+  .decl-table td:first-child, .decl-table td:nth-child(2) { font-family: var(--font-mono); font-size: 12px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--outline-light); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; line-height: 1.8; color: #8b8b8b; }
+  .t-h1    { font-family: var(--font-serif); font-size: 40px; font-weight: 600; line-height: 2; letter-spacing: .05em; }
+  .t-h1sub { font-family: var(--font-serif); font-size: 32px; font-weight: 600; line-height: 1.8; letter-spacing: .15em; }
+  .t-en    { font-family: var(--font-roman); font-size: 34px; font-weight: 700; line-height: 1.6; letter-spacing: .2em; color: var(--gold); }
+  .t-h2    { font-family: var(--font-serif); font-size: 28px; font-weight: 600; line-height: 1.8; letter-spacing: .05em; }
+  .t-h3    { font-family: var(--font-serif); font-size: 20px; font-weight: 600; line-height: 1.8; letter-spacing: .05em; }
+  .t-card  { font-family: var(--font-sans); font-size: 28px; font-weight: 400; line-height: 2; letter-spacing: .05em; }
+  .t-lead  { font-family: var(--font-serif); font-size: 22px; font-weight: 500; line-height: 2; letter-spacing: .05em; }
+  .t-eyeb  { font-family: var(--font-roman); font-size: 16px; font-weight: 700; line-height: 1.6; letter-spacing: .2em; color: var(--gold); }
+  .t-body  { font-size: 16px; font-weight: 400; line-height: 2; letter-spacing: normal; }
+  .t-nav   { font-family: var(--font-serif); font-size: 16px; font-weight: 500; line-height: 2; letter-spacing: .05em; }
+  .t-th    { font-family: var(--font-serif); font-size: 14px; font-weight: 600; line-height: 2; letter-spacing: .05em; color: var(--gold); }
+  .t-cap   { font-size: 14px; font-weight: 400; line-height: 2.5; letter-spacing: normal; }
+  .t-micro { font-size: 12px; font-weight: 400; line-height: 1.4; letter-spacing: .12em; color: var(--gold); }
+  .t-small { font-size: 10px; font-weight: 400; line-height: 1.5; letter-spacing: .16em; color: #8b8b8b; }
+
+  /* ARTICLE */
+  .prose p { margin-bottom: 24px; }
+  .prose h3 { font-family: var(--font-serif); font-size: 20px; font-weight: 600; line-height: 1.8; letter-spacing: .05em; margin: 32px 0 10px; }
+  .info-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  .info-table th { font-family: var(--font-serif); font-size: 14px; font-weight: 600; line-height: 2; letter-spacing: .05em; color: var(--gold); text-align: left; padding: 12px 16px 12px 0; border-bottom: 1px solid var(--outline-light); white-space: nowrap; vertical-align: top; width: 160px; }
+  .info-table td { font-size: 16px; font-weight: 400; line-height: 1.8; padding: 12px 0; border-bottom: 1px solid var(--outline-light); }
+
+  /* BUTTONS */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 20px; }
+  .btn { display: inline-block; text-decoration: none; cursor: pointer; border-radius: var(--r-none); transition: background-color var(--transition); }
+  .btn-primary { background: var(--gold); color: #fff; border: 1px solid var(--gold); padding: 14px 20px; font-family: var(--font-serif); font-size: 14px; font-weight: 600; letter-spacing: .05em; }
+  .btn-primary:hover { background: var(--gold-hover); }
+  .btn-primary-lg { background: var(--gold); color: #fff; border: 1px solid var(--gold); padding: 19px 32px; font-family: var(--font-serif); font-size: 16px; font-weight: 600; letter-spacing: .05em; }
+  .btn-ghost { background: transparent; color: var(--text-disabled); border: 1px solid var(--outline); border-radius: var(--r-sm); padding: 13px 20px; font-family: var(--font-serif); font-size: 14px; font-weight: 600; letter-spacing: .05em; }
+  .btn-disabled { background: var(--disabled-bg-2); color: var(--text-disabled); border: 1px solid var(--disabled-bg-2); padding: 14px 20px; font-family: var(--font-serif); font-size: 14px; font-weight: 600; letter-spacing: .05em; cursor: not-allowed; }
+  .btn-top { background: var(--gold-dark); color: #fff; border: 0; padding: 12px 26px; font-size: 16px; font-weight: 700; letter-spacing: .2em; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-nested); }
+  .card { background: var(--bg); border: 0; border-radius: var(--r-none); box-shadow: none; }
+  .card-photo { height: 170px; background: linear-gradient(150deg, #ded6c6, #9b8d72); }
+  .card-body { padding: var(--sp-nested) 0 0; }
+  .card-title { font-family: var(--font-serif); font-size: 20px; font-weight: 600; line-height: 1.8; letter-spacing: .05em; }
+  .card-text { font-size: 16px; line-height: 1.6; letter-spacing: .05em; margin-top: 6px; color: #4a4a4a; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .field label { display: block; font-family: var(--font-serif); font-size: 16px; font-weight: 500; letter-spacing: .05em; margin-bottom: 8px; }
+  .field input, .field select, .field textarea { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--outline); border-radius: var(--r-none); font-family: var(--font-sans); font-size: 16px; line-height: 2; padding: 10px 14px; }
+  .field.is-focus input { outline: 2px solid var(--gold); outline-offset: 0; }
+  .field.is-error input { border-color: var(--danger-dark); background: var(--danger-light); }
+  .field .msg  { font-size: 14px; line-height: 2; color: var(--danger-dark); margin-top: 4px; }
+  .field .hint { font-size: 14px; line-height: 2; color: var(--text-disabled); margin-top: 4px; }
+  .semantic { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 26px; }
+  .semantic div { padding: 12px 16px; font-size: 14px; line-height: 1.8; border-radius: var(--r-none); }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .elev { background: var(--bg); border: 1px solid var(--outline-light); padding: 18px; min-height: 130px; }
+  .elev-0 { box-shadow: none; }
+  .elev-1 { box-shadow: var(--shadow-inset); }
+  .elev-2 { box-shadow: var(--shadow-header); }
+  .elev-3 { box-shadow: var(--shadow-panel); }
+  .elev b { display: block; font-family: var(--font-serif); font-size: 14px; font-weight: 600; line-height: 2; letter-spacing: .05em; }
+  .elev code { display: block; margin-top: 6px; font-size: 10px; line-height: 1.8; background: none; border: 0; padding: 0; color: #7d7d7d; }
+
+  /* LAYOUT */
+  .layout-demo { border: 1px dashed var(--outline); padding: 14px; }
+  .layout-bar { background: var(--surface); border: 1px solid var(--outline-light); text-align: center; font-family: var(--font-mono); font-size: 12px; line-height: 3.4; color: #7d7d7d; }
+  .layout-split { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-nested); margin-top: 12px; }
+  .layout-split div { border: 1px solid var(--outline-light); text-align: center; font-family: var(--font-mono); font-size: 12px; line-height: 5; color: #7d7d7d; }
+  .scale-table { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 1.8; margin-top: 26px; }
+  .scale-table th, .scale-table td { border-bottom: 1px solid var(--outline-light); padding: 10px 8px; text-align: left; }
+  .scale-table th { font-family: var(--font-serif); font-weight: 600; font-size: 14px; letter-spacing: .05em; color: var(--gold); }
+  .scale-table td:first-child { font-family: var(--font-mono); font-size: 12px; }
+
+  /* FOOTER */
+  .footer { background: var(--surface-dark); color: #fff; padding: 48px 32px 26px; margin-top: var(--sp-module); }
+  .footer-inner { max-width: 984px; margin: 0 auto; }
+  .footer p.ttl { font-family: var(--font-roman); font-size: 20px; font-weight: 700; letter-spacing: .2em; margin-bottom: 18px; }
+  .footer-nav { display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--outline-dark); }
+  .footer-nav a { font-family: var(--font-serif); font-size: 16px; font-weight: 500; letter-spacing: .05em; color: #fff; text-decoration: none; }
+  .footer-copy { font-size: 10px; letter-spacing: .16em; color: var(--on-dark-2); }
+
+  @media (max-width: 767px) {
+    .type-row { grid-template-columns: 1fr; gap: 6px; }
+    .card-grid, .layout-split, .elev-grid, .semantic { grid-template-columns: 1fr 1fr; }
+    .t-h1, .section-title { font-size: 26px; }
+    .t-en, .section-en { font-size: 22px; }
+    .info-table th { width: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-logo" href="#">IMPERIAL HOTEL</a>
+  <nav class="header-nav">
+    <a href="#">宿泊</a><a href="#">レストラン・バー</a><a href="#">宴会・ウエディング</a><a href="#">館内施設</a><a href="#">会員組織</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <p class="hero-copy">時代を超え 人が集う場に輝きを</p>
+  <div class="hero-dots"><i class="on"></i><i></i><i></i><i></i></div>
+</section>
+
+<!-- 01 COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="section-en">PALETTE</div>
+  <h2 class="section-title">金茶1色で格を出す</h2>
+  <p class="section-lead">白と淡いグレーの余白を大きく取り、彩度を持つのは <code>#856c34</code> だけ。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#856c34"></div><div class="swatch-body"><div class="swatch-name">Imperial Gold</div><div class="swatch-hex">#856c34</div><div class="swatch-use">--COLOR_BRAND_PRIMARY。CTA・見出しの差し色。実測 18 件</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#755f2d"></div><div class="swatch-body"><div class="swatch-name">Gold Hover</div><div class="swatch-hex">#755f2d</div><div class="swatch-use">--COLOR_BRAND_PRIMARY_HOVER</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#927f56"></div><div class="swatch-body"><div class="swatch-name">Gold Muted</div><div class="swatch-hex">#927f56</div><div class="swatch-use">小さな「詳細を見る」リンク</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#4d422a"></div><div class="swatch-body"><div class="swatch-name">Gold Dark</div><div class="swatch-hex">#4d422a</div><div class="swatch-use">スクロールトップボタン</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffffff;border-bottom:1px solid #e6e6e6"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-use">--COLOR_BACKGROUND_LIGHT。body に明示指定</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f5f5f5"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#f5f5f5</div><div class="swatch-use">--COLOR_BACKGROUND_LIGHT_2。下層で 19 件</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#1a1a1a"></div><div class="swatch-body"><div class="swatch-name">Surface Dark</div><div class="swatch-hex">#1a1a1a</div><div class="swatch-use">ヘッダー・フッター。本文色も同値</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#707070"></div><div class="swatch-body"><div class="swatch-name">Text Disabled</div><div class="swatch-hex">#707070</div><div class="swatch-use">--COLOR_FOREGROUND_DISABLED</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#7a7a7a"></div><div class="swatch-body"><div class="swatch-name">Outline</div><div class="swatch-hex">#7a7a7a</div><div class="swatch-use">主要な罫線・カルーセルの非アクティブドット</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e6e6e6"></div><div class="swatch-body"><div class="swatch-name">Outline Light</div><div class="swatch-hex">#e6e6e6</div><div class="swatch-use">テーブル・カードの淡い区切り線</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#4d4d4d"></div><div class="swatch-body"><div class="swatch-name">Outline Dark</div><div class="swatch-hex">#4d4d4d</div><div class="swatch-use">黒地の上の罫線</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#cccccc"></div><div class="swatch-body"><div class="swatch-name">On Dark 2</div><div class="swatch-hex">#cccccc</div><div class="swatch-use">黒地の上の小さな注記</div></div></div>
+  </div>
+
+  <h3 class="t-h3" style="margin-top:40px">宣言 ≠ 実装（トークンにあるが 0 件だった値）</h3>
+  <table class="decl-table">
+    <tr><th>変数</th><th>値</th><th>実測</th></tr>
+    <tr><td>--COLOR_BACKGROUND_LIGHT_3</td><td>#faf6ee</td><td><b>0 件</b>（アイボリーとして使ってはいけない）</td></tr>
+    <tr><td>--COLOR_OUTLINE_GOLD</td><td>#ccbe9f</td><td><b>0 件</b></td></tr>
+    <tr><td>--COLOR_BRAND_SECONDARY</td><td>#b89548</td><td><b>0 件</b></td></tr>
+    <tr><td>--FONT_FAMILY_SANS_EN</td><td>Jost</td><td><b>0 件</b>（欧文サンセリフは出てこない）</td></tr>
+    <tr><td>--BOX_SHADOW</td><td>0 5px 6px #7d7d7d33</td><td><b>0 件</b></td></tr>
+    <tr><td>--BORDER_RADIUS_SMALL / LARGE</td><td>5px / 10px</td><td>1 件 / 8 件（主要 CTA は 0）</td></tr>
+    <tr><td>--LINER_GRADIENT</td><td>#ade6ff → #dbb2ff</td><td><b>0 件</b>（ブランドと無関係のパステル）</td></tr>
+  </table>
+
+  <div class="warn"><b>uniqueBackgrounds に出る <code>#3860be</code> / <code>#27455c</code> / <code>#468254</code> はブランド色ではない。</b> すべて OneTrust の Cookie 同意バナー由来。<code>_textPreview</code> に <code>OK</code> / <code>Apply</code> / <code>クッキー設定</code> / <code>全てのクッキーを受け入れる</code> が並ぶことで判別できる。</div>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <div class="section-en">TYPOGRAPHY</div>
+  <h2 class="section-title">見出しもボタンも明朝</h2>
+  <p class="section-lead">本文だけがゴシック（ヒラギノ角ゴ Pro）。それ以外の階層は Noto Serif JP が担う。</p>
+
+  <div class="type-row"><div class="type-meta">Page Title (h1)<br>Noto Serif JP / 40px / 600<br>lh 2.0 / ls .05em</div><div class="t-h1">進化するグランドホテル</div></div>
+  <div class="type-row"><div class="type-meta">Page Title (sub)<br>Noto Serif JP / 32px / 600<br>lh 1.8 / <b>ls .15em</b></div><div class="t-h1sub">レストラン・バーラウンジ</div></div>
+  <div class="type-row"><div class="type-meta">Section Heading (EN)<br><b>Judson</b> / 34px / 700<br>lh 1.6 / <b>ls .2em</b> / #856c34</div><div class="t-en">DESTINATION</div></div>
+  <div class="type-row"><div class="type-meta">Section Heading (h2)<br>Noto Serif JP / 28px / 600<br>lh 1.8 / ls .05em</div><div class="t-h2">人に、地球に、未来にやさしく</div></div>
+  <div class="type-row"><div class="type-meta">Sub Heading (h3)<br>Noto Serif JP / 20px / 600<br>lh 1.8 / ls .05em</div><div class="t-h3">館内ショッピングエリア</div></div>
+  <div class="type-row"><div class="type-meta">Card Title<br>ヒラギノ角ゴ Pro / 28px / 400<br>lh 2.0 / ls .05em</div><div class="t-card">帝国ホテル 東京</div></div>
+  <div class="type-row"><div class="type-meta">Lead<br>Noto Serif JP / 22px / 500<br>lh 2.0 / ls .05em</div><div class="t-lead">ゆっくりとお過ごしいただくために</div></div>
+  <div class="type-row"><div class="type-meta">Eyebrow (EN)<br><b>Judson</b> / 16px / 700<br>lh 1.6 / <b>ls .2em</b> / #856c34</div><div class="t-eyeb">SUSTAINABILITY</div></div>
+  <div class="type-row"><div class="type-meta">Body（基準）<br>ヒラギノ角ゴ Pro / 16px / 400<br>lh <b>2.0</b> / ls <b>normal</b></div><div class="t-body">1890年の開業以来、日本の迎賓館としての役割を担ってきました。本文だけは字間を入れず、行間 2.0 の余白で読みやすさを確保しています。見出しの字間が広いぶん、本文はあえて素のまま組むという設計です。</div></div>
+  <div class="type-row"><div class="type-meta">Nav<br>Noto Serif JP / 16px / 500<br>lh 2.0 / ls .05em</div><div class="t-nav">宿泊　レストラン・バー　宴会・ウエディング</div></div>
+  <div class="type-row"><div class="type-meta">Table Header (th)<br>Noto Serif JP / 14px / 600<br>lh 2.0 / ls .05em / #856c34</div><div class="t-th">営業時間</div></div>
+  <div class="type-row"><div class="type-meta">Caption<br>ヒラギノ角ゴ Pro / 14px / 400<br>lh 2.5 / ls normal</div><div class="t-cap">※ 料金には消費税およびサービス料が含まれます</div></div>
+  <div class="type-row"><div class="type-meta">Micro<br>ヒラギノ角ゴ Pro / 12px / 400<br>lh 1.4 / ls .12em / #856c34</div><div class="t-micro">IMPERIAL CLUB</div></div>
+  <div class="type-row"><div class="type-meta">Footer Small<br>ヒラギノ角ゴ Pro / 10px / 400<br>lh 1.5 / <b>ls .16em</b> / #cccccc</div><div class="t-small">法定公告　プライバシーポリシー　利用規約</div></div>
+
+  <p class="note">「日本語の見出しは <b>0.05em</b>、英字の飾りは <b>0.2em</b>」という二層構造が帝国ホテルの字間設計。<code>palt</code> は 0 件で、字面の調整は <code>letter-spacing</code> だけで行う。</p>
+</div>
+</section>
+
+<!-- 03 ARTICLE -->
+<section class="section" id="article">
+  <div class="section-label">03 / Restaurant</div>
+  <div class="section-en">RESTAURANTS</div>
+  <h2 class="section-title">レストラン情報の組版</h2>
+
+  <div class="prose">
+    <p class="eyebrow">FRENCH</p>
+    <h3 style="text-align:left">レ セゾン</h3>
+    <p>季節ごとに表情を変える食材を、正統なフランス料理の技法で仕立てます。開業以来受け継いできた味わいと、いまの感覚を重ねた一皿をお楽しみください。</p>
+    <table class="info-table">
+      <tr><th>営業時間</th><td>ランチ 11:30〜14:30（L.O. 14:00）／ ディナー 17:30〜21:30（L.O. 20:30）</td></tr>
+      <tr><th>定休日</th><td>不定休</td></tr>
+      <tr><th>席数</th><td>48席（個室 2室）</td></tr>
+      <tr><th>ドレスコード</th><td>スマートカジュアル</td></tr>
+    </table>
+    <p class="note">テーブルの <code>th</code> は Noto Serif JP 14px / 600 / <code>#856c34</code>。罫線は <code>1px solid #e6e6e6</code>。</p>
+  </div>
+</section>
+
+<!-- 04 BUTTONS -->
+<section class="section-alt" id="buttons">
+<div class="section-inner">
+  <div class="section-label">04 / Buttons</div>
+  <div class="section-en">BUTTONS</div>
+  <h2 class="section-title">主要 CTA は角丸なし</h2>
+  <p class="section-lead"><b>ラベルのフォントが明朝</b>であることが、このサイトの格の源。</p>
+
+  <div class="btn-row" style="justify-content:center">
+    <a class="btn btn-primary" href="#">詳しく見る</a>
+    <a class="btn btn-primary-lg" href="#">ご予約</a>
+    <a class="btn btn-ghost" href="#">条件を変更する</a>
+    <span class="btn btn-disabled">満室</span>
+    <a class="btn btn-top" href="#">TOP</a>
+  </div>
+  <p class="note" style="text-align:center">Primary は <code>padding: 14px 20px</code> / 14px / 600 / <code>letter-spacing: .05em</code>、ホバーで <code>#755f2d</code>。<br>Large は <code>19px 32px</code> / 16px / 600。スクロールトップだけ <code>letter-spacing: .2em</code>。</p>
+</div>
+</section>
+
+<!-- 05 CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <div class="section-en">DESTINATION</div>
+  <h2 class="section-title">Cards</h2>
+  <p class="section-lead">枠も角丸も影も持たない。写真とテキストを 24px の余白で並べるだけ。</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">帝国ホテル 東京</div><p class="card-text">日比谷。1890年の開業から続く、日本の迎賓館。</p></div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">上高地帝国ホテル</div><p class="card-text">日本初の本格的な山岳リゾートホテル。</p></div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">帝国ホテル 大阪</div><p class="card-text">大川のほとりに建つ、水辺のグランドホテル。</p></div></div>
+  </div>
+</section>
+
+<!-- 06 FORMS -->
+<section class="section-alt" id="forms">
+<div class="section-inner">
+  <div class="section-label">06 / Forms</div>
+  <div class="section-en">RESERVATION</div>
+  <h2 class="section-title">Forms</h2>
+  <p class="section-lead">入力欄も角丸なし。枠は <code>1px solid #7a7a7a</code>、フォーカスで金茶に変わる。</p>
+  <div class="form-grid">
+    <div class="field"><label>ご宿泊人数</label><input type="text" value="2名"><p class="hint">1室あたりの人数をご入力ください</p></div>
+    <div class="field is-focus"><label>チェックイン（フォーカス）</label><input type="text" value="2026年9月18日"><p class="hint">フォーカスリングは #856c34</p></div>
+    <div class="field is-error"><label>メールアドレス（エラー）</label><input type="text" value="guest@"><p class="msg">メールアドレスの形式が正しくありません</p></div>
+    <div class="field"><label>ご希望のプラン</label><select><option>スタンダードプラン</option><option>朝食付きプラン</option><option>記念日プラン</option></select><p class="hint">セレクトも同じ枠・角丸なし</p></div>
+  </div>
+  <div class="semantic">
+    <div style="background:var(--success-light);color:var(--success-dark)">Success — ご予約を承りました</div>
+    <div style="background:var(--danger-light);color:var(--danger-dark)">Danger — 入力に誤りがあります</div>
+    <div style="background:var(--warning-light);color:var(--warning-dark)">Warning — 残りわずかです</div>
+    <div style="background:var(--info-light);color:var(--info-dark)">Info — 館内改装のお知らせ</div>
+  </div>
+</div>
+</section>
+
+<!-- 07 ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <div class="section-en">ELEVATION</div>
+  <h2 class="section-title">Depth &amp; Elevation</h2>
+  <p class="section-lead">影の色は黒ではなく <code>#1a150a</code>（わずかに温かい黒）を 10% で使う。</p>
+  <div class="elev-grid">
+    <div class="elev elev-0"><b>Level 0 — なし</b><code>box-shadow: none</code></div>
+    <div class="elev elev-1"><b>Level 1 — 内影（最多12件）</b><code>inset 0 20px 20px -20px rgba(26,21,10,.1)</code></div>
+    <div class="elev elev-2"><b>Level 2 — 固定ヘッダー</b><code>0 -2px 20px rgba(26,21,10,.1)</code></div>
+    <div class="elev elev-3"><b>Level 3 — 浮くパネル</b><code>1px 2px 8px rgba(61,63,69,.24)</code></div>
+  </div>
+  <p class="note">宣言されている <code>--BOX_SHADOW: 0 5px 6px #7d7d7d33</code> は<b>実測 0 件</b>。トークンから拾って実装しないこと。</p>
+</section>
+
+<!-- 08 LAYOUT -->
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">08 / Layout</div>
+  <div class="section-en">LAYOUT</div>
+  <h2 class="section-title">Layout</h2>
+  <p class="section-lead">外枠 1440px、本文コンテンツ 984px。セクション間は 64px、入れ子は 24px。</p>
+  <div class="layout-demo">
+    <div class="layout-bar">max-width: 1440px（外枠）</div>
+    <div class="layout-bar" style="margin-top:12px;width:70%;margin-left:auto;margin-right:auto">max-width: 984px（本文）</div>
+    <div class="layout-split"><div>1 / 3</div><div>2 / 3</div><div>3 / 3</div></div>
+  </div>
+  <table class="scale-table">
+    <tr><th>Token</th><th>Value</th><th>由来 / 用途</th></tr>
+    <tr><td>XS</td><td>4px</td><td>—</td></tr>
+    <tr><td>S</td><td>10px</td><td>入力欄の縦 padding</td></tr>
+    <tr><td>M</td><td>14px</td><td>ボタンの縦 padding</td></tr>
+    <tr><td>L</td><td>24px</td><td>--SIZE_NESTED_MODULE_MARGIN</td></tr>
+    <tr><td>XL</td><td>32px</td><td>大型ボタンの左右 padding</td></tr>
+    <tr><td>XXL</td><td>64px</td><td>--SIZE_MODULE_MARGIN（セクション間）</td></tr>
+  </table>
+  <table class="scale-table">
+    <tr><th>Z-Index</th><th>Value</th><th>用途</th></tr>
+    <tr><td>Modal</td><td>500</td><td>モーダル</td></tr>
+    <tr><td>Navigation</td><td>490</td><td>グローバルナビ</td></tr>
+    <tr><td>Dialog</td><td>480</td><td>ダイアログ</td></tr>
+    <tr><td>Popover</td><td>470</td><td>ポップオーバー</td></tr>
+    <tr><td>Overlay / Sticky</td><td>460</td><td>オーバーレイ・固定要素</td></tr>
+    <tr><td>Modules</td><td>100</td><td>通常のモジュール</td></tr>
+  </table>
+  <table class="scale-table">
+    <tr><th>Breakpoint</th><th>Width</th><th>説明</th></tr>
+    <tr><td>Mobile</td><td>≤ 767px</td><td>1カラム。下部タブナビゲーション</td></tr>
+    <tr><td>Tablet</td><td>768–1023px</td><td>2カラム</td></tr>
+    <tr><td>Laptop</td><td>1024–1259px</td><td>3カラム</td></tr>
+    <tr><td>Desktop</td><td>≥ 1260px</td><td>max-width 1440px / 本文 984px</td></tr>
+  </table>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="ttl">IMPERIAL HOTEL</p>
+    <nav class="footer-nav">
+      <a href="#">宿泊</a><a href="#">レストラン・バー</a><a href="#">宴会・ウエディング</a><a href="#">館内施設</a><a href="#">会員組織</a><a href="#">総支配人ご挨拶</a><a href="#">サステナビリティ</a>
+    </nav>
+    <p class="footer-copy">この preview は DESIGN.md の値を確認するためのショーケースです。実サイトの複製ではありません。</p>
+  </div>
+</footer>
+
+</body>
+</html>
