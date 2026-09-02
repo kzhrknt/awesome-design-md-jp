@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: nosh（ナッシュ）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトは 180 個の CSS 変数を持つが、宣言と実装がずれている箇所がある。
+       採用するのは常に実測値。2026-09-02 */
+    --green:        #63a351;  /* 実質の主色。CTA の面・見出し・ラベル。可視 70要素（変数化されていない） */
+    --green-price:  #52a530;  /* --service-color-primary。可視 22要素。割引価格の表示のみ */
+    --green-focus:  #39bf00;  /* --alias-color-border-primary-highlight。入力欄フォーカスの枠のみ */
+    --green-dark:   #3e8a1f;  /* --service-color-primary-dark。ホバー */
+    --green-light:  #e2f3db;  /* --service-color-primary-light */
+    --green-pale:   #e1f0cc;  /* --alias-color-background-accent-default */
+
+    /* Sub brand */
+    --club:         #1f3d06;  /* --alias-color-noshClub-default */
+    --club-text:    #335f06;  /* --alias-color-noshClub-text-default */
+    --gift:         #0b7043;  /* --alias-color-noshGift-default */
+    --premium-text: #94651b;  /* --alias-color-noshPremiumMenu-text-default */
+    --premium-bd:   #af9546;  /* --alias-color-noshPremiumMenu-border-default */
+    --premium-bg:   #fcf8f4;  /* --alias-color-noshPremiumMenu-background-default */
+    --quick:        #ffd24d;  /* --alias-color-noshQuickDelivery-default */
+
+    /* Ranking */
+    --rank1: #d4b932; --rank2: #94a1a9; --rank3: #d29c4b; --rank-other: #195c32;
+
+    /* Semantic */
+    --warning:      #d80000;  --warning-pale: #fae9eb;
+    --error:        #e86767;  --error-light:  #ffe7e7;
+    --caution:      #ffd24d;  --caution-pale: #fffff4;
+    --notice:       #afcbd6;  --notice-pale:  #fafbfc;
+    --sale:         #ff4000;  /* トークン化されていないが実装で使用 */
+    --star:         #ffd937;  /* --alias-color-menuStar-active-default */
+
+    /* Neutral */
+    --text:         #333333;  /* --alias-color-text-primary-default。実測 5,375 要素 */
+    --text-rating:  #2a2929;  /* --alias-color-menuRating-text-default（381要素） */
+    --text-2:       #818181;  /* --service-color-text-secondary */
+    --text-3:       #bdbdbd;  /* --service-color-text-tertiary */
+    --placeholder:  #999999;
+    --bg:           #fdfcfa;  /* --alias-color-background-tertiary-default。純白ではない生成り */
+    --surface:      #ffffff;
+    --surface-alt:  #f5f7f8;  /* --alias-color-background-secondary-default */
+    --disable:      #f1f1f1;  /* --service-color-disable */
+    --border:       #dddddd;  /* --alias-color-border-primary-default。実装で使われるのはこちら */
+
+    /* === Fonts: 同じ2書体の「順序違い」を役割で使い分ける === */
+    --font-ja: "Noto Sans JP", Roboto, sans-serif;  /* 文章・見出し・ナビ */
+    --font-en: Roboto, "Noto Sans JP", sans-serif;  /* 価格・数値・評価 */
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Radius === */
+    --r-pill:   9999px;  /* CTA。実装には 1440px も混在するが 9999px に統一する */
+    --r-card:   8px;     /* カード。実測 259 要素で最頻 */
+    --r-tab:    5px;
+    --r-chip:   4px;
+    --r-input:  3px;
+    --r-circle: 50%;
+
+    /* === Shadow: 可視要素で 3 件のみ === */
+    --shadow-1: 0 4px 4px rgba(0, 0, 0, .25);
+
+    /* === Spacing: --service-size-0〜10（4px 基準） === */
+    --sp-0: 4px;  --sp-1: 8px;  --sp-2: 16px; --sp-3: 24px; --sp-4: 32px;
+    --sp-5: 48px; --sp-6: 64px; --sp-7: 96px; --sp-8: 128px;
+
+    --container: 1280px;
+    --container-lp: 840px;  /* --alias-size-lp-width-max-default */
+    --header-h: 90px;       /* --n-c-header-height */
+
+    --transition: .2s ease;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* root は 10px。1.4rem = 14px として組む */
+  html { font-size: 10px; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ja);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.8;              /* 実装値。トークンの 1.7 ではない */
+    letter-spacing: .3px;          /* 実装値。トークンの 0.04em (=.56px) ではない */
+    font-feature-settings: normal; /* palt は実測 0 件 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { background: var(--surface); border-bottom: 1px solid var(--border); }
+  .header-inner { display: flex; align-items: center; gap: 28px; max-width: var(--container); margin: 0 auto; padding: 0 24px; height: var(--header-h); }
+  .header-logo { font-family: var(--font-ja); font-size: 28px; font-weight: 500; line-height: 1.8; letter-spacing: .3px; color: var(--green-price); text-decoration: none; }
+  .header-nav { display: flex; gap: 26px; margin-left: auto; }
+  .header-nav a { font-size: 16px; font-weight: 400; line-height: 1.8; letter-spacing: .3px; color: var(--text); text-decoration: none; }
+
+  /* HERO */
+  .hero { position: relative; height: 380px; background: linear-gradient(155deg, #7b4a2e 0%, #4a2c1a 55%, #21120a 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; }
+  .hero h1 { font-size: 40px; font-weight: 700; line-height: 1.7; letter-spacing: .3px; color: #fff; text-align: center; }
+  .hero-stats { display: flex; gap: 16px; }
+  .hero-stat { border: 1px solid rgba(255,255,255,.7); padding: 12px 22px; text-align: center; color: #fff; }
+  .hero-stat b { font-family: var(--font-en); font-size: 28px; font-weight: 700; line-height: 1; letter-spacing: .56px; display: block; }
+  .hero-stat span { font-size: 12px; font-weight: 500; line-height: 1.6; letter-spacing: .3px; }
+
+  /* SECTIONS */
+  .section { padding: 64px 24px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--surface-alt); }
+  .section-alt .section-inner { padding: 64px 24px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; color: var(--text-2); margin-bottom: 6px; text-align: center; }
+  .eyebrow { font-size: 16px; font-weight: 700; line-height: 1.8; letter-spacing: .3px; color: var(--green); text-align: center; }
+  .section-title { font-size: 28px; font-weight: 700; line-height: 1.5; letter-spacing: .3px; text-align: center; margin-bottom: 10px; }
+  .section-lead { font-size: 16px; font-weight: 500; line-height: 1.6; letter-spacing: .3px; text-align: center; margin-bottom: 38px; }
+  .note { font-size: 12px; font-weight: 500; line-height: 1.6; letter-spacing: .3px; color: var(--text-2); margin-top: 16px; }
+  code { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; background: var(--disable); border: 1px solid var(--border); border-radius: var(--r-chip); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+  .swatch { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-card); overflow: hidden; }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 10px 12px 14px; }
+  .swatch-name { font-size: 14px; font-weight: 700; line-height: 1.5; letter-spacing: .3px; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; color: var(--text-2); }
+  .swatch-use { font-size: 11px; font-weight: 500; line-height: 1.6; letter-spacing: .3px; color: var(--text-2); margin-top: 5px; }
+  .warn { border-left: 4px solid var(--green); border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); border-radius: var(--r-card); background: var(--surface); padding: 16px 18px; margin-top: 24px; font-size: 14px; line-height: 1.8; letter-spacing: .3px; }
+  .decl-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.8; letter-spacing: .3px; margin-top: 20px; background: var(--surface); }
+  .decl-table th, .decl-table td { border-bottom: 1px solid var(--border); padding: 10px 12px; text-align: left; }
+  .decl-table th { font-weight: 700; color: var(--green); }
+  .decl-table td:first-child, .decl-table td:nth-child(2) { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--border); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; line-height: 1.8; letter-spacing: 0; color: var(--text-2); }
+  .t-disp  { font-family: var(--font-en); font-size: 56px; font-weight: 700; line-height: 1; letter-spacing: .3px; }
+  .t-h1    { font-size: 40px; font-weight: 700; line-height: 1.7; letter-spacing: .3px; }
+  .t-h1s   { font-size: 28px; font-weight: 500; line-height: 1.8; letter-spacing: .3px; }
+  .t-h2    { font-size: 28px; font-weight: 700; line-height: 1.5; letter-spacing: .3px; }
+  .t-h2s   { font-size: 24px; font-weight: 700; line-height: 1.6; letter-spacing: .3px; }
+  .t-eyeb  { font-size: 16px; font-weight: 700; line-height: 1.8; letter-spacing: .3px; color: var(--green); }
+  .t-h3    { font-size: 18px; font-weight: 700; line-height: 1.6; letter-spacing: .3px; }
+  .t-h4    { font-size: 16px; font-weight: 700; line-height: 1; letter-spacing: .3px; }
+  .t-lead  { font-size: 16px; font-weight: 500; line-height: 1.6; letter-spacing: .3px; }
+  .t-body  { font-size: 14px; font-weight: 500; line-height: 1.8; letter-spacing: .3px; }
+  .t-card  { font-size: 14px; font-weight: 500; line-height: 1.2; letter-spacing: .3px; }
+  .t-cap   { font-size: 12px; font-weight: 500; line-height: 1.6; letter-spacing: .3px; }
+  .t-micro { font-size: 10px; font-weight: 700; line-height: 1.8; letter-spacing: .3px; color: var(--green); }
+  .t-num   { font-family: var(--font-en); font-size: 14px; font-weight: 700; line-height: 1.8; letter-spacing: .56px; color: var(--text-rating); }
+
+  /* MENU CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-2); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-card); overflow: hidden; box-shadow: none; position: relative; }
+  .card-photo { height: 130px; background: linear-gradient(150deg, #d8c9a8, #9d8964); }
+  .card-rank { position: absolute; top: 0; left: 0; color: #fff; border-radius: 0; padding: 4px 8px; font-size: 14px; font-weight: 500; letter-spacing: .3px; }
+  .card-body { padding: 12px; }
+  .card-title { font-size: 14px; font-weight: 500; line-height: 1.2; letter-spacing: .3px; }
+  .card-meta { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
+  .card-price { font-family: var(--font-en); font-size: 14px; font-weight: 700; letter-spacing: .56px; color: var(--green-price); }
+  .card-star { font-family: var(--font-en); font-size: 12px; font-weight: 500; letter-spacing: .56px; color: var(--text-rating); }
+  .card-star i { color: var(--star); font-style: normal; }
+  .chip-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+
+  /* CHIPS & BADGES */
+  .chip       { background: var(--disable); color: var(--green); border-radius: var(--r-chip); padding: 4px 8px; font-size: 12px; font-weight: 500; letter-spacing: .3px; }
+  .chip-pill  { background: var(--disable); color: var(--text-rating); border-radius: var(--r-pill); padding: 8px 12px; font-size: 12px; font-weight: 500; letter-spacing: .3px; }
+  .badge-sale { background: var(--sale); color: #fff; border-radius: 25px; padding: 3px 8px; font-size: 12px; font-weight: 400; letter-spacing: .3px; }
+  .badge-prem { background: var(--surface); color: var(--premium-text); border: 1px solid var(--premium-bd); border-radius: var(--r-chip); padding: 8px; font-size: 12px; font-weight: 500; letter-spacing: .3px; }
+  .badge-club { background: var(--club); color: #fff; border-radius: var(--r-chip); padding: 4px 8px; font-size: 12px; font-weight: 500; letter-spacing: .3px; }
+  .badge-quick{ background: var(--quick); color: var(--text); border-radius: var(--r-chip); padding: 4px 8px; font-size: 12px; font-weight: 500; letter-spacing: .3px; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: center; margin-bottom: 20px; }
+  .btn { display: inline-block; text-decoration: none; cursor: pointer; font-family: var(--font-ja); letter-spacing: .3px; transition: background-color var(--transition), color var(--transition); }
+  .btn-primary  { background: var(--green); color: #fff; border: 1px solid var(--green); border-radius: var(--r-pill); padding: 16px 24px; font-size: 16px; font-weight: 500; }
+  .btn-primary:hover { background: var(--green-dark); border-color: var(--green-dark); }
+  .btn-primary-sm { background: var(--green); color: #fff; border: 1px solid var(--green); border-radius: var(--r-pill); padding: 8px 14px; font-size: 16px; font-weight: 700; }
+  .btn-secondary{ background: var(--surface); color: var(--green); border: 1px solid var(--green); border-radius: var(--r-pill); padding: 16px 40px; font-size: 18px; font-weight: 700; }
+  .btn-ghost    { background: transparent; color: var(--green); border: 1px solid var(--green); border-radius: var(--r-pill); padding: 8px 16px; font-size: 12px; font-weight: 400; }
+  .btn-tab-on   { background: var(--green); color: #fff; border: 0; border-radius: var(--r-tab); padding: 10px 15px; font-size: 16px; font-weight: 700; }
+  .btn-tab-off  { background: var(--text-3); color: #fff; border: 0; border-radius: var(--r-tab); padding: 10px 15px; font-size: 16px; font-weight: 700; }
+  .on-photo { background: linear-gradient(150deg, #6b4632, #2b1a10); padding: 40px; display: flex; gap: 16px; justify-content: center; margin-top: 26px; border-radius: var(--r-card); }
+  .btn-onphoto { background: rgba(0,0,0,.5); color: #fff; border: 1px solid #fff; border-radius: var(--r-pill); padding: 12px 36px; font-size: 20px; font-weight: 700; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .field label { display: block; font-size: 14px; font-weight: 700; letter-spacing: .3px; margin-bottom: 8px; }
+  .field input, .field select { width: 100%; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: var(--r-input); font-family: var(--font-ja); font-size: 16px; line-height: 1.5; letter-spacing: .3px; padding: 10px; height: 40px; }
+  .field input::placeholder { color: var(--placeholder); }
+  .field.is-focus input { border-color: var(--green-focus); outline: none; }
+  .field.is-error input { border-color: var(--warning); }
+  .field .msg  { font-size: 12px; line-height: 1.6; letter-spacing: .3px; color: var(--warning); margin-top: 5px; }
+  .field .hint { font-size: 12px; line-height: 1.6; letter-spacing: .3px; color: var(--text-2); margin-top: 5px; }
+  .semantic { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 26px; }
+  .semantic div { padding: 12px 16px; font-size: 14px; line-height: 1.6; letter-spacing: .3px; border-radius: var(--r-card); }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .elev { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-card); padding: 20px; min-height: 120px; }
+  .elev-0 { box-shadow: none; }
+  .elev-1 { box-shadow: var(--shadow-1); }
+  .elev b { display: block; font-size: 14px; font-weight: 700; line-height: 1.8; letter-spacing: .3px; }
+  .elev code { display: block; margin-top: 6px; font-size: 11px; line-height: 1.8; background: none; border: 0; padding: 0; color: var(--text-2); }
+
+  /* LAYOUT */
+  .layout-demo { border: 1px dashed var(--border); border-radius: var(--r-card); padding: 14px; background: var(--surface); }
+  .layout-bar { background: var(--disable); border: 1px solid var(--border); border-radius: var(--r-chip); text-align: center; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; line-height: 3.4; color: var(--text-2); }
+  .layout-split { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-2); margin-top: 12px; }
+  .layout-split div { border: 1px solid var(--border); border-radius: var(--r-card); text-align: center; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; line-height: 5; color: var(--text-2); }
+  .scale-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.8; letter-spacing: .3px; margin-top: 26px; background: var(--surface); }
+  .scale-table th, .scale-table td { border-bottom: 1px solid var(--border); padding: 10px 12px; text-align: left; }
+  .scale-table th { font-weight: 700; color: var(--green); }
+  .scale-table td:first-child { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; }
+  .sp-bar { background: var(--green-pale); border: 1px solid var(--green); border-radius: 2px; display: inline-block; height: 12px; }
+
+  /* FOOTER */
+  .footer { background: var(--surface); border-top: 1px solid var(--border); padding: 48px 24px 28px; margin-top: 64px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer .ttl { font-size: 28px; font-weight: 500; letter-spacing: .3px; color: var(--green-price); margin-bottom: 18px; }
+  .footer-nav { display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 22px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .footer-nav a { font-size: 12px; font-weight: 700; letter-spacing: .3px; color: var(--text); text-decoration: none; }
+  .footer-copy { font-size: 12px; line-height: 1.6; letter-spacing: .3px; color: var(--text-2); }
+
+  @media (max-width: 767px) {
+    .type-row { grid-template-columns: 1fr; gap: 6px; }
+    .card-grid, .layout-split, .semantic { grid-template-columns: 1fr 1fr; }
+    .elev-grid { grid-template-columns: 1fr; }
+    .header-nav { display: none; }
+    .t-disp { font-size: 32px; }
+    .t-h1, .hero h1 { font-size: 24px; }
+    .section-title { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a class="header-logo" href="#">nosh</a>
+    <nav class="header-nav">
+      <a href="#">メニュー</a><a href="#">お客さまへの約束</a><a href="#">nosh club</a><a href="#">FAQ</a><a href="#">ログイン</a>
+    </nav>
+    <a class="btn btn-primary-sm" href="#">今すぐ始める</a>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>「がんばらない」<br>これからの健康の常識</h1>
+  <a class="btn btn-onphoto" href="#">今すぐお得に始める</a>
+  <div class="hero-stats">
+    <div class="hero-stat"><b>30</b><span>全メニュー糖質g以下</span></div>
+    <div class="hero-stat"><b>0</b><span>買出し調理片付け 分</span></div>
+    <div class="hero-stat"><b>100</b><span>メニュー数 種類以上</span></div>
+  </div>
+</section>
+
+<!-- 01 COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <p class="eyebrow">PALETTE</p>
+  <h2 class="section-title">緑が 3 つある</h2>
+  <p class="section-lead">CTA の緑・価格の緑・フォーカスの緑は別物。<b>トークンの <code>--service-color-primary</code> は主色ではない。</b></p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#63a351"></div><div class="swatch-body"><div class="swatch-name">Brand Green（主色）</div><div class="swatch-hex">#63a351</div><div class="swatch-use">CTA の面・見出し・ラベル。可視 70 要素。<b>変数化されていない</b></div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#52a530"></div><div class="swatch-body"><div class="swatch-name">Price Green</div><div class="swatch-hex">#52a530</div><div class="swatch-use">--service-color-primary。可視 22 要素。<b>割引価格の表示のみ</b></div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#39bf00"></div><div class="swatch-body"><div class="swatch-name">Focus Green</div><div class="swatch-hex">#39bf00</div><div class="swatch-use">--alias-color-border-primary-highlight。入力欄フォーカスの枠のみ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#3e8a1f"></div><div class="swatch-body"><div class="swatch-name">Green Dark</div><div class="swatch-hex">#3e8a1f</div><div class="swatch-use">--service-color-primary-dark。ホバー</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e2f3db"></div><div class="swatch-body"><div class="swatch-name">Green Light</div><div class="swatch-hex">#e2f3db</div><div class="swatch-use">--service-color-primary-light</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#1f3d06"></div><div class="swatch-body"><div class="swatch-name">nosh club</div><div class="swatch-hex">#1f3d06</div><div class="swatch-use">--alias-color-noshClub-default。文字は #335f06</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#0b7043"></div><div class="swatch-body"><div class="swatch-name">nosh Gift</div><div class="swatch-hex">#0b7043</div><div class="swatch-use">--alias-color-noshGift-default</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#af9546"></div><div class="swatch-body"><div class="swatch-name">Premium Border</div><div class="swatch-hex">#af9546</div><div class="swatch-use">文字 #94651b / 面 #fcf8f4 と組で使う</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ff4000"></div><div class="swatch-body"><div class="swatch-name">Sale</div><div class="swatch-hex">#ff4000</div><div class="swatch-use">「初回¥1,500OFF」の赤橙。トークン化されていない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fdfcfa;border-bottom:1px solid #dddddd"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#fdfcfa</div><div class="swatch-use"><b>純白ではない生成り。</b>body の背景</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#333333</div><div class="swatch-use">--alias-color-text-primary-default。実測 5,375 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#dddddd"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#dddddd</div><div class="swatch-use">カード・入力欄の枠。#dedede ではなくこちらが実装値</div></div></div>
+  </div>
+
+  <h3 class="t-h2s" style="margin-top:44px">人気順バッジ（ランキング）</h3>
+  <div class="btn-row" style="justify-content:flex-start;margin-top:14px">
+    <span class="card-rank" style="position:static;background:#d4b932">人気No.1</span>
+    <span class="card-rank" style="position:static;background:#94a1a9">人気No.2</span>
+    <span class="card-rank" style="position:static;background:#d29c4b">人気No.3</span>
+    <span class="card-rank" style="position:static;background:#195c32">人気No.8</span>
+  </div>
+  <p class="note" style="text-align:left">金 <code>#d4b932</code> / 銀 <code>#94a1a9</code> / 銅 <code>#d29c4b</code> / 4位以下 <code>#195c32</code>。<b>ランキングバッジだけ角丸なし。</b></p>
+
+  <h3 class="t-h2s" style="margin-top:44px">宣言 ≠ 実装</h3>
+  <table class="decl-table">
+    <tr><th>トークン</th><th>宣言</th><th>実測</th></tr>
+    <tr><td>--service-color-primary</td><td>#52a530</td><td>CTA・見出しは <b>#63a351</b>。#52a530 は割引価格のみ（22要素）</td></tr>
+    <tr><td>--service-size-lineheight-primary</td><td>1.7</td><td>本文は <b>1.8</b>（14px/25.2px、16px/28.8px）。1.7 の実測はほぼ無い</td></tr>
+    <tr><td>--service-size-letterspacing-primary</td><td>0.04em</td><td>既定は <b>0.3px</b>（≒0.021em）。0.04em は欧文優先スタックの一部のみ</td></tr>
+    <tr><td>--n-border-radius-max</td><td>100vmax</td><td><b>0 件</b>。実装のピルは 9999px / 1440px</td></tr>
+    <tr><td>--service-color-border-primary</td><td>#dedede</td><td>実装で使われるのは <b>#dddddd</b>（alias 層）</td></tr>
+  </table>
+
+  <div class="warn"><b>変数を見て <code>line-height: 1.7</code> / <code>letter-spacing: 0.04em</code> で実装すると、行間も字間も実サイトより開く。</b> 実装値の <code>1.8</code> と <code>0.3px</code> を使うこと。主色も同様に、トークンの <code>#52a530</code> ではなく実測の <code>#63a351</code> を採る。</div>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <p class="eyebrow">TYPOGRAPHY</p>
+  <h2 class="section-title">同じ2書体を、順序違いで使い分ける</h2>
+  <p class="section-lead">文章は <code>"Noto Sans JP", Roboto</code>、価格や評価など数字が主の箇所は <code>Roboto, "Noto Sans JP"</code> に切り替える。</p>
+
+  <div class="type-row"><div class="type-meta">Display<br><b>Roboto 先頭</b> / 56px / 700<br>lh 1.0 / ls .3px</div><div class="t-disp">100+</div></div>
+  <div class="type-row"><div class="type-meta">Heading 1<br>Noto Sans JP 先頭 / 40px / 700<br>lh 1.7 (68px) / ls .3px</div><div class="t-h1">これからの健康の常識</div></div>
+  <div class="type-row"><div class="type-meta">Heading 1（サイト名）<br>28px / 500<br>lh 1.8 (50.4px) / ls .3px</div><div class="t-h1s">ナッシュのこだわり</div></div>
+  <div class="type-row"><div class="type-meta">Heading 2<br>28px / 700<br>lh 1.5 (42px) / ls .3px</div><div class="t-h2">続く仕組み ＝ ナッシュ</div></div>
+  <div class="type-row"><div class="type-meta">Heading 2（小）<br>24px / 700<br>lh 1.6 (38.4px) / ls .3px</div><div class="t-h2s">人気メニュー</div></div>
+  <div class="type-row"><div class="type-meta">Eyebrow<br>16px / 700<br>lh 1.8 (28.8px) / ls .3px / #63a351</div><div class="t-eyeb">What’s nosh?</div></div>
+  <div class="type-row"><div class="type-meta">Heading 3<br>18px / 700<br>lh 1.6 (28.8px) / ls .3px</div><div class="t-h3">1食あたりの糖質と塩分</div></div>
+  <div class="type-row"><div class="type-meta">Heading 4<br>16px / 700<br>lh 1.0 (16px) / ls .3px</div><div class="t-h4">配送スケジュール</div></div>
+  <div class="type-row"><div class="type-meta">Lead<br>16px / 500<br>lh 1.6 (25.6px) / ls .3px</div><div class="t-lead">専属のシェフと管理栄養士が、すべてのメニューを監修しています</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body（読ませる文章）</b><br>14px / 500<br>lh <b>1.8</b> (25.2px) / ls .3px<br>実測 297 要素</div><div class="t-body">材料の仕入れから調理、盛り付けまで自社の工場で行っています。冷凍のまま届くので、必要なときにレンジで温めるだけ。買い出しも調理も片付けも要りません。読ませる文章は行間 1.8 で組みます。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Text（カード内）</b><br>14px / 500<br>lh <b>1.2</b> (16.8px) / ls .3px<br><b>実測 513 要素で最多</b></div><div class="t-card">[8/21発売] たっぷり野菜と鯵の甘酢あん</div></div>
+  <div class="type-row"><div class="type-meta">Number（欧文優先）<br><b>Roboto 先頭</b> / 14px / 700<br>lh 1.8 / <b>ls .56px (=0.04em)</b></div><div class="t-num">¥1,000 ／ ★ 4.5 ／ 2026.09.02</div></div>
+  <div class="type-row"><div class="type-meta">Caption<br>12px / 500<br>lh 1.6 (19.2px) / ls .3px<br>実測 171 要素</div><div class="t-cap">※ 表示価格は税込です。送料は別途かかります</div></div>
+  <div class="type-row"><div class="type-meta">Micro<br>10px / 700<br>lh 1.8 (18px) / ls .3px / #63a351</div><div class="t-micro">NEW</div></div>
+
+  <p class="note"><b>本文とカード内で <code>line-height</code> が 1.8 と 1.2 に割れている。</b> 読ませる文章は 1.8、カード内の商品名や数値は 1.2 に詰める。この 2 値の使い分けが nosh の組版の骨格で、全部 1.8 にすると商品一覧が間延びする。</p>
+  <p class="note"><code>palt</code> は実測 <b>0 件</b>（DOM 全走査 6,449 要素）。<b>足すと商品名の字送りが変わり、カードの 2 行クランプが崩れる。</b></p>
+</div>
+</section>
+
+<!-- 03 MENU -->
+<section class="section" id="menu">
+  <div class="section-label">03 / Menu</div>
+  <p class="eyebrow">MENU</p>
+  <h2 class="section-title">メニュー一覧の組版</h2>
+  <p class="section-lead">カードは <code>border-radius: 8px</code>（実測 259 要素で最頻）＋ <code>1px solid #dddddd</code>、影なし。</p>
+
+  <div class="btn-row" style="justify-content:flex-start;margin-bottom:24px">
+    <span class="btn btn-tab-on">すべて</span>
+    <span class="btn btn-tab-off">主菜</span>
+    <span class="btn btn-tab-off">副菜</span>
+    <span class="btn btn-tab-off">デザート</span>
+    <span class="chip-pill">1食あたり ¥599〜</span>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-photo"></div><span class="card-rank" style="background:#d4b932">人気No.1</span>
+      <div class="card-body">
+        <div class="card-title">[8/21発売] 白身魚の揚げ出し生姜醤油</div>
+        <div class="card-meta"><span class="card-price">¥599</span><span class="card-star"><i>★</i> 4.6</span></div>
+        <div class="chip-row"><span class="chip">糖質 12.4g</span><span class="chip">塩分 2.0g</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-photo"></div><span class="card-rank" style="background:#94a1a9">人気No.2</span>
+      <div class="card-body">
+        <div class="card-title">たっぷり野菜と鯵の甘酢あん</div>
+        <div class="card-meta"><span class="card-price">¥599</span><span class="card-star"><i>★</i> 4.4</span></div>
+        <div class="chip-row"><span class="chip">糖質 15.1g</span><span class="chip">塩分 1.8g</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-photo"></div><span class="card-rank" style="background:#d29c4b">人気No.3</span>
+      <div class="card-body">
+        <div class="card-title">ロールキャベツのトマト煮込み</div>
+        <div class="card-meta"><span class="card-price">¥599</span><span class="card-star"><i>★</i> 4.3</span></div>
+        <div class="chip-row"><span class="chip">糖質 18.0g</span><span class="badge-prem">一番人気</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-photo"></div><span class="card-rank" style="background:#195c32">人気No.8</span>
+      <div class="card-body">
+        <div class="card-title">specialチキンのバジルオイル焼き</div>
+        <div class="card-meta"><span class="card-price">¥699</span><span class="card-star"><i>★</i> 4.2</span></div>
+        <div class="chip-row"><span class="badge-sale">初回¥1,500OFF</span><span class="badge-quick">最短翌日</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">チップは 2 種類ある。<b>属性チップ</b>（面 <code>#f1f1f1</code> / 文字 <code>#63a351</code> / radius <code>4px</code>）と、<b>数値チップ</b>（面 <code>#f1f1f1</code> / 文字 <code>#2a2929</code> / radius <code>9999px</code>）。</p>
+</section>
+
+<!-- 04 BUTTONS -->
+<section class="section-alt" id="buttons">
+<div class="section-inner">
+  <div class="section-label">04 / Buttons</div>
+  <p class="eyebrow">BUTTONS</p>
+  <h2 class="section-title">CTA は完全なピル、カードは 8px</h2>
+  <p class="section-lead">実装には <code>9999px</code> と <code>1440px</code> が混在しているが、<b>新規実装では <code>9999px</code> に統一する</b>。</p>
+
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">すべて見る</a>
+    <a class="btn btn-primary-sm" href="#">今すぐ始める</a>
+    <a class="btn btn-secondary" href="#">品質・安全への取り組み</a>
+    <a class="btn btn-ghost" href="#">プレス</a>
+    <a class="btn btn-ghost" href="#">新商品</a>
+  </div>
+  <div class="btn-row">
+    <span class="btn btn-tab-on">すべて</span>
+    <span class="btn btn-tab-off">商品情報</span>
+    <span class="btn btn-tab-off">サービス</span>
+  </div>
+
+  <div class="on-photo">
+    <a class="btn btn-onphoto" href="#">今すぐお得に始める</a>
+  </div>
+
+  <p class="note" style="text-align:center"><b>タブだけがピルではない</b>（<code>border-radius: 5px</code>）。CTA の角丸をカードの <code>8px</code> と混同しないこと。</p>
+</div>
+</section>
+
+<!-- 05 FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div>
+  <p class="eyebrow">FORM</p>
+  <h2 class="section-title">Forms</h2>
+  <p class="section-lead">入力欄は <code>border-radius: 3px</code>、高さ 40px、<code>font-size: 16px</code>。<b>フォーカスは枠色を <code>#39bf00</code> に変えるだけで outline は出さない。</b></p>
+  <div class="form-grid">
+    <div class="field"><label>メールアドレス</label><input type="text" placeholder="mail@example.com"><p class="hint">ご注文の確認をお送りします</p></div>
+    <div class="field is-focus"><label>パスワード（フォーカス）</label><input type="text" value="••••••••"><p class="hint">枠色が #39bf00 に変わる</p></div>
+    <div class="field is-error"><label>郵便番号（エラー）</label><input type="text" value="1234"><p class="msg">郵便番号を 7 桁でご入力ください</p></div>
+    <div class="field"><label>お届け間隔</label><select><option>1週間に1回</option><option>2週間に1回</option><option>3週間に1回</option></select><p class="hint">いつでも変更・スキップできます</p></div>
+  </div>
+  <div class="semantic">
+    <div style="background:var(--warning-pale);color:var(--warning)">Warning — 在庫がありません</div>
+    <div style="background:var(--error-light);color:var(--error)">Error — 入力に誤りがあります</div>
+    <div style="background:var(--caution-pale);color:#8a6d00;border:1px solid var(--caution)">Caution — お届け日が変更されます</div>
+    <div style="background:var(--notice-pale);color:#4a6f7c;border:1px solid var(--notice)">Notice — 配送地域が拡大しました</div>
+  </div>
+</section>
+
+<!-- 06 ELEVATION -->
+<section class="section-alt" id="elevation">
+<div class="section-inner">
+  <div class="section-label">06 / Elevation</div>
+  <p class="eyebrow">ELEVATION</p>
+  <h2 class="section-title">Depth &amp; Elevation</h2>
+  <p class="section-lead">可視要素で影を持つのは 3 件だけ。奥行きは「生成りの地 / 白いカード / 1px の枠」で表現する。</p>
+  <div class="elev-grid">
+    <div class="elev elev-0"><b>Level 0 — なし（既定）</b><code>box-shadow: none</code><br><span class="t-cap">カード・ボタン・ヘッダーすべてこれ</span></div>
+    <div class="elev elev-1"><b>Level 1 — 追従 CTA など一部のみ</b><code>0 4px 4px rgba(0,0,0,.25)</code><br><span class="t-cap">実測 3 件</span></div>
+  </div>
+  <p class="note"><b>カードに影を付けないこと。</b></p>
+</div>
+</section>
+
+<!-- 07 LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">07 / Layout</div>
+  <p class="eyebrow">LAYOUT</p>
+  <h2 class="section-title">4px 基準のスケール</h2>
+  <p class="section-lead">余白は <code>--service-size-0</code>〜<code>10</code>（4→256px）から選ぶ。</p>
+  <div class="layout-demo">
+    <div class="layout-bar">max-width: 1280px（サイト全体）</div>
+    <div class="layout-bar" style="margin-top:12px;width:94%;margin-left:auto;margin-right:auto">max-width: 1200px（--alias-size-mypage-width-max-default）</div>
+    <div class="layout-bar" style="margin-top:12px;width:66%;margin-left:auto;margin-right:auto">max-width: 840px（--alias-size-lp-width-max-default）</div>
+    <div class="layout-split"><div>1 / 4</div><div>2 / 4</div><div>3 / 4</div><div>4 / 4</div></div>
+  </div>
+  <table class="scale-table">
+    <tr><th>Token</th><th>Value</th><th></th></tr>
+    <tr><td>--service-size-0</td><td>4px</td><td><span class="sp-bar" style="width:4px"></span></td></tr>
+    <tr><td>--service-size-1</td><td>8px</td><td><span class="sp-bar" style="width:8px"></span></td></tr>
+    <tr><td>--service-size-2</td><td>16px</td><td><span class="sp-bar" style="width:16px"></span></td></tr>
+    <tr><td>--service-size-3</td><td>24px</td><td><span class="sp-bar" style="width:24px"></span></td></tr>
+    <tr><td>--service-size-4</td><td>32px</td><td><span class="sp-bar" style="width:32px"></span></td></tr>
+    <tr><td>--service-size-5</td><td>48px</td><td><span class="sp-bar" style="width:48px"></span></td></tr>
+    <tr><td>--service-size-6</td><td>64px</td><td><span class="sp-bar" style="width:64px"></span></td></tr>
+    <tr><td>--service-size-7</td><td>96px</td><td><span class="sp-bar" style="width:96px"></span></td></tr>
+    <tr><td>--service-size-8</td><td>128px</td><td><span class="sp-bar" style="width:128px"></span></td></tr>
+  </table>
+  <table class="scale-table">
+    <tr><th>固定高さ</th><th>Value</th><th>トークン</th></tr>
+    <tr><td>ヘッダー（LP）</td><td>90px</td><td>--n-c-header-height</td></tr>
+    <tr><td>ヘッダー（アプリ内）</td><td>70px</td><td>--n-l-header-height</td></tr>
+    <tr><td>上部バナー</td><td>50px</td><td>--n-p-horizontal-banner-height</td></tr>
+    <tr><td>パンくず</td><td>45px</td><td>--n-p-user-breadcrumb-height</td></tr>
+    <tr><td>カート送信ボタン</td><td>80px</td><td>--n-c-button-cart-submit-height</td></tr>
+  </table>
+  <table class="scale-table">
+    <tr><th>Breakpoint</th><th>Width</th><th>出現数 / 説明</th></tr>
+    <tr><td>Mobile</td><td>&lt; 481px</td><td>既定（ベーススタイル）</td></tr>
+    <tr><td>Small</td><td>≥ 481px</td><td>95</td></tr>
+    <tr><td><b>Tablet</b></td><td><b>≥ 768px</b></td><td><b>1,628 — 主ブレークポイント</b></td></tr>
+    <tr><td>Desktop</td><td>≥ 1024px</td><td>257 — 2〜3カラム化</td></tr>
+    <tr><td>Wide</td><td>≥ 1180px</td><td>162</td></tr>
+    <tr><td>Extra Wide</td><td>≥ 1480px</td><td>30</td></tr>
+  </table>
+  <p class="note"><b><code>min-width</code> で書かれたモバイルファースト設計。</b> 補助的に <code>(any-hover: hover)</code>（61件）でホバー演出をポインタ環境に限定し、タッチでのちらつきを避けている。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="ttl">nosh</p>
+    <nav class="footer-nav">
+      <a href="#">メニュー</a><a href="#">お客さまへの約束</a><a href="#">nosh club</a><a href="#">シェフ紹介</a><a href="#">製造について</a><a href="#">物流について</a><a href="#">FAQ</a><a href="#">お問い合わせ</a>
+    </nav>
+    <p class="footer-copy">この preview は DESIGN.md の値を確認するためのショーケースです。実サイトの複製ではありません。</p>
+  </div>
+</footer>
+
+</body>
+</html>

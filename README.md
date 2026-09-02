@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (483 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (486 sites)</a>
 </p>
 
 <table>
@@ -734,6 +734,11 @@
 <td align="center"><strong>有隣堂</strong><br><img src="design-md/yurindo/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>帝国ホテル</strong><br><img src="design-md/imperialhotel/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>石屋製菓 ISHIYA</strong><br><img src="design-md/ishiya/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>東京国立博物館</strong><br><img src="design-md/tnm/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>nosh</strong><br><img src="design-md/nosh/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1277,11 +1282,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [DNP (大日本印刷)](https://www.dnp.co.jp/) | Printing / Corporate | [DESIGN.md](design-md/dnp/DESIGN.md) | [preview.html](design-md/dnp/preview.html) |
 | [有隣堂 (YURINDO)](https://www.yurindo.co.jp/) | Bookstore / Retail | [DESIGN.md](design-md/yurindo/DESIGN.md) | [preview.html](design-md/yurindo/preview.html) |
 | [帝国ホテル (Imperial Hotel)](https://www.imperialhotel.co.jp/) | Hotel / Hospitality | [DESIGN.md](design-md/imperialhotel/DESIGN.md) | [preview.html](design-md/imperialhotel/preview.html) |
+| [石屋製菓 (ISHIYA)](https://www.ishiya.co.jp/) | Confectionery / Corporate | [DESIGN.md](design-md/ishiya/DESIGN.md) | [preview.html](design-md/ishiya/preview.html) |
+| [東京国立博物館 (Tokyo National Museum)](https://www.tnm.jp/) | Museum / Culture | [DESIGN.md](design-md/tnm/DESIGN.md) | [preview.html](design-md/tnm/preview.html) |
+| [nosh (ナッシュ)](https://nosh.jp/) | D2C / Food Delivery | [DESIGN.md](design-md/nosh/DESIGN.md) | [preview.html](design-md/nosh/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (483 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (486 sites)</a>
 </p>
 
 <table>
@@ -1980,6 +1988,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>DNP</strong><br><img src="design-md/dnp/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>有隣堂</strong><br><img src="design-md/yurindo/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>帝国ホテル</strong><br><img src="design-md/imperialhotel/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>石屋製菓 ISHIYA</strong><br><img src="design-md/ishiya/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>東京国立博物館</strong><br><img src="design-md/tnm/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>nosh</strong><br><img src="design-md/nosh/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

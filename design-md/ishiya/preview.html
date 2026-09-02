@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 石屋製菓（ISHIYA）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors: CSS 変数は実サイトに 0 個。すべて computed style の実測値。2026-09-02 === */
+    --blue:        #005bac;  /* ISHIYA Blue。CTA の面・ナビの文字。実測で最多（面色5件 / 文字色50件） */
+    --blue-dark:   #00498a;  /* 暗い対。ホバー・押下 */
+    --navy:        #003767;  /* フッター最下部「関連サイト」バー */
+    --gold:        #be9a60;  /* ISHIYA Gold。第二の差し色。1画面に1箇所まで */
+    --green:       #124819;  /* 白い恋人パーク専用。汎用 success ではない */
+
+    --bg:          #ffffff;  /* ページ背景。body に明示指定 */
+    --cream:       #fff4d5;  /* 稀に出る淡い面 */
+    --product-navy:#021336;  /* 商品特設ページの全面背景。コーポレートでは使わない */
+
+    --text:        #2d2622;  /* 本文。赤みのある焦茶。実測 388 要素で圧倒的多数 */
+    --border:      #cccccc;  /* 入力欄の枠・区切り線 */
+    --border-light:#dddddd;  /* 淡い罫線 */
+    --muted:       #8b8580;  /* 補助テキスト（preview 用の派生値） */
+
+    /* 採用禁止 — チャットウィジェット由来（実寸 0×0px） */
+    --chat-blue:   #0e6cc1;
+
+    /* === Fonts: Web フォントは Noto Sans JP と Playfair Display の2つだけ。
+           欧文セリフのスタックにも和文（游明朝）が混ぜてあるのが実サイトの宣言どおり。 === */
+    --font-sans:  "Noto Sans JP", YuGothic, "Yu Gothic Medium", "Yu Gothic", Meiryo, メイリオ, sans-serif;
+    --font-serif: "Noto Serif JP", YuMincho, "Yu Mincho", Meiryo, メイリオ, serif;
+    --font-en:    "Playfair Display", YuMincho, "Yu Mincho", Meiryo, メイリオ, serif;
+    --font-mono:  SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Radius: 0 / 36px（ピル） / 50%（円） の3つだけ === */
+    --r-none: 0;
+    --r-pill: 36px;
+    --r-circle: 50%;
+
+    /* === Shadow: 可視要素で3件のみ。既定はフラット === */
+    --shadow-1: 7px 7px 20px rgba(4, 0, 0, .1);
+
+    /* === Spacing === */
+    --sp-xs: 7px; --sp-s: 10px; --sp-m: 40px; --sp-l: 50px; --sp-xl: 60px;
+    --container: 1040px;
+
+    --transition: .3s ease;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* root が 15px。1rem = 15px として組む */
+  html { font-size: 15px; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 2;                 /* 15px / 30px */
+    letter-spacing: .1em;           /* 全階層で一律 0.1em */
+    font-feature-settings: normal;  /* palt は使わない（実測1件のみ・外部ウィジェット由来） */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { display: flex; align-items: center; gap: 28px; padding: 0 24px 0 0; border-bottom: 1px solid var(--border-light); }
+  .header-logo { background: var(--blue); color: #fff; font-family: var(--font-en); font-size: 22px; font-weight: 400; letter-spacing: .18em; text-decoration: none; padding: 26px 20px; }
+  .header-nav { display: flex; gap: 30px; margin-left: auto; }
+  .header-nav a { text-decoration: none; text-align: center; display: block; }
+  .header-nav .en { font-family: var(--font-en); font-size: 22px; font-weight: 400; line-height: 1.37; letter-spacing: .1em; color: var(--blue); display: block; }
+  .header-nav .ja { font-family: var(--font-sans); font-size: 11px; font-weight: 400; line-height: 1.37; letter-spacing: .1em; color: var(--text); display: block; }
+  .header-actions { display: flex; align-items: center; gap: 14px; }
+
+  /* HERO */
+  .hero { position: relative; height: 340px; background: linear-gradient(170deg, #b9cee5 0%, #cfd8ea 45%, #eef3f9 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+  .hero-en { font-family: var(--font-en); font-size: 48px; font-weight: 400; line-height: 1.25; letter-spacing: .08em; color: #fff; text-shadow: 0 2px 12px rgba(0,60,120,.35); }
+  .hero-ja { font-family: var(--font-sans); font-size: 32px; font-weight: 700; line-height: 1.44; letter-spacing: .1em; color: #fff; text-shadow: 0 2px 12px rgba(0,60,120,.35); }
+
+  /* SECTIONS */
+  .section { padding: 72px 24px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: #f7f9fb; }
+  .section-alt .section-inner { padding: 72px 24px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; text-align: center; }
+  .section-en { font-family: var(--font-en); font-size: 36px; font-weight: 400; line-height: 1.12; letter-spacing: .08em; color: var(--blue); text-align: center; }
+  .section-ja { font-family: var(--font-sans); font-size: 11px; font-weight: 400; line-height: 1.37; letter-spacing: .1em; color: var(--text); text-align: center; margin-bottom: 16px; }
+  .section-title { font-family: var(--font-sans); font-size: 20px; font-weight: 700; line-height: 1.6; letter-spacing: .1em; text-align: center; margin-bottom: 10px; }
+  .section-lead { font-size: 15px; line-height: 2; letter-spacing: .1em; text-align: center; margin-bottom: 40px; color: #4d4540; }
+  .note { font-size: 13px; line-height: 1.54; letter-spacing: .1em; color: var(--muted); margin-top: 16px; }
+  code { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; background: #f2f4f6; border: 1px solid var(--border-light); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+  .swatch { background: var(--bg); border: 1px solid var(--border-light); border-radius: var(--r-none); }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 10px 12px 14px; line-height: 1.6; }
+  .swatch-name { font-family: var(--font-en); font-size: 15px; font-weight: 400; letter-spacing: .06em; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; color: #7d7d7d; }
+  .swatch-use { font-size: 11px; line-height: 1.7; letter-spacing: .05em; color: #8b8b8b; margin-top: 5px; }
+  .warn { border-left: 4px solid var(--blue); border-top: 1px solid var(--border-light); border-right: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); padding: 16px 18px; margin-top: 24px; font-size: 14px; line-height: 1.9; letter-spacing: .06em; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--border-light); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; line-height: 1.8; letter-spacing: 0; color: #8b8b8b; }
+  .t-dispen { font-family: var(--font-en); font-size: 48px; font-weight: 400; line-height: 1.25; letter-spacing: .08em; }
+  .t-secen  { font-family: var(--font-en); font-size: 36px; font-weight: 400; line-height: 1.12; letter-spacing: .08em; color: var(--blue); }
+  .t-h1     { font-family: var(--font-sans); font-size: 32px; font-weight: 700; line-height: 1.44; letter-spacing: .1em; }
+  .t-min    { font-family: var(--font-serif); font-size: 25px; font-weight: 400; line-height: 1.8; letter-spacing: .1em; }
+  .t-naven  { font-family: var(--font-en); font-size: 22px; font-weight: 400; line-height: 1.37; letter-spacing: .1em; color: var(--blue); }
+  .t-h3     { font-family: var(--font-sans); font-size: 20px; font-weight: 700; line-height: 1.6; letter-spacing: .1em; }
+  .t-lead   { font-family: var(--font-sans); font-size: 18px; font-weight: 700; line-height: 1.56; letter-spacing: .1em; }
+  .t-body   { font-size: 15px; font-weight: 400; line-height: 2; letter-spacing: .1em; }
+  .t-bodyb  { font-size: 15px; font-weight: 700; line-height: 2; letter-spacing: .08em; }
+  .t-cap    { font-size: 13px; font-weight: 400; line-height: 1.54; letter-spacing: .1em; }
+  .t-navja  { font-size: 11px; font-weight: 400; line-height: 1.37; letter-spacing: .1em; }
+  .t-micro  { font-family: var(--font-en); font-size: 10px; font-weight: 400; line-height: 1; letter-spacing: .18em; color: var(--blue); }
+
+  /* ARTICLE */
+  .prose { max-width: 800px; margin: 0 auto; }
+  .prose p { margin-bottom: 26px; }
+  .prose h3 { font-family: var(--font-sans); font-size: 20px; font-weight: 700; line-height: 1.6; letter-spacing: .1em; margin: 34px 0 12px; }
+  .info-table { width: 100%; border-collapse: collapse; margin-top: 22px; }
+  .info-table th { font-size: 15px; font-weight: 700; line-height: 2; letter-spacing: .08em; color: var(--blue); text-align: left; padding: 12px 16px 12px 0; border-bottom: 1px solid var(--border-light); white-space: nowrap; vertical-align: top; width: 170px; }
+  .info-table td { font-size: 15px; font-weight: 400; line-height: 2; letter-spacing: .1em; padding: 12px 0; border-bottom: 1px solid var(--border-light); }
+
+  /* BUTTONS */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: center; margin-bottom: 22px; }
+  .btn { display: inline-block; text-decoration: none; cursor: pointer; font-family: var(--font-sans); font-size: 15px; font-weight: 400; letter-spacing: .1em; transition: background-color var(--transition), color var(--transition); }
+  .btn-primary   { background: var(--blue); color: #fff; border: 1px solid var(--blue); border-radius: var(--r-none); padding: 11px 50px 13px; }
+  .btn-primary:hover { background: var(--blue-dark); border-color: var(--blue-dark); }
+  .btn-primary-lg{ background: var(--blue); color: #fff; border: 1px solid var(--blue); border-radius: var(--r-none); padding: 17px 50px 19px; }
+  .btn-pill      { background: var(--blue); color: #fff; border: 1px solid var(--blue); border-radius: var(--r-pill); padding: 8px 20px 10px; }
+  .btn-gold      { background: var(--gold); color: #fff; border: 0; border-radius: var(--r-none); padding: 14px 60px 16px; }
+  .btn-green     { background: var(--green); color: #fff; border: 0; border-radius: var(--r-none); padding: 14px 60px 16px; }
+  .btn-circle    { background: var(--gold); color: #fff; border: 0; border-radius: var(--r-circle); width: 52px; height: 52px; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; letter-spacing: 0; }
+  .on-photo { background: linear-gradient(150deg, #2f5f96, #17365c); padding: 34px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; align-items: center; margin-top: 26px; }
+  .btn-ghost   { background: transparent; color: #fff; border: 1px solid #fff; border-radius: var(--r-none); padding: 4px 8px 6px; font-family: var(--font-serif); font-weight: 500; }
+  .btn-inverse { background: #fff; color: var(--blue); border: 1px solid #fff; border-radius: var(--r-none); padding: 9px 50px 11px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-m); }
+  .card { background: var(--bg); border: 0; border-radius: var(--r-none); box-shadow: none; }
+  .card-photo { height: 180px; background: linear-gradient(150deg, #cfe0f0, #86a9cd); }
+  .card-date { font-family: var(--font-en); font-size: 13px; letter-spacing: .1em; color: var(--blue); margin-top: 16px; }
+  .card-title { font-size: 15px; font-weight: 700; line-height: 2; letter-spacing: .08em; margin-top: 2px; }
+  .card-text { font-size: 13px; line-height: 1.54; letter-spacing: .1em; margin-top: 6px; color: #6a635e; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .field label { display: block; font-size: 15px; font-weight: 700; letter-spacing: .1em; margin-bottom: 8px; }
+  .field input, .field select, .field textarea { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: var(--r-none); font-family: var(--font-sans); font-size: 15px; line-height: 2; letter-spacing: .1em; padding: 9px 12px; }
+  .field.is-focus input { outline: 2px solid var(--blue); outline-offset: 0; }
+  .field.is-error input { border-color: #b3261e; background: #fdf2f1; }
+  .field .msg  { font-size: 13px; line-height: 1.8; letter-spacing: .08em; color: #b3261e; margin-top: 5px; }
+  .field .hint { font-size: 13px; line-height: 1.8; letter-spacing: .08em; color: var(--muted); margin-top: 5px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .elev { background: var(--bg); border: 1px solid var(--border-light); padding: 20px; min-height: 130px; }
+  .elev-0 { box-shadow: none; }
+  .elev-1 { box-shadow: var(--shadow-1); }
+  .elev b { display: block; font-size: 15px; font-weight: 700; line-height: 2; letter-spacing: .08em; }
+  .elev code { display: block; margin-top: 6px; font-size: 11px; line-height: 1.8; background: none; border: 0; padding: 0; color: #7d7d7d; }
+
+  /* LAYOUT */
+  .layout-demo { border: 1px dashed var(--border); padding: 14px; }
+  .layout-bar { background: #f2f4f6; border: 1px solid var(--border-light); text-align: center; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; line-height: 3.4; color: #7d7d7d; }
+  .layout-split { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-m); margin-top: 12px; }
+  .layout-split div { border: 1px solid var(--border-light); text-align: center; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; line-height: 5; color: #7d7d7d; }
+  .scale-table { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 1.8; margin-top: 26px; }
+  .scale-table th, .scale-table td { border-bottom: 1px solid var(--border-light); padding: 10px 8px; text-align: left; letter-spacing: .06em; }
+  .scale-table th { font-weight: 700; font-size: 14px; color: var(--blue); }
+  .scale-table td:first-child { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; }
+
+  /* CAMPAIGN COMPARISON */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--border-light); margin-top: 26px; }
+  .compare > div { padding: 26px 24px; }
+  .compare .corp { background: #fff; }
+  .compare .camp { background: var(--product-navy); color: #fff; font-family: "Zen Maru Gothic", var(--font-sans); letter-spacing: normal; }
+  .compare h4 { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+  .compare .camp h4 { color: #fff; }
+  .compare p { font-size: 14px; line-height: 2; }
+
+  /* FOOTER */
+  .footer { background: var(--blue); color: #fff; padding: 48px 24px 0; margin-top: 72px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer .ttl { font-family: var(--font-en); font-size: 22px; letter-spacing: .18em; margin-bottom: 20px; }
+  .footer-nav { display: flex; flex-wrap: wrap; gap: 26px; margin-bottom: 26px; padding-bottom: 22px; border-bottom: 1px solid rgba(255,255,255,.3); }
+  .footer-nav a { font-size: 15px; letter-spacing: .1em; color: #fff; text-decoration: none; }
+  .footer-related { background: var(--navy); margin: 0 -24px; padding: 11px 24px 9px; }
+  .footer-related span { font-size: 13px; letter-spacing: .1em; }
+  .footer-copy { font-size: 13px; line-height: 1.54; letter-spacing: .1em; color: rgba(255,255,255,.8); padding: 22px 0; }
+
+  @media (max-width: 767px) {
+    .type-row { grid-template-columns: 1fr; gap: 6px; }
+    .card-grid, .layout-split, .elev-grid, .compare { grid-template-columns: 1fr; }
+    .header-nav { display: none; }
+    .t-dispen, .hero-en { font-size: 28px; }
+    .t-h1, .hero-ja { font-size: 22px; }
+    .section-en { font-size: 26px; }
+    .info-table th { width: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="header-logo" href="#">ISHIYA</a>
+  <nav class="header-nav">
+    <a href="#"><span class="en">About</span><span class="ja">企業案内</span></a>
+    <a href="#"><span class="en">Lineup</span><span class="ja">商品情報</span></a>
+    <a href="#"><span class="en">News</span><span class="ja">新着情報</span></a>
+    <a href="#"><span class="en">Shop</span><span class="ja">店舗案内</span></a>
+  </nav>
+  <div class="header-actions">
+    <a class="btn btn-pill" href="#">Online Shop</a>
+  </div>
+</header>
+
+<section class="hero">
+  <p class="hero-en">Sweets of Hokkaido</p>
+  <p class="hero-ja">しあわせをつくるお菓子</p>
+</section>
+
+<!-- 01 COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="section-en">PALETTE</div>
+  <div class="section-ja">カラーパレット</div>
+  <h2 class="section-title">藍青 1 色で構造をつくる</h2>
+  <p class="section-lead">CSS 変数は 0 個。色はコンポーネント CSS への直書きで、彩度を持つのは <code>#005bac</code> と <code>#be9a60</code> の 2 色だけ。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#005bac"></div><div class="swatch-body"><div class="swatch-name">ISHIYA Blue</div><div class="swatch-hex">#005bac</div><div class="swatch-use">CTA の面・ロゴ角版・ナビの文字。面色5件 / 文字色50件で最多</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#00498a"></div><div class="swatch-body"><div class="swatch-name">Navy</div><div class="swatch-hex">#00498a</div><div class="swatch-use">暗い対。ホバー・押下</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#003767"></div><div class="swatch-body"><div class="swatch-name">Deep Navy</div><div class="swatch-hex">#003767</div><div class="swatch-use">フッター最下部「関連サイト」バーの面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#be9a60"></div><div class="swatch-body"><div class="swatch-name">ISHIYA Gold</div><div class="swatch-hex">#be9a60</div><div class="swatch-use">第二の差し色。ブランド CTA・トップへ戻る円。1画面に1箇所まで</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#124819"></div><div class="swatch-body"><div class="swatch-name">Park Green</div><div class="swatch-hex">#124819</div><div class="swatch-use">白い恋人パーク専用。汎用の success ではない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffffff;border-bottom:1px solid #e6e6e6"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-use">ページ背景。body に明示指定</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fff4d5"></div><div class="swatch-body"><div class="swatch-name">Cream</div><div class="swatch-hex">#fff4d5</div><div class="swatch-use">お知らせの強調帯などに稀に出る淡い面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#2d2622"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#2d2622</div><div class="swatch-use">本文。純黒ではなく赤みのある焦茶。実測 388 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#cccccc"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#cccccc</div><div class="swatch-use">入力欄の枠・区切り線</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#dddddd"></div><div class="swatch-body"><div class="swatch-name">Border Light</div><div class="swatch-hex">#dddddd</div><div class="swatch-use">淡い罫線</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#021336"></div><div class="swatch-body"><div class="swatch-name">Product Navy</div><div class="swatch-hex">#021336</div><div class="swatch-use">商品特設ページ専用の全面背景。コーポレートには持ち込まない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#0e6cc1"></div><div class="swatch-body"><div class="swatch-name">Chat Blue（採用禁止）</div><div class="swatch-hex">#0e6cc1</div><div class="swatch-use">チャットウィジェット由来。実寸 0×0px でページに描画されない</div></div></div>
+  </div>
+
+  <div class="warn"><b><code>#0e6cc1</code> をブランド色として使わない。</b> <code>uniqueBackgrounds</code> と <code>interactive</code> に 4〜5 件出るが、すべてチャットボット（「価格や取扱店舗などよくある質問」）由来で、該当要素の <code>getBoundingClientRect()</code> はすべて <b>0×0px</b>。<code>border-radius</code> が <code>3px</code> / <code>4px</code> / <code>10px 10px 0 0</code> と半端なのも見分けどころで、<b>サイト本体の radius は <code>0</code> / <code>36px</code> / <code>50%</code> の 3 つしかない。</b></div>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <div class="section-en">TYPOGRAPHY</div>
+  <div class="section-ja">タイポグラフィ</div>
+  <h2 class="section-title">英字はセリフ、和文はゴシック</h2>
+  <p class="section-lead">ナビの <code>About</code> は Playfair Display（セリフ）。その真下に 11px のゴシックで和文を添える 2 段組みが、このサイトの型。</p>
+
+  <div class="type-row"><div class="type-meta">Display EN<br>Playfair Display / 48px / 400<br>lh 1.25 / ls .08em</div><div class="t-dispen">Sweets of Hokkaido</div></div>
+  <div class="type-row"><div class="type-meta">Section EN<br>Playfair Display / 36px / 400<br>lh 1.12 / ls .08em / #005bac</div><div class="t-secen">LINEUP</div></div>
+  <div class="type-row"><div class="type-meta">Heading 1<br>Noto Sans JP / 32px / 700<br>lh 1.44 / ls .1em</div><div class="t-h1">北の大地から、しあわせを</div></div>
+  <div class="type-row"><div class="type-meta">Heading 2（明朝）<br><b>Noto Serif JP</b> / 25px / 400<br>lh 1.8 / ls .1em</div><div class="t-min">お菓子は、人と人をつなぐもの</div></div>
+  <div class="type-row"><div class="type-meta">Nav EN<br>Playfair Display / 22px / 400<br>lh 1.37 / ls .1em / #005bac</div><div class="t-naven">About</div></div>
+  <div class="type-row"><div class="type-meta">Nav 和文ラベル<br>Noto Sans JP / 11px / 400<br>lh 1.37 / ls .1em</div><div class="t-navja">企業案内</div></div>
+  <div class="type-row"><div class="type-meta">Heading 3<br>Noto Sans JP / 20px / 700<br>lh 1.6 / ls .1em</div><div class="t-h3">白い恋人</div></div>
+  <div class="type-row"><div class="type-meta">Lead<br>Noto Sans JP / 18px / 700<br>lh 1.56 / ls .1em</div><div class="t-lead">1976年の発売以来、変わらぬ味わい</div></div>
+  <div class="type-row"><div class="type-meta">Body（基準）<br>Noto Sans JP / 15px / 400<br>lh <b>2.0</b> / ls <b>.1em</b><br>実測 89 要素で最多</div><div class="t-body">やわらかなラングドシャで、なめらかなホワイトチョコレートをはさみました。北海道の雪をイメージした白い色合いと、口の中でほどけていく食感。行間 2.0 と字間 0.1em の広さが、このサイトの余韻をつくっています。</div></div>
+  <div class="type-row"><div class="type-meta">Body Bold<br>Noto Sans JP / 15px / 700<br>lh 2.0 / <b>ls .08em</b></div><div class="t-bodyb">ニュースカードの見出しはここだけ字間が 0.08em に締まる</div></div>
+  <div class="type-row"><div class="type-meta">Caption<br>Noto Sans JP / 13px / 400<br>lh 1.54 / ls .1em</div><div class="t-cap">※ 商品の仕様・パッケージは予告なく変更する場合があります</div></div>
+  <div class="type-row"><div class="type-meta">Micro EN<br>Playfair Display / 10px / 400<br>lh 1.0 / <b>ls .18em</b> / #005bac</div><div class="t-micro">CONFECTIONERY</div></div>
+
+  <p class="note"><b>字間は全階層で一律 0.1em。</b> Playfair Display の英字だけ 1 段狭い 0.08em、10px 級の極小英字だけ 0.18em まで開く。<code>palt</code> は使わず（実測 583 要素中 1 件のみ・外部ウィジェット由来）、字送りはすべて <code>letter-spacing</code> のベタ組みで作る。<b>詰め組みではなく開き組みのサイトなので、<code>palt</code> を足すと設計と逆方向に動く。</b></p>
+  <p class="note"><b>root の <code>font-size</code> が 15px</b>（16px ではない）。<code>rem</code> で組むと 1rem = 15px になり、<code>1.34rem = 20.1px</code> のような半端な実測値が並ぶ。</p>
+</div>
+</section>
+
+<!-- 03 ARTICLE -->
+<section class="section" id="article">
+  <div class="section-label">03 / Product</div>
+  <div class="section-en">PRODUCT</div>
+  <div class="section-ja">商品情報</div>
+  <h2 class="section-title">商品ページの組版</h2>
+
+  <div class="prose">
+    <p class="t-micro">LANGUE DE CHAT</p>
+    <h3 style="text-align:left">白い恋人</h3>
+    <p>北海道の澄んだ空気と雪をイメージして生まれたラングドシャ。オリジナルのホワイトチョコレートを、さっくりと焼き上げた生地ではさみました。冬の石狩平野に降り積もる雪の情景を、そのままお菓子にしたいという思いから名付けられています。</p>
+    <p>発売から半世紀近く、配合も焼成温度も少しずつ見直しながら、変わらない口どけを守り続けてきました。</p>
+    <table class="info-table">
+      <tr><th>内容量</th><td>12枚入 / 18枚入 / 24枚入 / 36枚入</td></tr>
+      <tr><th>賞味期限</th><td>製造日より 150 日</td></tr>
+      <tr><th>保存方法</th><td>直射日光・高温多湿を避けて保存してください</td></tr>
+      <tr><th>取扱店舗</th><td>直営店、北海道内の主要空港・駅、公式オンラインショップ</td></tr>
+    </table>
+    <p class="note">テーブルの <code>th</code> は Noto Sans JP 15px / 700 / <code>#005bac</code>、字間 0.08em。罫線は <code>1px solid #dddddd</code>。</p>
+  </div>
+</section>
+
+<!-- 04 BUTTONS -->
+<section class="section-alt" id="buttons">
+<div class="section-inner">
+  <div class="section-label">04 / Buttons</div>
+  <div class="section-en">BUTTONS</div>
+  <div class="section-ja">ボタン</div>
+  <h2 class="section-title">矩形が基本、ピルは EC 導線だけ</h2>
+  <p class="section-lead">左右のパディングは 50〜60px と極端に広く、<b>下パディングだけ 2px 厚い</b>（和文の字面の視覚補正）。</p>
+
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">もっと見る</a>
+    <a class="btn btn-primary-lg" href="#">ISHIYA商品取扱店舗一覧</a>
+    <a class="btn btn-pill" href="#">Online Shop</a>
+    <a class="btn btn-gold" href="#">ブランドについて</a>
+    <a class="btn btn-green" href="#">公式サイトへ</a>
+    <span class="btn btn-circle">Top</span>
+  </div>
+
+  <div class="on-photo">
+    <a class="btn btn-ghost" href="#">法人窓口</a>
+    <a class="btn btn-inverse" href="#">ISHIYA G</a>
+    <a class="btn btn-inverse" href="#">白い恋人パーク</a>
+  </div>
+
+  <p class="note" style="text-align:center">Primary は <code>padding: 11px 50px 13px</code> / <code>border-radius: 0</code>。ヘッダーの EC 導線だけ <code>border-radius: 36px</code> のピル。<br>写真・濃色面の上では <b>Ghost（枠だけ・ラベルは Noto Serif JP / 500）</b>と <b>Inverse（白地に青文字）</b>の 2 種に切り替わる。</p>
+</div>
+</section>
+
+<!-- 05 CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <div class="section-en">NEWS</div>
+  <div class="section-ja">新着情報</div>
+  <h2 class="section-title">Cards</h2>
+  <p class="section-lead">枠も角丸も影も持たない。写真とテキストを 40px の余白で並べるだけ。</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-photo"></div><div class="card-date">2026.09.02</div><div class="card-title">冬季限定「美冬」新パッケージのご案内</div><p class="card-text">季節の意匠を刷新しました</p></div>
+    <div class="card"><div class="card-photo"></div><div class="card-date">2026.08.21</div><div class="card-title">白い恋人パーク 秋のイベント開催</div><p class="card-text">工房見学とお菓子づくり体験</p></div>
+    <div class="card"><div class="card-photo"></div><div class="card-date">2026.08.05</div><div class="card-title">公式オンラインショップ リニューアル</div><p class="card-text">ギフト包装の選択肢を拡充</p></div>
+  </div>
+</section>
+
+<!-- 06 FORMS -->
+<section class="section-alt" id="forms">
+<div class="section-inner">
+  <div class="section-label">06 / Forms</div>
+  <div class="section-en">CONTACT</div>
+  <div class="section-ja">お問い合わせ</div>
+  <h2 class="section-title">Forms</h2>
+  <p class="section-lead">実サイトの問い合わせフォームは Bootstrap の <code>form-control</code> をそのまま使っている（本体のデザインシステムとは別系統）。<b>新規実装では下記のように角丸 0・影なしへ寄せる。</b></p>
+  <div class="form-grid">
+    <div class="field"><label>お名前</label><input type="text" value="石屋 太郎"><p class="hint">全角でご入力ください</p></div>
+    <div class="field is-focus"><label>メールアドレス（フォーカス）</label><input type="text" value="taro@example.jp"><p class="hint">フォーカスリングは #005bac</p></div>
+    <div class="field is-error"><label>電話番号（エラー）</label><input type="text" value="090-1234"><p class="msg">電話番号の形式が正しくありません</p></div>
+    <div class="field"><label>お問い合わせ種別</label><select><option>商品について</option><option>店舗について</option><option>白い恋人パークについて</option></select><p class="hint">セレクトも同じ枠・角丸なし</p></div>
+  </div>
+</div>
+</section>
+
+<!-- 07 ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <div class="section-en">ELEVATION</div>
+  <div class="section-ja">奥行き</div>
+  <h2 class="section-title">Depth &amp; Elevation</h2>
+  <p class="section-lead">可視要素で影を持つのは 3 件だけ。奥行きは「白地 / 写真 / 濃色面」の 3 層で表現する。</p>
+  <div class="elev-grid">
+    <div class="elev elev-0"><b>Level 0 — なし（既定）</b><code>box-shadow: none</code><br><span style="font-size:13px;line-height:1.8;color:#7d7d7d">カード・ボタン・ヘッダーすべてこれ</span></div>
+    <div class="elev elev-1"><b>Level 1 — 一部のフローティング要素のみ</b><code>7px 7px 20px rgba(4,0,0,.1)</code><br><span style="font-size:13px;line-height:1.8;color:#7d7d7d">影の色はわずかに赤みのある黒</span></div>
+  </div>
+  <p class="note"><b>カードに影を足さないこと。</b> このサイトの平面性は、影ではなく余白と 1px の罫線で成立している。</p>
+</section>
+
+<!-- 08 LAYOUT -->
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">08 / Layout</div>
+  <div class="section-en">LAYOUT</div>
+  <div class="section-ja">レイアウト</div>
+  <h2 class="section-title">Layout</h2>
+  <p class="section-lead">コンテナは 1040px。ブレークポイントは実質 960px の 1 本。</p>
+  <div class="layout-demo">
+    <div class="layout-bar">max-width: 1280px（全幅セクション）</div>
+    <div class="layout-bar" style="margin-top:12px;width:81%;margin-left:auto;margin-right:auto">max-width: 1040px（サイトの基準）</div>
+    <div class="layout-bar" style="margin-top:12px;width:62%;margin-left:auto;margin-right:auto">max-width: 800px（読み物幅）</div>
+    <div class="layout-split"><div>1 / 3</div><div>2 / 3</div><div>3 / 3</div></div>
+  </div>
+  <table class="scale-table">
+    <tr><th>Token</th><th>Value</th><th>用途</th></tr>
+    <tr><td>XS</td><td>7px</td><td>インラインの隙間</td></tr>
+    <tr><td>S</td><td>10px</td><td>小さなギャップ</td></tr>
+    <tr><td>M</td><td>40px</td><td>カード間 / グリッドの gutter</td></tr>
+    <tr><td>L</td><td>50px</td><td>ボタンの左右パディング</td></tr>
+    <tr><td>XL</td><td>60px</td><td>金茶ボタンの左右パディング</td></tr>
+  </table>
+  <table class="scale-table">
+    <tr><th>Breakpoint</th><th>Width</th><th>説明</th></tr>
+    <tr><td>Mobile</td><td>≤ 600px</td><td>細かい調整（12箇所）</td></tr>
+    <tr><td><b>主</b></td><td><b>≤ 960px</b></td><td><b>レイアウトが総入れ替わる（393箇所）</b></td></tr>
+    <tr><td>Desktop</td><td>≥ 961px</td><td><code>print, screen and (min-width: 961px)</code>（103箇所）</td></tr>
+    <tr><td>Wide</td><td>≥ 1041px</td><td>コンテナ 1040px を超えたときの調整</td></tr>
+  </table>
+</div>
+</section>
+
+<!-- 09 CAMPAIGN -->
+<section class="section" id="campaign">
+  <div class="section-label">09 / Campaign</div>
+  <div class="section-en">EXCEPTION</div>
+  <div class="section-ja">商品特設ページ</div>
+  <h2 class="section-title">特設ページは別系統</h2>
+  <p class="section-lead">商品キャンペーンページはヘッダー・フッターだけ共通で、中身は総取り替えになる。<b>「ISHIYA のデザイン」としてはコーポレート側を採用する。</b></p>
+  <div class="compare">
+    <div class="corp">
+      <h4>コーポレート（採用する）</h4>
+      <p>和文 Noto Sans JP / 英字 Playfair Display<br>背景 #ffffff ／ 本文 15px・行間 2.0・字間 0.1em<br>radius は 0 / 36px / 50%</p>
+    </div>
+    <div class="camp">
+      <h4>商品特設（持ち込まない）</h4>
+      <p>和文 Zen Maru Gothic（丸ゴシック）<br>背景 #021336 ／ 本文 14px・行間 2.0・字間 normal<br>見出しの字間は −1.3px のマイナス、radius 2px</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="ttl">ISHIYA</p>
+    <nav class="footer-nav">
+      <a href="#">企業案内</a><a href="#">商品情報</a><a href="#">新着情報</a><a href="#">店舗案内</a><a href="#">採用情報</a><a href="#">お問い合わせ</a>
+    </nav>
+    <p class="footer-copy">この preview は DESIGN.md の値を確認するためのショーケースです。実サイトの複製ではありません。</p>
+    <div class="footer-related"><span>関連サイト</span></div>
+  </div>
+</footer>
+
+</body>
+</html>
