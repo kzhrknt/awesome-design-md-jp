@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (486 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (489 sites)</a>
 </p>
 
 <table>
@@ -739,6 +739,11 @@
 <td align="center"><strong>東京国立博物館</strong><br><img src="design-md/tnm/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>nosh</strong><br><img src="design-md/nosh/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>ソラシドエア</strong><br><img src="design-md/solaseed-air/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>森ビル</strong><br><img src="design-md/mori-building/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ヤンマー</strong><br><img src="design-md/yanmar/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1285,11 +1290,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [石屋製菓 (ISHIYA)](https://www.ishiya.co.jp/) | Confectionery / Corporate | [DESIGN.md](design-md/ishiya/DESIGN.md) | [preview.html](design-md/ishiya/preview.html) |
 | [東京国立博物館 (Tokyo National Museum)](https://www.tnm.jp/) | Museum / Culture | [DESIGN.md](design-md/tnm/DESIGN.md) | [preview.html](design-md/tnm/preview.html) |
 | [nosh (ナッシュ)](https://nosh.jp/) | D2C / Food Delivery | [DESIGN.md](design-md/nosh/DESIGN.md) | [preview.html](design-md/nosh/preview.html) |
+| [ソラシドエア (Solaseed Air)](https://www.solaseedair.jp/) | Airline / Travel | [DESIGN.md](design-md/solaseed-air/DESIGN.md) | [preview.html](design-md/solaseed-air/preview.html) |
+| [森ビル (Mori Building)](https://www.mori.co.jp/) | Real Estate / Urban Development | [DESIGN.md](design-md/mori-building/DESIGN.md) | [preview.html](design-md/mori-building/preview.html) |
+| [ヤンマー (YANMAR)](https://www.yanmar.com/jp/) | Industrial Machinery / Corporate | [DESIGN.md](design-md/yanmar/DESIGN.md) | [preview.html](design-md/yanmar/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (486 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (489 sites)</a>
 </p>
 
 <table>
@@ -1993,6 +2001,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>石屋製菓 ISHIYA</strong><br><img src="design-md/ishiya/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>東京国立博物館</strong><br><img src="design-md/tnm/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>nosh</strong><br><img src="design-md/nosh/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>ソラシドエア</strong><br><img src="design-md/solaseed-air/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>森ビル</strong><br><img src="design-md/mori-building/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ヤンマー</strong><br><img src="design-md/yanmar/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ヤンマー（YANMAR）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       130 個の CSS 変数。色はすべて「不透明度のランプ」で定義される。2026-09-03 */
+
+    /* YANMAR Premium Red — 1 色だけがブランド名を持つ */
+    --red-100:        rgba(220, 30, 55, 100%);   /* ★#dc1e37。CSS 全文で 196 回 */
+    --red-80:         rgba(220, 30, 55, 80%);
+    --red-80-opaque:  #de465a;                    /* 白地でのホバー */
+    --red-50:         rgba(220, 30, 55, 50%);
+    --red-dark:       #b0182c;                    /* --yanmar-premium-red-20-dark-opaque。プレス */
+    --red-10:         rgba(220, 30, 55, 10%);     /* 選択中のフィルタ項目 */
+    --red-5:          rgba(220, 30, 55, 5%);
+    --red-5-opaque:   #fdf4f5;
+
+    /* Semantic — ブランドレッドとは別 */
+    --blue-100:   rgba(0, 128, 193, 100%);   /* #0080c1 */
+    --green-100:  rgba(25, 146, 0, 100%);    /* #199200 */
+    --yellow-100: rgba(206, 126, 0, 100%);   /* #ce7e00。フォーカスリングにも使う */
+    --error-100:  rgba(255, 0, 0, 100%);     /* ★#ff0000。ブランドレッドとは別物 */
+    --error-80-opaque: #ff3333;
+
+    /* Black / White — alpha ランプと不透明版が対になっている */
+    --black-100: rgba(0, 0, 0, 100%);   --white-100: rgba(255, 255, 255, 100%);
+    --black-80:  rgba(0, 0, 0, 80%);    --white-50:  rgba(255, 255, 255, 50%);
+    --black-50:  rgba(0, 0, 0, 50%);    --white-20:  rgba(255, 255, 255, 20%);
+    --black-30:  rgba(0, 0, 0, 30%);    --white-10:  rgba(255, 255, 255, 10%);
+    --black-20:  rgba(0, 0, 0, 20%);    --white-5:   rgba(255, 255, 255, 5%);
+    --black-10:  rgba(0, 0, 0, 10%);
+    --black-5:   rgba(0, 0, 0, 5%);
+    --black-80-opaque: #333333;   /* ★本文。名前は「黒の80%」だが値は完全不透明 */
+    --black-10-opaque: #e5e5e5;   /* 枠線 */
+    --black-5-opaque:  #f2f2f2;   /* パンくず・カテゴリ帯の面 */
+
+    --input-border: #d1d1d1;
+    --disabled:     #a3a3a3;
+    --bg:           #ffffff;
+
+    /* === Fonts ===
+       --font-family-brand-display は DIN Next 先頭だが、計測した 3 ページでは
+       1 つもロードされなかった。必ず Noto Sans JP へのフォールバックを前提にする。 */
+    --font: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Meiryo", "Helvetica Neue", Arial, sans-serif;
+    --font-brand: "DIN Next", "DIN Next LT Pro", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Meiryo", "Helvetica Neue", Arial, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Font size: 11 段 === */
+    --fs-l6: 112px;  --fs-base: 16px;
+    --fs-l5:  56px;  --fs-s1:   14px;
+    --fs-l4: 37.3px; --fs-s2: 12.4px;
+    --fs-l3:  28px;  --fs-s3: 11.2px;
+    --fs-l2: 22.4px; --fs-s4: 10.2px;
+    --fs-l1: 18.7px;
+
+    /* === Line height: 1.3 / 1.5 / 1.8 === */
+    --lh-brand: 1.3;   /* ブランド display */
+    --lh-head:  1.5;   /* 見出し */
+    --lh-body:  1.8;   /* 本文 */
+
+    /* === OpenType: 3 つセットで使う === */
+    --ffs: "pkna" on, "palt" on, "pwid" on;
+
+    /* === Spacing: 7px 基準（4px でも 8px でもない） === */
+    --sp-1: 7px;  --sp-2: 14px; --sp-3: 21px; --sp-4: 35px;
+    --sp-5: 56px; --sp-6: 91px; --sp-7: 147px; --sp-8: 238px;
+    --sp-side: 15px;
+
+    /* === Radius === */
+    --r-sm: 3px;
+    --r-1:  5px;     /* ボタンの既定 */
+    --r-2:  10px;
+    --r-max: 9999px;
+
+    /* === Shadow === */
+    --shadow:        0px 1px 2px 0px rgba(0, 0, 0, 5%);    /* ボタン常時 */
+    --shadow-medium: 0 2px 16px 0 rgba(0, 0, 0, 10%);
+    --shadow-large:  0px 4px 32px 0px rgba(0, 0, 0, 10%);
+    --focus-shadow:  0 0 0 4px rgba(206, 126, 0, 20%);     /* ★フォーカスリングは黄色 */
+
+    --content-width: 1110px;
+    --gutter: 21px;
+    --transition: 0.3s ease-out;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--black-80-opaque);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: var(--lh-body);      /* 1.8 */
+    letter-spacing: normal;           /* トークンに定義がない。足さない */
+    font-feature-settings: normal;    /* body には置かない。詰めたい箇所のみ */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { background: var(--bg); border-bottom: 1px solid var(--black-10-opaque); }
+  .header-inner { display: flex; align-items: center; max-width: var(--content-width); margin: 0 auto; padding: 21px 15px; gap: 35px; }
+  .logo { display: flex; align-items: center; gap: 7px; text-decoration: none; }
+  .logo-mark { display: flex; flex-direction: column; gap: 3px; }
+  .logo-mark i { display: block; width: 30px; height: 6px; background: var(--red-100); transform: skewY(-12deg); }
+  .logo-text { font-family: var(--font-brand); font-size: 26px; font-weight: 800; letter-spacing: 1px; color: var(--red-100); font-feature-settings: var(--ffs); }
+  .header-nav { display: flex; gap: 21px; margin-left: auto; }
+  .header-nav a { font-size: 14px; line-height: var(--lh-body); color: var(--black-100); text-decoration: none; }
+  .header-sub { display: flex; gap: 14px; }
+  .header-sub a { font-size: 12.4px; line-height: 1.8; color: var(--black-100); text-decoration: none; }
+
+  /* BREADCRUMB */
+  .crumb { background: var(--black-5-opaque); }
+  .crumb-inner { max-width: var(--content-width); margin: 0 auto; padding: 7px 15px; font-size: 12.4px; line-height: 1.8; color: var(--black-100); }
+
+  /* HERO */
+  .hero { position: relative; height: 420px; background: linear-gradient(150deg, #2f6b6a 0%, #1c4f63 50%, #123246 100%); display: flex; align-items: center; justify-content: center; text-align: center; }
+  .hero::after { content: ""; position: absolute; inset: 0; background: var(--black-30); }
+  .hero-inner { position: relative; z-index: 2; color: #fff; padding: 0 15px; }
+  .hero h1 { font-family: var(--font-brand); font-size: 56px; font-weight: 700; line-height: var(--lh-brand); letter-spacing: 2px; }
+  .hero p { font-size: 28px; font-weight: 700; line-height: var(--lh-head); margin-top: 14px; font-feature-settings: var(--ffs); }
+
+  /* SECTIONS */
+  .section { padding: 56px 15px; max-width: var(--content-width); margin: 0 auto; }
+  .section-alt { background: var(--black-5-opaque); }
+  .section-alt .section-inner { padding: 56px 15px; max-width: var(--content-width); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--disabled); margin-bottom: 7px; text-align: center; }
+  .eyebrow { font-family: var(--font-brand); font-size: 14px; font-weight: 700; line-height: var(--lh-head); letter-spacing: 1.5px; color: var(--red-100); text-align: center; }
+  .section-title { font-size: 28px; font-weight: 700; line-height: var(--lh-head); text-align: center; margin: 7px 0 7px; font-feature-settings: var(--ffs); }
+  .section-lead { font-size: 16px; line-height: var(--lh-body); text-align: center; margin-bottom: 35px; }
+  .note { font-size: 12.4px; line-height: var(--lh-body); color: #6b6b6b; margin-top: 21px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--black-5-opaque); border: 1px solid var(--black-10-opaque); border-radius: var(--r-sm); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+  .swatch { background: var(--bg); border: 1px solid var(--black-10-opaque); border-radius: var(--r-1); overflow: hidden; }
+  .swatch-chip { height: 74px; }
+  .swatch-body { padding: 10px 14px 14px; }
+  .swatch-name { font-size: 14px; font-weight: 700; line-height: var(--lh-head); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: #6b6b6b; margin-top: 2px; }
+  .swatch-use { font-size: 12.4px; line-height: 1.6; color: #6b6b6b; margin-top: 6px; }
+
+  .ramp { display: flex; border-radius: var(--r-1); overflow: hidden; margin-bottom: 7px; background-image: linear-gradient(45deg,#eee 25%,transparent 25%),linear-gradient(-45deg,#eee 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#eee 75%),linear-gradient(-45deg,transparent 75%,#eee 75%); background-size: 14px 14px; background-position: 0 0,0 7px,7px -7px,-7px 0; }
+  .ramp div { flex: 1; height: 56px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 5px; font-family: var(--font-mono); font-size: 10px; }
+  .ramp-name { font-size: 14px; font-weight: 700; margin-bottom: 7px; }
+  .ramp-wrap { margin-bottom: 28px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 21px; padding: 18px 0; border-bottom: 1px solid var(--black-10-opaque); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: #6b6b6b; line-height: 1.7; }
+  .type-meta b { display: block; font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--black-80-opaque); }
+
+  /* ARTICLE */
+  .article { max-width: 731px; margin: 0 auto; }
+  .article h2 { font-size: 28px; font-weight: 700; line-height: var(--lh-head); margin-bottom: 21px; font-feature-settings: var(--ffs); }
+  .article h3 { font-size: 22.4px; font-weight: 700; line-height: var(--lh-head); margin: 35px 0 14px; font-feature-settings: var(--ffs); }
+  .article p { font-size: 16px; line-height: var(--lh-body); margin-bottom: 21px; }
+  .spec-table { width: 100%; border-collapse: collapse; margin: 21px 0; }
+  .spec-table th { background: var(--black-5-opaque); font-size: 14px; font-weight: 700; line-height: var(--lh-head); text-align: left; padding: 14px; border: 1px solid var(--black-10-opaque); }
+  .spec-table td { font-size: 14px; line-height: var(--lh-body); padding: 14px; border: 1px solid var(--black-10-opaque); }
+  .spec-table td b { color: var(--red-100); font-weight: 700; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 28px; }
+  .btn { font-family: var(--font); letter-spacing: normal; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: var(--shadow); transition: var(--transition); }
+  .btn-primary { background: var(--red-100); color: #fff; border: 1px solid var(--red-100); border-radius: var(--r-1); padding: 7px 14px; font-size: 14px; font-weight: 700; line-height: var(--lh-body); }
+  .btn-primary:hover { background: var(--red-80-opaque); border-color: var(--red-80-opaque); }
+  .btn-secondary { background: #fff; color: var(--black-100); border: 1px solid var(--black-10); border-radius: var(--r-1); padding: 6.2px 12.4px; font-size: 12.4px; font-weight: 700; line-height: var(--lh-body); }
+  .btn-tertiary { background: #fff; color: var(--red-100); border: 1px solid var(--red-100); border-radius: var(--r-1); padding: 7px 14px; font-size: 14px; font-weight: 700; line-height: var(--lh-body); }
+  .btn-disabled { background: var(--disabled); color: #fff; border: none; border-radius: 0; padding: 7px 14px; font-size: 14px; font-weight: 700; cursor: not-allowed; box-shadow: none; }
+
+  .chips { display: inline-flex; gap: 0; flex-wrap: wrap; border: 1px solid var(--black-10-opaque); border-radius: var(--r-1); overflow: hidden; }
+  .chip { padding: 14px; font-size: 14px; line-height: var(--lh-body); background: #fff; color: var(--black-80-opaque); border-right: 1px solid var(--black-10-opaque); cursor: pointer; }
+  .chip:last-child { border-right: none; }
+  .chip.is-active { background: var(--red-10); color: var(--red-100); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 21px; }
+  .card { position: relative; height: 200px; border-radius: 0; overflow: hidden; display: flex; align-items: flex-end; padding: 21px; text-decoration: none; }
+  .card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(0,0,0,0) 40%, rgba(0,0,0,0.55) 100%); }
+  .card-label { position: relative; z-index: 2; color: #fff; font-size: 18.7px; font-weight: 700; line-height: var(--lh-head); font-feature-settings: var(--ffs); display: flex; width: 100%; justify-content: space-between; align-items: center; }
+  .redbar { background: var(--red-100); color: #fff; border-radius: 0; padding: 14px 21px; font-size: 14px; font-weight: 700; line-height: 1.3; text-align: center; text-decoration: none; display: block; }
+  .redbar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 14px; margin-top: 21px; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 21px; }
+  .field label { display: block; font-size: 14px; font-weight: 700; line-height: var(--lh-head); margin-bottom: 7px; }
+  .field input, .field select {
+    width: 100%; background: #fff; color: var(--black-100);
+    border: 1px solid var(--input-border); border-radius: var(--r-max);
+    padding: 10px 35px 10px 15px; font-family: var(--font); font-size: 12.8px; line-height: var(--lh-body);
+  }
+  .field input::placeholder { color: var(--disabled); }
+  .field.is-focus input { outline: none; box-shadow: var(--focus-shadow); }
+  .field.is-error input { border-color: var(--error-100); }
+  .field-msg { font-size: 12.4px; line-height: 1.6; color: #6b6b6b; margin-top: 6px; }
+  .field.is-error .field-msg { color: var(--error-100); }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 21px; }
+  .elev { background: #fff; border-radius: var(--r-1); padding: 21px; text-align: center; border: 1px solid var(--black-10-opaque); }
+  .elev.e1 { box-shadow: var(--shadow); border-color: transparent; }
+  .elev.e2 { box-shadow: var(--shadow-medium); border-color: transparent; }
+  .elev.e3 { box-shadow: var(--shadow-large); border-color: transparent; }
+  .elev.ef { box-shadow: var(--focus-shadow); border-color: transparent; }
+  .elev-name { font-size: 14px; font-weight: 700; line-height: var(--lh-head); }
+  .elev-val { font-family: var(--font-mono); font-size: 10px; color: #6b6b6b; margin-top: 6px; word-break: break-all; }
+
+  /* LAYOUT */
+  .sp-row { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+  .sp-item { text-align: center; }
+  .sp-bar { background: var(--red-100); }
+  .sp-label { font-family: var(--font-mono); font-size: 10px; color: #6b6b6b; margin-top: 6px; }
+  .radius-row { display: flex; gap: 21px; flex-wrap: wrap; margin-top: 28px; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 104px; height: 66px; background: var(--red-5-opaque); border: 1px solid var(--red-100); }
+  .radius-label { font-family: var(--font-mono); font-size: 10px; color: #6b6b6b; margin-top: 6px; }
+  .grid-demo { display: grid; grid-template-columns: repeat(6, 1fr); gap: 21px; margin-top: 21px; }
+  .grid-demo div { background: var(--red-10); height: 56px; border-radius: var(--r-sm); }
+
+  /* FOOTER */
+  .footer { background: var(--black-5-opaque); padding: 35px 15px; }
+  .footer-inner { max-width: var(--content-width); margin: 0 auto; display: flex; flex-wrap: wrap; gap: 35px; }
+  .footer-col h5 { font-size: 14px; font-weight: 700; line-height: var(--lh-head); margin-bottom: 7px; }
+  .footer-col a { display: block; font-size: 12.4px; line-height: var(--lh-body); color: var(--black-100); text-decoration: none; }
+  .footer-copy { max-width: var(--content-width); margin: 21px auto 0; font-size: 12.4px; line-height: var(--lh-body); color: #6b6b6b; }
+
+  @media (max-width: 659px) {
+    .section, .section-alt .section-inner { padding: 35px 15px; }
+    .section-title { font-size: 22.4px; }
+    .hero h1 { font-size: 37.3px; }
+    .hero p { font-size: 18.7px; }
+    .type-row { grid-template-columns: 1fr; gap: 7px; }
+    .header-nav, .header-sub { display: none; }
+    .grid-demo { grid-template-columns: repeat(2, 1fr); }
+    .btn-primary, .btn-tertiary { padding: 14px 21px; }  /* SP では 44px を確保 */
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <span class="logo-mark"><i></i><i></i></span>
+      <span class="logo-text">YANMAR</span>
+    </a>
+    <nav class="header-nav">
+      <a href="#">製品・サービス</a><a href="#">企業情報</a><a href="#">ニュースルーム</a><a href="#">サステナビリティ</a><a href="#">採用情報</a>
+    </nav>
+    <div class="header-sub"><a href="#">販売拠点</a><a href="#">サポート・お問い合わせ</a></div>
+  </div>
+</header>
+
+<div class="crumb"><div class="crumb-inner">ホーム ＞ 製品・サービス ＞ 農業 ＞ トラクター</div></div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h1>A SUSTAINABLE FUTURE</h1>
+    <p>― テクノロジーで、新しい豊かさへ。 ―</p>
+  </div>
+</div>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="eyebrow">COLOR PALETTE</div>
+  <h2 class="section-title">1 色だけがブランド名を持つ</h2>
+  <p class="section-lead"><code>--yanmar-premium-red-*</code> という命名そのものが宣言。他の色は <code>black</code> / <code>white</code> / <code>blue</code> / <code>green</code> / <code>yellow</code> という汎用名しか与えられていない。</p>
+
+  <div class="color-grid" style="margin-bottom:35px">
+    <div class="swatch"><div class="swatch-chip" style="background:#dc1e37"></div><div class="swatch-body"><div class="swatch-name">YANMAR Premium Red</div><div class="swatch-hex">#dc1e37</div><div class="swatch-use">★主色。CSS 全文で 196 回。CTA・ロゴ・アクティブなラベル</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#de465a"></div><div class="swatch-body"><div class="swatch-name">Premium Red 80</div><div class="swatch-hex">#de465a</div><div class="swatch-use">白地でのホバー</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#b0182c"></div><div class="swatch-body"><div class="swatch-name">Premium Red Dark</div><div class="swatch-hex">#b0182c</div><div class="swatch-use">プレス状態</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fdf4f5"></div><div class="swatch-body"><div class="swatch-name">Premium Red 5</div><div class="swatch-hex">#fdf4f5</div><div class="swatch-use">最も淡い赤の面（不透明版）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ff0000"></div><div class="swatch-body"><div class="swatch-name">Error Red</div><div class="swatch-hex">#ff0000</div><div class="swatch-use">★ブランドレッドとは別物。混同するとエラーが伝わらない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#0080c1"></div><div class="swatch-body"><div class="swatch-name">Blue（Info / Link）</div><div class="swatch-hex">#0080c1</div><div class="swatch-use">--blue-100</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#199200"></div><div class="swatch-body"><div class="swatch-name">Green（Success）</div><div class="swatch-hex">#199200</div><div class="swatch-use">--green-100</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ce7e00"></div><div class="swatch-body"><div class="swatch-name">Yellow（Warning）</div><div class="swatch-hex">#ce7e00</div><div class="swatch-use">★フォーカスリングにも使う（20% で）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Text</div><div class="swatch-hex">#333333</div><div class="swatch-use">--black-80-opaque。可視 170 要素で最多</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f2f2f2"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#f2f2f2</div><div class="swatch-use">--black-5-opaque。パンくず・カテゴリ帯</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e5e5e5"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#e5e5e5</div><div class="swatch-use">--black-10-opaque（入力欄は #d1d1d1）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#a3a3a3"></div><div class="swatch-body"><div class="swatch-name">Disabled</div><div class="swatch-hex">#a3a3a3</div><div class="swatch-use">無効なボタンの面</div></div></div>
+  </div>
+
+  <div class="ramp-wrap">
+    <div class="ramp-name">YANMAR Premium Red — 不透明度ランプ</div>
+    <div class="ramp">
+      <div style="background:rgba(220,30,55,1);color:#fff">100%</div>
+      <div style="background:rgba(220,30,55,.8);color:#fff">80%</div>
+      <div style="background:rgba(220,30,55,.5);color:#fff">50%</div>
+      <div style="background:rgba(220,30,55,.1);color:#dc1e37">10%</div>
+      <div style="background:rgba(220,30,55,.05);color:#dc1e37">5%</div>
+    </div>
+  </div>
+
+  <div class="ramp-wrap">
+    <div class="ramp-name">Black — 不透明度ランプ（写真の上に重ねる用）</div>
+    <div class="ramp">
+      <div style="background:rgba(0,0,0,1);color:#fff">100%</div><div style="background:rgba(0,0,0,.8);color:#fff">80%</div>
+      <div style="background:rgba(0,0,0,.5);color:#fff">50%</div><div style="background:rgba(0,0,0,.3);color:#fff">30%</div>
+      <div style="background:rgba(0,0,0,.2);color:#333">20%</div><div style="background:rgba(0,0,0,.1);color:#333">10%</div>
+      <div style="background:rgba(0,0,0,.05);color:#333">5%</div>
+    </div>
+  </div>
+
+  <div class="ramp-wrap">
+    <div class="ramp-name">White — 不透明度ランプ</div>
+    <div class="ramp" style="background-image:none;background-color:#4a5a63">
+      <div style="background:rgba(255,255,255,1);color:#333">100%</div><div style="background:rgba(255,255,255,.5);color:#fff">50%</div>
+      <div style="background:rgba(255,255,255,.2);color:#fff">20%</div><div style="background:rgba(255,255,255,.1);color:#fff">10%</div>
+      <div style="background:rgba(255,255,255,.05);color:#fff">5%</div>
+    </div>
+  </div>
+
+  <p class="note"><b>写真の上には alpha 版、白地の上には opaque 版</b>という使い分けを崩さないこと。<code>--black-80-opaque</code> は名前が「黒の 80%」だが値は完全不透明の <code>#333333</code>。<b><code>#dc1e37</code> と <code>#ff0000</code> も混同しない</b> — 前者はブランド色、後者はエラー専用。</p>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <div class="eyebrow">TYPOGRAPHY</div>
+  <h2 class="section-title">font ショートハンドを丸ごとトークンにする</h2>
+  <p class="section-lead"><code>--font-shorthand-heading-large-3: 700 28px / 1.5 "Noto Sans JP", …</code> のように、<b>サイズ・ウェイト・行間・書体が 1 つの変数に束ねられている</b>。</p>
+
+  <div class="type-row"><div class="type-meta"><b>Brand Display</b>--font-shorthand-brand-large-6-bold<br>112px / 700 / lh 1.3<br>DIN Next 先頭（要フォールバック）</div><div style="font-family:var(--font-brand);font-size:56px;font-weight:700;line-height:1.3;letter-spacing:2px">SUSTAINABLE</div></div>
+  <div class="type-row"><div class="type-meta"><b>Brand Heavy Italic</b>--font-shorthand-brand-large-5-heavy-italic<br>56px / 800 <i>italic</i> / lh 1.3</div><div style="font-family:var(--font-brand);font-size:37.3px;font-weight:800;font-style:italic;line-height:1.3;color:#dc1e37">YANMAR</div></div>
+  <div class="type-row"><div class="type-meta"><b>Heading 1</b>--font-shorthand-heading-large-5<br>56px / 700 / lh 1.5</div><div style="font-size:37.3px;font-weight:700;line-height:1.5;font-feature-settings:var(--ffs)">より良い未来へ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Heading 3</b>--font-shorthand-heading-large-3<br>28px / 700 / lh 1.5 ★実測あり</div><div style="font-size:28px;font-weight:700;line-height:1.5;font-feature-settings:var(--ffs)">より良い未来につながる社会を</div></div>
+  <div class="type-row"><div class="type-meta"><b>Heading 4</b>--font-shorthand-heading-large-2<br>22.4px / 700 / lh 1.5</div><div style="font-size:22.4px;font-weight:700;line-height:1.5;font-feature-settings:var(--ffs)">トラクターのタイプとその特長</div></div>
+  <div class="type-row"><div class="type-meta"><b>Heading 5</b>--font-shorthand-heading-large-1<br>18.7px / 700 / lh 1.5</div><div style="font-size:18.7px;font-weight:700;line-height:1.5">無段変速仕様</div></div>
+  <div class="type-row"><div class="type-meta"><b>Heading 6</b>--font-shorthand-heading-base<br>16px / 700 / lh 1.5 ★実測あり</div><div style="font-size:16px;font-weight:700;line-height:1.5">会社情報</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body Large</b>--font-shorthand-base-normal<br>16px / 400 / lh 1.8 ★実測あり</div><div style="font-size:16px;line-height:1.8">クラッチ操作なしで無段階にスムーズな変速を実現。作業速度を細かく合わせられるため、圃場の状態に応じた最適な作業が可能です。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body</b>--font-shorthand-small-1-normal<br>14px / 400 / lh 1.8 ★既定</div><div style="font-size:14px;line-height:1.8">ヤンマーは1912年の創業以来、産業用ディーゼルエンジンの小型化に世界で初めて成功するなど、テクノロジーで社会の課題を解いてきました。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Caption</b>--font-shorthand-small-2-normal<br>12.4px / 400 / lh 1.8 ★実測あり</div><div style="font-size:12.4px;line-height:1.8">Copyright © YANMAR HOLDINGS CO., LTD.</div></div>
+  <div class="type-row"><div class="type-meta"><b>Small / Micro</b>small-3 / small-4<br>11.2px / 10.2px / lh 1.8</div><div style="font-size:11.2px;line-height:1.8">※ 掲載の仕様は予告なく変更する場合があります</div></div>
+
+  <p class="note"><b>行間の使い分けが明確。</b>ブランド display は 1.3、見出しは 1.5、<b>18.7px 以下の本文は 1.8</b>。日本語の業務 UI としてはゆったりした行間で、スペック表や説明文の可読性を優先している。</p>
+
+  <p class="note"><b><code>letter-spacing</code> を足さない。</b>ヤンマーのトークンに letter-spacing の定義は 1 つも存在せず、実測も 245/248 要素が <code>normal</code>。残りは Cookie 同意バナー（OneTrust）由来の <code>0.13008px</code> / <code>0.144px</code> で、ヤンマーの設計値ではない。</p>
+
+  <p class="note"><b><code>font-feature-settings: "pkna" on, "palt" on, "pwid" on</code> は 3 つセットで使う。</b><code>pkna</code>（仮名のプロポーショナル字形）まで指定しているサイトは珍しい。<b>ただし body には置かない</b> — 実サイトの適用は 15 要素のみで、詰めたい見出しに個別に当てる運用。</p>
+</div>
+</section>
+
+<section class="section" id="article">
+  <div class="section-label">03 / Product</div>
+  <div class="eyebrow">PRODUCT</div>
+  <h2 class="section-title">製品スペックの組版</h2>
+  <p class="section-lead">本文カラムは <code>--content-width-sm</code>（6 カラム中 4 カラム分 ≒ 731px）。本文 14px / <code>line-height: 1.8</code>。</p>
+
+  <div class="article">
+    <h2>トラクター</h2>
+    <p>圃場の規模と作業内容に合わせて、20 馬力未満の小型機から 100 馬力超の大型機まで幅広くラインアップしています。すべての機種で作業性・快適性・環境性能を両立させました。</p>
+
+    <h3>無段変速仕様</h3>
+    <p>クラッチ操作なしで無段階にスムーズな変速を実現。作業速度を細かく合わせられるため、圃場の状態に応じた最適な作業が可能です。旋回時の減速・復帰も自動で行います。</p>
+
+    <table class="spec-table">
+      <thead><tr><th>型式</th><th>馬力</th><th>変速方式</th><th>参考価格（税別）</th></tr></thead>
+      <tbody>
+        <tr><td>YT5113</td><td>113 PS</td><td>I-HMT</td><td><b>￥12,800,000〜</b></td></tr>
+        <tr><td>YT357</td><td>57 PS</td><td>I-HMT</td><td><b>￥7,400,000〜</b></td></tr>
+        <tr><td>SA-424</td><td>24 PS</td><td>油圧無段変速</td><td><b>￥3,100,000〜</b></td></tr>
+      </tbody>
+    </table>
+
+    <p style="font-size:12.4px;color:#6b6b6b">※ 掲載の仕様・価格は予告なく変更する場合があります。詳しくはお近くの販売拠点までお問い合わせください。</p>
+  </div>
+</section>
+
+<section class="section-alt" id="buttons">
+<div class="section-inner">
+  <div class="section-label">04 / Buttons</div>
+  <div class="eyebrow">COMPONENTS</div>
+  <h2 class="section-title">ボタンは Web Component（<code>&lt;y-button&gt;</code>）</h2>
+  <p class="section-lead">角丸 <code>5px</code>、余白 <code>7px 14px</code>（7px グリッド上）、<b>影 <code>0px 1px 2px rgba(0,0,0,5%)</code> が常時入る</b>。</p>
+
+  <div class="btn-grid">
+    <button class="btn btn-primary">絞り込み</button>
+    <button class="btn btn-tertiary">リセット</button>
+    <button class="btn btn-secondary">トラクターのタイプとその特長</button>
+    <button class="btn btn-secondary">トラクターの主な仕様</button>
+    <button class="btn btn-disabled">送信できません</button>
+  </div>
+
+  <div style="margin-bottom:21px">
+    <div style="font-size:14px;font-weight:700;margin-bottom:7px">馬力(PS)</div>
+    <div class="chips">
+      <div class="chip is-active">すべて</div>
+      <div class="chip">–20馬力</div>
+      <div class="chip">20–40馬力</div>
+      <div class="chip">40–60馬力</div>
+      <div class="chip">60馬力–</div>
+    </div>
+  </div>
+
+  <p class="note">選択中のフィルタ項目は <b>面 <code>rgba(220,30,55,0.1)</code> ／ 文字 <code>#dc1e37</code>、角丸なし</b>。<b>角丸を <code>2px</code> にしないこと</b> — それは Cookie 同意バナー（OneTrust）の値で、ヤンマーの <code>--border-radius-*</code> は 3 / 5 / 10 / 9999px。<b>ボタンから影を外してフラットにしないこと。</b></p>
+</div>
+</section>
+
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <div class="eyebrow">CARDS</div>
+  <h2 class="section-title">製品カードは角丸なし</h2>
+  <p class="section-lead">写真の上にラベルを直接載せ、右下にシェブロン。面の色は持たない。</p>
+
+  <div class="card-grid">
+    <a href="#" class="card" style="background:linear-gradient(150deg,#7a6a4e,#3d3626)"><div class="card-label"><span>農業</span><span>›</span></div></a>
+    <a href="#" class="card" style="background:linear-gradient(150deg,#3d7d92,#14384a)"><div class="card-label"><span>マリンプレジャー</span><span>›</span></div></a>
+    <a href="#" class="card" style="background:linear-gradient(150deg,#5f7a8c,#2a3a48)"><div class="card-label"><span>大形舶用エンジン</span><span>›</span></div></a>
+    <a href="#" class="card" style="background:linear-gradient(150deg,#8a8a72,#40402f)"><div class="card-label"><span>建設機械</span><span>›</span></div></a>
+  </div>
+
+  <div class="redbar-grid">
+    <a href="#" class="redbar">製品について<br>知りたい・探したい</a>
+    <a href="#" class="redbar">所有している製品の<br>サポートを受けたい</a>
+    <a href="#" class="redbar" style="background:#a3a3a3">閉じる</a>
+  </div>
+</section>
+
+<section class="section-alt" id="forms">
+<div class="section-inner">
+  <div class="section-label">06 / Forms</div>
+  <div class="eyebrow">FORMS</div>
+  <h2 class="section-title">フォーカスリングは黄色</h2>
+  <p class="section-lead"><b><code>0 0 0 4px rgba(206, 126, 0, 20%)</code></b>。ブランドレッドでも青でもない。<b>実測しないと絶対に出てこない値。</b></p>
+
+  <div class="form-grid">
+    <div class="field">
+      <label for="y1">キーワード検索</label>
+      <input id="y1" type="text" placeholder="型式・製品名で検索">
+      <div class="field-msg">入力欄はピル（border-radius: 9999px）</div>
+    </div>
+    <div class="field is-focus">
+      <label for="y2">お名前（フォーカス時）</label>
+      <input id="y2" type="text" value="山田 太郎">
+      <div class="field-msg">box-shadow: 0 0 0 4px rgba(206,126,0,0.2)</div>
+    </div>
+    <div class="field is-error">
+      <label for="y3">メールアドレス（エラー時）</label>
+      <input id="y3" type="email" value="taro@">
+      <div class="field-msg">メールアドレスの形式が正しくありません</div>
+    </div>
+    <div class="field">
+      <label for="y4">お問い合わせ製品</label>
+      <select id="y4"><option>トラクター</option><option>コンバイン</option><option>田植機</option><option>建設機械</option></select>
+      <div class="field-msg">該当する製品カテゴリをお選びください</div>
+    </div>
+  </div>
+
+  <p class="note">エラー表示には <code>#ff0000</code>（<code>--error-100</code>）を使う。<b><code>#dc1e37</code> はブランド色なので、エラーには使わない。</b></p>
+</div>
+</section>
+
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <div class="eyebrow">DEPTH</div>
+  <h2 class="section-title">ボタンにも常時、ごく浅い影</h2>
+  <p class="section-lead">フラットに見えるが、実際には <code>0px 1px 2px rgba(0,0,0,5%)</code> で紙のように持ち上げている。</p>
+
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">Level 0</div><div class="elev-val">none</div></div>
+    <div class="elev e1"><div class="elev-name">--shadow</div><div class="elev-val">0px 1px 2px 0px rgba(0,0,0,5%)　ボタン</div></div>
+    <div class="elev e2"><div class="elev-name">--shadow-medium</div><div class="elev-val">0 2px 16px 0 rgba(0,0,0,10%)　カード</div></div>
+    <div class="elev e3"><div class="elev-name">--shadow-large</div><div class="elev-val">0px 4px 32px 0px rgba(0,0,0,10%)　モーダル</div></div>
+    <div class="elev ef"><div class="elev-name">--focus-shadow</div><div class="elev-val">0 0 0 4px rgba(206,126,0,20%)　フォーカス</div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">08 / Layout</div>
+  <div class="eyebrow">LAYOUT</div>
+  <h2 class="section-title">余白は 7px グリッド</h2>
+  <p class="section-lead">4px でも 8px でもない。<code>7 → 14 → 21 → 35 → 56 → 91 → 147 → 238px</code> と、途中から<b>前 2 項の和に近い伸び方</b>をする。</p>
+
+  <div class="sp-row">
+    <div class="sp-item"><div class="sp-bar" style="width:7px;height:7px"></div><div class="sp-label">1<br>7px</div></div>
+    <div class="sp-item"><div class="sp-bar" style="width:14px;height:14px"></div><div class="sp-label">2<br>14px</div></div>
+    <div class="sp-item"><div class="sp-bar" style="width:21px;height:21px"></div><div class="sp-label">3<br>21px</div></div>
+    <div class="sp-item"><div class="sp-bar" style="width:35px;height:35px"></div><div class="sp-label">4<br>35px</div></div>
+    <div class="sp-item"><div class="sp-bar" style="width:56px;height:56px"></div><div class="sp-label">5<br>56px</div></div>
+    <div class="sp-item"><div class="sp-bar" style="width:91px;height:91px"></div><div class="sp-label">6<br>91px</div></div>
+    <div class="sp-item"><div class="sp-bar" style="width:147px;height:147px"></div><div class="sp-label">7<br>147px</div></div>
+  </div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:3px"></div><div class="radius-label">--border-radius-small-1<br>3px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:5px"></div><div class="radius-label">--border-radius-1<br>5px（ボタン）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:10px"></div><div class="radius-label">--border-radius-2<br>10px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:9999px"></div><div class="radius-label">--border-radius-max<br>9999px</div></div>
+  </div>
+
+  <div style="margin-top:35px">
+    <div style="font-size:14px;font-weight:700;margin-bottom:7px">6 カラムグリッド / ガター 21px（<code>--content-width: 1110px</code>）</div>
+    <div class="grid-demo"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+  </div>
+
+  <p class="note"><code>--content-width-sm: calc((1110px - (21px * 5)) / 6 * 4 + (21px * 3))</code> ≒ 731px は「6 カラム中 4 カラム分」を計算式で表現している。ブレークポイントはトークンとして <b>660 / 1064 / 1200px</b> の 3 つだけが定義されている。</p>
+
+  <p class="note"><b>タッチターゲットに注意。</b>Primary ボタン（14px / padding 7px 14px）の実高は約 <b>39px</b> で 44px 基準を下回る。モバイルでは縦 padding を <code>--spacing-2</code>（14px）以上に広げること。</p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-col"><h5>製品・サービス</h5><a href="#">農業</a><a href="#">建設機械</a><a href="#">エネルギー</a><a href="#">マリン</a></div>
+    <div class="footer-col"><h5>企業情報</h5><a href="#">会社情報</a><a href="#">社長挨拶</a><a href="#">グループ会社</a></div>
+    <div class="footer-col"><h5>サポート</h5><a href="#">販売拠点</a><a href="#">お問い合わせ</a><a href="#">アフターサービス</a></div>
+    <div class="footer-col"><h5>その他</h5><a href="#">ニュースルーム</a><a href="#">サステナビリティ</a><a href="#">採用情報</a></div>
+  </div>
+  <p class="footer-copy">これは DESIGN.md の再現用サンプルです。ヤンマーの実サイトではありません。ブランド display 書体（DIN Next）は Noto Sans JP にフォールバックしています。</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ソラシドエア（Solaseed Air）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Murecho:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトは 237 個の CSS 変数を持つ。色は 12 段ランプで定義される。
+       採用するのは常に実測値。2026-09-03 */
+
+    /* Leaf Green（面に敷く深緑） */
+    --leaf-10:   #f4f9ee;  --leaf-50:   #eaf3de;  --leaf-100:  #d5e7bd;
+    --leaf-200:  #c1db9d;  --leaf-300:  #acd07c;  --leaf-400:  #92c154;
+    --leaf-500:  #73af23;  --leaf-600:  #64a70b;  /* --color-brand-l。宣言のみ・可視 0 要素 */
+    --leaf-700:  #5a9609;
+    --leaf-800:  #4d8008;  /* ★実質の主色。CTA の面・アクティブタブ・文字 40 要素 */
+    --leaf-900:  #467407;  --leaf-1000: #3c6406;  --leaf-1100: #284204;
+
+    /* Pistachio Green（差し色の黄緑） */
+    --pist-10:   #fbfcee;  --pist-50:   #f9fbe4;  --pist-100:  #f6f9d7;
+    --pist-200:  #e6ee94;  --pist-300:  #dde76b;  --pist-400:  #d7e351;
+    --pist-500:  #cfde33;
+    --pist-600:  #c4d600;  /* ★--color-brand-p。会員登録ピル・フッター著作権バー */
+    --pist-700:  #b0c000;  --pist-800:  #9cab00;  --pist-900:  #758000;
+    --pist-1000: #626b00;  --pist-1100: #3a4000;
+
+    /* Solaseed Gray（温かみのある独自グレー） */
+    --sgray-100: #cdcec9;  --sgray-400: #999a90;
+    --sgray-700: #707167;  /* 実測 7 要素 */
+    --sgray-1100:#464741;
+    --brand-g:   #7e7f74;  /* --color-brand-g */
+
+    /* Semantic */
+    --error:     #d90f1c;  /* --color-error = --color-red-400。可視 24 要素 */
+    --error-bg:  #ffe5e6;  /* --color-red-50 */
+    --important: #fbdb65;  /* --color-important = --color-softyellow-600 */
+    --sat:       #150ba7;  /* カレンダーの土曜 */
+
+    /* Neutral */
+    --text:      #4d4d4d;  /* --color-type = --color-gray-700。可視 1,107 要素 */
+    --link:      #4d4d4d;  /* --color-link。リンクも本文と同色 */
+    --bg:        #ffffff;  /* --color-background */
+    --bg-accent: #f6f9d7;  /* --color-background-accent */
+    --surface-alt:#f2f2f2; /* --color-gray-50 */
+    --disabled:  #e6e6e6;  /* --color-gray-100 */
+    --disabled-t:#999999;  /* --color-gray-400 */
+    --border:    #7f7f7f;  /* --color-border = --color-gray-500。かなり濃い */
+    --border-lt: #cccccc;  /* --color-border-light */
+    --border-dk: #4d4d4d;  /* --color-border-dark */
+    --input-bd:  #666666;  /* --color-input-border */
+    --input-bd-h:#333333;  /* --color-input-border-hover */
+    --gray-800:  #333333;
+    --gray-900:  #1a1a1a;
+
+    /* === Font: サイト全体で 1 書体のみ ===
+       実測 1,222 要素中 1,221 が Murecho。和文用・欧文用の別スタックは存在しない */
+    --font: "Murecho", sans-serif;   /* --font-sans-serif */
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height === */
+    --lh-xs: 1.4;  --lh-sm: 1.5;  --lh-md: 1.6;  --lh-lg: 1.8;  --lh-xl: 2.2;
+
+    /* === Radius === */
+    --r-xs:  4px;
+    --r-s:   8px;    /* ユーティリティボタン・タグ */
+    --r-m:   16px;   /* カード・タブ上端 */
+    --r-l:   24px;   /* 大きめのパネル */
+    --r-xl:  176px;  /* ★ピル。CTA・入力欄・タブ */
+    --r-circle: 50%;
+
+    /* === Shadow: 下方向にだけ落ちる極端に浅い影 === */
+    --shadow-s: 0px 8px 10px -10px rgba(0,0,0,.25);   /* --pc-shadow-s */
+    --shadow-m: 0px 30px 30px -35px rgba(0,0,0,.25);  /* --pc-shadow-m */
+
+    /* === Spacing: Tailwind 型 4px グリッド === */
+    --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px; --sp-5: 20px;
+    --sp-6: 24px; --sp-8: 32px; --sp-10: 40px; --sp-12: 48px; --sp-16: 64px;
+
+    --container: 1200px;
+    --header-h: 116px;   /* --headerHeight */
+    --ease: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: var(--lh-md);       /* 1.6 */
+    letter-spacing: normal;          /* 実測 1,222/1,222 が normal */
+    font-feature-settings: normal;   /* palt の適用要素は 0 個 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { background: var(--bg); border-bottom: 1px solid var(--border-lt); }
+  .header-inner { display: flex; align-items: center; gap: 26px; max-width: var(--container); margin: 0 auto; padding: 0 24px; height: 88px; }
+  .header-logo { font-size: 24px; font-weight: 700; line-height: var(--lh-sm); color: var(--leaf-800); text-decoration: none; letter-spacing: normal; }
+  .header-logo span { display: block; font-size: 11px; font-weight: 400; color: var(--sgray-700); }
+  .header-nav { display: flex; gap: 22px; margin-left: auto; }
+  .header-nav a { font-size: 15px; font-weight: 400; line-height: var(--lh-sm); color: var(--text); text-decoration: none; }
+  .header-nav a.is-active { font-weight: 700; }
+  .header-actions { display: flex; gap: 8px; align-items: center; }
+
+  /* NOTICE BAR */
+  .notice { background: var(--important); padding: 14px 24px; }
+  .notice-inner { max-width: var(--container); margin: 0 auto; display: flex; gap: 10px; align-items: center; font-size: 14px; line-height: var(--lh-md); }
+  .notice-inner b { font-weight: 700; }
+
+  /* HERO */
+  .hero { background: var(--pist-10); padding: 44px 24px; }
+  .hero-inner { max-width: var(--container); margin: 0 auto; }
+  .hero-card { background: var(--leaf-800); border-radius: var(--r-l); padding: 64px 40px; text-align: center; }
+  .hero-card h1 { font-size: 36px; font-weight: 700; line-height: var(--lh-sm); color: #fff; letter-spacing: normal; }
+  .hero-card p { font-size: 16px; font-weight: 400; line-height: var(--lh-md); color: #fff; margin-top: 14px; }
+
+  /* SECTIONS */
+  .section { padding: 64px 24px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--pist-10); }
+  .section-alt .section-inner { padding: 64px 24px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--sgray-700); margin-bottom: 6px; text-align: center; }
+  .eyebrow { font-size: 16px; font-weight: 700; line-height: var(--lh-md); color: var(--leaf-800); text-align: center; }
+  .section-title { font-size: 30px; font-weight: 700; line-height: var(--lh-sm); text-align: center; margin-bottom: 10px; }
+  .section-lead { font-size: 16px; font-weight: 400; line-height: var(--lh-md); text-align: center; margin-bottom: 38px; }
+  .note { font-size: 14px; line-height: var(--lh-xs); color: var(--sgray-700); margin-top: 16px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--surface-alt); border: 1px solid var(--border-lt); border-radius: var(--r-xs); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+  .swatch { background: #fff; border: 1px solid var(--border-lt); border-radius: var(--r-m); overflow: hidden; }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 10px 12px 14px; }
+  .swatch-name { font-size: 14px; font-weight: 700; line-height: var(--lh-sm); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 12px; color: var(--sgray-700); }
+  .swatch-use { font-size: 12px; line-height: var(--lh-xs); color: var(--sgray-700); margin-top: 4px; }
+
+  .ramp { display: flex; border-radius: var(--r-s); overflow: hidden; margin-bottom: 8px; }
+  .ramp div { flex: 1; height: 56px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 5px; font-family: var(--font-mono); font-size: 9px; }
+  .ramp-name { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .ramp-wrap { margin-bottom: 26px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 210px 1fr; gap: 22px; padding: 18px 0; border-bottom: 1px solid var(--border-lt); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; color: var(--sgray-700); line-height: 1.7; }
+  .type-meta b { display: block; font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--text); }
+
+  /* ARTICLE */
+  .article { max-width: 760px; margin: 0 auto; }
+  .article h2 { font-size: 30px; font-weight: 700; line-height: var(--lh-sm); margin-bottom: 20px; }
+  .article h3 { font-size: 24px; font-weight: 700; line-height: var(--lh-sm); margin: 34px 0 14px; }
+  .article p { font-size: 16px; line-height: var(--lh-md); margin-bottom: 18px; }
+  .fare-table { width: 100%; border-collapse: collapse; margin: 22px 0; }
+  .fare-table th { background: var(--bg-accent); font-size: 14px; font-weight: 700; line-height: var(--lh-md); text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--border-lt); }
+  .fare-table td { font-size: 16px; line-height: var(--lh-md); padding: 14px 16px; border-bottom: 1px solid var(--border-lt); }
+  .fare-table td b { font-weight: 700; color: var(--leaf-800); }
+  .alert-box { background: var(--error-bg); border-radius: var(--r-s); padding: 16px 20px; margin: 22px 0; }
+  .alert-box p { color: var(--error); font-size: 14px; line-height: var(--lh-md); margin: 0; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 30px; }
+  .btn { font-family: var(--font); letter-spacing: normal; cursor: pointer; border: none; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+  .btn-main { background: var(--leaf-800); color: #fff; border-radius: var(--r-xl); padding: 16px 40px 16px 24px; font-size: 18px; font-weight: 700; line-height: var(--lh-sm); position: relative; }
+  .btn-main::after { content: "›"; position: absolute; right: 20px; font-size: 22px; line-height: 1; }
+  .btn-second { background: #fff; color: var(--text); border: 1px solid var(--border); border-radius: var(--r-xl); padding: 18px 20px; font-size: 14px; font-weight: 700; line-height: var(--lh-md); }
+  .btn-accent { background: var(--pist-600); color: var(--text); border-radius: var(--r-xl); padding: 6px 10px; font-size: 12px; font-weight: 700; line-height: var(--lh-xs); }
+  .btn-login { background: var(--leaf-800); color: #fff; border-radius: var(--r-xl); padding: 6px 10px; font-size: 12px; font-weight: 700; line-height: var(--lh-xs); }
+  .btn-util { background: #fff; color: var(--text); border: 1px solid var(--border); border-radius: var(--r-s); padding: 12px 14px; font-size: 12px; font-weight: 700; line-height: var(--lh-xs); }
+  .btn-disabled { background: var(--disabled); color: var(--disabled-t); border-radius: var(--r-xl); padding: 15px 40px; font-size: 18px; font-weight: 700; cursor: not-allowed; }
+
+  .tabs { display: flex; gap: 4px; margin-bottom: 0; }
+  .tab { border: none; cursor: pointer; font-family: var(--font); border-radius: 16px 16px 0 0; padding: 12px 32px; font-size: 18px; font-weight: 700; line-height: var(--lh-sm); background: var(--disabled); color: var(--text); }
+  .tab.is-active { background: #fff; }
+  .tab-panel { background: #fff; border-radius: 0 var(--r-m) var(--r-m) var(--r-m); padding: 26px; border: 1px solid var(--border-lt); }
+
+  .pilltabs { display: inline-flex; gap: 8px; }
+  .pilltab { border: none; cursor: pointer; font-family: var(--font); border-radius: var(--r-xl); padding: 16px 40px; font-size: 20px; font-weight: 700; line-height: var(--lh-xs); background: var(--disabled); color: var(--text); }
+  .pilltab.is-active { background: var(--leaf-800); color: #fff; }
+
+  .chips { display: flex; gap: 10px; flex-wrap: wrap; }
+  .chip-news { background: var(--surface-alt); color: var(--text); border-radius: var(--r-s); padding: 8px 16px; font-size: 14px; font-weight: 700; line-height: var(--lh-md); }
+  .chip-lime { background: var(--pist-400); color: var(--text); border-radius: var(--r-s); padding: 8px; font-size: 13px; font-weight: 700; line-height: var(--lh-md); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+  .card { background: #fff; border-radius: var(--r-m); box-shadow: var(--shadow-s); overflow: hidden; }
+  .card-media { height: 150px; }
+  .card-body { padding: 20px; }
+  .card-tag { display: inline-block; background: var(--surface-alt); border-radius: var(--r-s); padding: 6px 12px; font-size: 12px; font-weight: 700; line-height: var(--lh-xs); margin-bottom: 10px; }
+  .card h4 { font-size: 24px; font-weight: 700; line-height: var(--lh-sm); margin-bottom: 8px; }
+  .card p { font-size: 14px; line-height: var(--lh-md); color: var(--text); }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 26px; }
+  .field label { display: block; font-size: 16px; font-weight: 700; line-height: var(--lh-md); margin-bottom: 8px; }
+  .field input, .field select {
+    width: 100%; background: #fff; color: var(--text);
+    border: 1px solid var(--border); border-radius: var(--r-xl);
+    padding: 14px 20px; font-family: var(--font); font-size: 16px; line-height: var(--lh-md);
+  }
+  .field input::placeholder { color: var(--disabled-t); }
+  .field.is-focus input { border-color: var(--input-bd-h); outline: none; }
+  .field.is-error input { border-color: var(--error); }
+  .field-msg { font-size: 14px; line-height: var(--lh-xs); margin-top: 6px; color: var(--sgray-700); }
+  .field.is-error .field-msg { color: var(--error); }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 24px; }
+  .elev { background: #fff; border-radius: var(--r-m); padding: 26px; text-align: center; border: 1px solid var(--border-lt); }
+  .elev.e1 { box-shadow: var(--shadow-s); border-color: transparent; }
+  .elev.e2 { box-shadow: var(--shadow-m); border-color: transparent; }
+  .elev-name { font-size: 16px; font-weight: 700; line-height: var(--lh-md); }
+  .elev-val { font-family: var(--font-mono); font-size: 11px; color: var(--sgray-700); margin-top: 6px; word-break: break-all; }
+
+  /* LAYOUT */
+  .sp-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+  .sp-item { text-align: center; }
+  .sp-bar { background: var(--leaf-800); border-radius: var(--r-xs); }
+  .sp-label { font-family: var(--font-mono); font-size: 11px; color: var(--sgray-700); margin-top: 6px; }
+  .radius-row { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 30px; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 104px; height: 66px; background: var(--pist-100); border: 1px solid var(--leaf-800); }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; color: var(--sgray-700); margin-top: 6px; }
+
+  /* FOOTER */
+  .footer { background: var(--pist-300); padding: 40px 24px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; display: flex; flex-wrap: wrap; gap: 40px; }
+  .footer-col h5 { font-size: 14px; font-weight: 700; line-height: var(--lh-md); margin-bottom: 10px; }
+  .footer-col a { display: block; font-size: 14px; line-height: var(--lh-lg); color: var(--text); text-decoration: none; }
+  .footer-bar { background: var(--pist-600); padding: 14px 24px; }
+  .footer-bar p { max-width: var(--container); margin: 0 auto; font-size: 12px; line-height: var(--lh-xs); color: var(--text); }
+
+  @media (max-width: 767px) {
+    .section, .section-alt .section-inner { padding: 44px 20px; }
+    .section-title { font-size: 23px; }
+    .hero-card h1 { font-size: 26px; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .header-nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="notice">
+  <div class="notice-inner"><b>重要なお知らせ</b>　予約・搭乗システム刷新に伴うよくあるお問い合わせ内容について</div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="header-logo">Solaseed Air<span>“Seed Smiles in the Sky.”</span></a>
+    <nav class="header-nav">
+      <a href="#" class="is-active">セール/キャンペーン</a>
+      <a href="#">運賃/予約</a>
+      <a href="#">搭乗手続き/空港案内</a>
+      <a href="#">機内サービス</a>
+    </nav>
+    <div class="header-actions">
+      <button class="btn btn-accent">会員登録</button>
+      <button class="btn btn-login">ログイン</button>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-card">
+      <h1>1書体・字間ゼロ・完全ピル</h1>
+      <p>Murecho 1本で全ページを組み、letter-spacing は全要素 normal。CTA と入力欄は border-radius: 176px。</p>
+    </div>
+  </div>
+</div>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="eyebrow">Color Palette</div>
+  <h2 class="section-title">緑が 2 系統ある</h2>
+  <p class="section-lead">面に敷いて読ませるのは<b>リーフグリーン（深緑）</b>、目を引かせる差し色は<b>ピスタチオグリーン（黄緑）</b>。<b>トークンの <code>--color-brand-l: #64a70b</code> は可視 0 要素で、実装の主色は <code>#4d8008</code>。</b></p>
+
+  <div class="color-grid" style="margin-bottom:38px">
+    <div class="swatch"><div class="swatch-chip" style="background:#4d8008"></div><div class="swatch-body"><div class="swatch-name">Leaf Green 800</div><div class="swatch-hex">#4d8008</div><div class="swatch-use">★実質の主色。CTA の面・アクティブタブ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#64a70b"></div><div class="swatch-body"><div class="swatch-name">Leaf Green（名目）</div><div class="swatch-hex">#64a70b</div><div class="swatch-use">--color-brand-l。宣言のみで描画されない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#c4d600"></div><div class="swatch-body"><div class="swatch-name">Pistachio 600</div><div class="swatch-hex">#c4d600</div><div class="swatch-use">★差し色。会員登録ピル・フッターバー</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f6f9d7"></div><div class="swatch-body"><div class="swatch-name">Accent Surface</div><div class="swatch-hex">#f6f9d7</div><div class="swatch-use">--color-background-accent</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#d90f1c"></div><div class="swatch-body"><div class="swatch-name">Error</div><div class="swatch-hex">#d90f1c</div><div class="swatch-use">--color-error。注意書きの文字（24 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fbdb65"></div><div class="swatch-body"><div class="swatch-name">Important</div><div class="swatch-hex">#fbdb65</div><div class="swatch-use">--color-important。最上部の告知バー</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#4d4d4d"></div><div class="swatch-body"><div class="swatch-name">Text / Link</div><div class="swatch-hex">#4d4d4d</div><div class="swatch-use">本文もリンクも同色。可視 1,107 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#7f7f7f"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#7f7f7f</div><div class="swatch-use">--color-border。ボタン・入力欄の枠</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#707167"></div><div class="swatch-body"><div class="swatch-name">Solaseed Gray 700</div><div class="swatch-hex">#707167</div><div class="swatch-use">温かみのある独自グレー</div></div></div>
+  </div>
+
+  <div class="ramp-wrap">
+    <div class="ramp-name">Leaf Green — 12 段ランプ（<code>--color-leafgreen-10 〜 1100</code>）</div>
+    <div class="ramp">
+      <div style="background:#f4f9ee;color:#284204">10</div><div style="background:#eaf3de;color:#284204">50</div>
+      <div style="background:#d5e7bd;color:#284204">100</div><div style="background:#c1db9d;color:#284204">200</div>
+      <div style="background:#acd07c;color:#284204">300</div><div style="background:#92c154;color:#284204">400</div>
+      <div style="background:#73af23;color:#fff">500</div><div style="background:#64a70b;color:#fff">600</div>
+      <div style="background:#5a9609;color:#fff">700</div><div style="background:#4d8008;color:#fff">★800</div>
+      <div style="background:#467407;color:#fff">900</div><div style="background:#3c6406;color:#fff">1000</div>
+      <div style="background:#284204;color:#fff">1100</div>
+    </div>
+  </div>
+
+  <div class="ramp-wrap">
+    <div class="ramp-name">Pistachio Green — 12 段ランプ（<code>--color-pistachiogreen-10 〜 1100</code>）</div>
+    <div class="ramp">
+      <div style="background:#fbfcee;color:#3a4000">10</div><div style="background:#f9fbe4;color:#3a4000">50</div>
+      <div style="background:#f6f9d7;color:#3a4000">100</div><div style="background:#e6ee94;color:#3a4000">200</div>
+      <div style="background:#dde76b;color:#3a4000">300</div><div style="background:#d7e351;color:#3a4000">400</div>
+      <div style="background:#cfde33;color:#3a4000">500</div><div style="background:#c4d600;color:#3a4000">★600</div>
+      <div style="background:#b0c000;color:#fff">700</div><div style="background:#9cab00;color:#fff">800</div>
+      <div style="background:#758000;color:#fff">900</div><div style="background:#626b00;color:#fff">1000</div>
+      <div style="background:#3a4000;color:#fff">1100</div>
+    </div>
+  </div>
+
+  <div class="ramp-wrap">
+    <div class="ramp-name">Solaseed Gray — 温かみのある独自グレー（<code>--color-solaseedgray-100 〜 1100</code>）</div>
+    <div class="ramp">
+      <div style="background:#cdcec9;color:#464741">100</div><div style="background:#babbb4;color:#464741">200</div>
+      <div style="background:#a9aaa1;color:#464741">300</div><div style="background:#999a90;color:#fff">400</div>
+      <div style="background:#8b8c81;color:#fff">500</div><div style="background:#7e7f74;color:#fff">600</div>
+      <div style="background:#707167;color:#fff">700</div><div style="background:#64655c;color:#fff">800</div>
+      <div style="background:#595a52;color:#fff">900</div><div style="background:#4f5049;color:#fff">1000</div>
+      <div style="background:#464741;color:#fff">1100</div>
+    </div>
+  </div>
+
+  <p class="note">色はすべて 12 段ランプから選ぶ。中間色を自作しない。純白・純黒はグレーランプの両端（<code>#ffffff</code> / <code>#1a1a1a</code>）で代用する。</p>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <div class="eyebrow">Typography</div>
+  <h2 class="section-title">書体は Murecho 1 本だけ</h2>
+  <p class="section-lead">可視要素 1,222 個のうち 1,221 個が <code>Murecho, sans-serif</code>。<b><code>letter-spacing</code> は全要素 <code>normal</code>、<code>palt</code> の適用要素は 0 個。</b></p>
+
+  <div class="type-row"><div class="type-meta"><b>Heading 1</b>36px / 700 / lh 1.5<br>letter-spacing: normal</div><div style="font-size:36px;font-weight:700;line-height:1.5">運賃情報</div></div>
+  <div class="type-row"><div class="type-meta"><b>Heading 2</b>30px / 700 / lh 1.5</div><div style="font-size:30px;font-weight:700;line-height:1.5">早めのご予約でおトクな運賃</div></div>
+  <div class="type-row"><div class="type-meta"><b>Heading 3</b>24px / 700 / lh 1.5</div><div style="font-size:24px;font-weight:700;line-height:1.5">アーリーソラバリュー</div></div>
+  <div class="type-row"><div class="type-meta"><b>Tab Label</b>20px / 700 / lh 1.4</div><div style="font-size:20px;font-weight:700;line-height:1.4">メールアドレス</div></div>
+  <div class="type-row"><div class="type-meta"><b>Button</b>18px / 700 / lh 1.5</div><div style="font-size:18px;font-weight:700;line-height:1.5">アーリーソラバリューの詳細を見る</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body</b>16px / 400 / lh 1.6<br>既定</div><div style="font-size:16px;font-weight:400;line-height:1.6">羽田・中部・神戸から、宮崎・熊本・長崎・鹿児島・大分・沖縄へ。九州と沖縄を結ぶ路線網で、ビジネスにも旅行にもお使いいただけます。ご予約は出発の 355 日前から承ります。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body Bold</b>16px / 700 / lh 1.6</div><div style="font-size:16px;font-weight:700;line-height:1.6">複数区間とは</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav</b>15px / 400 / lh 1.5</div><div style="font-size:15px;font-weight:400;line-height:1.5">セール/キャンペーン</div></div>
+  <div class="type-row"><div class="type-meta"><b>Caption</b>14px / 400 / lh 1.4</div><div style="font-size:14px;font-weight:400;line-height:1.4">お乗り継ぎ等で複数の都市をまたがる旅程の場合はこちらをご利用ください。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Chip</b>13px / 700 / lh 1.6</div><div style="font-size:13px;font-weight:700;line-height:1.6">よくあるご質問・お問い合わせ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Small</b>12px / 700 / lh 1.4</div><div style="font-size:12px;font-weight:700;line-height:1.4">会員登録</div></div>
+
+  <p class="note"><b>字間を足さないこと。</b>「日本語の見出しには <code>letter-spacing: 0.04em</code>」といった定石を当てると、Murecho の設計字幅から外れて実サイトと別物になる。<code>font-feature-settings</code> も同様に指定しない。</p>
+</div>
+</section>
+
+<section class="section" id="article">
+  <div class="section-label">03 / Article</div>
+  <div class="eyebrow">Fare Guide</div>
+  <h2 class="section-title">運賃案内の組版</h2>
+  <p class="section-lead">本文 16px / <code>line-height: 1.6</code>。見出しは H1〜H3 すべて <code>line-height: 1.5</code> でサイズだけが変わる。</p>
+
+  <div class="article">
+    <h2>おトクな運賃のご案内</h2>
+    <p>ソラシドエアでは、ご予約のタイミングやお客さまの年齢に応じた各種運賃をご用意しています。早めのご予約なら「アーリーソラバリュー」、直前のご予約なら「ソラバリュー」が便利です。</p>
+
+    <h3>アーリーソラバリュー</h3>
+    <p>搭乗日の 28 日前までのご予約でご利用いただける、もっともおトクな運賃です。予約変更はできませんが、取消手数料は搭乗日の前日までであれば運賃の一部となります。</p>
+
+    <table class="fare-table">
+      <thead><tr><th>運賃名</th><th>予約期限</th><th>片道運賃（羽田〜宮崎）</th></tr></thead>
+      <tbody>
+        <tr><td>アーリーソラバリュー</td><td>搭乗 28 日前まで</td><td><b>￥9,800〜</b></td></tr>
+        <tr><td>ソラバリュー</td><td>搭乗前日まで</td><td><b>￥14,300〜</b></td></tr>
+        <tr><td>ヤング割</td><td>搭乗当日</td><td><b>￥11,000</b></td></tr>
+        <tr><td>シニア割</td><td>搭乗当日</td><td><b>￥13,200</b></td></tr>
+      </tbody>
+    </table>
+
+    <div class="alert-box">
+      <p>2026年5月19日以降ご搭乗分につきましては、予約・搭乗システムの刷新に伴い、お手続きの方法が変更となります。</p>
+    </div>
+
+    <h3>ご予約の変更について</h3>
+    <p>予約変更が可能な運賃をお選びの場合、出発時刻の 20 分前まで、同一路線・同一区間に限り変更を承ります。お手続きは公式サイトのマイページ、または予約センターにて承ります。</p>
+  </div>
+</section>
+
+<section class="section-alt" id="buttons">
+<div class="section-inner">
+  <div class="section-label">04 / Buttons</div>
+  <div class="eyebrow">Buttons &amp; Tabs</div>
+  <h2 class="section-title">CTA も入力欄も完全ピル（176px）</h2>
+  <p class="section-lead"><code>--radius-xl: 176px</code> が「実質 9999px」として使われる。<b>角丸 8px はヘッダーのユーティリティボタンとタグだけ。</b></p>
+
+  <div class="btn-grid">
+    <button class="btn btn-main">アーリーソラバリューの詳細を見る</button>
+    <button class="btn btn-second">2026年5月18日までに出発の方はこちら</button>
+    <button class="btn btn-accent">会員登録</button>
+    <button class="btn btn-login">ログイン</button>
+    <button class="btn btn-util">発着案内・運航の見通し</button>
+    <button class="btn btn-disabled">検索する</button>
+  </div>
+
+  <div style="margin-bottom:30px">
+    <div class="tabs">
+      <button class="tab is-active">航空券</button>
+      <button class="tab">特典航空券</button>
+      <button class="tab">航空券＋宿泊</button>
+      <button class="tab">ホテル・保険・レンタカー</button>
+    </div>
+    <div class="tab-panel">
+      <div class="pilltabs">
+        <button class="pilltab is-active">東京</button>
+        <button class="pilltab">沖縄</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="chips">
+    <span class="chip-news">お知らせ</span>
+    <span class="chip-news">プレスリリース</span>
+    <span class="chip-lime">日本語・JAPANESE</span>
+    <span class="chip-lime">よくあるご質問・お問い合わせ</span>
+  </div>
+
+  <p class="note">予約タブは <code>border-radius: 16px 16px 0 0</code> の台形。アクティブが <code>#ffffff</code>、非アクティブが <code>#e6e6e6</code>。ピルタブはアクティブが <code>#4d8008</code>／白文字。<b>ボタンに <code>box-shadow</code> は付けない</b>（実測 30 件すべて <code>none</code>）。</p>
+</div>
+</section>
+
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <div class="eyebrow">Cards</div>
+  <h2 class="section-title">カードは 16px / 24px の角丸</h2>
+  <p class="section-lead">影は <code>--pc-shadow-s</code>（<code>0 8px 10px -10px</code>）だけ。下方向にわずかに落ちる。</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-media" style="background:linear-gradient(140deg,#c4d600,#4d8008)"></div>
+      <div class="card-body"><span class="card-tag">キャンペーン</span><h4>アーリーソラバリュー</h4><p>搭乗 28 日前までのご予約でおトクに。九州・沖縄への旅を、もっと気軽に。</p></div>
+    </div>
+    <div class="card">
+      <div class="card-media" style="background:linear-gradient(140deg,#dde76b,#92c154)"></div>
+      <div class="card-body"><span class="card-tag">お知らせ</span><h4>ソラシド スマイルクラブ</h4><p>マイルが貯まる・使える無料の会員プログラム。ご登録後すぐにご利用いただけます。</p></div>
+    </div>
+    <div class="card">
+      <div class="card-media" style="background:linear-gradient(140deg,#f6f9d7,#cdcec9)"></div>
+      <div class="card-body"><span class="card-tag">機内サービス</span><h4>九州・沖縄の味</h4><p>就航地の素材を活かしたドリンクとスナックを機内でお楽しみいただけます。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt" id="forms">
+<div class="section-inner">
+  <div class="section-label">06 / Forms</div>
+  <div class="eyebrow">Forms</div>
+  <h2 class="section-title">入力欄もピル（176px）</h2>
+  <p class="section-lead">枠は <code>1px solid #7f7f7f</code> とかなり濃い。<b>ホバーで <code>#333333</code>、エラーで <code>#d90f1c</code> に枠色が変わるだけで、outline は出さない。</b></p>
+
+  <div class="form-grid">
+    <div class="field">
+      <label for="f1">メールアドレス（半角英数）</label>
+      <input id="f1" type="email" placeholder="example@solaseedair.jp">
+      <div class="field-msg">ご登録のメールアドレスを入力してください</div>
+    </div>
+    <div class="field is-focus">
+      <label for="f2">パスワード（フォーカス時）</label>
+      <input id="f2" type="password" value="············">
+      <div class="field-msg">枠色が #333333 に変わる</div>
+    </div>
+    <div class="field is-error">
+      <label for="f3">会員番号（エラー時）</label>
+      <input id="f3" type="text" value="12345">
+      <div class="field-msg">会員番号は 10 桁で入力してください</div>
+    </div>
+    <div class="field">
+      <label for="f4">出発地</label>
+      <select id="f4"><option>東京（羽田）</option><option>宮崎</option><option>熊本</option><option>那覇</option></select>
+      <div class="field-msg">就航 15 空港からお選びください</div>
+    </div>
+  </div>
+
+  <p class="note">入力欄がピルであることがこのサイトの特徴。<b>角丸 4px や 8px の一般的なフォーム UI に置き換えないこと。</b>入力文字は 16px（iOS の自動ズームを防ぐ最小値）。</p>
+</div>
+</section>
+
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <div class="eyebrow">Depth &amp; Elevation</div>
+  <h2 class="section-title">影は下方向にだけ、極端に浅く</h2>
+  <p class="section-lead"><code>spread</code> に大きな負値（<code>-10px</code> / <code>-35px</code>）を入れて、輪郭をぼかさずに接地感だけを出す。</p>
+
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">Level 0</div><div class="elev-val">none — 既定。ボタン・タグ・入力欄</div></div>
+    <div class="elev e1"><div class="elev-name">Level 1 — <code>--pc-shadow-s</code></div><div class="elev-val">0px 8px 10px -10px rgba(0,0,0,.25)</div></div>
+    <div class="elev e2"><div class="elev-name">Level 2 — <code>--pc-shadow-m</code></div><div class="elev-val">0px 30px 30px -35px rgba(0,0,0,.25)</div></div>
+  </div>
+
+  <p class="note">モバイル用に <code>--sp-shadow-m: 0px 20px 30px -35px rgba(0,0,0,.25)</code> も定義されている。実測で影を持つ可視要素は 7 件のみ。</p>
+</section>
+
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">08 / Layout</div>
+  <div class="eyebrow">Layout</div>
+  <h2 class="section-title">4px グリッドと 5 段の角丸</h2>
+  <p class="section-lead">余白は Tailwind 型の <code>--space-*</code>。<b><code>--space-44</code> が 176px で、ピルの半径と同じ値。</b></p>
+
+  <div class="sp-row">
+    <div class="sp-item"><div class="sp-bar" style="width:4px;height:4px"></div><div class="sp-label">1<br>4px</div></div>
+    <div class="sp-item"><div class="sp-bar" style="width:8px;height:8px"></div><div class="sp-label">2<br>8px</div></div>
+    <div class="sp-item"><div class="sp-bar" style="width:12px;height:12px"></div><div class="sp-label">3<br>12px</div></div>
+    <div class="sp-item"><div class="sp-bar" style="width:16px;height:16px"></div><div class="sp-label">4<br>16px</div></div>
+    <div class="sp-item"><div class="sp-bar" style="width:24px;height:24px"></div><div class="sp-label">6<br>24px</div></div>
+    <div class="sp-item"><div class="sp-bar" style="width:32px;height:32px"></div><div class="sp-label">8<br>32px</div></div>
+    <div class="sp-item"><div class="sp-bar" style="width:48px;height:48px"></div><div class="sp-label">12<br>48px</div></div>
+    <div class="sp-item"><div class="sp-bar" style="width:64px;height:64px"></div><div class="sp-label">16<br>64px</div></div>
+    <div class="sp-item"><div class="sp-bar" style="width:96px;height:96px"></div><div class="sp-label">24<br>96px</div></div>
+  </div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">--radius-xs<br>4px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">--radius-s<br>8px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:16px"></div><div class="radius-label">--radius-m<br>16px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:24px"></div><div class="radius-label">--radius-l<br>24px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:176px"></div><div class="radius-label">--radius-xl<br>176px</div></div>
+  </div>
+
+  <p class="note">コンテナ最大幅は <b>1200px</b>、ヘッダー高さは <b>116px</b>（<code>--headerHeight</code>）。ブレークポイントは 576 / 768 / 1024 / 1200 / 1400px。ホバーは <code>opacity: .75</code> または <code>scale: 1.03</code>、イージングは <code>cubic-bezier(.215,.61,.355,1)</code>。</p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-col"><h5>運賃・予約</h5><a href="#">運賃情報</a><a href="#">予約・購入方法</a><a href="#">時刻表</a><a href="#">運航路線</a></div>
+    <div class="footer-col"><h5>搭乗手続き</h5><a href="#">搭乗手続き</a><a href="#">手荷物</a><a href="#">空港案内</a></div>
+    <div class="footer-col"><h5>機内</h5><a href="#">機材</a><a href="#">機内サービス</a><a href="#">機内安全・機内環境</a></div>
+    <div class="footer-col"><h5>会員</h5><a href="#">ソラシド スマイルクラブ</a><a href="#">サイトの使い方</a><a href="#">地域と共に</a></div>
+  </div>
+</footer>
+<div class="footer-bar"><p>これは DESIGN.md の再現用サンプルです。ソラシドエアの実サイトではありません。</p></div>
+
+</body>
+</html>
