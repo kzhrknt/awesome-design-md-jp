@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ソメスサドル（SOMÈS SADDLE）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400&family=Josefin+Sans:wght@300;400&family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は実質存在しない。以下は computed style と
+       CSS 全文（styles.css）の実測値。2026-09-11 */
+    --green:       #13311d;   /* ★革の深緑。CSS 44 回 / 可視 6 要素 */
+    --green-dark:  #0a2613;
+    --green-ov:    rgba(12, 48, 24, 0.8);   /* 写真に重ねる緑 */
+    --brown:       #523a05;   /* 「店舗一覧」の縦タブ */
+    --brown-ov:    rgba(102, 72, 6, 0.8);   /* 写真に重ねる茶 */
+    --ink:         #040404;   /* ★本文（可視 112 要素）かつ塗り面。純黒ではない */
+    --muted:       #787878;   /* 価格・補助（可視 68 要素 / CSS 24 回） */
+    --accent:      #d5553a;   /* お知らせの強調のみ（可視 2 要素 / CSS 5 回） */
+    --sage:        #eaece9;   /* ★最多の面色（可視 10 要素 / CSS 16 回） */
+    --offwhite:    #fafafa;
+    --offwhite2:   #f6f7f5;
+    --white:       #ffffff;
+    --bg:          #ffffff;   /* pageBackground.resolved / 根拠 body */
+
+    /* === Fonts ===
+       和文優先。游ゴシック Medium は OS フォントなので macOS では実サイトと同一表示。
+       欧文は Josefin Sans（見出し・日付）と Crimson Text（ブランド大見出し・価格）。
+       どちらも実サイトと同じ Google Fonts。 */
+    --font-body:  "游ゴシック Medium", "Yu Gothic Medium", 游ゴシック体, YuGothic,
+                  "ヒラギノ角ゴ Pro W3", メイリオ, "Noto Sans JP", sans-serif;
+    --font-en:    "Josefin Sans", "游ゴシック Medium", "Yu Gothic Medium", 游ゴシック体, YuGothic,
+                  "ヒラギノ角ゴ Pro W3", メイリオ, sans-serif;
+    --font-serif: "Crimson Text", "游ゴシック Medium", "Yu Gothic Medium", 游ゴシック体, YuGothic,
+                  "ヒラギノ角ゴ Pro W3", メイリオ, sans-serif;
+    --font-mono:  SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: 本文 2.4 / 一覧 2.0 / 英語見出し 1.0 === */
+    --lh-body: 2.4;
+    --lh-list: 2.0;
+    --lh-head: 1.0;
+    --lh-title:1.7;
+
+    /* === Letter spacing: 3 段の階段 === */
+    --ls-body: 0.10em;   /* 本文・記事タイトル・価格（実測 104 要素で最多） */
+    --ls-wide: 0.18em;   /* 英語見出し・日付・VIEW MORE・和文ボタン（82 要素） */
+    --ls-lead: 0.14em;   /* ヒーローのリード文（34 要素） */
+    --ls-tight:0.05em;   /* 商品名（34 要素。最も詰める） */
+    --ls-disp: 0.08em;   /* ブランド大見出し 72px（12 要素） */
+
+    --r: 0px;   /* サイト全体で 0。例外なし */
+    --shadow-soft: 0 0 40px rgba(0, 0, 0, 0.1);   /* 実測 1 要素 */
+    --shadow-head: 0 0 5px #808080;               /* 実測 1 要素 */
+
+    --container: 1000px;
+    --list:      824px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: var(--lh-body);
+    letter-spacing: var(--ls-body);
+    /* font-feature-settings は実サイトで 1 要素も使われていない（実測 0 件）。 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { position: relative; }
+  .header-inner { display: flex; align-items: flex-start; max-width: 1330px; margin: 0 auto; padding: 26px 24px; gap: 30px; }
+  .logo { font-family: var(--font-serif); font-size: 26px; line-height: 1; letter-spacing: 0.06em; color: var(--ink); text-decoration: none; padding-top: 6px; }
+  .header-nav { display: flex; gap: 22px; margin-left: auto; }
+  .header-nav a { text-decoration: none; text-align: center; display: block; }
+  .header-nav .ja { font-size: 14px; line-height: var(--lh-head); letter-spacing: var(--ls-body); color: var(--ink); }
+  .header-nav .en { font-family: var(--font-en); font-size: 10px; font-weight: 300; line-height: 1; letter-spacing: var(--ls-wide); color: var(--muted); margin-top: 8px; display: block; }
+
+  /* SIDE TABS */
+  .side-tabs { position: absolute; right: 0; top: 50%; transform: translateY(-50%); display: flex; z-index: 10; }
+  .side-tab { width: 60px; min-height: 169px; padding: 22px 0; display: flex; align-items: center; justify-content: center; color: var(--white); text-decoration: none; font-size: 13px; line-height: var(--lh-head); letter-spacing: var(--ls-body); white-space: nowrap; writing-mode: vertical-rl; text-orientation: mixed; }
+  .side-tab .en { font-family: var(--font-en); font-size: 9px; font-weight: 300; letter-spacing: var(--ls-wide); opacity: .8; margin-right: 8px; }
+  .side-tab.green { background: var(--green); }
+  .side-tab.black { background: var(--ink); }
+
+  /* HERO */
+  .hero { position: relative; height: 380px; background: linear-gradient(150deg,#7d8b7f,#3d4a40 60%,#2a332c); display: flex; align-items: center; padding: 0 90px; }
+  .hero-lead { color: var(--white); font-size: 14px; line-height: var(--lh-body); letter-spacing: var(--ls-lead); }
+
+  /* SECTIONS */
+  .section { padding: 90px 24px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--sage); }
+  .section-alt .section-inner { padding: 90px 24px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; color: var(--muted); margin-bottom: 14px; }
+  .c-ttl { text-align: center; margin-bottom: 46px; }
+  .c-ttl .en { font-family: var(--font-en); font-size: 36px; font-weight: 300; line-height: var(--lh-head); letter-spacing: var(--ls-wide); color: var(--ink); display: block; }
+  .c-ttl .ja { font-size: 14px; line-height: var(--lh-list); letter-spacing: var(--ls-body); color: var(--ink); display: block; margin-top: 14px; }
+  .section-lead { font-size: 14px; line-height: var(--lh-body); letter-spacing: var(--ls-body); margin-bottom: 40px; }
+  .note { font-size: 13px; line-height: 2.0; letter-spacing: var(--ls-tight); color: #555; margin-top: 24px; }
+  code { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; background: var(--sage); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .swatch { border: 1px solid var(--sage); background: var(--bg); }
+  .swatch-chip { height: 76px; background-image: linear-gradient(45deg,#eee 25%,transparent 25%),linear-gradient(-45deg,#eee 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#eee 75%),linear-gradient(-45deg,transparent 75%,#eee 75%); background-size: 14px 14px; background-position: 0 0,0 7px,7px -7px,-7px 0; position: relative; }
+  .swatch-chip i { position: absolute; inset: 0; display: block; }
+  .swatch-body { padding: 12px; }
+  .swatch-name { font-size: 13px; line-height: 1.6; letter-spacing: var(--ls-tight); color: var(--ink); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: var(--muted); margin-top: 4px; }
+  .swatch-use { font-size: 12px; line-height: 1.8; letter-spacing: var(--ls-tight); color: #666; margin-top: 6px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 22px 0; border-bottom: 1px solid var(--sage); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: var(--muted); line-height: 1.75; }
+  .type-meta b { display: block; font-family: var(--font-body); font-size: 13px; letter-spacing: var(--ls-tight); color: var(--ink); }
+  .scale-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 34px; align-items: baseline; }
+  .scale-bar span { background: var(--sage); padding: 8px 14px; line-height: var(--lh-head); letter-spacing: var(--ls-tight); }
+  .ls-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .ls-table th, .ls-table td { font-size: 13px; line-height: 2; letter-spacing: var(--ls-tight); text-align: left; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--sage); }
+  .ls-table th { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: var(--muted); width: 120px; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin-bottom: 26px; }
+  .btn { font-family: var(--font-body); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; border: none; border-radius: var(--r); }
+  .btn-ja { background: var(--ink); color: var(--white); font-size: 14px; line-height: var(--lh-list); letter-spacing: var(--ls-wide); width: 427px; max-width: 100%; height: 64px; }
+  .btn-primary { background: var(--green); color: var(--white); font-size: 14px; line-height: var(--lh-list); letter-spacing: var(--ls-wide); width: 320px; max-width: 100%; height: 64px; }
+  .btn-white { background: var(--white); color: var(--ink); font-family: var(--font-en); font-size: 12px; font-weight: 400; line-height: var(--lh-list); letter-spacing: var(--ls-wide); width: 208px; height: 48px; }
+  .btn-alert { background: transparent; color: var(--accent); border: 1px solid var(--accent); font-size: 14px; line-height: var(--lh-list); letter-spacing: var(--ls-body); padding: 12px 24px; }
+  .btn-unique { width: 360px; max-width: 100%; height: 95px; color: var(--white); font-size: 16px; line-height: var(--lh-list); letter-spacing: var(--ls-body); background-blend-mode: multiply; }
+  .btn-unique.t1 { background: linear-gradient(var(--green-ov), var(--green-ov)), linear-gradient(140deg,#8f9a8c,#4c5a4e); }
+  .btn-unique.t2 { background: linear-gradient(var(--brown-ov), var(--brown-ov)), linear-gradient(140deg,#a3906c,#5e4f34); }
+  .c-cat { display: inline-block; background: var(--green); color: var(--white); font-size: 12px; line-height: 2; letter-spacing: var(--ls-body); padding: 0 14px; border-radius: var(--r); }
+  .c-cat.black { background: var(--ink); }
+
+  /* NEWS LIST */
+  .news-list { max-width: var(--list); margin: 0 auto; }
+  .news-item { display: flex; gap: 26px; align-items: baseline; padding: 14px 10px; text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--sage); }
+  .news-date { font-family: var(--font-en); font-size: 12px; font-weight: 400; line-height: var(--lh-head); letter-spacing: var(--ls-wide); flex-shrink: 0; }
+  .news-title { font-size: 14px; line-height: var(--lh-list); letter-spacing: var(--ls-body); }
+  .news-alert { display: flex; gap: 26px; align-items: baseline; padding: 14px 20px; border: 1px solid var(--accent); color: var(--accent); text-decoration: none; margin-bottom: 20px; }
+
+  /* PRODUCTS */
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 30px; }
+  .product { text-decoration: none; color: var(--ink); display: block; }
+  .product .img { height: 200px; background: linear-gradient(150deg,#d8d3c8,#8d8172); }
+  .product .name { font-size: 13px; line-height: var(--lh-list); letter-spacing: var(--ls-tight); margin-top: 14px; }
+  .product .price { font-family: var(--font-serif); font-size: 17px; line-height: var(--lh-list); letter-spacing: var(--ls-body); color: var(--muted); }
+
+  /* ARTICLE */
+  .article { max-width: var(--list); margin: 0 auto; }
+  .article .brand-display { font-family: var(--font-serif); font-size: 72px; line-height: var(--lh-head); letter-spacing: var(--ls-disp); color: var(--ink); }
+  .article .brand-sub { font-family: var(--font-serif); font-size: 24px; line-height: 1.3; letter-spacing: var(--ls-body); color: var(--ink); margin-top: 18px; }
+  .article h3 { font-size: 18px; font-weight: 400; line-height: var(--lh-title); letter-spacing: var(--ls-body); margin: 46px 0 14px; }
+  .article p { font-size: 14px; line-height: var(--lh-body); letter-spacing: var(--ls-body); margin-bottom: 20px; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+  .field label { display: block; font-size: 13px; line-height: var(--lh-list); letter-spacing: var(--ls-body); margin-bottom: 10px; }
+  .field input, .field select {
+    width: 100%; background: var(--white); color: var(--ink);
+    border: 1px solid #c9c9c9; border-radius: var(--r);
+    padding: 14px 16px; font-size: 14px; line-height: var(--lh-list); letter-spacing: var(--ls-body);
+    font-family: var(--font-body);
+  }
+  .field.is-focus input { border-color: var(--green); outline: none; }
+  .field.is-error input { border-color: var(--accent); }
+  .field-msg { font-size: 12px; line-height: 1.9; letter-spacing: var(--ls-tight); color: var(--muted); margin-top: 8px; }
+  .field.is-error .field-msg { color: var(--accent); }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 30px; }
+  .elev { background: var(--white); border: 1px solid var(--sage); padding: 28px; text-align: center; }
+  .elev.e1 { box-shadow: var(--shadow-soft); border-color: transparent; }
+  .elev.e2 { box-shadow: var(--shadow-head); border-color: transparent; }
+  .elev-name { font-size: 14px; line-height: var(--lh-list); letter-spacing: var(--ls-body); }
+  .elev-val { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: var(--muted); margin-top: 10px; }
+
+  /* LAYOUT */
+  .layout-demo { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .layout-bar { background: var(--sage); height: 36px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: #555; }
+
+  /* FOOTER */
+  .footer { background: var(--green); color: var(--white); padding: 54px 24px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-logo { font-family: var(--font-serif); font-size: 26px; line-height: 1; letter-spacing: 0.06em; }
+  .footer-nav { display: flex; gap: 30px; flex-wrap: wrap; margin-top: 26px; }
+  .footer-nav a { color: var(--white); text-decoration: none; font-size: 13px; line-height: var(--lh-list); letter-spacing: var(--ls-body); }
+  .footer-copy { font-family: var(--font-en); font-size: 11px; font-weight: 300; letter-spacing: var(--ls-wide); margin-top: 32px; opacity: .75; }
+
+  @media (max-width: 750px) {
+    .section, .section-alt .section-inner { padding: 54px 18px; }
+    .c-ttl .en { font-size: 26px; letter-spacing: 0.12em; }
+    .article .brand-display { font-size: 40px; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .header-nav, .side-tabs { display: none; }
+    .hero { padding: 0 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">SOMÈS</a>
+    <nav class="header-nav">
+      <a href="#"><span class="ja">ソメスについて</span><span class="en">ABOUT US</span></a>
+      <a href="#"><span class="ja">店舗一覧</span><span class="en">SHOP</span></a>
+      <a href="#"><span class="ja">お知らせ</span><span class="en">NEWS</span></a>
+      <a href="#"><span class="ja">ソメスの馬具</span><span class="en">HORSE GOODS</span></a>
+      <a href="#"><span class="ja">商品一覧</span><span class="en">PRODUCT</span></a>
+      <a href="#"><span class="ja">リペア</span><span class="en">REPAIR</span></a>
+      <a href="#"><span class="ja">お問い合わせ</span><span class="en">CONTACT</span></a>
+    </nav>
+  </div>
+</header>
+
+
+<div class="hero">
+  <div class="side-tabs">
+    <a href="#" class="side-tab green"><span class="en">ONLINE SHOP</span>オンラインショップ</a>
+    <a href="#" class="side-tab black"><span class="en">SOMÈS CLUB</span>クラブ会員登録</a>
+  </div>
+  <p class="hero-lead">ソメスサドルは、1964年の創業以来、<br>時を経てますます愛着の湧く革製品づくりを目指し、<br>企画から製造、販売、修理までを一貫して行っています。</p>
+</div>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="c-ttl"><span class="en">COLORS</span><span class="ja">カラーパレット</span></div>
+  <p class="section-lead">革の深緑 <code>#13311d</code> と黒 <code>#040404</code> の 2 色で組む。唯一の暖色は<b>お知らせの強調に使う <code>#d5553a</code></b> で、可視 2 要素しかない。面は淡い灰緑 <code>#eaece9</code>。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip"><i style="background:#13311d"></i></div><div class="swatch-body"><div class="swatch-name">Deep Green</div><div class="swatch-hex">#13311d</div><div class="swatch-use">★革の深緑。CSS 44 回 / 可視 6 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip"><i style="background:#040404"></i></div><div class="swatch-body"><div class="swatch-name">Ink Black</div><div class="swatch-hex">#040404</div><div class="swatch-use">★本文（可視 112 要素）かつ塗り面。<b>純黒ではない</b></div></div></div>
+    <div class="swatch"><div class="swatch-chip"><i style="background:rgba(12,48,24,0.8)"></i></div><div class="swatch-body"><div class="swatch-name">Green Overlay</div><div class="swatch-hex">rgba(12, 48, 24, 0.8)</div><div class="swatch-use">写真に重ねる大型ボタン（修理実績一覧）</div></div></div>
+    <div class="swatch"><div class="swatch-chip"><i style="background:rgba(102,72,6,0.8)"></i></div><div class="swatch-body"><div class="swatch-name">Brown Overlay</div><div class="swatch-hex">rgba(102, 72, 6, 0.8)</div><div class="swatch-use">写真に重ねる大型ボタン（オンラインリペア）</div></div></div>
+    <div class="swatch"><div class="swatch-chip"><i style="background:#523a05"></i></div><div class="swatch-body"><div class="swatch-name">Brown</div><div class="swatch-hex">#523a05</div><div class="swatch-use">「店舗一覧」の縦タブ</div></div></div>
+    <div class="swatch"><div class="swatch-chip"><i style="background:#d5553a"></i></div><div class="swatch-body"><div class="swatch-name">Alert Orange</div><div class="swatch-hex">#d5553a</div><div class="swatch-use">お知らせの強調のみ（可視 2 要素 / CSS 5 回）。<b>一般のアクセントに広げない</b></div></div></div>
+    <div class="swatch"><div class="swatch-chip"><i style="background:#787878"></i></div><div class="swatch-body"><div class="swatch-name">Muted</div><div class="swatch-hex">#787878</div><div class="swatch-use">価格・補助情報（可視 68 要素 / CSS 24 回）</div></div></div>
+    <div class="swatch"><div class="swatch-chip"><i style="background:#eaece9"></i></div><div class="swatch-body"><div class="swatch-name">Surface Sage</div><div class="swatch-hex">#eaece9</div><div class="swatch-use">★最多の面色（可視 10 要素 / CSS 16 回）</div></div></div>
+  </div>
+
+  <p class="note"><b>本文色は <code>#040404</code>。</b>純黒 <code>#000000</code> ではない。革の色に寄せたわずかな濁りが、写真と並べたときの馴染みを作っている。</p>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <div class="c-ttl"><span class="en">TYPOGRAPHY</span><span class="ja">タイポグラフィ</span></div>
+  <p class="section-lead">和文は<b>游ゴシック Medium</b>（実測 151 要素）。欧文は <b>Josefin Sans</b>（見出し・日付、90 要素）と <b>Crimson Text</b>（ブランド大見出し・価格、41 要素）を役割で分ける。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:12px">12</span><span style="font-size:13px">13</span><span style="font-size:14px">14</span>
+    <span style="font-size:15px">15</span><span style="font-size:16px">16</span><span style="font-size:17px;font-family:var(--font-serif)">17</span>
+    <span style="font-size:18px">18</span><span style="font-size:24px;font-family:var(--font-serif)">24</span>
+    <span style="font-size:28px;font-family:var(--font-en);font-weight:300">28</span>
+    <span style="font-size:36px;font-family:var(--font-en);font-weight:300">36</span>
+    <span style="font-size:52px;font-family:var(--font-serif)">72</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Brand Display ★</b>Crimson Text / 72px / 400<br>lh 1.00 / ls 0.08em</div><div style="font-family:var(--font-serif);font-size:72px;line-height:1;letter-spacing:0.08em">SOMMET<br>&amp; SADDLE</div></div>
+  <div class="type-row"><div class="type-meta"><b>Brand Sub</b>Crimson Text / 24px / 400<br>lh 1.30 / ls 0.10em</div><div style="font-family:var(--font-serif);font-size:24px;line-height:1.3;letter-spacing:0.1em">CRAFTSMANSHIP,<br>SINCE 1964.</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Title (L) ★</b>Josefin Sans / 36px / <b style="display:inline">300</b><br>lh 1.00 / <b style="display:inline">ls 0.18em</b></div><div><span style="font-family:var(--font-en);font-size:36px;font-weight:300;line-height:1;letter-spacing:0.18em;display:block">SHOP LIST</span><span style="font-size:14px;line-height:2;letter-spacing:0.1em;display:block;margin-top:14px">店舗一覧</span></div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Title</b>Josefin Sans / 28px / 300<br>lh 1.00 / ls 0.18em</div><div><span style="font-family:var(--font-en);font-size:28px;font-weight:300;line-height:1;letter-spacing:0.18em;display:block">NEWS</span><span style="font-size:14px;line-height:2;letter-spacing:0.1em;display:block;margin-top:12px">お知らせ</span></div></div>
+  <div class="type-row"><div class="type-meta"><b>Article Title</b>游ゴシック Medium / 18px<br>lh 1.70 / ls 0.10em</div><div style="font-size:18px;line-height:1.7;letter-spacing:0.1em">遊び心から生まれた馬の案内板｜ソメスフェスタの舞台裏</div></div>
+  <div class="type-row"><div class="type-meta"><b>Price ★</b>Crimson Text / 17px<br>lh 2.00 / ls 0.10em / #787878</div><div style="font-family:var(--font-serif);font-size:17px;line-height:2;letter-spacing:0.1em;color:#787878">¥36,300(税込)</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>游ゴシック Medium / 14px<br>lh <b style="display:inline">2.40</b> / ls <b style="display:inline">0.10em</b></div><div style="font-size:14px;line-height:2.4;letter-spacing:0.1em">SOMMET（頂点）＆SADDLE（鞍）の言葉を合わせて、ソメスサドル。北海道・砂川の工房で、馬具づくりで培った技術を鞄と革小物に受け継いでいます。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Lead</b>游ゴシック Medium / 14px<br>lh 2.40 / <b style="display:inline">ls 0.14em</b></div><div style="font-size:14px;line-height:2.4;letter-spacing:0.14em">ソメスサドルは、1964年の創業以来、時を経てますます愛着の湧く革製品づくりを目指しています。</div></div>
+  <div class="type-row"><div class="type-meta"><b>List Title</b>游ゴシック Medium / 14px<br>lh 2.00 / ls 0.10em</div><div style="font-size:14px;line-height:2;letter-spacing:0.1em">再入荷のお知らせ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Button (JP)</b>游ゴシック Medium / 14px<br>lh 2.00 / <b style="display:inline">ls 0.18em</b></div><div style="font-size:14px;line-height:2;letter-spacing:0.18em">オンラインショップ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Product Name</b>游ゴシック Medium / 13px<br>lh 2.00 / <b style="display:inline">ls 0.05em</b>（最も詰める）</div><div style="font-size:13px;line-height:2;letter-spacing:0.05em">【WEB限定】フロイント Apple Watch バンド</div></div>
+  <div class="type-row"><div class="type-meta"><b>Date / VIEW MORE</b>Josefin Sans / 12px<br>lh 1.00〜2.00 / ls 0.18em</div><div><span style="font-family:var(--font-en);font-size:12px;line-height:2;letter-spacing:0.18em">2026.09.04　／　VIEW MORE</span></div></div>
+
+  <h3 style="font-size:14px;line-height:2;letter-spacing:0.1em;margin:34px 0 4px">letter-spacing の階段（実測の分布）</h3>
+  <table class="ls-table">
+    <tr><th>0.10em</th><td><b>104 要素（最多）</b> — 本文・記事タイトル・価格・カテゴリ名</td></tr>
+    <tr><th>0.18em</th><td><b>82 要素</b> — 英語見出し・日付・VIEW MORE・和文ボタン</td></tr>
+    <tr><th>0.05em</th><td>34 要素 — 商品名（最も詰める）</td></tr>
+    <tr><th>0.142em</th><td>34 要素 — ヒーローのリード文</td></tr>
+    <tr><th>0.08em</th><td>12 要素 — ブランド大見出し（72px）</td></tr>
+    <tr><th>0.15em</th><td>9 要素 — 補助ラベル</td></tr>
+  </table>
+
+  <p class="note"><b>字間を一律にしないこと。</b>本文 0.10em / 英語見出し 0.18em / 商品名 0.05em の 3 段を守る。<b>文字が大きいほど em を減らす</b>（72px で 0.08em、28px で 0.18em）のもこのサイトの癖で、大きい文字は同じ em でも物理的に空きすぎるため。</p>
+
+  <p class="note"><b><code>line-height: 2.4</code> は本文専用。</b>一覧やボタンは 2.0、英語見出しは 1.0（行送りゼロで下の和文と積む）。<b><code>font-feature-settings</code> は 1 要素も使っていない</b>（実測 0 件）。詰めるのではなく <code>letter-spacing</code> で空ける設計なので、<b>palt を足すと狙いと逆になる。</b></p>
+</div>
+</section>
+
+<section class="section" id="article">
+  <div class="section-label">03 / Article</div>
+  <div class="c-ttl"><span class="en">ABOUT US</span><span class="ja">ソメスについて</span></div>
+
+  <div class="article">
+    <div class="brand-display">SOMMET<br>&amp; SADDLE</div>
+    <div class="brand-sub">CRAFTSMANSHIP, SINCE 1964.</div>
+
+    <h3>馬具づくりから始まった</h3>
+    <p>SOMMET（頂点）＆SADDLE（鞍）の言葉を合わせて、ソメスサドル。北海道・砂川の工房で、馬具づくりで培った技術を鞄と革小物に受け継いでいます。企画から製造、販売、そして修理までを一貫して自社で行うことで、長く使い続けられる革製品をお届けしています。</p>
+
+    <h3>時を経てますます愛着の湧くものを</h3>
+    <p>革は使うほどに色を深め、手になじんでいきます。だからこそ、つくったあとの時間まで含めて設計する必要があると考えています。修理の窓口を自社で持ち続けているのは、そのためです。</p>
+  </div>
+</section>
+
+<section class="section-alt" id="news">
+<div class="section-inner">
+  <div class="section-label">04 / News</div>
+  <div class="c-ttl"><span class="en">NEWS</span><span class="ja">お知らせ</span></div>
+
+  <div class="news-list">
+    <a href="#" class="news-alert"><span class="news-date">2026.09.04</span><span class="news-title">商品価格改定のお知らせ</span></a>
+    <a href="#" class="news-item"><span class="news-date">2026.08.26</span><span class="news-title">再入荷のお知らせ</span></a>
+    <a href="#" class="news-item"><span class="news-date">2026.08.25</span><span class="news-title">これからの時間を、次の使い手と。｜サステナブルフェア開催</span></a>
+    <a href="#" class="news-item"><span class="news-date">2026.08.18</span><span class="news-title">秋の新作コレクションを公開しました</span></a>
+  </div>
+
+  <div style="text-align:center;margin-top:34px"><a href="#" class="btn btn-white">VIEW MORE</a></div>
+
+  <div style="display:flex;gap:12px;justify-content:center;margin-top:30px">
+    <span class="c-cat">店舗情報</span><span class="c-cat">ソメスをつくる場所と人</span><span class="c-cat black">その他</span>
+  </div>
+</div>
+</section>
+
+<section class="section" id="products">
+  <div class="section-label">05 / Products</div>
+  <div class="c-ttl"><span class="en">SHOP</span><span class="ja">商品の購入</span></div>
+  <p class="section-lead">商品名は <code>letter-spacing: 0.05em</code> と最も詰め、価格だけ <b>Crimson Text のセリフ数字</b>で組む。</p>
+
+  <div class="product-grid">
+    <a href="#" class="product"><div class="img"></div><div class="name">【WEB限定】フロイント Apple Watch バンド</div><div class="price">¥36,300(税込)</div></a>
+    <a href="#" class="product"><div class="img" style="background:linear-gradient(150deg,#c4b6a3,#6f5f4a)"></div><div class="name">ブライドル 二つ折り財布</div><div class="price">¥46,200(税込)</div></a>
+    <a href="#" class="product"><div class="img" style="background:linear-gradient(150deg,#a8b0a4,#4f5a4d)"></div><div class="name">サドルレザー ブリーフケース</div><div class="price">¥143,000(税込)</div></a>
+    <a href="#" class="product"><div class="img" style="background:linear-gradient(150deg,#cfc3b4,#7c6b56)"></div><div class="name">コードバン 名刺入れ</div><div class="price">¥33,000(税込)</div></a>
+  </div>
+
+  <div style="text-align:center;margin-top:44px"><a href="#" class="btn btn-ja">オンラインショップ</a></div>
+</section>
+
+<section class="section-alt" id="buttons">
+<div class="section-inner">
+  <div class="section-label">06 / Buttons</div>
+  <div class="c-ttl"><span class="en">BUTTONS</span><span class="ja">ボタン</span></div>
+  <p class="section-lead">角丸は全体で <code>0px</code>。和文ボタンは <code>letter-spacing: 0.18em</code> で幅いっぱいに伸ばし、写真の上に置くボタンだけ <code>rgba(…, 0.8)</code> の半透明にする。</p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-ja">オンラインショップ</a>
+    <a href="#" class="btn btn-primary">馬具の修理について</a>
+  </div>
+  <div class="btn-grid">
+    <a href="#" class="btn btn-white">VIEW MORE</a>
+    <a href="#" class="btn btn-alert">商品価格改定のお知らせ</a>
+    <span class="c-cat">店舗情報</span>
+  </div>
+  <div class="btn-grid">
+    <a href="#" class="btn btn-unique t1">修理実績一覧</a>
+    <a href="#" class="btn btn-unique t2">オンラインリペア</a>
+  </div>
+
+  <p class="note">写真に重ねる大型ボタン（360×95px）は <code>rgba(12,48,24,0.8)</code> と <code>rgba(102,72,6,0.8)</code>。<b><code>alpha: 0.8</code> を守ること</b> — 不透明に置き換えると背景写真が消えて意図が変わる。</p>
+</div>
+</section>
+
+<section class="section" id="forms">
+  <div class="section-label">07 / Forms</div>
+  <div class="c-ttl"><span class="en">FORMS</span><span class="ja">フォーム</span></div>
+  <p class="section-lead">入力欄も角丸ゼロ。フォーカスは深緑の枠で示す。</p>
+
+  <div class="form-grid">
+    <div class="field">
+      <label for="q1">お名前</label>
+      <input id="q1" type="text" placeholder="砂川　馨">
+      <div class="field-msg">全角でご入力ください</div>
+    </div>
+    <div class="field is-focus">
+      <label for="q2">メールアドレス（フォーカス時）</label>
+      <input id="q2" type="email" value="kaoru@example.com">
+      <div class="field-msg">枠色が #13311d に変わる</div>
+    </div>
+    <div class="field is-error">
+      <label for="q3">お問い合わせ内容（エラー時）</label>
+      <input id="q3" type="text" value="">
+      <div class="field-msg">お問い合わせ内容をご入力ください</div>
+    </div>
+    <div class="field">
+      <label for="q4">対象の商品カテゴリー</label>
+      <select id="q4"><option>バッグ / BAG</option><option>財布 / WALLET CASE</option><option>馬具 / HORSE GOODS</option><option>オリジナルグッズ</option></select>
+      <div class="field-msg">複数ある場合は代表的なものをお選びください</div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt" id="elevation">
+<div class="section-inner">
+  <div class="section-label">08 / Elevation</div>
+  <div class="c-ttl"><span class="en">ELEVATION</span><span class="ja">影</span></div>
+  <p class="section-lead">サイト全体で影は 2 要素だけ。ぼかし半径 40px の極端に柔らかい影と、追従ヘッダーの小さな影。</p>
+
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">Level 0</div><div class="elev-val">none — 既定。ボタン・カードはすべてフラット</div></div>
+    <div class="elev e1"><div class="elev-name">Level 1</div><div class="elev-val">0 0 40px rgba(0, 0, 0, 0.1)　（実測 1 要素）</div></div>
+    <div class="elev e2"><div class="elev-name">Level 2</div><div class="elev-val">0 0 5px #808080　（実測 1 要素・追従ヘッダー）</div></div>
+  </div>
+
+  <p class="note">階層は影ではなく<b>面色（<code>#eaece9</code>）と余白</b>で作る。<b>カードに影を足さないこと。</b></p>
+</div>
+</section>
+
+<section class="section" id="layout">
+  <div class="section-label">09 / Layout</div>
+  <div class="c-ttl"><span class="en">LAYOUT</span><span class="ja">レイアウト</span></div>
+  <p class="section-lead">全幅の写真セクションの中に 1000px のコンテナを置き、一覧は 824px に絞る。</p>
+
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:100%;max-width:1000px">--container: 1000px</div>
+    <div class="layout-bar" style="width:824px;max-width:100%">--list: 824px（ニュース一覧・お知らせ）</div>
+    <div class="layout-bar" style="width:720px;max-width:100%">720px（サブカラム）</div>
+  </div>
+
+  <p class="note">ブレークポイントは <b>750px</b>（CSS 全文で <code>max-width: 750px</code> が 531 回、<code>min-width: 751px</code> が 159 回）。<code>pc</code> / <code>sp</code> クラスで要素自体を出し分ける。<b>モバイルでは英語見出しの <code>letter-spacing</code> を 0.12em 程度まで落とす</b>（0.18em のままだと 1 行に収まらない）。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">SOMÈS</div>
+    <nav class="footer-nav">
+      <a href="#">ソメスについて</a><a href="#">店舗一覧</a><a href="#">お知らせ</a><a href="#">ソメスの馬具</a>
+      <a href="#">商品一覧</a><a href="#">リペア</a><a href="#">法人様向け窓口</a><a href="#">採用情報</a><a href="#">お問い合わせ</a>
+    </nav>
+    <p class="footer-copy">© SOMÈS SADDLE CO., LTD.</p>
+    <p style="font-size:12px;line-height:2;letter-spacing:0.05em;margin-top:16px;opacity:.75">これは DESIGN.md の再現用サンプルです。ソメスサドル株式会社の実サイトではありません。書体は実サイトと同じ 游ゴシック Medium / Josefin Sans / Crimson Text を使用しています。</p>
+  </div>
+</footer>
+
+</body>
+</html>

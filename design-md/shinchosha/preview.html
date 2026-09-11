@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 新潮社（SHINCHOSHA）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は実質存在しない（3 個は Swiper の既定値）。
+       以下は computed style と CSS 全文の実測値。2026-09-11 */
+    --yellow:        #ffed1b;   /* ★新潮イエロー。可視 19 要素 / CSS 24 回 */
+    --yellow-cart:   #fdec54;   /* 書誌ページの「ネットで購入」専用。CSS 4 回 */
+    --black:         #000000;   /* ★本文かつ塗り面。可視 198 要素 */
+    --white:         #ffffff;
+    --muted:         #9b9b9b;   /* 発売日・「もっと見る」。可視 43 要素 / CSS 109 回 */
+    --link:          #008bbe;   /* カード内のリンク（可視 4 要素 / CSS 8 回） */
+    --border:        #cbcbcb;   /* ★最多の罫線色。CSS 88 回 */
+    --surface:       #efefef;   /* チップ・面（可視 37 要素） */
+    --surface-light: #f5f5f5;   /* 検索フォーム */
+    --surface-lighter:#fafafa;
+    --bg:            #ffffff;   /* pageBackground.resolved / 根拠 body */
+
+    /* === Fonts ===
+       和文優先。游ゴシック体／游明朝は OS フォントなので macOS では実サイトと同一表示。
+       フッター見出しの TP明朝 StdN High B（Type Project）はドメインライセンスのため
+       ローカルでは表示できず、Shippori Mincho で代替する。 */
+    --font-body: 游ゴシック体, YuGothic, "Yu Gothic M", "游ゴシック Medium", "Yu Gothic Medium",
+                 "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN W3", HiraKakuProN-W3,
+                 "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN",
+                 "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro",
+                 メイリオ, Meiryo, "Noto Sans JP", sans-serif;
+    --font-mincho: 游明朝, YuMincho, "Hiragino Mincho ProN", "Shippori Mincho", Meiryo, serif;
+    --font-brand:  "Shippori Mincho", 游明朝, YuMincho, "Hiragino Mincho ProN", serif;  /* 代替: TP明朝 StdN High B */
+    --font-mono:   SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: 本文 2.13 / UI 1.46 / 見出し 1.2 の三層 === */
+    --lh-body:  2.13;   /* 書籍紹介文（16px / 34px） */
+    --lh-ui:    1.46;   /* 実測 140 要素で最多 */
+    --lh-mid:   1.5;    /* 惹句・表（67 要素） */
+    --lh-tight: 1.23;   /* 書名・見出し */
+
+    /* === Letter spacing: normal が既定（実測 272 要素） === */
+    --ls:       normal;
+    --ls-badge: 0.158em;   /* 黄色バッジのみ */
+
+    --r: 0px;   /* サイト全体で 0。例外はカートアイコンの 100% だけ */
+    --shadow: 0 0 20px rgba(0, 0, 0, 0.15);   /* 全体で 1 要素のみ */
+
+    --container: 1060px;
+    --column:    700px;   /* 書評・プロフィール */
+    --detail:    500px;   /* 書誌ブロック */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--black);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: var(--lh-ui);
+    letter-spacing: var(--ls);
+    /* font-feature-settings は実サイトで 1 要素も使われていない（実測 0 件）。 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .topbar { height: 6px; background: var(--yellow); }
+  .header { border-bottom: 1px solid var(--border); }
+  .header-inner { display: flex; align-items: center; max-width: var(--container); margin: 0 auto; padding: 14px 20px; gap: 28px; }
+  .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--black); }
+  .logo-mark { width: 22px; height: 22px; border: 1px solid var(--black); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-mincho); font-size: 12px; }
+  .logo-text { font-family: var(--font-mincho); font-size: 20px; font-weight: 700; }
+  .header-nav { display: flex; gap: 22px; margin-left: auto; }
+  .header-nav a { font-size: 14px; line-height: var(--lh-ui); color: var(--black); text-decoration: none; }
+
+  /* SEARCH BAR */
+  .searchbar { display: flex; max-width: var(--container); margin: 0 auto; }
+  .searchbar select, .searchbar input { background: var(--surface-light); border: none; border-radius: var(--r); height: 50px; font-family: var(--font-body); font-size: 16px; color: var(--black); }
+  .searchbar select { width: 120px; padding: 5px 10px; }
+  .searchbar input { flex: 1; padding: 5px 60px 5px 10px; }
+  .searchbar .detail { background: var(--bg); border: none; height: 50px; padding: 0 20px; font-size: 14px; cursor: pointer; font-family: var(--font-body); }
+  .searchbar .modal-trigger { background: var(--black); color: var(--white); border: none; height: 50px; width: 212px; font-size: 16px; font-family: var(--font-body); cursor: pointer; }
+
+  /* SECTIONS */
+  .section { padding: 64px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--surface); }
+  .section-alt .section-inner { padding: 64px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+  .eyebrow { display: inline-block; font-size: 12px; font-weight: 700; line-height: 1; padding: 4px 0; border-bottom: 4px solid var(--yellow); }
+  .section-title { font-family: var(--font-mincho); font-size: 32px; font-weight: 700; line-height: var(--lh-mid); margin: 14px 0 16px; }
+  .section-lead { font-size: 16px; line-height: var(--lh-body); margin-bottom: 36px; max-width: 860px; }
+  .note { font-size: 14px; line-height: 1.9; color: #555; margin-top: 20px; max-width: 860px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--surface); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .swatch { border: 1px solid var(--border); background: var(--bg); }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 12px; }
+  .swatch-name { font-size: 14px; font-weight: 700; line-height: var(--lh-ui); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .swatch-use { font-size: 12px; line-height: 1.6; color: #555; margin-top: 6px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 240px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--border); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--muted); line-height: 1.75; }
+  .type-meta b { display: block; font-family: var(--font-body); font-size: 13px; font-weight: 700; color: var(--black); }
+  .scale-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 30px; align-items: baseline; }
+  .scale-bar span { background: var(--surface); padding: 8px 14px; line-height: var(--lh-ui); }
+
+  /* BOOK DETAIL */
+  .book { display: flex; gap: 40px; max-width: var(--container); margin: 0 auto; }
+  .book-cover { width: 220px; flex-shrink: 0; }
+  .book-cover .img { width: 220px; height: 320px; border: 1px solid var(--border); background: linear-gradient(160deg,#dfe6ea,#b3bfc7); display: flex; align-items: center; justify-content: center; font-family: var(--font-mincho); font-size: 22px; font-weight: 700; writing-mode: vertical-rl; padding: 24px 0; }
+  .book-info { width: var(--detail); }
+  .book-chips { display: flex; gap: 6px; margin-bottom: 12px; }
+  .chip { background: var(--surface); color: var(--black); font-size: 12px; line-height: 2.13; padding: 0 5px; border-radius: var(--r); }
+  .chip-icon { background: var(--surface); color: #4a4a4a; font-size: 10px; font-weight: 700; line-height: 1; padding: 5px; border-radius: var(--r); }
+  .book-title { font-size: 26px; font-weight: 700; line-height: var(--lh-tight); margin-bottom: 10px; }
+  .book-author { font-size: 18px; line-height: 1.56; }
+  .book-price { font-size: 18px; font-weight: 700; line-height: 1.56; margin-top: 4px; }
+  .book-date { font-size: 12px; line-height: 1.5; color: var(--muted); margin-top: 4px; }
+  .book-desc { font-size: 16px; line-height: var(--lh-body); margin-top: 22px; }
+  .book-catch { font-family: var(--font-mincho); font-size: 32px; font-weight: 700; line-height: var(--lh-mid); margin: 0 0 26px; }
+  .spec { width: 100%; border-collapse: collapse; margin-top: 24px; }
+  .spec th { font-size: 12.8px; font-weight: 700; line-height: 1.5; text-align: left; width: 168px; padding: 5px 40px 5px 0; vertical-align: top; }
+  .spec td { font-size: 12.8px; line-height: 1.5; padding: 5px 0; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 26px; }
+  .btn { font-family: var(--font-body); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--r); }
+  .btn-cart { background: var(--yellow-cart); color: var(--black); border: 2px solid var(--black); padding: 15px 10px 14px; font-size: 16px; font-weight: 700; line-height: 1.69; width: 245px; height: 60px; }
+  .btn-outline { background: var(--white); color: var(--black); border: 1px solid var(--black); padding: 10px; font-size: 14px; font-weight: 500; line-height: 1.46; width: 245px; }
+  .btn-outline-sm { background: var(--white); color: var(--black); border: 1px solid var(--black); padding: 4px 5px 3px; font-size: 14px; font-weight: 700; line-height: 2.28; }
+  .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 2px 10px; font-size: 12px; font-weight: 700; line-height: 2; }
+  .tab { background: transparent; color: var(--black); border: none; padding: 8px 18px; font-size: 14px; font-weight: 700; line-height: 1.46; cursor: pointer; font-family: var(--font-body); }
+  .tab.is-active { background: var(--black); color: var(--white); }
+  .badge { display: inline-block; background: var(--yellow); color: var(--black); font-size: 10px; font-weight: 700; line-height: 1; letter-spacing: var(--ls-badge); padding: 3px 10px; border-radius: var(--r); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
+  .card { border: 1px solid var(--border); border-radius: var(--r); padding: 20px; text-decoration: none; color: var(--black); display: block; background: var(--bg); }
+  .card-cat { font-size: 12px; font-weight: 700; line-height: 1; padding-bottom: 5px; border-bottom: 3px solid var(--yellow); display: inline-block; }
+  .card-title { font-size: 16px; font-weight: 700; line-height: 1.8; margin-top: 14px; }
+  .card-date { font-size: 14px; line-height: 1.43; color: var(--muted); margin-top: 16px; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 26px; }
+  .field label { display: block; font-size: 14px; font-weight: 700; line-height: var(--lh-ui); margin-bottom: 8px; }
+  .field input, .field select {
+    width: 100%; background: var(--surface-light); color: var(--black);
+    border: none; border-radius: var(--r);
+    padding: 5px 10px; height: 50px; font-size: 16px; line-height: var(--lh-ui);
+    font-family: var(--font-body);
+  }
+  .field.is-focus input { outline: 2px solid var(--black); }
+  .field.is-error input { outline: 2px solid #c0392b; }
+  .field-msg { font-size: 12px; line-height: 1.6; color: var(--muted); margin-top: 7px; }
+  .field.is-error .field-msg { color: #c0392b; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 30px; }
+  .elev { background: var(--bg); border: 1px solid var(--border); padding: 28px; text-align: center; }
+  .elev.e1 { box-shadow: var(--shadow); border-color: transparent; }
+  .elev-name { font-size: 16px; font-weight: 700; line-height: var(--lh-ui); }
+  .elev-val { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 8px; }
+
+  /* LAYOUT */
+  .layout-demo { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .layout-bar { background: var(--surface); height: 36px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; color: #555; }
+  .radius-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 30px; justify-content: center; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 108px; height: 68px; background: var(--surface); border: 1px solid var(--border); }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 7px; }
+
+  /* FOOTER */
+  .footer { background: var(--black); color: var(--white); padding: 40px 20px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-head { font-family: var(--font-brand); font-size: 22px; font-weight: 400; line-height: 1.5; }
+  .footer-cols { display: flex; gap: 48px; margin-top: 20px; flex-wrap: wrap; }
+  .footer-col-title { font-family: var(--font-brand); font-size: 16px; font-weight: 400; line-height: 1.5; }
+  .footer-col a { display: block; font-size: 14px; line-height: 2; color: var(--white); text-decoration: none; opacity: .8; }
+  .footer-copy { font-size: 11px; font-weight: 500; line-height: 1.5; margin-top: 30px; opacity: .7; }
+
+  @media (max-width: 720px) {
+    .section, .section-alt .section-inner { padding: 44px 16px; }
+    .section-title { font-size: 24px; }
+    .book { flex-direction: column; }
+    .book-info { width: 100%; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .header-nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar"></div>
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo"><span class="logo-mark">S</span><span class="logo-text">新潮社</span></a>
+    <nav class="header-nav">
+      <a href="#">会社情報</a><a href="#">採用情報</a><a href="#">ニュース</a><a href="#">お問い合わせ</a><a href="#">著作権について</a>
+    </nav>
+  </div>
+</header>
+
+<div style="border-bottom:1px solid #cbcbcb">
+  <div class="searchbar">
+    <select aria-label="検索対象"><option>書籍名</option><option>著者名</option><option>ISBN</option><option>雑誌名</option></select>
+    <input type="text" placeholder="タイトルで探す">
+    <button class="detail">＋ 詳細検索</button>
+    <button class="modal-trigger">本・雑誌・ウェブ</button>
+  </div>
+</div>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="eyebrow">Color Palette</div>
+  <h2 class="section-title">黒・白・黄の三色だけ</h2>
+  <p class="section-lead">ブランド色は <b>新潮イエロー #ffed1b</b> ひとつ。面と文字は黒と白、区切りは <code>#cbcbcb</code> の罫線と <code>#efefef</code> の淡い面で作る。<b>黄色が 2 つあるのは実装の実態</b>で、購入ボタンだけ淡い <code>#fdec54</code> を使う。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#ffed1b"></div><div class="swatch-body"><div class="swatch-name">新潮イエロー</div><div class="swatch-hex">#ffed1b</div><div class="swatch-use">★可視 19 要素 / CSS 24 回。バッジ・帯・見出しの下線</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fdec54"></div><div class="swatch-body"><div class="swatch-name">Cart Yellow</div><div class="swatch-hex">#fdec54</div><div class="swatch-use">書誌ページの「ネットで購入」専用（CSS 4 回）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Black</div><div class="swatch-hex">#000000</div><div class="swatch-use">★本文（可視 198 要素）かつ塗り面（可視 10 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#9b9b9b"></div><div class="swatch-body"><div class="swatch-name">Muted</div><div class="swatch-hex">#9b9b9b</div><div class="swatch-use">発売日・「もっと見る」（可視 43 要素 / CSS 109 回）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#cbcbcb"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#cbcbcb</div><div class="swatch-use">★最多の罫線色。CSS 全文で 88 回</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#efefef"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#efefef</div><div class="swatch-use">判型チップ・面（可視 37 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f5f5f5"></div><div class="swatch-body"><div class="swatch-name">Surface Light</div><div class="swatch-hex">#f5f5f5</div><div class="swatch-use">検索フォームの面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#008bbe"></div><div class="swatch-body"><div class="swatch-name">Link</div><div class="swatch-hex">#008bbe</div><div class="swatch-use">カード内のリンク・アイコン（可視 4 要素 / CSS 8 回）</div></div></div>
+  </div>
+
+  <p class="note"><b>本文は純黒 <code>#000000</code>。</b>「日本語本文に純黒は避ける」定石とは逆で、これが目録らしい硬さを作っている。<code>#333333</code> に置き換えないこと。</p>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <div class="eyebrow">Typography</div>
+  <h2 class="section-title">本文ゴシック、惹句だけ明朝</h2>
+  <p class="section-lead">游ゴシック体 261 要素に対し、游明朝は 35 要素。<b>明朝を使うのは「本の言葉」（キャッチコピー）とフッターの見出しだけ。</b>フッターには Type Project の <b>TP明朝 StdN High B</b> を Web フォントで配信している。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:10px">10</span><span style="font-size:11px">11</span><span style="font-size:12px">12</span>
+    <span style="font-size:12.8px">12.8</span><span style="font-size:14px">14</span><span style="font-size:16px">16</span>
+    <span style="font-size:18px">18</span><span style="font-size:22px">22</span><span style="font-size:24px">24</span>
+    <span style="font-size:26px">26</span><span style="font-size:32px;font-family:var(--font-mincho);font-weight:700">32</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Catch Copy ★</b>游明朝 / 32px / 700<br>lh 1.50 / ls normal</div><div style="font-family:var(--font-mincho);font-size:32px;font-weight:700;line-height:1.5">寒いぞぉー、うまいぞぉー。抱腹絶倒の南極越冬日記。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Book Title</b>游ゴシック体 / 26px / 700<br>lh 1.23 / ls normal</div><div style="font-size:26px;font-weight:700;line-height:1.23">面白南極料理人</div></div>
+  <div class="type-row"><div class="type-meta"><b>Article Heading</b>游ゴシック体 / 24px / 700<br>lh 1.25</div><div style="font-size:24px;font-weight:700;line-height:1.25">想像するおいしさ　その自由な世界</div></div>
+  <div class="type-row"><div class="type-meta"><b>Footer Heading</b>TP明朝 StdN High B / 22px<br>lh 1.50（代替: Shippori Mincho）</div><div style="font-family:var(--font-brand);font-size:22px;line-height:1.5">新潮社について</div></div>
+  <div class="type-row"><div class="type-meta"><b>Author / Price</b>游ゴシック体 / 18px<br>lh 1.56 / 400・700</div><div><span style="font-size:18px;line-height:1.56">西村淳／著</span>　<span style="font-size:18px;font-weight:700;line-height:1.56">781円（税込）</span></div></div>
+  <div class="type-row"><div class="type-meta"><b>Sub Heading</b>游ゴシック体 / 18px / 700<br>lh 1.78</div><div style="font-size:18px;font-weight:700;line-height:1.78">書評</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>游ゴシック体 / 16px / 400<br>lh <b style="display:inline">2.13</b> / ls normal</div><div style="font-size:16px;line-height:2.13">ウイルスさえも生存が許されない地の果て、南極ドーム基地。そこに送りこまれた八人の男たちの、おかしくもたくましい日々を、料理担当の著者が記録した抱腹絶倒の食エッセイ。</div></div>
+  <div class="type-row"><div class="type-meta"><b>List Item</b>游ゴシック体 / 14px<br>lh 1.57</div><div style="font-size:14px;line-height:1.57">ジャンル：文学・評論 ＞ エッセー・ノンフィクション</div></div>
+  <div class="type-row"><div class="type-meta"><b>Date</b>游ゴシック体 / 14px<br>lh 1.43 / color #9b9b9b</div><div style="font-size:14px;line-height:1.43;color:#9b9b9b">2026/09/01</div></div>
+  <div class="type-row"><div class="type-meta"><b>Spec Table</b>游ゴシック体 / 12.8px<br>lh 1.50 / 400・700</div><div><span style="font-size:12.8px;font-weight:700;line-height:1.5">読み仮名</span>　<span style="font-size:12.8px;line-height:1.5">オモシロナンキョクリョウリニン</span></div></div>
+  <div class="type-row"><div class="type-meta"><b>Chip</b>游ゴシック体 / 12px<br>lh 2.13</div><div><span class="chip">文庫</span> <span class="chip">電子書籍あり</span></div></div>
+  <div class="type-row"><div class="type-meta"><b>Badge ★</b>游ゴシック体 / 10px / 700<br>lh 1.0 / <b style="display:inline">ls 0.158em</b></div><div><span class="badge">新刊</span> <span class="badge">最新号</span></div></div>
+
+  <p class="note"><b><code>letter-spacing</code> は <code>normal</code> が既定</b>（実測 272 要素）。字間を空けるのは<b>黄色バッジの 0.158em だけ</b>。游ゴシックの素の字送りを信じる設計なので、本文に字間を足すと印象が変わる。</p>
+
+  <p class="note"><b><code>font-feature-settings: "palt"</code> は 1 要素も使っていない</b>（実測 0 件）。括弧の多い書名（<code>『村上春樹WORKS』</code>）でも詰めない。<b>palt を足さないこと。</b></p>
+
+  <p class="note"><b>游ゴシックの Windows 対策</b>：素の <code>YuGothic</code> は Light にマッピングされて細くなる。実サイトは <code>"Yu Gothic M"</code> / <code>"游ゴシック Medium"</code> / <code>"Yu Gothic Medium"</code> を並べ、さらにヒラギノを <b>ProN W3 → ProN → Pro</b> の 6 通りで書き分けている。<b>このチェーンを短縮しないこと。</b></p>
+</div>
+</section>
+
+<section class="section" id="book">
+  <div class="section-label">03 / Book Detail</div>
+  <div class="eyebrow">Book</div>
+  <h2 class="section-title">書誌ページ：書影 ＋ 500px カラム</h2>
+  <p class="section-lead">惹句は游明朝 32px。書名以下の情報はすべてゴシックで、<code>line-height</code> は本文 2.13・表 1.5 と切り替える。</p>
+
+  <p class="book-catch">寒いぞぉー、うまいぞぉー。<br>抱腹絶倒の南極越冬日記。</p>
+
+  <div class="book">
+    <div class="book-cover">
+      <div class="img">面白南極料理人</div>
+      <div style="margin-top:14px"><a href="#" class="btn btn-cart">ネットで購入</a></div>
+    </div>
+    <div class="book-info">
+      <div class="book-chips"><span class="chip">文庫</span><span class="chip">電子書籍あり</span><span class="chip-icon">映画化</span><span class="chip-icon">テレビ化</span></div>
+      <h1 class="book-title">面白南極料理人</h1>
+      <p class="book-author">西村淳／著</p>
+      <p class="book-price">781円（税込）</p>
+      <p class="book-date">発売日：2004/09/29</p>
+      <p class="book-desc">ウイルスさえも生存が許されない地の果て、南極ドーム基地。平均気温マイナス五十四度、標高三八〇〇メートル、酸素は平地の六割。そこに送りこまれた八人の男たちの、おかしくもたくましい日々を、料理担当の著者が記録した抱腹絶倒の食エッセイ。</p>
+
+      <p style="font-size:16px;font-weight:700;line-height:2.13;margin-top:24px">書誌情報</p>
+      <table class="spec">
+        <tr><th>読み仮名</th><td>オモシロナンキョクリョウリニン</td></tr>
+        <tr><th>シリーズ名</th><td>新潮文庫</td></tr>
+        <tr><th>発行形態</th><td>文庫、電子書籍</td></tr>
+        <tr><th>判型</th><td>新潮文庫</td></tr>
+        <tr><th>頁数</th><td>269ページ</td></tr>
+      </table>
+
+      <div style="margin-top:20px"><a href="#" class="btn btn-ghost">もっと見る</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt" id="news">
+<div class="section-inner">
+  <div class="section-label">04 / News</div>
+  <div class="eyebrow">News</div>
+  <h2 class="section-title">タブとカード</h2>
+  <p class="section-lead">選択中のタブだけ黒の塗り。カードは <code>1px solid #cbcbcb</code> の枠で、角丸も影も使わない。</p>
+
+  <div style="display:flex;gap:0;border-bottom:1px solid #cbcbcb;margin-bottom:24px">
+    <button class="tab is-active">新着</button><button class="tab">お知らせ</button><button class="tab">文学賞</button><button class="tab">イベント</button>
+  </div>
+
+  <div class="card-grid">
+    <a href="#" class="card"><span class="card-cat">お知らせ</span><div class="card-title">『村上春樹WORKS』全16巻<br>2027年1月刊行開始！</div><div class="card-date">2026/09/01</div></a>
+    <a href="#" class="card"><span class="card-cat">文学賞</span><div class="card-title">第25回 小林秀雄賞<br>受賞作決定</div><div class="card-date">2026/08/28</div></a>
+    <a href="#" class="card"><span class="card-cat">文学賞</span><div class="card-title">第25回 新潮ドキュメント賞<br>受賞作決定</div><div class="card-date">2026/08/28</div></a>
+    <a href="#" class="card"><span class="card-cat">お知らせ</span><div class="card-title">「新潮文庫の100冊」記念、小説の面白さを、あらためて。</div><div class="card-date">2026/08/27</div></a>
+  </div>
+
+  <div style="text-align:center;margin-top:26px"><a href="#" class="btn btn-outline">ニュース一覧</a></div>
+</div>
+</section>
+
+<section class="section" id="buttons">
+  <div class="section-label">05 / Buttons</div>
+  <div class="eyebrow">Buttons</div>
+  <h2 class="section-title">角丸ゼロ。太い黒枠の購入ボタン</h2>
+  <p class="section-lead">主要 CTA は <code>#fdec54</code> の面に <b>2px の黒枠</b>。セカンダリは白地に 1px の黒枠、三番手は <code>#cbcbcb</code> の枠にグレーの文字。</p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-cart">ネットで購入</a>
+    <a href="#" class="btn btn-outline">新刊一覧</a>
+    <a href="#" class="btn btn-outline-sm">登録</a>
+    <a href="#" class="btn btn-ghost">もっと見る</a>
+    <span class="badge">新刊</span>
+    <span class="chip">文庫</span>
+    <span class="chip-icon">映画化</span>
+  </div>
+
+  <div style="display:flex;gap:0;border-bottom:1px solid #cbcbcb;max-width:420px">
+    <button class="tab is-active">すべて</button><button class="tab">書籍</button><button class="tab">雑誌</button><button class="tab">コミック</button>
+  </div>
+
+  <p class="note"><b><code>border-radius</code> はサイト全体で <code>0px</code>。</b>例外は書誌ページのカートアイコン（<code>100%</code>）だけ。4px や 8px の角丸を足さないこと。</p>
+</section>
+
+<section class="section-alt" id="forms">
+<div class="section-inner">
+  <div class="section-label">06 / Forms</div>
+  <div class="eyebrow">Forms</div>
+  <h2 class="section-title">入力欄は #f5f5f5 の面・高さ 50px</h2>
+  <p class="section-lead">枠線を持たず、背景の淡いグレーだけで入力欄を表す。角丸なし。</p>
+
+  <div class="form-grid">
+    <div class="field">
+      <label for="s1">お名前</label>
+      <input id="s1" type="text" placeholder="新潮　太郎">
+      <div class="field-msg">全角でご入力ください</div>
+    </div>
+    <div class="field is-focus">
+      <label for="s2">メールアドレス（フォーカス時）</label>
+      <input id="s2" type="email" value="taro@example.com">
+      <div class="field-msg">黒のアウトラインが付く</div>
+    </div>
+    <div class="field is-error">
+      <label for="s3">ご意見・ご感想（エラー時）</label>
+      <input id="s3" type="text" value="">
+      <div class="field-msg">ご意見・ご感想をご入力ください</div>
+    </div>
+    <div class="field">
+      <label for="s4">対象の書籍</label>
+      <select id="s4"><option>面白南極料理人</option><option>新潮文庫の100冊</option><option>小説新潮</option><option>週刊新潮</option></select>
+      <div class="field-msg">複数ある場合は代表的なものをお選びください</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <div class="eyebrow">Elevation</div>
+  <h2 class="section-title">影はサイト全体で 1 要素だけ</h2>
+  <p class="section-lead">カード・ボタン・チップはすべてフラット。区別は罫線 <code>#cbcbcb</code> と面 <code>#efefef</code> で行う。</p>
+
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">Level 0</div><div class="elev-val">none — 既定。カード・ボタン・チップはすべて影なし</div></div>
+    <div class="elev e1"><div class="elev-name">Level 1</div><div class="elev-val">0 0 20px rgba(0, 0, 0, 0.15)　（実測 1 要素）</div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">08 / Layout</div>
+  <div class="eyebrow">Layout</div>
+  <h2 class="section-title">コンテナ 1060px / 本文 700px / 書誌 500px</h2>
+  <p class="section-lead">書誌ページは「書影（左）／情報 500px（右）」の 2 カラム。書評やプロフィールは 700px に絞る。</p>
+
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:100%;max-width:1060px">--container: 1060px（実測 19 要素で最多）</div>
+    <div class="layout-bar" style="width:1000px;max-width:100%">1000px（フォーム幅）</div>
+    <div class="layout-bar" style="width:700px;max-width:100%">--column: 700px（書評・プロフィール）</div>
+    <div class="layout-bar" style="width:500px;max-width:100%">--detail: 500px（書誌ブロック）</div>
+  </div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:0"></div><div class="radius-label">既定<br>0px</div></div>
+    <div class="radius-item"><div class="radius-box" style="width:68px;border-radius:100%"></div><div class="radius-label">カートアイコン<br>100%</div></div>
+  </div>
+
+  <p class="note">ブレークポイントは <b>720px（SP）/ 1080px（PC）</b>。実サイトは <code>/common_v2/css/</code> と <code>/common_v2/sp/css/</code> で <b>CSS ファイル自体を出し分けている</b>。</p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-head">本・雑誌・ウェブ</div>
+    <div class="footer-cols">
+      <div class="footer-col"><div class="footer-col-title">本</div><a href="#">新刊</a><a href="#">文庫</a><a href="#">コミック</a></div>
+      <div class="footer-col"><div class="footer-col-title">雑誌</div><a href="#">週刊新潮</a><a href="#">小説新潮</a><a href="#">波</a></div>
+      <div class="footer-col"><div class="footer-col-title">本の最新情報</div><a href="#">ニュース</a><a href="#">文学賞</a><a href="#">イベント</a></div>
+      <div class="footer-col"><div class="footer-col-title">新潮社について</div><a href="#">会社情報</a><a href="#">採用情報</a><a href="#">著作権について</a></div>
+    </div>
+    <p class="footer-copy">すべての画像・データについて無断使用・無断転載を禁止します。</p>
+    <p class="footer-copy">これは DESIGN.md の再現用サンプルです。株式会社新潮社の実サイトではありません。フッター見出しの TP明朝 StdN High B（Type Project）はドメインライセンスのため、Shippori Mincho で代替しています。</p>
+  </div>
+</footer>
+
+</body>
+</html>

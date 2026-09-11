@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ライオン（LION）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<!-- 約物半角フォント。実サイトの YakuHanJPs_Noto と同じもの（Qrac / Yaku Han JP）。 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/yakuhanjp@4.1.1/dist/css/yakuhanjp_s.css">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は実質存在しない（トップの 2 個は Swiper の既定値、
+       下層は 0 個）。以下は computed style からの実測値。2026-09-11 */
+    --primary:       #007a46;   /* ★ CSS 全文で 663 回。可視テキスト 30 要素・面 5 要素 */
+    --primary-light: #00854c;   /* 企業理念ページの中見出し。CSS 8 回 */
+    --primary-pale:  #00a05c;   /* CSS 2 回 */
+
+    --surface-green: #f3f8f6;   /* サイドナビの選択項目（可視 3 要素） */
+    --surface-blue:  #f2f6f9;   /* 情報ブロックの面（可視 3 要素） */
+    --surface-gray:  #f4f4f4;
+    --pale-blue:     #cddcf2;
+    --gray-disc:     #c2cbcc;   /* カルーセルの非アクティブ（可視 3 要素） */
+    --navy:          #000333;
+
+    --text:          #333333;   /* ★ 本文。可視 131 要素で最多 */
+    --text-footer:   #202020;   /* フッター（可視 37 要素） */
+    --text-heading:  #000000;   /* h1 / h2 のみ（可視 10 要素） */
+    --text-muted:    #444444;
+    --text-invert:   #ffffff;
+    --bg:            #ffffff;   /* pageBackground.resolved / 根拠 body */
+
+    /* === Fonts ===
+       和文は Noto Sans JP。約物だけ YakuHanJPs（グリフを持たない文字は自動的に
+       次の Noto Sans JP に落ちる）。欧文見出しは Jost。すべて実サイトと同一書体。 */
+    --font-body:  YakuHanJPs, "Noto Sans JP", "Hiragino kaku Gothic ProN", Meiryo, sans-serif;
+    --font-latin: "Jost", sans-serif;   /* 実サイトは Jost, serif と誤記。sans-serif が正 */
+    --font-mono:  SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Letter spacing ===
+       0.06em が基準（CSS 全文で 9 箇所宣言）。宣言のない子要素には
+       計算後の 0.96px がそのまま継承される。 */
+    --ls:        0.06em;
+    --ls-inherit:0.96px;  /* 継承される実値。14px なら 0.069em、24px なら 0.04em に相当 */
+
+    /* === Line height: 本文 2.0 / UI 1.3 の二層 === */
+    --lh-body:  2.0;    /* 記事本文（16px/32px, 14px/28px） */
+    --lh-ui:    1.3;    /* ナビ・ボタン・ラベル（実測 172 要素で最多） */
+    --lh-title: 1.6;    /* h1・リード文 */
+
+    /* === Radius: 0 / 3 / 50px / 50% の 4 値しかない === */
+    --r:        0px;
+    --r-skip:   3px;
+    --r-pill:   50px;
+    --r-circle: 50%;
+
+    /* === Shadow: サイト全体で 1 要素のみ === */
+    --shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+
+    --container: 1200px;
+    --column:    677px;   /* 読み物カラム */
+    --column-mid:900px;   /* 中央寄せブロック */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: var(--lh-ui);          /* 器は 1.3。記事本文だけ 2.0 を上書き */
+    letter-spacing: var(--ls);          /* 0.06em → computed 0.96px が継承される */
+    font-feature-settings: "palt";      /* body から全体に継承（実測 816 要素） */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid #e6e6e6; background: var(--bg); }
+  .header-inner { display: flex; align-items: center; max-width: var(--container); margin: 0 auto; padding: 16px 24px; gap: 28px; }
+  .logo { display: flex; flex-direction: column; gap: 2px; text-decoration: none; }
+  .logo .tagline { font-size: 10px; line-height: var(--lh-ui); color: var(--text); }
+  .logo .mark { font-family: var(--font-latin); font-size: 30px; font-weight: 500; line-height: 1; letter-spacing: 0.02em; color: var(--primary); }
+  .header-nav { display: flex; gap: 22px; margin-left: auto; align-items: center; }
+  .header-nav a { font-size: 15px; font-weight: 500; line-height: var(--lh-ui); letter-spacing: var(--ls); color: var(--text); text-decoration: none; }
+  .header-nav a:hover { color: var(--primary); }
+  .search-btn { width: 32px; height: 32px; border-radius: var(--r-circle); background: var(--primary); border: none; color: var(--text-invert); font-size: 14px; cursor: pointer; }
+
+  /* NOTICE BAR */
+  .notice { background: var(--primary); color: var(--text-invert); }
+  .notice-inner { max-width: var(--container); margin: 0 auto; padding: 22px 24px; font-size: 16px; line-height: var(--lh-body); letter-spacing: var(--ls); }
+
+  /* SECTIONS */
+  .section { padding: 72px 24px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--surface-green); }
+  .section-alt .section-inner { padding: 72px 24px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; color: #888; margin-bottom: 10px; }
+  .eyebrow { font-family: var(--font-latin); font-size: 54px; font-weight: 500; line-height: var(--lh-ui); letter-spacing: 0.027em; color: var(--primary); }
+  .section-title { font-size: 32px; font-weight: 700; line-height: var(--lh-ui); letter-spacing: var(--ls); color: var(--primary); margin: 6px 0 18px; }
+  .section-lead { font-size: 16px; line-height: var(--lh-body); letter-spacing: var(--ls); margin-bottom: 40px; max-width: var(--column-mid); }
+  .note { font-size: 14px; line-height: var(--lh-body); letter-spacing: 0.05em; color: #555; margin-top: 20px; max-width: var(--column-mid); }
+  code { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; background: var(--surface-gray); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .swatch { border: 1px solid #e6e6e6; background: var(--bg); }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 12px; }
+  .swatch-name { font-size: 14px; font-weight: 500; line-height: var(--lh-ui); color: var(--text); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: #777; margin-top: 3px; }
+  .swatch-use { font-size: 12px; line-height: 1.5; color: #666; margin-top: 6px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 240px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid #e6e6e6; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: #777; line-height: 1.75; }
+  .type-meta b { display: block; font-family: var(--font-body); font-size: 13px; font-weight: 700; letter-spacing: var(--ls); color: var(--text); }
+  .scale-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 30px; align-items: baseline; }
+  .scale-bar span { background: var(--surface-green); padding: 8px 14px; line-height: var(--lh-ui); color: var(--primary); }
+
+  /* ARTICLE */
+  .article { max-width: var(--column); margin: 0 auto; }
+  .article h1 { font-size: 46px; font-weight: 700; line-height: var(--lh-title); letter-spacing: var(--ls); color: var(--text-heading); margin-bottom: 28px; }
+  .article .concept-label { font-size: 18px; font-weight: 400; line-height: 1.73; letter-spacing: 0.025em; color: var(--primary-light); margin-bottom: 4px; }
+  .article h3 { font-size: 26px; font-weight: 600; line-height: 1.75; letter-spacing: 0.05em; color: var(--primary-light); margin: 34px 0 10px; }
+  .article p { font-size: 16px; line-height: var(--lh-body); letter-spacing: var(--ls); margin-bottom: 20px; }
+  .article p.small { font-size: 14px; line-height: var(--lh-body); letter-spacing: 0.05em; }
+  .article p.catch { font-size: 24px; font-weight: 700; line-height: var(--lh-title); letter-spacing: var(--ls); color: var(--text); margin: 30px 0 20px; }
+
+  /* MORE LINK（円＋ラベル） */
+  .more { display: inline-flex; align-items: center; gap: 14px; text-decoration: none; }
+  .more .label { font-family: var(--font-latin); font-size: 16px; line-height: var(--lh-ui); letter-spacing: var(--ls); color: var(--primary); }
+  .circle-arrow { width: 54px; height: 54px; border-radius: var(--r-circle); background: var(--bg); border: 2px solid var(--primary); display: inline-flex; align-items: center; justify-content: center; color: var(--primary); font-size: 18px; transition: background .2s, color .2s; }
+  .more:hover .circle-arrow { background: var(--primary); color: var(--text-invert); }
+  .circle-muted { width: 54px; height: 54px; border-radius: var(--r-circle); background: var(--gray-disc); display: inline-flex; align-items: center; justify-content: center; color: var(--text-invert); font-size: 18px; }
+  .circle-filled { width: 32px; height: 32px; border-radius: var(--r-circle); background: var(--primary); display: inline-flex; align-items: center; justify-content: center; color: var(--text-invert); font-size: 14px; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin-bottom: 26px; }
+  .btn { font-family: var(--font-body); letter-spacing: var(--ls); line-height: var(--lh-ui); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; border: none; }
+  .btn-pill { background: var(--primary); color: var(--text-invert); border-radius: var(--r-pill); padding: 16px 40px; font-size: 16px; }
+  .btn-pill:hover { background: var(--primary-light); }
+  .btn-skip { background: var(--bg); color: var(--primary); border: 1px solid var(--primary); border-radius: var(--r-skip); padding: 7px 8px; font-size: 16px; }
+  .nav-item { display: block; background: var(--surface-green); color: var(--primary); border-radius: var(--r); padding: 12px 10px 13px; font-size: 15px; line-height: var(--lh-ui); text-decoration: none; width: 240px; }
+  .text-link { color: var(--primary); text-decoration: none; font-size: 16px; padding-left: 30px; position: relative; }
+  .text-link::before { content: "›"; position: absolute; left: 10px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+  .card { background: var(--bg); border: 1px solid #e6e6e6; border-radius: var(--r); overflow: hidden; text-decoration: none; color: var(--text); display: block; }
+  .card-img { height: 150px; }
+  .card-body { padding: 20px; }
+  .card-date { font-family: var(--font-latin); font-size: 14px; line-height: var(--lh-ui); letter-spacing: var(--ls); color: var(--primary); }
+  .card-title { font-size: 16px; font-weight: 700; line-height: 1.75; letter-spacing: var(--ls); margin-top: 6px; }
+  .card-tonal { background: var(--surface-blue); border: none; }
+  .card-tonal-green { background: var(--surface-green); border: none; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 26px; }
+  .field label { display: block; font-size: 16px; font-weight: 600; line-height: var(--lh-ui); letter-spacing: var(--ls); margin-bottom: 8px; }
+  .field input, .field select {
+    width: 100%; background: var(--bg); color: var(--text);
+    border: 1px solid #c9c9c9; border-radius: var(--r);
+    padding: 13px 14px; font-size: 16px; line-height: var(--lh-ui); letter-spacing: var(--ls);
+    font-family: var(--font-body);
+  }
+  .field.is-focus input { border-color: var(--primary); outline: 2px solid var(--surface-green); }
+  .field.is-error input { border-color: #c0392b; }
+  .field-msg { font-size: 14px; line-height: 1.6; letter-spacing: 0.05em; color: #666; margin-top: 7px; }
+  .field.is-error .field-msg { color: #c0392b; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 30px; }
+  .elev { background: var(--bg); border: 1px solid #e6e6e6; padding: 28px; text-align: center; }
+  .elev.e1 { box-shadow: var(--shadow); border-color: transparent; }
+  .elev-name { font-size: 16px; font-weight: 700; line-height: var(--lh-ui); }
+  .elev-val { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: #777; margin-top: 8px; }
+
+  /* LAYOUT */
+  .layout-demo { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .layout-bar { background: var(--surface-green); height: 36px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: var(--primary); }
+  .radius-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 30px; justify-content: center; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 108px; height: 68px; background: var(--surface-green); border: 1px solid var(--primary); }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: #777; margin-top: 7px; }
+
+  /* FOOTER */
+  .footer { background: var(--surface-gray); padding: 36px 24px; color: var(--text-footer); }
+  .footer-inner { max-width: var(--container); margin: 0 auto; display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+  .footer-inner a { font-size: 14px; line-height: var(--lh-ui); letter-spacing: var(--ls); color: var(--text-footer); text-decoration: none; }
+  .footer-copy { font-size: 13px; line-height: var(--lh-ui); letter-spacing: var(--ls); margin-left: auto; }
+
+  @media (max-width: 768px) {
+    .section, .section-alt .section-inner { padding: 46px 20px; }
+    .eyebrow { font-size: 34px; }
+    .section-title { font-size: 24px; }
+    .article h1 { font-size: 30px; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .header-nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <span class="tagline">今日を愛する。</span>
+      <span class="mark">LION</span>
+    </a>
+    <nav class="header-nav">
+      <a href="#">製品情報</a><a href="#">研究開発</a><a href="#">サステナビリティ</a>
+      <a href="#">企業情報</a><a href="#">採用情報</a>
+      <button class="search-btn" aria-label="検索">⌕</button>
+    </nav>
+  </div>
+</header>
+
+<div class="notice">
+  <div class="notice-inner">【重要なお知らせ】いつも当社製品をご愛顧いただき、誠にありがとうございます。一部製品のパッケージ変更についてお知らせいたします（2026年9月11日）。</div>
+</div>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="eyebrow">Colors</div>
+  <h2 class="section-title">深緑1色で組む</h2>
+  <p class="section-lead">UI に使う有彩色は <b>#007a46 の深緑ひとつだけ</b>。CSS 全文で 663 回登場し、リンク・見出し・円形ボタン・ピル CTA のすべてを担う。面は淡い緑と淡い青で作る。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#007a46"></div><div class="swatch-body"><div class="swatch-name">Primary</div><div class="swatch-hex">#007a46</div><div class="swatch-use">★CSS 全文で 663 回。可視テキスト 30 要素・面 5 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#00854c"></div><div class="swatch-body"><div class="swatch-name">Primary Light</div><div class="swatch-hex">#00854c</div><div class="swatch-use">企業理念ページの中見出し（CSS 8 回）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#00a05c"></div><div class="swatch-body"><div class="swatch-name">Primary Pale</div><div class="swatch-hex">#00a05c</div><div class="swatch-use">CSS 2 回。面 1 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f3f8f6"></div><div class="swatch-body"><div class="swatch-name">Surface Green</div><div class="swatch-hex">#f3f8f6</div><div class="swatch-use">サイドナビの選択項目（可視 3 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f2f6f9"></div><div class="swatch-body"><div class="swatch-name">Surface Blue</div><div class="swatch-hex">#f2f6f9</div><div class="swatch-use">情報ブロックの面（可視 3 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#cddcf2"></div><div class="swatch-body"><div class="swatch-name">Pale Blue</div><div class="swatch-hex">#cddcf2</div><div class="swatch-use">図版・図解の面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#c2cbcc"></div><div class="swatch-body"><div class="swatch-name">Gray Disc</div><div class="swatch-hex">#c2cbcc</div><div class="swatch-use">カルーセルの非アクティブな円（可視 3 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Text</div><div class="swatch-hex">#333333</div><div class="swatch-use">★本文。可視 131 要素で最多</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#202020"></div><div class="swatch-body"><div class="swatch-name">Text Footer</div><div class="swatch-hex">#202020</div><div class="swatch-use">フッター（可視 37 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Text Heading</div><div class="swatch-hex">#000000</div><div class="swatch-use">h1 / h2 のみ（可視 10 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#00b140;opacity:.35"></div><div class="swatch-body"><div class="swatch-name">✕ #00b140</div><div class="swatch-hex">#00b140</div><div class="swatch-use"><b>使わない。</b>Cookie 同意バナー（OneTrust）の色で、サイトの CSS には 1 回も出てこない</div></div></div>
+  </div>
+
+  <p class="note"><b><code>#00b140</code> をブランド色と誤らないこと。</b><code>uniqueBackgrounds</code> では <code>#007a46</code> と並んで 6 回出るが、実測した 6 要素は<b>すべて OneTrust のボタン</b>。ロゴの緑に近いので紛らわしいが、UI の面色は <code>#007a46</code> だけ。</p>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <div class="eyebrow">Typography</div>
+  <h2 class="section-title">約物半角 × palt × 0.06em</h2>
+  <p class="section-lead"><code>font-family</code> の先頭に <b>YakuHanJPs_Noto</b>（約物だけのサブセット）を置き、残りを Noto Sans JP に落とす。さらに <code>font-feature-settings: "palt"</code> を body から全体に継承させる（実測 816 要素）。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:10px">10</span><span style="font-size:13px">13</span><span style="font-size:14px">14</span>
+    <span style="font-size:15px">15</span><span style="font-size:16px">16</span><span style="font-size:18px">18</span>
+    <span style="font-size:24px">24</span><span style="font-size:26px">26</span><span style="font-size:32px">32</span>
+    <span style="font-size:46px">46</span><span style="font-size:54px;font-family:var(--font-latin);font-weight:500">54</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Display (EN)</b>Jost / 54px / 500<br>lh 1.30 / ls 0.027em</div><div style="font-family:var(--font-latin);font-size:54px;font-weight:500;line-height:1.3;letter-spacing:0.027em;color:#007a46">Topics</div></div>
+  <div class="type-row"><div class="type-meta"><b>Page Title</b>Noto Sans JP / 46px / 700<br>lh 1.60 / ls 0.06em</div><div style="font-size:46px;font-weight:700;line-height:1.6;letter-spacing:0.06em;color:#000">企業理念</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Heading</b>Noto Sans JP / 32px / 700<br>lh 1.30 / ls 0.06em</div><div style="font-size:32px;font-weight:700;line-height:1.3;letter-spacing:0.06em;color:#007a46">サステナビリティ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Slogan</b>Noto Sans JP / 26px / 700<br>lh 1.08 / ls 0.10em</div><div style="font-size:26px;font-weight:700;line-height:1.08;letter-spacing:0.1em;color:#007a46">企業スローガン</div></div>
+  <div class="type-row"><div class="type-meta"><b>Sub Heading</b>Noto Sans JP / 26px / 600<br>lh 1.75 / ls 0.05em</div><div style="font-size:26px;font-weight:600;line-height:1.75;letter-spacing:0.05em;color:#00854c">愛の精神の実践</div></div>
+  <div class="type-row"><div class="type-meta"><b>Concept Label</b>Noto Sans JP / 18px / 400<br>lh 1.73 / ls 0.025em</div><div style="font-size:18px;line-height:1.73;letter-spacing:0.025em;color:#00854c">PURPOSE ／ 存在意義</div></div>
+  <div class="type-row"><div class="type-meta"><b>Catch</b>Noto Sans JP / 24px / 700<br>lh 1.60 / ls 0.06em</div><div style="font-size:24px;font-weight:700;line-height:1.6;letter-spacing:0.06em">価値は顧客が決める</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>Noto Sans JP / 16px / 400<br>lh <b style="display:inline">2.00</b> / ls 0.06em</div><div style="font-size:16px;line-height:2;letter-spacing:0.06em">企業理念はパーパス（存在意義）、ビリーフス、DNA の三層で構成されています。「今日を愛する。」という言葉は、その全体をひとことで表したものです。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body Small</b>Noto Sans JP / 14px / 400<br>lh 2.00 / ls 0.05em</div><div style="font-size:14px;line-height:2;letter-spacing:0.05em">DNA は、創業から受け継がれてきた想いであり、当社の基盤となる価値観です。</div></div>
+  <div class="type-row"><div class="type-meta"><b>UI Label</b>Noto Sans JP / 16px / 400<br>lh <b style="display:inline">1.30</b> / ls 0.06em</div><div style="font-size:16px;line-height:1.3;letter-spacing:0.06em">一覧を見る</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav Item</b>Noto Sans JP / 15px / 500<br>lh 1.30 / ls 0.06em</div><div style="font-size:15px;font-weight:500;line-height:1.3;letter-spacing:0.06em">製品を探す</div></div>
+  <div class="type-row"><div class="type-meta"><b>Small</b>Noto Sans JP / 13px / 400<br>lh 1.30 / ls 0.06em</div><div style="font-size:13px;line-height:1.3;letter-spacing:0.06em;color:#202020">Copyright © 1996-2026 Lion Corporation</div></div>
+
+  <div class="type-row"><div class="type-meta"><b>約物の比較</b>YakuHanJPs あり／なし</div><div>
+    <div style="font-size:20px;line-height:2;letter-spacing:0.06em">あり：「今日を愛する。」（LION）、それが私たちの約束です。</div>
+    <div style="font-family:'Noto Sans JP',sans-serif;font-size:20px;line-height:2;letter-spacing:0.06em;color:#666">なし：「今日を愛する。」（LION）、それが私たちの約束です。</div>
+  </div></div>
+
+  <p class="note"><b>YakuHanJPs は約物のグリフしか持たない。</b>だから <code>font-family</code> の先頭に置いても、括弧・句読点以外は自動的に次の <code>"Noto Sans JP"</code> に落ちる。これが「約物だけ半角」を実現する仕組み。<b>palt と役割が違うので両方入れる</b> — 前者はグリフそのもの、後者はアキの詰め。</p>
+
+  <p class="note"><b><code>letter-spacing: 0.06em</code> は「宣言は em、継承は px」。</b>body の 16px で 0.96px に解決され、宣言のない子要素には<b>その px がそのまま降りてくる</b>。14px の要素では 0.069em、24px の要素では 0.04em に相当する。<b>子要素ごとに 0.06em を再宣言すると、大きい見出しほど実サイトより空く。</b></p>
+
+  <p class="note"><b>実装の不整合（実測）</b>：下層ページ（<code>/ja/company/philosophy/</code>）の <code>body</code> は <code>"Noto Sans JP", sans-serif</code> だけで <b>YakuHanJPs_Noto が抜けている</b>。共通ヘッダー・フッターだけが前置を保っている。新規実装では統一すること。また実サイトの欧文指定は <code>Jost, serif</code> だが、Jost はサンセリフなので <b><code>Jost, sans-serif</code> が正しい</b>。</p>
+</div>
+</section>
+
+<section class="section" id="article">
+  <div class="section-label">03 / Article</div>
+  <div class="eyebrow">Philosophy</div>
+  <h2 class="section-title">本文カラムは 677px</h2>
+  <p class="section-lead">16px / <code>line-height: 2.0</code> / <code>letter-spacing: 0.06em</code>。UI の 1.3 との落差が、このサイトの読みやすさを作っている。</p>
+
+  <div class="article">
+    <h1>企業理念</h1>
+    <p>企業理念はパーパス（存在意義）、ビリーフス、DNA の三層で構成されています。日々の暮らしに寄り添う製品をつくる会社として、私たちが何のために存在し、何を信じ、何を受け継いできたのかを言葉にしたものです。</p>
+
+    <div class="concept-label">PURPOSE ／ 存在意義</div>
+    <p class="catch">より良い習慣づくりで、人々の毎日に貢献する。</p>
+    <p class="small">Purpose は、私たちが社会において果たす役割を示すものです。歯みがき、手洗い、洗濯——毎日くり返される小さな行為をより良いものに変えていくことが、私たちの仕事です。</p>
+
+    <h3>愛の精神の実践</h3>
+    <p class="small">DNA は、創業から受け継がれてきた想いであり、当社の基盤となる価値観です。創業者が掲げた「愛の精神」は、いまも製品づくりと人づくりの根底に流れています。</p>
+
+    <p style="margin-top:32px"><a href="#" class="more"><span class="label">view more</span><span class="circle-arrow">›</span></a></p>
+  </div>
+</section>
+
+<section class="section-alt" id="cards">
+<div class="section-inner">
+  <div class="section-label">04 / Cards</div>
+  <div class="eyebrow">Topics</div>
+  <h2 class="section-title">カードは角丸ゼロ・影なし</h2>
+  <p class="section-lead">面の区別は <code>#f3f8f6</code>（淡緑）と <code>#f2f6f9</code>（淡青）で行う。<code>box-shadow</code> はサイト全体で 1 要素しか使われていない。</p>
+
+  <div class="card-grid">
+    <a href="#" class="card"><div class="card-img" style="background:linear-gradient(140deg,#bfe0cf,#5aa17c)"></div><div class="card-body"><div class="card-date">2026.09.07</div><div class="card-title">2026年12月期 第2四半期（中間期）決算短信・決算説明資料</div></div></a>
+    <a href="#" class="card card-tonal"><div class="card-body" style="padding:24px"><div class="card-date">2026.08.29</div><div class="card-title">オーラルケア習慣に関する共同研究の成果を学会で発表しました</div></div></a>
+    <a href="#" class="card card-tonal-green"><div class="card-body" style="padding:24px"><div class="card-date">2026.08.21</div><div class="card-title">サステナビリティレポート2026を公開しました</div></div></a>
+  </div>
+</div>
+</section>
+
+<section class="section" id="buttons">
+  <div class="section-label">05 / Buttons</div>
+  <div class="eyebrow">Buttons</div>
+  <h2 class="section-title">円かピル。長方形の塗りボタンは無い</h2>
+  <p class="section-lead">主要な導線は <b>54×54px の白丸に 2px の緑ボーダー</b>で、ラベル <code>view more</code> は円の外に Jost で置く。角丸は <b>0px / 3px / 50px / 50%</b> の 4 値しかない。</p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-pill">製品情報を見る</a>
+    <a href="#" class="more"><span class="label">view more</span><span class="circle-arrow">›</span></a>
+    <span class="circle-muted">›</span>
+    <span class="circle-filled">⌕</span>
+    <a href="#" class="btn btn-skip">本文へスキップ</a>
+    <a href="#" class="text-link">サステナビリティ</a>
+  </div>
+
+  <div style="margin-top:12px"><a href="#" class="nav-item">企業理念</a></div>
+
+  <p class="note">Pill は <code>border-radius: 50px</code>、円は <code>50%</code>、スキップリンクだけ <code>3px</code>、それ以外はすべて <code>0px</code>。<b>4px や 8px の角丸を使わないこと。</b></p>
+</section>
+
+<section class="section-alt" id="forms">
+<div class="section-inner">
+  <div class="section-label">06 / Forms</div>
+  <div class="eyebrow">Forms</div>
+  <h2 class="section-title">Forms</h2>
+  <p class="section-lead">入力欄も <code>border-radius: 0</code>。フォーカスリングは Primary の深緑で、周囲に淡緑の面を回す。</p>
+
+  <div class="form-grid">
+    <div class="field">
+      <label for="l1">お名前</label>
+      <input id="l1" type="text" placeholder="獅子　太郎">
+      <div class="field-msg">全角でご入力ください</div>
+    </div>
+    <div class="field is-focus">
+      <label for="l2">メールアドレス（フォーカス時）</label>
+      <input id="l2" type="email" value="taro@example.com">
+      <div class="field-msg">枠色が #007a46 に変わる</div>
+    </div>
+    <div class="field is-error">
+      <label for="l3">お問い合わせ種別（エラー時）</label>
+      <input id="l3" type="text" value="">
+      <div class="field-msg">お問い合わせ種別をお選びください</div>
+    </div>
+    <div class="field">
+      <label for="l4">対象の製品カテゴリー</label>
+      <select id="l4"><option>オーラルケア</option><option>ビューティケア</option><option>ファブリックケア</option><option>リビングケア</option></select>
+      <div class="field-msg">複数ある場合は代表的なものをお選びください</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <div class="eyebrow">Elevation</div>
+  <h2 class="section-title">影はサイト全体で 1 要素だけ</h2>
+  <p class="section-lead">オフセットを持たない <code>0 0 18px rgba(0,0,0,0.2)</code> が追従ヘッダーにのみ掛かる。それ以外はすべてフラット。</p>
+
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">Level 0</div><div class="elev-val">none — 既定。カード・ボタン・チップはすべて影なし</div></div>
+    <div class="elev e1"><div class="elev-name">Level 1</div><div class="elev-val">0 0 18px rgba(0, 0, 0, 0.2)　（実測 1 要素）</div></div>
+  </div>
+
+  <p class="note">階層は影ではなく<b>面色（<code>#f3f8f6</code> / <code>#f2f6f9</code>）と罫線</b>で表す。<b>カードに影を足さないこと。</b></p>
+</section>
+
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">08 / Layout</div>
+  <div class="eyebrow">Layout</div>
+  <h2 class="section-title">コンテナ 1200px / 本文 677px</h2>
+  <p class="section-lead">全幅セクションの中に 1200px のコンテナを置き、読み物は 677px、中央寄せブロックは 900px に絞る。</p>
+
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:100%;max-width:1200px">--container: 1200px</div>
+    <div class="layout-bar" style="width:900px;max-width:100%">--column-mid: 900px（中央寄せブロック）</div>
+    <div class="layout-bar" style="width:677px;max-width:100%">--column: 677px（読み物カラム）</div>
+  </div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:0"></div><div class="radius-label">既定<br>0px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:3px"></div><div class="radius-label">スキップリンク<br>3px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:50px"></div><div class="radius-label">ピル<br>50px</div></div>
+    <div class="radius-item"><div class="radius-box" style="width:68px;border-radius:50%"></div><div class="radius-label">円<br>50%</div></div>
+  </div>
+
+  <p class="note">ブレークポイントは <b>768px が主</b>（CSS 全文で <code>max-width: 768px</code> が 111 回）。1000 / 1160 / 1200 / 1300px はコンテナ幅の微調整のみ。</p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <a href="#">サイトマップ</a><a href="#">お問い合わせ</a><a href="#">個人情報保護方針</a><a href="#">サイトのご利用について</a>
+    <span class="footer-copy">Copyright © 1996-2026 Lion Corporation</span>
+  </div>
+  <p style="max-width:1200px;margin:18px auto 0;font-size:13px;line-height:1.8;color:#666">これは DESIGN.md の再現用サンプルです。ライオン株式会社の実サイトではありません。書体は実サイトと同じ Noto Sans JP / Jost / Yaku Han JP（YakuHanJPs）を使用しています。</p>
+</footer>
+
+</body>
+</html>

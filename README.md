@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (489 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (492 sites)</a>
 </p>
 
 <table>
@@ -744,6 +744,11 @@
 <td align="center"><strong>森ビル</strong><br><img src="design-md/mori-building/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>ヤンマー</strong><br><img src="design-md/yanmar/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>ライオン</strong><br><img src="design-md/lion/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>新潮社</strong><br><img src="design-md/shinchosha/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ソメスサドル</strong><br><img src="design-md/somes/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1293,11 +1298,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [ソラシドエア (Solaseed Air)](https://www.solaseedair.jp/) | Airline / Travel | [DESIGN.md](design-md/solaseed-air/DESIGN.md) | [preview.html](design-md/solaseed-air/preview.html) |
 | [森ビル (Mori Building)](https://www.mori.co.jp/) | Real Estate / Urban Development | [DESIGN.md](design-md/mori-building/DESIGN.md) | [preview.html](design-md/mori-building/preview.html) |
 | [ヤンマー (YANMAR)](https://www.yanmar.com/jp/) | Industrial Machinery / Corporate | [DESIGN.md](design-md/yanmar/DESIGN.md) | [preview.html](design-md/yanmar/preview.html) |
+| [ライオン (LION)](https://www.lion.co.jp/ja/) | Consumer Goods / Corporate | [DESIGN.md](design-md/lion/DESIGN.md) | [preview.html](design-md/lion/preview.html) |
+| [新潮社 (SHINCHOSHA)](https://www.shinchosha.co.jp/) | Publishing / Books | [DESIGN.md](design-md/shinchosha/DESIGN.md) | [preview.html](design-md/shinchosha/preview.html) |
+| [ソメスサドル (SOMÈS SADDLE)](https://www.somes.co.jp/) | Leather Goods / Craft | [DESIGN.md](design-md/somes/DESIGN.md) | [preview.html](design-md/somes/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (489 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (492 sites)</a>
 </p>
 
 <table>
@@ -2006,6 +2014,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>ソラシドエア</strong><br><img src="design-md/solaseed-air/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>森ビル</strong><br><img src="design-md/mori-building/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>ヤンマー</strong><br><img src="design-md/yanmar/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>ライオン</strong><br><img src="design-md/lion/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>新潮社</strong><br><img src="design-md/shinchosha/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ソメスサドル</strong><br><img src="design-md/somes/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
