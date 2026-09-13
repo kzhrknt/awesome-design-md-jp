@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 丸亀製麺（MARUGAME SEIMEN）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!--
+  実サイトは TypeSquare（モリサワ）配信の 秀英初号明朝 / 游明朝 Pr6N M / 游明朝 Pr6N D /
+  游ゴシック Pr6N M の4書体。いずれもドメインライセンスのためローカルでは表示できない。
+  ここでは字形の近い Google Fonts で代替する:
+    秀英初号明朝     → Shippori Mincho B1（太く抑揚の強い見出し明朝）
+    游明朝 Pr6N M    → Shippori Mincho（穏やかな本文明朝）
+    游ゴシック Pr6N M → Noto Sans JP
+-->
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;500;600;700;800&family=Shippori+Mincho:wght@400;500;600&family=Noto+Sans+JP:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は実質存在しない（2ページとも --swiper-theme-color の
+       1 個のみで、これは Swiper の既定値）。以下は computed style からの実測値。2026-09-13 */
+    --primary:     #c81432;   /* ★ 紅。CSS 全文で 164 回。可視テキスト 16 要素・面 14 要素 */
+
+    --text:        #44413c;   /* ★ 墨。可視 88 要素で最多。本文・ナビ・フッター */
+    --text-heading:#000000;   /* h2 / h3 と大きな見出しのみ（可視 15 要素） */
+    --text-muted:  #666666;   /* 注記・日付（可視 9 要素） */
+    --text-invert: #ffffff;
+
+    --bg:          #fbf7ef;   /* ★ 生成り。pageBackground.resolved / 根拠 body。CSS 16 回 */
+    --surface:     #f2eee6;   /* ★ 面。CSS 44 回。背景より一段濃い生成り */
+    --surface-gray:#f2f2f2;   /* 汎用の淡いグレー（5 要素） */
+    --surface-dark:#44413c;   /* フッターの濃面。本文色と同値 */
+    --surface-blue:#dee5ec;   /* 言語切替（2 要素） */
+    --border:      #ddd8cc;   /* 罫（生成り地に馴染むトーン） */
+
+    /* 帯のグラデーション（和紙・木目） */
+    --band: linear-gradient(#e5d9c8 0%, #d3bfa3 100%);
+
+    /* === Fonts ===
+       実サイトは全書体 font-weight: 400。太字は1つも存在しない。 */
+    --font-display: "Shippori Mincho B1", "Shuei ShogoMincho", serif;  /* 秀英初号明朝の代替 */
+    --font-body:    "Shippori Mincho", "Yu Mincho Pr6N M", serif;      /* 游明朝 Pr6N M の代替 */
+    --font-gothic:  "Noto Sans JP", "Yu Gothic Pr6N M", sans-serif;    /* 注記のみ */
+    --font-mono:    SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Letter spacing ===
+       既定は normal（ベタ組み。実測 600 要素）。開けるのは4箇所だけ。 */
+    --ls-body:  0.12em;   /* 本文 16px → 1.92px */
+    --ls-nav:   0.10em;   /* ナビ 14px → 1.4px */
+    --ls-head:  0.05em;   /* 見出し 24〜38px */
+    --ls-max:   0.15em;   /* 惹句 40px → 6px。最大 */
+
+    /* === Line height: 本文 2.0〜2.3 / 見出し 1.33〜1.67 === */
+    --lh-body:  2.0;
+    --lh-wide:  2.3;      /* リード 20px / 46px */
+    --lh-title: 1.5;
+    --lh-hero:  1.67;
+
+    /* === Radius: 6px（カード・ボタン）/ 2px（写真上の操作）のみ === */
+    --r:      6px;
+    --r-small:2px;
+
+    /* === Shadow: 浅い1段 + inset === */
+    --shadow:       0 1px 2px rgba(0, 0, 0, 0.16);   /* 実測 39 要素で最多 */
+    --shadow-inset: inset 0 3px 6px rgba(0, 0, 0, 0.16);
+
+    --container: 1200px;
+    --content:   960px;
+    --column:    880px;   /* 明朝の長文を読ませるカラム */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 400;                 /* ★ サイト全体でこれ以外を使わない */
+    line-height: var(--lh-title);
+    font-feature-settings: normal;    /* ★ palt は実測 0 件。ベタ組み */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== HEADER（縦組みナビ） ===== */
+  .header { display: flex; gap: 48px; padding: 36px 32px; background: var(--bg); border-bottom: 1px solid var(--border); align-items: flex-start; }
+  /* 縦組みのロゴ。左に「丸亀製麺」＋角印、その右にキャッチを縦で添える */
+  .brand { display: flex; align-items: flex-start; gap: 12px; }
+  .brand-mark { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .brand-name { font-family: var(--font-display); font-size: 34px; line-height: 1.15; letter-spacing: 0.02em; color: var(--text); writing-mode: vertical-rl; }
+  .brand-catch { font-family: var(--font-display); font-size: 11px; line-height: 1.6; letter-spacing: var(--ls-nav); color: var(--text); writing-mode: vertical-rl; }
+  .brand-seal { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; background: var(--primary); color: var(--text-invert); font-family: var(--font-display); font-size: 10px; line-height: 1.2; text-align: center; }
+  /* ★ グローバルナビは writing-mode: vertical-rl（実測 54 要素）。
+     vertical-rl では flex の column が「右→左」の block 軸に沿うので、
+     先頭の「メニュー」が右端に立つ。row / row-reverse を使うと順序が縦に潰れる。 */
+  .gnav { list-style: none; display: flex; flex-direction: column; gap: 20px; writing-mode: vertical-rl; }
+  .gnav a { font-family: var(--font-display); font-size: 14px; letter-spacing: var(--ls-nav); color: var(--text); text-decoration: none; }
+  .gnav a:hover { color: var(--primary); }
+
+  /* ===== HERO（縦組みコピー） ===== */
+  /* 48px の縦組みコピーが1行 8 文字。列の高さは 8 × 約 50px ＝ 400px 要る */
+  .hero { position: relative; height: 660px; background: linear-gradient(135deg, #cdbda6 0%, #b8a78e 55%, #a3927a 100%); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.05) 30%, rgba(0,0,0,0.3) 100%); }
+  .hero-copy { position: relative; z-index: 1; writing-mode: vertical-rl; font-family: var(--font-display); font-size: 48px; line-height: var(--lh-hero); letter-spacing: 0.042em; color: var(--text-invert); }
+  .hero-btn { position: absolute; z-index: 1; bottom: 40px; left: 50%; transform: translateX(-50%); background: #fff; color: var(--text); font-family: var(--font-display); font-size: 16px; padding: 16px 48px; border: none; border-radius: var(--r); box-shadow: var(--shadow); cursor: pointer; }
+
+  /* ===== SECTIONS ===== */
+  .section { padding: 72px 32px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--surface); }
+  .section-alt .section-inner { padding: 72px 32px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: #999; margin-bottom: 10px; }
+  .section-title { font-family: var(--font-display); font-size: 24px; font-weight: 400; line-height: var(--lh-title); letter-spacing: var(--ls-head); color: var(--text-heading); margin: 6px 0 18px; }
+  .section-lead { font-family: var(--font-display); font-size: 16px; line-height: var(--lh-body); letter-spacing: var(--ls-body); margin-bottom: 40px; max-width: var(--column); }
+  .note { font-size: 14px; line-height: 1.9; letter-spacing: 0.05em; color: #6b675f; margin-top: 20px; max-width: var(--content); }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--surface-gray); padding: 1px 5px; }
+
+  /* 帯（和紙・木目のセクション見出し） */
+  .band { background: var(--band); box-shadow: var(--shadow-inset); padding: 28px 32px; text-align: center; }
+  .band h3 { font-family: var(--font-display); font-size: 22px; font-weight: 400; letter-spacing: var(--ls-head); color: var(--text); }
+
+  /* ===== COLORS ===== */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .swatch { border: 1px solid var(--border); background: #fff; }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 12px; }
+  .swatch-name { font-size: 14px; line-height: 1.4; color: var(--text); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: #8a857c; margin-top: 3px; }
+  .swatch-use { font-size: 12px; line-height: 1.6; color: #6b675f; margin-top: 6px; }
+
+  /* ===== TYPOGRAPHY ===== */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--border); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: #8a857c; line-height: 1.8; }
+  .type-meta b { display: block; font-family: var(--font-body); font-size: 13px; font-weight: 400; color: var(--text); }
+  .ls-demo { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0; border: 1px solid var(--border); background: #fff; }
+  .ls-demo > div { padding: 20px; border-right: 1px solid var(--border); }
+  .ls-demo > div:last-child { border-right: none; }
+  .ls-demo .lbl { font-family: var(--font-mono); font-size: 11px; color: #8a857c; margin-bottom: 10px; }
+  .ls-demo .smp { font-family: var(--font-display); font-size: 20px; line-height: 1.9; }
+
+  /* ===== ARTICLE ===== */
+  .article { max-width: var(--column); }
+  .article h1 { font-family: var(--font-display); font-size: 38px; font-weight: 400; line-height: 1.47; letter-spacing: var(--ls-head); color: var(--text-heading); margin-bottom: 10px; }
+  .article .meta { font-family: var(--font-display); font-size: 14px; letter-spacing: var(--ls-head); color: var(--text-muted); margin-bottom: 32px; }
+  .article .lead { font-family: var(--font-display); font-size: 20px; line-height: var(--lh-wide); letter-spacing: 0.06em; margin-bottom: 32px; }
+  .article h2 { font-family: var(--font-display); font-size: 24px; font-weight: 400; line-height: var(--lh-title); letter-spacing: var(--ls-head); color: var(--text-heading); margin: 44px 0 18px; }
+  .article p { font-family: var(--font-display); font-size: 16px; line-height: var(--lh-body); letter-spacing: var(--ls-body); margin-bottom: 26px; }
+  .article .price { color: var(--primary); }
+  .article .statement { background: linear-gradient(135deg, #b8a78e, #a3927a); color: var(--text-invert); font-family: var(--font-display); font-size: 40px; line-height: 1.5; letter-spacing: var(--ls-max); padding: 56px 40px; text-align: center; margin: 40px 0; }
+
+  /* ===== BUTTONS ===== */
+  .btn-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-bottom: 28px; }
+  .btn { font-family: var(--font-display); font-size: 16px; font-weight: 400; line-height: 1.5; padding: 16px 32px; border-radius: var(--r); cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn-primary { background: #fff; color: var(--text); border: none; box-shadow: var(--shadow); }
+  .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-overlay-wrap { background: linear-gradient(135deg, #b8a78e, #a3927a); padding: 24px; border-radius: var(--r); display: inline-block; }
+  .btn-overlay { background: rgba(0,0,0,0.2); color: #fff; border: none; border-radius: var(--r-small); padding: 7px 14px; font-family: var(--font-gothic); font-size: 13px; cursor: pointer; }
+
+  /* ===== CARDS ===== */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+  .card { background: #fff; border-radius: var(--r); box-shadow: var(--shadow); overflow: hidden; }
+  .card-photo { position: relative; height: 150px; background: linear-gradient(135deg, #ddd0b8, #c6b599); }
+  .card-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 90%, #fff 100%); }
+  .card-body { padding: 20px; }
+  .card-title { font-family: var(--font-display); font-size: 18px; font-weight: 400; line-height: 1.67; color: var(--text); }
+  .card-text { font-family: var(--font-body); font-size: 12px; line-height: 1.83; color: var(--text); margin-top: 8px; }
+  .card-price { font-family: var(--font-display); font-size: 18px; color: var(--primary); margin-top: 12px; }
+
+  /* ===== FORMS ===== */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; max-width: var(--content); }
+  .field label { display: block; font-family: var(--font-display); font-size: 14px; letter-spacing: var(--ls-head); color: var(--text); margin-bottom: 8px; }
+  .field input { width: 100%; background: #fff; border: 1px solid var(--border); border-radius: var(--r); padding: 14px 16px; font-family: var(--font-body); font-size: 16px; color: var(--text); }
+  .field input:focus { outline: none; border-color: var(--text); box-shadow: 0 0 0 2px rgba(68,65,60,0.15); }
+  .field.is-focus input { border-color: var(--text); box-shadow: 0 0 0 2px rgba(68,65,60,0.15); }
+  .field.is-error input { border-color: var(--primary); }
+  .field .msg { font-size: 12px; line-height: 1.7; color: var(--primary); margin-top: 6px; }
+  .field .hint { font-size: 12px; line-height: 1.7; color: var(--text-muted); margin-top: 6px; }
+
+  /* ===== ELEVATION ===== */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+  .elev { background: #fff; border-radius: var(--r); padding: 24px; }
+  .elev-0 { box-shadow: none; border: 1px solid var(--border); }
+  .elev-1 { box-shadow: var(--shadow); }
+  .elev-inset { background: var(--band); box-shadow: var(--shadow-inset); }
+  .elev-name { font-family: var(--font-display); font-size: 16px; color: var(--text); }
+  .elev-val { font-family: var(--font-mono); font-size: 11px; color: #8a857c; margin-top: 6px; word-break: break-all; }
+
+  /* ===== LAYOUT ===== */
+  .layout-bar { position: relative; height: 46px; background: var(--surface-gray); margin-bottom: 12px; border: 1px solid var(--border); }
+  .layout-fill { position: absolute; inset: 0 auto 0 0; background: var(--surface); display: flex; align-items: center; padding-left: 14px; font-family: var(--font-mono); font-size: 11px; color: var(--text); }
+
+  /* ===== FOOTER ===== */
+  .footer { background: var(--surface-dark); color: var(--text-invert); padding: 56px 32px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-nav { font-family: var(--font-body); font-size: 16px; line-height: 1.5; }
+  .footer-copy { font-family: var(--font-gothic); font-size: 10px; line-height: 2.4; margin-top: 24px; opacity: 0.75; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="brand">
+    <div class="brand-mark">
+      <div class="brand-name">丸亀製麺</div>
+      <div class="brand-seal">丸亀<br>製麺</div>
+    </div>
+    <div class="brand-catch">ここのうどんは、生きている。</div>
+  </div>
+  <ul class="gnav">
+    <li><a href="#">メニュー</a></li>
+    <li><a href="#">こだわり</a></li>
+    <li><a href="#">お店を探す</a></li>
+    <li><a href="#">お持ち帰り</a></li>
+    <li><a href="#">公式アプリ</a></li>
+  </ul>
+</header>
+
+<div class="hero">
+  <div class="hero-copy">打ち立て茹でたて、<br>夏は冷たく。</div>
+  <button class="hero-btn">うどんづくりのこだわり</button>
+</div>
+
+<!-- ============ COLORS ============ -->
+<section class="section" id="colors">
+  <div class="section-label">01 / COLORS</div>
+  <h2 class="section-title">生成りの地に、紅を点で置く</h2>
+  <p class="section-lead">面はすべて生成り系（<code>#fbf7ef</code> / <code>#f2eee6</code>）で通し、ブランドの紅は角印・価格・小さなラベルにだけ乗せる。本文色は純黒ではなく茶みのある墨。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#c81432"></div><div class="swatch-body"><div class="swatch-name">Primary / 紅</div><div class="swatch-hex">#c81432</div><div class="swatch-use">CSS 164 回。可視 16 要素・面 14 要素。角印・価格・強調</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#44413c"></div><div class="swatch-body"><div class="swatch-name">Text Primary / 墨</div><div class="swatch-hex">#44413c</div><div class="swatch-use">可視 88 要素で最多。本文・ナビ・フッターの面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Text Heading</div><div class="swatch-hex">#000000</div><div class="swatch-use">h2 / h3 と大見出しのみ（可視 15 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#666666"></div><div class="swatch-body"><div class="swatch-name">Text Muted</div><div class="swatch-hex">#666666</div><div class="swatch-use">注記・日付（可視 9 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fbf7ef;border-bottom:1px solid #ddd8cc"></div><div class="swatch-body"><div class="swatch-name">Background / 生成り</div><div class="swatch-hex">#fbf7ef</div><div class="swatch-use">ページ背景。根拠 body。CSS 16 回</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f2eee6"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#f2eee6</div><div class="swatch-use">CSS 44 回。カード・セクションの面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f2f2f2"></div><div class="swatch-body"><div class="swatch-name">Surface Gray</div><div class="swatch-hex">#f2f2f2</div><div class="swatch-use">汎用の淡いグレー（5 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#dee5ec"></div><div class="swatch-body"><div class="swatch-name">Surface Blue Gray</div><div class="swatch-hex">#dee5ec</div><div class="swatch-use">言語切替の面（2 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:linear-gradient(#e5d9c8,#d3bfa3)"></div><div class="swatch-body"><div class="swatch-name">Band Gradient</div><div class="swatch-hex">#e5d9c8 → #d3bfa3</div><div class="swatch-use">セクション見出しの帯。inset 影で掘り込む</div></div></div>
+  </div>
+  <p class="note"><strong>黄 <code>#f1cd00</code> と紺 <code>#27313b</code> を設計色として使わないこと。</strong>可視要素には出るが CSS 全文に 1 回も現れない（外部ウィジェット由来）。</p>
+</section>
+
+<!-- ============ TYPOGRAPHY ============ -->
+<section class="section-alt" id="typography">
+ <div class="section-inner">
+  <div class="section-label">02 / TYPOGRAPHY</div>
+  <h2 class="section-title">太字が存在しない。書体と級数で階層をつくる</h2>
+  <p class="section-lead">可視テキストの <code>font-weight</code> は全要素 <code>400</code>。TypeSquare から4書体を配信し、見出しは秀英初号明朝、UI は游明朝 Pr6N M、注記だけ游ゴシック Pr6N M で受ける。ゴシックは 10px のコピーライトにしか出てこない。</p>
+
+  <div class="type-row"><div class="type-meta"><b>Hero Copy（縦組み）</b>秀英初号明朝 / 48px / 400<br>lh 1.67 (80px) / ls 0.042em</div><div style="font-family:var(--font-display);font-size:48px;line-height:1.67;letter-spacing:0.042em;color:#fff;background:linear-gradient(135deg,#b8a78e,#a3927a);padding:24px;writing-mode:vertical-rl;height:560px">打ち立て茹でたて、<br>夏は冷たく。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Page Title</b>秀英初号明朝 / 48px / 400<br>lh 1.33 (64px) / ls 0.027em</div><div style="font-family:var(--font-display);font-size:48px;line-height:1.33;letter-spacing:0.027em;color:#000">メニュー</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Title</b>秀英初号明朝 / 38px / 400<br>lh 1.47 (56px) / ls 0.05em</div><div style="font-family:var(--font-display);font-size:38px;line-height:1.47;letter-spacing:0.05em;color:#000">うどん</div></div>
+  <div class="type-row"><div class="type-meta"><b>Statement</b>秀英初号明朝 / 40px / 400<br>lh 1.50 / <strong>ls 0.15em（最大）</strong></div><div style="font-family:var(--font-display);font-size:40px;line-height:1.5;letter-spacing:0.15em;color:#fff;background:linear-gradient(135deg,#b8a78e,#a3927a);padding:24px">北海道産小麦100％</div></div>
+  <div class="type-row"><div class="type-meta"><b>Tagline</b>秀英初号明朝 / 30px / 400<br>lh normal / ls 0.08em</div><div style="font-family:var(--font-display);font-size:30px;letter-spacing:0.08em;color:#44413c">ここのうどんは、生きている。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Heading</b>秀英初号明朝 / 24px / 400<br>lh 1.50 (36px) / ls 0.05em</div><div style="font-family:var(--font-display);font-size:24px;line-height:1.5;letter-spacing:0.05em;color:#000">おすすめ・限定メニュー</div></div>
+  <div class="type-row"><div class="type-meta"><b>Lead Wide</b>秀英初号明朝 / 20px / 400<br><strong>lh 2.30 (46px)</strong> / ls 0.06em</div><div style="font-family:var(--font-display);font-size:20px;line-height:2.3;letter-spacing:0.06em;color:#000">すべての店で、粉からつくる。<br>打ち立て、できたてを、そのまま。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body</b>秀英初号明朝 / 16px / 400<br>lh 2.00 (32px) / <strong>ls 0.12em</strong></div><div style="font-family:var(--font-display);font-size:16px;line-height:2;letter-spacing:0.12em">丸亀製麺は信じています。おいしいうどんは「打ち立て・茹でたて」でしか作れないと。だから全国すべての店に製麺機を置き、粉から手づくりしています。</div></div>
+  <div class="type-row"><div class="type-meta"><b>UI Default</b>游明朝 Pr6N M / 16px / 400<br>lh 1.50 (24px) / ls normal</div><div style="font-family:var(--font-body);font-size:16px;line-height:1.5">メニュー　うどん　うどん弁当　天ぷら　薬味・トッピング</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav Item（縦組み）</b>秀英初号明朝 / 14px / 400<br>ls 0.10em (1.4px)</div><div style="font-family:var(--font-display);font-size:14px;letter-spacing:0.1em;writing-mode:vertical-rl;height:130px">お店を探す</div></div>
+  <div class="type-row"><div class="type-meta"><b>Caption</b>游明朝 Pr6N M / 12px / 400<br>lh 1.83 (22px) / ls normal</div><div style="font-family:var(--font-body);font-size:12px;line-height:1.83">SNS等で気軽に贈れるデジタルギフト券</div></div>
+  <div class="type-row"><div class="type-meta"><b>Micro（唯一のゴシック）</b>游ゴシック Pr6N M / 10px / 400<br>lh 2.40 (24px)</div><div style="font-family:var(--font-gothic);font-size:10px;line-height:2.4">© 2026 TORIDOLL Holdings Corporation.</div></div>
+
+  <h3 style="font-family:var(--font-display);font-size:22px;font-weight:400;letter-spacing:0.05em;color:#000;margin:48px 0 8px">字間は「級数が上がるほど広げる」</h3>
+  <p class="note" style="margin-bottom:20px">既定は <code>normal</code>（ベタ組み。実測 600 要素）。<code>palt</code> は実測 0 件で、字詰めは一切しない。秀英初号明朝も游明朝 Pr6N も仮想ボディいっぱいに字面を設計した書体で、ベタ組みでちょうど良く見える。</p>
+  <div class="ls-demo">
+    <div><div class="lbl">normal（既定）</div><div class="smp">打ち立て茹でたて</div></div>
+    <div><div class="lbl">0.05em（見出し 24〜38px）</div><div class="smp" style="letter-spacing:0.05em">打ち立て茹でたて</div></div>
+    <div><div class="lbl">0.12em（本文 16px）</div><div class="smp" style="letter-spacing:0.12em">打ち立て茹でたて</div></div>
+    <div><div class="lbl">0.15em（惹句 40px）</div><div class="smp" style="letter-spacing:0.15em">打ち立て茹でたて</div></div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ ARTICLE ============ -->
+<section class="section" id="article">
+  <div class="section-label">03 / ARTICLE</div>
+  <h2 class="section-title">本文カラムは 880px、行間は 2.0</h2>
+  <p class="section-lead">明朝のベタ組みを読ませるため、本文は <code>line-height: 2.0</code> と <code>letter-spacing: 0.12em</code> の組で成立している。行間を詰めるなら字間も見直すこと。</p>
+  <article class="article">
+    <h1>釜揚げうどんができるまで</h1>
+    <div class="meta">令和8年9月13日</div>
+    <p class="lead">使っているのは、北海道産小麦と塩と水だけ。今日も店の奥で、粉から麺を打っています。</p>
+    <p>丸亀製麺の店には、必ず製麺機があります。冷凍麺を運んでくるのではなく、その日の分をその日に打つ。気温と湿度で加水率を変え、寝かせる時間を変える。だから同じレシピでも、店ごと、日ごとに手当てが要ります。</p>
+    <h2>茹でたてを、そのまま</h2>
+    <p>打った麺は、太い釜で一気に茹で上げます。茹で時間はうどんの太さで決まりますが、最後に見るのは時計ではなく麺そのものです。芯の白がすっと消える瞬間を見極めて、湯から上げる。</p>
+    <p>釜揚げうどんは、その茹で上がりをそのまま釜の湯ごとお出しするもの。締めない分、小麦の甘みと香りが立ちます。<span class="price">釜揚げうどん（並）340円</span>。</p>
+    <div class="statement">北海道産小麦100％</div>
+    <h2>麺職人という仕事</h2>
+    <p>店には「麺職人」と呼ばれる認定制度があります。粉の状態を見て水を決め、生地の弾力を手で確かめ、茹で上がりを見極める。この一連を任せられる人にだけ与えられる呼び名です。</p>
+  </article>
+</section>
+
+<!-- ============ BUTTONS ============ -->
+<section class="section-alt" id="buttons">
+ <div class="section-inner">
+  <div class="section-label">04 / BUTTONS</div>
+  <h2 class="section-title">角丸 6px、影は 1px。太字にはしない</h2>
+  <p class="section-lead">ボタンのラベルも <code>font-weight: 400</code>。強調は級数と余白で作る。写真に重なる操作ボタンだけ <code>rgba(0,0,0,0.2)</code> の半透明・角丸 2px を使う。</p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">うどんづくりのこだわり</a>
+    <a class="btn btn-primary" href="#">メニュー一覧へ</a>
+    <a class="btn btn-ghost" href="#">うどん弁当</a>
+    <a class="btn btn-ghost" href="#">丸亀製麺の取り組み</a>
+  </div>
+  <div class="btn-overlay-wrap">
+    <button class="btn-overlay">一時停止</button>
+    <button class="btn-overlay">Language</button>
+  </div>
+  <p class="note">写真上の操作ボタンだけ游ゴシック 13px。これはブラウザ既定に近い扱いで、設計の級数表には含めない。</p>
+ </div>
+</section>
+
+<!-- ============ CARDS ============ -->
+<section class="section" id="cards">
+  <div class="section-label">05 / CARDS</div>
+  <h2 class="section-title">写真の下端を白のスクリムで地に溶かす</h2>
+  <p class="section-lead">カードは角丸 6px、影は <code>0 1px 2px rgba(0,0,0,0.16)</code> の1段だけ。写真の下 10% に白のグラデーションを重ね、写真とテキストの境目を消す。</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">釜揚げうどん</div><div class="card-text">茹でたてをそのまま、釜の湯ごと。小麦の甘みが立ちます。</div><div class="card-price">340円</div></div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">ぶっかけうどん</div><div class="card-text">冷たく締めた麺に、濃いめのだしを回しかけて。</div><div class="card-price">390円</div></div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">丸亀お子さま<br>まんぷくセット</div><div class="card-text">打ち立てうどんに、天ぷらとおむすび。</div><div class="card-price">500円</div></div></div>
+  </div>
+  <div class="band" style="margin-top:40px"><h3>本日ご紹介する麺職人</h3></div>
+</section>
+
+<!-- ============ FORMS ============ -->
+<section class="section-alt" id="forms">
+ <div class="section-inner">
+  <div class="section-label">06 / FORMS</div>
+  <h2 class="section-title">Forms</h2>
+  <p class="section-lead">入力欄も角丸 6px、罫は生成り地に馴染むトーン。フォーカスは墨色の枠とごく淡いリング、エラーはブランドの紅で示す。</p>
+  <div class="form-grid">
+    <div class="field"><label>お名前</label><input type="text" placeholder="丸亀 太郎"><div class="hint">全角でご入力ください</div></div>
+    <div class="field is-focus"><label>メールアドレス（フォーカス）</label><input type="email" value="taro@example.com"><div class="hint">確認メールをお送りします</div></div>
+    <div class="field is-error"><label>電話番号（エラー）</label><input type="tel" value="090-000"><div class="msg">電話番号の桁数が足りません</div></div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ ELEVATION ============ -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / ELEVATION</div>
+  <h2 class="section-title">浅い影1段と、掘り込む inset</h2>
+  <p class="section-lead">影は <code>0 1px 2px rgba(0,0,0,0.16)</code> の1段のみ（実測 39 要素）。モーダル用の深い影は持たない。代わりに <code>inset</code> を「面を沈める」表現として使う。</p>
+  <div class="elev-grid">
+    <div class="elev elev-0"><div class="elev-name">Level 0</div><div class="elev-val">none — 地の面・帯</div></div>
+    <div class="elev elev-1"><div class="elev-name">Level 1</div><div class="elev-val">0 1px 2px rgba(0,0,0,0.16) — カード・ボタン（39 要素）</div></div>
+    <div class="elev elev-inset"><div class="elev-name">Inset</div><div class="elev-val">inset 0 3px 6px rgba(0,0,0,0.16) — セクション帯（5 要素）</div></div>
+  </div>
+</section>
+
+<!-- ============ LAYOUT ============ -->
+<section class="section-alt" id="layout">
+ <div class="section-inner">
+  <div class="section-label">08 / LAYOUT</div>
+  <h2 class="section-title">1200 / 960 / 880 の三段</h2>
+  <p class="section-lead">1440px のビューポートに対し、本文は 880px まで絞る。明朝の長文を読ませるための幅。</p>
+  <div class="layout-bar"><div class="layout-fill" style="width:83.3%">Container 1200px（実測 29 要素で最多）</div></div>
+  <div class="layout-bar"><div class="layout-fill" style="width:66.7%">Content 960px（26 要素）</div></div>
+  <div class="layout-bar"><div class="layout-fill" style="width:61.1%">Column 880px（19 要素）— 本文カラム</div></div>
+  <p class="note">Spacing は 8 / 12 / <strong>16</strong> / <strong>24</strong> / 40 / 80px。gap は 16px（14 要素）と 24px（8 要素）が最頻、<code>padding-top</code> は 24px（19 要素）が最頻。</p>
+ </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-nav">メニュー　うどん　うどん弁当　天ぷら　薬味・トッピング　ご飯もの　お持ち帰り　お店を探す</div>
+    <div class="footer-copy">© 2026 TORIDOLL Holdings Corporation.　このページは design-md-jp のデザインシステム再現サンプルです（非公式）。</div>
+  </div>
+</footer>
+
+</body>
+</html>

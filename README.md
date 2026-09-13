@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (492 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (495 sites)</a>
 </p>
 
 <table>
@@ -749,6 +749,11 @@
 <td align="center"><strong>新潮社</strong><br><img src="design-md/shinchosha/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>ソメスサドル</strong><br><img src="design-md/somes/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>丸亀製麺</strong><br><img src="design-md/marugame/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>カリモク家具</strong><br><img src="design-md/karimoku/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>白鶴酒造</strong><br><img src="design-md/hakutsuru/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1301,11 +1306,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [ライオン (LION)](https://www.lion.co.jp/ja/) | Consumer Goods / Corporate | [DESIGN.md](design-md/lion/DESIGN.md) | [preview.html](design-md/lion/preview.html) |
 | [新潮社 (SHINCHOSHA)](https://www.shinchosha.co.jp/) | Publishing / Books | [DESIGN.md](design-md/shinchosha/DESIGN.md) | [preview.html](design-md/shinchosha/preview.html) |
 | [ソメスサドル (SOMÈS SADDLE)](https://www.somes.co.jp/) | Leather Goods / Craft | [DESIGN.md](design-md/somes/DESIGN.md) | [preview.html](design-md/somes/preview.html) |
+| [丸亀製麺 (MARUGAME SEIMEN)](https://www.marugame-seimen.com/) | Restaurant / Food | [DESIGN.md](design-md/marugame/DESIGN.md) | [preview.html](design-md/marugame/preview.html) |
+| [カリモク家具 (karimoku)](https://www.karimoku.co.jp/) | Furniture / Manufacturing | [DESIGN.md](design-md/karimoku/DESIGN.md) | [preview.html](design-md/karimoku/preview.html) |
+| [白鶴酒造 (HAKUTSURU)](https://www.hakutsuru.co.jp/) | Sake Brewery / Beverage | [DESIGN.md](design-md/hakutsuru/DESIGN.md) | [preview.html](design-md/hakutsuru/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (492 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (495 sites)</a>
 </p>
 
 <table>
@@ -2019,6 +2027,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>ライオン</strong><br><img src="design-md/lion/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>新潮社</strong><br><img src="design-md/shinchosha/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>ソメスサドル</strong><br><img src="design-md/somes/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>丸亀製麺</strong><br><img src="design-md/marugame/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>カリモク家具</strong><br><img src="design-md/karimoku/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>白鶴酒造</strong><br><img src="design-md/hakutsuru/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

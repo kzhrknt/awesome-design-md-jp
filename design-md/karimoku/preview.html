@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: カリモク家具（karimoku）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!--
+  和文見出しの Noto Serif JP は実サイトと同一書体（Web フォントで loaded を確認済み）。
+  本文の游ゴシック Medium は OS ローカルのため、環境によっては出ない。
+  欧文の Century Gothic も OS ローカル。ここでは字形の近い Google Fonts で代替する:
+    游ゴシック Medium → Noto Sans JP 500
+    Century Gothic    → Questrial（幾何学サンセリフ。字幅と O の真円が近い）
+-->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Questrial&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は 0 個。以下は computed style からの実測値。2026-09-13 */
+    --text:        #282828;   /* ★ 本文。可視 108 要素で最多。純黒ではない */
+    --text-second: #505050;   /* ナビ・補助リンク（可視 23 要素） */
+    --text-third:  #646464;   /* カードの補足（可視 2 要素） */
+    --text-invert: #ffffff;
+
+    --bg:          #ffffff;   /* ページ背景。根拠 ua-default-canvas（html/body ともに塗り指定なし） */
+    --surface:     #ecebea;   /* ★ uniqueBackgrounds 1 位（21 回）。白との差がごく小さい温かいグレー */
+    --surface-gray:#f0f0f0;   /* コーポレートサイトボタン */
+    --surface-dark:#2c2c2c;   /* オンラインショップボタン */
+    --border:      #c8c8c8;   /* 枠ボタン・区切り罫 */
+
+    --brown:       #725941;   /* 木の色。シリーズ名（可視 6 要素） */
+    --green:       #557857;   /* こだわりの見出し（可視 2 要素） */
+
+    /* バッジ4色。いずれも彩度が低く、白文字の前提 */
+    --badge-sand:  #bba685;   /* 重要 / 新商品情報 */
+    --badge-aqua:  #a0ccc4;   /* お知らせ */
+    --badge-yellow:#e1cc84;   /* イベント情報 */
+    --badge-gray:  #9f9b93;   /* 汎用・全幅の誘導 */
+
+    /* === Fonts === */
+    --font-body:  "Noto Sans JP", "Yu Gothic", YuGothic, "Hiragino Sans", sans-serif;
+    --font-serif: "Noto Serif JP", 游明朝体, "Yu Mincho", YuMincho, "ヒラギノ明朝 ProN", serif;
+    --font-latin: "Questrial", "Century Gothic", sans-serif;  /* 実サイトは "Century Gothic", serif と誤記。sans-serif が正 */
+    --font-mono:  SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height ===
+       ★ font-size に関係なく 28px の絶対値で固定する。実測 215 要素が 14px/28px。
+       ただし 30px/28px は行間が font-size を下回るため、新規実装では見出しに 1.3 を当てる。 */
+    --lh:       28px;
+    --lh-head:  1.3;      /* 30px 以上の見出しにはこちらを使う（実サイトの 28px は1行前提） */
+    --lh-tight: 1.0;      /* ナビ・ラベル。font-size と同値にして和欧2段を密着させる */
+
+    /* === Letter spacing ===
+       既定 normal（実測 381 要素）。開けるのは2種類だけ。 */
+    --ls-en:    0.2em;    /* セクション見出しの欧文 16px → 3.2px */
+    --ls-lead:  0.1em;    /* セクション見出しの和文 30px → 3px / 欧文 34px → 3.4px */
+    --ls-nav:   0.07em;   /* ナビ 14px → 0.98px */
+    --ls-micro: 0.07em;   /* 9〜12px の小さいラベル */
+
+    /* === Radius: 0 が既定。例外は2つだけ === */
+    --r:        0;
+    --r-util:   3px;      /* 極小のユーティリティボタン */
+    --r-circle: 100px;    /* カルーセルの操作ボタンのみ */
+
+    /* === Shadow: サイト全体で 0 件 === */
+
+    --container: 1200px;
+    --column:    740px;
+    --gap-s:  20px;
+    --gap-m:  40px;
+    --gap-l:  60px;       /* セクション間（実測 10 要素で最多） */
+    --gap-xl: 90px;       /* 大セクション間（6 要素） */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;                  /* ★ 本文 14px */
+    font-weight: 400;
+    line-height: var(--lh);           /* ★ 28px の絶対値 */
+    letter-spacing: normal;
+    font-feature-settings: normal;    /* ★ palt は実測 0 件 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== HEADER ===== */
+  .util { border-bottom: 1px solid #e8e8e8; }
+  .util-inner { max-width: var(--container); margin: 0 auto; padding: 12px 24px; display: flex; justify-content: flex-end; gap: 24px; }
+  .util a { font-size: 12px; line-height: var(--lh-tight); letter-spacing: var(--ls-micro); color: var(--text-second); text-decoration: none; }
+  .header { border-bottom: 1px solid #e8e8e8; }
+  .header-inner { max-width: var(--container); margin: 0 auto; padding: 24px; display: flex; align-items: center; gap: 40px; }
+  .logo { display: flex; flex-direction: column; gap: 4px; text-decoration: none; }
+  .logo .mark { font-family: var(--font-latin); font-size: 30px; line-height: 1; letter-spacing: -0.01em; color: var(--text); }
+  .logo .sub { font-size: 12px; line-height: var(--lh-tight); letter-spacing: var(--ls-micro); color: var(--text); }
+  .gnav { display: flex; gap: 32px; list-style: none; margin-left: auto; align-items: center; }
+  /* ★ 和欧2段のナビ。line-height を font-size と同値にして密着させる */
+  .gnav a { text-decoration: none; display: flex; flex-direction: column; gap: 5px; align-items: center; }
+  .gnav .ja { font-size: 18px; line-height: var(--lh-tight); letter-spacing: 0.054em; color: var(--text-second); }
+  .gnav .en { font-family: var(--font-latin); font-size: 12px; line-height: var(--lh-tight); letter-spacing: 0.082em; color: var(--text-second); }
+  .util-btns { display: flex; gap: 8px; }
+  .util-btn { font-size: 9px; line-height: 1.2; letter-spacing: var(--ls-micro); padding: 12px 10px; border-radius: var(--r-util); text-align: center; text-decoration: none; }
+  .util-btn.gray { background: var(--surface-gray); color: var(--text); }
+  .util-btn.dark { background: var(--surface-dark); color: var(--text-invert); }
+
+  /* ===== HERO ===== */
+  .hero { position: relative; height: 420px; background: linear-gradient(160deg, #f4f1ec 0%, #e6e0d6 60%, #d8cfc0 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; }
+  .hero-sub { font-family: var(--font-serif); font-size: 20px; line-height: var(--lh-head); letter-spacing: var(--ls-lead); color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 14px; }
+  .hero-title { font-family: var(--font-serif); font-size: 40px; font-weight: 400; line-height: var(--lh-head); letter-spacing: var(--ls-lead); color: var(--text); }
+
+  /* ===== SECTIONS ===== */
+  .section { padding: var(--gap-xl) 24px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--surface); }
+  .section-alt .section-inner { padding: var(--gap-xl) 24px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: #999; margin-bottom: 10px; letter-spacing: normal; }
+  /* ★ セクション見出しは「欧文 + 和文」の2段 */
+  .head2 { margin-bottom: var(--gap-m); }
+  .head2 .en { display: block; font-family: var(--font-latin); font-size: 16px; line-height: var(--lh); letter-spacing: var(--ls-en); color: var(--text); }
+  .head2 .ja { display: block; font-family: var(--font-serif); font-size: 30px; font-weight: 400; line-height: var(--lh-head); letter-spacing: var(--ls-lead); color: var(--text); margin-top: 6px; }
+  .section-title { font-family: var(--font-serif); font-size: 24px; font-weight: 700; line-height: var(--lh); color: var(--text); margin: 6px 0 18px; }
+  .section-lead { font-size: 14px; line-height: var(--lh); margin-bottom: var(--gap-m); max-width: 900px; }
+  .note { font-size: 14px; line-height: var(--lh); color: #5c5c5c; margin-top: var(--gap-s); max-width: 900px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--surface); padding: 1px 5px; }
+
+  /* ===== COLORS ===== */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .swatch { border: 1px solid var(--border); background: var(--bg); }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 12px; }
+  .swatch-name { font-size: 14px; line-height: 1.5; color: var(--text); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: #7d7d7d; margin-top: 3px; }
+  .swatch-use { font-size: 12px; line-height: 1.7; color: #5c5c5c; margin-top: 6px; }
+
+  /* ===== TYPOGRAPHY ===== */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: var(--gap-s) 0; border-bottom: 1px solid var(--border); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: #7d7d7d; line-height: 1.8; }
+  .type-meta b { display: block; font-family: var(--font-body); font-size: 13px; font-weight: 700; color: var(--text); }
+  /* 行送り 28px を可視化するためのストライプ */
+  .lh-demo { background: repeating-linear-gradient(to bottom, #f6f5f4 0, #f6f5f4 27px, var(--border) 27px, var(--border) 28px); border: 1px solid var(--border); padding: 0 16px 28px; }
+  .lh-demo p { line-height: 28px; margin: 0; }
+
+  /* ===== ARTICLE ===== */
+  .article { max-width: var(--column); }
+  .article h1 { font-family: var(--font-serif); font-size: 30px; font-weight: 400; line-height: var(--lh-head); letter-spacing: var(--ls-lead); color: var(--text); margin-bottom: var(--gap-s); }
+  .article h2 { font-family: var(--font-serif); font-size: 24px; font-weight: 700; line-height: var(--lh); color: var(--text); margin: var(--gap-m) 0 12px; }
+  .article p { font-size: 14px; line-height: var(--lh); margin-bottom: var(--lh); }
+  .article .series { font-family: var(--font-latin); font-size: 18px; font-weight: 700; line-height: var(--lh); color: var(--brown); }
+
+  /* ===== BUTTONS ===== */
+  .btn-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-bottom: var(--gap-s); }
+  .btn { font-family: var(--font-body); font-size: 18px; font-weight: 400; line-height: var(--lh); border-radius: var(--r); cursor: pointer; text-decoration: none; display: inline-block; text-align: center; }
+  .btn-outline { background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 15px 30px; }
+  .btn-surface { background: var(--surface); color: var(--text); border: 1px solid var(--bg); padding: 10px 30px; }
+  .btn-wide { background: var(--badge-gray); color: var(--text-invert); border: none; padding: 20px 10px; display: block; width: 100%; }
+  .carousel-btns { display: flex; gap: 12px; margin-top: var(--gap-s); }
+  .carousel-btn { width: 44px; height: 44px; border-radius: var(--r-circle); border: none; background: #999397; color: #fff; font-size: 16px; cursor: pointer; }
+  .carousel-btn.green { background: #99b49b; }
+
+  /* ===== BADGES ===== */
+  .badge-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .badge { border-radius: var(--r); padding: 0 4px; font-size: 11px; line-height: 1.7; color: var(--text-invert); }
+
+  /* ===== CARDS ===== */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--gap-m) var(--gap-s); }
+  .card { background: var(--bg); border-radius: var(--r); box-shadow: none; }   /* ★ 影を使わない */
+  .card-photo { height: 160px; background: linear-gradient(150deg, #ede8e0, #ddd3c4); }
+  .card-body { padding: 16px 0 0; }
+  .card-title { font-family: var(--font-serif); font-size: 20px; font-weight: 500; line-height: var(--lh); color: var(--text); }
+  .card-text { font-size: 14px; line-height: var(--lh); color: var(--text-third); margin-top: 6px; }
+  .card.is-surface { background: var(--surface); }
+  .card.is-surface .card-body { padding: 16px; }
+
+  /* ===== FORMS ===== */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--gap-s); max-width: 900px; }
+  .field label { display: block; font-size: 12px; line-height: var(--lh-tight); letter-spacing: 0.06em; color: var(--text); margin-bottom: 8px; }
+  .field input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); padding: 12px 14px; font-family: var(--font-body); font-size: 14px; line-height: var(--lh); color: var(--text); }
+  .field input:focus { outline: none; border-color: var(--text); }
+  .field.is-focus input { border-color: var(--text); }
+  .field.is-error input { border-color: var(--brown); }
+  .field .msg { font-size: 12px; line-height: 1.8; color: var(--brown); margin-top: 6px; }
+  .field .hint { font-size: 12px; line-height: 1.8; color: var(--text-third); margin-top: 6px; }
+
+  /* ===== ELEVATION ===== */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--gap-s); }
+  .elev { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); padding: 24px; box-shadow: none; }
+  .elev.surface { background: var(--surface); border-color: var(--surface); }
+  .elev-name { font-size: 16px; line-height: var(--lh); color: var(--text); }
+  .elev-val { font-family: var(--font-mono); font-size: 11px; color: #7d7d7d; margin-top: 4px; }
+
+  /* ===== LAYOUT ===== */
+  .layout-bar { position: relative; height: 46px; background: #f6f5f4; margin-bottom: 12px; border: 1px solid var(--border); }
+  .layout-fill { position: absolute; inset: 0 auto 0 0; background: var(--surface); display: flex; align-items: center; padding-left: 14px; font-family: var(--font-mono); font-size: 11px; color: var(--text); }
+
+  /* ===== FOOTER ===== */
+  .footer { border-top: 1px solid var(--border); padding: var(--gap-l) 24px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer .en { font-family: var(--font-latin); font-size: 18px; line-height: var(--lh); letter-spacing: 0.2em; color: #999397; }
+  .footer .copy { font-size: 12px; line-height: var(--lh); color: var(--text-third); margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<div class="util"><div class="util-inner">
+  <a href="#">サステナビリティ</a><a href="#">メルマガ申し込み</a><a href="#">お問い合わせ</a><a href="#">コントラクト</a>
+</div></div>
+
+<header class="header"><div class="header-inner">
+  <a class="logo" href="#"><span class="mark">karimoku</span><span class="sub">個人のお客さまサイト</span></a>
+  <ul class="gnav">
+    <li><a href="#"><span class="ja">WEBカタログ</span><span class="en">Digital catalog</span></a></li>
+    <li><a href="#"><span class="ja">家具を見に行く</span><span class="en">Showroom</span></a></li>
+    <li><a href="#"><span class="ja">修理・お手入れ</span><span class="en">Maintenance</span></a></li>
+    <li><a href="#"><span class="ja">特集ページ</span><span class="en">Special</span></a></li>
+  </ul>
+  <div class="util-btns">
+    <a class="util-btn gray" href="#">コーポレート<br>サイト</a>
+    <a class="util-btn dark" href="#">オンライン<br>ショップ</a>
+  </div>
+</div></header>
+
+<div class="hero">
+  <div class="hero-sub">天然素材のぬくもりと、匠の技の深い味わい。</div>
+  <div class="hero-title">カリモクのこだわり</div>
+</div>
+
+<!-- ============ COLORS ============ -->
+<section class="section" id="colors">
+  <div class="section-label">01 / COLORS</div>
+  <h2 class="section-title">白と、白に近いグレー</h2>
+  <p class="section-lead">面は白（<code>#ffffff</code>）と <code>#ecebea</code> の2つだけで、その差はごくわずか。家具の写真を主役に立てるため、UI の色数を徹底して絞っている。差し色の茶と緑もテキストにしか使わない。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#282828"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#282828</div><div class="swatch-use">可視 108 要素で最多。本文・見出し。純黒ではない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#505050"></div><div class="swatch-body"><div class="swatch-name">Text Secondary</div><div class="swatch-hex">#505050</div><div class="swatch-use">ナビ・補助リンク（可視 23 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffffff;border-bottom:1px solid #c8c8c8"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-use">根拠 ua-default-canvas（html/body に塗り指定なし）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ecebea"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#ecebea</div><div class="swatch-use">uniqueBackgrounds 1 位（21 回）。カード・選択肢の面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#c8c8c8"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#c8c8c8</div><div class="swatch-use">枠ボタン・区切り罫。影の代わりに階層をつくる</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#725941"></div><div class="swatch-body"><div class="swatch-name">Accent / Brown</div><div class="swatch-hex">#725941</div><div class="swatch-use">木の色。シリーズ名（可視 6 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#557857"></div><div class="swatch-body"><div class="swatch-name">Accent / Green</div><div class="swatch-hex">#557857</div><div class="swatch-use">こだわりの見出し（可視 2 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#2c2c2c"></div><div class="swatch-body"><div class="swatch-name">Surface Dark</div><div class="swatch-hex">#2c2c2c</div><div class="swatch-use">オンラインショップボタン</div></div></div>
+  </div>
+  <h3 class="section-title" style="margin-top:var(--gap-l)">バッジは角丸ゼロ・padding: 0 4px</h3>
+  <div class="badge-row">
+    <span class="badge" style="background:var(--badge-sand)">重要</span>
+    <span class="badge" style="background:var(--badge-aqua)">お知らせ</span>
+    <span class="badge" style="background:var(--badge-yellow)">イベント情報</span>
+    <span class="badge" style="background:var(--badge-sand)">新商品情報</span>
+    <span class="badge" style="background:var(--badge-gray)">（汎用）</span>
+  </div>
+  <p class="note">4色とも彩度が低く、白文字とのコントラストはぎりぎり。11px の小さい文字に使う前提の配色。<strong>丸めないこと</strong>（<code>border-radius: 0</code>）。</p>
+</section>
+
+<!-- ============ TYPOGRAPHY ============ -->
+<section class="section-alt" id="typography">
+ <div class="section-inner">
+  <div class="section-label">02 / TYPOGRAPHY</div>
+  <div class="head2"><span class="en">Typography</span><span class="ja">行送りを 28px の絶対値で揃える</span></div>
+  <p class="section-lead">このサイトの最大の特徴は、<code>line-height</code> が font-size に関係なく <code>28px</code> であること。実測 215 要素が <code>14px / 28px</code>、さらに 16 / 18 / 20 / 24 / 30px のすべてが同じ 28px を共有する。比率ではなく絶対値で行を揃える、活版の込め物に近い設計。</p>
+
+  <div class="lh-demo" style="margin-bottom:var(--gap-m)">
+    <p style="font-size:14px">本文 14px — 行送り 28px（比率 2.00）。背景の罫が 28px ごとのグリッド。</p>
+    <p style="font-size:18px">見出し 18px — 同じ 28px（比率 1.56）</p>
+    <p style="font-size:24px;font-family:var(--font-serif)">見出し 24px — 同じ 28px（比率 1.17）</p>
+    <p style="font-size:30px;font-family:var(--font-serif)">見出し 30px — 同じ 28px（比率 0.93）</p>
+  </div>
+  <p class="note" style="margin-bottom:var(--gap-m)"><strong>30px / 28px は行間が font-size を下回る。</strong>実サイトでは1行で収まる見出しにのみ使われている。新規実装で2行以上になりうる見出しには <code>line-height: 1.3</code> を別途当てること。</p>
+
+  <div class="type-row"><div class="type-meta"><b>Section Title (EN)</b>Century Gothic / 34px / 400<br>lh 28px / ls 0.1em</div><div style="font-family:var(--font-latin);font-size:34px;line-height:28px;letter-spacing:0.1em;color:#282828">Selection</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Lead (JA)</b>Noto Serif JP / 30px / 400<br>lh 28px / ls 0.1em</div><div style="font-family:var(--font-serif);font-size:30px;line-height:1.3;letter-spacing:0.1em;color:#282828">家具選びを様々な情報でサポートいたします。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Title</b>Noto Serif JP / 24px / 700<br>lh 28px (1.17) / ls normal</div><div style="font-family:var(--font-serif);font-size:24px;font-weight:700;line-height:28px;color:#282828">ダイニングチェア部門</div></div>
+  <div class="type-row"><div class="type-meta"><b>Choice Title</b>Noto Serif JP / 20px / <strong>500</strong><br>lh 28px (1.40) / ls normal</div><div style="font-family:var(--font-serif);font-size:20px;font-weight:500;line-height:28px;color:#282828">ソファの選び方</div></div>
+  <div class="type-row"><div class="type-meta"><b>Series Name</b>Century Gothic / 18px / 700<br>lh 28px / 色 #725941</div><div style="font-family:var(--font-latin);font-size:18px;font-weight:700;line-height:28px;color:#725941">NEIVIE（ネイビ）</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav Label (JA)</b>游ゴシック / 18px / 400<br><strong>lh 18px（font-size と同値）</strong> / ls 0.054em</div><div style="font-size:18px;line-height:18px;letter-spacing:0.054em;color:#505050">WEBカタログ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Label (EN)</b>Century Gothic / 16px / 400<br>lh 28px / <strong>ls 0.2em（最大）</strong></div><div style="font-family:var(--font-latin);font-size:16px;line-height:28px;letter-spacing:0.2em;color:#282828">Support</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body</b>游ゴシック / 14px / 400<br>lh 28px (2.00) / ls normal</div><div style="font-size:14px;line-height:28px">掛ける人数や背もたれの高さなど、用途に合わせて様々なかたちからお選びいただけます。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav Item</b>游ゴシック / 14px / 400<br>lh 14px / ls 0.07em</div><div style="font-size:14px;line-height:14px;letter-spacing:0.07em;color:#505050">会社案内</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav Label (EN)</b>Century Gothic / 12px / 400<br>lh 12px / ls 0.082em</div><div style="font-family:var(--font-latin);font-size:12px;line-height:12px;letter-spacing:0.082em;color:#505050">Digital catalog</div></div>
+  <div class="type-row"><div class="type-meta"><b>Utility Nav</b>游ゴシック / 12px / 400<br>lh 12px / ls 0.06em</div><div style="font-size:12px;line-height:12px;letter-spacing:0.06em;color:#282828">サステナビリティ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Micro</b>游ゴシック / 9px / 400<br>lh 10.8px / ls 0.07em</div><div style="font-size:9px;line-height:10.8px;letter-spacing:0.07em;color:#282828">コーポレートサイト</div></div>
+
+  <p class="note"><strong>小さい文字ほど字間を開ける</strong>（9px で 0.07em、12px で 0.06〜0.08em）。游ゴシックの小級数が潰れるのを防ぐ処置。<code>palt</code> は実測 0 件で、詰める処理は一切入れない。</p>
+ </div>
+</section>
+
+<!-- ============ ARTICLE ============ -->
+<section class="section" id="article">
+  <div class="section-label">03 / PRODUCT</div>
+  <div class="head2"><span class="en">Technique &amp; Quality</span><span class="ja">見出しは明朝、本文はゴシック</span></div>
+  <article class="article">
+    <h1>木を、80年つかう</h1>
+    <p>カリモクの家具づくりは、木を乾かすところから始まります。伐り出した材は含水率が高く、そのまま加工すれば数年で反り、割れます。だから人工乾燥機で時間をかけて水分を抜き、さらに工場で寝かせて、室内の湿度に馴染ませる。</p>
+    <h2>接合部に金物を使わない</h2>
+    <p>脚と幕板の接合は、ほぞ組みで押さえます。金物は経年でゆるみますが、木と木の組みは季節ごとの伸縮を受け止めながら締まっていく。修理のときにも分解できるので、張地を替え、部材を替えて使い続けられます。</p>
+    <p class="series">NEIVIE（ネイビ）</p>
+    <p>ダイニングとリビングの境目をなくすシリーズ。座面を低く、背を高く取って、食事のあとそのまま寛げる寸法にしています。</p>
+  </article>
+</section>
+
+<!-- ============ BUTTONS ============ -->
+<section class="section-alt" id="buttons">
+ <div class="section-inner">
+  <div class="section-label">04 / BUTTONS</div>
+  <div class="head2"><span class="en">Buttons</span><span class="ja">角丸ゼロ、影なし。罫で押さえる</span></div>
+  <div class="btn-row">
+    <a class="btn btn-outline" href="#">カリモクのこだわり 一覧へ</a>
+    <a class="btn btn-outline" href="#">その他の家具を探す</a>
+  </div>
+  <div class="btn-row">
+    <a class="btn btn-surface" href="#">このモデルのページを見る</a>
+    <a class="btn btn-surface" href="#">ソファの選び方</a>
+    <a class="btn btn-surface" href="#">テレビボードの選び方</a>
+  </div>
+  <a class="btn btn-wide" href="#">お近くのショールーム・ギャラリーを探す</a>
+  <div class="carousel-btns">
+    <button class="carousel-btn">←</button>
+    <button class="carousel-btn">→</button>
+    <button class="carousel-btn green">←</button>
+    <button class="carousel-btn green">→</button>
+  </div>
+  <p class="note">カルーセルの操作ボタン（<code>border-radius: 100px</code>）が、サイト中で唯一の完全な丸。ユーティリティボタンの <code>3px</code> と合わせて、角丸はこの2箇所しかない。</p>
+ </div>
+</section>
+
+<!-- ============ CARDS ============ -->
+<section class="section" id="cards">
+  <div class="section-label">05 / CARDS</div>
+  <div class="head2"><span class="en">Cards</span><span class="ja">影を1つも使わない</span></div>
+  <p class="section-lead"><code>box-shadow</code> の実測は 0 件。階層は罫線（<code>1px solid #c8c8c8</code>）と面色（<code>#ffffff</code> / <code>#ecebea</code>）の差だけで表現する。</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">ソファの選び方</div><div class="card-text">掛ける人数や背もたれの高さなど、用途に合わせて。</div></div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">ダイニングチェアの選び方</div><div class="card-text">座り心地は座面高と座面の奥行きで決まります。</div></div></div>
+    <div class="card is-surface"><div class="card-photo"></div><div class="card-body"><div class="card-title">テレビボードの選び方</div><div class="card-text">面色 #ecebea のカード。白との差はごくわずか。</div></div></div>
+  </div>
+</section>
+
+<!-- ============ FORMS ============ -->
+<section class="section-alt" id="forms">
+ <div class="section-inner">
+  <div class="section-label">06 / FORMS</div>
+  <div class="head2"><span class="en">Forms</span><span class="ja">Forms</span></div>
+  <p class="section-lead">入力欄も角丸ゼロ。フォーカスは罫を本文色まで濃くするだけで、リングも影も足さない。</p>
+  <div class="form-grid">
+    <div class="field"><label>お名前</label><input type="text" placeholder="刈谷 太郎"><div class="hint">全角でご入力ください</div></div>
+    <div class="field is-focus"><label>メールアドレス（フォーカス）</label><input type="email" value="taro@example.com"><div class="hint">カタログの送付先になります</div></div>
+    <div class="field is-error"><label>郵便番号（エラー）</label><input type="text" value="448-"><div class="msg">郵便番号は7桁でご入力ください</div></div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ ELEVATION ============ -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / ELEVATION</div>
+  <div class="head2"><span class="en">Elevation</span><span class="ja">Level 0 しか存在しない</span></div>
+  <p class="section-lead">サイト全体で <code>box-shadow</code> が 0 件。モーダルやドロップダウンにも影を付けない。浮かせたいときは面色を変えるか罫を引く。</p>
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">Level 0 — 罫</div><div class="elev-val">border: 1px solid #c8c8c8 / box-shadow: none</div></div>
+    <div class="elev surface"><div class="elev-name">Level 0 — 面</div><div class="elev-val">background: #ecebea / box-shadow: none</div></div>
+  </div>
+</section>
+
+<!-- ============ LAYOUT ============ -->
+<section class="section-alt" id="layout">
+ <div class="section-inner">
+  <div class="section-label">08 / LAYOUT</div>
+  <div class="head2"><span class="en">Layout</span><span class="ja">コンテナ 1200px、余白は 60 / 90 / 120px</span></div>
+  <div class="layout-bar"><div class="layout-fill" style="width:100%">Viewport 1440px — 帯はここまで広げる</div></div>
+  <div class="layout-bar"><div class="layout-fill" style="width:83.3%">Container 1200px（実測 13 要素）</div></div>
+  <div class="layout-bar"><div class="layout-fill" style="width:72.2%">Content 1040px — 本文ブロック</div></div>
+  <div class="layout-bar"><div class="layout-fill" style="width:51.4%">Column 740px — 記事カラム</div></div>
+  <p class="note"><code>padding-top</code> の実測は 20 / 40 / 50 / 60 / 65 / 70 / 75 / <strong>90</strong> / 120px。最頻は 60px（10 要素）と 90px（6 要素）で、いずれも行送り 28〜30px の倍数に近い。<strong><code>gap</code> プロパティの使用は実測 0 件</strong>で、レイアウトは margin / padding で組まれている。</p>
+ </div>
+</section>
+
+<footer class="footer"><div class="footer-inner">
+  <div class="en">Blog</div>
+  <div class="copy">© karimoku furniture inc.　このページは design-md-jp のデザインシステム再現サンプルです（非公式）。</div>
+</div></footer>
+
+</body>
+</html>

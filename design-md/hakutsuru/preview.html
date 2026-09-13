@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 白鶴酒造（HAKUTSURU）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!--
+  Noto Serif JP（見出し）と Lato（欧文）は実サイトと同一書体。
+  本文の游ゴシック Medium は OS ローカルのため環境によっては出ない。
+  ここでは実サイトの @font-face をそのまま再現したうえで、
+  Noto Sans JP をフォールバックに置いて字面を近づける。
+-->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ★ 実サイトの游ゴシック Medium マッピング。
+     実サイトは local("YuGothic-Medium")（macOS の PostScript 名）だけを書いているが、
+     ここでは Windows 名も併記して両 OS で解決するようにしてある（DESIGN.md 3.1 参照）。 */
+  @font-face { font-family: MyYuGothicM; font-weight: 400; src: local("YuGothic-Medium"), local("Yu Gothic Medium"); }
+  @font-face { font-family: MyYuGothicM; font-weight: 700; src: local("YuGothic-Bold"),   local("Yu Gothic Bold");   }
+
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は 0 個。以下は computed style からの実測値。2026-09-13 */
+    --gold:       #d5b45c;   /* ★ CSS 全文で 154 回。可視 11 要素。ナビのアクティブ・英字ラベル */
+    --gold-dark:  #aa9869;   /* CSS 7 回。PREMIUM の文字、プレミアム帯の端 */
+    --gold-light: #cfbd8e;   /* プレミアム帯の中央 */
+
+    --text:       #000000;   /* ★ 可視 67 要素で最多。このサイトは純黒を使う */
+    --text-muted: #666666;   /* パンくず・ユーティリティ */
+    --text-invert:#ffffff;
+
+    --bg:         #ffffff;   /* 根拠 viewportTopBySample (3/3) */
+    --surface:    #f6f7f9;   /* 検索窓・淡い面 */
+    --surface-gray:#efefef;  /* 商品一覧の面（下層で 8 要素） */
+    --border:     #aaaaaa;   /* 罫・カルーセルの非アクティブ */
+    --border-dark:#000000;   /* ボタンの枠 */
+
+    /* ★ 商品グレードの3色。角度とストップを揃えることが意匠の要 */
+    --grade-premium: linear-gradient(-45deg, #aa9869 0%, #cfbd8e 40%, #cfbd8e 60%, #aa9869 100%);
+    --grade-daily:   linear-gradient(-45deg, #67907c 0%, #88b19d 40%, #88b19d 60%, #67907c 100%);
+    --grade-special: linear-gradient(-45deg, #8f0100 0%, #ac4f4e 40%, #ac4f4e 60%, #8f0100 100%);
+
+    /* === Fonts === */
+    --font-body:  MyYuGothicM, YuGothic, "Noto Sans JP", -apple-system, "system-ui", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    --font-serif: "Noto Serif JP", "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "游明朝", YuMincho, serif;
+    --font-latin: "Lato", "Helvetica Neue", Arial, sans-serif;  /* 実サイトは Lato, "Times New Roman" と誤記。sans-serif が正 */
+    --font-mono:  SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: 2.0 が基準。見出しのみ 1.2〜1.5 === */
+    --lh:       2.0;
+    --lh-title: 1.5;
+    --lh-head:  1.2;
+
+    /* === Letter spacing ===
+       既定 normal（実測 365 要素）。開けるのは2箇所だけ。 */
+    --ls-en:   0.1em;   /* 英字ラベル 12px → 1.2px */
+    --ls-vert: 1.4px;   /* 縦組み。px で指定する（em に直すと級数ごとに変わる） */
+
+    /* === Radius: 0 が既定。カルーセルのドットのみ 5px === */
+    --r:     0;
+    --r-dot: 5px;
+
+    /* === Shadow: カードのみ1段 === */
+    --shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+
+    --container: 1380px;
+    --column:    860px;
+    --gap-m:  40px;
+    --gap-l:  80px;
+    --gap-xl: 100px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;                  /* ★ 本文 14px */
+    font-weight: 400;
+    line-height: var(--lh);           /* ★ 2.0 が全体の既定 */
+    letter-spacing: normal;
+    font-feature-settings: normal;    /* ★ palt は実測 0 件 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== HEADER ===== */
+  .util { max-width: var(--container); margin: 0 auto; padding: 10px 24px; display: flex; justify-content: flex-end; align-items: center; gap: 20px; }
+  .util a { font-size: 12px; line-height: 2.5; color: var(--text-muted); text-decoration: none; }
+  .util .region { border: 1px solid var(--gold); color: var(--gold); font-size: 12px; line-height: 2.5; padding: 0 12px; }
+  .header { border-bottom: 1px solid #e6e6e6; }
+  .header-inner { max-width: var(--container); margin: 0 auto; padding: 0 24px 16px; display: flex; align-items: flex-end; gap: 48px; }
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .logo .crane { width: 46px; height: 46px; border-radius: 50%; background: var(--grade-premium); display: flex; align-items: center; justify-content: center; color: #fff; font-family: var(--font-serif); font-size: 18px; }
+  .logo .name { font-family: var(--font-serif); font-size: 30px; font-weight: 700; line-height: 1.2; color: var(--text); }
+  .gnav { list-style: none; display: flex; gap: 30px; margin-left: auto; }
+  .gnav a { font-size: 16px; font-weight: 700; line-height: 1.4; color: var(--text); text-decoration: none; }
+  .gnav a.is-active { color: var(--gold); }   /* ★ 金は「現在地」を示す色 */
+
+  /* ===== HERO（縦組みステートメント） ===== */
+  /* 縦組みは主が右・従が左。row-reverse で主のコピーを右に立てる。
+     28px × 14 文字 × lh 2.0 で列の高さは約 410px 要る */
+  .hero { position: relative; height: 600px; background: linear-gradient(120deg, #2a2622 0%, #453c30 55%, #6b5b44 100%); display: flex; flex-direction: row-reverse; align-items: center; justify-content: center; gap: 44px; padding-bottom: 40px; }
+  /* 縦組みの列の長さは physical な height が決める。
+     28px+1.4px の字送り × 14 文字 ＝ 約 412px 必要なので明示しておく */
+  .hero-copy { height: 490px; writing-mode: vertical-rl; font-family: var(--font-serif); font-size: 28px; font-weight: 700; line-height: var(--lh); letter-spacing: var(--ls-vert); color: var(--text-invert); }
+  .hero-sub { height: 400px; writing-mode: vertical-rl; font-family: var(--font-serif); font-size: 18px; font-weight: 400; line-height: var(--lh); letter-spacing: var(--ls-vert); color: var(--text-invert); opacity: 0.85; }
+  .hero-scroll { position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); font-family: var(--font-latin); font-size: 14px; letter-spacing: var(--ls-en); color: var(--text-invert); }
+
+  /* ===== SECTIONS ===== */
+  .section { padding: var(--gap-xl) 24px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--surface); }
+  .section-alt .section-inner { padding: var(--gap-xl) 24px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: #999; margin-bottom: 10px; }
+  /* ★ 和欧2段の見出し。和文が上（明朝・黒）、欧文が下（Lato・金・0.1em） */
+  .head2 { margin-bottom: var(--gap-m); }
+  .head2 .ja { display: block; font-family: var(--font-serif); font-size: 30px; font-weight: 700; line-height: var(--lh-head); color: var(--text); }
+  .head2 .en { display: block; font-family: var(--font-latin); font-size: 12px; line-height: 2; letter-spacing: var(--ls-en); color: var(--gold); margin-top: 4px; }
+  .section-lead { font-family: var(--font-serif); font-size: 18px; line-height: var(--lh); margin-bottom: var(--gap-m); max-width: var(--container); }
+  .note { font-size: 14px; line-height: var(--lh); color: #444; margin-top: 20px; max-width: 1000px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--surface-gray); padding: 1px 5px; }
+
+  /* ===== COLORS ===== */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .swatch { border: 1px solid #ddd; background: var(--bg); }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 12px; }
+  .swatch-name { font-size: 14px; line-height: 1.5; color: var(--text); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: #777; margin-top: 3px; }
+  .swatch-use { font-size: 12px; line-height: 1.7; color: #555; margin-top: 6px; }
+  .grade-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .grade { color: #fff; padding: 28px 20px; text-align: center; border-radius: var(--r); }
+  .grade .ja { font-family: var(--font-serif); font-size: 24px; font-weight: 700; line-height: var(--lh-head); }
+  .grade .en { font-family: var(--font-latin); font-size: 12px; letter-spacing: var(--ls-en); margin-top: 6px; }
+  .grade .hex { font-family: var(--font-mono); font-size: 11px; margin-top: 10px; opacity: 0.9; }
+
+  /* ===== TYPOGRAPHY ===== */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid #e6e6e6; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: #777; line-height: 1.8; }
+  .type-meta b { display: block; font-family: var(--font-body); font-size: 13px; font-weight: 700; color: var(--text); }
+
+  /* ===== ARTICLE ===== */
+  .article { max-width: var(--column); }
+  .article h1 { font-family: var(--font-serif); font-size: 28px; font-weight: 700; line-height: var(--lh-title); color: var(--text); margin-bottom: 20px; }
+  .article h2 { font-family: var(--font-serif); font-size: 21px; font-weight: 700; line-height: var(--lh); color: var(--text); margin: var(--gap-m) 0 8px; }
+  .article p { font-size: 14px; line-height: var(--lh); margin-bottom: 20px; }
+  .article .lead { font-family: var(--font-serif); font-size: 18px; line-height: var(--lh); margin-bottom: 28px; }
+
+  /* ===== BUTTONS ===== */
+  .btn-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-bottom: 24px; }
+  .btn { font-family: var(--font-body); font-size: 14px; line-height: 1.5; padding: 12px 24px; border-radius: var(--r); cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border-dark); }
+  .btn-outline.is-strong { font-weight: 700; }
+  .btn-grade { color: #fff; border: none; }
+  .photo-wrap { background: linear-gradient(120deg, #453c30, #6b5b44); padding: 24px; display: inline-flex; gap: 12px; }
+  .btn-white { background: #fff; color: var(--text); border: 1px solid #fff; }
+  .dots { display: flex; gap: 8px; margin-top: 20px; }
+  .dot { width: 34px; height: 8px; border-radius: var(--r-dot); background: var(--border); }
+  .dot.is-active { background: var(--gold); }   /* ★ アクティブは金 */
+
+  /* ===== CARDS ===== */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--gap-m) 24px; }
+  .card { background: var(--bg); border-radius: var(--r); box-shadow: var(--shadow); }
+  .card-photo { height: 170px; background: linear-gradient(140deg, #e8e2d4, #cdbf9f); }
+  .card-body { padding: 20px; }
+  .card-title { font-family: var(--font-serif); font-size: 18px; font-weight: 700; line-height: var(--lh-title); color: var(--text); }
+  .card-text { font-size: 14px; line-height: var(--lh); color: var(--text); margin-top: 6px; }
+
+  /* ===== FORMS ===== */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; max-width: 1000px; }
+  .field label { display: block; font-size: 14px; line-height: 1.5; color: var(--text); margin-bottom: 8px; font-weight: 700; }
+  .field input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 12px 14px; font-family: var(--font-body); font-size: 16px; line-height: var(--lh-title); color: var(--text); }
+  .field input:focus { outline: none; border-color: var(--gold); background: #fff; }
+  .field.is-focus input { border-color: var(--gold); background: #fff; }
+  .field.is-error input { border-color: #8f0100; background: #fff; }
+  .field .msg { font-size: 12px; line-height: 1.8; color: #8f0100; margin-top: 6px; }
+  .field .hint { font-size: 12px; line-height: 1.8; color: var(--text-muted); margin-top: 6px; }
+
+  /* ===== ELEVATION ===== */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .elev { background: var(--bg); border-radius: var(--r); padding: 24px; }
+  .elev-0 { border: 1px solid var(--border-dark); }
+  .elev-1 { box-shadow: var(--shadow); }
+  .elev-name { font-size: 16px; line-height: var(--lh-title); color: var(--text); font-weight: 700; }
+  .elev-val { font-family: var(--font-mono); font-size: 11px; color: #777; margin-top: 4px; }
+
+  /* ===== LAYOUT ===== */
+  .layout-bar { position: relative; height: 46px; background: var(--surface-gray); margin-bottom: 12px; border: 1px solid #ddd; }
+  .layout-fill { position: absolute; inset: 0 auto 0 0; background: var(--surface); display: flex; align-items: center; padding-left: 14px; font-family: var(--font-mono); font-size: 11px; color: var(--text); }
+
+  /* ===== FOOTER ===== */
+  .footer { border-top: 1px solid var(--border); padding: var(--gap-l) 24px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer .caution { font-size: 14px; line-height: var(--lh); font-weight: 700; }
+  .footer .copy { font-size: 12px; line-height: var(--lh); color: var(--text-muted); margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<div class="util">
+  <a href="#">オンラインショップ</a>
+  <a href="#">お客様相談室</a>
+  <span class="region">国・地域選択</span>
+</div>
+
+<header class="header"><div class="header-inner">
+  <a class="logo" href="#"><span class="crane">鶴</span><span class="name">白鶴</span></a>
+  <ul class="gnav">
+    <li><a class="is-active" href="#">TOP</a></li>
+    <li><a href="#">ニュース</a></li>
+    <li><a href="#">商品ラインアップ</a></li>
+    <li><a href="#">白鶴を知る</a></li>
+    <li><a href="#">レシピ</a></li>
+    <li><a href="#">企業情報</a></li>
+  </ul>
+</div></header>
+
+<div class="hero">
+  <div class="hero-copy">「米、水、人、酒造りの本質。」</div>
+  <div class="hero-sub">シンプルだからこそ、どこまでも奥深い。<br>白鶴の酒造りは、この三つに尽きます。</div>
+  <div class="hero-scroll">SCROLL</div>
+</div>
+
+<!-- ============ COLORS ============ -->
+<section class="section" id="colors">
+  <div class="section-label">01 / COLORS</div>
+  <div class="head2"><span class="ja">白と黒に、金を一点</span><span class="en">COLORS</span></div>
+  <p class="section-lead">唯一の有彩色が金 <code>#d5b45c</code>。これをナビのアクティブ状態、英字ラベル、カルーセルの現在位置にだけ乗せる。金は「面を塗る色」ではなく「現在地と格を示す色」。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#d5b45c"></div><div class="swatch-body"><div class="swatch-name">Primary / 金</div><div class="swatch-hex">#d5b45c</div><div class="swatch-use">CSS 154 回。可視 11 要素。ナビのアクティブ・英字ラベル</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#aa9869"></div><div class="swatch-body"><div class="swatch-name">Gold Dark</div><div class="swatch-hex">#aa9869</div><div class="swatch-use">CSS 7 回。PREMIUM の文字、帯の端</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#000000</div><div class="swatch-use">可視 67 要素で最多。<strong>純黒を使う</strong>。薄めない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#666666"></div><div class="swatch-body"><div class="swatch-name">Text Muted</div><div class="swatch-hex">#666666</div><div class="swatch-use">パンくず・ユーティリティ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffffff;border-bottom:1px solid #aaa"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-use">根拠 viewportTopBySample (3/3)</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f6f7f9"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#f6f7f9</div><div class="swatch-use">検索窓・淡い面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#efefef"></div><div class="swatch-body"><div class="swatch-name">Surface Gray</div><div class="swatch-hex">#efefef</div><div class="swatch-use">商品一覧の面（下層で 8 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#aaaaaa"></div><div class="swatch-body"><div class="swatch-name">Border / Inactive</div><div class="swatch-hex">#aaaaaa</div><div class="swatch-use">罫・カルーセルの非アクティブ（5 要素）</div></div></div>
+  </div>
+
+  <h3 class="card-title" style="font-size:21px;margin:var(--gap-l) 0 16px">商品グレードは3色のグラデーション帯で表す</h3>
+  <div class="grade-grid">
+    <div class="grade" style="background:var(--grade-premium)"><div class="ja">プレミアム</div><div class="en">PREMIUM</div><div class="hex">#aa9869 → #cfbd8e</div></div>
+    <div class="grade" style="background:var(--grade-daily)"><div class="ja">デイリー</div><div class="en">DAILY</div><div class="hex">#67907c → #88b19d</div></div>
+    <div class="grade" style="background:var(--grade-special)"><div class="ja">スペシャル</div><div class="en">SPECIAL</div><div class="hex">#8f0100 → #ac4f4e</div></div>
+  </div>
+  <p class="note">3色とも <code>linear-gradient(-45deg, 濃 0%, 淡 40%, 淡 60%, 濃 100%)</code> という<strong>同じ角度・同じストップ</strong>で作る。<strong>中央 20% を淡い色で通すことで箔の光沢に見せる</strong>のがこの意匠の要点。グレードを増やすときも式を保ったまま色だけ差し替えること。</p>
+</section>
+
+<!-- ============ TYPOGRAPHY ============ -->
+<section class="section-alt" id="typography">
+ <div class="section-inner">
+  <div class="section-label">02 / TYPOGRAPHY</div>
+  <div class="head2"><span class="ja">見出しは明朝、本文はゴシック</span><span class="en">TYPOGRAPHY</span></div>
+  <p class="section-lead">書体で役割を分け、見出しはさらに「和文（明朝・黒）+ 欧文（Lato・金・<code>0.1em</code>）」の2段で組む。行送りは全サイズで比率 <code>2.0</code> を維持する。</p>
+
+  <div class="type-row"><div class="type-meta"><b>Section Title (JA)</b>Noto Serif JP / 30px / 700<br>lh 1.20 (36px) / ls normal</div><div style="font-family:var(--font-serif);font-size:30px;font-weight:700;line-height:1.2">プレミアム</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Label (EN)</b>Lato / 12px / 400<br>lh 2.0 / <strong>ls 0.10em</strong> / 色 #d5b45c</div><div style="font-family:var(--font-latin);font-size:12px;line-height:2;letter-spacing:0.1em;color:#d5b45c">PICK UP</div></div>
+  <div class="type-row"><div class="type-meta"><b>Page Title</b>Noto Serif JP / 28px / 700<br>lh 1.50 (42px) / ls normal</div><div style="font-family:var(--font-serif);font-size:28px;font-weight:700;line-height:1.5">商品ラインアップ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Vertical Copy（縦組み）</b>Noto Serif JP / 28px / 700<br>lh 2.00 (56px) / <strong>ls 1.4px</strong></div><div style="font-family:var(--font-serif);font-size:28px;font-weight:700;line-height:2;letter-spacing:1.4px;writing-mode:vertical-rl;height:300px;color:#fff;background:linear-gradient(120deg,#453c30,#6b5b44);padding:20px">「米、水、人、酒造りの本質。」</div></div>
+  <div class="type-row"><div class="type-meta"><b>Statement</b>游ゴシック / 24px / 700<br>lh 2.00 (48px) / ls normal</div><div style="font-size:24px;font-weight:700;line-height:2">「日本酒はこんなに楽しい」</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Heading</b>Noto Serif JP / 21px / 700<br>lh 2.00 (42px) / ls normal</div><div style="font-family:var(--font-serif);font-size:21px;font-weight:700;line-height:2">商品カテゴリ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Lead</b>Noto Serif JP / 18px / 400<br>lh 2.00 (36px) / ls normal</div><div style="font-family:var(--font-serif);font-size:18px;line-height:2">大切なひとときを彩る、こだわりの商品です。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav Item</b>游ゴシック / 16px / <strong>700</strong><br>lh 1.40 (22.4px) / アクティブは金</div><div style="font-size:16px;font-weight:700;line-height:1.4">ニュース　<span style="color:#d5b45c">商品ラインアップ</span>　レシピ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Grade Label (EN)</b>Noto Serif JP / 16px / 700<br>lh 2.00 (32px) / 色 #aa9869</div><div style="font-family:var(--font-serif);font-size:16px;font-weight:700;line-height:2;color:#aa9869">PREMIUM</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body</b>游ゴシック / 14px / 400<br>lh 2.00 (28px) / ls normal</div><div style="font-size:14px;line-height:2">日本酒のスタンダードな魅力から意外な一面まで。白鶴が長年かけて積み上げてきた知見を、できるだけやさしい言葉でお伝えします。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body（明朝）</b>Noto Serif JP / 14px / 400<br>lh 2.00 (28px) / ls normal</div><div style="font-family:var(--font-serif);font-size:14px;line-height:2">大切なひとときを彩る、こだわりの商品です。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Utility Nav</b>游ゴシック / 12px / 400<br>lh 2.50 (30px)</div><div style="font-size:12px;line-height:2.5;color:#666">オンラインショップ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Breadcrumb</b>游ゴシック / 12px / 400<br>lh 1.20 (14.4px) / 色 #666</div><div style="font-size:12px;line-height:1.2;color:#666">TOP ＞ 商品ラインアップ</div></div>
+
+  <p class="note"><strong>字間は既定 <code>normal</code>（実測 365 要素）。</strong>開けるのは英字ラベル（<code>0.1em</code>）と縦組みのコピー（<code>1.4px</code>）だけ。縦組みの 28px と 18px がどちらも 1.4px なのは、親（28px 基準の <code>0.05em</code>）から <strong>px のまま継承されている</strong>ため。<code>0.05em</code> と書き写すと 18px 側が 0.9px になり実サイトと変わる。</p>
+  <p class="note">実測には <code>-4.34px</code> / <code>-5.6px</code> という極端なマイナス字間も出るが、これはロゴ・見出し画像まわりの詰め処理。<strong>本文・UI に持ち込まないこと。</strong></p>
+ </div>
+</section>
+
+<!-- ============ ARTICLE ============ -->
+<section class="section" id="article">
+  <div class="section-label">03 / ARTICLE</div>
+  <div class="head2"><span class="ja">本文カラムは 860px、行間は 2.0</span><span class="en">ARTICLE</span></div>
+  <article class="article">
+    <h1>ひやおろしという飲みごろ</h1>
+    <p class="lead">秋になると店先に並ぶ「ひやおろし」。名前は聞くけれど中身は知らない、という方に向けて。</p>
+    <p>冬に仕込んだ酒は、春にいちど火入れをして夏を越します。この間、蔵の中でゆっくりと熟成が進み、荒さが取れて味がまとまる。秋、外の気温が蔵の中と同じくらいまで下がったころ、二度目の火入れをせずにそのまま出荷する——これがひやおろしです。</p>
+    <h2>火入れを一度省くということ</h2>
+    <p>火入れは酒を安定させる工程ですが、同時に香りの一部を飛ばします。二度目を省くぶん、ひやおろしには仕込んだときの香りが残る。熟成でまろやかになった口当たりと、若い香りが同居するのが、この酒の面白いところです。</p>
+    <p>冷やしすぎず、常温から少しぬるめが向きます。秋の食材——きのこ、戻り鰹、秋刀魚——と合わせると、酒の膨らみが料理の脂を受け止めてくれます。</p>
+  </article>
+</section>
+
+<!-- ============ BUTTONS ============ -->
+<section class="section-alt" id="buttons">
+ <div class="section-inner">
+  <div class="section-label">04 / BUTTONS</div>
+  <div class="head2"><span class="ja">黒の枠線が基本形</span><span class="en">BUTTONS</span></div>
+  <p class="section-lead">通常のボタンは透明地に <code>1px solid #000</code>、角丸なし。塗るのは商品グレードへの誘導だけで、そこにグラデーション帯を使う。</p>
+  <div class="btn-row">
+    <a class="btn btn-outline is-strong" href="#">商品ラインアップへ</a>
+    <a class="btn btn-outline" href="#">ピックアップへ</a>
+    <a class="btn btn-outline" href="#">白鶴を知るへ</a>
+    <a class="btn btn-outline" href="#">レシピへ</a>
+  </div>
+  <div class="btn-row">
+    <a class="btn btn-grade" style="background:var(--grade-premium)" href="#">プレミアムへ</a>
+    <a class="btn btn-grade" style="background:var(--grade-daily)" href="#">デイリーへ</a>
+    <a class="btn btn-grade" style="background:var(--grade-special)" href="#">スペシャルへ</a>
+  </div>
+  <div class="photo-wrap">
+    <a class="btn btn-white" href="#">白鶴のあゆみ</a>
+    <a class="btn btn-white" href="#">受賞実績</a>
+  </div>
+  <div class="dots"><span class="dot is-active"></span><span class="dot"></span><span class="dot"></span></div>
+  <p class="note">カルーセルのドットは完全な円ではなく <code>border-radius: 5px</code> の角丸。非アクティブは <code>#aaaaaa</code>、<strong>アクティブは金 <code>#d5b45c</code></strong>。</p>
+ </div>
+</section>
+
+<!-- ============ CARDS ============ -->
+<section class="section" id="cards">
+  <div class="section-label">05 / CARDS</div>
+  <div class="head2"><span class="ja">角丸なし、影は1段だけ</span><span class="en">CARDS</span></div>
+  <div class="card-grid">
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">白鶴 大吟醸</div><div class="card-text">華やかな香りと、すっきりとした後味。冷やしてどうぞ。</div></div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">淡雪スパークリング</div><div class="card-text">やさしい甘みと細かな泡。food と合わせやすい低アルコール。</div></div></div>
+    <div class="card"><div class="card-photo"></div><div class="card-body"><div class="card-title">素材がいきる料理の清酒</div><div class="card-text">煮物の臭みを抑え、素材の味を立てる料理用の清酒。</div></div></div>
+  </div>
+</section>
+
+<!-- ============ FORMS ============ -->
+<section class="section-alt" id="forms">
+ <div class="section-inner">
+  <div class="section-label">06 / FORMS</div>
+  <div class="head2"><span class="ja">Forms</span><span class="en">FORMS</span></div>
+  <p class="section-lead">入力欄は淡い面（<code>#f6f7f9</code>）に <code>#aaaaaa</code> の罫。フォーカスすると罫が金に変わり、地が白に起き上がる。エラーはスペシャルの赤で示す。</p>
+  <div class="form-grid">
+    <div class="field"><label>お名前</label><input type="text" placeholder="灘 太郎"><div class="hint">全角でご入力ください</div></div>
+    <div class="field is-focus"><label>メールアドレス（フォーカス）</label><input type="email" value="taro@example.com"><div class="hint">お問い合わせの返信先になります</div></div>
+    <div class="field is-error"><label>生年（エラー）</label><input type="text" value="2015"><div class="msg">20歳未満の方はご利用いただけません</div></div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ ELEVATION ============ -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / ELEVATION</div>
+  <div class="head2"><span class="ja">影はカードの1段のみ</span><span class="en">ELEVATION</span></div>
+  <p class="section-lead">ボタン・帯・バッジには影を付けない。基本は罫線と面色で階層をつくり、カードだけを浮かせる。</p>
+  <div class="elev-grid">
+    <div class="elev elev-0"><div class="elev-name">Level 0</div><div class="elev-val">none — 罫で仕切る面・ボタン</div></div>
+    <div class="elev elev-1"><div class="elev-name">Level 1</div><div class="elev-val">0 5px 10px rgba(0,0,0,0.2) — カード（実測 11 要素）</div></div>
+  </div>
+</section>
+
+<!-- ============ LAYOUT ============ -->
+<section class="section-alt" id="layout">
+ <div class="section-inner">
+  <div class="section-label">08 / LAYOUT</div>
+  <div class="head2"><span class="ja">コンテナ 1380px</span><span class="en">LAYOUT</span></div>
+  <p class="section-lead">ビューポート 1440px に対し 1380px まで使う、余白の少ない広いレイアウト。本文だけ 860px に絞る。</p>
+  <div class="layout-bar"><div class="layout-fill" style="width:100%">Viewport 1440px</div></div>
+  <div class="layout-bar"><div class="layout-fill" style="width:95.8%">Container 1380px（実測 8 要素）</div></div>
+  <div class="layout-bar"><div class="layout-fill" style="width:88.9%">Block 1280〜1320px</div></div>
+  <div class="layout-bar"><div class="layout-fill" style="width:59.7%">Column 860px — 本文カラム</div></div>
+  <p class="note">Spacing は 4 / 24 / 40 / <strong>80</strong> / <strong>100</strong> / <strong>120px</strong>。<code>gap</code> プロパティの使用は実測 0 件で、レイアウトは margin で組まれている。</p>
+ </div>
+</section>
+
+<footer class="footer"><div class="footer-inner">
+  <div class="caution">飲酒は20歳になってから。お酒はおいしく適量を。妊娠中・授乳期の飲酒はやめましょう。</div>
+  <div class="copy">© HAKUTSURU SAKE BREWING CO., LTD.　このページは design-md-jp のデザインシステム再現サンプルです（非公式）。</div>
+</div></footer>
+
+</body>
+</html>
