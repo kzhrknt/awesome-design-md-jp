@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: みんなの銀行（Minna no Ginko）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Design Tokens ===
+       このサイトは実効的な CSS 変数を 19 個持つ（WordPress 既定のような「使われない変数」ではない）。
+       以下は実サイトの :root をそのまま写したもの。2026-09-14 */
+    --primary-black: #000;
+    --primary-white: #fff;
+    --accent: #ef0;              /* = #eeff00 蛍光イエロー。可視 20 要素 */
+    --notice: #DE0000;
+    --gray:    #707070;
+    --gray-v2: #A1A1A1;
+    --gray-v3: #E5E5E5;
+    --gray-v4: #4d4d4d;
+    --light-gray: #f4f4f4;       /* ページ背景 */
+    --black-opacity1: color-mix(in srgb, #000 10%, transparent);
+    --black-opacity3: color-mix(in srgb, #000 30%, transparent);
+    --accent-opacity1: color-mix(in srgb, #ef0 10%, transparent);
+    --inner-maxWidth: 504px;     /* ★このサイトの骨格 */
+    --base-normal-weight: 300;
+
+    /* === Fonts ===
+       和文は OS フォント優先。macOS ではヒラギノがローカル解決するため、
+       @font-face の Noto Sans JP / Roboto は全ページで unloaded のまま（＝Windows 用の保険）。
+       欧文・数字だけ Avenir Next 先頭の別チェーンを使う。 */
+    --base-font: "Hiragino Sans", "Noto Sans JP", sans-serif;
+    --font-en: "Avenir Next", Roboto, "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: 1.6〜1.75 に集中 === */
+    --lh: 1.67;
+    --lh-nav: 1.71;
+    --lh-long: 1.75;   /* 長文（weight 300） */
+    --lh-btn: 1.33;
+
+    /* === Letter spacing: 0.8px を px 固定で全面（実測 218 要素） === */
+    --ls: 0.8px;
+
+    --border-w: 2px;   /* ★このサイトの線は 2px */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--light-gray);
+    color: var(--primary-black);
+    font-family: var(--base-font);
+    font-size: 16px;
+    font-weight: 600;                 /* ★UI の主役は 600（実測 184 要素） */
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+    font-feature-settings: normal;    /* ★palt を使わない（291 / 291 要素が normal） */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NOTICE BAR */
+  .notice { display: flex; align-items: center; gap: 12px; background: var(--primary-white); border-bottom: var(--border-w) solid var(--primary-black); padding: 12px 20px; font-size: 14px; }
+  .notice-dot { width: 20px; height: 20px; border-radius: 50%; border: var(--border-w) solid var(--primary-black); display: inline-flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
+  .notice-pager { margin-left: auto; font-family: var(--font-en); font-size: 12px; font-weight: 700; letter-spacing: var(--ls); }
+
+  /* HEADER */
+  .header { background: var(--primary-white); padding: 14px 20px; display: flex; align-items: center; gap: 20px; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-mark { display: flex; gap: 2px; }
+  .logo-mark i { display: block; width: 4px; height: 20px; background: var(--primary-black); }
+  .logo-text { font-family: var(--font-en); font-size: 18px; font-weight: 600; letter-spacing: var(--ls); }
+  .header-nav { display: flex; gap: 20px; margin-left: auto; align-items: center; }
+  .header-nav a { font-size: 14px; line-height: var(--lh-nav); color: var(--primary-black); text-decoration: none; }
+  .header-nav a.header-cta { background: var(--primary-black); color: var(--primary-white); border: 1px solid var(--primary-black); border-radius: 0; padding: 10px 18px; font-family: var(--base-font); font-size: 12px; font-weight: 600; letter-spacing: var(--ls); text-decoration: none; }
+
+  /* SECTIONS */
+  .section { max-width: 1120px; margin: 0 auto; padding: 64px 20px; }
+  .section-alt { background: var(--primary-white); }
+  .section-label { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--gray); letter-spacing: normal; margin-bottom: 10px; }
+  .section-title { font-size: 24px; font-weight: 600; line-height: 1.6; letter-spacing: var(--ls); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+  .marker { width: 10px; height: 10px; background: var(--accent); flex-shrink: 0; }
+  .section-lead { font-size: 16px; font-weight: 300; line-height: var(--lh-long); margin-bottom: 32px; max-width: 900px; }
+  .note { font-size: 14px; font-weight: 300; line-height: var(--lh-long); color: #333; margin-top: 20px; max-width: 900px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--gray-v3); padding: 1px 5px; letter-spacing: normal; }
+  b { font-weight: 600; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; }
+  .swatch { border: var(--border-w) solid var(--primary-black); background: var(--primary-white); }
+  .swatch-chip { height: 74px; border-bottom: var(--border-w) solid var(--primary-black); }
+  .swatch-body { padding: 12px 14px; }
+  .swatch-name { font-size: 14px; font-weight: 600; line-height: 1.5; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--gray); margin-top: 4px; letter-spacing: normal; }
+  .swatch-use { font-size: 12px; font-weight: 300; line-height: 1.6; margin-top: 7px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--gray-v3); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; font-weight: 400; color: var(--gray); line-height: 1.75; letter-spacing: normal; }
+  .type-meta b { display: block; font-family: var(--base-font); font-size: 13px; font-weight: 600; color: var(--primary-black); letter-spacing: var(--ls); }
+
+  /* BUTTONS */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+  .btn {
+    width: 294px; height: 56px; border-radius: 0; padding: 0 24px;
+    font-family: var(--base-font); font-size: 14px; font-weight: 600; line-height: var(--lh-btn);
+    letter-spacing: var(--ls); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .btn-primary { background: var(--primary-black); color: var(--primary-white); border: var(--border-w) solid transparent; }
+  .btn-secondary { background: var(--primary-white); color: var(--primary-black); border: var(--border-w) solid var(--primary-black); }
+  .btn-on-dark { background: var(--primary-black); color: var(--primary-white); border: var(--border-w) solid var(--primary-white); }
+  .dark-panel { background: var(--primary-black); padding: 28px; margin-top: 20px; }
+
+  /* STICKERS */
+  .sticker { display: inline-flex; align-items: center; border: var(--border-w) solid var(--primary-black); border-radius: 100px; padding: 4px 12px; font-size: 16px; font-weight: 300; line-height: 1.5; letter-spacing: normal; background: var(--primary-white); }
+  .sticker p { color: var(--primary-black); }
+  .sticker-dark { background: var(--primary-black); }
+  .sticker-dark p { color: var(--primary-white); }
+
+  /* SERVICE LIST */
+  .service-list { display: flex; flex-wrap: wrap; gap: 12px; }
+  .service-item { border: var(--border-w) solid var(--primary-black); border-radius: 0; background: var(--primary-white); padding: 12px 20px; font-size: 16px; font-weight: 300; letter-spacing: normal; cursor: pointer; }
+  .service-item.is-active { background: var(--accent); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .card { border: var(--border-w) solid var(--primary-black); background: var(--primary-white); }
+  .card-thumb { aspect-ratio: 16 / 9; background: repeating-linear-gradient(45deg, #f4f4f4 0 10px, #e8e8e8 10px 20px); border-bottom: var(--border-w) solid var(--primary-black); }
+  .card-body { padding: 12px 16px; }
+  .card-cat { display: inline-block; background: var(--gray-v3); border: var(--border-w) solid var(--primary-black); padding: 2px 8px; font-size: 14px; font-weight: 300; letter-spacing: normal; margin-bottom: 8px; }
+  .card-title { font-size: 16px; font-weight: 600; line-height: var(--lh); }
+
+  /* FEATURE */
+  .inner { max-width: var(--inner-maxWidth); margin: 0 auto; }
+  .feature { text-align: center; }
+  .feature-num { font-family: var(--font-en); font-size: 88px; font-weight: 700; line-height: 1; letter-spacing: 0.88px; }
+  .feature-label { font-family: var(--font-en); font-size: 20px; font-weight: 700; line-height: 2; letter-spacing: var(--ls); }
+  .feature-title { font-size: 24px; font-weight: 600; line-height: 1.6; margin-top: 6px; }
+  .feature-text { font-size: 16px; font-weight: 300; line-height: var(--lh-long); margin-top: 14px; }
+  .phone { margin: 28px auto 0; width: 260px; height: 420px; border: var(--border-w) solid var(--primary-black); border-radius: 28px; background: var(--primary-white); display: flex; align-items: center; justify-content: center; }
+  .phone span { font-family: var(--font-en); font-size: 14px; font-weight: 600; letter-spacing: var(--ls); color: var(--gray); }
+
+  /* TAGS */
+  .tag { display: inline-block; font-size: 14px; font-weight: 400; letter-spacing: 0.6px; margin-right: 12px; }
+
+  /* FORMS */
+  .form { max-width: var(--inner-maxWidth); }
+  .form-row { margin-bottom: 24px; }
+  .form-label { display: block; font-size: 14px; font-weight: 600; line-height: var(--lh); margin-bottom: 8px; }
+  .form-input { width: 100%; height: 56px; background: var(--primary-white); border: var(--border-w) solid var(--primary-black); border-radius: 0; padding: 0 16px; font-family: var(--base-font); font-size: 16px; font-weight: 300; letter-spacing: var(--ls); }
+  .form-input:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .form-input.is-error { border-color: var(--notice); }
+  .form-msg { font-size: 14px; font-weight: 300; line-height: var(--lh); margin-top: 7px; }
+  .form-msg.is-error { color: var(--notice); font-weight: 600; }
+  .form-msg.is-help { color: var(--gray); }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 820px; }
+  .elev { background: var(--primary-white); padding: 24px; font-size: 13px; font-weight: 300; line-height: 1.7; }
+  .elev-0 { border: var(--border-w) solid var(--primary-black); }
+  .elev-1 { box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+  .elev-2 { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+
+  /* SHEET */
+  .sheet { max-width: var(--inner-maxWidth); margin: 24px auto 0; background: var(--primary-white); border-radius: 60px 60px 0 0; box-shadow: 0 4px 20px rgba(0,0,0,0.1); padding: 48px 16px; text-align: center; }
+  .sheet-inner { background: var(--light-gray); padding: 40px 16px; }
+
+  /* LAYOUT */
+  .layout-bar { background: var(--gray-v3); padding: 11px 14px; font-family: var(--font-mono); font-size: 11px; letter-spacing: normal; margin-bottom: 8px; }
+
+  /* FOOTER */
+  .footer { background: var(--primary-black); color: var(--primary-white); padding: 48px 20px; }
+  .footer-inner { max-width: 1120px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; font-size: 14px; font-weight: 300; line-height: 2; }
+  .footer a { color: var(--primary-white); text-decoration: none; display: block; }
+  .footer-copy { max-width: 1120px; margin: 34px auto 0; font-family: var(--font-en); font-size: 12px; letter-spacing: var(--ls); color: var(--gray-v2); }
+
+  @media (max-width: 896px) {
+    .card-grid { grid-template-columns: 1fr; }
+    .header-nav { display: none; }
+    .btn { width: 100%; }
+    .footer-inner { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="notice">
+  <span class="notice-dot">i</span>
+  <b>重要なお知らせ</b>
+  <span style="font-weight:300">【臨時システムメンテナンス】2026年3月20日（金）の取扱いについて</span>
+  <span class="notice-pager">2 / 10</span>
+</div>
+
+<header class="header">
+  <div class="logo">
+    <span class="logo-mark"><i></i><i></i><i></i></span>
+    <span class="logo-text">Minna no Ginko</span>
+  </div>
+  <nav class="header-nav">
+    <a href="#">法人のお客さま</a>
+    <a href="#">BaaSとは</a>
+    <a href="#">会社概要</a>
+    <a href="#">ニュース</a>
+    <a class="header-cta" href="#">口座開設</a>
+  </nav>
+</header>
+
+<!-- 1. COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / COLORS</div>
+  <h2 class="section-title"><span class="marker"></span>純黒・純白・蛍光イエローの3色</h2>
+  <p class="section-lead">
+    文字色は <b>純黒と純白の2色だけ</b>（実測 <code>#000</code> 196 要素 / <code>#fff</code> 95 要素）。グレーの文字が 1 つも出てこない。
+    蛍光イエローは<b>面を塗る色ではなく、10×10px のマーカーと選択状態の合図</b>として使う。
+  </p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Black</div><div class="swatch-hex">#000000 / --primary-black</div><div class="swatch-use">文字・ボタンの面・全ボーダー。可視 196 要素。純黒を使う</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffffff"></div><div class="swatch-body"><div class="swatch-name">White</div><div class="swatch-hex">#ffffff / --primary-white</div><div class="swatch-use">黒面の上の文字、カード・ボタンの面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#eeff00"></div><div class="swatch-body"><div class="swatch-name">Accent</div><div class="swatch-hex">#eeff00 / --accent: #ef0</div><div class="swatch-use">★可視 20 要素。10px のマーカーと選択中タブのみ。広い面には塗らない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#DE0000"></div><div class="swatch-body"><div class="swatch-name">Notice</div><div class="swatch-hex">#DE0000 / --notice</div><div class="swatch-use">重要なお知らせ・エラー</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f4f4f4"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#f4f4f4 / --light-gray</div><div class="swatch-use">ページ背景（根拠 body）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#E5E5E5"></div><div class="swatch-body"><div class="swatch-name">Surface Gray</div><div class="swatch-hex">#E5E5E5 / --gray-v3</div><div class="swatch-use">カードのカテゴリラベル</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#707070"></div><div class="swatch-body"><div class="swatch-name">Gray</div><div class="swatch-hex">#707070 / --gray</div><div class="swatch-use">トークンには存在するが、可視テキストの色としては 0 件</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#4d4d4d"></div><div class="swatch-body"><div class="swatch-name">Gray v4</div><div class="swatch-hex">#4d4d4d / --gray-v4</div><div class="swatch-use">同上。本文の文字色には使わない</div></div></div>
+  </div>
+</section>
+
+<!-- 2. TYPOGRAPHY -->
+<div class="section-alt">
+<section class="section" id="typography">
+  <div class="section-label">02 / TYPOGRAPHY</div>
+  <h2 class="section-title"><span class="marker"></span>palt を使わず、0.8px 空ける</h2>
+  <p class="section-lead">
+    <b><code>font-feature-settings</code> は 291 要素すべて <code>normal</code></b>。約物を詰める代わりに
+    <b><code>letter-spacing: 0.8px</code> を全面に効かせる</b>（218 要素）。ウェイトは <b>600 と 300 の 2 極</b>で、
+    中間の 400 / 500 をほとんど使わない。
+  </p>
+
+  <div class="type-row">
+    <div class="type-meta"><b>Display（欧文）</b>Avenir Next 88px / 700<br>line-height 1.00 / ls 0.88px</div>
+    <div style="font-family:var(--font-en);font-size:64px;font-weight:700;line-height:1;letter-spacing:0.88px">POINT</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Heading</b>Hiragino Sans 24px / 600<br>line-height 1.60 / ls 0.8px</div>
+    <div style="font-size:24px;font-weight:600;line-height:1.6">お金を目的別に仕分けてかんたん管理</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Label（欧文）</b>Avenir Next 20px / 700<br>line-height 2.00 / ls 0.8px</div>
+    <div style="font-family:var(--font-en);font-size:20px;font-weight:700;letter-spacing:0.8px">Point 01</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Body</b>Hiragino Sans 16px / <b>600</b><br>line-height 1.67 / ls 0.8px</div>
+    <div style="font-size:16px;font-weight:600;line-height:1.67;max-width:600px">高金利なのに出し入れはいつでもすぐに。他行残高も見えるから資産配分をかしこく管理できます。</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Body Long</b>Hiragino Sans 16px / <b>300</b><br>line-height 1.75 / ls 0.8px</div>
+    <div style="font-size:16px;font-weight:300;line-height:1.75;max-width:600px">みんなの銀行は、国内最大の地域金融グループが立ち上げたデジタルバンクです。口座開設から入出金、振込、デビットカードの利用までを、すべてスマートフォンのアプリで完結できます。</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Button</b>Hiragino Sans 14px / 600<br>line-height 1.33 / ls 0.8px</div>
+    <div><button class="btn btn-primary" style="width:220px;height:48px">アプリをダウンロード</button></div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Sticker</b>16px / <b>300</b><br>ls normal / radius 100px</div>
+    <div>
+      <span class="sticker"><p>ボックス</p></span>
+      <span class="sticker"><p>レコード</p></span>
+      <span class="sticker sticker-dark"><p>セキュリティ</p></span>
+    </div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Tag</b>14px / 400 / ls 0.6px</div>
+    <div><span class="tag"># すべての方</span><span class="tag"># 要エントリー</span></div>
+  </div>
+
+  <p class="note">
+    <b><code>letter-spacing</code> を em に読み替えない。</b>16px の本文でも 14px のボタンでも実効値は同じ <code>0.8px</code>（0.05em / 0.057em）。
+    em で再宣言すると大きい文字ほど開きすぎる。<br>
+    <b>Web フォントは全ページで <code>unloaded</code>。</b>macOS ではヒラギノがローカル解決するため、
+    <code>Noto Sans JP</code> / <code>Roboto</code> は Windows・Android のための保険として配信されている。検証環境の OS で字面が変わる。
+  </p>
+</section>
+</div>
+
+<!-- 3. BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">03 / BUTTONS</div>
+  <h2 class="section-title"><span class="marker"></span>矩形のボタン、pill のステッカー</h2>
+  <p class="section-lead">
+    ボタンは <b>幅 294px × 高さ 56px / <code>border-radius: 0</code> / 枠 2px</b>。
+    Primary にも <code>2px solid transparent</code> を当てて Secondary と寸法を揃えている。
+  </p>
+  <div class="btn-row">
+    <button class="btn btn-primary">アプリをダウンロード</button>
+    <button class="btn btn-secondary">みんなの銀行とは</button>
+  </div>
+  <div class="dark-panel">
+    <div class="btn-row">
+      <button class="btn btn-on-dark">体験してみる</button>
+      <span class="sticker sticker-dark"><p>セキュリティ</p></span>
+    </div>
+  </div>
+  <p class="note">
+    <b>pill やボタンの直下にテキストノードを置かない。</b>実サイトはラベルの色を子要素（<code>&lt;p&gt;</code> / <code>&lt;strong&gt;</code>）に当てており、
+    pill 自身の <code>color</code> は黒のまま。直置きすると黒 pill の上に黒文字が出る。
+  </p>
+</section>
+
+<!-- 4. SERVICE LIST -->
+<div class="section-alt">
+<section class="section" id="service">
+  <div class="section-label">04 / SELECTED STATE</div>
+  <h2 class="section-title"><span class="marker"></span>蛍光イエローは「選択」の合図</h2>
+  <p class="section-lead">選択されていない項目は白。アクセントを広い面に塗らないことで、10px のマーカーと選択状態だけが際立つ。</p>
+  <div class="service-list">
+    <button class="service-item is-active">入出金</button>
+    <button class="service-item">支払う</button>
+    <button class="service-item">貯める・管理する</button>
+    <button class="service-item">借りる</button>
+    <button class="service-item">つながる</button>
+  </div>
+</section>
+</div>
+
+<!-- 5. CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / CARDS</div>
+  <h2 class="section-title"><span class="marker"></span>枠 2px、角丸ゼロ、影なし</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-body">
+        <span class="card-cat">Cheer Box</span>
+        <div class="card-title">【アビスパ福岡】トレーニング環境の改善支援</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-body">
+        <span class="card-cat">campaign</span>
+        <div class="card-title">募集総額500億円！みんなの銀行5thアニバーサリー</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-body">
+        <span class="card-cat">news</span>
+        <div class="card-title">貯蓄預金の基準金利改定について</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. FEATURE（504px カラム） -->
+<div class="section-alt">
+<section class="section" id="feature">
+  <div class="section-label">06 / INNER COLUMN — 504px</div>
+  <h2 class="section-title"><span class="marker"></span>本文は 504px の 1 カラム</h2>
+  <p class="section-lead">
+    <code>--inner-maxWidth: 504px</code> がこのサイトの骨格。デスクトップでも本文は 504px に収まり、
+    スマホアプリの画面比率をそのまま拡大した構成になっている。
+  </p>
+  <div class="inner feature">
+    <div class="feature-num">01</div>
+    <div class="feature-label">FEATURE</div>
+    <div class="feature-title">最短5分で口座開設</div>
+    <div class="feature-text">本人確認から口座開設まで、アプリだけで完結します。印鑑も郵送もいりません。※1</div>
+    <div class="phone"><span>App Screen</span></div>
+    <div style="margin-top:28px"><button class="btn btn-primary" style="width:100%">今すぐアプリをダウンロード</button></div>
+  </div>
+</section>
+</div>
+
+<!-- 7. FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">07 / FORMS</div>
+  <h2 class="section-title"><span class="marker"></span>入力欄も高さ 56px・枠 2px</h2>
+  <div class="form">
+    <div class="form-row">
+      <label class="form-label">お名前</label>
+      <input class="form-input" type="text" placeholder="みんな 太郎">
+      <div class="form-msg is-help">キャッシュカードに印字されるお名前です</div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">メールアドレス（フォーカス例）</label>
+      <input class="form-input" type="text" value="taro@example.com" autofocus>
+    </div>
+    <div class="form-row">
+      <label class="form-label">電話番号（エラー例）</label>
+      <input class="form-input is-error" type="text" value="090-0000">
+      <div class="form-msg is-error">電話番号の桁数が正しくありません</div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. ELEVATION -->
+<div class="section-alt">
+<section class="section" id="elevation">
+  <div class="section-label">08 / ELEVATION</div>
+  <h2 class="section-title"><span class="marker"></span>影は 3 件だけ。奥行きは 2px の黒罫</h2>
+  <div class="elev-grid">
+    <div class="elev elev-0">Level 0 — none<br>枠 2px solid #000（ほぼ全要素）</div>
+    <div class="elev elev-1">Level 1<br>0 4px 10px rgba(0,0,0,0.1)</div>
+    <div class="elev elev-2">Level 2<br>0 4px 20px rgba(0,0,0,0.1)</div>
+  </div>
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div style="font-size:16px;font-weight:300;line-height:1.75">まずはみんなの銀行アプリをダウンロード</div>
+      <div style="margin-top:20px"><button class="btn btn-primary" style="width:100%">口座開設から始めよう</button></div>
+    </div>
+  </div>
+  <p class="note">ボトムシートだけ <code>border-radius: 60px 60px 0 0</code> を持つ。</p>
+</section>
+</div>
+
+<!-- 9. LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">09 / LAYOUT</div>
+  <h2 class="section-title"><span class="marker"></span>896px で総取り替え</h2>
+  <p class="section-lead">
+    主ブレークポイントは <code>max-width: 896px</code>（158 ルール）。さらに <code>(hover: hover)</code> を 50 ヶ所で使い、
+    <b>ホバー効果をポインタデバイスに限定</b>している——スマホ起点のサービスらしい設計。
+  </p>
+  <div class="layout-bar">Wide — max-width 1280px</div>
+  <div class="layout-bar" style="max-width:1120px">Section — max-width 1120px</div>
+  <div class="layout-bar" style="max-width:504px">Inner column — 504px（--inner-maxWidth）</div>
+  <div class="layout-bar" style="max-width:390px">Mobile 基準 — 390px</div>
+  <p class="note">gap の実測分布は <b>4px（25 ヶ所）/ 16px（21）/ 24px（12）</b>。4px 基準のスケール。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <a href="#">サービス一覧</a>
+      <a href="#">入出金・ATM</a>
+      <a href="#">振込・ことら送金</a>
+      <a href="#">デビットカード</a>
+    </div>
+    <div>
+      <a href="#">金利・手数料</a>
+      <a href="#">キャンペーン</a>
+      <a href="#">初めての方へ</a>
+    </div>
+    <div>
+      <a href="#">セキュリティ</a>
+      <a href="#">サポート</a>
+      <a href="#">よくあるご質問</a>
+    </div>
+    <div>
+      <a href="#">会社概要</a>
+      <a href="#">BaaSとは</a>
+      <a href="#">ニュース</a>
+    </div>
+  </div>
+  <div class="footer-copy">© Minna no Ginko, Ltd.</div>
+</footer>
+
+</body>
+</html>

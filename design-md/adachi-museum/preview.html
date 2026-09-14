@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 足立美術館（ADACHI MUSEUM OF ART）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;700&family=Noto+Sans+JP:wght@400;600&family=Libre+Baskerville:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は 49 個あるが全て WordPress 既定値と Swiper の --swiper-theme-color。
+       足立美術館自身の設計トークンは存在しない。以下は computed style の実測値。2026-09-14 */
+    --sumi:        #121212;   /* ★墨。本文・見出し・ナビ。可視 108 要素。純黒ではない */
+    --sumi-fill:   #3b3a36;   /* 縦タブ・丸数字の面。わずかに緑みのある黒 */
+    --text-2:      #3f3f3f;   /* 日付・補足文。可視 60 要素。Noto Sans JP とセット */
+    --on-dark:     #d6d6d6;   /* 暗い面・ドロワーの文字。可視 31 要素 */
+    --white:       #ffffff;
+    --gold-band:   #69592a;   /* カードのラベル帯（左端を透明にするグラデ） */
+    --gold-link:   #907b3d;   /* リンク文字 */
+    --gold-fill:   #927d3e;   /* 小さな面 */
+    --green:       #007746;   /* 「23年連続日本一」の実績バッジ専用 */
+    --btn-fill:    #e9e9e9;   /* ヘッダーのユーティリティボタン */
+    --border-warm: #e1ded7;   /* 実績バッジの枠。温かみのあるグレー */
+    --border:      #d9d9d9;
+    --border-dark: #4d4b4b;
+    --tag-fill:    #5c5a56;
+    --bg:          #ffffff;   /* ★ページ背景は白（html/body 無指定＝UA 既定のキャンバス） */
+
+    /* === Fonts ===
+       明朝＝館の言葉（125 要素）、Noto Sans JP＝運用情報（89 要素）、
+       Libre Baskerville＝欧文見出し（14 要素）。いずれも Google Fonts なのでローカルでも同一表示。
+       実サイトは generic のみをフォールバックにしているが、DESIGN.md の推奨に従いローカル明朝を足している。 */
+    --font-mincho: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    --font-gothic: "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-en:     "Libre Baskerville", serif;
+    --font-mono:   SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: 本文 2.00 / 展覧会名 1.40 / 1行もの 1.00 === */
+    --lh-body: 2.0;
+    --lh-card: 1.4;
+
+    /* === Letter spacing: px の絶対値で 3 段 === */
+    --ls-ui:    1px;   /* Noto Sans JP 全般・欧文小見出し（99 要素） */
+    --ls-card:  2px;   /* 展覧会名 */
+    --ls-hero:  4px;   /* ヒーロー惹句・欧文 Display */
+
+    --r: 0;            /* 角丸は丸数字の 50% 以外ゼロ */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--sumi);
+    font-family: var(--font-mincho);
+    font-size: 14px;
+    font-weight: 600;            /* ★しっぽり明朝の本文は 600 で組む */
+    line-height: var(--lh-body);
+    letter-spacing: normal;
+    font-feature-settings: "palt";   /* ★可視テキスト 228 / 228 要素 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER — 実サイトは和紙テクスチャの画像を repeat。ここでは近似のグラデで代替 */
+  .header {
+    background-color: #f2f0eb;
+    background-image: radial-gradient(circle at 20% 30%, rgba(0,0,0,0.018) 0 1px, transparent 1px),
+                      radial-gradient(circle at 70% 60%, rgba(0,0,0,0.015) 0 1px, transparent 1px);
+    background-size: 7px 7px, 11px 11px;
+    padding: 20px 28px 0;
+  }
+  .header-top { display: flex; align-items: center; max-width: 1280px; margin: 0 auto; }
+  .lang { font-size: 14px; font-weight: 600; line-height: 1; }
+  .header-actions { margin-left: auto; display: flex; gap: 12px; align-items: center; }
+  .utility-btn {
+    background: var(--btn-fill); color: var(--sumi); border: 1px solid #dcdcdc; border-radius: var(--r);
+    padding: 0 16px; height: 36px; display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-mincho); font-size: 13px; font-weight: 600; text-decoration: none;
+  }
+  .logo { text-align: center; margin: -18px auto 4px; }
+  .logo-mark { font-family: var(--font-mincho); font-size: 30px; color: #1c6b3f; line-height: 1; }
+  .logo-text { font-family: var(--font-mincho); font-size: 21px; font-weight: 600; letter-spacing: 2px; margin-top: 6px; }
+  .logo-en { font-family: var(--font-en); font-size: 8px; letter-spacing: var(--ls-ui); color: var(--text-2); margin-top: 4px; }
+  .gnav { display: flex; justify-content: center; gap: 54px; max-width: 1280px; margin: 0 auto; padding: 16px 0 18px; }
+  .gnav a { font-family: var(--font-mincho); font-size: 14px; font-weight: 600; line-height: 1; color: var(--sumi); text-decoration: none; letter-spacing: normal; }
+  .gnav a:hover { font-weight: 700; }
+
+  /* HERO */
+  .hero { position: relative; height: 460px; background: linear-gradient(165deg, #7d9a6b 0%, #4e6b4b 45%, #2f4436 100%); display: flex; align-items: center; justify-content: center; text-align: center; }
+  .hero-copy { font-family: var(--font-mincho); font-size: 40px; font-weight: 400; letter-spacing: var(--ls-hero); color: #fff; }
+  .hero-sub { font-family: var(--font-en); font-size: 13px; line-height: 1; letter-spacing: var(--ls-ui); color: #fff; margin-top: 18px; }
+  .side-tab {
+    position: absolute; right: 0; top: 40px; background: var(--sumi-fill); color: #fff;
+    padding: 22px 12px 26px; font-size: 16px; font-weight: 600; text-decoration: none;
+  }
+  .side-tab span { writing-mode: vertical-rl; font-size: 14px; letter-spacing: var(--ls-ui); }
+
+  /* SECTIONS */
+  .section { max-width: 1280px; margin: 0 auto; padding: 72px 28px; }
+  .section-narrow { max-width: 1000px; }
+  .section-alt { background: #faf9f6; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--text-2); letter-spacing: var(--ls-ui); margin-bottom: 10px; }
+  .section-en { font-family: var(--font-en); font-size: 26px; line-height: 1; letter-spacing: var(--ls-ui); }
+  .section-title { font-family: var(--font-mincho); font-size: 20px; font-weight: 600; line-height: 1.6; margin: 14px 0 8px; }
+  .section-lead { font-size: 16px; font-weight: 600; line-height: var(--lh-body); margin-bottom: 34px; max-width: 900px; }
+  .note { font-family: var(--font-gothic); font-size: 14px; font-weight: 400; line-height: var(--lh-body); letter-spacing: var(--ls-ui); color: var(--text-2); margin-top: 20px; max-width: 900px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: #efece5; padding: 1px 5px; letter-spacing: normal; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+  .swatch { border: 1px solid var(--border-warm); background: #fff; }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 14px; }
+  .swatch-name { font-size: 14px; font-weight: 600; line-height: 1.6; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--text-2); margin-top: 4px; }
+  .swatch-use { font-family: var(--font-gothic); font-size: 12px; font-weight: 400; line-height: 1.8; letter-spacing: var(--ls-ui); color: var(--text-2); margin-top: 7px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 260px 1fr; gap: 26px; padding: 22px 0; border-bottom: 1px solid var(--border-warm); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-2); line-height: 1.8; letter-spacing: normal; }
+  .type-meta b { display: block; font-family: var(--font-mincho); font-size: 13px; font-weight: 600; color: var(--sumi); }
+
+  /* EXHIBITION CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 34px; }
+  .card-photo { position: relative; aspect-ratio: 4 / 3; background: linear-gradient(150deg, #9fae8e, #5d7059); }
+  .card-band {
+    position: absolute; left: 0; bottom: 0; color: #fff; font-size: 13px; font-weight: 400;
+    line-height: 1.4; padding: 6px 20px 6px 50px;
+    background: linear-gradient(90deg, rgba(0,0,0,0) 0%, var(--gold-band) 47%, var(--gold-band) 100%);
+  }
+  .card-band.is-now { background: #000; padding-left: 20px; font-weight: 600; font-size: 14px; }
+  .card-title { font-size: 22px; font-weight: 400; line-height: var(--lh-card); letter-spacing: var(--ls-card); margin-top: 16px; }
+  .card-date { font-family: var(--font-mincho); font-size: 13px; font-weight: 400; line-height: 1.8; letter-spacing: var(--ls-ui); margin-top: 8px; }
+  .tag { display: inline-block; background: var(--tag-fill); color: #fff; font-family: var(--font-gothic); font-size: 10px; font-weight: 400; line-height: 1; letter-spacing: var(--ls-ui); padding: 6px 10px; margin-top: 12px; }
+
+  /* ARTICLE */
+  .article { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  .article-photo { aspect-ratio: 4 / 3; background: linear-gradient(150deg, #cbd3c0, #7d8f74); }
+  .article h3 { font-size: 20px; font-weight: 600; line-height: 1.6; margin-bottom: 16px; }
+  .article p { font-size: 14px; font-weight: 600; line-height: var(--lh-body); }
+  .article .caption { font-family: var(--font-gothic); font-size: 14px; font-weight: 400; line-height: var(--lh-body); letter-spacing: var(--ls-ui); color: var(--text-2); margin-top: 16px; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+  .btn-outline { background: transparent; color: var(--sumi); border: 1px solid var(--border-warm); border-radius: var(--r); padding: 14px 24px; font-family: var(--font-mincho); font-size: 16px; font-weight: 600; line-height: 1.6; cursor: pointer; }
+  .btn-overlay { background: rgba(255,255,255,0.5); color: var(--sumi); border: 1px solid var(--border); border-radius: var(--r); padding: 14px 24px; font-family: var(--font-mincho); font-size: 16px; font-weight: 600; cursor: pointer; }
+  .btn-dark { background: var(--sumi-fill); color: #fff; border: none; border-radius: var(--r); padding: 14px 26px; font-family: var(--font-mincho); font-size: 16px; font-weight: 600; cursor: pointer; }
+  .btn-on-dark { background: transparent; color: var(--on-dark); border: 1px solid var(--border-dark); border-radius: var(--r); padding: 14px 24px; font-family: var(--font-mincho); font-size: 16px; font-weight: 400; letter-spacing: var(--ls-ui); cursor: pointer; }
+  .dark-panel { background: #3e3e3e; padding: 28px; margin-top: 20px; }
+  .num { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: var(--sumi-fill); color: #fff; font-size: 14px; font-weight: 600; }
+  .award { display: inline-flex; align-items: center; gap: 14px; border: 1px solid var(--border-warm); padding: 14px 24px; }
+  .award-year { background: var(--green); color: #fff; width: 54px; height: 54px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; }
+
+  /* FORMS */
+  .form { max-width: 620px; }
+  .form-row { margin-bottom: 24px; }
+  .form-label { display: block; font-size: 14px; font-weight: 600; line-height: 1.8; margin-bottom: 8px; }
+  .form-input { width: 100%; height: 44px; background: #fff; border: 1px solid var(--border); border-radius: var(--r); padding: 0 14px; font-family: var(--font-mincho); font-size: 15px; font-weight: 600; font-feature-settings: "palt"; }
+  .form-input:focus { outline: 2px solid var(--gold-link); outline-offset: 1px; }
+  .form-input.is-error { border-color: #9b3b2f; }
+  .form-msg { font-family: var(--font-gothic); font-size: 13px; font-weight: 400; letter-spacing: var(--ls-ui); line-height: 1.8; margin-top: 6px; }
+  .form-msg.is-error { color: #9b3b2f; }
+  .form-msg.is-help { color: var(--text-2); }
+
+  /* ELEVATION / LAYOUT */
+  .elev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 800px; }
+  .elev { background: #fff; border: 1px solid var(--border-warm); padding: 24px; font-family: var(--font-gothic); font-size: 13px; font-weight: 400; line-height: 1.9; letter-spacing: var(--ls-ui); }
+  .layout-bar { background: #ede9e1; padding: 11px 14px; font-family: var(--font-mono); font-size: 11px; margin-bottom: 8px; letter-spacing: normal; }
+
+  /* FOOTER */
+  .footer { background: #3b3a36; color: var(--on-dark); padding: 54px 28px; }
+  .footer-inner { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; font-family: var(--font-gothic); font-size: 13px; font-weight: 400; line-height: 2; letter-spacing: var(--ls-ui); }
+  .footer a { color: var(--on-dark); text-decoration: none; display: block; }
+  .footer-copy { max-width: 1280px; margin: 36px auto 0; font-family: var(--font-en); font-size: 11px; letter-spacing: var(--ls-ui); color: #8d8b86; }
+
+  @media (max-width: 900px) {
+    .card-grid { grid-template-columns: 1fr; }
+    .article { grid-template-columns: 1fr; }
+    .gnav { gap: 24px; flex-wrap: wrap; }
+    .footer-inner { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <div class="lang">JP / EN</div>
+    <div class="header-actions">
+      <a class="utility-btn" href="#">よくある質問</a>
+      <a class="utility-btn" href="#">アクセス</a>
+      <a class="utility-btn" href="#">シャトルバス</a>
+    </div>
+  </div>
+  <div class="logo">
+    <div class="logo-mark">⛰</div>
+    <div class="logo-text">足立美術館</div>
+    <div class="logo-en">ADACHI MUSEUM OF ART</div>
+  </div>
+  <nav class="gnav">
+    <a href="#">ご利用案内</a>
+    <a href="#">展覧会</a>
+    <a href="#">庭園</a>
+    <a href="#">当館について</a>
+    <a href="#">コレクション</a>
+    <a href="#">オンラインショップ</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <div>
+    <div class="hero-copy">名園の時間。名画の時間。</div>
+    <div class="hero-sub">Time for Great Gardens. Time for Great Art.</div>
+  </div>
+  <a class="side-tab" href="#"><span>チケットの購入</span></a>
+</div>
+
+<!-- 1. COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / COLORS</div>
+  <div class="section-en">Colors</div>
+  <h2 class="section-title">彩度の高いブランド色を持たない</h2>
+  <p class="section-lead">
+    基調は墨と和紙。金茶と緑が差し色として少量入るだけで、面を彩度で塗ることはしない。
+    金茶は帯・文字・面で <b>3 値に分かれている</b>のが実装の実態で、1 色に丸めない。
+  </p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#121212"></div><div class="swatch-body"><div class="swatch-name">墨 / Text Primary</div><div class="swatch-hex">#121212</div><div class="swatch-use">本文・見出し・ナビ。可視 108 要素。純黒ではない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#3b3a36"></div><div class="swatch-body"><div class="swatch-name">Dark Fill</div><div class="swatch-hex">#3b3a36</div><div class="swatch-use">縦タブ・丸数字・フッター。わずかに緑みのある黒</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#3f3f3f"></div><div class="swatch-body"><div class="swatch-name">Text Secondary</div><div class="swatch-hex">#3f3f3f</div><div class="swatch-use">日付・補足文。可視 60 要素。Noto Sans JP とセット</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:linear-gradient(90deg,rgba(0,0,0,0) 0%,#69592a 47%,#69592a 100%)"></div><div class="swatch-body"><div class="swatch-name">金茶（帯）</div><div class="swatch-hex">#69592a</div><div class="swatch-use">カードのラベル帯。左端を透明にして写真へ溶かす</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#907b3d"></div><div class="swatch-body"><div class="swatch-name">金茶（リンク）</div><div class="swatch-hex">#907b3d</div><div class="swatch-use">「詳細はこちら」のリンク文字</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#007746"></div><div class="swatch-body"><div class="swatch-name">緑（実績）</div><div class="swatch-hex">#007746</div><div class="swatch-use">「23年連続日本一」バッジ専用。他に緑は出ない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#5c5a56"></div><div class="swatch-body"><div class="swatch-name">Tag Fill</div><div class="swatch-hex">#5c5a56</div><div class="swatch-use">「庭園」「ご案内」のカテゴリタグ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e9e9e9"></div><div class="swatch-body"><div class="swatch-name">Utility Button</div><div class="swatch-hex">#e9e9e9</div><div class="swatch-use">ヘッダーのボタン面。罫線は #dcdcdc</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e1ded7"></div><div class="swatch-body"><div class="swatch-name">Border Warm</div><div class="swatch-hex">#e1ded7</div><div class="swatch-use">実績バッジの枠。温かみのあるグレー</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffffff;border-bottom:1px solid #e1ded7"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-use">★ページ背景は白。ヘッダーだけ和紙テクスチャ画像</div></div></div>
+  </div>
+  <p class="note">
+    <b>抽出結果の <code>pageBackground.resolved</code>（<code>rgb(59,58,54)</code> / <code>rgb(0,0,0)</code>）はページ背景ではない。</b>
+    どちらも上部ビューポートを覆う全画面の庭園映像を拾った値で、コンテンツ領域の地色は白。ここを取り違えると全体を暗く作ってしまう。
+  </p>
+</section>
+
+<!-- 2. TYPOGRAPHY -->
+<div class="section-alt">
+<section class="section" id="typography">
+  <div class="section-label">02 / TYPOGRAPHY</div>
+  <div class="section-en">Typography</div>
+  <h2 class="section-title">明朝は weight 600、字間は px で 3 段</h2>
+  <p class="section-lead">
+    しっぽり明朝の 400 は細いため、<b>本文・小見出しは 600 が既定</b>。400 を使うのは 22px 以上の見出しと惹句だけ。
+    字間は <code>normal</code>（118 要素）/ <code>1px</code>（99 要素）/ <code>2px</code> / <code>4px</code> の 3 段で、
+    <b>px の絶対値で宣言されている</b>。
+  </p>
+
+  <div class="type-row">
+    <div class="type-meta"><b>Display（欧文）</b>Libre Baskerville 80px / 400<br>letter-spacing 4px</div>
+    <div style="font-family:var(--font-en);font-size:56px;line-height:1.1;letter-spacing:4px">Gardens</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Hero Copy</b>Shippori Mincho 40px / <b>400</b><br>letter-spacing 4px</div>
+    <div style="font-size:40px;font-weight:400;letter-spacing:4px;line-height:1.4">名園の時間。名画の時間。</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Section Heading（欧文）</b>Libre Baskerville 26px / 400<br>line-height 1.00 / ls 1px</div>
+    <div style="font-family:var(--font-en);font-size:26px;line-height:1;letter-spacing:1px">Topics</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Exhibition Title</b>Shippori Mincho 22px / <b>400</b><br>line-height 1.40 / ls 2px</div>
+    <div style="font-size:22px;font-weight:400;line-height:1.4;letter-spacing:2px">侍 ― 日本画の革新に挑んだ7人 ―</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Heading 3</b>Shippori Mincho 20px / 600<br>ls normal</div>
+    <div style="font-size:20px;font-weight:600;line-height:1.6">足立美術館の庭園</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Body</b>Shippori Mincho 14px / <b>600</b><br>line-height <b>2.00</b> / ls normal</div>
+    <div style="font-size:14px;font-weight:600;line-height:2;max-width:620px">花々が咲き誇る春、緑鮮やかな夏、紅葉が彩りを添える秋、そして雪化粧の冬。五万坪の庭園は、四季それぞれに異なる絵をつくります。</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Caption / 補足</b>Noto Sans JP 14px / 400<br>line-height 2.00 / <b>ls 1px</b> / #3f3f3f</div>
+    <div style="font-family:var(--font-gothic);font-size:14px;font-weight:400;line-height:2;letter-spacing:1px;color:#3f3f3f;max-width:620px">館長自ら撮影したベストショット。過去のお気に入りの一枚を、撮影日とともに紹介します。</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Tag</b>Noto Sans JP 10px / 400<br>ls 1px / 面 #5c5a56</div>
+    <div><span class="tag" style="margin-top:0">庭園</span> <span class="tag" style="margin-top:0">ご案内</span></div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>縦組み</b>writing-mode: vertical-rl<br>14px / ls 1px（実測 <b>1 要素のみ</b>）</div>
+    <div><span style="writing-mode:vertical-rl;background:#3b3a36;color:#fff;padding:16px 10px;font-size:14px;letter-spacing:1px;display:inline-block">チケットの購入</span></div>
+  </div>
+
+  <p class="note">
+    <b><code>letter-spacing</code> を em に読み替えない。</b>4px は 40px の惹句では 0.1em、80px の Display では 0.05em にあたる。px のまま宣言すること。<br>
+    <b>Shippori Mincho の 500 は宣言されているが <code>unloaded</code>。</b>使えるのは 400 / 600 / 700 の 3 段。
+  </p>
+</section>
+</div>
+
+<!-- 3. EXHIBITION CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">03 / EXHIBITION</div>
+  <div class="section-en">Exhibitions</div>
+  <h2 class="section-title">写真に重ねる帯は片側を透かす</h2>
+  <p class="section-lead">ラベル帯は <code>linear-gradient(90deg, transparent 0%, #69592a 47%, #69592a 100%)</code>。単色の帯で代用すると印象が変わる。</p>
+  <div class="card-grid">
+    <div>
+      <div class="card-photo"><span class="card-band is-now">開催中</span></div>
+      <div class="card-title">秋季特別展</div>
+      <div class="card-date">会期：2026年8月31日（月）～11月30日（月）</div>
+      <span class="tag">展覧会</span>
+    </div>
+    <div>
+      <div class="card-photo"><span class="card-band">予　告</span></div>
+      <div class="card-title">現代日本画名品選Ⅱ</div>
+      <div class="card-date">会期：2026年6月26日（金）～10月19日（月）</div>
+      <span class="tag">コレクション</span>
+    </div>
+    <div>
+      <div class="card-photo"><span class="card-band">予　告</span></div>
+      <div class="card-title">冬季特別展</div>
+      <div class="card-date">会期：2026年12月1日（火）～2027年2月28日（日）</div>
+      <span class="tag">展覧会</span>
+    </div>
+  </div>
+</section>
+
+<!-- 4. ARTICLE -->
+<div class="section-alt">
+<section class="section section-narrow" id="article">
+  <div class="section-label">04 / ARTICLE</div>
+  <div class="section-en">Gardens</div>
+  <h2 class="section-title">本文は明朝 600・行間 2.0</h2>
+  <div class="article">
+    <div class="article-photo"></div>
+    <div>
+      <h3>足立美術館の庭園</h3>
+      <p>枯山水庭、白砂青松庭、苔庭、池庭。窓枠がそのまま額縁になるよう、建物の側から庭を設計しています。
+      借景の山までを含めて一枚の絵として保つため、庭師は毎朝、松の一葉から手を入れます。</p>
+      <div class="caption">2026.08.25 ／ 日本庭園が米誌ランキングで「23年連続日本一」に選ばれました</div>
+      <div style="margin-top:22px" class="award">
+        <span class="award-year">23</span>
+        <span style="font-size:16px;font-weight:600;line-height:1.7">ミシュラングリーンガイドジャポン<br>三つ星／庭園ランキング 23年連続日本一</span>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- 5. BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">05 / BUTTONS</div>
+  <div class="section-en">Buttons</div>
+  <h2 class="section-title">角丸ゼロ・罫線 1px</h2>
+  <div class="btn-row">
+    <button class="btn-dark">チケットの購入</button>
+    <button class="btn-outline">ミシュラングリーンガイドジャポン</button>
+    <button class="btn-overlay">日本一の庭園をつくった男</button>
+    <span class="num">1</span><span class="num">2</span>
+  </div>
+  <div class="dark-panel">
+    <div class="btn-row">
+      <button class="btn-on-dark">春季特別展</button>
+      <button class="btn-on-dark">夏季特別展</button>
+      <button class="btn-on-dark">秋季特別展</button>
+    </div>
+  </div>
+  <p class="note">
+    角丸を持つのは <code>/gardens</code> の丸数字（<code>50%</code>）だけ。ボタン・タグ・バッジはすべて <code>border-radius: 0</code>。
+    写真の上に置くボタンだけ <code>rgba(255,255,255,0.5)</code> の半透明にする。
+  </p>
+</section>
+
+<!-- 6. FORMS -->
+<div class="section-alt">
+<section class="section" id="forms">
+  <div class="section-label">06 / FORMS</div>
+  <div class="section-en">Forms</div>
+  <h2 class="section-title">入力欄も明朝・角丸ゼロ</h2>
+  <div class="form">
+    <div class="form-row">
+      <label class="form-label">お名前</label>
+      <input class="form-input" type="text" placeholder="足立 全康">
+      <div class="form-msg is-help">団体でのご来館は 20 名さまから承ります</div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">ご来館予定日（フォーカス例）</label>
+      <input class="form-input" type="text" value="2026年11月3日" autofocus>
+    </div>
+    <div class="form-row">
+      <label class="form-label">メールアドレス（エラー例）</label>
+      <input class="form-input is-error" type="text" value="adachi.example">
+      <div class="form-msg is-error">メールアドレスの形式が正しくありません</div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- 7. ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / ELEVATION</div>
+  <div class="section-en">Elevation</div>
+  <h2 class="section-title">影も角丸も 0 件</h2>
+  <p class="section-lead">奥行きは写真と地色の明度差だけで表す。WordPress 既定の <code>--wp--preset--shadow--*</code> は 1 ヶ所も使われていない。</p>
+  <div class="elev-grid">
+    <div class="elev">Level 0 — 罫線 1px<br>#e1ded7（温かいグレー）</div>
+    <div class="elev" style="background:#e9e9e9;border-color:#dcdcdc">Utility Fill<br>#e9e9e9</div>
+    <div class="elev" style="background:#3b3a36;color:#d6d6d6;border:none">Dark Fill<br>#3b3a36 / 文字 #d6d6d6</div>
+  </div>
+</section>
+
+<!-- 8. LAYOUT -->
+<div class="section-alt">
+<section class="section" id="layout">
+  <div class="section-label">08 / LAYOUT</div>
+  <div class="section-en">Layout</div>
+  <h2 class="section-title">コンテナは 1280px と 1000px の 2 段</h2>
+  <div class="layout-bar">Hero — ビューポート全面（1440 × 900 実測）</div>
+  <div class="layout-bar" style="max-width:1280px">Wide section — max-width 1280px</div>
+  <div class="layout-bar" style="max-width:1000px">Article — max-width 1000px</div>
+</section>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <a href="#">ご利用案内</a>
+      <a href="#">開館時間・入館料</a>
+      <a href="#">アクセス</a>
+      <a href="#">シャトルバス</a>
+    </div>
+    <div>
+      <a href="#">展覧会</a>
+      <a href="#">コレクション</a>
+      <a href="#">庭園</a>
+    </div>
+    <div>
+      <a href="#">展示室・館内施設</a>
+      <a href="#">ミュージアムショップ</a>
+      <a href="#">喫茶・お食事</a>
+    </div>
+    <div>
+      <a href="#">当館について</a>
+      <a href="#">採用情報</a>
+      <a href="#">よくある質問</a>
+    </div>
+  </div>
+  <div class="footer-copy">© ADACHI MUSEUM OF ART</div>
+</footer>
+
+</body>
+</html>

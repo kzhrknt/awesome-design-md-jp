@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 青幻舎（SEIGENSHA Art Publishing）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Serif+JP:wght@400&family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は 77 個あるが全て WordPress / Gutenberg の既定値。
+       青幻舎自身の設計トークンは存在しないため、以下は computed style の実測値。2026-09-14 */
+    --new:        #e50c00;   /* ★New アイコン。可視 8 要素。このサイト最強の赤 */
+    --badge-new:  #dd4b4b;   /* 新刊バッジ（書影に重ねる帯）。可視 5 要素 */
+    --badge-rep:  #1e73be;   /* 重版。可視 3 要素 */
+    --badge-soon: #777777;   /* 刊行予定。可視 11 要素 */
+    --badge-ev:   #f15a24;   /* 展覧会・イベント。可視 7 要素 */
+    --badge-media:#009245;   /* メディア情報。可視 1 要素 */
+    --badge-series:#666666;  /* シリーズタグ。可視 8 要素 */
+
+    --text:       #222222;   /* 見出し・本文。可視 28 要素 */
+    --text-nav:   #35302e;   /* ★最多の文字色。ナビ・リンク。可視 60 要素 */
+    --muted:      #808080;   /* 著者名・副題。可視 25 要素 */
+    --on-dark:    #e6e6e6;   /* ダーク面の文字。可視 42 要素 */
+    --white:      #ffffff;
+    --chip:       #4d4d4d;   /* 絞り込みチップの面 */
+    --footer:     #333333;   /* フッター全面 */
+    --surface:    #f2f2f2;   /* 「もっと見る」の面 */
+    --link-on:    #0062a2;   /* 言語切替 選択中 */
+    --link-off:   #cccccc;
+    --bg:         #fbfbfb;   /* pageBackground.resolved / 根拠 body。純白ではない */
+
+    /* === Fonts ===
+       和文も欧文も Noto Sans JP 1 スタック（可視テキスト 205 / 209 要素）。
+       Noto Serif JP と Open Sans はグループ企業名の 2 ヶ所だけ。
+       実サイトは generic だけをフォールバックにしているが、
+       ここでは DESIGN.md の推奨どおりローカル和文ゴシックを足している。 */
+    --font: "Noto Sans JP", "Hiragino Sans", "ヒラギノ角ゴシック", "Yu Gothic", sans-serif;
+    --font-serif: "Noto Serif JP", serif;
+    --font-en: "Open Sans", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height ===
+       1.70 が 149 要素で支配的。1 行で終わるものだけ 1.10。 */
+    --lh-body:  1.7;
+    --lh-tight: 1.1;
+
+    /* === Letter spacing: normal（実測 205 / 209 要素）。palt だけで詰める === */
+    --ls: normal;
+
+    --r-new: 0.3em;   /* New バッジのみ角丸を持つ */
+    --r-chip: 1.2em;  /* 絞り込みチップ（14px 時 16.8px） */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { font-size: 10px; }   /* 実サイトのルートは 10px */
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: var(--lh-body);
+    letter-spacing: var(--ls);
+    /* ★サイト全体に palt。可視テキスト 209 / 209 要素 */
+    font-feature-settings: "palt";
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .topbar { background: #0062a2; color: #fff; font-size: 13px; line-height: var(--lh-body); padding: 8px 24px; }
+  .header { background: #fff; border-bottom: 1px solid #eee; }
+  .header-inner { display: flex; align-items: center; gap: 26px; max-width: 1340px; margin: 0 auto; padding: 20px 24px; }
+  .logo { display: flex; align-items: baseline; gap: 10px; }
+  .logo-mark { font-family: var(--font-serif); font-size: 26px; color: var(--new); }
+  .logo-text { font-family: var(--font-serif); font-size: 24px; letter-spacing: 0.1em; }
+  .logo-sub { font-family: var(--font-en); font-size: 9px; font-weight: 300; letter-spacing: 0.06em; color: var(--muted); }
+  .header-nav { display: flex; gap: 22px; margin-left: auto; }
+  .header-nav a { font-size: 16px; line-height: var(--lh-tight); color: var(--text-nav); text-decoration: none; }
+  .header-nav a:hover { font-weight: 700; }
+  .lang { margin-left: 18px; font-size: 13px; }
+  .lang b { color: var(--link-on); }
+  .lang span { color: var(--link-off); }
+
+  /* SEARCH STRIP */
+  .searchstrip { background: var(--footer); padding: 16px 24px; }
+  .searchstrip-inner { display: flex; gap: 24px; max-width: 1340px; margin: 0 auto; }
+  .searchstrip input, .searchstrip select {
+    font-family: var(--font);   /* ★実サイトは Arial のまま。DESIGN.md の推奨に従い inherit させている */
+    font-size: 18px; height: 40px; border-radius: 0; background: #fff; border: 1px solid #000;
+    padding: 0 9px; flex: 1;
+  }
+  .searchstrip select { color: var(--muted); }
+
+  /* CHIP ROW */
+  .chiprow { display: flex; flex-wrap: wrap; gap: 10px; padding: 22px 24px; max-width: 1340px; margin: 0 auto; }
+  .chip {
+    background: var(--chip); color: var(--on-dark); border: 1px solid var(--muted);
+    border-radius: var(--r-chip); padding: 0.6em 1.1em; font-size: 14px; line-height: var(--lh-tight);
+    text-decoration: none;
+  }
+
+  /* SECTIONS */
+  .section { max-width: 1340px; margin: 0 auto; padding: 56px 24px; }
+  .section-alt { background: #f5f5f5; }
+  .section-alt .section { background: none; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .section-title { font-size: 24px; font-weight: 700; line-height: var(--lh-tight); margin-bottom: 6px; }
+  .section-title-rule { display: flex; align-items: center; gap: 28px; margin-bottom: 22px; }
+  .section-title-rule::before, .section-title-rule::after { content: ""; flex: 1; height: 1px; background: #ccc; }
+  .section-lead { font-size: 15px; line-height: var(--lh-body); color: #444; margin-bottom: 30px; max-width: 900px; }
+  .note { font-size: 13px; line-height: var(--lh-body); color: #555; margin-top: 18px; max-width: 900px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: #ececec; padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(198px, 1fr)); gap: 12px; }
+  .swatch { border: 1px solid #e0e0e0; background: #fff; }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 12px; }
+  .swatch-name { font-size: 14px; font-weight: 600; line-height: var(--lh-tight); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .swatch-use { font-size: 12px; line-height: 1.6; color: #555; margin-top: 6px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 18px 0; border-bottom: 1px solid #e0e0e0; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--muted); line-height: 1.75; }
+  .type-meta b { display: block; font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--text); }
+
+  /* BOOK GRID */
+  .book-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+  .book-cover { position: relative; aspect-ratio: 3 / 4; background: linear-gradient(150deg, #e7e2d8, #b9b2a4); display: flex; align-items: center; justify-content: center; }
+  .book-cover .cover-label { font-family: var(--font-serif); font-size: 20px; color: #4a443a; writing-mode: vertical-rl; letter-spacing: 0.1em; }
+  .book-badge { position: absolute; top: 0; left: 0; color: #fff; font-size: 14px; line-height: 40px; padding: 0 14px; }
+  .book-title { font-size: 16px; font-weight: 600; line-height: var(--lh-body); margin-top: 12px; }
+  .book-author { font-size: 13px; font-weight: 600; line-height: var(--lh-body); color: var(--muted); margin-top: 2px; }
+
+  /* BOOK DETAIL */
+  .detail { display: grid; grid-template-columns: 300px 1fr; gap: 48px; }
+  .detail-cover { aspect-ratio: 3 / 4; background: linear-gradient(150deg, #d8dde2, #9aa4ae); display: flex; align-items: center; justify-content: center; }
+  .detail-cover span { font-family: var(--font-serif); font-size: 26px; color: #2f3740; writing-mode: vertical-rl; letter-spacing: 0.12em; }
+  .detail h3 { font-size: 22px; font-weight: 700; line-height: var(--lh-body); }
+  .detail h4 { font-size: 20px; font-weight: 700; line-height: var(--lh-body); margin-top: 18px; }
+  .detail h5 { font-size: 14px; font-weight: 600; line-height: var(--lh-body); color: var(--muted); margin-top: 6px; }
+  .detail p { font-size: 15px; line-height: var(--lh-body); margin-top: 18px; }
+  .detail-badges { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .spec { width: 100%; border-collapse: collapse; margin-top: 26px; font-size: 15px; line-height: var(--lh-body); }
+  .spec th, .spec td { border-bottom: 1px solid #e0e0e0; text-align: left; padding: 9px 0; font-weight: 400; }
+  .spec th { width: 130px; color: var(--muted); font-weight: 600; }
+
+  /* BADGES */
+  .badge { display: inline-block; color: #fff; font-size: 14px; line-height: 40px; padding: 0 14px; }
+  .badge-new-icon { display: inline-block; background: var(--new); color: #fff; font-size: 14px; font-weight: 500; line-height: 1; border-radius: var(--r-new); padding: 0.3em 0.5em; }
+  .badge-small { font-size: 13px; line-height: 1; padding: 0.3em 0.5em; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+  .btn-more { background: var(--surface); color: var(--text-nav); border: 1px solid var(--surface); border-radius: 0; padding: 1.2em 6.5em; font-size: 14px; line-height: var(--lh-tight); font-family: var(--font); cursor: pointer; }
+  .btn-outline { background: #fff; color: var(--text-nav); border: 1px solid var(--chip); border-radius: 0; padding: 14px 40px; font-size: 14px; font-weight: 700; line-height: var(--lh-tight); font-family: var(--font); cursor: pointer; }
+
+  /* FORMS */
+  .form { max-width: 620px; }
+  .form-row { margin-bottom: 22px; }
+  .form-label { display: block; font-size: 14px; font-weight: 600; line-height: var(--lh-body); margin-bottom: 7px; }
+  .form-input { width: 100%; height: 40px; background: #fff; border: 1px solid #000; border-radius: 0; padding: 0 9px; font-family: var(--font); font-size: 18px; font-feature-settings: "palt"; }
+  .form-input:focus { outline: 2px solid var(--link-on); outline-offset: 1px; }
+  .form-input.is-error { border-color: var(--new); }
+  .form-error { font-size: 13px; line-height: var(--lh-body); color: var(--new); margin-top: 5px; }
+  .form-help { font-size: 13px; line-height: var(--lh-body); color: var(--muted); margin-top: 5px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 760px; }
+  .elev { background: #fff; border: 1px solid #e0e0e0; padding: 22px; font-size: 13px; line-height: var(--lh-body); }
+  .elev-flat { background: var(--surface); border: none; }
+  .elev-dark { background: var(--chip); color: var(--on-dark); border: none; }
+
+  /* LAYOUT */
+  .layout-bar { background: #e8e8e8; padding: 10px 14px; font-family: var(--font-mono); font-size: 11px; margin-bottom: 8px; }
+
+  /* FOOTER */
+  .footer { background: var(--footer); color: var(--on-dark); padding: 48px 24px; }
+  .footer-inner { max-width: 1340px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; font-size: 13px; line-height: var(--lh-body); }
+  .footer a { color: var(--on-dark); text-decoration: none; display: block; }
+  .footer-copy { max-width: 1340px; margin: 34px auto 0; font-size: 10px; color: #666; }
+
+  @media (max-width: 767px) {
+    .book-grid { grid-template-columns: repeat(2, 1fr); }
+    .detail { grid-template-columns: 1fr; }
+    .header-nav { display: none; }
+    .footer-inner { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">SEIGENSHA Group</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-mark">青</span>
+      <span class="logo-text">青幻舎</span>
+      <span class="logo-sub">SEIGENSHA ART PUBLISHING</span>
+    </div>
+    <nav class="header-nav">
+      <a href="#">新着情報一覧</a>
+      <a href="#">新刊・刊行書籍</a>
+      <a href="#">特設</a>
+      <a href="#">オンラインショップ</a>
+      <a href="#">書店さま用</a>
+      <a href="#">お問い合わせ</a>
+    </nav>
+    <div class="lang"><b>JP</b> <span>EN</span></div>
+  </div>
+</header>
+
+<div class="searchstrip">
+  <div class="searchstrip-inner">
+    <input type="search" placeholder="書籍名・著者名・ISBNで検索">
+    <select><option>カテゴリで絞り込む</option><option>アート（374）</option><option>写真</option></select>
+  </div>
+</div>
+
+<div class="chiprow">
+  <a class="chip" href="#">新刊</a>
+  <a class="chip" href="#">新刊予告</a>
+  <a class="chip" href="#">重版</a>
+  <a class="chip" href="#">ヴィジュアル文庫</a>
+  <a class="chip" href="#">360° BOOK</a>
+  <a class="chip" href="#">特装版・サイン本あり</a>
+  <a class="chip" href="#">電子書籍あり</a>
+</div>
+
+<!-- 1. COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / COLORS</div>
+  <h2 class="section-title">ブランド色ではなく「分類の色」</h2>
+  <p class="section-lead">
+    このサイトの色は面を塗るためではなく、<b>書誌の状態を示すバッジ</b>のためにある。赤が 2 色あるのは実装の実態で、
+    <code>#e50c00</code> は New アイコン、<code>#dd4b4b</code> は書影に重ねる帯と用途が分かれている。1 色に丸めないこと。
+  </p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#e50c00"></div><div class="swatch-body"><div class="swatch-name">New</div><div class="swatch-hex">#e50c00</div><div class="swatch-use">New アイコン。可視 8 要素。唯一 角丸（0.3em）を持つバッジ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#dd4b4b"></div><div class="swatch-body"><div class="swatch-name">新刊</div><div class="swatch-hex">#dd4b4b</div><div class="swatch-use">書影に重ねる帯バッジ。可視 5 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#1e73be"></div><div class="swatch-body"><div class="swatch-name">重版</div><div class="swatch-hex">#1e73be</div><div class="swatch-use">可視 3 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#777777"></div><div class="swatch-body"><div class="swatch-name">刊行予定</div><div class="swatch-hex">#777777</div><div class="swatch-use">未確定のものはグレーに落とす。可視 11 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f15a24"></div><div class="swatch-body"><div class="swatch-name">展覧会・イベント</div><div class="swatch-hex">#f15a24</div><div class="swatch-use">可視 7 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#009245"></div><div class="swatch-body"><div class="swatch-name">メディア情報</div><div class="swatch-hex">#009245</div><div class="swatch-use">可視 1 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#666666"></div><div class="swatch-body"><div class="swatch-name">シリーズタグ</div><div class="swatch-hex">#666666</div><div class="swatch-use">「360° BOOK シリーズ」等。可視 8 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#4d4d4d"></div><div class="swatch-body"><div class="swatch-name">Chip Fill</div><div class="swatch-hex">#4d4d4d</div><div class="swatch-use">絞り込みチップの面。文字は #e6e6e6</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#35302e"></div><div class="swatch-body"><div class="swatch-name">Nav / Link</div><div class="swatch-hex">#35302e</div><div class="swatch-use">★最多の文字色。可視 60 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#222222"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#222222</div><div class="swatch-use">見出し・本文。純黒は使わない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#808080"></div><div class="swatch-body"><div class="swatch-name">Text Muted</div><div class="swatch-hex">#808080</div><div class="swatch-use">著者名・副題。可視 25 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fbfbfb;border-bottom:1px solid #e0e0e0"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#fbfbfb</div><div class="swatch-use">ページ背景。純白ではない（根拠 body）</div></div></div>
+  </div>
+</section>
+
+<!-- 2. TYPOGRAPHY -->
+<div class="section-alt">
+<section class="section" id="typography">
+  <div class="section-label">02 / TYPOGRAPHY</div>
+  <h2 class="section-title">palt は全面、字間はゼロ</h2>
+  <p class="section-lead">
+    可視テキスト <b>209 要素すべてに <code>font-feature-settings: "palt"</code></b> が当たっている。一方
+    <b><code>letter-spacing</code> は <code>normal</code></b>（205 / 209）。<b>約物のアキだけを潰して、字間は書体のままにする</b>——
+    詰めと空けを同時にやらない構えが、このサイトの字面を決めている。行間は <b>1.70</b> が 149 要素で支配的。
+  </p>
+
+  <div class="type-row">
+    <div class="type-meta"><b>Section Heading</b>Noto Sans JP 24px / 700<br>line-height 1.10 / ls normal</div>
+    <div style="font-size:24px;font-weight:700;line-height:1.1">新刊案内</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Book Title</b>Noto Sans JP 22px / 700<br>line-height 1.70 / ls normal</div>
+    <div style="font-size:22px;font-weight:700;line-height:1.7">馬の肖像 驥魂 Kikon</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Catch Copy</b>Noto Sans JP 20px / 700<br>line-height 1.70</div>
+    <div style="font-size:20px;font-weight:700;line-height:1.7">馬が放つ一瞬の煌めきを、油彩という技法で画布に封じ込める。</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Card Title</b>Noto Sans JP 16px / 600<br>line-height 1.70</div>
+    <div style="font-size:16px;font-weight:600;line-height:1.7">フェルメール［新版］ ―ちいさな美術館</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Body</b>Noto Sans JP 15px / 400<br>line-height 1.70 / ls normal</div>
+    <div style="font-size:15px;line-height:1.7;max-width:640px">美術・写真・デザイン・工藝・建築を軸に、展覧会図録から文庫まで。判型と造本を書目ごとに選び、書影がそのまま索引になるように一覧を組んでいる。</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Author / Subtitle</b>Noto Sans JP 13px / 600<br>color #808080</div>
+    <div style="font-size:13px;font-weight:600;line-height:1.7;color:#808080">ヨハネス・フェルメール／ちいさな美術館</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Badge</b>14px / 400–500<br>line-height <b>40px（絶対値）</b></div>
+    <div>
+      <span class="badge" style="background:#dd4b4b">新刊</span>
+      <span class="badge" style="background:#1e73be">重版</span>
+      <span class="badge" style="background:#777777">11月刊行予定</span>
+      <span class="badge-new-icon">New</span>
+    </div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>グループ企業名</b>Noto Serif JP 400 / Open Sans 300<br>ls 5.2px / 2.8px（唯一の字間指定）</div>
+    <div>
+      <span style="font-family:var(--font-serif);letter-spacing:5.2px">紫紅社</span>
+      <span style="font-family:var(--font-en);font-weight:300;letter-spacing:2.8px;margin-left:14px">SHIKOSHA</span>
+    </div>
+  </div>
+
+  <p class="note">
+    <b>バッジの <code>line-height: 40px</code> を比率（2.86）に換算しない。</b>高さを 40px に固定するための絶対値で、比率に意味はない。
+    新規実装では高さを <code>height</code> か <code>padding</code> で決め、<code>line-height</code> は 1 前後にすること。
+    <br><b>Noto Sans JP の 300 と 900 は宣言されているが <code>unloaded</code>。</b>使えるのは 400 / 500 / 600 / 700 の 4 段。
+  </p>
+</section>
+</div>
+
+<!-- 3. BOOK GRID -->
+<section class="section" id="grid">
+  <div class="section-label">03 / BOOK GRID</div>
+  <div class="section-title-rule"><h2 class="section-title">新刊案内</h2></div>
+  <p class="section-lead">書影タイルは <b>枠なし・角丸なし・影なし</b>。バッジだけを書影の左上に重ねる。</p>
+  <div class="book-grid">
+    <div>
+      <div class="book-cover"><span class="cover-label">ちいさな美術館</span><span class="book-badge" style="background:#dd4b4b">新刊</span></div>
+      <div class="book-title">フェルメール［新版］</div>
+      <div class="book-author">ヨハネス・フェルメール</div>
+    </div>
+    <div>
+      <div class="book-cover"><span class="cover-label">日本の意匠</span><span class="book-badge" style="background:#1e73be">重版</span></div>
+      <div class="book-title">文様のはなし 増補版</div>
+      <div class="book-author">長瀬智之</div>
+    </div>
+    <div>
+      <div class="book-cover"><span class="cover-label">建築の設計</span><span class="book-badge" style="background:#777777">11月刊行予定</span></div>
+      <div class="book-title">デザイン・工藝・建築 2026</div>
+      <div class="book-author">大沼知之</div>
+    </div>
+    <div>
+      <div class="book-cover"><span class="cover-label">写真と余白</span><span class="book-badge" style="background:#666666">360° BOOK</span></div>
+      <div class="book-title">Threads of Beauty</div>
+      <div class="book-author">高木由利子</div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. BOOK DETAIL -->
+<div class="section-alt">
+<section class="section" id="detail">
+  <div class="section-label">04 / BOOK DETAIL</div>
+  <h2 class="section-title">書誌ページ：書影と表</h2>
+  <p class="section-lead">書名 22px / 700、惹句 20px / 700、本文 15px / 400。いずれも行間 1.70 で通す。</p>
+  <div class="detail">
+    <div class="detail-cover"><span>馬の肖像 驥魂</span></div>
+    <div>
+      <div class="detail-badges">
+        <span class="badge" style="background:#dd4b4b">新刊</span>
+        <span class="badge-new-icon">New</span>
+        <span class="badge badge-small" style="background:#666666">ビジュアル文庫シリーズ</span>
+      </div>
+      <h3 style="margin-top:16px">馬の肖像 驥魂 Kikon</h3>
+      <h5>大沼知之</h5>
+      <h4>馬が放つ一瞬の煌めきを、油彩という技法で画布に封じ込める。</h4>
+      <p>競走馬の肉体が見せる張力を、写実の筆で追い続けた画家の画集。厩舎の薄明かりから返し馬の砂塵まで、
+      同じ一頭を異なる時間で描き分けた 88 点を、原寸に近い判型で収録する。</p>
+      <table class="spec">
+        <tr><th>判型</th><td>A4変型・上製</td></tr>
+        <tr><th>頁数</th><td>176頁</td></tr>
+        <tr><th>定価</th><td>4,950円（税込）</td></tr>
+        <tr><th>ISBN</th><td>978-4-86831-042-6</td></tr>
+        <tr><th>発行</th><td>2026年11月</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- 5. BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-label">05 / BUTTONS</div>
+  <h2 class="section-title">角丸ゼロ。寸法は em で決まる</h2>
+  <p class="section-lead">
+    実測の半端な px（16.8px / 8.4px / 4.2px）は <b><code>em</code> 指定の結果</b>。14px × 1.2em = 16.8px。
+    文字サイズを変えれば寸法が連動する。
+  </p>
+  <div class="btn-row">
+    <button class="btn-more">もっと見る</button>
+    <button class="btn-outline">会社概要</button>
+    <button class="btn-outline">採用情報</button>
+    <a class="chip" href="#">新刊予告</a>
+  </div>
+  <p class="note">
+    <b>絞り込みチップだけが pill（<code>1.2em</code>）</b>。ボタンとバッジは <code>radius: 0</code>。
+    角丸を持つのは New アイコン（<code>0.3em</code>）だけで、他のバッジは全部 0。
+  </p>
+</section>
+
+<!-- 6. FORMS -->
+<div class="section-alt">
+<section class="section" id="forms">
+  <div class="section-label">06 / FORMS</div>
+  <h2 class="section-title">入力欄：高さ 40px・黒 1px・角丸ゼロ</h2>
+  <p class="section-lead">
+    <b>実サイトの既知の問題：<code>input</code> / <code>select</code> だけ <code>font-family: Arial</code> のまま</b>で、
+    <code>font-feature-settings</code> も <code>normal</code>。本文と書体が食い違う。ここでは推奨どおり <code>inherit</code> させている。
+  </p>
+  <div class="form">
+    <div class="form-row">
+      <label class="form-label">書籍名・著者名・ISBN</label>
+      <input class="form-input" type="text" placeholder="フェルメール">
+      <div class="form-help">キーワードは全角・半角どちらでも検索できます</div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">お名前（フォーカス例）</label>
+      <input class="form-input" type="text" value="青幻 太郎" autofocus>
+    </div>
+    <div class="form-row">
+      <label class="form-label">メールアドレス（エラー例）</label>
+      <input class="form-input is-error" type="text" value="seigensha.example">
+      <div class="form-error">メールアドレスの形式が正しくありません</div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- 7. ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / ELEVATION</div>
+  <h2 class="section-title">影は 0 件。深さは面の明度で出す</h2>
+  <p class="section-lead">
+    <code>box-shadow</code> を持つ可視要素は <b>0 件</b>。WordPress 既定の <code>--wp--preset--shadow--*</code> は
+    宣言されているだけで 1 ヶ所も使われていない。
+  </p>
+  <div class="elev-grid">
+    <div class="elev">Level 0 — 罫線 1px<br>カード・表</div>
+    <div class="elev elev-flat">Surface #f2f2f2<br>「もっと見る」の面</div>
+    <div class="elev elev-dark">Chip #4d4d4d<br>文字は #e6e6e6</div>
+  </div>
+</section>
+
+<!-- 8. LAYOUT -->
+<div class="section-alt">
+<section class="section" id="layout">
+  <div class="section-label">08 / LAYOUT</div>
+  <h2 class="section-title">固定コンテナを持たない流動レイアウト</h2>
+  <p class="section-lead">
+    <code>max-width</code> を持つコンテナは実測 0 件。% とパディングで組み、グリッドのカラム数で調整する。
+    主ブレークポイントは <code>max-width: 767px</code>（13 ルール）。
+  </p>
+  <div class="layout-bar">Desktop — 書影グリッド 4 カラム / gap 28px</div>
+  <div class="layout-bar" style="width:70%">Tablet（≤ 900px）— 3 カラム</div>
+  <div class="layout-bar" style="width:45%">Mobile（≤ 767px）— 2 カラム・ナビはドロワー</div>
+</section>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <a href="#">新刊・刊行書籍</a>
+      <a href="#">アート</a>
+      <a href="#">写真</a>
+      <a href="#">デザイン・工藝・建築</a>
+    </div>
+    <div>
+      <a href="#">展覧会・イベント</a>
+      <a href="#">メディア情報</a>
+      <a href="#">特設ページ</a>
+    </div>
+    <div>
+      <a href="#">オンラインショップ</a>
+      <a href="#">書店さま用</a>
+      <a href="#">お問い合わせ</a>
+    </div>
+    <div>
+      <a href="#">会社概要</a>
+      <a href="#">採用情報</a>
+      <a href="#">プライバシーポリシー</a>
+    </div>
+  </div>
+  <div class="footer-copy">Copyright © Seigensha Art Publishing, Inc. All Rights Reserved.</div>
+</footer>
+
+</body>
+</html>

@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (495 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (498 sites)</a>
 </p>
 
 <table>
@@ -754,6 +754,11 @@
 <td align="center"><strong>カリモク家具</strong><br><img src="design-md/karimoku/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>白鶴酒造</strong><br><img src="design-md/hakutsuru/preview-screenshot.png" width="120"></td>
 </tr>
+<tr>
+<td align="center"><strong>青幻舎</strong><br><img src="design-md/seigensha/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>足立美術館</strong><br><img src="design-md/adachi-museum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>みんなの銀行</strong><br><img src="design-md/minna-no-ginko/preview-screenshot.png" width="120"></td>
+</tr>
 </table>
 
 ### テンプレートの使い方
@@ -1309,11 +1314,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [丸亀製麺 (MARUGAME SEIMEN)](https://www.marugame-seimen.com/) | Restaurant / Food | [DESIGN.md](design-md/marugame/DESIGN.md) | [preview.html](design-md/marugame/preview.html) |
 | [カリモク家具 (karimoku)](https://www.karimoku.co.jp/) | Furniture / Manufacturing | [DESIGN.md](design-md/karimoku/DESIGN.md) | [preview.html](design-md/karimoku/preview.html) |
 | [白鶴酒造 (HAKUTSURU)](https://www.hakutsuru.co.jp/) | Sake Brewery / Beverage | [DESIGN.md](design-md/hakutsuru/DESIGN.md) | [preview.html](design-md/hakutsuru/preview.html) |
+| [青幻舎 (SEIGENSHA)](https://www.seigensha.com/) | Publishing / Art Books | [DESIGN.md](design-md/seigensha/DESIGN.md) | [preview.html](design-md/seigensha/preview.html) |
+| [足立美術館 (ADACHI MUSEUM OF ART)](https://www.adachi-museum.or.jp/) | Museum / Japanese Garden | [DESIGN.md](design-md/adachi-museum/DESIGN.md) | [preview.html](design-md/adachi-museum/preview.html) |
+| [みんなの銀行 (Minna no Ginko)](https://www.minna-no-ginko.com/) | Digital Bank / Finance | [DESIGN.md](design-md/minna-no-ginko/DESIGN.md) | [preview.html](design-md/minna-no-ginko/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (495 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (498 sites)</a>
 </p>
 
 <table>
@@ -2032,6 +2040,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 <td align="center"><strong>丸亀製麺</strong><br><img src="design-md/marugame/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>カリモク家具</strong><br><img src="design-md/karimoku/preview-screenshot.png" width="120"></td>
 <td align="center"><strong>白鶴酒造</strong><br><img src="design-md/hakutsuru/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>青幻舎</strong><br><img src="design-md/seigensha/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>足立美術館</strong><br><img src="design-md/adachi-museum/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>みんなの銀行</strong><br><img src="design-md/minna-no-ginko/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
