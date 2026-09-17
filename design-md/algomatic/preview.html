@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Algomatic（アルゴマティック）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Antique&family=Poppins:wght@500;600&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は 28 個すべて自社トークン（platform 0）。
+       以下は実サイトの :root をそのまま写している。2026-09-17 実測 */
+    --color-primary:        #f8444d;  /* ★面 17 要素 / 文字 37 要素。唯一のアクセント */
+    --color-primary-hover:  #fff2f3;  /* ホバー専用。静止状態では可視 0 要素 */
+    --color-text:           #16171d;  /* ★本文。可視 59 要素。純黒ではない */
+    --color-text-muted:     #585e74;  /* 補助。可視上位 3 色には入らない */
+    --color-text-inverse:   #ffffff;  /* 黒面・赤面の上。可視 51 要素 */
+    --color-surface:        #ffffff;  /* pageBackground.resolved / 根拠 body */
+    --color-surface-dark:   #16171d;  /* 面 8 要素 */
+    --color-surface-muted:  #f0f1f4;  /* 面 4 要素。フィルタ非選択 */
+    --color-surface-subtle: #fafafc;  /* 宣言のみ。可視 0 要素 */
+    --color-border:         #c5c8d3;
+    --color-border-accent:  #f8444d;
+    /* フォーム部品だけ Tailwind slate の素通し。本体のニュートラルとは別系統 */
+    --color-form-text:         #020617;  /* slate-950 */
+    --color-form-placeholder:  #64748b;  /* slate-500 */
+    --color-form-input-border: #e2e8f0;  /* slate-200 */
+
+    /* === Fonts ===
+       見出しの ten-mincho-antique（貂明朝アンチック / Adobe Fonts）はドメインライセンスのため
+       ローカルでは表示できない。同じアンチック体の Zen Antique で代替する
+       （仮名が写植のアンチック・漢字がゴシック寄り、という字面の性格が最も近い）。
+       欧文の nexa（Adobe Fonts）はジオメトリック・サンセリフなので Poppins で代替。
+       本文の游ゴシック体は OS フォントなので macOS では実サイトと同一表示。 */
+    --font-family-base:    "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic",
+                           "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP",
+                           Meiryo, sans-serif;
+    --font-family-en:      "Poppins", sans-serif;      /* 代替: nexa（500 / 600 のみ loaded） */
+    --font-family-display: "Zen Antique",              /* 代替: ten-mincho-antique 700 */
+                           "Hiragino Mincho ProN", "游明朝", "Yu Mincho", YuMincho,
+                           "MS PMincho", serif;
+
+    /* === Size ===
+       --font-size-body は実サイトの宣言そのまま。1.6rem は root 8.47px 換算で 13.55px */
+    --font-size-body:      clamp(13px, 1.6rem, 16px);
+    --letter-spacing-body: .064rem;   /* ★実測 0.542117px。em ではなく rem で宣言する */
+
+    --radius-xs:   .4rem;   /* 実測 3.38823px / 28 要素。写真・小さな面 */
+    --radius-sm:   .8rem;
+    --radius-md:   1.2rem;  /* ★実測 10.1647px / 73 要素。既定 */
+    --radius-full: 999px;   /* Get In Touch の丸ボタンのみ（1 要素） */
+
+    --shadow-card: 0 0 1.6rem 0 #2c2f3a1f;  /* 宣言のみ。可視 0 要素 */
+    --noise-opacity: .24;
+
+    --section-padding-x: 8rem;    /* 実測 67.76px @1440 */
+    --section-padding-y: 14rem;   /* ★実測 118.61px @1440。余白の主役 */
+    --border-h-width: 1px;
+  }
+
+  /* ★このサイトの寸法はすべてこの rem に乗る。
+     実測 8.47058px @1440 = 100vw / 170（デザイン幅 1700px で 1rem = 10px）。
+     16px や 62.5% に変えるとトークンの数値が全部壊れる。 */
+  html { font-size: calc(100vw / 170); }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-body);
+    font-weight: 400;
+    line-height: 1.65;                          /* 本文の行間 */
+    letter-spacing: var(--letter-spacing-body); /* ★rem 固定。サイズに連動させない */
+    font-feature-settings: "palt";              /* 実測 35 要素 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== HEADER ===== */
+  .header { display: flex; align-items: center; justify-content: space-between;
+            padding: 3.2rem var(--section-padding-x); position: relative; z-index: 3; }
+  .logo { font-family: var(--font-family-en); font-size: 22px; font-weight: 600;
+          letter-spacing: 0.02em; color: var(--color-text); }
+  .header-nav { display: flex; gap: 5.2rem; align-items: center; }
+  /* ナビは px 固定。rem に載せない（実測 14px / letter-spacing 0.28px） */
+  .header-nav a { font-family: var(--font-family-en); font-size: 14px; font-weight: 500;
+                  line-height: 1.30; letter-spacing: 0.28px; color: var(--color-text);
+                  text-decoration: none; }
+
+  /* ===== HERO ===== */
+  .hero { position: relative; padding: 6rem var(--section-padding-x) 10rem; overflow: hidden; }
+  .hero-rail { position: absolute; left: 3.6rem; top: 0; bottom: 0; width: var(--border-h-width);
+               background: var(--color-border-accent); }
+  .hero-scroll { position: absolute; left: 1.4rem; bottom: 8rem;
+                 writing-mode: vertical-rl;   /* ★実サイトで唯一の縦組み（1 要素） */
+                 font-size: 13px; font-weight: 500; line-height: 1.12;
+                 letter-spacing: 0.237176px; color: var(--color-primary); }
+  .blob { position: absolute; border-radius: 50%; filter: blur(4px); }
+  .blob-a { width: 62rem; height: 62rem; right: 10rem; top: -14rem;
+            background: radial-gradient(circle at 35% 35%, #ffb27a 0%, #f8444d 55%, #f8737a 100%); }
+  .blob-b { width: 58rem; height: 58rem; right: -4rem; top: 26rem;
+            background: radial-gradient(circle at 40% 40%, #ffcf9a 0%, #b23cf0 45%, #7a2fd6 100%); }
+  /* ノイズ。--noise-opacity .24 が前提。フラットなグラデにしない */
+  .noise { position: absolute; inset: 0; opacity: var(--noise-opacity); pointer-events: none;
+           background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='120' height='120' filter='url(%23n)' opacity='0.55'/></svg>"); }
+  .hero-copy { position: relative; z-index: 2; margin-top: 16rem; }
+  /* ★見出しは貂明朝アンチック 700。palt で詰めた上に 0.08em 空ける */
+  .hero-copy h1 { font-family: var(--font-family-display); font-size: 16.8rem; font-weight: 700;
+                  line-height: 1.12; letter-spacing: 0.08em; font-feature-settings: "palt"; }
+  .hero-meta { position: relative; z-index: 2; margin-top: 4.4rem; display: flex; gap: 2.4rem;
+               align-items: center; }
+
+  /* ===== SECTION ===== */
+  .section { padding: var(--section-padding-y) var(--section-padding-x); }
+  .section-alt { background: var(--color-surface-muted); }
+  .section-dark { background: var(--color-surface-dark); color: var(--color-text-inverse); }
+  .section-num { font-family: var(--font-family-en); font-size: 12px; font-weight: 500;
+                 letter-spacing: 0.24px; color: var(--color-text-muted); margin-bottom: 1.2rem; }
+  /* セクションラベルは nexa 400 / 1.6rem / 赤 */
+  .eyebrow { font-family: var(--font-family-en); font-size: 1.6rem; font-weight: 500;
+             line-height: 1.20; letter-spacing: var(--letter-spacing-body);
+             color: var(--color-primary); margin-bottom: 2.4rem; }
+  .section-dark .eyebrow { color: var(--color-primary); }
+  .section-title { font-family: var(--font-family-display); font-size: 6.4rem; font-weight: 700;
+                   line-height: 1.32; letter-spacing: 0.08em; font-feature-settings: "palt"; }
+  .section-lead { max-width: 72rem; margin-top: 3.2rem; line-height: 1.65; }
+  .note { max-width: 72rem; margin-top: 3.2rem; padding: 2.4rem 3.2rem;
+          background: var(--color-surface-subtle); border-left: 3px solid var(--color-primary);
+          border-radius: var(--radius-xs); line-height: 1.65; color: var(--color-text); }
+  .section-alt .note { background: #ffffff; }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 0.92em;
+         background: #ffffff; border: 1px solid var(--color-border); border-radius: 3px;
+         padding: 0 4px; }
+  .section-alt code { background: #ffffff; }
+  .section-dark code { background: #24262f; border-color: #3b3e4b; color: #ffffff; }
+
+  /* ===== SWATCHES ===== */
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.4rem; margin-top: 5.2rem; }
+  .swatch { border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; }
+  .swatch-chip { height: 9rem; }
+  .swatch-body { padding: 2rem; background: #ffffff; }
+  .swatch-name { font-weight: 700; font-size: 1.6rem; line-height: 1.5; }
+  .swatch-hex { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 1.4rem;
+                color: var(--color-text-muted); margin: 0.4rem 0 0.8rem; }
+  .swatch-use { font-size: 1.4rem; line-height: 1.56; color: var(--color-text-muted); }
+
+  /* ===== TYPE SPECIMENS ===== */
+  .type-row { display: grid; grid-template-columns: 26rem 1fr; gap: 4rem; align-items: baseline;
+              padding: 3.2rem 0; border-top: var(--border-h-width) solid var(--color-border); }
+  .type-meta { font-size: 1.4rem; line-height: 1.56; color: var(--color-text-muted); }
+  .type-meta b:first-child { display: block; color: var(--color-text); font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .d-hero    { font-family: var(--font-family-display); font-size: 9rem; font-weight: 700;
+               line-height: 1.12; letter-spacing: 0.08em; font-feature-settings: "palt"; }
+  .d-h2      { font-family: var(--font-family-display); font-size: 6.4rem; font-weight: 700;
+               line-height: 1.32; letter-spacing: 0.08em; font-feature-settings: "palt"; }
+  .d-lead    { font-family: var(--font-family-display); font-size: 3.2rem; font-weight: 700;
+               line-height: 1.32; letter-spacing: .128rem; color: var(--color-primary); }
+  .d-en-big  { font-family: var(--font-family-en); font-size: 12rem; font-weight: 600;
+               line-height: 1.00; letter-spacing: -0.02em; }
+  .d-label   { font-family: var(--font-family-en); font-size: 1.6rem; font-weight: 500;
+               line-height: 1.20; letter-spacing: var(--letter-spacing-body); color: var(--color-primary); }
+  .d-h3      { font-size: 2.8rem; font-weight: 700; line-height: 1.50; letter-spacing: .096rem; }
+  .d-name    { font-size: 2rem; font-weight: 700; line-height: 1.20; letter-spacing: .036rem; }
+  .d-body    { font-size: var(--font-size-body); line-height: 1.65; letter-spacing: var(--letter-spacing-body); }
+  .d-tag     { font-size: 12px; font-weight: 500; line-height: 1.42; letter-spacing: .024rem; }
+
+  .scale-bar { display: flex; align-items: baseline; gap: 2.4rem; flex-wrap: wrap;
+               font-family: var(--font-family-en); font-weight: 500; color: var(--color-text-muted);
+               margin-top: 4rem; padding-bottom: 3.2rem;
+               border-bottom: var(--border-h-width) solid var(--color-border); }
+
+  /* ===== BUTTONS ===== */
+  .btn-row { display: flex; align-items: center; gap: 3.2rem; flex-wrap: wrap; margin-top: 5.2rem; }
+  /* Primary Dark。padding は 1.6rem 5.6rem、font-size は px 固定 */
+  .btn-dark { display: inline-block; background: var(--color-surface-dark);
+              color: var(--color-text-inverse); border: 1px solid transparent;
+              border-radius: var(--radius-md); padding: 1.6rem 5.6rem;
+              font-family: var(--font-family-base); font-size: 14px; font-weight: 700;
+              line-height: 1.30; letter-spacing: .028rem;
+              font-feature-settings: normal;   /* UI 部品には palt を効かせない */
+              text-decoration: none; box-shadow: inset 0 0 0 0 #ffffff; cursor: pointer; }
+  .btn-round { display: flex; flex-direction: column; align-items: center; justify-content: center;
+               width: 18rem; height: 18rem; border-radius: var(--radius-full);
+               background: var(--color-primary); color: var(--color-text-inverse);
+               text-decoration: none; }
+  .btn-round .en { font-family: var(--font-family-en); font-size: 1.6rem; font-weight: 600;
+                   line-height: 1.20; }
+  .btn-round .ja { font-size: 1.4rem; line-height: 1.42; margin-top: 0.4rem; }
+  .filters { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 3.2rem; }
+  /* フィルタだけ radius 0。このサイトで唯一の角丸ゼロ部品 */
+  .filter-btn { background: var(--color-surface-muted); color: var(--color-text); border: 1px solid transparent;
+                border-radius: 0; padding: 0.6rem 1.6rem; font-family: var(--font-family-base);
+                font-size: 13px; font-weight: 500; line-height: 1.42; letter-spacing: .056rem;
+                cursor: pointer; }
+  .filter-btn.is-active { background: var(--color-primary); color: var(--color-text-inverse); }
+  .btn-note { font-size: 1.4rem; line-height: 1.56; color: var(--color-text-muted); }
+
+  /* ===== BAND ===== */
+  .band { display: flex; align-items: center; justify-content: space-between;
+          background: var(--color-primary); color: var(--color-text-inverse);
+          border-radius: var(--radius-md); padding: 5.6rem 6.5rem; margin-top: 5.2rem; }
+  .band .en { font-family: var(--font-family-en); font-size: 4.2rem; font-weight: 600; line-height: 1.00; }
+  .band .ja { font-size: 1.6rem; line-height: 1.42; margin-top: 0.8rem; }
+  .band-arrow { font-family: var(--font-family-en); font-size: 3.2rem; font-weight: 500; }
+
+  /* ===== CARDS ===== */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.4rem; margin-top: 5.2rem; }
+  .card { background: #ffffff; border: 1px solid var(--color-border);
+          border-radius: var(--radius-md); padding: 3.2rem; }
+  .card h3 { font-size: 2.8rem; font-weight: 700; line-height: 1.50; letter-spacing: .096rem; }
+  .card p  { margin-top: 1.6rem; line-height: 1.56; color: var(--color-text-muted); }
+  .card .tags { display: flex; gap: 0.8rem; margin-top: 2.4rem; }
+  .tag { background: var(--color-surface-muted); color: var(--color-text);
+         border-radius: var(--radius-xs); padding: 0.4rem 1.2rem;
+         font-size: 12px; font-weight: 500; line-height: 1.42; letter-spacing: .024rem; }
+  .persons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.4rem; margin-top: 5.2rem; }
+  .person-photo { height: 16rem; border-radius: var(--radius-xs);
+                  background: linear-gradient(135deg, #f0f1f4 0%, #d9dbe4 100%); }
+  .person-role { font-size: 12px; font-weight: 500; line-height: 1.42; letter-spacing: .024rem;
+                 color: var(--color-text-muted); margin-top: 1.2rem; }
+  .person-name { font-size: 2rem; font-weight: 700; line-height: 1.20; letter-spacing: .036rem;
+                 margin-top: 0.4rem; }
+
+  /* ===== FORM（別系統の slate トークン） ===== */
+  .form { max-width: 72rem; margin-top: 5.2rem; display: grid; gap: 2.4rem; }
+  .field label { display: block; font-size: 1.4rem; font-weight: 700; line-height: 1.56;
+                 margin-bottom: 0.8rem; }
+  .field input, .field textarea {
+    width: 100%; background: #ffffff; color: var(--color-form-text);
+    border: 1px solid var(--color-form-input-border); border-radius: var(--radius-xs);
+    padding: 1.6rem; font-family: var(--font-family-base); font-size: var(--font-size-body);
+    line-height: 1.65; letter-spacing: var(--letter-spacing-body); }
+  .field input::placeholder, .field textarea::placeholder { color: var(--color-form-placeholder); }
+  /* フォーカスはアクセントの赤で示す。autofocus は使わず .is-focus で見せる */
+  .field input.is-focus { outline: 2px solid var(--color-primary); outline-offset: 1px;
+                          border-color: var(--color-primary); }
+
+  /* ===== SPACING / RADIUS SPECIMEN ===== */
+  .spec { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.4rem; margin-top: 5.2rem; }
+  .spec-item { border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 2.4rem; }
+  .spec-bar { height: 1.2rem; background: var(--color-primary); border-radius: var(--radius-xs); }
+  .spec-label { font-size: 1.4rem; line-height: 1.56; color: var(--color-text-muted); margin-top: 1.2rem; }
+  .spec-label b { color: var(--color-text); }
+  .radius-demo { display: flex; gap: 2.4rem; align-items: flex-end; margin-top: 5.2rem; flex-wrap: wrap; }
+  .radius-box { width: 12rem; height: 12rem; background: var(--color-surface-muted);
+                border: 1px solid var(--color-border); display: flex; align-items: center;
+                justify-content: center; font-size: 1.4rem; color: var(--color-text-muted); }
+
+  /* ===== DO / DON'T ===== */
+  .dd { display: grid; grid-template-columns: 1fr 1fr; gap: 3.2rem; margin-top: 5.2rem; }
+  .dd-col { border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 3.2rem;
+            background: #ffffff; }
+  .dd-col h3 { font-size: 2rem; font-weight: 700; line-height: 1.50; margin-bottom: 2rem; }
+  .dd-do h3   { color: #1c7a4a; }
+  .dd-dont h3 { color: var(--color-primary); }
+  .dd-col ul { list-style: none; display: grid; gap: 1.2rem; }
+  .dd-col li { position: relative; padding-left: 2.4rem; line-height: 1.56; }
+  .dd-col li::before { position: absolute; left: 0; font-weight: 700; }
+  .dd-do li::before   { content: "○"; color: #1c7a4a; }
+  .dd-dont li::before { content: "×"; color: var(--color-primary); }
+
+  /* ===== FOOTER ===== */
+  .footer { background: var(--color-surface-dark); color: var(--color-text-inverse);
+            padding: 10rem var(--section-padding-x) 5.2rem; }
+  .footer-nav { display: flex; gap: 5.2rem; flex-wrap: wrap; }
+  .footer-nav a { color: var(--color-text-inverse); text-decoration: none;
+                  font-size: 1.6rem; line-height: 1.22; letter-spacing: .028rem; }
+  .footer-copy { margin-top: 8rem; font-size: 10px; line-height: 1.20; color: #8c90a0; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="logo" href="#">ALGOMATIC</a>
+  <nav class="header-nav">
+    <a href="#">About</a><a href="#">Service</a><a href="#">News</a><a href="#">Recruit</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="blob blob-a"></div>
+  <div class="blob blob-b"></div>
+  <div class="noise"></div>
+  <div class="hero-rail"></div>
+  <div class="hero-scroll">Scroll Down</div>
+  <div class="hero-copy">
+    <h1>AIで企業のOSを<br>つくり変える会社</h1>
+  </div>
+  <div class="hero-meta">
+    <a class="btn-dark" href="#">私たちについて</a>
+    <span class="btn-note">見出しは <code>ten-mincho-antique</code> 700（代替: Zen Antique）。<b>ゴシックではない</b></span>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-num">01 / Colors</div>
+  <div class="eyebrow">Color Palette</div>
+  <h2 class="section-title">白地に、赤ひとつ</h2>
+  <p class="section-lead">アクセントは <b>#f8444d</b> の 1 色だけ。面にも文字にも罫にも同じ赤を使い回す。本文の黒は純黒ではなく <code>#16171d</code>、面の階調は <code>#f0f1f4</code> と <code>#fafafc</code> の 2 段しかない。</p>
+
+  <div class="grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#f8444d"></div><div class="swatch-body"><div class="swatch-name">Primary</div><div class="swatch-hex">#f8444d</div><div class="swatch-use">★面 17 要素 / 文字 37 要素。CTA・フィルタ選択・Scroll Down・ラベル</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#16171d"></div><div class="swatch-body"><div class="swatch-name">Text / Surface Dark</div><div class="swatch-hex">#16171d</div><div class="swatch-use">★本文 59 要素かつ塗り面 8 要素。純黒ではない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#585e74"></div><div class="swatch-body"><div class="swatch-name">Text Muted</div><div class="swatch-hex">#585e74</div><div class="swatch-use">補助テキスト。可視上位 3 色には入らない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f0f1f4"></div><div class="swatch-body"><div class="swatch-name">Surface Muted</div><div class="swatch-hex">#f0f1f4</div><div class="swatch-use">面 4 要素。フィルタの非選択状態</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fafafc"></div><div class="swatch-body"><div class="swatch-name">Surface Subtle</div><div class="swatch-hex">#fafafc</div><div class="swatch-use">宣言のみ。<b>実サイトでは可視 0 要素</b></div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#c5c8d3"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#c5c8d3</div><div class="swatch-use">区切り線・カード枠</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fff2f3"></div><div class="swatch-body"><div class="swatch-name">Primary Hover</div><div class="swatch-hex">#fff2f3</div><div class="swatch-use">ホバー専用。静止状態では可視 0 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e2e8f0"></div><div class="swatch-body"><div class="swatch-name">Form Border</div><div class="swatch-hex">#e2e8f0</div><div class="swatch-use">slate-200。<b>フォーム部品だけ別系統</b></div></div></div>
+  </div>
+
+  <p class="note"><b>フォーム部品だけブランドのニュートラルから外れている。</b>本文の黒は <code>#16171d</code> なのに入力欄の文字は <code>#020617</code>（slate-950）、罫は <code>#c5c8d3</code> ではなく <code>#e2e8f0</code>（slate-200）。実装の実態としてそうなっているので、既存ページに合わせるならこの 3 値を使う。</p>
+</section>
+
+<section class="section section-alt">
+  <div class="section-num">02 / Typography</div>
+  <div class="eyebrow">Typography</div>
+  <h2 class="section-title">見出しは明朝アンチック</h2>
+  <p class="section-lead">一見ヘビーゴシックだが、実体は <b>貂明朝アンチック（<code>ten-mincho-antique</code>）700</b>。仮名が写植のアンチック、漢字がゴシック寄りという字面で、<b>ゴシックに置き換えると仮名の表情が消える</b>。和文の本文には Web フォントを 1 本も使わず、游ゴシック体（OS ローカル）で組む。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:10px">10</span><span style="font-size:12px">12</span><span style="font-size:13px">13</span>
+    <span style="font-size:14px">14</span><span style="font-size:2rem">2rem</span><span style="font-size:2.8rem">2.8rem</span>
+    <span style="font-size:3.2rem">3.2rem</span><span style="font-size:6.4rem;font-family:var(--font-family-display);font-weight:700">6.4rem</span>
+    <span style="font-size:9rem;font-family:var(--font-family-display);font-weight:700">16.8rem</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Hero (h1) ★</b>貂明朝アンチック / 16.8rem（実測 142.306px）/ 700<br>lh 1.12 / ls <b>0.08em</b> / palt</div><div class="d-hero">AIで企業のOSを</div></div>
+  <div class="type-row"><div class="type-meta"><b>Hero Accent</b>nexa（代替 Poppins）/ 19.6rem / 600<br>lh 1.00 / ls <b>-0.02em</b>（和文とは逆に詰める）</div><div class="d-en-big">AO</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Heading (h2) ★</b>貂明朝アンチック / 6.4rem（54.2117px）/ 700<br>lh 1.32 / ls <b>0.08em</b> / palt</div><div class="d-h2">AIを前提とした企業運営</div></div>
+  <div class="type-row"><div class="type-meta"><b>Lead</b>貂明朝アンチック / 3.2rem / 700<br>lh 1.32 / ls .128rem / 色 #f8444d</div><div class="d-lead">これまで、200社を超えるAI変革を実現</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Label</b>nexa / 1.6rem / 500<br>lh 1.20 / ls .064rem / 色 #f8444d</div><div class="d-label">Feature</div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Heading (h3)</b>游ゴシック体 / 2.8rem / 700<br>lh 1.50 / ls .096rem</div><div class="d-h3">経営層向けAI活用伴走支援</div></div>
+  <div class="type-row"><div class="type-meta"><b>Person Name</b>游ゴシック体 / 2rem / 700<br>lh 1.20 / ls .036rem（28 要素）</div><div class="d-name">鴨居 啓人</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>游ゴシック体 / clamp(13px, 1.6rem, 16px)<br>lh 1.65 / ls <b>.064rem</b>（rem 固定）</div><div class="d-body">生成AIの登場以降、AIは我々の想像を超えるスピードで進化を続けている。AIはただのツールではなく、人と横並びで仕事をする存在になりつつある。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav Link</b>nexa / <b>14px（px 固定）</b> / 500<br>lh 1.30 / ls 0.28px（px 固定）</div><div style="font-family:var(--font-family-en);font-size:14px;font-weight:500;line-height:1.3;letter-spacing:0.28px">About　Service　News</div></div>
+  <div class="type-row"><div class="type-meta"><b>Tag</b>游ゴシック体 / <b>12px（px 固定）</b> / 500<br>lh 1.42 / ls .024rem（可視 37 要素で最多）</div><div class="d-tag">プレスリリース　経営層向け支援　事業変革</div></div>
+
+  <p class="note"><b>サイズには 2 つの系統がある。</b>見出し・本文・カードは <code>rem</code> で viewport に連動し、ナビ・ボタン・チップは <b>px 固定（12 / 13 / 14px）</b>。UI 部品はどの画面幅でも同じ大きさにする設計。<br><b>字間も同じ考え方で <code>rem</code> 宣言。</b><code>em</code> で書くとサイズに比例してしまい、「本文の字間は絶対値」という設計が崩れる。例外は 40px を超える大見出しだけで、そこは <code>0.08em</code>（ヒーローも h2 もちょうど 8%）。</p>
+</section>
+
+<section class="section">
+  <div class="section-num">03 / Components</div>
+  <div class="eyebrow">Components</div>
+  <h2 class="section-title">角丸は1.2rem、影はゼロ</h2>
+  <p class="section-lead"><code>border-radius</code> は実測 3 値だけ ——<b>1.2rem（73 要素）</b>、0.4rem（28 要素）、999px（1 要素）。静止状態の <code>box-shadow</code> は 0 要素で、<code>--shadow-card</code> は宣言されているだけ。</p>
+
+  <div class="btn-row">
+    <a class="btn-dark" href="#">私たちについて</a>
+    <a class="btn-round" href="#"><span class="en">Get In Touch</span><span class="ja">お問い合わせ</span></a>
+    <span class="btn-note"><b>Primary Dark</b>：#16171d / radius 1.2rem / padding 1.6rem 5.6rem / 14px weight 700<br><b>Primary Round</b>：#f8444d / radius 999px / 英語＋日本語の2段</span>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn is-active">すべて</button>
+    <button class="filter-btn">経営層向け支援</button>
+    <button class="filter-btn">事業変革</button>
+    <button class="filter-btn">組織変革</button>
+  </div>
+  <p class="note">フィルタだけ <code>border-radius: 0</code>。<b>このサイトで唯一の角丸ゼロ部品</b>。選択状態が <code>#f8444d</code>、非選択が <code>#f0f1f4</code>。</p>
+
+  <div class="cards">
+    <div class="card">
+      <h3>AI導入戦略策定支援</h3>
+      <p>AIのプロフェッショナルが戦略策定をご支援します。現状の業務を棚卸しし、効果の出る領域から着手します。</p>
+      <div class="tags"><span class="tag">経営層向け支援</span><span class="tag">事業変革</span></div>
+    </div>
+    <div class="card">
+      <h3>経営層向けAI活用伴走支援</h3>
+      <p>経営層がAIの可能性と限界を掴み、自ら意思決定できる状態をつくります。</p>
+      <div class="tags"><span class="tag">経営層向け支援</span></div>
+    </div>
+    <div class="card">
+      <h3>新規事業開発支援</h3>
+      <p>創業以来50以上のAIネイティブな事業立ち上げで培った型を持ち込みます。</p>
+      <div class="tags"><span class="tag">事業変革</span><span class="tag">組織変革</span></div>
+    </div>
+  </div>
+
+  <div class="persons">
+    <div><div class="person-photo"></div><div class="person-role">代表取締役CEO</div><div class="person-name">鴨居 啓人</div></div>
+    <div><div class="person-photo"></div><div class="person-role">執行役員 COO</div><div class="person-name">高橋 椋一</div></div>
+    <div><div class="person-photo"></div><div class="person-role">執行役員 CHRO</div><div class="person-name">高橋 寛行</div></div>
+    <div><div class="person-photo"></div><div class="person-role">執行役員 CTO</div><div class="person-name">山田 拓郎</div></div>
+  </div>
+  <p class="note">人物写真だけ <code>--radius-xs</code>（0.4rem / 実測 3.38823px）。カードとボタンは 1.2rem。</p>
+
+  <div class="band">
+    <div><div class="en">Get In Touch</div><div class="ja">AI活用のご相談はこちらから</div></div>
+    <div class="band-arrow">→</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-num">04 / Form</div>
+  <div class="eyebrow">Form</div>
+  <h2 class="section-title">入力欄だけ別系統</h2>
+  <p class="section-lead">フォームのトークンは Tailwind slate の素通し（<code>#020617</code> / <code>#64748b</code> / <code>#e2e8f0</code>）。フォーカスはアクセントの赤で示す。<b><code>autofocus</code> は使わず <code>.is-focus</code> クラスで見せている</b>。</p>
+  <div class="form">
+    <div class="field"><label for="f-name">お名前</label><input id="f-name" type="text" placeholder="山田 太郎"></div>
+    <div class="field"><label for="f-mail">メールアドレス（フォーカス状態）</label><input id="f-mail" class="is-focus" type="text" placeholder="taro@example.com"></div>
+    <div class="field"><label for="f-msg">ご相談内容</label><textarea id="f-msg" rows="4" placeholder="AI導入の進め方について相談したい"></textarea></div>
+    <div><a class="btn-dark" href="#">送信する</a></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-num">05 / Layout</div>
+  <div class="eyebrow">Layout &amp; Spacing</div>
+  <h2 class="section-title">rootは8.47px</h2>
+  <p class="section-lead"><code>html { font-size: calc(100vw / 170) }</code> ——1440px で <b>1rem = 8.47058px</b>、デザイン幅 1700px で 1rem = 10px になる流体ルート。<b>このサイトの寸法はすべてこの rem に乗っている。</b>16px や 62.5% に変えると <code>--section-padding-y: 14rem</code> をはじめトークンの数値が全部壊れる。</p>
+
+  <div class="spec">
+    <div class="spec-item"><div class="spec-bar" style="width:0.8rem"></div><div class="spec-label"><b>0.8rem</b><br>6.78px @1440</div></div>
+    <div class="spec-item"><div class="spec-bar" style="width:1.2rem"></div><div class="spec-label"><b>1.2rem</b><br>10.16px ★gap 最多（19 要素）</div></div>
+    <div class="spec-item"><div class="spec-bar" style="width:2.4rem"></div><div class="spec-label"><b>2.4rem</b><br>20.33px カード間</div></div>
+    <div class="spec-item"><div class="spec-bar" style="width:3.2rem"></div><div class="spec-label"><b>3.2rem</b><br>27.11px ブロック間</div></div>
+    <div class="spec-item"><div class="spec-bar" style="width:5.2rem"></div><div class="spec-label"><b>5.2rem</b><br>44.05px セクション内の段</div></div>
+    <div class="spec-item"><div class="spec-bar" style="width:8rem"></div><div class="spec-label"><b>8rem</b><br>67.76px ★--section-padding-x</div></div>
+    <div class="spec-item"><div class="spec-bar" style="width:14rem"></div><div class="spec-label"><b>14rem</b><br>118.61px ★--section-padding-y</div></div>
+    <div class="spec-item"><div class="spec-bar" style="width:100%"></div><div class="spec-label"><b>72rem</b><br>609.88px 本文カラム</div></div>
+  </div>
+
+  <div class="radius-demo">
+    <div class="radius-box" style="border-radius:var(--radius-xs)">0.4rem<br>写真</div>
+    <div class="radius-box" style="border-radius:var(--radius-sm)">0.8rem</div>
+    <div class="radius-box" style="border-radius:var(--radius-md)">1.2rem<br>既定</div>
+    <div class="radius-box" style="border-radius:var(--radius-full)">999px<br>丸ボタン</div>
+    <div class="radius-box" style="border-radius:0">0<br>フィルタのみ</div>
+  </div>
+
+  <p class="note"><b>ブレークポイントは <code>(width &lt;= 768px)</code> の 1 本だけ</b>（実測 15 件）。中間幅の調整は <code>html</code> の流体 <code>font-size</code> が引き受けている。<code>(hover: hover)</code> 11 件、<code>(prefers-reduced-motion: reduce)</code> 10 件でホバー演出とアニメーションを丁寧に切り分けている。</p>
+</section>
+
+<section class="section section-dark">
+  <div class="section-num" style="color:#8c90a0">06 / Guidelines</div>
+  <div class="eyebrow">Do's and Don'ts</div>
+  <h2 class="section-title">やること・やらないこと</h2>
+  <div class="dd">
+    <div class="dd-col dd-do" style="background:#ffffff;color:#16171d">
+      <h3>Do</h3>
+      <ul>
+        <li><code>html { font-size: calc(100vw / 170) }</code> を先に置く。全トークンがこれ前提</li>
+        <li>見出しは <code>ten-mincho-antique</code> 700。落ちる先は明朝（<code>Hiragino Mincho ProN</code>）</li>
+        <li>本文・UI は游ゴシック体。<b>和文の Web フォントは読み込まない</b></li>
+        <li>字間は <code>rem</code> で宣言（本文 .064rem / タグ .024rem / ボタン .028rem）</li>
+        <li>40px 超の大見出しだけ <code>letter-spacing: 0.08em</code> ＋ <code>palt</code></li>
+        <li>巨大な欧文は <code>-0.02em</code> と逆に詰める</li>
+        <li>赤は <code>#f8444d</code> 1 色。本文色は <code>#16171d</code></li>
+        <li>ナビ・ボタン・チップの <code>font-size</code> は px 固定</li>
+      </ul>
+    </div>
+    <div class="dd-col dd-dont" style="background:#ffffff;color:#16171d">
+      <h3>Don't</h3>
+      <ul>
+        <li><b>見出しをヘビーゴシックにしない</b>（実体は明朝アンチック）</li>
+        <li><code>nexa</code> の <code>font-weight: 300</code> を使わない（<code>unloaded</code>）</li>
+        <li>本文の <code>letter-spacing</code> を <code>em</code> で書かない</li>
+        <li>カード・ボタンに <code>box-shadow</code> を足さない（静止時 0 要素）</li>
+        <li>グラデーションをフラットにしない（ノイズ 24% が前提）</li>
+        <li>アクセント色を 2 色目にしない</li>
+        <li><code>#fafafc</code> を面に使わない（実サイトでは未使用）</li>
+        <li>フォーム以外に slate の値を持ち込まない</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <nav class="footer-nav">
+    <a href="#">私たちについて</a><a href="#">サービス</a><a href="#">お知らせ</a><a href="#">採用情報</a><a href="#">お問い合わせ</a>
+  </nav>
+  <div class="footer-copy">© Algomatic Co., Ltd. All Rights Reserved. ／ このページは DESIGN.md の再現サンプルです（2026-09-17 実測）</div>
+</footer>
+
+</body>
+</html>

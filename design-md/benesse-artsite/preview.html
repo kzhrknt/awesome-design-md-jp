@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ベネッセアートサイト直島（Benesse Art Site Naoshima）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPMincho:wght@400;700&family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトに CSS Custom Properties は 0 個（own 0 / platform 0）。すべて px と hex の直書き。
+       以下は computed style の実測値をこのプレビュー用にまとめたもの。2026-09-17 実測 */
+    --blue-fill: #3799cc;   /* ★予約ボタンの面（10 要素） */
+    --blue-text: #3d9fd2;   /* ★リンク文字・チケットCTAの枠（数値がわずかに違う 2 つ目の青） */
+    --black:     #000000;   /* ★本文。可視 182 要素。純黒を使う */
+    --gray-33:   #333333;   /* 副次テキスト（24 要素） */
+    --white:     #ffffff;   /* body の背景 */
+    --bg-main:   #f5f5f5;   /* ★main の地色。ビューポート最大面積（1,296,000px²） */
+    --gray-d8:   #d8d8d8;   /* 副次ボタンの面 */
+    --gray-e0:   #e0e0e0;   /* 期間タグの面 */
+    --gray-ba:   #bababa;   /* カルーセルの非選択ドット */
+    --gray-ee:   #eeeeee;   /* 施設ページの左カラム */
+    --gray-dd:   #dddddd;   /* 施設ページの右カラム */
+    --red:       #ff0000;   /* 休館告知。可視 2 要素のみ */
+
+    /* === Fonts ===
+       本文の I-OTF-UD明朝Pro R（イワタ UD明朝 / FONTPLUS 配信）はドメインライセンスのため
+       ローカルでは表示できない。同じ UD 系の明朝である BIZ UDPMincho（モリサワ）で代替する。
+       ★実サイトの宣言は font-family: "I-OTF-UD明朝Pro R" の 1 語だけでフォールバックが無い。
+         新規実装では必ず明朝のフォールバックを続けること（ゴシックに落ちると別物になる）。
+       ★施設ページの定義リストだけゴシック。実サイトは "Hiragino Kaku ProN" と書いているが
+         これは存在しないフォント名で、正しくは "Hiragino Kaku Gothic ProN"。ここでは正した値を使う。 */
+    --font-mincho: "I-OTF-UD明朝Pro R", "BIZ UDPMincho",
+                   "ヒラギノ明朝 ProN", "Hiragino Mincho ProN", "游明朝", YuMincho, serif;
+    --font-gothic: 游ゴシック, YuGothic, "Hiragino Kaku Gothic ProN", "Noto Sans JP",
+                   メイリオ, Meiryo, sans-serif;
+
+    /* === Line height: UI 1.50 が既定、読み物だけ 1.72〜2.20 に開く === */
+    --lh-ui:    1.50;   /* ★可視 143/230 要素で最多 */
+    --lh-read:  2.20;   /* 読み物本文 */
+    --lh-desc:  1.72;   /* 作品解説 */
+    --lh-info:  2.09;   /* 営業時間・定休日 */
+    --lh-flat:  1.00;   /* ボタン・ラベル（25 要素） */
+
+    /* === Letter spacing: normal が既定（185/230 要素）。見出しだけ px で空ける === */
+    --ls:          normal;
+    --ls-nav:      1.8px;  /* 30px 見出し = 0.06em */
+    --ls-story:    1.6px;  /* 20px 見出し = 0.08em */
+    --ls-read:     1.4px;  /* 読み物本文（23 要素） */
+    --ls-date:     0.6px;
+    --ls-vertical: 6px;    /* ★縦組み見出し 30px = 0.2em */
+
+    --r: 0px;   /* ★サイト全体で 0。例外はカルーセルのドット（50%）だけ */
+    --shadow: 0 20px 30px rgba(23, 73, 77, 0.15);  /* ★黒ではなく青緑。トップに 3 要素のみ */
+
+    --container: 1000px;   /* ★実測 11 要素で最多 */
+    --wide:      1300px;
+    --column:    800px;
+    --narrow:    600px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--font-mincho);
+    font-size: 14px;                 /* ★body の実測値 */
+    font-weight: 400;                /* ★400 以外は使えない（@font-face が 1 本しかない） */
+    line-height: 1.60;               /* 14px / 22.4px */
+    letter-spacing: var(--ls);
+    /* font-feature-settings は実サイトで 1 要素も使われていない（palt 0 件） */
+    -webkit-font-smoothing: antialiased;
+  }
+  main { background: var(--bg-main); }  /* ★実際に目に入る地色はこちら */
+
+  /* ===== NOTICE BAR ===== */
+  .notice { background: var(--white); color: var(--gray-33); font-size: 12px;
+            line-height: 1.87; text-align: center; padding: 8px 20px; }
+  .notice a { color: var(--blue-text); }
+
+  /* ===== HEADER ===== */
+  .header { background: var(--white); display: flex; align-items: stretch; }
+  .brand { background: var(--blue-fill); color: var(--white); width: 168px; padding: 20px;
+           font-size: 20px; line-height: 1.40; letter-spacing: 1px; }
+  .header-main { flex: 1; display: flex; flex-direction: column; }
+  .header-top { display: flex; justify-content: flex-end; align-items: center; gap: 10px;
+                padding: 10px 20px; }
+  /* 予約ボタン。padding の左 45px はアイコンを絶対配置する分のアキ */
+  .btn-reserve { background: var(--blue-fill); color: var(--white); border: none;
+                 border-radius: var(--r); padding: 14px 20px 14px 45px;
+                 font-family: var(--font-mincho); font-size: 14px; font-weight: 400;
+                 line-height: var(--lh-flat); letter-spacing: var(--ls);
+                 position: relative; cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn-reserve::before { content: "▣"; position: absolute; left: 20px; top: 50%;
+                         transform: translateY(-50%); font-size: 14px; }
+  .btn-faq { background: var(--gray-d8); color: var(--black); border: none;
+             border-radius: var(--r); padding: 14px 20px 14px 44px;
+             font-family: var(--font-mincho); font-size: 12px; line-height: var(--lh-flat);
+             position: relative; cursor: pointer; }
+  .btn-faq::before { content: "?"; position: absolute; left: 22px; top: 50%;
+                     transform: translateY(-50%); }
+  .lang { font-size: 10px; line-height: 2.24; padding: 0 10px; }
+  .gnav { display: flex; border-top: 1px solid var(--gray-d8); }
+  .gnav a { flex: 1; text-align: center; padding: 16px 8px; font-size: 12px;
+            line-height: var(--lh-ui); color: var(--black); text-decoration: none;
+            border-left: 1px solid var(--gray-d8); }
+
+  /* ===== HERO ===== */
+  .hero { position: relative; height: 380px;
+          background: linear-gradient(180deg, #cfe2ea 0%, #9dc3d4 45%, #dfd7c6 100%); }
+  .hero-inner { position: absolute; inset: 0; display: flex; align-items: center;
+                justify-content: flex-end; padding: 0 60px; }
+  /* ★実サイトで唯一の縦組み。h2.top-art__heading */
+  .vertical-heading { writing-mode: vertical-rl; font-size: 30px; font-weight: 400;
+                      line-height: 1.00; letter-spacing: var(--ls-vertical);
+                      color: var(--black); }
+
+  /* ===== SECTION ===== */
+  .section { max-width: var(--container); margin: 0 auto; padding: 100px 20px; }
+  .section-wide { max-width: var(--wide); margin: 0 auto; padding: 100px 20px; }
+  .section-white { background: var(--white); }
+  .section-num { font-size: 10px; line-height: var(--lh-ui); color: var(--gray-33);
+                 letter-spacing: var(--ls-date); margin-bottom: 8px; }
+  .section-title { font-size: 30px; font-weight: 400; line-height: 1.12;
+                   letter-spacing: var(--ls-nav); }
+  .section-lead { font-size: 16px; line-height: var(--lh-ui); margin-top: 20px;
+                  max-width: var(--column); }
+  .note { max-width: var(--column); margin-top: 40px; padding: 20px;
+          background: var(--white); border-left: 4px solid var(--blue-fill);
+          font-size: 14px; line-height: var(--lh-desc); }
+  .section-white .note { background: var(--bg-main); }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 0.92em;
+         background: var(--white); border: 1px solid var(--gray-d8); padding: 0 4px; }
+  .note code, .section-white code { background: var(--bg-main); }
+
+  /* ===== SWATCHES ===== */
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 40px; margin-top: 40px; }
+  .swatch { background: var(--white); border: 1px solid var(--gray-d8); }
+  .swatch-chip { height: 80px; }
+  .swatch-body { padding: 15px; }
+  .swatch-name { font-size: 16px; line-height: var(--lh-ui); }
+  .swatch-hex { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 12px;
+                color: var(--gray-33); margin: 4px 0 8px; }
+  .swatch-use { font-size: 12px; line-height: var(--lh-ui); color: var(--gray-33); }
+
+  /* ===== TYPE SPECIMENS ===== */
+  .type-row { display: grid; grid-template-columns: 240px 1fr; gap: 40px; align-items: baseline;
+              padding: 20px 0; border-top: 1px solid var(--gray-d8); }
+  .type-meta { font-size: 12px; line-height: var(--lh-ui); color: var(--gray-33); }
+  .type-meta b:first-child { display: block; color: var(--black); font-size: 14px; margin-bottom: 4px; }
+  .scale-bar { display: flex; align-items: baseline; gap: 20px; flex-wrap: wrap;
+               color: var(--gray-33); margin-top: 40px; padding-bottom: 20px;
+               border-bottom: 1px solid var(--gray-d8); }
+
+  /* ===== BUTTONS ===== */
+  .btn-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 40px; }
+  .btn-outline { background: var(--blue-text); color: var(--gray-33);
+                 border: 1px solid var(--blue-text); border-radius: var(--r);
+                 padding: 7px 14px; font-family: var(--font-mincho); font-size: 14px;
+                 font-weight: 700; line-height: var(--lh-ui); text-decoration: none; }
+  .btn-section { background: var(--gray-d8); color: var(--black); border: none;
+                 border-radius: var(--r); padding: 30px; font-family: var(--font-mincho);
+                 font-size: 16px; line-height: var(--lh-flat); text-decoration: none;
+                 display: inline-block; }
+  .btn-text { color: var(--blue-text); font-size: 14px; line-height: var(--lh-ui);
+              padding: 8px 0; text-decoration: none; display: inline-block; }
+  .tag { display: inline-block; background: var(--bg-main); color: var(--black);
+         padding: 0 6px; font-size: 12px; font-weight: 500; line-height: var(--lh-ui); }
+  .tag-period { background: var(--gray-e0); }
+
+  /* ===== CAROUSEL DOTS ===== */
+  .dots { display: flex; gap: 10px; margin-top: 40px; align-items: center; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gray-ba); }
+  .dot.is-active { background: var(--black); }
+
+  /* ===== CARDS ===== */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px 40px; margin-top: 40px; }
+  .card { background: var(--white); border-radius: var(--r); overflow: hidden; }
+  .card-photo { height: 160px; position: relative;
+                background: linear-gradient(140deg, #b9d3dd 0%, #8fb6c6 60%, #cfc6b2 100%); }
+  /* 写真の上に見出しを載せるための白いベール（実測 8 要素） */
+  .card-veil { position: absolute; inset: 0; display: flex; align-items: center;
+               justify-content: center;
+               background: linear-gradient(to right bottom,
+                           rgba(255,255,255,0.8) 0.05%, rgba(255,255,255,0.4) 99.95%); }
+  .card-veil span { font-size: 30px; line-height: 1.12; letter-spacing: var(--ls-nav);
+                    color: var(--black); }
+  .card-body { padding: 20px; }
+  .card-body h3 { font-size: 20px; font-weight: 400; line-height: 1.30;
+                  letter-spacing: var(--ls-story); }
+  .card-body p  { font-size: 14px; line-height: var(--lh-ui); margin-top: 10px; }
+  .card-date { font-size: 12px; line-height: 1.60; letter-spacing: var(--ls-date);
+               color: var(--gray-33); }
+  .card-shadow { box-shadow: var(--shadow); }
+
+  /* ===== 2 COLUMN（施設ページ） ===== */
+  .split { display: grid; grid-template-columns: 1fr 1fr; margin-top: 40px; }
+  .split .left  { background: var(--gray-ee); padding: 30px; }
+  .split .right { background: var(--gray-dd); padding: 30px; }
+  .split h3 { font-size: 22px; font-weight: 400; line-height: 1.40; margin-bottom: 15px; }
+  .split p  { font-size: 16px; line-height: var(--lh-desc); }
+  .deflist { margin-top: 20px; display: grid; grid-template-columns: 100px 1fr; gap: 10px 20px; }
+  /* ★施設ページの定義リストだけゴシック。実サイトは weight 900 で合成ボールドになるため
+     ここでは 500 に留めている（DESIGN.md の Don't に対応） */
+  .deflist dt { font-family: var(--font-gothic); font-size: 14px; font-weight: 500;
+                line-height: var(--lh-ui); }
+  .deflist dd { font-size: 14px; line-height: var(--lh-info); }
+
+  /* ===== READING ===== */
+  .reading { max-width: var(--narrow); margin-top: 40px; }
+  .reading p { font-size: 16px; line-height: var(--lh-read); letter-spacing: var(--ls-read);
+               margin-bottom: 20px; }
+  ruby rt { font-size: 7px; }   /* ★本文 14px のちょうど半分 */
+
+  /* ===== DO / DON'T ===== */
+  .dd { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; }
+  .dd-col { background: var(--white); border: 1px solid var(--gray-d8); padding: 30px; }
+  .dd-col h3 { font-size: 20px; font-weight: 400; line-height: 1.30;
+               letter-spacing: var(--ls-story); margin-bottom: 20px; }
+  .dd-do h3   { color: #1c6b4a; }
+  .dd-dont h3 { color: #b3222a; }
+  .dd-col ul { list-style: none; display: grid; gap: 10px; }
+  .dd-col li { position: relative; padding-left: 20px; font-size: 14px; line-height: var(--lh-desc); }
+  .dd-col li::before { position: absolute; left: 0; }
+  .dd-do li::before   { content: "○"; color: #1c6b4a; }
+  .dd-dont li::before { content: "×"; color: #b3222a; }
+
+  /* ===== FOOTER ===== */
+  .footer { background: var(--white); border-top: 1px solid var(--gray-d8);
+            padding: 40px 20px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-nav { display: flex; gap: 40px; flex-wrap: wrap; }
+  .footer-nav a { font-size: 12px; line-height: var(--lh-ui); color: var(--black);
+                  text-decoration: none; }
+  .footer-copy { font-size: 10px; line-height: var(--lh-ui); color: var(--gray-33);
+                 margin-top: 40px; }
+</style>
+</head>
+<body>
+
+<div class="notice">【重要】2024年10月1日より全アート施設でオンラインチケットを導入しました。チケットの購入は<a href="#">こちら</a>をご確認ください。</div>
+
+<header class="header">
+  <div class="brand">Benesse<br>Art Site<br>Naoshima</div>
+  <div class="header-main">
+    <div class="header-top">
+      <a class="btn-reserve" href="#">宿泊予約</a>
+      <a class="btn-reserve" href="#">美術館予約</a>
+      <button class="btn-faq">よくあるご質問</button>
+      <span class="lang">Language ▾</span>
+    </div>
+    <nav class="gnav">
+      <a href="#">ご来島の方へ</a><a href="#">島×アートの魅力</a><a href="#">アート・建築</a>
+      <a href="#">宿泊</a><a href="#">体験・研修</a><a href="#">トピックス</a><a href="#">その他</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h2 class="vertical-heading">アートと暮らす島々へ。</h2>
+  </div>
+</div>
+
+<section class="section">
+  <div class="section-num">01 / Colors</div>
+  <h2 class="section-title">白とグレーと、二つの青</h2>
+  <p class="section-lead">面は白とごく薄いグレーだけ。青は <b>#3799cc</b>（面）と <b>#3d9fd2</b>（文字・枠）の 2 つがあり、rgb で 6 / 6 / 6 だけ違う。本文の黒は純黒 <code>#000000</code>（可視 182 要素）。</p>
+
+  <div class="grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#3799cc"></div><div class="swatch-body"><div class="swatch-name">予約ブルー（面）</div><div class="swatch-hex">#3799cc</div><div class="swatch-use">★面 10 要素。宿泊予約・美術館予約</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#3d9fd2"></div><div class="swatch-body"><div class="swatch-name">リンクブルー（文字・枠）</div><div class="swatch-hex">#3d9fd2</div><div class="swatch-use">インラインリンク・チケットCTAの枠</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#000000</div><div class="swatch-use">★可視 182 要素。純黒を使う</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Text Secondary</div><div class="swatch-hex">#333333</div><div class="swatch-use">お知らせ帯・MENU（24 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f5f5f5;border-bottom:1px solid #d8d8d8"></div><div class="swatch-body"><div class="swatch-name">Content Background</div><div class="swatch-hex">#f5f5f5</div><div class="swatch-use">★main の地色。ビューポート最大面積</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#d8d8d8"></div><div class="swatch-body"><div class="swatch-name">Surface Gray</div><div class="swatch-hex">#d8d8d8</div><div class="swatch-use">副次ボタン・セクションリンク</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e0e0e0"></div><div class="swatch-body"><div class="swatch-name">Surface Gray Light</div><div class="swatch-hex">#e0e0e0</div><div class="swatch-use">期間タグ（半日 / 1泊2日）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ff0000"></div><div class="swatch-body"><div class="swatch-name">Alert Red</div><div class="swatch-hex">#ff0000</div><div class="swatch-use">純赤。可視 2 要素のみ。汎用に使わない</div></div></div>
+  </div>
+
+  <p class="note"><b>ページ背景は白、コンテンツの地色は <code>#f5f5f5</code>。</b><code>pageBackground.resolved</code> は <code>body</code> 由来の白だが、ビューポート面積で最大なのは <code>main.g-main</code> の <code>#f5f5f5</code>（1,296,000px²）。<b>地色を白だと思って組むと印象が変わる。</b></p>
+</section>
+
+<section class="section-wide section-white">
+  <div class="section" style="padding:0 20px">
+    <div class="section-num">02 / Typography</div>
+    <h2 class="section-title">明朝ひと書体、ウェイトは一本</h2>
+    <p class="section-lead">可視 217/230 要素が <code>"I-OTF-UD明朝Pro R"</code>。ナビもボタンも日付も同じ明朝で組む。<b><code>@font-face</code> は Regular の書体名を <code>font-weight: bold</code> で宣言しているため、<code>700</code> を指定しても太くならない</b>。太さではなくサイズと字間で階層を作る。</p>
+
+    <div class="scale-bar">
+      <span style="font-size:7px">7</span><span style="font-size:10px">10</span><span style="font-size:12px">12</span>
+      <span style="font-size:14px">14</span><span style="font-size:16px">16</span><span style="font-size:18px">18</span>
+      <span style="font-size:20px">20</span><span style="font-size:22px">22</span><span style="font-size:30px">30</span>
+    </div>
+
+    <div class="type-row"><div class="type-meta"><b>Vertical Heading ★</b>UD明朝 / 30px / 400<br>lh 1.00 / ls <b>6px（0.2em）</b><br>writing-mode: vertical-rl</div><div><span style="writing-mode:vertical-rl;font-size:30px;line-height:1;letter-spacing:6px;display:inline-block;height:420px">アートと暮らす島々へ。</span></div></div>
+    <div class="type-row"><div class="type-meta"><b>Nav Heading</b>UD明朝 / 30px / 400<br>lh 1.12 / ls 1.8px（0.06em）</div><div style="font-size:30px;line-height:1.12;letter-spacing:1.8px">島×アートの魅力</div></div>
+    <div class="type-row"><div class="type-meta"><b>Feature Heading</b>UD明朝 / 22px / 400<br>lh 1.40 / ls normal</div><div style="font-size:22px;line-height:1.4">アートを巡る　島時間をたのしむ</div></div>
+    <div class="type-row"><div class="type-meta"><b>Story Heading</b>UD明朝 / 20px / 400<br>lh 1.30 / ls 1.6px（0.08em）</div><div style="font-size:20px;line-height:1.3;letter-spacing:1.6px">ある日、島の桟橋に大きなかぼちゃがあらわれた。</div></div>
+    <div class="type-row"><div class="type-meta"><b>Body</b>UD明朝 / 16px / 400<br>lh 1.50 / ls normal（可視 57 要素）</div><div style="font-size:16px;line-height:1.5">地中美術館は「自然と人間との関係を考える場所」として、2004年に設立されました。</div></div>
+    <div class="type-row"><div class="type-meta"><b>作品解説</b>UD明朝 / 16px / 400<br>lh <b>1.72</b>（施設ページ 61 要素）</div><div style="font-size:16px;line-height:1.72;max-width:600px">印象派を代表する画家、クロード・モネが手掛けた最晩年の作品を、自然光だけの空間で鑑賞します。時刻と季節によって見え方が刻々と変わります。</div></div>
+    <div class="type-row"><div class="type-meta"><b>Caption / UI</b>UD明朝 / <b>12px</b> / 400<br>lh 1.50（<b>可視 94 要素で最多</b>）</div><div style="font-size:12px;line-height:1.5">所要時間の目安・定員・ご予約に関する注意事項</div></div>
+    <div class="type-row"><div class="type-meta"><b>Date</b>UD明朝 / 12px / 400<br>lh 1.60 / ls 0.6px</div><div style="font-size:12px;line-height:1.6;letter-spacing:0.6px">2026年09月11日</div></div>
+    <div class="type-row"><div class="type-meta"><b>Ruby ★</b>本文 14px に対してルビ <b>7px</b><br>（ちょうど半分）</div><div style="font-size:14px;line-height:2.2"><ruby>故<rt>ふる</rt></ruby>きを<ruby>温<rt>たず</rt></ruby>ねて、新しきを知る「本村家プロジェクト」</div></div>
+    <div class="type-row"><div class="type-meta"><b>定義リスト</b>游ゴシック / 14px<br>施設ページのみゴシック（20 要素）</div><div style="font-family:var(--font-gothic);font-size:14px;font-weight:500;line-height:1.5">開催日　所要時間　定員</div></div>
+
+    <p class="note"><b><code>font-size: 12px</code> が 94 要素で最多。</b>日本語 UI としてかなり小さく、明朝のフトコロが小さいぶん読みづらくなりやすい。このサイトの印象を再現するなら 12px のまま、可読性を優先するなら 13〜14px へ上げる判断も妥当。<br><b>行間は「読ませる箇所だけ開く」。</b>UI は 1.50、作品解説は 1.72、営業情報は 2.09、読み物は 2.20、ボタンは 1.00。</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-num">03 / Components</div>
+  <h2 class="section-title">角丸ゼロ、影は三箇所</h2>
+  <p class="section-lead"><code>border-radius</code> はサイト全体で <b>0px</b>。例外はカルーセルのドット（<code>50%</code>）だけ。影はトップに 3 要素のみで、色は <b><code>rgba(23, 73, 77, 0.15)</code>（深い青緑）</b>。</p>
+
+  <div class="btn-row">
+    <a class="btn-reserve" href="#">宿泊予約</a>
+    <button class="btn-faq">よくあるご質問</button>
+    <a class="btn-outline" href="#">オンラインチケットの購入はこちら</a>
+    <a class="btn-text" href="#">▶ 詳しく見る</a>
+  </div>
+  <div class="btn-row">
+    <a class="btn-section" href="#">アートのご紹介</a>
+    <a class="btn-section" href="#">建築のご紹介</a>
+    <span class="tag">直島</span><span class="tag tag-period">半日</span><span class="tag tag-period">1泊2日</span>
+  </div>
+  <p class="note"><b>予約ボタンの padding は <code>14px 20px 14px 45px</code>。</b>左の 45px はアイコンを絶対配置する分のアキ。均等な padding にするとアイコンが文字に重なる。<br><code>btn-outline</code> は <code>font-weight: 700</code> を持つが、<b>実サイトでは書体が Regular 1 本しかないため太さは変わらない</b>。</p>
+
+  <div class="dots"><span class="dot"></span><span class="dot is-active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+  <p class="note">カルーセルのページ番号は <code>font-size: 0px</code> で視覚的に消し、<code>border-radius: 50%</code> のドットに置き換えている（スクリーンリーダー用にテキストは残す実装）。非選択 <code>#bababa</code> / 選択 <code>#000000</code>。</p>
+
+  <div class="cards">
+    <div class="card card-shadow">
+      <div class="card-photo"><div class="card-veil"><span>ご来島の方へ</span></div></div>
+      <div class="card-body"><h3>初めてご来島の方へ</h3><p>島へのアクセス、島内の移動、鑑賞の予約方法をまとめています。</p></div>
+    </div>
+    <div class="card card-shadow">
+      <div class="card-photo"><div class="card-veil"><span>アート・建築</span></div></div>
+      <div class="card-body"><h3>地中美術館</h3><p>安藤忠雄の設計による、地中に埋設された美術館。</p></div>
+    </div>
+    <div class="card card-shadow">
+      <div class="card-photo"><div class="card-veil"><span>宿　泊</span></div></div>
+      <div class="card-body"><div class="card-date">2026年09月11日</div><h3>ベネッセハウス</h3><p>「自然・建築・アートの共生」をコンセプトにした宿泊施設。</p></div>
+    </div>
+  </div>
+  <p class="note">写真の上に見出しを載せるときは <code>linear-gradient(to right bottom, rgba(255,255,255,.8) .05%, rgba(255,255,255,.4) 99.95%)</code> の白いベールを重ねる（実測 8 要素）。<b>影は <code>rgba(23,73,77,.15)</code> ——黒ではなく青緑。</b><code>rgba(0,0,0,.15)</code> に置き換えないこと。</p>
+</section>
+
+<section class="section-white">
+  <div class="section">
+    <div class="section-num">04 / Facility Page</div>
+    <h2 class="section-title">地色で塗り分ける2カラム</h2>
+    <p class="section-lead">施設ページは <code>div.left</code>（<code>#eeeeee</code>）と <code>div.right</code>（<code>#dddddd</code>）の 2 カラムを<b>地色の差だけで分ける</b>。罫線も影も使わない。</p>
+
+    <div class="split">
+      <div class="left">
+        <h3>地中美術館</h3>
+        <p>「自然と人間との関係を考える場所」として2004年に設立。建物の大半が地下にありながら、自然光が作品の表情を刻々と変えていきます。</p>
+        <dl class="deflist">
+          <dt>開催日</dt><dd>通年（月曜休館、祝日の場合は翌日）</dd>
+          <dt>所要時間</dt><dd>約90分</dd>
+          <dt>定員</dt><dd>各回30名</dd>
+        </dl>
+      </div>
+      <div class="right">
+        <h3>クロード・モネ</h3>
+        <p>1840年パリに生まれた印象派を代表する画家。「睡蓮の池」（c.1915-26年）は直径2.2mを超える大作で、自然光だけの空間に展示されています。</p>
+        <dl class="deflist">
+          <dt>営業時間</dt><dd>10:30〜16:45（ラストオーダー16:30）</dd>
+          <dt>定休日</dt><dd>月曜日</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="reading">
+      <p>ある日、島の桟橋に大きなかぼちゃがあらわれた。どこにもあるような桟橋が、どこにもない風景に生まれ変わった。遠い街から、遠い国からたくさんの人々が訪れるようになった。</p>
+      <p>浜辺や桟橋、小高い丘から、町の中心まで。島のさまざまな場所に作品が置かれ、朝の光とともに目覚め、心ゆくまでアートや自然、島の暮らしにふれる時間がはじまる。</p>
+    </div>
+    <p class="note">読み物の行間は <b>2.20</b>、字間は <b>1.4px</b>（可視 23 要素）。<b>字間を空けるのは見出しと読み物だけで、UI は <code>normal</code></b>（185/230 要素）。実サイトは px 直書きなので、<code>em</code> に読み替えず px のまま写すこと。</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-num">05 / Guidelines</div>
+  <h2 class="section-title">やること・やらないこと</h2>
+  <div class="dd">
+    <div class="dd-col dd-do">
+      <h3>Do</h3>
+      <ul>
+        <li>サイト全体を 1 書体（UD明朝）で組む。ナビもボタンも日付も明朝</li>
+        <li><b>フォールバックを必ず書く</b>（実サイトは 1 語だけだが、明朝に落ちることが設計上不可欠）</li>
+        <li><code>font-weight</code> は 400 を既定にする。太字で階層を作らない</li>
+        <li><code>border-radius: 0</code> を貫く（ドットのみ 50%）</li>
+        <li>本文色は純黒 <code>#000000</code>、コンテンツの地色は <code>#f5f5f5</code></li>
+        <li><code>letter-spacing</code> は <code>normal</code> を既定に、見出しだけ <b>px で</b>空ける</li>
+        <li>縦組みの見出しは <code>letter-spacing: 6px</code>（0.2em）</li>
+        <li>予約 CTA の padding は <code>14px 20px 14px 45px</code></li>
+        <li>影は <code>rgba(23, 73, 77, 0.15)</code>（青緑）を数箇所だけ</li>
+        <li>ルビは本文のちょうど半分（14px → 7px）</li>
+      </ul>
+    </div>
+    <div class="dd-col dd-dont">
+      <h3>Don't</h3>
+      <ul>
+        <li>見出しをゴシックにしない（ゴシックは定義リスト 20 要素だけ）</li>
+        <li><code>font-weight: 700</code> で太さを期待しない</li>
+        <li><code>font-feature-settings: "palt"</code> を足さない（実測 0 要素）</li>
+        <li>本文に <code>letter-spacing</code> を足さない</li>
+        <li><code>border-radius</code> を 4px や 8px にしない</li>
+        <li>CSS Custom Properties を前提にしない（実サイトは 0 個）</li>
+        <li>影を <code>rgba(0,0,0,…)</code> にしない</li>
+        <li><code>"Hiragino Kaku ProN"</code> と書かない（<b>存在しない名前</b>。正しくは <code>"Hiragino Kaku Gothic ProN"</code>）</li>
+        <li>游ゴシックに <code>font-weight: 900</code> を指定しない（合成ボールドになる）</li>
+        <li>赤 <code>#ff0000</code> を汎用のアクセントに使わない</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <nav class="footer-nav">
+      <a href="#">ご来島の方へ</a><a href="#">アート・建築</a><a href="#">宿泊</a><a href="#">体験・研修</a>
+      <a href="#">トピックス</a><a href="#">メディアの方へ</a><a href="#">採用情報</a>
+    </nav>
+    <div class="footer-copy">このページは DESIGN.md の再現サンプルです（2026-09-17 実測）。本文書体は I-OTF-UD明朝Pro R を BIZ UDPMincho で代替しています。</div>
+  </div>
+</footer>
+
+</body>
+</html>

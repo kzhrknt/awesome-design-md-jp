@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (502 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (505 sites)</a>
 </p>
 
 <table>
@@ -766,6 +766,11 @@
 </tr>
 <tr>
 <td align="center"><strong>東京オペラシティ アートギャラリー</strong><br><img src="design-md/tokyo-operacity-ag/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Algomatic</strong><br><img src="design-md/algomatic/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ベネッセアートサイト直島</strong><br><img src="design-md/benesse-artsite/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>bitFlyer</strong><br><img src="design-md/bitflyer/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1329,11 +1334,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [Nstock 株式報酬 (Nstock)](https://nstock.com/) | Equity Compensation / SaaS | [DESIGN.md](design-md/nstock/DESIGN.md) | [preview.html](design-md/nstock/preview.html) |
 | [SORANO HOTEL (ソラノホテル)](https://soranohotel.com/) | Hotel / Hospitality | [DESIGN.md](design-md/soranohotel/DESIGN.md) | [preview.html](design-md/soranohotel/preview.html) |
 | [東京オペラシティ アートギャラリー (Tokyo Opera City Art Gallery)](https://www.operacity.jp/ag/) | Art Gallery / Culture | [DESIGN.md](design-md/tokyo-operacity-ag/DESIGN.md) | [preview.html](design-md/tokyo-operacity-ag/preview.html) |
+| [Algomatic (アルゴマティック)](https://algomatic.jp/) | AI Consulting / Startup | [DESIGN.md](design-md/algomatic/DESIGN.md) | [preview.html](design-md/algomatic/preview.html) |
+| [ベネッセアートサイト直島 (Benesse Art Site Naoshima)](https://benesse-artsite.jp/) | Art Museum / Tourism | [DESIGN.md](design-md/benesse-artsite/DESIGN.md) | [preview.html](design-md/benesse-artsite/preview.html) |
+| [bitFlyer (ビットフライヤー)](https://bitflyer.com/ja-jp/) | Crypto Exchange / Fintech | [DESIGN.md](design-md/bitflyer/DESIGN.md) | [preview.html](design-md/bitflyer/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (502 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (505 sites)</a>
 </p>
 
 <table>
@@ -2065,6 +2073,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>東京オペラシティ アートギャラリー</strong><br><img src="design-md/tokyo-operacity-ag/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Algomatic</strong><br><img src="design-md/algomatic/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ベネッセアートサイト直島</strong><br><img src="design-md/benesse-artsite/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>bitFlyer</strong><br><img src="design-md/bitflyer/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

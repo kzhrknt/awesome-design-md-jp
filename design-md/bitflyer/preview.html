@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: bitFlyer（ビットフライヤー）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Nunito:wght@600&family=Poppins:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       ★実サイトの CSS 変数は 150 個（own 150 / platform 0）あるが、この LP で描画される色は
+         ごく一部。しかも主 CTA は --primary-color-bg (#1980e5) ではなく実測 #0050d7。
+         以下は「実測値」を採用している。2026-09-17 実測 */
+    --blue:        #0050d7;   /* ★主CTA・値上がり率・タグ文字。面 5 要素 / 文字 114 要素 */
+    --orange:      #ff6400;   /* ★値下がり率・Lightning の CTA。文字 19 要素 / 面 1 要素 */
+    --text:        #13161b;   /* ★本文。可視 54 要素（変数の #242428 ではない） */
+    --text-sub:    #42516a;   /* 銘柄名・補足（118 要素） */
+    --text-muted:  #697ca9;   /* ★可視 356 要素で最多。青みの強いグレー */
+    --text-nav:    #2a3547;   /* ドロップダウン見出し（11 要素） */
+    --text-foot:   #45526b;   /* フッターリンク（40 要素） */
+    --text-note:   #66778f;   /* 免責（12 要素） */
+    --text-date:   #8ea2b2;   /* プレスリリースの日付（6 要素） */
+    --bg:          #fdfdff;   /* ★body。pageBackground.resolved（変数と一致する数少ない例） */
+    --bg-section:  #f5f8fd;   /* ★ビューポート面積で最大。実際に目に入る地色 */
+    --tint:        #eef4ff;   /* 淡青のタグ（面 13 要素） */
+    --tint-2:      #ebf1fc;   /* STEP バッジ・お知らせ帯（面 9 要素） */
+    --glass:       rgba(255, 255, 255, 0.42);  /* ★ティッカーのカード。面 195 要素 */
+    --white:       #ffffff;
+    --dark:        #13161b;
+
+    /* === Fonts ===
+       Noto Sans JP / Nunito / Poppins はすべて Google Fonts にあるため実サイトと同一表示。
+       ★body の宣言は -apple-system 先頭だが、子要素は Noto Sans JP 先頭に上書きされている
+         （可視 402 要素）。body の宣言を見て「システムフォントのサイト」と判断しないこと。 */
+    --font-jp:  "Noto Sans JP", -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-num: Nunito, sans-serif;     /* ★価格・変動率。可視 351 要素 */
+    --font-big: Poppins, sans-serif;    /* ★実績の巨大数字。可視 5 要素 */
+
+    /* === Line height: 1.00 が 617/759 要素。読ませる文章だけ開く === */
+    --lh-flat: 1.00;   /* ★ティッカー・ラベル・ボタン */
+    --lh-head: 1.40;   /* 見出し */
+    --lh-card: 1.35;   /* カード見出し */
+    --lh-body: 1.75;   /* 本文（body の 16px / 28px） */
+    --lh-foot: 1.95;   /* フッターのリンク列（40 要素） */
+    --lh-note: 1.85;   /* 免責・長文注記 */
+
+    /* === Letter spacing: normal が 755/759 要素 === */
+    --ls:      normal;
+    --ls-stat: -5.6px;   /* ★Poppins 61px の巨大数字だけ。-0.091em */
+
+    --r-card:  10px;   /* ★ティッカーカード。117 要素で最多 */
+    --r-pill:  990px;  /* ★タグ・チップ。18 要素 */
+    --r-cta:   12px;   /* 主 CTA。6 要素 */
+    --r-cta-s: 8px;    /* ヘッダーの新規登録 */
+    --r-big:   28px;   /* 特集カード */
+    --r-mid:   16px;
+    --r-press: 6px;
+
+    /* ★影は黒ではなく濃紺 rgba(16,42,75,…)。アルファは 0.06 で統一 */
+    --shadow-1: 0 1px 3px rgba(16, 42, 75, 0.06);
+    --shadow-2: 0 4px 20px rgba(16, 42, 75, 0.06);
+    --shadow-3: 0 0 16px rgba(36, 36, 36, 0.08);
+
+    /* === Spacing（変数どおり。html 10px なので 1rem = 10px） === */
+    --spacing-1x: 0.4rem; --spacing-2x: 0.8rem; --spacing-3x: 1.2rem;
+    --spacing-4x: 1.6rem;  /* ★16px。実測の gap 最多（16 要素） */
+    --spacing-6x: 2.4rem; --spacing-8x: 3.2rem; --spacing-12x: 4.8rem; --spacing-20x: 8rem;
+
+    --container: 1170px;   /* ★実測 7 要素で最多 */
+    --column:    620px;
+
+    --easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    --easing-duration-fast: 240ms;
+  }
+
+  /* ★実サイトの root。rem 計算を 10 基準にする */
+  html { font-size: 10px; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-jp);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: var(--lh-body);   /* 28px / 16px = 1.75 */
+    letter-spacing: var(--ls);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== HEADER ===== */
+  .header { background: var(--white); box-shadow: var(--shadow-3); position: relative; z-index: 3; }
+  .header-inner { max-width: var(--container); margin: 0 auto; display: flex; align-items: center;
+                  gap: 3.2rem; padding: 1.2rem 2rem; height: 56px; }
+  .logo { display: flex; align-items: center; gap: 0.8rem; font-family: var(--font-jp);
+          font-size: 18px; font-weight: 700; line-height: var(--lh-flat); color: var(--text);
+          text-decoration: none; }
+  .logo-mark { display: grid; grid-template-columns: repeat(2, 7px); gap: 2px; }
+  .logo-mark i { width: 7px; height: 7px; background: var(--blue); border-radius: 1px; }
+  .logo-mark i:last-child { background: var(--orange); border-radius: 50%; }
+  /* ナビは 14px / weight 600。このサイトは weight 600 が既定（618/759 要素） */
+  .header-nav { display: flex; gap: 2.4rem; }
+  .header-nav a { font-size: 14px; font-weight: 600; line-height: 1.60; color: var(--text);
+                  text-decoration: none; }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 1.6rem; }
+  .header-right .login { font-size: 14px; font-weight: 600; line-height: var(--lh-flat);
+                         color: var(--text); text-decoration: none; }
+  .btn-signup { display: inline-flex; align-items: center; height: 36px;
+                background: var(--blue); color: var(--white); border: none;
+                border-radius: var(--r-cta-s); padding: 0 16px;
+                font-family: var(--font-jp); font-size: 14px; font-weight: 600;
+                line-height: var(--lh-flat); text-decoration: none; cursor: pointer; }
+
+  .alertbar { background: var(--tint-2); text-align: center; padding: 0.8rem 2rem;
+              font-size: 12px; font-weight: 400; line-height: 1.38; color: var(--blue); }
+
+  /* ===== HERO ===== */
+  .hero { background: var(--bg-section); }
+  .hero-inner { max-width: var(--container); margin: 0 auto; padding: 6.4rem 2rem 8rem;
+                display: grid; grid-template-columns: 1fr 420px; gap: 4.8rem; align-items: center; }
+  .hero-copy h1 { font-size: 44px; font-weight: 700; line-height: var(--lh-head);
+                  letter-spacing: var(--ls); }
+  .hero-copy .sub { font-size: 20px; font-weight: 700; line-height: var(--lh-head);
+                    margin-top: 0.8rem; }
+  .btn-primary { display: inline-flex; align-items: center; height: 56px;
+                 background: var(--blue); color: var(--white); border: none;
+                 border-radius: var(--r-cta); padding: 0 24px;
+                 font-family: var(--font-jp); font-size: 18px; font-weight: 700;
+                 line-height: var(--lh-flat); text-decoration: none; cursor: pointer;
+                 margin-top: 2.4rem; }
+  .btn-primary.s { height: 48px; font-size: 15px; }
+  .btn-lightning { background: var(--orange); }
+  .hero-note { font-size: 15px; font-weight: 700; line-height: 1.50;
+               letter-spacing: 0.36px; margin-top: 1.6rem; }
+  .hero-fine { font-size: 12px; font-weight: 400; line-height: 1.50;
+               color: var(--text-note); margin-top: 1.2rem; max-width: var(--column); }
+
+  /* ===== TICKER ===== */
+  .ticker { display: grid; gap: 0.9rem; }
+  /* ★カードは影ではなく半透明の白で浮かせる */
+  .ticker-row { display: grid; grid-template-columns: 1fr auto auto; gap: 1.6rem;
+                align-items: center; background: var(--glass); border-radius: var(--r-card);
+                padding: 10px 14px; }
+  .t-name { font-size: 13px; font-weight: 600; line-height: var(--lh-flat); color: var(--text-sub); }
+  .t-sym  { font-size: 13px; font-weight: 600; line-height: var(--lh-flat); color: var(--text-muted);
+            margin-left: 6px; }
+  /* ★数字は Nunito ＋ tnum。桁がずれないための設計 */
+  .t-price { font-family: var(--font-num); font-size: 11px; font-weight: 600;
+             line-height: var(--lh-flat); color: var(--text-muted);
+             font-feature-settings: "tnum"; text-align: right; }
+  .t-price .unit { font-size: 10px; margin-left: 2px; }
+  .t-chg { font-family: var(--font-num); font-size: 11px; font-weight: 600;
+           line-height: var(--lh-flat); font-feature-settings: "tnum";
+           text-align: right; min-width: 56px; }
+  .t-up   { color: var(--blue); }
+  .t-down { color: var(--orange); }
+
+  /* ===== SECTION ===== */
+  .section { max-width: var(--container); margin: 0 auto; padding: 8rem 2rem; }
+  .section-alt { background: var(--bg-section); }
+  .section-num { font-size: 11px; font-weight: 600; line-height: var(--lh-flat);
+                 color: var(--text-muted); margin-bottom: 0.8rem; }
+  .section-title { font-size: 32px; font-weight: 700; line-height: var(--lh-head);
+                   letter-spacing: var(--ls); }
+  .section-lead { font-size: 16px; font-weight: 400; line-height: var(--lh-body);
+                  margin-top: 1.6rem; max-width: 820px; }
+  .note { max-width: 820px; margin-top: 3.2rem; padding: 2rem 2.4rem; background: var(--white);
+          border-left: 3px solid var(--blue); border-radius: var(--r-press);
+          font-size: 14px; font-weight: 400; line-height: var(--lh-note); }
+  .section-alt .note { background: var(--white); }
+  .section:not(.section-alt) .note { background: var(--bg-section); }
+  code { font-family: 'SF Mono', 'Roboto Mono', monospace; font-size: 0.92em;
+         background: var(--white); border: 1px solid #dbe3f0; border-radius: 3px; padding: 0 4px; }
+
+  /* ===== SWATCHES ===== */
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.6rem; margin-top: 3.2rem; }
+  .swatch { background: var(--white); border-radius: var(--r-card); overflow: hidden;
+            box-shadow: var(--shadow-1); }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 1.6rem; }
+  .swatch-name { font-size: 14px; font-weight: 600; line-height: 1.40; }
+  .swatch-hex { font-family: 'SF Mono', 'Roboto Mono', monospace; font-size: 12px;
+                color: var(--text-muted); margin: 4px 0 8px; }
+  .swatch-use { font-size: 12px; font-weight: 400; line-height: 1.50; color: var(--text-note); }
+
+  /* ===== TYPE SPECIMENS ===== */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 3.2rem; align-items: baseline;
+              padding: 2.4rem 0; border-top: 1px solid #dde5f2; }
+  .type-meta { font-size: 12px; font-weight: 400; line-height: 1.50; color: var(--text-note); }
+  .type-meta b:first-child { display: block; color: var(--text); font-size: 14px; font-weight: 600;
+                 margin-bottom: 4px; }
+  .d-stat { font-family: var(--font-big); font-size: 61px; font-weight: 600; line-height: 1.25;
+            letter-spacing: var(--ls-stat); color: var(--text); }
+  .scale-bar { display: flex; align-items: baseline; gap: 2rem; flex-wrap: wrap;
+               font-weight: 600; color: var(--text-muted); margin-top: 3.2rem;
+               padding-bottom: 2.4rem; border-bottom: 1px solid #dde5f2; }
+
+  /* ===== STATS ===== */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6rem; margin-top: 3.2rem; }
+  .stat { background: rgba(255,255,255,0.92); border-radius: 15px; padding: 2.4rem; }
+  .stat-label { font-size: 13.2px; font-weight: 600; line-height: 1.25; color: var(--text-sub); }
+  .stat-num { font-family: var(--font-big); font-size: 61px; font-weight: 600; line-height: 1.25;
+              letter-spacing: var(--ls-stat); font-feature-settings: "tnum"; margin-top: 0.8rem; }
+  .stat-num .unit { font-size: 39.6px; }
+  .stat-fine { font-size: 12px; font-weight: 400; line-height: 1.50; color: var(--text-note);
+               margin-top: 0.8rem; }
+
+  /* ===== BUTTONS / PILLS ===== */
+  .btn-row { display: flex; align-items: center; gap: 1.6rem; flex-wrap: wrap; margin-top: 3.2rem; }
+  .pill { display: inline-flex; align-items: center; background: var(--tint); color: var(--blue);
+          border-radius: var(--r-pill); padding: 5px 10px; font-size: 11px; font-weight: 600;
+          line-height: var(--lh-flat); }
+  .chip { display: inline-flex; align-items: center; background: var(--tint); color: #111827;
+          border-radius: var(--r-pill); padding: 8px 14px; font-size: 13px; font-weight: 500;
+          line-height: var(--lh-flat); }
+  .step { display: inline-flex; align-items: center; justify-content: center;
+          width: 45px; height: 45px; background: var(--tint-2); color: var(--text);
+          border-radius: 22.5px; font-size: 14px; font-weight: 600; line-height: var(--lh-flat); }
+  .btn-legacy { display: inline-flex; align-items: center; height: 40px; background: var(--white);
+                color: #1077dd; border: none; border-radius: 4px; padding: 8px 32px;
+                font-family: var(--font-jp); font-size: 14px; font-weight: 700;
+                line-height: var(--lh-flat); box-shadow: var(--shadow-1); text-decoration: none; }
+
+  /* ===== CARDS ===== */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6rem; margin-top: 3.2rem; }
+  .card-service { background: var(--white); border-radius: var(--r-big); padding: 3.2rem;
+                  box-shadow: var(--shadow-2); }
+  .card-service h3 { font-size: 28px; font-weight: 700; line-height: var(--lh-card); }
+  .card-service p  { font-size: 16px; font-weight: 400; line-height: 1.75; margin-top: 1.6rem;
+                     color: var(--text-sub); }
+  .press { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6rem; margin-top: 3.2rem; }
+  .card-press { background: var(--white); border-radius: var(--r-press); padding: 2rem;
+                box-shadow: var(--shadow-1); }
+  .card-press .meta { display: flex; align-items: center; gap: 0.8rem; }
+  .card-press .date { font-size: 12px; font-weight: 400; line-height: 1.30; color: var(--text-date); }
+  .card-press p { font-size: 14px; font-weight: 600; line-height: 1.30; margin-top: 1.2rem; }
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6rem; margin-top: 3.2rem; }
+  .feature { background: rgba(255,255,255,0.92); border-radius: 15px; padding: 2.4rem; }
+  .feature h4 { font-size: 20px; font-weight: 700; line-height: var(--lh-head); }
+  .feature p  { font-size: 14px; font-weight: 400; line-height: 1.70; margin-top: 1.2rem;
+                color: var(--text-sub); }
+
+  /* ===== RADIUS / SHADOW SPECIMEN ===== */
+  .specs { display: flex; gap: 2.4rem; flex-wrap: wrap; align-items: flex-end; margin-top: 3.2rem; }
+  .spec-box { width: 110px; height: 110px; background: var(--white); box-shadow: var(--shadow-1);
+              display: flex; align-items: center; justify-content: center; text-align: center;
+              font-size: 12px; font-weight: 600; line-height: 1.40; color: var(--text-muted); }
+
+  /* ===== DO / DON'T ===== */
+  .dd { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4rem; margin-top: 3.2rem; }
+  .dd-col { background: var(--white); border-radius: var(--r-mid); padding: 3.2rem;
+            box-shadow: var(--shadow-1); }
+  .dd-col h3 { font-size: 20px; font-weight: 700; line-height: var(--lh-head); margin-bottom: 2rem; }
+  .dd-do h3   { color: #0a7a52; }
+  .dd-dont h3 { color: var(--orange); }
+  .dd-col ul { list-style: none; display: grid; gap: 1.2rem; }
+  .dd-col li { position: relative; padding-left: 2.2rem; font-size: 14px; font-weight: 400;
+               line-height: 1.70; }
+  .dd-col li::before { position: absolute; left: 0; font-weight: 700; }
+  .dd-do li::before   { content: "○"; color: #0a7a52; }
+  .dd-dont li::before { content: "×"; color: var(--orange); }
+
+  /* ===== FOOTER ===== */
+  .footer { background: var(--white); border-top: 1px solid #e6edf8; padding: 4.8rem 2rem; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-nav { display: flex; gap: 4.8rem; flex-wrap: wrap; }
+  .footer-nav a { font-size: 14px; font-weight: 400; line-height: var(--lh-foot);
+                  color: var(--text-foot); text-decoration: none; }
+  .footer-note { font-size: 12px; font-weight: 400; line-height: var(--lh-note);
+                 color: var(--text-note); margin-top: 3.2rem; max-width: 820px; }
+</style>
+</head>
+<body>
+
+<div class="alertbar">【重要】当社を装った詐欺電話にご注意ください。詳細はこちらをご確認ください。</div>
+
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" href="#"><span class="logo-mark"><i></i><i></i><i></i><i></i></span>bitFlyer</a>
+    <nav class="header-nav">
+      <a href="#">暗号資産のはじめ方</a><a href="#">サービス一覧</a><a href="#">チャート・相場</a>
+      <a href="#">手数料</a><a href="#">セキュリティ</a><a href="#">サポート</a>
+    </nav>
+    <div class="header-right">
+      <a class="login" href="#">ログイン</a>
+      <a class="btn-signup" href="#">新規登録</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <h1>ビットコイン取引量<br>10年連続 No.1</h1>
+      <div class="sub">暗号資産はビットフライヤー</div>
+      <a class="btn-primary" href="#">ビットフライヤーをはじめる</a>
+      <div class="hero-note">最短9分・口座開設無料</div>
+      <div class="hero-fine">「10年連続 No.1」は、2016年〜2025年の差金決済取引および先物取引を含む年間出来高について、JVCEAおよび各社が公表するデータを基に当社が調査した結果です。</div>
+    </div>
+    <div class="ticker">
+      <div class="ticker-row"><div><span class="t-name">ビットコイン</span><span class="t-sym">BTC</span></div><div class="t-price">11,943,452<span class="unit">円</span></div><div class="t-chg t-up">+1.36%</div></div>
+      <div class="ticker-row"><div><span class="t-name">イーサリアム</span><span class="t-sym">ETH</span></div><div class="t-price">341,251<span class="unit">円</span></div><div class="t-chg t-up">+0.45%</div></div>
+      <div class="ticker-row"><div><span class="t-name">エックスアールピー（XRP）</span><span class="t-sym">XRP</span></div><div class="t-price">204.76<span class="unit">円</span></div><div class="t-chg t-up">+1.45%</div></div>
+      <div class="ticker-row"><div><span class="t-name">ソラナ</span><span class="t-sym">SOL</span></div><div class="t-price">13,125<span class="unit">円</span></div><div class="t-chg t-down">-0.26%</div></div>
+      <div class="ticker-row"><div><span class="t-name">ドージコイン</span><span class="t-sym">DOGE</span></div><div class="t-price">12.59<span class="unit">円</span></div><div class="t-chg t-down">-5.81%</div></div>
+      <div class="ticker-row"><div><span class="t-name">シバイヌ</span><span class="t-sym">SHIB</span></div><div class="t-price">0.0009314<span class="unit">円</span></div><div class="t-chg t-down">-6.74%</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-num">01 / Colors</div>
+  <h2 class="section-title">青い白を三段、アクセントは青とオレンジ</h2>
+  <p class="section-lead">白が 3 段あり、どれも青が混ざっている ——<code>#fdfdff</code>（body）→ <code>#f5f8fd</code>（セクション）→ <code>rgba(255,255,255,.42)</code>（ティッカーカード）。<b>純白はテキスト色としてしか出てこない。</b>値上がりは <b>#0050d7</b>、値下がりは <b>#ff6400</b>。赤と緑は使わない。</p>
+
+  <div class="grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#0050d7"></div><div class="swatch-body"><div class="swatch-name">bitFlyer ブルー</div><div class="swatch-hex">#0050d7</div><div class="swatch-use">★面 5 要素 / 文字 114 要素。主CTA・値上がり率・タグの文字</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#1980e5"></div><div class="swatch-body"><div class="swatch-name">（変数の青・未使用）</div><div class="swatch-hex">#1980e5</div><div class="swatch-use"><b>--primary-color-bg の宣言値。可視 0 要素</b></div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ff6400"></div><div class="swatch-body"><div class="swatch-name">Lightning オレンジ</div><div class="swatch-hex">#ff6400</div><div class="swatch-use">★値下がり率（19 要素）・Lightning の CTA</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#13161b"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#13161b</div><div class="swatch-use">可視 54 要素。<b>変数の #242428 より濃い</b></div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#697ca9"></div><div class="swatch-body"><div class="swatch-name">Text Muted</div><div class="swatch-hex">#697ca9</div><div class="swatch-use">★可視 356 要素で最多。ティッカーの銘柄・価格</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#42516a"></div><div class="swatch-body"><div class="swatch-name">Text Secondary</div><div class="swatch-hex">#42516a</div><div class="swatch-use">銘柄名・補足（118 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f5f8fd;border-bottom:1px solid #dde5f2"></div><div class="swatch-body"><div class="swatch-name">Section Background</div><div class="swatch-hex">#f5f8fd</div><div class="swatch-use">★ビューポート面積で最大。実際に目に入る地色</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#eef4ff;border-bottom:1px solid #dde5f2"></div><div class="swatch-body"><div class="swatch-name">Tint</div><div class="swatch-hex">#eef4ff</div><div class="swatch-use">淡青のタグ・チップ（面 13 要素）</div></div></div>
+  </div>
+
+  <p class="note"><b>CSS 変数 150 個は、ほとんどが描画されていない。</b><code>ruby</code> <code>emerald</code> <code>yellow</code> <code>orange</code> <code>red</code> の 12 段パレット（計 60 色）はこの LP の可視要素に 1 つも出ない ——取引ツール（bitFlyer Lightning）と共有のトークンが配信されているだけ。<b>変数の値をそのまま実装値として書かないこと。</b></p>
+</section>
+
+<section class="section section-alt">
+  <div class="section-num">02 / Typography</div>
+  <h2 class="section-title">主役はpaltではなくtnum</h2>
+  <p class="section-lead"><code>font-feature-settings: "tnum"</code> が <b>366 要素</b>に効いている。<code>palt</code> は 6 要素だけ。日本語サイトとしては珍しく、<b>OpenType の主役が「詰め」ではなく「等幅数字」</b>。価格が更新されても桁がガタつかないための設計。数字は和文書体ではなく <code>Nunito</code> で組む（可視 351 要素）。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:10px">10</span><span style="font-size:11px">11</span><span style="font-size:12px">12</span>
+    <span style="font-size:13px">13</span><span style="font-size:14px">14</span><span style="font-size:15px">15</span>
+    <span style="font-size:16px">16</span><span style="font-size:18px">18</span><span style="font-size:20px">20</span>
+    <span style="font-size:28px">28</span><span style="font-size:32px">32</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Stat Number ★</b>Poppins / 61px / 600<br>lh 1.25 / ls <b>-5.6px（-0.091em）</b><br>このサイト唯一の字間調整</div><div class="d-stat">95.7<span style="font-size:39.6px">%</span></div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Heading</b>Noto Sans JP / 32px / <b>700</b><br>lh 1.40 / ls normal</div><div style="font-size:32px;font-weight:700;line-height:1.4">ビットフライヤーが選ばれる３つの理由</div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Heading</b>Noto Sans JP / 28px / 700<br>lh 1.35</div><div style="font-size:28px;font-weight:700;line-height:1.35">bitFlyer かんたん積立</div></div>
+  <div class="type-row"><div class="type-meta"><b>Feature Heading</b>Noto Sans JP / 20px / 700<br>lh 1.40（13 要素）</div><div style="font-size:20px;font-weight:700;line-height:1.4">豊富な銘柄の取り扱い</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav ★</b>Noto Sans JP / 14px / <b>600</b><br>lh 1.60（75 要素）<br><b>weight 600 が既定</b></div><div style="font-size:14px;font-weight:600;line-height:1.6">暗号資産のはじめ方　サービス一覧　チャート・相場</div></div>
+  <div class="type-row"><div class="type-meta"><b>Ticker Name ★</b>Noto Sans JP / 13px / 600<br>lh <b>1.00</b>（<b>可視 249 要素で最多</b>）</div><div style="font-size:13px;font-weight:600;line-height:1"><span style="color:#42516a">ビットコイン</span> <span style="color:#697ca9">BTC</span></div></div>
+  <div class="type-row"><div class="type-meta"><b>Ticker Price ★</b>Nunito / 11px / 600<br>lh 1.00 / <b>font-feature-settings: "tnum"</b><br>（可視 241 要素）</div><div style="font-family:var(--font-num);font-size:11px;font-weight:600;line-height:1;font-feature-settings:'tnum';color:#697ca9">11,943,452 円　<span style="color:#0050d7">+1.36%</span>　<span style="color:#ff6400">-5.81%</span></div></div>
+  <div class="type-row"><div class="type-meta"><b>Body</b>Noto Sans JP / 16px / 400<br>lh <b>1.75</b>（body の 16px / 28px）</div><div style="font-size:16px;font-weight:400;line-height:1.75;max-width:620px">暗号資産（仮想通貨）の売買はもちろん、積立・運用・決済まで。ビットコインやイーサリアムなど、お好きな暗号資産をお選びいただけます。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Note</b>Noto Sans JP / 12px / 400<br>lh 1.85（免責・長文注記）</div><div style="font-size:12px;font-weight:400;line-height:1.85;color:#66778f;max-width:620px">暗号資産は法定通貨ではなく、代価の弁済を受ける者の同意がある場合に限り支払いに使用することができます。需給バランスの変化等により価格が変動することがあります。</div></div>
+
+  <p class="note"><b><code>line-height: 1.00</code> が 617/759 要素（81%）。</b>ティッカーもラベルもボタンもすべて 1.0 で、読ませる文章だけ 1.40〜1.95 に開く。<b>高さは <code>line-height</code> ではなく <code>height</code> と <code>padding</code> で作る。</b><br><b>字間は 755/759 要素が <code>normal</code>。</b>例外は Poppins の巨大数字（-5.6px）と <code>最短9分・口座開設無料</code> の 0.36px だけ。<b>日本語に <code>letter-spacing</code> を足さない。</b></p>
+</section>
+
+<section class="section">
+  <div class="section-num">03 / Numbers</div>
+  <h2 class="section-title">数字を読ませるための三層</h2>
+  <p class="section-lead">価格は <b>Nunito 11px ＋ tnum</b>、実績は <b>Poppins 61px ＋ -0.091em</b>、和文は Noto Sans JP。<b>数字だけ書体を切り替える</b>のがこのサイトの流儀。</p>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">ビットコイン取引量</div><div class="stat-num">No.1</div><div class="stat-fine">※1 2025年12月末時点</div></div>
+    <div class="stat"><div class="stat-label">「アプリが使いやすい」<br>と答えた方</div><div class="stat-num">95.7<span class="unit">%</span></div><div class="stat-fine">※2 当社調べ</div></div>
+    <div class="stat"><div class="stat-label">「価格情報をすぐ確認できた」<br>と答えた方</div><div class="stat-num">95.1<span class="unit">%</span></div><div class="stat-fine">※2 当社調べ</div></div>
+  </div>
+
+  <p class="note"><b>数値を出す要素には必ず <code>font-feature-settings: "tnum"</code> を入れる。</b>入れないと <code>1</code> と <code>8</code> の字幅差で桁がずれ、更新のたびに目がちらつく。<b>日本語サイトで <code>palt</code> を足す前に、数字があるなら <code>tnum</code> を検討すること。</b></p>
+</section>
+
+<section class="section section-alt">
+  <div class="section-num">04 / Components</div>
+  <h2 class="section-title">角丸は10pxと990px</h2>
+  <p class="section-lead"><code>border-radius</code> は 8 種あるが主役は 2 つ ——カードの <b>10px</b>（117 要素）とピルの <b>990px</b>（18 要素）。主 CTA だけ 12px。<b>CTA に影は付けない。</b></p>
+
+  <div class="btn-row">
+    <a class="btn-primary s" href="#">無料で口座開設</a>
+    <a class="btn-primary s btn-lightning" href="#">bitFlyer Lightning で売買を始める</a>
+    <a class="btn-signup" href="#">新規登録</a>
+  </div>
+  <div class="btn-row">
+    <span class="pill">機能について</span><span class="pill">料金について</span><span class="pill">サポートについて</span>
+    <span class="chip">少額からスタート</span><span class="chip">自動でコツコツ購入</span><span class="chip">頻度を自由に設定</span>
+    <span class="step">1</span><span class="step">2</span><span class="step">3</span>
+  </div>
+  <div class="btn-row">
+    <a class="btn-legacy" href="#">新規登録</a>
+    <span style="font-size:13px;font-weight:400;line-height:1.7;color:#66778f">← <b>下層ページ（<code>/s/how-to-start</code>）の CTA。radius 4px / weight 400 既定 / コンテナ 1080px の別世代</b>。新規実装では使わない</span>
+  </div>
+
+  <div class="features">
+    <div class="feature"><h4>豊富な銘柄の取り扱い</h4><p>ビットコインをはじめ、全 40 銘柄の暗号資産を取り扱っています。</p></div>
+    <div class="feature"><h4>1 円から購入可能</h4><p>ビットコイン、イーサリアム、エックスアールピーなどを少額から。</p></div>
+    <div class="feature"><h4>手数料無料</h4><p>販売所の売買手数料、口座開設・口座維持手数料は無料です。</p></div>
+  </div>
+
+  <div class="cards">
+    <div class="card-service"><h3>bitFlyer かんたん積立</h3><p>ビットコインやイーサリアムなど、お好きな暗号資産を毎日・毎週・毎月から選んで自動で購入できます。</p></div>
+    <div class="card-service"><h3>定期貸しコイン／ステーキング</h3><p>保有している暗号資産を活用して、貸借料や報酬を受け取ることができます。</p></div>
+    <div class="card-service"><h3>bitFlyer クレカ</h3><p>日々のお買い物や公共料金の支払いでビットコインが貯まります。</p></div>
+  </div>
+
+  <div class="press">
+    <div class="card-press"><div class="meta"><span class="pill">プレスリリース</span><span class="date">2026.09.16</span></div><p>トロン（ TRX ）、グラム（ GRAM ）、コスモス（ ATOM ）の取り扱いを開始</p></div>
+    <div class="card-press"><div class="meta"><span class="pill">プレスリリース</span><span class="date">2026.09.04</span></div><p>国内ビットコイン取引量、2026年上半期 第1位を獲得</p></div>
+    <div class="card-press"><div class="meta"><span class="pill">プレスリリース</span><span class="date">2026.08.21</span></div><p>ビットコイン（ BTC ）のハードフォーク実施予定に関するお知らせ</p></div>
+  </div>
+
+  <div class="specs">
+    <div class="spec-box" style="border-radius:6px">6px<br>プレス</div>
+    <div class="spec-box" style="border-radius:8px">8px<br>ヘッダーCTA</div>
+    <div class="spec-box" style="border-radius:10px">★10px<br>カード（117）</div>
+    <div class="spec-box" style="border-radius:12px">12px<br>主CTA</div>
+    <div class="spec-box" style="border-radius:16px">16px</div>
+    <div class="spec-box" style="border-radius:28px">28px<br>特集</div>
+    <div class="spec-box" style="border-radius:990px">★990px<br>ピル（18）</div>
+  </div>
+
+  <p class="note"><b>影は黒ではなく濃紺 <code>rgba(16, 42, 75, …)</code>、アルファは 0.06 で統一。</b>プレスカードが <code>0 1px 3px</code>、サービスカードが <code>0 4px 20px</code>、追従ヘッダーが <code>0 0 16px rgba(36,36,36,.08)</code>。<b>ティッカーカードは影を持たず、<code>rgba(255,255,255,.42)</code> の半透明白で浮かせている。</b></p>
+</section>
+
+<section class="section">
+  <div class="section-num">05 / Layout &amp; Guidelines</div>
+  <h2 class="section-title">rootは10px、境界は690と1280</h2>
+  <p class="section-lead"><code>html { font-size: 10px }</code> なので変数の <code>rem</code> はすべて ×10 が px（<code>--spacing-4x: 1.6rem</code> = 16px、<code>--font-size-320: 3.2rem</code> = 32px）。ブレークポイントは <b>690px と 1280px の 2 本</b>で、中間帯を <code>(691px &lt;= width &lt;= 1279px)</code> の range 構文で直接書く。コンテナは <b>1170px</b>、本文カラムは <b>620px</b>。</p>
+
+  <div class="dd">
+    <div class="dd-col dd-do">
+      <h3>Do</h3>
+      <ul>
+        <li>数値を出す要素に必ず <code>font-feature-settings: "tnum"</code>（366 要素）</li>
+        <li>数字は <code>Nunito, sans-serif</code> に切り替える</li>
+        <li>60px 級の実績数字は <code>Poppins</code> 600 / <code>letter-spacing: -5.6px</code></li>
+        <li>和文の <code>font-weight</code> 既定を <b>600</b> にする（400 は注記のみ）</li>
+        <li><code>font-family</code> は <code>"Noto Sans JP"</code> を先頭に置く</li>
+        <li>数値・ラベル・ボタンは <code>line-height: 1.00</code>、本文は 1.75</li>
+        <li>CTA は <code>#0050d7</code> / radius 12px / padding <code>0 24px</code> / 影なし</li>
+        <li>タグは radius 990px のピル（面 <code>#eef4ff</code>、文字 <code>#0050d7</code>）</li>
+        <li>地色は青い白を 3 段。値上がり青 / 値下がりオレンジ</li>
+        <li>影は <code>rgba(16, 42, 75, 0.06)</code></li>
+      </ul>
+    </div>
+    <div class="dd-col dd-dont">
+      <h3>Don't</h3>
+      <ul>
+        <li><code>--primary-color-bg</code>（<code>#1980e5</code>）を CTA に使わない</li>
+        <li><code>--color-text</code>（<code>#242428</code>）を本文色にしない</li>
+        <li><code>ruby</code> / <code>emerald</code> / <code>yellow</code> / <code>red</code> のパレットを使わない</li>
+        <li>値上がりを赤、値下がりを緑にしない</li>
+        <li>日本語に <code>letter-spacing</code> を足さない</li>
+        <li><code>palt</code> を全体に足さない（実測 6 要素のみ）</li>
+        <li><code>Noto Sans JP</code> の weight 300・可変指定を使わない（<code>unloaded</code>）</li>
+        <li>CTA に <code>box-shadow</code> を足さない</li>
+        <li>影を <code>rgba(0,0,0,…)</code> にしない</li>
+        <li><b><code>body</code> の <code>font-family</code> 宣言（<code>-apple-system</code> 先頭）を真似しない</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="note"><b>トップページと下層ページは別のデザインシステム。</b>トップは <code>"Noto Sans JP"</code> 先頭・weight 600 既定・radius 12px・コンテナ 1170px。下層 <code>/s/how-to-start</code> は <code>-apple-system</code> 先頭・weight 400 既定・radius 4px・コンテナ 1080px で、可視 101 要素すべてが <code>body</code> のスタックのまま。<b>新規に組むならトップ側（新しい世代）に合わせる。</b></p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <nav class="footer-nav">
+      <a href="#">bitFlyerのはじめ方</a><a href="#">暗号資産について学ぶ</a><a href="#">bitFlyerのセキュリティ</a>
+      <a href="#">手数料</a><a href="#">会社情報</a><a href="#">採用情報</a>
+    </nav>
+    <div class="footer-note">株式会社 bitFlyer ／ 金融商品取引業者 関東財務局長（金商）第3294号　— このページは DESIGN.md の再現サンプルです（2026-09-17 実測）。表示価格はダミーです。</div>
+  </div>
+</footer>
+
+</body>
+</html>
