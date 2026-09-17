@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Nstock（株式報酬）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Design Tokens ===
+       実サイトに CSS Custom Properties は 1 個も存在しない（Next.js の CSS Modules で
+       ビルド時に解決されている）。以下は実測値から起こしたもの。2026-09-17 */
+
+    /* Color — 実測の可視要素数を併記 */
+    --indigo:        #2227b2;   /* 文字 34 要素 / 面 8 要素。CTA・リンク・強調 */
+    --ink:           #0f131a;   /* 可視 464 要素。純黒は使わない */
+    --ink-secondary: #3c4149;   /* 可視 6 要素 */
+    --ink-muted:     #6d727c;   /* 可視 7 要素 */
+    --white:         #ffffff;
+    --bg:            #ffffff;   /* ページ背景（根拠 body） */
+    --surface:       #f3f4f7;   /* フッター面・ステータスバッジ */
+    --border:        #e9eaed;   /* カードの枠 */
+    --border-strong: #afb6c1;   /* セカンダリボタンの枠 */
+    --border-subtle: #d4d8dd;   /* タグの枠 */
+    --nav-dark:      #40444d;
+    --hero-dark:     #2f305d;
+
+    /* サービス3領域のバッジ色。青 → インディゴ → 紫 と色相が連続する */
+    --svc-planning:   #085f96;
+    --svc-admin:      #2227b2;
+    --svc-enablement: #4622b2;
+
+    --success: #0d735b;         /* #f3f4f7 面の上の「提供予定」 */
+
+    /* Fonts — 欧文 Manrope が先、和文 Noto Sans JP が後。
+       字ごとにスタックを走査するので数字とラテン文字は Manrope が拾う。
+       ロードされるのは Manrope 400-700 / Noto Sans JP 400-600 だけ
+       （Manrope 800 と Noto Sans JP 700 は unloaded）。 */
+    --font: Manrope, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    --font-en: Manrope, sans-serif;   /* 実サイトは generic 無し。ここでは補って書く */
+
+    /* Letter spacing — body に 1 回だけ書いて px で継承させる。
+       実測 0.368px が可視 540 要素中 493 要素 */
+    --ls: 0.023em;              /* 16px に対して 0.368px */
+    --ls-h-lg: 0.05em;          /* 56px 見出し */
+    --ls-h:    0.06em;          /* 32px / 24px 見出し */
+
+    /* Radius */
+    --r-btn:  4px;              /* ボタン・カード・バッジ */
+    --r-face: 6px;              /* 面・大型CTA・タブ */
+    --r-tag:  2px;              /* カテゴリタグ */
+
+    /* Elevation — 唯一の影。ヒーローの浮きラベル 3 要素だけ */
+    --shadow: rgba(0,0,0,.08) 2px 4px 4px 0;
+
+    --container: 1120px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.8;              /* ★本文は 1.8 */
+    letter-spacing: var(--ls);     /* ★1 回だけ。子で再宣言しない */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* palt は見出しだけ。実測 9 要素はすべて h1/h2/h3 と円ラベル */
+  h1, h2, h3, .palt { font-feature-settings: "palt"; }
+
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .88em;
+         background: var(--surface); padding: 1px 5px; border-radius: var(--r-tag); }
+  b { font-weight: 600; }
+
+  /* ---------- header ---------- */
+  .header { position: sticky; top: 0; z-index: 10; background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 24px;
+            padding: 14px 40px; }
+  .logo { display: flex; flex-direction: column; gap: 2px; }
+  .logo-tag { font-size: 11px; line-height: 1.2; color: var(--ink-secondary); }
+  .logo-row { display: flex; align-items: center; gap: 8px; }
+  .logo-mark { width: 26px; height: 26px; background: var(--ink); position: relative; }
+  .logo-mark::before { content: ""; position: absolute; left: 0; top: 7px; width: 26px; height: 5px; background: var(--white); }
+  .logo-name { font-family: var(--font-en); font-size: 21px; font-weight: 700; letter-spacing: -.01em; }
+  .logo-sub { font-size: 15px; font-weight: 600; }
+  .header-nav { margin-left: auto; display: flex; align-items: center; gap: 26px; }
+  .header-nav a { color: var(--ink); text-decoration: none; font-size: 16px; font-weight: 600; line-height: 1.2; }
+  .header-nav a.btn-login { color: var(--ink-secondary); background: var(--white);
+      border: 1px solid var(--border-strong); border-radius: var(--r-btn); padding: 12px 18px; line-height: 1; }
+  .header-nav a.btn-cta { color: var(--white); background: var(--indigo);
+      border-radius: var(--r-btn); padding: 13px 18px; line-height: 1; }
+
+  /* ---------- sections ---------- */
+  .section { max-width: var(--container); margin: 0 auto; padding: 72px 40px; }
+  .section-alt { background: linear-gradient(96.8deg, #f5fafd 6.38%, #f5f6fd 51.98%, #f7f5fd 110.34%); }
+  .section-label { font-family: var(--font-en); font-size: 16px; font-weight: 600;
+                   color: var(--indigo); letter-spacing: .02em; margin-bottom: 8px; }
+  .section-title { font-size: 32px; font-weight: 600; line-height: 1.65;
+                   letter-spacing: var(--ls-h); margin-bottom: 12px; }
+  .section-lead { font-size: 16px; line-height: 1.65; color: var(--ink); max-width: 760px; margin-bottom: 32px; }
+
+  /* ---------- 01 colors ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(258px, 1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--border); border-radius: var(--r-btn); overflow: hidden; }
+  .swatch-chip { height: 74px; }
+  .swatch-body { padding: 12px 14px; }
+  .swatch-name { font-size: 14px; font-weight: 600; line-height: 1.45; }
+  .swatch-hex { font-family: var(--font-en); font-size: 12px; color: var(--ink-muted); line-height: 1.45; }
+  .swatch-use { font-size: 12px; line-height: 1.45; color: var(--ink-secondary); margin-top: 6px; }
+
+  /* ---------- 02 typography ---------- */
+  .type-row { border-top: 1px solid var(--border); padding: 22px 0;
+              display: grid; grid-template-columns: 210px 1fr; gap: 28px; align-items: baseline; }
+  .type-row:last-child { border-bottom: 1px solid var(--border); }
+  .type-meta { font-family: var(--font-en); font-size: 12px; line-height: 1.6; color: var(--ink-muted); }
+  .t-hero { font-size: 56px; font-weight: 600; line-height: 1.2; letter-spacing: var(--ls-h-lg); }
+  .t-h2   { font-size: 32px; font-weight: 600; line-height: 1.65; letter-spacing: var(--ls-h); }
+  .t-h3   { font-size: 20px; font-weight: 600; line-height: 1.55; letter-spacing: .03em; }
+  .t-lead { font-size: 20px; font-weight: 500; line-height: 1.75; }
+  .t-body { font-size: 16px; font-weight: 400; line-height: 1.8; }
+  .t-small{ font-size: 14px; font-weight: 400; line-height: 1.45; }
+  .t-note { font-size: 11px; font-weight: 400; line-height: 1.52; color: var(--ink-muted); }
+
+  .palt-demo { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 30px; }
+  .palt-box { border: 1px solid var(--border); border-radius: var(--r-btn); padding: 20px 22px; }
+  .palt-box .lbl { font-family: var(--font-en); font-size: 12px; color: var(--ink-muted); margin-bottom: 8px; }
+  .palt-on  { font-feature-settings: "palt"; font-size: 24px; font-weight: 600; line-height: 1.65; letter-spacing: var(--ls-h); }
+  .palt-off { font-feature-settings: normal; font-size: 24px; font-weight: 600; line-height: 1.65; letter-spacing: var(--ls-h); }
+
+  /* ---------- 03 article ---------- */
+  .doc { max-width: 603px; }
+  .doc h3 { font-size: 24px; font-weight: 600; line-height: 1.65; letter-spacing: var(--ls-h); margin-bottom: 14px; }
+  .doc p { font-size: 16px; line-height: 1.8; margin-bottom: 20px; }
+  .doc ul { margin: 0 0 20px 0; padding-left: 0; list-style: none; }
+  .doc li { font-size: 14px; line-height: 1.45; padding: 9px 0 9px 20px; position: relative; }
+  .doc li::before { content: ""; position: absolute; left: 4px; top: 16px;
+                    width: 6px; height: 6px; border-radius: 50%; background: var(--indigo); }
+  .stat-bar { background: linear-gradient(90deg, rgba(218,219,247,.5), rgba(180,212,241,.5));
+              border-radius: var(--r-face); padding: 18px 26px; margin-bottom: 26px;
+              display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .stat-bar .t { font-size: 16px; font-weight: 500; }
+  .stat-bar .n { font-family: var(--font-en); font-size: 24px; font-weight: 700; color: var(--indigo); line-height: 1; }
+
+  /* ---------- 04 buttons ---------- */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 26px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center;
+         font-family: var(--font); line-height: 1; text-decoration: none; cursor: pointer;
+         letter-spacing: var(--ls); border: none; }
+  .btn-primary   { background: var(--indigo); color: var(--white); border-radius: var(--r-btn);
+                   padding: 18px 16px; font-size: 16px; font-weight: 600; }
+  .btn-primary-lg{ background: var(--indigo); color: var(--white); border-radius: var(--r-face);
+                   padding: 20px 24px; font-size: 16px; font-weight: 400; }
+  .btn-secondary { background: var(--white); color: var(--ink-secondary);
+                   border: 1px solid var(--border-strong); border-radius: var(--r-btn);
+                   padding: 18px 16px; font-size: 16px; font-weight: 600; }
+  .btn-outline   { background: var(--white); color: var(--ink);   /* ★文字は黒。枠だけインディゴ */
+                   border: 1px solid var(--indigo); border-radius: var(--r-btn);
+                   padding: 16px; font-size: 16px; font-weight: 400; }
+  .btn-disabled  { background: var(--surface); color: var(--ink-muted); border-radius: var(--r-btn);
+                   padding: 18px 16px; font-size: 16px; font-weight: 600; cursor: not-allowed; }
+
+  .badge { display: inline-flex; align-items: center; color: var(--white);
+           border-radius: var(--r-btn); padding: 12px; font-size: 16px; font-weight: 400; line-height: 1; }
+  .label-col { display: inline-flex; color: var(--indigo); background: transparent;
+               border: 1px solid var(--indigo); border-radius: 0;   /* ★角丸を付けない */
+               padding: 10px; font-size: 14px; font-weight: 500; line-height: 1; }
+  .tag-cat { display: inline-flex; color: var(--ink-muted); background: var(--white);
+             border: 1px solid var(--border-subtle); border-radius: var(--r-tag);
+             padding: 6px; font-size: 12px; font-weight: 500; line-height: 1; }
+  .badge-status { display: inline-flex; color: var(--success); background: var(--surface);
+                  border-radius: var(--r-btn); padding: 4px 8px; font-size: 12px; font-weight: 600; line-height: 1.2; }
+  .float-label { display: inline-flex; background: rgba(255,255,255,.88); color: var(--ink);
+                 border-radius: var(--r-btn); padding: 12px 16px;
+                 font-size: 13px; font-weight: 600; line-height: 1.55; box-shadow: var(--shadow); }
+
+  /* ---------- 05 cards ---------- */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-btn);
+          overflow: hidden; box-shadow: none; }   /* ★影なし */
+  .card-thumb { height: 116px; }
+  .card-body { padding: 20px; }
+  .card-title { font-size: 16px; font-weight: 600; line-height: 1.58; margin: 10px 0 8px; }
+  .card-desc { font-size: 14px; line-height: 1.45; color: var(--ink-secondary); }
+  .card-meta { font-family: var(--font-en); font-size: 12px; color: var(--ink-muted); margin-top: 12px; }
+
+  .svc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .svc { border: 1px solid var(--border); border-radius: var(--r-face); padding: 28px 24px; }
+  .svc-circle { width: 56px; height: 56px; border-radius: 50%; display: flex; flex-direction: column;
+                align-items: center; justify-content: center; color: var(--white);
+                font-size: 14px; font-weight: 600; line-height: 1.1; font-feature-settings: "palt"; }
+  .svc-circle small { font-family: var(--font-en); font-size: 8px; font-weight: 600; letter-spacing: .02em; }
+  .svc-en { font-family: var(--font-en); font-size: 16px; font-weight: 600; color: var(--indigo); margin: 16px 0 4px; }
+  .svc-ttl { font-size: 20px; font-weight: 600; line-height: 1.55; letter-spacing: .03em; margin-bottom: 10px; }
+  .svc-txt { font-size: 14px; line-height: 1.45; color: var(--ink-secondary); margin-bottom: 18px; }
+
+  /* ---------- 06 forms ---------- */
+  .form { max-width: 540px; display: grid; gap: 22px; }
+  .field-label { font-size: 14px; font-weight: 600; line-height: 1.45; margin-bottom: 7px; display: block; }
+  .field { width: 100%; font-family: var(--font); font-size: 16px; line-height: 1.5;
+           letter-spacing: var(--ls); color: var(--ink);
+           background: var(--white); border: 1px solid var(--border-strong);
+           border-radius: var(--r-btn); padding: 13px 14px; }
+  .field::placeholder { color: var(--ink-muted); }
+  .field-focus { border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(34,39,178,.12); outline: none; }
+  .field-error { border-color: #c0392b; }
+  .field-hint { font-size: 12px; line-height: 1.45; color: var(--ink-muted); margin-top: 6px; }
+  .field-err-msg { font-size: 12px; line-height: 1.45; color: #c0392b; margin-top: 6px; }
+
+  /* ---------- 07 elevation ---------- */
+  .elev-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 320px)); gap: 24px; }
+  .elev { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-btn); padding: 22px; }
+  .elev-1 { box-shadow: var(--shadow); border-color: transparent; }
+  .elev-name { font-size: 14px; font-weight: 600; line-height: 1.45; }
+  .elev-val { font-family: var(--font-en); font-size: 12px; color: var(--ink-muted); line-height: 1.6; margin-top: 4px; }
+
+  /* ---------- 08 layout ---------- */
+  .layout-demo { border: 1px solid var(--border); border-radius: var(--r-face); overflow: hidden; }
+  .layout-band { background: var(--surface); text-align: center; font-family: var(--font-en);
+                 font-size: 12px; color: var(--ink-muted); padding: 7px; }
+  .layout-inner { max-width: 1120px; margin: 0 auto; background: rgba(34,39,178,.06);
+                  border-left: 1px dashed var(--indigo); border-right: 1px dashed var(--indigo);
+                  padding: 26px 20px; text-align: center; font-size: 14px; }
+  .space-row { display: flex; align-items: flex-end; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+  .space-item { text-align: center; }
+  .space-bar { background: var(--indigo); border-radius: var(--r-tag); }
+  .space-lbl { font-family: var(--font-en); font-size: 11px; color: var(--ink-muted); margin-top: 6px; }
+
+  /* ---------- footer ---------- */
+  .footer { background: var(--surface); border-radius: var(--r-face) var(--r-face) 0 0;
+            margin-top: 40px; padding: 48px 40px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; display: flex; gap: 40px; flex-wrap: wrap; }
+  .footer-note { font-size: 12px; line-height: 1.6; color: var(--ink-muted); }
+
+  .note { border-left: 3px solid var(--indigo); background: rgba(34,39,178,.04);
+          padding: 14px 18px; border-radius: 0 var(--r-btn) var(--r-btn) 0;
+          font-size: 14px; line-height: 1.65; margin-top: 26px; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <span class="logo-tag">AIと専門家による株式報酬エージェント</span>
+    <span class="logo-row">
+      <span class="logo-mark"></span>
+      <span class="logo-name">Nstock</span>
+      <span class="logo-sub">株式報酬</span>
+    </span>
+  </div>
+  <nav class="header-nav">
+    <a href="#colors">サービスの特長</a>
+    <a href="#typography">導入・活用事例</a>
+    <a href="#buttons">お役立ち資料</a>
+    <a class="btn-login" href="#forms">ログイン</a>
+    <a class="btn-cta" href="#buttons">プロに相談する</a>
+  </nav>
+</header>
+
+<!-- 01 COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">インディゴ1色で導線を引く</h2>
+  <p class="section-lead">
+    ブランド色は <code>#2227b2</code> ひとつ。<b>文字色として 34 要素、面色として 8 要素</b>にしか現れないが、CTA・リンク・数値の強調・セクションラベルをすべて担う。
+    本文の黒は純黒ではなく <code>#0f131a</code>（可視 464 要素）。サービス3領域のバッジだけが <b>青 → インディゴ → 紫</b> と色相を連続させた3色を使う。
+  </p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#2227b2"></div><div class="swatch-body"><div class="swatch-name">Brand Indigo</div><div class="swatch-hex">#2227b2</div><div class="swatch-use">★ CTA の面、リンク、数値強調、アウトラインの枠</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#0f131a"></div><div class="swatch-body"><div class="swatch-name">Ink</div><div class="swatch-hex">#0f131a</div><div class="swatch-use">本文・見出し。可視 464 要素。純黒 #000 は使わない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#3c4149"></div><div class="swatch-body"><div class="swatch-name">Ink / secondary</div><div class="swatch-hex">#3c4149</div><div class="swatch-use">補足文、ログインボタンの文字</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#6d727c"></div><div class="swatch-body"><div class="swatch-name">Ink / muted</div><div class="swatch-hex">#6d727c</div><div class="swatch-use">注釈 11px、カテゴリタグ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#085f96"></div><div class="swatch-body"><div class="swatch-name">設計 / Planning</div><div class="swatch-hex">#085f96</div><div class="swatch-use">バッジ面のみ。他では使わない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#4622b2"></div><div class="swatch-body"><div class="swatch-name">活用 / Enablement</div><div class="swatch-hex">#4622b2</div><div class="swatch-use">バッジ面のみ。他では使わない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#0d735b"></div><div class="swatch-body"><div class="swatch-name">Success</div><div class="swatch-hex">#0d735b</div><div class="swatch-use">「提供予定」バッジの文字（面は #f3f4f7）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f3f4f7"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#f3f4f7</div><div class="swatch-use">フッター面、ステータスバッジの面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e9eaed"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#e9eaed</div><div class="swatch-use">カードの枠</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#afb6c1"></div><div class="swatch-body"><div class="swatch-name">Border / strong</div><div class="swatch-hex">#afb6c1</div><div class="swatch-use">セカンダリボタン・入力欄の枠</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:linear-gradient(90deg, rgba(218,219,247,.5), rgba(180,212,241,.5)), #fff"></div><div class="swatch-body"><div class="swatch-name">Gradient / bar</div><div class="swatch-hex">rgba(218,219,247,.5) → rgba(180,212,241,.5)</div><div class="swatch-use">実績バー。白に限りなく近い</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:linear-gradient(96.8deg,#f5fafd 6.38%,#f5f6fd 51.98%,#f7f5fd 110.34%)"></div><div class="swatch-body"><div class="swatch-name">Gradient / section</div><div class="swatch-hex">#f5fafd → #f5f6fd → #f7f5fd</div><div class="swatch-use">セクション面。彩度を上げないこと</div></div></div>
+  </div>
+  <p class="note">
+    <b>このサイトに CSS 変数は 1 個も無い。</b>Next.js の CSS Modules（<code>index-module-scss-module__…__button</code>）でビルド時に解決されているため、<b>実装値そのものが仕様</b>になる。
+  </p>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<div class="section-alt">
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">palt は見出しだけ、字間は body から継承</h2>
+  <p class="section-lead">
+    欧文 <b>Manrope</b> → 和文 <b>Noto Sans JP</b> の順にスタックを積み、数字とラテン文字を Manrope に拾わせる。
+    <code>letter-spacing</code> は body に 1 回だけ書いて <b>0.368px として可視 493 要素に継承</b>させ、見出しだけが em で 0.05〜0.06em に開く。
+    <code>font-feature-settings: "palt"</code> は<b>可視 540 要素中わずか 9 要素</b>——すべて見出しと円ラベルで、本文には当てない。
+  </p>
+
+  <div class="type-row">
+    <div class="type-meta">h1 / Hero<br>56px · 600 · 1.2<br>letter-spacing .05em<br><b>palt あり</b></div>
+    <div class="t-hero">株式報酬、まるごとプロに。</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">h2 / Section<br>32px · 600 · 1.65<br>letter-spacing .06em<br><b>palt あり</b></div>
+    <div class="t-h2">株式報酬の課題、誰に相談していますか？</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">h3<br>20px · 600 · 1.55<br>letter-spacing .03em</div>
+    <div class="t-h3">100社以上の支援実績をもとに、最適な設計に伴走</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Lead<br>20px · 500 · 1.75<br>継承 0.368px</div>
+    <div class="t-lead">設計も、管理も、活用も。AIと専門家が、すべてに応える。</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Body<br>16px · 400 · <b>1.8</b><br>継承 0.368px<br>palt なし</div>
+    <div class="t-body">株式報酬の最適解は、成長フェーズごとに変わります。制度の設計も、日々の管理も、従業員への価値の伝え方も、担当者ひとりで抱えるには広すぎる領域です。</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Small<br>14px · 400 · 1.45<br>最頻サイズ（51 要素）</div>
+    <div class="t-small">制度設計・運用体制の相談／税制適格SO 契約書ひな型の提供／株価算定</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Note<br>11px · 400 · 1.52<br>#6d727c</div>
+    <div class="t-note">※ Nstock は法律・税務の助言や株価算定業務そのものを行うものではありません。</div>
+  </div>
+
+  <div class="palt-demo">
+    <div class="palt-box">
+      <div class="lbl">font-feature-settings: "palt" — 見出しに当てる</div>
+      <div class="palt-on">その課題、Nstock株式報酬が「まるごと」解決します。</div>
+    </div>
+    <div class="palt-box">
+      <div class="lbl">normal — 本文はこちら（palt を当てない）</div>
+      <div class="palt-off">その課題、Nstock株式報酬が「まるごと」解決します。</div>
+    </div>
+  </div>
+
+  <p class="note">
+    <b>和文に 700 以上を使わないこと。</b>Noto Sans JP の 700 は <code>@font-face</code> に宣言されているが <code>document.fonts</code> の status が <code>unloaded</code>（＝参照する要素が存在しない）。
+    実測のウェイト分布は <b>600 が 50、400 が 45、500 が 22、700 は数字の「100」1 要素だけ</b>。Manrope も 800 は unloaded。
+  </p>
+</section>
+</div>
+
+<!-- 03 DOCUMENT -->
+<section class="section" id="doc">
+  <div class="section-label">03 / Document</div>
+  <h2 class="section-title">本文は 603px の読み幅に置く</h2>
+  <p class="section-lead">コンテナは 1120px だが、長文ブロックは 603px / 540px に絞って 1 行の字数を抑える。</p>
+  <div class="doc">
+    <div class="stat-bar">
+      <span class="t">急成長スタートアップ・上場準備企業</span>
+      <span class="n">100</span>
+      <span class="t">社以上の支援実績</span>
+    </div>
+    <h3>その課題、まるごと解決します</h3>
+    <p>
+      エクセル管理は、成長とともに限界を迎えます。付与・変動・登記の履歴が担当者の手元にしか無い状態では、
+      資金調達や上場準備のたびに棚卸しが発生し、そのつど同じ確認を繰り返すことになります。
+    </p>
+    <ul>
+      <li>制度設計・運用体制の相談</li>
+      <li>税制適格SO 契約書ひな型の提供</li>
+      <li>ベスティング管理・契約締結機能</li>
+    </ul>
+    <p>
+      設計・管理・活用の3領域を 1 つの窓口にまとめることで、<b>誰に聞けばいいか分からない</b>という状態そのものを無くします。
+    </p>
+    <span class="badge-status">提供予定</span>
+  </div>
+</section>
+
+<!-- 04 BUTTONS -->
+<div class="section-alt">
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons &amp; Badges</div>
+  <h2 class="section-title">角丸 4px、アウトラインの文字は黒</h2>
+  <p class="section-lead">
+    CTA は<b>塗り（インディゴ）とアウトライン（枠だけインディゴ・文字は黒）の2種</b>だけ。アウトラインの文字色までブランド色にしないのがこのサイトの流儀。
+    面や大型 CTA だけ角丸が 6px、カテゴリタグは 2px、課題ラベルは <b>角丸ゼロ</b>。
+  </p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">プロに相談する</a>
+    <a class="btn btn-primary-lg" href="#">プロに相談する（大 / radius 6px）</a>
+    <a class="btn btn-secondary" href="#">ログイン</a>
+    <a class="btn btn-outline" href="#">設計支援を詳しく見る</a>
+    <span class="btn btn-disabled">送信できません</span>
+  </div>
+  <div class="btn-row">
+    <span class="badge" style="background:var(--svc-planning)">設計支援 Planning</span>
+    <span class="badge" style="background:var(--svc-admin)">管理支援 Admin</span>
+    <span class="badge" style="background:var(--svc-enablement)">活用支援 Enablement</span>
+  </div>
+  <div class="btn-row">
+    <span class="label-col">設計の課題</span>
+    <span class="label-col">管理の課題</span>
+    <span class="tag-cat">Press Release</span>
+    <span class="badge-status">提供予定</span>
+    <span class="float-label">最適な設計か分からない</span>
+  </div>
+  <p class="note">
+    <b>塗りボタンの角丸は 4px、フッターの大型 CTA だけ 6px。</b>課題ラベル（<code>.label-col</code>）は <code>border-radius: 0</code>、カテゴリタグは <code>2px</code>。
+    浮きラベルはこのサイトで<b>唯一影が付く要素</b>（<code>rgba(0,0,0,.08) 2px 4px 4px 0</code>・実測 3 要素）。
+  </p>
+</section>
+</div>
+
+<!-- 05 CARDS -->
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <h2 class="section-title">影を使わず、1px の罫線で囲む</h2>
+  <p class="section-lead">カードは <code>1px solid #e9eaed</code> と角丸 4px のみ。サービス3領域のカードだけ角丸 6px で、円ラベルに palt が当たる。</p>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-thumb" style="background:linear-gradient(120deg,#e6e8f7,#cfe0f2)"></div>
+      <div class="card-body">
+        <span class="tag-cat">導入事例</span>
+        <div class="card-title">チューリング初のストックオプション説明会レポート</div>
+        <div class="card-desc">CFO が語る、設計から従業員への伝え方まで。</div>
+        <div class="card-meta">2026.09.02</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb" style="background:linear-gradient(120deg,#dfe1f6,#e9e2f5)"></div>
+      <div class="card-body">
+        <span class="tag-cat">Press Release</span>
+        <div class="card-title">LayerX が資金調達とあわせて Nstock を導入した理由</div>
+        <div class="card-desc">成長フェーズごとに変わる最適解にどう追随するか。</div>
+        <div class="card-meta">2026.08.21</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb" style="background:linear-gradient(120deg,#e2edf6,#dcdff5)"></div>
+      <div class="card-body">
+        <span class="tag-cat">お知らせ</span>
+        <div class="card-title">日本経済新聞に掲載されました</div>
+        <div class="card-desc">株式報酬の設計・管理・活用をめぐる潮流について。</div>
+        <div class="card-meta">2026.08.05</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="svc-grid" style="margin-top:32px">
+    <div class="svc">
+      <div class="svc-circle" style="background:var(--svc-planning)">設計<small>PLANNING</small></div>
+      <div class="svc-en">Planning</div>
+      <div class="svc-ttl">最適な設計に伴走</div>
+      <div class="svc-txt">100社以上の支援実績をもとに、自社に合った制度の方向性を専門家と決めます。</div>
+      <a class="btn btn-outline" href="#">設計支援を詳しく見る</a>
+    </div>
+    <div class="svc">
+      <div class="svc-circle" style="background:var(--svc-admin)">管理<small>ADMIN</small></div>
+      <div class="svc-en">Admin</div>
+      <div class="svc-ttl">正確なデータと堅牢な体制</div>
+      <div class="svc-txt">付与・変動・登記の履歴をソフトウェアで一元化し、棚卸しを不要にします。</div>
+      <a class="btn btn-outline" href="#">管理支援を詳しく見る</a>
+    </div>
+    <div class="svc">
+      <div class="svc-circle" style="background:var(--svc-enablement)">活用<small>ENABLE</small></div>
+      <div class="svc-en">Enablement</div>
+      <div class="svc-ttl">価値を伝え、原動力へ</div>
+      <div class="svc-txt">従業員に株式報酬の価値が伝わる説明会・資料づくりまで支援します。</div>
+      <a class="btn btn-outline" href="#">活用支援を詳しく見る</a>
+    </div>
+  </div>
+</section>
+
+<!-- 06 FORMS -->
+<div class="section-alt">
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">入力欄も角丸 4px・枠 1px</h2>
+  <p class="section-lead">既定・フォーカス・エラーの3状態。フォーカスリングはインディゴの 12% を 3px。</p>
+  <div class="form">
+    <div>
+      <label class="field-label">会社名</label>
+      <input class="field" type="text" placeholder="株式会社◯◯">
+      <div class="field-hint">登記上の名称をご記入ください</div>
+    </div>
+    <div>
+      <label class="field-label">メールアドレス（フォーカス時）</label>
+      <input class="field field-focus" type="email" value="taro.yamada@example.co.jp">
+    </div>
+    <div>
+      <label class="field-label">電話番号（エラー時）</label>
+      <input class="field field-error" type="tel" value="03-000">
+      <div class="field-err-msg">電話番号の形式が正しくありません</div>
+    </div>
+    <div>
+      <label class="field-label">ご相談内容</label>
+      <textarea class="field" rows="4" placeholder="株式報酬の設計についてご相談したい内容をご記入ください"></textarea>
+    </div>
+    <div class="btn-row" style="margin:0">
+      <button class="btn btn-primary" type="button">プロに相談する</button>
+      <button class="btn btn-secondary" type="button">資料をダウンロード</button>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- 07 ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <h2 class="section-title">影は 1 種類・3 要素だけ</h2>
+  <p class="section-lead">可視 540 要素のうち 537 要素が <code>box-shadow: none</code>。階層は罫線と面色で表す。</p>
+  <div class="elev-grid">
+    <div class="elev">
+      <div class="elev-name">Level 0 — 既定</div>
+      <div class="elev-val">box-shadow: none<br>可視 537 要素。カードもボタンも影なし</div>
+    </div>
+    <div class="elev elev-1">
+      <div class="elev-name">Level 1 — ヒーローの浮きラベルのみ</div>
+      <div class="elev-val">rgba(0,0,0,.08) 2px 4px 4px 0<br>実測 3 要素</div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 LAYOUT -->
+<div class="section-alt">
+<section class="section" id="layout">
+  <div class="section-label">08 / Layout</div>
+  <h2 class="section-title">コンテナ 1120px、余白は 8px 刻み</h2>
+  <p class="section-lead">ヒーローと全幅セクションだけ 1440px。長文は 603px / 540px に絞る。</p>
+  <div class="layout-demo">
+    <div class="layout-band">1440px — ヒーロー・全幅セクション</div>
+    <div class="layout-inner">1120px — 本文コンテンツ（最頻）</div>
+    <div class="layout-band">603px / 540px — 長文ブロック</div>
+  </div>
+  <div class="space-row">
+    <div class="space-item"><div class="space-bar" style="width:8px;height:8px"></div><div class="space-lbl">8</div></div>
+    <div class="space-item"><div class="space-bar" style="width:12px;height:12px"></div><div class="space-lbl">12</div></div>
+    <div class="space-item"><div class="space-bar" style="width:16px;height:16px"></div><div class="space-lbl">16</div></div>
+    <div class="space-item"><div class="space-bar" style="width:20px;height:20px"></div><div class="space-lbl">20</div></div>
+    <div class="space-item"><div class="space-bar" style="width:24px;height:24px"></div><div class="space-lbl">24</div></div>
+    <div class="space-item"><div class="space-bar" style="width:32px;height:32px"></div><div class="space-lbl">32</div></div>
+    <div class="space-item"><div class="space-bar" style="width:40px;height:40px"></div><div class="space-lbl">40</div></div>
+    <div class="space-item"><div class="space-bar" style="width:64px;height:64px"></div><div class="space-lbl">64</div></div>
+  </div>
+  <p class="note">
+    ブレークポイントは <b>min-width 方式</b>。実測の出現回数は <code>1024px</code>(150) → <code>768px</code>(96) → <code>1280px</code>(65) → <code>640px</code>(7)。
+    <code>(prefers-reduced-motion: reduce)</code> も 1 箇所で扱っている。
+  </p>
+</section>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="logo-row" style="margin-bottom:8px">
+        <span class="logo-mark"></span>
+        <span class="logo-name">Nstock</span>
+        <span class="logo-sub">株式報酬</span>
+      </div>
+      <div class="footer-note">
+        Design System Preview — 実測日 2026-09-17<br>
+        出典: https://nstock.com/ , https://nstock.com/service<br>
+        ※ このページはデザイントークンの参照用に再現したショーケースであり、公式サイトではありません。
+      </div>
+    </div>
+    <div style="margin-left:auto">
+      <a class="btn btn-primary-lg" href="#">プロに相談する</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

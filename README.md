@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (499 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (502 sites)</a>
 </p>
 
 <table>
@@ -761,6 +761,11 @@
 </tr>
 <tr>
 <td align="center"><strong>JRA</strong><br><img src="design-md/jra/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Nstock</strong><br><img src="design-md/nstock/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>SORANO HOTEL</strong><br><img src="design-md/soranohotel/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>東京オペラシティ アートギャラリー</strong><br><img src="design-md/tokyo-operacity-ag/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1321,11 +1326,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [足立美術館 (ADACHI MUSEUM OF ART)](https://www.adachi-museum.or.jp/) | Museum / Japanese Garden | [DESIGN.md](design-md/adachi-museum/DESIGN.md) | [preview.html](design-md/adachi-museum/preview.html) |
 | [みんなの銀行 (Minna no Ginko)](https://www.minna-no-ginko.com/) | Digital Bank / Finance | [DESIGN.md](design-md/minna-no-ginko/DESIGN.md) | [preview.html](design-md/minna-no-ginko/preview.html) |
 | [JRA 日本中央競馬会 (JRA)](https://www.jra.go.jp/) | Horse Racing / Public Corporation | [DESIGN.md](design-md/jra/DESIGN.md) | [preview.html](design-md/jra/preview.html) |
+| [Nstock 株式報酬 (Nstock)](https://nstock.com/) | Equity Compensation / SaaS | [DESIGN.md](design-md/nstock/DESIGN.md) | [preview.html](design-md/nstock/preview.html) |
+| [SORANO HOTEL (ソラノホテル)](https://soranohotel.com/) | Hotel / Hospitality | [DESIGN.md](design-md/soranohotel/DESIGN.md) | [preview.html](design-md/soranohotel/preview.html) |
+| [東京オペラシティ アートギャラリー (Tokyo Opera City Art Gallery)](https://www.operacity.jp/ag/) | Art Gallery / Culture | [DESIGN.md](design-md/tokyo-operacity-ag/DESIGN.md) | [preview.html](design-md/tokyo-operacity-ag/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (499 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (502 sites)</a>
 </p>
 
 <table>
@@ -2052,6 +2060,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>JRA</strong><br><img src="design-md/jra/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Nstock</strong><br><img src="design-md/nstock/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>SORANO HOTEL</strong><br><img src="design-md/soranohotel/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>東京オペラシティ アートギャラリー</strong><br><img src="design-md/tokyo-operacity-ag/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: SORANO HOTEL（ソラノホテル）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Inter:wght@300;350;400;500&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ★ html { font-size: 10px } — このサイトの骨格。1rem = 10px として全トークンが書かれている */
+  html { font-size: 10px; }
+
+  :root {
+    /* === Design Tokens ===
+       実サイトの :root をそのまま写したもの（自社トークン 85 個 / うち主要なもの）。2026-09-17
+       ※ 宣言されていても実サイトで 1 要素も描画されない色があるため、下の Colors で明示している */
+    --color-dark:              #1a1a1a;
+    --color-black:             #000;
+    --color-blue:              #5988c6;
+    --color-blue-hover:        #476d9e;
+    --color-dark-blue:         #274875;
+    --color-dark-blue-hover:   #1f3a5e;
+    --color-white-hover:       #eeebe7;
+    --color-sorano-bllue:      #88ade2;   /* 綴りは実サイトのまま（bllue） */
+    --color-gold:              #a89469;
+    --color-beige:             #d1c3bc;
+    --color-brown:             #332727;
+    --color-red:               #c71212;
+    --color-orange:            #c74012;
+    --color-font-dark:         #1a1a1a;
+    --color-bg-primary:        #f9f8f6;
+    --color-bg-gray:           #eeebe7;
+    --color-bg-light-gray:     #f4f2ef;
+    --color-bg-dark-blue:      #30517b;
+    --color-bg-dark:           #171513;
+    --color-border-gray:       rgba(0,0,0,0.12);
+    --color-border-dark-gray:  rgba(0,0,0,0.25);
+    --color-border-light-gray: rgba(0,0,0,0.06);
+    --color-border-white-gray: rgba(255,255,255,0.3);
+
+    /* Fonts — 明朝が既定（可視 194/292 要素）、ゴシックは補助（18 要素） */
+    --font-family-serif: "Noto Serif JP", "游明朝", "Yu Mincho", yumincho, "Hiragino Mincho Pro", serif;
+    --font-family-sans:  "Inter", "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", meiryo, sans-serif;
+    --font-family-eng:   "Cardo", "Noto Serif JP", "游明朝", "Yu Mincho", serif;   /* 400 のみ */
+    --font-family-eng-sub: "Inter", sans-serif;
+
+    /* Size (1rem = 10px) */
+    --font-size-body-xl:  1.6rem; --font-size-body-lg:  1.5rem; --font-size-body-md:  1.4rem;
+    --font-size-body-sm:  1.3rem; --font-size-body-xs:  1.2rem; --font-size-body-2xs: 1.1rem;
+    --font-size-heading-2xl: 4.4rem; --font-size-heading-xl: 4rem;   --font-size-heading-lg: 3.2rem;
+    --font-size-heading-md:  2.4rem; --font-size-heading-sm: 2rem;   --font-size-heading-xs: 1.8rem;
+
+    /* Weight — ★既定が 350（非整数）。700 は 1 要素も無い */
+    --font-weight-normal: 350;
+    --font-weight-medium: 500;
+
+    /* Line height */
+    --line-height-body: 2;  --line-height-body-sm: 1.8;  --line-height-heading: 1.6;
+    --line-height-copy: 1.7; --line-height-heading-eng: 1.2;
+
+    /* Letter spacing — 和文 0.1em / 欧文 0.06em / ヒーローだけ 0.3em */
+    --letter-spacing-body: 0.1em; --letter-spacing-heading: 0.1em;
+    --letter-spacing-heading-en: 0.06em; --letter-spacing-copy: 0.1em;
+    --letter-spacing-xxl: 0.2em; --letter-spacing-xl: 0.15em; --letter-spacing-l: 0.12em;
+    --letter-spacing-m: 0.1em; --letter-spacing-s: 0.05em; --letter-spacing-xs: 0.02em;
+    --ls-hero: 0.3em;   /* 実測 9.6px / 32px。実サイトはコンポーネント側で持つ */
+
+    /* Space */
+    --site-padding: 6.25vw;
+    --header-height: 8rem;
+    --space-section-lg: 22rem; --space-section-md: 15rem; --space-section-sm: 10rem;
+    --space-element-3xl: 12rem; --space-element-2xl: 9.6rem; --space-element-xl: 8rem;
+    --space-element-lg: 6.4rem;  --space-element-md: 4.8rem;  --space-element-sm: 3.6rem;
+    --space-element-xs: 2.4rem;  --space-element-2xs: 1.6rem; --space-element-3xs: 1.2rem;
+    --space-element-4xs: 0.8rem;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--color-bg-primary);       /* ★純白ではなく生成り #f9f8f6 */
+    color: var(--color-dark);                  /* ★純黒ではなく #1a1a1a */
+    font-family: var(--font-family-sans);      /* body はゴシック。本文要素側で明朝に上書きする */
+    font-size: var(--font-size-body-md);       /* 14px */
+    font-weight: var(--font-weight-normal);    /* ★350 */
+    line-height: var(--line-height-body);      /* ★2.0 */
+    letter-spacing: var(--letter-spacing-body);/* ★0.1em → 1.4px として全体に継承 */
+    font-feature-settings: "palt";             /* ★全面に palt（可視 1045/1046 要素） */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .serif { font-family: var(--font-family-serif); }
+  .sans  { font-family: var(--font-family-sans); }
+  .eng   { font-family: var(--font-family-eng); letter-spacing: var(--letter-spacing-heading-en); }
+
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .86em;
+         background: var(--color-bg-gray); padding: 1px 5px; letter-spacing: 0; }
+  b { font-weight: var(--font-weight-medium); }
+
+  /* ---------- header ---------- */
+  .header { height: var(--header-height); display: flex; align-items: center; gap: 3.2rem;
+            padding: 0 var(--site-padding); background: var(--color-bg-dark-blue); color: #fff; }
+  .brand { font-family: var(--font-family-eng); font-size: 2rem; font-weight: 400;
+           letter-spacing: 0.2em; color: #fff; }
+  .header-nav { margin-left: auto; display: flex; align-items: center; gap: 2.8rem; }
+  .header-nav a { font-family: var(--font-family-serif); font-size: 1.3rem; font-weight: 500;
+                  letter-spacing: 0.1em; color: #fff; text-decoration: none; line-height: 1; }
+  .header-nav a.nav-eng { font-family: var(--font-family-eng); font-weight: 400; letter-spacing: 0.06em; }
+
+  /* ---------- hero ---------- */
+  .hero { position: relative; min-height: 46rem; padding: 10rem var(--site-padding);
+          background: linear-gradient(180deg,#8fa9bd 0%, #a8bcc6 45%, #cfd8d2 100%);
+          display: flex; flex-direction: column; justify-content: center; align-items: flex-end;
+          text-align: right; color: #fff; }
+  .hero-title { font-family: var(--font-family-serif);
+                font-size: var(--font-size-heading-lg);      /* 32px */
+                font-weight: var(--font-weight-normal);      /* 350 */
+                line-height: 1.5;
+                letter-spacing: var(--ls-hero);              /* ★0.3em */
+                margin-bottom: 3.2rem; }
+  .hero-lead { font-family: var(--font-family-serif); font-size: var(--font-size-body-md);
+               font-weight: var(--font-weight-normal); line-height: 2.2;
+               letter-spacing: var(--letter-spacing-body); max-width: 52rem; }
+  .hero-wordmark { position: absolute; left: var(--site-padding); bottom: 2rem;
+                   font-family: var(--font-family-eng); font-size: 9rem; font-weight: 400;
+                   letter-spacing: 0.06em; color: rgba(255,255,255,.85); line-height: 1; }
+
+  /* ---------- sections ---------- */
+  .section { max-width: 186rem; margin: 0 auto; padding: var(--space-section-sm) var(--site-padding); }
+  .section-alt { background: var(--color-bg-light-gray); }
+  .section-label { font-family: var(--font-family-eng); font-size: 1.2rem; font-weight: 400;
+                   letter-spacing: 0.15em; color: var(--color-dark-blue); margin-bottom: 1.2rem; }
+  .section-title { font-family: var(--font-family-serif); font-size: var(--font-size-heading-md);
+                   font-weight: var(--font-weight-medium); line-height: 1.6;
+                   letter-spacing: var(--letter-spacing-heading); margin-bottom: 1.6rem; }
+  .section-lead { font-family: var(--font-family-serif); font-size: var(--font-size-body-md);
+                  line-height: 2.2; max-width: 84rem; margin-bottom: var(--space-element-md); }
+
+  /* ---------- colors ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(26rem, 1fr)); gap: 1.6rem; }
+  .swatch { border: 1px solid var(--color-border-gray); background: #fff; }
+  .swatch-chip { height: 8rem; }
+  .swatch-body { padding: 1.4rem 1.6rem; }
+  .swatch-name { font-family: var(--font-family-serif); font-size: 1.4rem; font-weight: 500; line-height: 1.8; }
+  .swatch-hex { font-family: var(--font-family-eng-sub); font-size: 1.2rem; letter-spacing: 0.02em;
+                color: #6a6a6a; line-height: 1.8; }
+  .swatch-use { font-family: var(--font-family-serif); font-size: 1.2rem; line-height: 1.8; margin-top: .6rem; }
+  .swatch.unused { opacity: .55; }
+  .swatch.unused .swatch-chip { position: relative; }
+  .swatch.unused .swatch-chip::after { content: "未使用"; position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-family-serif); font-size: 1.2rem; letter-spacing: .2em;
+      color: #fff; background: rgba(0,0,0,.42); }
+
+  /* ---------- typography ---------- */
+  .type-row { border-top: 1px solid var(--color-border-light-gray); padding: 2.8rem 0;
+              display: grid; grid-template-columns: 24rem 1fr; gap: 3.2rem; align-items: baseline; }
+  .type-row:last-of-type { border-bottom: 1px solid var(--color-border-light-gray); }
+  .type-meta { font-family: var(--font-family-eng-sub); font-size: 1.2rem; letter-spacing: 0.02em;
+               line-height: 1.8; color: #6a6a6a; }
+  .t-hero { font-family: var(--font-family-serif); font-size: 3.2rem; font-weight: 350;
+            line-height: 1.5; letter-spacing: 0.3em; }
+  .t-h-xl { font-family: var(--font-family-serif); font-size: 4rem; font-weight: 350;
+            line-height: 1.7; letter-spacing: 0.1em; }
+  .t-eng  { font-family: var(--font-family-eng); font-size: 4.4rem; font-weight: 500;
+            line-height: 1.2; letter-spacing: 0.06em; }
+  .t-h-md { font-family: var(--font-family-serif); font-size: 2.4rem; font-weight: 500;
+            line-height: 1.7; letter-spacing: 0.1em; }
+  .t-h-sm { font-family: var(--font-family-serif); font-size: 2rem; font-weight: 350;
+            line-height: 1.6; letter-spacing: 0.1em; }
+  .t-body { font-family: var(--font-family-serif); font-size: 1.4rem; font-weight: 350;
+            line-height: 2.0; letter-spacing: 0.1em; }
+  .t-long { font-family: var(--font-family-serif); font-size: 1.4rem; font-weight: 350;
+            line-height: 2.2; letter-spacing: 0.1em; }
+  .t-cap  { font-family: var(--font-family-serif); font-size: 1.2rem; font-weight: 350;
+            line-height: 1.8; letter-spacing: 0.1em; }
+  .t-sans { font-family: var(--font-family-sans); font-size: 1.3rem; font-weight: 350;
+            line-height: 1.8; letter-spacing: 0.1em; }
+
+  .weight-demo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6rem; margin-top: 3.2rem; }
+  .weight-box { border: 1px solid var(--color-border-gray); background: #fff; padding: 2.4rem; }
+  .weight-box .lbl { font-family: var(--font-family-eng-sub); font-size: 1.2rem;
+                     letter-spacing: 0.02em; color: #6a6a6a; margin-bottom: 1rem; }
+  .weight-box .smp { font-family: var(--font-family-serif); font-size: 2rem; line-height: 1.7; letter-spacing: 0.1em; }
+
+  .ls-demo { margin-top: 3.2rem; display: grid; gap: 1.2rem; }
+  .ls-item { border-left: 2px solid var(--color-dark-blue); padding: 1.2rem 0 1.2rem 2rem; }
+  .ls-item .lbl { font-family: var(--font-family-eng-sub); font-size: 1.2rem; color: #6a6a6a;
+                  letter-spacing: 0.02em; line-height: 1.8; }
+  .ls-item .smp { font-family: var(--font-family-serif); font-size: 2rem; font-weight: 350; line-height: 1.8; }
+
+  /* ---------- rooms / cards ---------- */
+  .room-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4rem; }
+  .room-thumb { height: 22rem; }
+  .room-en { font-family: var(--font-family-eng); font-size: 2.4rem; font-weight: 350;
+             letter-spacing: 0.08em; line-height: 1.2; margin: 1.6rem 0 .8rem; }
+  .room-ttl { font-family: var(--font-family-serif); font-size: 1.6rem; font-weight: 500;
+              line-height: 1.8; letter-spacing: 0.1em; }
+  .room-txt { font-family: var(--font-family-serif); font-size: 1.3rem; font-weight: 350;
+              line-height: 2.0; letter-spacing: 0.1em; margin-top: .8rem; }
+
+  .news-list { border-top: 1px solid var(--color-border-gray); }
+  .news-item { border-bottom: 1px solid var(--color-border-gray); padding: 2.4rem 0;
+               display: grid; grid-template-columns: 12rem 16rem 1fr; gap: 2.4rem; align-items: center; }
+  .news-date { font-family: var(--font-family-eng-sub); font-size: 1.3rem; letter-spacing: 0.05em; }
+  .badge-category { display: inline-flex; align-items: center; justify-content: center;
+                    background: var(--color-blue); color: #fff; border-radius: 0;
+                    padding: .4rem .8rem; font-family: var(--font-family-sans);
+                    font-size: 1.1rem; font-weight: 350; letter-spacing: 0.1em; line-height: 1.6; }
+  .news-ttl { font-family: var(--font-family-serif); font-size: 1.4rem; font-weight: 500;
+              line-height: 1.8; letter-spacing: 0.1em; }
+
+  /* ---------- buttons ---------- */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 1.6rem; align-items: stretch; margin-bottom: 2.4rem; }
+  .btn { display: inline-flex; align-items: center; justify-content: center;
+         border-radius: 0;               /* ★角丸ゼロ */
+         box-shadow: none;               /* ★影なし */
+         text-decoration: none; cursor: pointer; text-align: center; }
+  .btn-primary { background: var(--color-dark-blue); color: #fff; border: none;
+                 padding: 3rem 2rem; font-family: var(--font-family-serif);
+                 font-size: 1.6rem; font-weight: 500; letter-spacing: 0.1em; line-height: 1; }
+  .btn-primary-sm { background: var(--color-dark-blue); color: #fff; border: none;
+                    padding: 1.3rem 2rem; font-family: var(--font-family-serif);
+                    font-size: 1.3rem; font-weight: 350; letter-spacing: 0.1em; line-height: 1; }
+  .btn-outline { background: transparent; color: var(--color-dark);
+                 border: 1px solid var(--color-border-gray);
+                 padding: 2rem 2rem 2rem 3rem; font-family: var(--font-family-serif);
+                 font-size: 1.4rem; font-weight: 350; letter-spacing: 0.1em; line-height: 1.6; }
+  .btn-floating { background: var(--color-dark-blue); color: #fff; border: none;
+                  padding: 1.8rem 3.2rem; flex-direction: column; gap: .4rem; }
+  .btn-floating .ja { font-family: var(--font-family-serif); font-size: 1.4rem;
+                      font-weight: 350; letter-spacing: 0.05em; line-height: 1.2; }
+  .btn-floating .en { font-family: var(--font-family-eng); font-size: 1rem;
+                      font-weight: 400; letter-spacing: 0.1em; line-height: 1.2; }
+
+  /* ---------- forms ---------- */
+  .form { max-width: 54rem; display: grid; gap: 2.8rem; }
+  .field-label { display: block; font-family: var(--font-family-serif); font-size: 1.3rem;
+                 font-weight: 500; letter-spacing: 0.1em; line-height: 1.8; margin-bottom: .8rem; }
+  .field { width: 100%; font-family: var(--font-family-serif); font-size: 1.4rem;
+           font-weight: 350; letter-spacing: 0.1em; line-height: 1.8; color: var(--color-dark);
+           background: #fff; border: 1px solid var(--color-border-dark-gray);
+           border-radius: 0; padding: 1.4rem 1.6rem; }
+  .field::placeholder { color: #9a9a9a; }
+  .field-focus { border-color: var(--color-dark-blue); outline: 2px solid rgba(39,72,117,.2); outline-offset: 0; }
+  .field-error { border-color: var(--color-red); }
+  .field-hint { font-family: var(--font-family-serif); font-size: 1.2rem; line-height: 1.8;
+                color: #6a6a6a; margin-top: .6rem; }
+  .field-err-msg { font-family: var(--font-family-serif); font-size: 1.2rem; line-height: 1.8;
+                   color: var(--color-red); margin-top: .6rem; }
+
+  /* ---------- elevation / layout ---------- */
+  .flat-note { border: 1px solid var(--color-border-gray); background: #fff;
+               padding: 3.2rem; font-family: var(--font-family-serif); font-size: 1.4rem;
+               line-height: 2.0; letter-spacing: 0.1em; }
+  .space-row { display: flex; align-items: flex-end; gap: 1.2rem; flex-wrap: wrap; margin-top: 2.4rem; }
+  .space-bar { background: var(--color-dark-blue); }
+  .space-lbl { font-family: var(--font-family-eng-sub); font-size: 1.1rem; letter-spacing: 0.02em;
+               color: #6a6a6a; margin-top: .6rem; text-align: center; }
+
+  .note { border-left: 2px solid var(--color-dark-blue); background: rgba(39,72,117,.05);
+          padding: 1.8rem 2.2rem; font-family: var(--font-family-serif); font-size: 1.3rem;
+          line-height: 2.0; letter-spacing: 0.1em; margin-top: 3.2rem; }
+
+  /* ---------- footer ---------- */
+  .footer { background: var(--color-bg-dark); color: #fff; padding: 6.4rem var(--site-padding); }
+  .footer-brand { font-family: var(--font-family-eng); font-size: 3.2rem; font-weight: 400;
+                  letter-spacing: 0.2em; line-height: 1.2; margin-bottom: 2.4rem; }
+  .footer-note { font-family: var(--font-family-serif); font-size: 1.2rem; font-weight: 350;
+                 line-height: 2.0; letter-spacing: 0.1em; color: rgba(255,255,255,.72); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <span class="brand">SORANO HOTEL</span>
+  <nav class="header-nav">
+    <a href="#colors">プラン</a>
+    <a href="#typography">客室</a>
+    <a href="#rooms">レストラン＆バー</a>
+    <a href="#buttons">アクセス</a>
+    <a class="nav-eng" href="#forms">MEMBERSHIP</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1 class="hero-title">東京にあって、<br>東京にないホテル</h1>
+  <p class="hero-lead">
+    SORANO HOTEL は、東京立川に誕生した新発想のホテルです。<br>
+    コンセプトは、心にも体にも健やかであること「ウェルビーイング」。
+  </p>
+  <span class="hero-wordmark">SORANO HOTEL</span>
+</section>
+
+<!-- 01 COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">実装されているのは3色だけ</h2>
+  <p class="section-lead">
+    トークンには金・茶・ベージュ・赤・橙まで並んでいるが、<b>DOM を 1 周して数えると描画されるのは
+    <code>#1a1a1a</code>（832 要素）・<code>#ffffff</code>（206）・<code>#5988c6</code>（4）だけ</b>。
+    面色も <code>#274875</code>（9）と <code>#5988c6</code>（21）に限られる。
+    紺は「押せるもの」、水色は「分類」——役割がはっきり分かれている。
+  </p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#1a1a1a"></div><div class="swatch-body"><div class="swatch-name">Dark（本文）</div><div class="swatch-hex">#1a1a1a / --color-dark</div><div class="swatch-use">★可視 832 要素。純黒 #000 は使わない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#274875"></div><div class="swatch-body"><div class="swatch-name">Dark Blue（CTA）</div><div class="swatch-hex">#274875 / --color-dark-blue</div><div class="swatch-use">★面色 9 要素。すべての塗りボタン。hover は #1f3a5e</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#5988c6"></div><div class="swatch-body"><div class="swatch-name">Blue（カテゴリ）</div><div class="swatch-hex">#5988c6 / --color-blue</div><div class="swatch-use">★面色 21 要素。ニュースの分類バッジ専用</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f9f8f6;border-bottom:1px solid rgba(0,0,0,.08)"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#f9f8f6 / --color-bg-primary</div><div class="swatch-use">★ページ背景（根拠 body）。純白ではない生成り</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#eeebe7"></div><div class="swatch-body"><div class="swatch-name">Gray</div><div class="swatch-hex">#eeebe7 / --color-bg-gray</div><div class="swatch-use">面、白ボタンの hover</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f4f2ef"></div><div class="swatch-body"><div class="swatch-name">Light Gray</div><div class="swatch-hex">#f4f2ef / --color-bg-light-gray</div><div class="swatch-use">セクションの下地</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#30517b"></div><div class="swatch-body"><div class="swatch-name">BG Dark Blue</div><div class="swatch-hex">#30517b / --color-bg-dark-blue</div><div class="swatch-use">ヘッダー・濃紺の帯</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#171513"></div><div class="swatch-body"><div class="swatch-name">BG Dark</div><div class="swatch-hex">#171513 / --color-bg-dark</div><div class="swatch-use">フッター</div></div></div>
+    <div class="swatch unused"><div class="swatch-chip" style="background:#a89469"></div><div class="swatch-body"><div class="swatch-name">Gold</div><div class="swatch-hex">#a89469 / --color-gold</div><div class="swatch-use">宣言のみ。可視 0 要素。配色に持ち込まない</div></div></div>
+    <div class="swatch unused"><div class="swatch-chip" style="background:#d1c3bc"></div><div class="swatch-body"><div class="swatch-name">Beige</div><div class="swatch-hex">#d1c3bc / --color-beige</div><div class="swatch-use">宣言のみ。可視 0 要素</div></div></div>
+    <div class="swatch unused"><div class="swatch-chip" style="background:#332727"></div><div class="swatch-body"><div class="swatch-name">Brown</div><div class="swatch-hex">#332727 / --color-brown</div><div class="swatch-use">宣言のみ。可視 0 要素</div></div></div>
+    <div class="swatch unused"><div class="swatch-chip" style="background:#88ade2"></div><div class="swatch-body"><div class="swatch-name">Sorano Blue</div><div class="swatch-hex">#88ade2 / --color-sorano-bllue</div><div class="swatch-use">宣言のみ。可視 0 要素（変数名の綴りも実サイトのまま）</div></div></div>
+  </div>
+  <p class="note">
+    <b>宣言 ≠ 実装。</b>CSS 変数の一覧を見て金や茶を配色に足すと、実サイトと別物になる。
+    使ってよいのは上段の8色だけ。
+  </p>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<div class="section-alt">
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">明朝で組み、0.1em 空け、palt で詰める</h2>
+  <p class="section-lead">
+    可視テキスト 292 要素のうち <b>194 要素が明朝（Noto Serif JP）</b>。ゴシックは 18 要素しかなく、ナビ・ラベル・日付など「読ませない文字」に限られる。
+    字間は <code>0.1em</code> を body に 1 回だけ書いて <b>1.4px として 736 要素に継承</b>させ、<b>ヒーロー見出しだけ 0.3em</b> まで開く。
+    <code>font-feature-settings: "palt"</code> は<b>可視 1046 要素中 1045 要素</b>——実質グローバル。
+  </p>
+
+  <div class="type-row">
+    <div class="type-meta">Hero / h1<br>32px · 350 · 1.5<br><b>letter-spacing 0.3em</b><br>明朝</div>
+    <div class="t-hero">東京にあって、東京にないホテル</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Heading xl<br>40px · 350 · 1.7<br>letter-spacing 0.1em<br>明朝</div>
+    <div class="t-h-xl">滞在そのものが Well-being 体験</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Heading 2xl / 欧文<br>44px · 500 · 1.2<br><b>letter-spacing 0.06em</b><br>Cardo</div>
+    <div class="t-eng">SORANO NEWS</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Heading md<br>24px · 500 · 1.7<br>letter-spacing 0.1em<br>明朝</div>
+    <div class="t-h-md">都心からわずか30分、大きな空と豊かな緑</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Heading sm<br>20px · 350 · 1.6<br>letter-spacing 0.1em<br>明朝</div>
+    <div class="t-h-sm">ジム・プールプログラム</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Body<br>14px · <b>350</b> · <b>2.0</b><br>letter-spacing 0.1em<br>明朝</div>
+    <div class="t-body">ゆったりとした広さは心地よく、豊かな緑に癒される。一つ一つの選択や判断に、一貫したウェルビーイングへのこだわりがあります。</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Body / long<br>14px · 350 · <b>2.2</b><br>長文はさらに開く</div>
+    <div class="t-long">慌ただしい日常から離れ、心身ともに心地よい寛ぎの時間を。フィジカル面での健やかさだけでなく、心の充足まで含めて滞在を設計しています。</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Caption<br>12px · 350 · 1.8<br>明朝</div>
+    <div class="t-cap">オールデイダイニング／朝食 7:00 - 10:30</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Sans（補助）<br>13px · 350 · 1.8<br>Inter + Noto Sans JP</div>
+    <div class="t-sans">ナビゲーション・ラベル・日付だけがゴシック</div>
+  </div>
+
+  <div class="weight-demo">
+    <div class="weight-box"><div class="lbl">font-weight: 350 — ★既定（可視 199 要素）</div><div class="smp" style="font-weight:350">心にも体にも健やかであること</div></div>
+    <div class="weight-box"><div class="lbl">font-weight: 500 — 強調（90 要素）</div><div class="smp" style="font-weight:500">心にも体にも健やかであること</div></div>
+    <div class="weight-box"><div class="lbl">font-weight: 700 — ★実サイトに 0 要素。使わない</div><div class="smp" style="font-weight:700;opacity:.4">心にも体にも健やかであること</div></div>
+  </div>
+
+  <div class="ls-demo">
+    <div class="ls-item"><div class="lbl">letter-spacing: 0.3em — ヒーロー見出しだけ</div><div class="smp" style="letter-spacing:.3em">東京にあって、東京にないホテル</div></div>
+    <div class="ls-item"><div class="lbl">letter-spacing: 0.1em — 和文の既定（本文・見出し）</div><div class="smp" style="letter-spacing:.1em">東京にあって、東京にないホテル</div></div>
+    <div class="ls-item"><div class="lbl">letter-spacing: 0.06em — 欧文見出し（Cardo）</div><div class="smp eng" style="letter-spacing:.06em">SORANO HOTEL TACHIKAWA</div></div>
+  </div>
+
+  <p class="note">
+    <b>0.3em を本文に広げないこと。</b>ヒーローの 1 見出しだけに使う値で、長文に当てると読めなくなる。
+    また <code>font-weight: 350</code> を 400 に丸めないこと——このサイトの「薄さ」はこの非整数ウェイトから来ている。
+  </p>
+</section>
+</div>
+
+<!-- 03 ROOMS -->
+<section class="section" id="rooms">
+  <div class="section-label">03 / Rooms &amp; News</div>
+  <h2 class="section-title">角丸ゼロ・影ゼロで組む</h2>
+  <p class="section-lead">
+    <code>border-radius: 0</code> が可視 1008 要素、<code>box-shadow: none</code> が 1043 要素。
+    丸いのは円形の装飾（100%）35 個だけ。写真とカードは矩形のまま並べる。
+  </p>
+  <div class="room-grid">
+    <div>
+      <div class="room-thumb" style="background:linear-gradient(140deg,#b6c6cf,#d8dcd4)"></div>
+      <div class="room-en">STANDARD</div>
+      <div class="room-ttl">スタンダード（52㎡）</div>
+      <div class="room-txt">全室 52㎡ 以上。大きな窓から昭和記念公園の緑を望む。</div>
+    </div>
+    <div>
+      <div class="room-thumb" style="background:linear-gradient(140deg,#c9c2b8,#e2ddd4)"></div>
+      <div class="room-en">SKY KING</div>
+      <div class="room-ttl">スカイキング パークビュー（1-2名）</div>
+      <div class="room-txt">最上階からの眺望と、水平線のように広がる空。</div>
+    </div>
+    <div>
+      <div class="room-thumb" style="background:linear-gradient(140deg,#aebfc8,#cdd3cd)"></div>
+      <div class="room-en">SUITE</div>
+      <div class="room-ttl">スイート（96㎡）</div>
+      <div class="room-txt">インフィニティプールに続く、ひと続きの滞在。</div>
+    </div>
+  </div>
+
+  <div class="news-list" style="margin-top:6.4rem">
+    <div class="news-item">
+      <span class="news-date">2026.09.16</span>
+      <span><span class="badge-category">インフォメーション</span></span>
+      <span class="news-ttl">ホテル休館日のご案内</span>
+    </div>
+    <div class="news-item">
+      <span class="news-date">2026.09.04</span>
+      <span><span class="badge-category">お知らせ</span></span>
+      <span class="news-ttl">【室数限定】3泊以上でお得に泊まろう！</span>
+    </div>
+    <div class="news-item">
+      <span class="news-date">2026.08.28</span>
+      <span><span class="badge-category">お知らせ</span></span>
+      <span class="news-ttl">Published Rate（公示価格）について</span>
+    </div>
+  </div>
+</section>
+
+<!-- 04 BUTTONS -->
+<div class="section-alt">
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">塗りは紺 1 色、角丸は 0</h2>
+  <p class="section-lead">
+    塗りボタンはすべて <code>#274875</code>。フッターの導線だけ <code>rgba(0,0,0,.12)</code> の細枠アウトライン。
+    固定の予約ボタンは<b>和文 14px / 0.05em と 欧文 Cardo 10px / 0.1em の2段組</b>になっている。
+  </p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">宿泊予約</a>
+    <a class="btn btn-primary" href="#">空室検索</a>
+    <a class="btn btn-primary-sm" href="#">お問い合せ</a>
+    <a class="btn btn-floating" href="#"><span class="ja">宿泊予約</span><span class="en">Reservation</span></a>
+  </div>
+  <div class="btn-row">
+    <a class="btn btn-outline" href="#">SORANO コノシュア — 専用施設</a>
+    <a class="btn btn-outline" href="#">SORANO ロイヤリティプログラム</a>
+  </div>
+  <div class="btn-row">
+    <span class="badge-category">インフォメーション</span>
+    <span class="badge-category">お知らせ</span>
+    <span class="badge-category">プレスリリース</span>
+  </div>
+</section>
+</div>
+
+<!-- 05 FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div>
+  <h2 class="section-title">入力欄も矩形のまま</h2>
+  <p class="section-lead">既定・フォーカス・エラーの3状態。角丸は付けず、枠は <code>rgba(0,0,0,.25)</code>。</p>
+  <div class="form">
+    <div>
+      <label class="field-label">お名前</label>
+      <input class="field" type="text" placeholder="山田 太郎">
+      <div class="field-hint">ご宿泊代表者さまのお名前をご記入ください</div>
+    </div>
+    <div>
+      <label class="field-label">メールアドレス（フォーカス時）</label>
+      <input class="field field-focus" type="email" value="taro.yamada@example.jp">
+    </div>
+    <div>
+      <label class="field-label">電話番号（エラー時）</label>
+      <input class="field field-error" type="tel" value="042-000">
+      <div class="field-err-msg">電話番号の形式が正しくありません</div>
+    </div>
+    <div>
+      <label class="field-label">ご要望</label>
+      <textarea class="field" rows="4" placeholder="ご滞在に関するご要望をご記入ください"></textarea>
+    </div>
+    <div class="btn-row" style="margin:0">
+      <button class="btn btn-primary" type="button">送信する</button>
+      <button class="btn btn-outline" type="button">入力内容を確認</button>
+    </div>
+  </div>
+</section>
+
+<!-- 06 ELEVATION -->
+<div class="section-alt">
+<section class="section" id="elevation">
+  <div class="section-label">06 / Elevation</div>
+  <h2 class="section-title">影を1つも使わない</h2>
+  <p class="section-lead">
+    可視 1046 要素のうち <b>1043 要素が <code>box-shadow: none</code></b>。残る3つは値が透明のものと、外部チャットウィジェット由来のもの。
+  </p>
+  <div class="flat-note">
+    階層は<b>細い罫線（<code>rgba(0,0,0,.12)</code> / <code>.06</code> / <code>.25</code>）</b>、<b>面（<code>#f9f8f6</code> / <code>#eeebe7</code> / <code>#f4f2ef</code>）</b>、
+    そして<b>100〜220px の余白</b>で表す。カードやボタンに影を足すと、このサイトの静けさが失われる。
+  </div>
+</section>
+</div>
+
+<!-- 07 LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-label">07 / Layout</div>
+  <h2 class="section-title">1860px の全幅と、rem = 10px の余白</h2>
+  <p class="section-lead">
+    コンテナは 1860px（実測 14 箇所）、左右の余白は <code>6.25vw</code>。
+    <code>html { font-size: 10px }</code> なので、<code>--space-section-lg: 22rem</code> は 220px を意味する。
+  </p>
+  <div class="space-row">
+    <div><div class="space-bar" style="width:8px;height:8px"></div><div class="space-lbl">0.8rem<br>8</div></div>
+    <div><div class="space-bar" style="width:12px;height:12px"></div><div class="space-lbl">1.2rem<br>12</div></div>
+    <div><div class="space-bar" style="width:16px;height:16px"></div><div class="space-lbl">1.6rem<br>16</div></div>
+    <div><div class="space-bar" style="width:24px;height:24px"></div><div class="space-lbl">2.4rem<br>24</div></div>
+    <div><div class="space-bar" style="width:36px;height:36px"></div><div class="space-lbl">3.6rem<br>36</div></div>
+    <div><div class="space-bar" style="width:48px;height:48px"></div><div class="space-lbl">4.8rem<br>48</div></div>
+    <div><div class="space-bar" style="width:64px;height:64px"></div><div class="space-lbl">6.4rem<br>64</div></div>
+    <div><div class="space-bar" style="width:80px;height:80px"></div><div class="space-lbl">8rem<br>80</div></div>
+    <div><div class="space-bar" style="width:96px;height:96px"></div><div class="space-lbl">9.6rem<br>96</div></div>
+    <div><div class="space-bar" style="width:120px;height:120px"></div><div class="space-lbl">12rem<br>120</div></div>
+  </div>
+  <p class="note">
+    ブレークポイントは <b>max-width 方式</b>。<code>(max-width: 767px)</code> が 499 箇所、<code>(max-width: 1024px)</code> が 493 箇所。
+    ホバー効果は <code>(hover: hover) and (pointer: fine)</code> で囲み、アニメーションは <code>not (prefers-reduced-motion)</code> で囲む。
+  </p>
+</section>
+
+<footer class="footer">
+  <div class="footer-brand">SORANO HOTEL</div>
+  <div class="footer-note">
+    Design System Preview — 実測日 2026-09-17<br>
+    出典: https://soranohotel.com/ , https://soranohotel.com/plan/<br>
+    ※ このページはデザイントークンの参照用に再現したショーケースであり、公式サイトではありません。<br>
+    ※ 本文の明朝は Noto Serif JP、欧文の飾りは Cardo（400 のみ）。実サイトは同等の自前ホストフォント（notoSerifJp）を使用。
+  </div>
+</footer>
+
+</body>
+</html>

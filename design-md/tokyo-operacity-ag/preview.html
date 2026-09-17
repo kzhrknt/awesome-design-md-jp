@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 東京オペラシティ アートギャラリー</title>
+<style>
+  /* ★このサイトは Web フォントを 1 つも読み込まない。
+     document.fonts に載るのは Swiper のアイコンフォント（unloaded）だけで、
+     和文も欧文も 100% 端末のローカルフォントで描画される。
+     このプレビューも意図的に <link> を持たない。 */
+
+  :root {
+    /* === Design Tokens ===
+       実サイトの CSS 変数は 4 個しかなく、うち 2 個は Swiper 由来。
+       自社トークンは --clientWidth と --zindex-header だけ。以下は実測値から起こした。2026-09-17 */
+    --ink:        #000000;   /* ★純黒。可視 247 要素 */
+    --orange:     #e46a00;   /* 文字 24 要素 / 面 2 要素。導線のすべて */
+    --cyan:       #04a7c4;   /* 面 2 要素。ヘッダー右上のピル専用 */
+    --navy:       #001e46;   /* 文字 5 / 面 2。支援セクション専用 */
+    --white:      #ffffff;
+    --surface:    #f7f7f7;   /* セクションの下地 */
+    --dark-band:  #272727;   /* 「本日休館日」の黒帯 */
+    --border:     #cccccc;   /* 会場バッジの枠 */
+    --dot:        #707070;   /* 点線の色 */
+
+    /* ★このスタックの 3〜4 番目に Medium を置くことで、
+       @font-face を書かずに Windows の游ゴシック問題を回避している。
+       macOS は 1〜2 番目（Regular）、Windows は 3〜4 番目（Medium）が当たる。 */
+    --font: 游ゴシック体, YuGothic, "游ゴシック Medium", "Yu Gothic Medium",
+            游ゴシック, "Yu Gothic", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro",
+            Osaka, メイリオ, Meiryo, "ＭＳ Ｐゴシック", sans-serif;
+
+    --lh: 1.67;          /* 16px に対する 26.6667px。可視 67 要素が同値 */
+    --border-w: 2px;     /* ★ボタンの枠は 2px */
+    --container: 1100px;
+    --zindex-header: 10;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--ink);                  /* ★純黒を使う */
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: var(--lh);
+    letter-spacing: normal;             /* ★字間を足さない（可視 298/300 要素が normal） */
+    font-feature-settings: normal;      /* ★palt を使わない（300/300 要素が normal） */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ★このサイト特有の点線。border-style: dotted ではなくグラデーションで描く */
+  .dotted-rule {
+    height: 1px;
+    background: linear-gradient(to right, var(--dot), var(--dot) 2px, rgba(0,0,0,0) 2px, rgba(0,0,0,0) 4px);
+    background-size: 4px 1px;
+    background-repeat: repeat-x;
+  }
+
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .86em;
+         background: var(--surface); padding: 1px 5px; }
+  b { font-weight: 700; }
+
+  /* ---------- header ---------- */
+  .header { position: sticky; top: 0; z-index: var(--zindex-header);
+            background: var(--white); border-bottom: 1px solid #e5e5e5;
+            padding: 12px 40px; }
+  .header-top { display: flex; align-items: flex-start; gap: 20px; }
+  .logo-mark { background: var(--ink); color: var(--white); font-weight: 700;
+               font-size: 20px; line-height: 1.1; padding: 5px 8px 3px; letter-spacing: -.01em; }
+  .logo-mark small { display: block; font-size: 8px; font-weight: 400; letter-spacing: .06em; }
+  .site-name { font-size: 14px; font-weight: 700; line-height: 1.57;
+               letter-spacing: 0.02em; color: var(--orange); }
+  .header-util { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+  .header-util a { font-size: 14px; color: var(--ink); text-decoration: none; line-height: 1.67; }
+  .header-nav { display: flex; gap: 26px; margin-top: 8px; }
+  .header-nav a { font-size: 15px; font-weight: 700; color: var(--ink); text-decoration: none; line-height: 1.67; }
+
+  .band-dark { background: var(--dark-band); color: var(--white);
+               padding: 16px 40px; display: flex; align-items: center; gap: 20px; }
+  .band-dark .today { font-size: 16px; font-weight: 700; }
+
+  /* ---------- sections ---------- */
+  .section { max-width: var(--container); margin: 0 auto; padding: 64px 40px; }
+  .section-alt { background: var(--surface); }
+  .section-label { font-size: 13px; font-weight: 700; color: var(--orange);
+                   line-height: 1.67; margin-bottom: 6px; }
+  .section-title { font-size: 32px; font-weight: 700; line-height: 1.67; margin-bottom: 12px; }
+  .section-lead { font-size: 16px; line-height: 1.67; margin-bottom: 32px; max-width: 780px; }
+
+  /* ---------- colors ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+  .swatch { border: 1px solid #e5e5e5; }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 12px 14px; }
+  .swatch-name { font-size: 14px; font-weight: 700; line-height: 1.67; }
+  .swatch-hex { font-size: 12px; color: #666; line-height: 1.67; }
+  .swatch-use { font-size: 12px; line-height: 1.67; margin-top: 4px; }
+
+  /* ---------- typography ---------- */
+  .type-row { padding: 22px 0; display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: baseline; }
+  .type-meta { font-size: 12px; line-height: 1.67; color: #666; }
+  .t-h38 { font-size: 38px; font-weight: 700; line-height: 1.0; }
+  .t-h34 { font-size: 34px; font-weight: 500; line-height: 1.71; }
+  .t-h32 { font-size: 32px; font-weight: 700; line-height: 1.67; }
+  .t-h24 { font-size: 24px; font-weight: 700; line-height: 1.67; }
+  .t-h18 { font-size: 18px; font-weight: 700; line-height: 1.67; }
+  .t-body{ font-size: 16px; font-weight: 400; line-height: 1.67; }
+  .t-14  { font-size: 14px; font-weight: 400; line-height: 1.67; }
+  .t-13  { font-size: 13px; font-weight: 700; line-height: 1.67; }
+  .t-12  { font-size: 12px; font-weight: 400; line-height: 1.67; }
+
+  .cmp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 30px; }
+  .cmp-box { border: 1px solid #e5e5e5; padding: 20px 22px; background: var(--white); }
+  .cmp-box .lbl { font-size: 12px; color: #666; line-height: 1.67; margin-bottom: 8px; }
+  .cmp-a { font-size: 22px; font-weight: 700; line-height: 1.67; letter-spacing: normal; font-feature-settings: normal; }
+  .cmp-b { font-size: 22px; font-weight: 700; line-height: 1.67; letter-spacing: .08em; font-feature-settings: "palt"; opacity: .55; }
+
+  .stack-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .stack-table th, .stack-table td { border: 1px solid #e5e5e5; padding: 9px 12px;
+                                     font-size: 13px; line-height: 1.67; text-align: left; }
+  .stack-table th { background: var(--surface); font-weight: 700; }
+
+  /* ---------- exhibition ---------- */
+  .exh { display: grid; grid-template-columns: 1fr 340px; gap: 40px; align-items: start; }
+  .exh-visual { height: 260px; background: linear-gradient(135deg,#dcdcd6,#eeeee8); }
+  .exh-date { font-size: 18px; font-weight: 700; line-height: 1.72; }
+  .exh-title { font-size: 24px; font-weight: 700; line-height: 1.67; margin: 6px 0 14px; }
+  .exh-caption { font-size: 14px; line-height: 1.71; color: #333; }
+  .topics { margin-top: 12px; }
+  .topic-row { display: grid; grid-template-columns: 150px 1fr; gap: 20px; padding: 20px 0; }
+  .topic-date { font-size: 14px; line-height: 1.67; }
+  .topic-text { font-size: 14px; line-height: 1.67; }
+
+  /* ---------- buttons ---------- */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 24px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center;
+         text-decoration: none; cursor: pointer; border-radius: 0; box-shadow: none;
+         font-family: var(--font); letter-spacing: normal; }
+  .btn-orange       { background: var(--orange); color: var(--white);
+                      border: var(--border-w) solid var(--orange); padding: 12px 22px;
+                      font-size: 16px; font-weight: 700; line-height: 1.2; }
+  .btn-orange-sm    { background: var(--orange); color: var(--white);
+                      border: var(--border-w) solid var(--orange); padding: 7px 16px;
+                      font-size: 13px; font-weight: 700; line-height: 1.2; }
+  .btn-orange-out   { background: var(--white); color: var(--orange);
+                      border: var(--border-w) solid var(--orange); padding: 12px 22px;
+                      font-size: 13px; font-weight: 700; line-height: 1.2; }
+  .btn-orange-ghost { background: transparent; color: var(--orange);
+                      border: 1px solid var(--orange); padding: 9px 18px;
+                      font-size: 13px; font-weight: 700; line-height: 1.2; }
+  .pill-cyan, .pill-outline-w, .pill-press, .badge-place {
+                      display: inline-flex; align-items: center; justify-content: center;
+                      text-decoration: none; box-shadow: none; font-family: var(--font);
+                      letter-spacing: normal; }
+  .pill-cyan        { background: var(--cyan); color: var(--white); border: none;
+                      border-radius: 12px; padding: 4px 12px;
+                      font-size: 13px; font-weight: 400; line-height: 1.67; }
+  .pill-outline-w   { background: transparent; color: var(--white);
+                      border: 1px solid var(--white); border-radius: 25px; padding: 7px 20px;
+                      font-size: 16px; font-weight: 400; line-height: 1.2; }
+  .pill-press       { background: var(--white); color: var(--orange);
+                      border: 1px solid var(--orange); border-radius: 25px; padding: 5px 16px;
+                      font-size: 13px; font-weight: 700; line-height: 1.2; }
+  .badge-place      { background: var(--white); color: var(--ink);
+                      border: 1px solid var(--border); border-radius: 6px;
+                      padding: 4px 10px; font-size: 14px; font-weight: 400; line-height: 1.67; }
+
+  .band-navy { background: var(--navy); padding: 48px 40px; text-align: center; }
+  .band-navy .ttl { color: var(--white); font-size: 24px; font-weight: 700; line-height: 1.67; margin-bottom: 20px; }
+  .btn-navy { background: var(--white); color: var(--navy);
+              border: var(--border-w) solid var(--white); border-radius: 0;
+              padding: 12px 26px; font-size: 16px; font-weight: 700; line-height: 1.2;
+              text-decoration: none; display: inline-flex; margin: 0 7px; }
+
+  .mail-banner { border: 1px solid var(--orange); padding: 20px 26px;
+                 display: flex; align-items: center; gap: 22px; max-width: 700px; }
+  .mail-banner .icon { width: 56px; height: 40px; border: 2px solid var(--orange); position: relative; flex: none; }
+  .mail-banner .icon::after { content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+      background: linear-gradient(135deg, transparent 47%, var(--orange) 47%, var(--orange) 53%, transparent 53%),
+                  linear-gradient(-135deg, transparent 47%, var(--orange) 47%, var(--orange) 53%, transparent 53%);
+      background-size: 100% 60%; background-repeat: no-repeat; }
+  .mail-banner .sm { font-size: 13px; font-weight: 700; color: var(--orange); line-height: 1.67; }
+  .mail-banner .lg { font-size: 18px; font-weight: 700; color: var(--ink); line-height: 1.67; }
+  .mail-banner .rt { margin-left: auto; font-size: 14px; color: var(--orange); line-height: 1.67; }
+
+  /* ---------- forms ---------- */
+  .form { max-width: 540px; display: grid; gap: 22px; }
+  .field-label { display: block; font-size: 14px; font-weight: 700; line-height: 1.67; margin-bottom: 6px; }
+  .field { width: 100%; font-family: var(--font); font-size: 16px; line-height: 1.5;
+           letter-spacing: normal; color: var(--ink); background: var(--white);
+           border: 1px solid #999; border-radius: 0; padding: 12px 14px; }
+  .field::placeholder { color: #999; }
+  .field-focus { border: 2px solid var(--orange); outline: none; }
+  .field-error { border: 2px solid #c0392b; }
+  .field-hint { font-size: 12px; line-height: 1.67; color: #666; margin-top: 5px; }
+  .field-err-msg { font-size: 12px; line-height: 1.67; color: #c0392b; margin-top: 5px; }
+
+  /* ---------- layout ---------- */
+  .layout-demo { border: 1px solid #e5e5e5; }
+  .layout-band { background: var(--surface); text-align: center; font-size: 12px; color: #666; padding: 8px; }
+  .layout-inner { max-width: 1100px; margin: 0 auto; background: rgba(228,106,0,.07);
+                  border-left: 1px dashed var(--orange); border-right: 1px dashed var(--orange);
+                  padding: 26px 20px; text-align: center; font-size: 14px; }
+  .bp-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  .bp-table th, .bp-table td { border: 1px solid #e5e5e5; padding: 9px 12px; font-size: 13px; line-height: 1.67; text-align: left; }
+  .bp-table th { background: var(--surface); font-weight: 700; }
+
+  .note { border-left: 3px solid var(--orange); background: rgba(228,106,0,.05);
+          padding: 14px 18px; font-size: 14px; line-height: 1.67; margin-top: 28px; }
+
+  /* ---------- footer ---------- */
+  .footer { background: var(--surface); padding: 48px 40px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-name { font-size: 18px; font-weight: 700; line-height: 1.56; margin-bottom: 10px; }
+  .footer-addr { font-size: 14px; line-height: 1.67; }
+  .footer-note { font-size: 12px; line-height: 1.67; color: #666; margin-top: 22px; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <span class="logo-mark">ARTGALLERY<small>TOKYO OPERA CITY</small></span>
+    <span class="site-name">東京オペラシティ アートギャラリー</span>
+    <span class="header-util">
+      <a class="pill-cyan" href="#buttons">Arts 友の会</a>
+      <a class="pill-cyan" href="#buttons">ご支援のお願い</a>
+      <a href="#forms">お問い合わせ</a>
+      <a href="#layout">English</a>
+    </span>
+  </div>
+  <nav class="header-nav">
+    <a href="#colors">展覧会</a>
+    <a href="#typography">アートギャラリーについて</a>
+    <a href="#exhibition">ご利用案内</a>
+    <a href="#buttons">ギャラリーショップ</a>
+    <a href="#layout">アクセス</a>
+  </nav>
+</header>
+
+<div class="band-dark">
+  <span class="today">本日休館日</span>
+  <a class="pill-outline-w" href="#exhibition">開館スケジュール</a>
+</div>
+
+<!-- 01 COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">黒・オレンジ・白と、用途が決まった2色</h2>
+  <p class="section-lead">
+    本文は<b>純黒 <code>#000000</code></b>（可視 247 要素）。導線はすべて<b>オレンジ <code>#e46a00</code></b>（文字 24 / 面 2 要素）。
+    シアン <code>#04a7c4</code> はヘッダー右上の2つのピル専用、紺 <code>#001e46</code> は支援セクション専用で、
+    <b>どちらも他の場所に出てこない</b>。
+  </p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Ink</div><div class="swatch-hex">#000000</div><div class="swatch-use">★本文・見出し。可視 247 要素。純黒を使う</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e46a00"></div><div class="swatch-body"><div class="swatch-name">Brand Orange</div><div class="swatch-hex">#e46a00</div><div class="swatch-use">★導線のすべて。サイト名・リンク・CTA の枠と文字</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#04a7c4"></div><div class="swatch-body"><div class="swatch-name">Cyan</div><div class="swatch-hex">#04a7c4</div><div class="swatch-use">ヘッダー右上のピル 2 つだけ。他に持ち出さない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#001e46"></div><div class="swatch-body"><div class="swatch-name">Navy</div><div class="swatch-hex">#001e46</div><div class="swatch-use">支援セクションの帯だけ。他に持ち出さない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#272727"></div><div class="swatch-body"><div class="swatch-name">Dark Band</div><div class="swatch-hex">#272727</div><div class="swatch-use">「本日休館日」の黒帯</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f7f7f7;border-bottom:1px solid #e5e5e5"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#f7f7f7</div><div class="swatch-use">セクションの下地・フッター</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#cccccc"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#cccccc</div><div class="swatch-use">会場バッジの枠</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="display:flex;align-items:center;padding:0 16px"><span class="dotted-rule" style="flex:1"></span></div><div class="swatch-body"><div class="swatch-name">Dotted Rule</div><div class="swatch-hex">#707070 / linear-gradient</div><div class="swatch-use">★border-style: dotted ではなくグラデーションで描く</div></div></div>
+  </div>
+  <div class="dotted-rule" style="margin-top:28px"></div>
+  <p class="note">
+    点線は <code>linear-gradient(to right, #707070, #707070 2px, transparent 2px, transparent 4px)</code> を
+    <code>background-size: 4px 1px / repeat-x</code> で敷く。2px の点 ＋ 2px の空きで、ブラウザ差の出ない均一な線になる。
+  </p>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<div class="section-alt">
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">Web フォントゼロ、字間ゼロ、palt なし</h2>
+  <p class="section-lead">
+    このサイトは <b>Web フォントを 1 つも読み込まない</b>。<code>document.fonts</code> に載るのは Swiper のアイコンフォント（<code>unloaded</code>）だけ。
+    <code>letter-spacing</code> は<b>可視 300 要素中 298 要素が <code>normal</code></b>、<code>font-feature-settings</code> は<b>全要素 <code>normal</code></b>。
+    和文組版に一切手を入れないのがこのサイトの仕様。
+  </p>
+
+  <h3 class="t-h24" style="margin-bottom:10px">font-family — スタック順で游ゴシック問題を解く</h3>
+  <table class="stack-table">
+    <tr><th style="width:90px">位置</th><th>名前</th><th>当たる環境</th></tr>
+    <tr><td>1–2</td><td>游ゴシック体 / YuGothic</td><td>macOS（Regular）</td></tr>
+    <tr><td><b>3–4</b></td><td><b>"游ゴシック Medium" / "Yu Gothic Medium"</b></td><td><b>Windows（Regular が細すぎるのを回避）</b></td></tr>
+    <tr><td>5–6</td><td>游ゴシック / "Yu Gothic"</td><td>Windows の保険</td></tr>
+    <tr><td>7–8</td><td>"ヒラギノ角ゴ Pro W3" / "Hiragino Kaku Gothic Pro"</td><td>游ゴシック非搭載の macOS</td></tr>
+    <tr><td>9–12</td><td>Osaka / メイリオ / Meiryo / "ＭＳ Ｐゴシック"</td><td>旧 Windows（現行ではまず到達しない）</td></tr>
+  </table>
+  <p class="note" style="margin-top:16px">
+    <code>@font-face</code> を書かずに Windows の游ゴシック問題を回避する<b>4つ目の流儀</b>
+    （SmartHR の別名 <code>AdjustedYuGothic</code>、白鶴酒造の <code>MyYuGothicM</code>、カリモク家具の <code>Yu Gothic</code> 上書きに続く）。
+    CSS が 1 行で済む代わりに、<b>macOS は Regular・Windows は Medium で太さが揃わない</b>。
+  </p>
+
+  <div class="dotted-rule" style="margin:36px 0 0"></div>
+  <div class="type-row">
+    <div class="type-meta">h2 / Section<br>38px · 700 · <b>1.0</b><br>letter-spacing normal</div>
+    <div class="t-h38">開催中の展覧会</div>
+  </div>
+  <div class="dotted-rule"></div>
+  <div class="type-row">
+    <div class="type-meta">h1 / Page<br>34px · 500 · 1.71</div>
+    <div class="t-h34">開催中の展覧会</div>
+  </div>
+  <div class="dotted-rule"></div>
+  <div class="type-row">
+    <div class="type-meta">h2<br>32px · 700 · 1.67</div>
+    <div class="t-h32">アートギャラリーについて</div>
+  </div>
+  <div class="dotted-rule"></div>
+  <div class="type-row">
+    <div class="type-meta">h2 / small<br>24px · 700 · 1.67</div>
+    <div class="t-h24">トピックス</div>
+  </div>
+  <div class="dotted-rule"></div>
+  <div class="type-row">
+    <div class="type-meta">展覧会タイトル / ナビ<br>18px · 700 · 1.67</div>
+    <div class="t-h18">種と根っこ ─ 都市の耕し方</div>
+  </div>
+  <div class="dotted-rule"></div>
+  <div class="type-row">
+    <div class="type-meta">Body<br>16px · 400 · <b>1.67</b><br>letter-spacing normal</div>
+    <div class="t-body">開館時間：11:00 ─ 19:00（入場は 18:30 まで）。会期中の金曜・土曜は 20:00 まで開館しています。</div>
+  </div>
+  <div class="dotted-rule"></div>
+  <div class="type-row">
+    <div class="type-meta">Caption<br>14px · 400 · 1.71<br>最頻サイズ（28 要素）</div>
+    <div class="t-14">浅野友理子《綯い交ぜの庭》2021　撮影：嵯峨倫寛</div>
+  </div>
+  <div class="dotted-rule"></div>
+  <div class="type-row">
+    <div class="type-meta">Label<br>13px · 700 · 1.67</div>
+    <div class="t-13">これまでのトピックス</div>
+  </div>
+  <div class="dotted-rule"></div>
+  <div class="type-row">
+    <div class="type-meta">Footer<br>12px · 400 · 1.67</div>
+    <div class="t-12">〒163-1403 東京都新宿区西新宿 3-20-2</div>
+  </div>
+  <div class="dotted-rule"></div>
+
+  <div class="cmp-grid">
+    <div class="cmp-box">
+      <div class="lbl">★このサイトの仕様 — letter-spacing: normal / font-feature-settings: normal</div>
+      <div class="cmp-a">「ほぼ、空」青木淳 ＋ リチャード・タトル（2026年）</div>
+    </div>
+    <div class="cmp-box">
+      <div class="lbl">よくある和文の作法（palt ＋ 字間）— このサイトでは使わない</div>
+      <div class="cmp-b">「ほぼ、空」青木淳 ＋ リチャード・タトル（2026年）</div>
+    </div>
+  </div>
+
+  <p class="note">
+    <b>「和文だから字間を開ける」という一般則をこのサイトに持ち込まないこと。</b>
+    ウェイトも <b>400 と 700 の2値だけ</b>（可視 95 要素中 700 が 50、400 が 45）。500 / 600 を使わない。
+  </p>
+</section>
+</div>
+
+<!-- 03 EXHIBITION -->
+<section class="section" id="exhibition">
+  <div class="section-label">03 / Exhibition</div>
+  <h2 class="section-title">日付は ［土］、期間は ─ でつなぐ</h2>
+  <p class="section-lead">
+    日付表記は <code>2026.07.18［土］</code> のように<b>全角の白抜き角括弧</b>で曜日を囲む。
+    期間の区切りと展覧会名の区切りには <b><code>─</code>（U+2500 罫線素片）</b>を使う。
+  </p>
+  <div class="exh">
+    <div>
+      <div class="exh-visual"></div>
+      <div class="exh-caption" style="margin-top:10px">《Your Movement》2025　撮影：斉藤新</div>
+    </div>
+    <div>
+      <div class="exh-date">2026.07.18［土］ ─ 09.23［水］</div>
+      <div class="exh-title">ほぼ、空：青木淳 ＋ リチャード・タトル</div>
+      <div class="btn-row" style="margin-bottom:16px">
+        <span class="badge-place">会場：ギャラリー 1, 2</span>
+        <span class="badge-place">会場：ギャラリー 3, 4</span>
+      </div>
+      <p class="t-14" style="margin-bottom:18px">
+        建築家とアーティストが、ひとつの空間をめぐって応答を重ねる。
+        「ほぼ、空」という題のとおり、置かれるものより置かれない余白のほうが多い展示になります。
+      </p>
+      <a class="btn btn-orange" href="#buttons">オンラインチケット</a>
+    </div>
+  </div>
+
+  <h3 class="t-h24" style="margin-top:56px;margin-bottom:6px">トピックス</h3>
+  <div class="topics">
+    <div class="dotted-rule"></div>
+    <div class="topic-row">
+      <span class="topic-date">2026.06.08［月］</span>
+      <span class="topic-text">10月からの企画展「種と根っこ ─ 都市の耕し方」開催</span>
+    </div>
+    <div class="dotted-rule"></div>
+    <div class="topic-row">
+      <span class="topic-date">2026.03.25［水］</span>
+      <span class="topic-text">東京オペラシティ アートギャラリー「コレクションハイライト」公開</span>
+    </div>
+    <div class="dotted-rule"></div>
+    <div class="topic-row">
+      <span class="topic-date">2025.12.11［木］</span>
+      <span class="topic-text">アートギャラリー　2026年度展覧会ラインナップ</span>
+    </div>
+    <div class="dotted-rule"></div>
+  </div>
+  <div class="btn-row" style="margin-top:24px">
+    <a class="btn btn-orange-sm" href="#buttons">これまでのトピックス</a>
+  </div>
+</section>
+
+<!-- 04 BUTTONS -->
+<div class="section-alt">
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">枠は 2px、角丸は 0</h2>
+  <p class="section-lead">
+    塗りボタンにも<b>面色と同じ色の 2px 枠を併せて指定する</b>（ホバーで反転させるための実装）。
+    角丸が付くのはピル（12px / 25px）と会場バッジ（6px）だけで、可視 300 要素のうち 290 要素が <code>border-radius: 0</code>。
+  </p>
+  <div class="btn-row">
+    <a class="btn btn-orange" href="#">オンラインチケット</a>
+    <a class="btn btn-orange-sm" href="#">これまでのトピックス</a>
+    <a class="btn btn-orange-out" href="#">お問い合わせフォーム</a>
+    <a class="btn btn-orange-ghost" href="#">アクセス</a>
+    <a class="btn btn-orange-ghost" href="#">館内マップ</a>
+  </div>
+  <div class="btn-row">
+    <a class="pill-cyan" href="#">Arts 友の会</a>
+    <a class="pill-cyan" href="#">東京オペラシティへのご支援</a>
+    <span class="pill-press">プレスリリース</span>
+    <span class="badge-place">会場：ギャラリー 1, 2</span>
+  </div>
+  <div class="mail-banner">
+    <span class="icon"></span>
+    <span>
+      <span class="sm">東京オペラシティ</span>
+      <span class="lg" style="display:block">メールニュース登録</span>
+    </span>
+    <span class="rt">最新情報などをeメールでお届けします（不定期）　›</span>
+  </div>
+</section>
+</div>
+
+<div class="band-navy">
+  <div class="ttl">東京オペラシティ文化財団を支える</div>
+  <a class="btn-navy" href="#forms">Arts友の会</a>
+  <a class="btn-navy" href="#forms">東京オペラシティへのご支援</a>
+</div>
+
+<!-- 05 FORMS -->
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div>
+  <h2 class="section-title">入力欄も矩形、フォーカスは 2px のオレンジ</h2>
+  <p class="section-lead">既定・フォーカス・エラーの3状態。ボタンと同じく枠の太さで状態を示す。</p>
+  <div class="form">
+    <div>
+      <label class="field-label">お名前</label>
+      <input class="field" type="text" placeholder="山田 太郎">
+      <div class="field-hint">全角でご記入ください</div>
+    </div>
+    <div>
+      <label class="field-label">メールアドレス（フォーカス時）</label>
+      <input class="field field-focus" type="email" value="taro.yamada@example.jp">
+    </div>
+    <div>
+      <label class="field-label">電話番号（エラー時）</label>
+      <input class="field field-error" type="tel" value="03-000">
+      <div class="field-err-msg">電話番号の形式が正しくありません</div>
+    </div>
+    <div>
+      <label class="field-label">お問い合わせ内容</label>
+      <textarea class="field" rows="4" placeholder="展覧会・ご利用についてのお問い合わせをご記入ください"></textarea>
+    </div>
+    <div class="btn-row" style="margin:0">
+      <button class="btn btn-orange" type="button">送信する</button>
+      <button class="btn btn-orange-out" type="button">入力内容を確認</button>
+    </div>
+  </div>
+</section>
+
+<!-- 06 ELEVATION + LAYOUT -->
+<div class="section-alt">
+<section class="section" id="layout">
+  <div class="section-label">06 / Elevation &amp; Layout</div>
+  <h2 class="section-title">影は 1 要素だけ、コンテナは 1100px</h2>
+  <p class="section-lead">
+    可視 300 要素のうち <b>299 要素が <code>box-shadow: none</code></b>。階層は 2px のオレンジ枠、点線の罫、
+    <code>#f7f7f7</code> の面、黒帯 <code>#272727</code> と紺帯 <code>#001e46</code> で表す。
+  </p>
+  <div class="layout-demo">
+    <div class="layout-band">100% — 黒帯・紺帯・フッター</div>
+    <div class="layout-inner">1100px — 本文コンテンツ（最頻・6 箇所）</div>
+    <div class="layout-band">780px / 765px — 文章ブロック</div>
+  </div>
+  <table class="bp-table">
+    <tr><th style="width:44%">ブレークポイント</th><th style="width:18%">出現</th><th>位置づけ</th></tr>
+    <tr><td><b>(min-width: 835px)</b></td><td>30</td><td><b>主ブレークポイント（PC 表示の開始）</b></td></tr>
+    <tr><td>(min-width: 768px)</td><td>26</td><td>タブレット</td></tr>
+    <tr><td>not all and (min-width: 835px)</td><td>25</td><td>835px 未満（スマホ）専用の打ち消し</td></tr>
+    <tr><td>not all and (min-width: 1080px)</td><td>8</td><td>1080px 未満</td></tr>
+    <tr><td>screen and (min-width: 1025px) and (max-width: 1100px)</td><td>4</td><td>コンテナ幅の調整帯</td></tr>
+    <tr><td>screen and (max-width: 640px)</td><td>3</td><td>小型スマホ</td></tr>
+  </table>
+  <p class="note">
+    <b>PC / スマホの境界は 835px。</b>768px でも 1024px でもない点に注意。
+    なお実サイトのボタン高さは <code>padding</code> ではなく <code>line-height</code>（31px / 34px / 70px）で作られている。
+    <b><code>line-height: 31px</code> のピルは 44px に届かないので、新規実装では <code>padding</code> でタッチターゲットを確保すること。</b>
+  </p>
+</section>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-name">東京オペラシティ アートギャラリー</div>
+    <div class="footer-addr">
+      〒163-1403 東京都新宿区西新宿 3-20-2<br>
+      開館時間：11:00 ─ 19:00（入場は 18:30 まで）
+    </div>
+    <div class="footer-note">
+      Design System Preview — 実測日 2026-09-17<br>
+      出典: https://www.operacity.jp/ag/ , https://www.operacity.jp/ag/exh/current_exhibitions/<br>
+      ※ このページはデザイントークンの参照用に再現したショーケースであり、公式サイトではありません。<br>
+      ※ 実サイトと同じく Web フォントを一切読み込んでいません。表示は閲覧環境のローカルフォントに依存します。
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
