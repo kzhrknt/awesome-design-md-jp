@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Findy（ファインディ）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- ★実サイトがロードしているのは Noto Sans JP の 400 と 700 だけ。300 / 500 は宣言されていても描画されない -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* 実サイトは html { font-size: 10px }。ただし FCDS のトークンは px 宣言なので rem 換算は要らない */
+  html { font-size: 10px; }
+
+  :root {
+    /* === FCDS tokens（実サイトの --fcds-* をそのまま写した。可視 192 個）=== 2026-09-18 */
+    --fcds-color-main:              #155aa8;  /* ★サービスのプライマリ。CSS 全文で 159 回 */
+    --fcds-color-text-black:        #1b2025;  /* ★本文。可視 124 要素 */
+    --fcds-color-text-grey:         #636b71;  /* 注記 */
+    --fcds-color-text-placeholder:  #8b9195;  /* タグの文字（可視 208 要素・下層で最多） */
+    --fcds-color-text-disabled:     #c5cdd1;
+    --fcds-color-text-white:        #ffffff;
+    --fcds-color-border:            #c5cdd1;
+    --fcds-color-background-grey:   #f1f4f5;
+    --fcds-color-background-white:  #ffffff;
+    --fcds-color-surface-blue:      #f4f7fc;
+    --fcds-color-blue-600:          #3466ad;
+    --fcds-color-blue-500:          #4076c9;
+    --fcds-color-grey-50:           #f8fafa;
+    --fcds-color-grey-500:          #8b9195;
+    --fcds-color-grey-600:          #636b71;
+    --fcds-color-grey-900:          #1b2025;
+    --fcds-color-accent-danger:     #bf0615;
+    --fcds-color-accent-backgroundDanger:  #f8e6e7;
+    --fcds-color-accent-success:    #00c2a8;
+    --fcds-color-accent-backgroundSuccess: #e5f9f6;
+    --fcds-color-tag-blue:          #4076c9;
+    --fcds-color-tag-backgroundBlue:#dbe8f8;
+    --fcds-color-tag-green:         #00c2a8;
+    --fcds-color-tag-backgroundGreen:#ccf3ee;
+    --fcds-color-tag-orange:        #f27127;
+    --fcds-color-tag-backgroundOrange:#fce3d4;
+    --fcds-color-tag-yellow:        #f2cb05;
+    --fcds-color-tag-backgroundYellow:#fcf5cd;
+    --fcds-color-tag-grey:          #8b9195;
+
+    /* ★LP だけ別の青。トークンに存在しない（CSS 全文で 40 回 / 可視 164 要素） */
+    --lp-blue:      #0d69d2;
+    --lp-text:      #1f1f1f;   /* LP の本文色。FCDS の #1b2025 と別値 */
+
+    /* font-family トークン。ロードされているのは 400 と 700 だけ */
+    --fcds-font-family-sans-serif: "Noto Sans JP", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* line-height トークンは 4 つだけ。1.6 / 1.7 を作らない */
+    --fcds-line-height-100: 1;
+    --fcds-line-height-125: 1.25;
+    --fcds-line-height-150: 1.5;
+    --fcds-line-height-175: 1.75;
+
+    /* radius / spacing */
+    --fcds-radius-s: 4px;  --fcds-radius-m: 8px;  --fcds-radius-l: 16px;  --fcds-radius-full: 9999px;
+    --sp-4xs: 2px; --sp-3xs: 4px; --sp-xxs: 8px; --sp-xs: 12px; --sp-m: 16px; --sp-l: 20px;
+    --sp-xl: 24px; --sp-xxl: 32px; --sp-3xl: 40px; --sp-4xl: 48px; --sp-5xl: 64px;
+
+    /* shadow は 2 系統。サービス側は黒寄り、LP 側は青みがかったグレー */
+    --shadow-card: 0 3px 6px rgba(44, 40, 40, 0.11);
+    --shadow-lp:   0 16px 14px rgba(201, 210, 220, 0.2);
+    --shadow-cta:  0 20px 36px rgba(201, 210, 220, 0.3);
+
+    --container-lp:  1080px;
+    --container-app: 1200px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--fcds-color-background-white);
+    color: var(--fcds-color-text-black);
+    font-family: var(--fcds-font-family-sans-serif);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: var(--fcds-line-height-150);
+    /* ★letter-spacing は書かない。下層は可視 531 要素すべて normal */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid var(--fcds-color-border); background: #fff; }
+  .header-inner { display: flex; align-items: center; gap: 24px; max-width: var(--container-app); margin: 0 auto; padding: 12px 20px; }
+  .logo { font-size: 18px; font-weight: 700; line-height: 1.5; color: var(--fcds-color-main); }
+  .header-nav { display: flex; gap: 4px; margin-left: auto; align-items: center; }
+  .header-nav a { font-size: 14px; font-weight: 700; line-height: 1.5; color: var(--fcds-color-text-black); text-decoration: none; padding: 8px 12px; border-radius: var(--fcds-radius-s); }
+  .btn-signup { background: var(--fcds-color-main); color: #fff; font-size: 12px; font-weight: 700; line-height: 1.45;
+                padding: 8px 16px; border-radius: var(--fcds-radius-s); border: none; cursor: pointer; font-family: inherit; }
+
+  /* HERO（LP。FCDS の外で組まれている） */
+  .hero { background: linear-gradient(180deg, #f5f8fd 0%, #ffffff 100%); }
+  .hero-inner { max-width: var(--container-lp); margin: 0 auto; padding: 64px 20px 48px; }
+  .hero h1 { font-size: 68px; font-weight: 700; line-height: 1.17; letter-spacing: -0.02em; color: var(--lp-blue); }
+  .hero p { font-size: 18px; font-weight: 400; line-height: 1.5; color: var(--lp-text); margin-top: 24px; max-width: 640px; }
+  .hero-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 24px; }
+  .chip-lp { background: #fff; color: var(--lp-blue); font-size: 16px; font-weight: 700; line-height: 1;
+             padding: 6px 16px; border-radius: var(--fcds-radius-full); box-shadow: var(--shadow-lp); }
+  .btn-lp { display: inline-block; background: var(--lp-blue); color: #fff; font-size: 20px; font-weight: 700; line-height: 1;
+            letter-spacing: 0.8px; padding: 20px 48px; border-radius: var(--fcds-radius-full); text-decoration: none; margin-top: 32px; }
+  .stats { display: flex; gap: 40px; margin-top: 32px; }
+  .stat .label { font-size: 13px; font-weight: 700; line-height: 1.2; color: var(--lp-blue); }
+  .stat .value { font-size: 32px; font-weight: 700; line-height: 1.25; color: var(--lp-blue); }
+  .stat .value small { font-size: 14px; }
+  .stats-note { font-size: 10px; font-weight: 400; line-height: 1.25; color: var(--fcds-color-text-grey); margin-top: 12px; }
+
+  /* SECTIONS */
+  .section { max-width: var(--container-app); margin: 0 auto; padding: 56px 20px; }
+  .section-alt { background: var(--fcds-color-grey-50); }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--fcds-color-text-grey); margin-bottom: 10px; }
+  .h2 { font-size: 32px; font-weight: 700; line-height: 1.5; }
+  .h3 { font-size: 24px; font-weight: 700; line-height: 1.5; margin-bottom: 16px; }
+  .lead { font-size: 16px; font-weight: 400; line-height: 1.75; color: var(--fcds-color-text-black); max-width: 880px; margin: 12px 0 28px; }
+  .note { font-size: 14px; font-weight: 400; line-height: 1.75; color: var(--fcds-color-text-grey); max-width: 880px; margin-top: 20px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--fcds-color-background-grey); padding: 1px 5px; border-radius: 2px; }
+
+  /* TOKEN RAMPS */
+  .ramp { display: grid; grid-template-columns: repeat(10, 1fr); gap: 0; border-radius: var(--fcds-radius-s); overflow: hidden; margin-bottom: 8px; }
+  .ramp div { height: 52px; display: flex; align-items: flex-end; justify-content: center; font-family: var(--font-mono); font-size: 10px; padding-bottom: 4px; }
+  .ramp-name { font-family: var(--font-mono); font-size: 11px; color: var(--fcds-color-text-grey); margin: 14px 0 4px; }
+
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; margin-top: 24px; }
+  .swatch { border: 1px solid var(--fcds-color-border); border-radius: var(--fcds-radius-s); overflow: hidden; background: #fff; }
+  .swatch-chip { height: 68px; }
+  .swatch-body { padding: 12px; }
+  .swatch-name { font-size: 14px; font-weight: 700; line-height: 1.5; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--fcds-color-text-grey); margin-top: 3px; }
+  .swatch-use { font-size: 12px; font-weight: 400; line-height: 1.5; color: var(--fcds-color-text-grey); margin-top: 6px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--fcds-color-border); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--fcds-color-text-grey); line-height: 1.75; }
+  .type-meta b { display: block; font-family: var(--fcds-font-family-sans-serif); font-size: 13px; font-weight: 700; color: var(--fcds-color-text-black); }
+  .scale-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: baseline; margin-bottom: 24px; }
+  .scale-bar span { background: var(--fcds-color-background-grey); padding: 8px 14px; line-height: 1; border-radius: var(--fcds-radius-s); font-weight: 700; }
+
+  .token-table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 1.75; }
+  .token-table th, .token-table td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--fcds-color-border); }
+  .token-table th { font-weight: 700; color: var(--fcds-color-text-grey); font-size: 12px; }
+  .token-table code { font-size: 11.5px; }
+
+  /* JOB CARD */
+  .job-grid { display: grid; grid-template-columns: 280px 1fr; gap: 24px; align-items: start; }
+  .panel { background: #fff; border-radius: var(--fcds-radius-m); box-shadow: var(--shadow-card); padding: 16px; }
+  .panel h4 { font-size: 18px; font-weight: 700; line-height: 1.5; margin-bottom: 12px; }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 12px; font-weight: 700; line-height: 1.5; color: var(--fcds-color-text-grey); margin-bottom: 4px; }
+  .field input { width: 100%; font-family: inherit; font-size: 12px; line-height: 1.5; color: var(--fcds-color-text-black);
+                 background: #f5f5f5; border: none; border-radius: var(--fcds-radius-s); padding: 6px 12px; }
+  .field input::placeholder { color: var(--fcds-color-text-placeholder); }
+  .job { background: #fff; border-radius: var(--fcds-radius-m); box-shadow: var(--shadow-card); padding: 16px; margin-bottom: 16px; }
+  .job .title { font-size: 18px; font-weight: 700; line-height: 1.5; }
+  .job .company { font-size: 14px; font-weight: 700; line-height: 1.5; color: var(--fcds-color-text-grey); margin-top: 4px; }
+  .job .salary { font-size: 24px; font-weight: 700; line-height: 1.25; margin-top: 12px; }
+  .job .salary small { font-size: 12px; }
+  .job .salary .badge { display: inline-block; background: var(--lp-blue); color: #fff; font-size: 10px; font-weight: 700;
+                        line-height: 1.5; letter-spacing: 1px; padding: 4px 8px; border-radius: var(--fcds-radius-s); vertical-align: middle; margin-right: 8px; }
+  .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .tag { background: var(--fcds-color-background-grey); color: var(--fcds-color-text-placeholder); font-size: 12px; font-weight: 700;
+         line-height: 1.5; padding: 4px 8px; border-radius: var(--fcds-radius-s); }
+  .tag-cond { background: #fff; color: var(--fcds-color-main); font-size: 12px; font-weight: 700; line-height: 1.5;
+              padding: 4px 8px; border-radius: var(--fcds-radius-s); box-shadow: inset 0 0 0 1px var(--fcds-color-main); }
+  .tag-pill { background: var(--fcds-color-surface-blue); color: var(--fcds-color-blue-600); font-size: 12px; font-weight: 400;
+              line-height: 1.5; padding: 4px 8px; border-radius: var(--fcds-radius-full); }
+  .job-actions { display: flex; gap: 12px; margin-top: 16px; }
+  .btn-outline { background: #fff; color: var(--fcds-color-main); border: 1px solid var(--fcds-color-main); font-size: 16px; font-weight: 700;
+                 line-height: 1.5; padding: 8px 16px; border-radius: var(--fcds-radius-s); cursor: pointer; font-family: inherit; }
+  .swatch-pair { display: flex; gap: 10px; align-items: center; }
+  .swatch-pair i { width: 46px; height: 32px; border-radius: var(--fcds-radius-s); display: block; border: 1px solid var(--fcds-color-border); }
+  .swatch-pair b { font-family: var(--font-mono); font-size: 11px; font-weight: 400; color: var(--fcds-color-text-grey); line-height: 1.6; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 2px; }
+  .tabs div { font-size: 14px; font-weight: 700; line-height: 1.43; padding: 12px 20px; border-radius: var(--fcds-radius-s) var(--fcds-radius-s) 0 0; }
+  .tabs .on { background: #fff; box-shadow: var(--shadow-card); }
+  .tabs .off { background: var(--fcds-color-background-grey); color: var(--fcds-color-grey-600); font-weight: 400; }
+
+  /* PAGINATION */
+  .pager { display: flex; margin-top: 20px; }
+  .pager span { font-size: 12px; font-weight: 400; line-height: 1.5; padding: 6px 12px; border: 1px solid #ddd; color: #777; background: #fff; }
+  .pager span:first-child { border-radius: var(--fcds-radius-s) 0 0 var(--fcds-radius-s); }
+  .pager span:last-child { border-radius: 0 var(--fcds-radius-s) var(--fcds-radius-s) 0; }
+  .pager span.on { background: #055ec1; border-color: #055ec1; color: #fff; }
+
+  /* COMPONENTS */
+  .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+  .comp { border: 1px solid var(--fcds-color-border); border-radius: var(--fcds-radius-m); padding: 20px; background: #fff; }
+  .comp h4 { font-size: 14px; font-weight: 700; line-height: 1.5; margin-bottom: 12px; }
+  .comp .spec { font-family: var(--font-mono); font-size: 11px; color: var(--fcds-color-text-grey); line-height: 1.8; margin-top: 12px; }
+  .is-focus { outline: 2px solid var(--fcds-color-main); outline-offset: 2px; }
+
+  /* TOKENS */
+  .tokens { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+  .tokens div { text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--fcds-color-text-grey); }
+  .tokens .bar { background: var(--fcds-color-main); height: 24px; margin-bottom: 6px; border-radius: 2px; }
+  .radius-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .radius-row div { width: 92px; height: 56px; background: var(--fcds-color-surface-blue); border: 1px solid var(--fcds-color-main);
+                    display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; color: var(--fcds-color-main); }
+  .shadow-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 16px; }
+  .shadow-row div { width: 190px; height: 84px; background: #fff; border-radius: var(--fcds-radius-m);
+                    display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; color: var(--fcds-color-text-grey); text-align: center; padding: 8px; }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--fcds-color-border); padding: 40px 20px; background: #fff; }
+  .footer-inner { max-width: var(--container-app); margin: 0 auto; display: flex; gap: 28px; flex-wrap: wrap; align-items: center; }
+  .footer a { font-size: 14px; font-weight: 700; line-height: 1.5; color: var(--fcds-color-text-black); text-decoration: none; }
+  .footer .copy { font-size: 12px; font-weight: 400; line-height: 1.5; color: var(--fcds-color-text-grey); margin-left: auto; }
+
+  @media (max-width: 767.98px) {
+    .hero h1 { font-size: 56px; letter-spacing: -0.02em; }
+    .job-grid, .type-row { grid-template-columns: 1fr; }
+    .ramp { grid-template-columns: repeat(5, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">Findy</div>
+    <nav class="header-nav">
+      <a href="#">求人</a><a href="#">メディア</a><a href="#">イベント</a><a href="#">Findy Freelance</a><a href="#">採用担当者の方はこちら</a><a href="#">ログイン</a>
+      <button class="btn-signup">新規登録</button>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>つくる人の経験を、<br>次の舞台へ。</h1>
+    <p>Findyは、一人ひとりの経験や強みを可視化し、活躍できる企業とつなげる、ハイクラス向けのIT転職サービスです。</p>
+    <div class="hero-chips">
+      <span class="chip-lp">PdM</span><span class="chip-lp">エンジニア</span><span class="chip-lp">プロマネ</span>
+      <span class="chip-lp">SIer/SE</span><span class="chip-lp">CTO</span><span class="chip-lp">VPoE</span><span class="chip-lp">EM</span>
+    </div>
+    <a href="#" class="btn-lp">新規登録はこちら</a>
+    <div class="stats">
+      <div class="stat"><div class="label">ユーザー登録者数</div><div class="value">165,000<small>名</small></div></div>
+      <div class="stat"><div class="label">転職で年収アップしたユーザー割合</div><div class="value">79.8<small>%</small></div></div>
+    </div>
+    <p class="stats-note">※1：2026年9月時点　※2：2026年1〜6月実績</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-label">01 / Two blues</div>
+  <h2 class="h2">青が 2 つある。サービスと LP で別</h2>
+  <p class="lead">デザインシステムのプライマリは <b><code>--fcds-color-main: #155aa8</code></b>（CSS 全文で 159 回）。一方、<b>トップの LP だけ <code>#0d69d2</code></b>（40 回 / 可視 164 要素）を使っていて、<b>この色はトークンに存在しない</b>。上のヒーローが <code>#0d69d2</code>、ヘッダーの「新規登録」が <code>#155aa8</code>。<b>青を 1 色に統一しない。</b></p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#155aa8"></div><div class="swatch-body"><div class="swatch-name">Findy Blue（サービス）</div><div class="swatch-hex">#155aa8　--fcds-color-main</div><div class="swatch-use">★CSS 159 回。ボタン・リンク・タグの枠</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#0d69d2"></div><div class="swatch-body"><div class="swatch-name">LP Blue（トップのみ）</div><div class="swatch-hex">#0d69d2　トークン無し</div><div class="swatch-use">CSS 40 回 / 可視 164 要素。LP の見出し・CTA・チップ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#1b2025"></div><div class="swatch-body"><div class="swatch-name">Text Black</div><div class="swatch-hex">#1b2025　--fcds-color-text-black</div><div class="swatch-use">★本文。可視 124 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#8b9195"></div><div class="swatch-body"><div class="swatch-name">Tag Text / Placeholder</div><div class="swatch-hex">#8b9195　--fcds-color-grey-500</div><div class="swatch-use">技術タグの文字（可視 208 要素・下層で最多）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#c5cdd1"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#c5cdd1　--fcds-color-border</div><div class="swatch-use">罫線・入力欄の枠 / grey-300</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f1f4f5"></div><div class="swatch-body"><div class="swatch-name">Background Grey</div><div class="swatch-hex">#f1f4f5　--fcds-color-grey-100</div><div class="swatch-use">タグの面・タブの非選択</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#bf0615"></div><div class="swatch-body"><div class="swatch-name">Danger</div><div class="swatch-hex">#bf0615　--fcds-color-accent-danger</div><div class="swatch-use">背景は #f8e6e7（red-50）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#00c2a8"></div><div class="swatch-body"><div class="swatch-name">Success</div><div class="swatch-hex">#00c2a8　--fcds-color-accent-success</div><div class="swatch-use">背景は #e5f9f6（green-50）</div></div></div>
+  </div>
+</section>
+
+<section class="section-alt">
+<div class="section">
+  <div class="section-label">02 / Color ramps</div>
+  <h2 class="h2">色は 10 段階のランプから選ぶ</h2>
+  <p class="lead">FCDS は <code>blue</code> <code>grey</code> <code>green</code> <code>orange</code> <code>purple</code> <code>red</code> <code>yellow</code> の 7 系統を <b>50 / 100 / 200 … 900 の 10 段階</b>で持っている。<b>中間色を自分で作らない。</b></p>
+
+  <div class="ramp-name">--fcds-color-blue-50 → 900</div>
+  <div class="ramp">
+    <div style="background:#f4f7fc;color:#1b2025">50</div><div style="background:#dbe8f8;color:#1b2025">100</div><div style="background:#b7d3f3;color:#1b2025">200</div>
+    <div style="background:#88b7ee;color:#1b2025">300</div><div style="background:#569cea;color:#1b2025">400</div><div style="background:#4076c9;color:#fff">500</div>
+    <div style="background:#3466ad;color:#fff">600</div><div style="background:#26528c;color:#fff">700</div><div style="background:#1d406c;color:#fff">800</div><div style="background:#112a4a;color:#fff">900</div>
+  </div>
+
+  <div class="ramp-name">--fcds-color-grey-50 → 900</div>
+  <div class="ramp">
+    <div style="background:#f8fafa;color:#1b2025">50</div><div style="background:#f1f4f5;color:#1b2025">100</div><div style="background:#dce1e3;color:#1b2025">200</div>
+    <div style="background:#c5cdd1;color:#1b2025">300</div><div style="background:#afb7bc;color:#1b2025">400</div><div style="background:#8b9195;color:#fff">500</div>
+    <div style="background:#636b71;color:#fff">600</div><div style="background:#474e54;color:#fff">700</div><div style="background:#353a3f;color:#fff">800</div><div style="background:#1b2025;color:#fff">900</div>
+  </div>
+
+  <div class="ramp-name">--fcds-color-green-50 → 900</div>
+  <div class="ramp">
+    <div style="background:#e5f9f6;color:#1b2025">50</div><div style="background:#ccf3ee;color:#1b2025">100</div><div style="background:#99e7dc;color:#1b2025">200</div>
+    <div style="background:#66dacb;color:#1b2025">300</div><div style="background:#33ceb9;color:#1b2025">400</div><div style="background:#00c2a8;color:#1b2025">500</div>
+    <div style="background:#009b86;color:#fff">600</div><div style="background:#007465;color:#fff">700</div><div style="background:#004e43;color:#fff">800</div><div style="background:#002722;color:#fff">900</div>
+  </div>
+
+  <p class="note"><code>alphaGrey-*</code> / <code>alphaBlue-*</code> / <code>black-*</code> / <code>white-*</code> の<b>半透明ランプも各 10 段階</b>ある。写真の上に文字や面を置くときはこちらを使う。</p>
+  <p class="note"><b><code>--rt-*</code>（react-tooltip・10 個）と <code>--agentation-*</code>（7 個）はサードパーティのトークン。</b>抽出では合計 209 個と出るが、<b>設計値として読むのは <code>--fcds-*</code> の 192 個だけ。</b></p>
+</div>
+</section>
+
+<section class="section">
+  <div class="section-label">03 / Typography</div>
+  <h2 class="h2">太字が既定。字間は書かない</h2>
+  <p class="lead">可視 531 要素のうち <b>419 要素が weight 700</b>。ナビもタグも年収も見出しも太字で、<b>Regular(400) の方が例外</b>（52 要素）。そして<b>下層は 531 要素すべて <code>letter-spacing: normal</code></b>。字間で整えず、weight と line-height だけで階層を作る。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:10px">10</span><span style="font-size:12px">12</span><span style="font-size:14px">14</span>
+    <span style="font-size:16px">16</span><span style="font-size:18px">18</span><span style="font-size:24px">24</span>
+    <span style="font-size:32px">32</span><span style="font-size:40px">40</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>LP Hero ★</b>68px / 700<br>lh 1.17 / <b style="display:inline">ls -0.02em</b><br>≤1279px で 56px</div><div style="font-size:44px;font-weight:700;line-height:1.17;letter-spacing:-0.02em;color:#0d69d2">つくる人の経験を、次の舞台へ。</div></div>
+  <div class="type-row"><div class="type-meta"><b>LP Section Heading</b>40px / 700<br>lh 1.25 / ls 1.6px<br>--fcds-typography-heading-3xl</div><div style="font-size:32px;font-weight:700;line-height:1.25;letter-spacing:1.6px">AI分析と人の両面からより良いマッチングへ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Page Title</b>32px / 700<br>lh 1.5 / <b style="display:inline">ls normal</b><br>--fcds-typography-heading-xxl</div><div style="font-size:32px;font-weight:700;line-height:1.5">フロントエンドエンジニアの転職・求人情報</div></div>
+  <div class="type-row"><div class="type-meta"><b>List Heading</b>24px / 700<br>lh 1.5 / heading-xl</div><div style="font-size:24px;font-weight:700;line-height:1.5">求人一覧</div></div>
+  <div class="type-row"><div class="type-meta"><b>Job Title ★</b>18px / 700<br>lh 1.5 / heading-l（62 要素）</div><div style="font-size:18px;font-weight:700;line-height:1.5">【フルリモートOK/フルフレックス】レガシーUIの刷新を担うフロントエンドエンジニア</div></div>
+  <div class="type-row"><div class="type-meta"><b>Article Body</b>16px / 400<br>lh <b style="display:inline">1.75</b> / text-article-m-regular</div><div style="font-size:16px;font-weight:400;line-height:1.75">職歴やプロジェクト情報から、専門性や事業経験、マネジメント経験を読み取り、活躍できる企業を提案します。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav / Tab ★</b>14px / 700<br>lh 1.5 / ls normal（180 要素）</div><div style="font-size:14px;font-weight:700;line-height:1.5">求人　メディア　イベント</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body / UI ★</b>12px / 700・400<br>lh 1.5（最多 252 要素）</div><div><span style="font-size:12px;font-weight:700;line-height:1.5">開発生産性の高い企業</span>　<span style="font-size:12px;font-weight:400;line-height:1.5">一部リモート可</span></div></div>
+  <div class="type-row"><div class="type-meta"><b>Caption</b>10px / 400<br>lh <b style="display:inline">1.25</b> / color #636b71</div><div style="font-size:10px;font-weight:400;line-height:1.25;color:#636b71">※1：2026年 年間実績　※2：2026年1〜6月 面談後アンケート結果</div></div>
+
+  <div class="section-label" style="margin-top:40px">03-b / Typography tokens</div>
+  <h3 class="h3"><code>font:</code> ショートハンド 1 本で組める</h3>
+  <table class="token-table">
+    <tr><th>Token</th><th>値</th><th>用途</th></tr>
+    <tr><td><code>--fcds-typography-heading-4xl</code></td><td><code>700 64px/1.25</code></td><td>最大見出し</td></tr>
+    <tr><td><code>--fcds-typography-heading-3xl</code></td><td><code>700 40px/1.25</code></td><td>LP のセクション見出し</td></tr>
+    <tr><td><code>--fcds-typography-heading-xxl</code></td><td><code>700 32px/1.5</code></td><td>ページタイトル</td></tr>
+    <tr><td><code>--fcds-typography-heading-xl</code></td><td><code>700 24px/1.5</code></td><td>一覧見出し</td></tr>
+    <tr><td><code>--fcds-typography-heading-l / m / s</code></td><td><code>700 18 / 16 / 14px ×1.5</code></td><td>カード見出し・小見出し</td></tr>
+    <tr><td><code>--fcds-typography-text-body-{l,m,s,xs}-{bold,regular}</code></td><td><code>700・400 18 / 16 / 14 / 12px ×1.5</code></td><td>UI テキスト</td></tr>
+    <tr><td><code>--fcds-typography-text-body-xxs-*</code></td><td><code>700・400 10px/1.25</code></td><td>注記</td></tr>
+    <tr><td><code>--fcds-typography-text-article-{l,m}-*</code></td><td><code>700・400 18 / 16px <b>×1.75</b></code></td><td><b>記事だけ行間 1.75</b></td></tr>
+  </table>
+  <p class="note"><b>行間は 4 つだけ</b>（<code>--fcds-line-height-100 / 125 / 150 / 175</code> = 1 / 1.25 / 1.5 / 1.75）。<b>1.6 や 1.7 を作らない。</b>UI は 1.5（可視 433 要素）、記事は 1.75、1 行で収めるラベルは 1（241 要素）。</p>
+  <p class="note"><b>ロードされている Noto Sans JP は 400 と 700 だけ。</b>実サイトは下層の職種リストに <code>weight: 300</code>、LP のリード文に <code>500</code> を指定しているが、<b>どちらも <code>@font-face</code> が無い＝描画されていない指定</b>。<code>--fcds-font-weight-*</code> にも 400 と 700 しか無い。</p>
+  <p class="note"><b><code>Rubik</code> も同様。</b>5 要素に指定されているが <code>@font-face</code> が無く、<code>system-ui</code> に落ちる。<b>Rubik を前提に組まないこと。</b></p>
+  <p class="note"><b><code>font-feature-settings: "palt"</code> は 1 要素も使っていない</b>（CSS 全文でも 0 回）。年収の桁揃えに <code>tnum</code> も使わず、レイアウト側で揃えている。</p>
+</section>
+
+<section class="section-alt">
+<div class="section">
+  <div class="section-label">04 / Job List</div>
+  <h2 class="h2">求人一覧：フィルタ ／ カード</h2>
+
+  <div class="tabs" style="margin-bottom:0">
+    <div class="on">求人を探す</div><div class="off">企業を探す</div>
+  </div>
+
+  <div class="job-grid" style="margin-top:16px">
+    <div class="panel">
+      <h4>検索条件</h4>
+      <div class="field"><label>キーワード</label><input type="text" placeholder="キーワードで探す"></div>
+      <div class="field"><label>職種</label><input type="text" value="フロントエンドエンジニア"></div>
+      <div class="field"><label>年収</label><input type="text" placeholder="下限なし"></div>
+      <button class="btn-outline">詳しい条件を追加</button>
+    </div>
+
+    <div>
+      <div class="job">
+        <div class="title">【フルリモートOK/フルフレックス】レガシーUIの刷新を担うフロントエンドエンジニア</div>
+        <div class="company">株式会社メルカリ</div>
+        <div class="salary"><span class="badge">年収</span>1,200〜2,500<small>万円</small></div>
+        <div class="tags">
+          <span class="tag">TypeScript</span><span class="tag">React</span><span class="tag">Go</span><span class="tag">Dart</span>
+          <span class="tag-cond">フルリモート可</span><span class="tag-cond">副業可能</span>
+          <span class="tag-pill">開発生産性の高い企業</span>
+        </div>
+        <div class="job-actions">
+          <button class="btn-outline">求人を見る</button>
+        </div>
+      </div>
+
+      <div class="job">
+        <div class="title">プロダクト基盤のリアーキテクトをリードするフロントエンドエンジニア</div>
+        <div class="company">株式会社マネーフォワード</div>
+        <div class="salary"><span class="badge">年収</span>800〜2,199<small>万円</small></div>
+        <div class="tags">
+          <span class="tag">TypeScript</span><span class="tag">Next.js</span><span class="tag">GraphQL</span>
+          <span class="tag-cond">一部リモート可</span>
+        </div>
+        <div class="job-actions">
+          <button class="btn-outline">求人を見る</button>
+        </div>
+      </div>
+
+      <div class="pager">
+        <span>前へ</span><span class="on">1</span><span>2</span><span>3</span><span>…</span><span>次へ</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="note"><b>条件タグ（<code>フルリモート可</code>）の 1px 枠は <code>border</code> ではなく <code>box-shadow: inset 0 0 0 1px</code></b>（可視 26 要素）。<b>枠をレイアウトの寸法に影響させないための実装。</b></p>
+</div>
+</section>
+
+<section class="section">
+  <div class="section-label">05 / Components</div>
+  <h2 class="h2">角丸は 4 / 8 / 16 / 9999px</h2>
+  <div class="comp-grid">
+    <div class="comp">
+      <h4>Primary（サービス）</h4>
+      <button class="btn-signup">新規登録</button>
+      <div class="spec">bg var(--fcds-color-main) #155aa8<br>padding 8px 16px / radius 4px<br>12px / weight 700 / lh 1.45</div>
+    </div>
+    <div class="comp">
+      <h4>Primary Large（LP）</h4>
+      <a href="#" class="btn-lp" style="margin-top:0;font-size:16px;padding:14px 32px">新規登録はこちら</a>
+      <div class="spec">bg #0d69d2（LP 専用）<br>padding 20px 48px / radius 9999px<br>20px / weight 700 / ls 0.8px</div>
+    </div>
+    <div class="comp">
+      <h4>Secondary / Outlined</h4>
+      <button class="btn-outline">詳しい条件を追加</button>
+      <div class="spec">border 1px solid #155aa8<br>padding 8px 16px / radius 4px<br>16px / weight 700</div>
+    </div>
+    <div class="comp">
+      <h4>Disabled（非活性）</h4>
+      <div class="swatch-pair">
+        <i style="background:#f1f4f5"></i><b>面 #f1f4f5<br>grey-100</b>
+        <i style="background:#c5cdd1"></i><b>文字 #c5cdd1<br>grey-300</b>
+      </div>
+      <div class="spec">「いいかも」ボタンの非活性。<br>padding 8px 20px / radius 4px / 18px weight 700<br>★コントラスト比 1.46:1 で WCAG を満たさない。<br>実測値どおりだが、新規実装では grey-500 #8b9195 以上に。<br>（読めない見本になるため文字では描かず色見本で示す）</div>
+    </div>
+    <div class="comp">
+      <h4>Tag（技術スタック）</h4>
+      <div class="tags"><span class="tag">Go</span><span class="tag">Dart</span><span class="tag">TypeScript</span></div>
+      <div class="spec">bg #f1f4f5 / color #8b9195<br>padding 4px 8px / radius 4px<br>12px / weight 700</div>
+    </div>
+    <div class="comp">
+      <h4>Condition Tag</h4>
+      <div class="tags"><span class="tag-cond">フルリモート可</span><span class="tag-cond">副業可能</span></div>
+      <div class="spec">box-shadow: inset 0 0 0 1px #155aa8<br>bg #fff / color #155aa8<br>padding 4px 8px / radius 4px</div>
+    </div>
+    <div class="comp">
+      <h4>Feature Pill</h4>
+      <div class="tags"><span class="tag-pill">開発生産性の高い企業</span></div>
+      <div class="spec">bg #f4f7fc（blue-50）<br>color #3466ad（blue-600）<br>radius 9999px / 12px / weight 400</div>
+    </div>
+    <div class="comp">
+      <h4>Focus（キーボード操作）</h4>
+      <button class="btn-outline is-focus">求人を見る</button>
+      <div class="spec">outline 2px solid #155aa8 / offset 2px</div>
+    </div>
+    <div class="comp">
+      <h4>Radius Scale</h4>
+      <div class="radius-row">
+        <div style="border-radius:4px">s 4px ★</div>
+        <div style="border-radius:8px">m 8px</div>
+        <div style="border-radius:16px">l 16px</div>
+        <div style="border-radius:9999px">full</div>
+      </div>
+      <div class="spec">既定は 4px（可視 280 要素）</div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt">
+<div class="section">
+  <div class="section-label">06 / Layout &amp; Depth</div>
+  <h2 class="h2">4px グリッドの余白と、2 系統の影</h2>
+  <div class="tokens">
+    <div><div class="bar" style="width:2px"></div>4xs 2</div>
+    <div><div class="bar" style="width:4px"></div>3xs 4</div>
+    <div><div class="bar" style="width:8px"></div>xxs 8</div>
+    <div><div class="bar" style="width:12px"></div>xs 12</div>
+    <div><div class="bar" style="width:16px"></div>m 16</div>
+    <div><div class="bar" style="width:20px"></div>l 20</div>
+    <div><div class="bar" style="width:24px"></div>xl 24</div>
+    <div><div class="bar" style="width:32px"></div>xxl 32</div>
+    <div><div class="bar" style="width:40px"></div>3xl 40</div>
+    <div><div class="bar" style="width:48px"></div>4xl 48</div>
+    <div><div class="bar" style="width:64px"></div>5xl 64</div>
+  </div>
+  <p class="note"><b><code>s</code> が無く <code>xs</code>(12px) の次が <code>m</code>(16px)。</b>トークン名を勝手に補完しない。</p>
+
+  <div class="shadow-row">
+    <div style="box-shadow:var(--shadow-card)">Level 1（サービス）<br>0 3px 6px rgba(44,40,40,.11)<br>可視 31 要素</div>
+    <div style="box-shadow:var(--shadow-lp)">Level 2（LP カード）<br>0 16px 14px rgba(201,210,220,.2)<br>可視 36 要素</div>
+    <div style="box-shadow:var(--shadow-cta)">Level 3（LP の CTA）<br>0 20px 36px rgba(201,210,220,.3)<br>可視 49 要素</div>
+  </div>
+  <p class="note"><b>影の色が 2 系統ある。</b>サービス側は黒寄り（<code>rgba(44,40,40,.11)</code>）、LP 側は青みがかったグレー（<code>rgba(201,210,220,.2〜.3)</code>）で、<b>下に大きくぼかす</b>。</p>
+  <p class="note"><b>コンテナは LP 1080px / サービス画面 1200px。</b>ブレークポイントは Bootstrap 由来の <code>max-width: 767.98px</code>（243 回）と自前の <code>min-width: 768px</code>（108 回）が主。<b><code>.98</code> は慣習を引き継いだものなので、新設しない。</b></p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <a href="#">求人</a><a href="#">メディア</a><a href="#">イベント</a><a href="#">Findy Freelance</a><a href="#">利用規約</a>
+    <span class="copy">© Findy Inc.</span>
+  </div>
+</footer>
+
+</body>
+</html>

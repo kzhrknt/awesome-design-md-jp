@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (505 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (508 sites)</a>
 </p>
 
 <table>
@@ -771,6 +771,11 @@
 </tr>
 <tr>
 <td align="center"><strong>bitFlyer</strong><br><img src="design-md/bitflyer/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>船橋屋</strong><br><img src="design-md/funabashiya/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>熊本市現代美術館</strong><br><img src="design-md/camk/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>Findy</strong><br><img src="design-md/findy/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1337,11 +1342,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [Algomatic (アルゴマティック)](https://algomatic.jp/) | AI Consulting / Startup | [DESIGN.md](design-md/algomatic/DESIGN.md) | [preview.html](design-md/algomatic/preview.html) |
 | [ベネッセアートサイト直島 (Benesse Art Site Naoshima)](https://benesse-artsite.jp/) | Art Museum / Tourism | [DESIGN.md](design-md/benesse-artsite/DESIGN.md) | [preview.html](design-md/benesse-artsite/preview.html) |
 | [bitFlyer (ビットフライヤー)](https://bitflyer.com/ja-jp/) | Crypto Exchange / Fintech | [DESIGN.md](design-md/bitflyer/DESIGN.md) | [preview.html](design-md/bitflyer/preview.html) |
+| [船橋屋 (FUNABASHIYA)](https://www.funabashiya.co.jp/) | Food / Traditional Confectionery | [DESIGN.md](design-md/funabashiya/DESIGN.md) | [preview.html](design-md/funabashiya/preview.html) |
+| [熊本市現代美術館 (CAMK)](https://www.camk.jp/) | Museum / Contemporary Art | [DESIGN.md](design-md/camk/DESIGN.md) | [preview.html](design-md/camk/preview.html) |
+| [Findy (ファインディ)](https://findy-code.io/) | SaaS / IT Recruiting | [DESIGN.md](design-md/findy/DESIGN.md) | [preview.html](design-md/findy/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (505 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (508 sites)</a>
 </p>
 
 <table>
@@ -2078,6 +2086,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>bitFlyer</strong><br><img src="design-md/bitflyer/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>船橋屋</strong><br><img src="design-md/funabashiya/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>熊本市現代美術館</strong><br><img src="design-md/camk/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>Findy</strong><br><img src="design-md/findy/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

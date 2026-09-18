@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 船橋屋（FUNABASHIYA）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Neuton:wght@300;700&display=swap" rel="stylesheet">
+<!-- ★実サイトと同じ約物半角フォント。書体本体より先に置く（yakuhanjp@3.2.0 / jsDelivr） -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/yakuhanjp@3.2.0/dist/css/yakuhanmp.min.css">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は実サイトに 0 個（own = 0）。
+       以下は computed style と CSS 全文の実測値。2026-09-18 */
+    --notice-red: #cf1030;   /* ★日付ラベルの文字色。CSS 6 回 / 可視 5 要素 */
+    --shop-red:   #b93242;   /* ONLINE SHOP ボタンの面のみ。CSS 5 回 / 可視 1 要素 */
+    --sumi:       #080604;   /* SNS アイコンの面（可視 6 要素）。純黒ではない */
+    --black:      #000000;   /* ★本文・見出し・ナビ。可視 56 / 53 要素 */
+    --white:      #ffffff;
+    --maroon:     #450510;   /* 下層フッターの通販ダイヤル（可視 2 要素） */
+    --pink:       #f0b3be;   /* トップの通販ダイヤルの文字 */
+    --pink-line:  #f1b7c1;   /* 同・1px 枠 */
+    --label-gray: #747474;   /* カテゴリバッジの面（可視 5 要素） */
+    --update-bg:  #333333;   /* UPDATE ラベルの面 */
+    --recruit-bg: #3e3e3e;   /* 採用情報バーの面 */
+    --surface-lavender: #f6f5f8;  /* グローバルナビの引き出し */
+    --surface-gray:     #f0f0f0;  /* 下層の引用ブロック */
+    --bg:         #ffffff;   /* pageBackground.resolved / 根拠 body */
+
+    /* === Fonts ===
+       ★1 番目は書体ではなく約物フォント。括弧と句読点のグリフしか持たないので、
+         残りは 2 番目の Noto Serif JP が描く。順序を入れ替えると約物が半角にならない。
+       ★Neuton は実サイトが `Neuton, sans-serif` と誤って宣言している（セリフ体なので serif が正しい）。 */
+    --font-jp: YakuHanMP_Noto, "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", YuMincho, serif;
+    --font-en: Neuton, serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height ===
+       本文も見出しも詰めない。詰めるのはトップのブロック見出し（1.00）だけ */
+    --lh-body:  2.00;   /* ★本文 16px / 32px */
+    --lh-mid:   1.70;   /* 見出し 27px / 45.9px、一覧 15px / 25.5px */
+    --lh-ui:    1.50;   /* body 既定 20px / 30px、写真キャプション */
+    --lh-tight: 1.00;   /* トップのブロック見出し・日付 */
+
+    /* === Letter spacing ===
+       ★実サイトに px 宣言の字間は 1 つも無い。すべて em の 3 段階 */
+    --ls-body: 0.06em;   /* CSS 全文で 15 回（最多）。本文 */
+    --ls-list: 0.15em;   /* CSS 6 回。一覧・日付・小見出し・バッジ */
+    --ls-head: 0.12em;   /* CSS 2 回。27px / 30px の大見出し */
+    --ls-nav:  0.10em;   /* グローバルナビ 21px / 2.1px */
+    --ls-label:0.08em;   /* UPDATE ラベル 16px / 1.28px */
+
+    --r: 0px;            /* サイト全体で 0。円は SNS アイコンと通販ボタンだけ */
+    --shadow: none;      /* ★実サイトの影は 0 種 */
+
+    --container: 1400px; /* CSS 全文で 4 回（最頻） */
+    --wide:      1600px;
+    --narrow:    1200px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--black);
+    font-family: var(--font-jp);
+    font-size: 20px;            /* 実サイトの body 既定 */
+    font-weight: 400;
+    line-height: var(--lh-ui);
+    letter-spacing: normal;
+    /* font-feature-settings は実サイトで 0 要素。詰めは YakuHanMP が担当する */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { position: relative; }
+  .header-inner { display: flex; align-items: center; gap: 24px; max-width: var(--wide); margin: 0 auto; padding: 18px 28px; }
+  .logo { font-size: 24px; letter-spacing: var(--ls-head); line-height: var(--lh-tight); }
+  .logo small { display: block; font-size: 11px; letter-spacing: var(--ls-list); margin-top: 8px; }
+  .header-actions { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+  .lang { font-size: 16px; line-height: 1.5; border: 1px solid #ddd; padding: 6px 14px; }
+  .menu-btn { font-family: var(--font-en); font-size: 18px; letter-spacing: var(--ls-list); border: 1px solid var(--black); background: var(--white); padding: 8px 18px; cursor: pointer; border-radius: var(--r); }
+
+  /* HERO — 全画面写真の上に 1px の白い額を重ねる */
+  .hero { position: relative; height: 460px; display: flex; align-items: center; justify-content: center;
+          background: linear-gradient(160deg, #c8ab7a 0%, #8d7145 45%, #4a3a20 100%); }
+  .hero-frame { border: 1px solid var(--white); padding: 56px 72px; text-align: center; }
+  .hero-sub { color: var(--white); font-size: 22px; letter-spacing: var(--ls-head); line-height: var(--lh-mid); }
+  .hero-title { color: var(--white); font-size: 44px; letter-spacing: var(--ls-head); line-height: var(--lh-mid); margin: 14px 0 10px; }
+  .hero-en { color: var(--white); font-family: var(--font-en); font-size: 16px; letter-spacing: var(--ls-list); }
+  .hero-btn { display: inline-block; margin-top: 28px; background: rgba(0,0,0,0.8); color: var(--white);
+              border-radius: var(--r); padding: 16px 52px; font-size: 16px; letter-spacing: var(--ls-list); text-decoration: none; }
+
+  /* SECTIONS */
+  .section { max-width: var(--narrow); margin: 0 auto; padding: 72px 28px; }
+  .section-wide { max-width: var(--container); margin: 0 auto; padding: 72px 28px; }
+  .section-alt { background: var(--surface-lavender); }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: #888; margin-bottom: 12px; letter-spacing: normal; }
+  .section-title { font-size: 27px; font-weight: 600; line-height: var(--lh-mid); letter-spacing: var(--ls-head);
+                   text-align: center; border-top: 1px solid var(--black); border-bottom: 1px solid var(--black); padding: 18px 0; margin-bottom: 28px; }
+  .block-title { font-size: 24px; font-weight: 400; line-height: var(--lh-tight); letter-spacing: var(--ls-list); margin-bottom: 26px; }
+  .lead { font-size: 16px; font-weight: 600; line-height: var(--lh-body); letter-spacing: var(--ls-body); max-width: 860px; margin-bottom: 30px; }
+  .note { font-size: 15px; font-weight: 400; line-height: var(--lh-mid); letter-spacing: var(--ls-list); color: #444; max-width: 880px; margin-top: 22px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--surface-gray); padding: 1px 5px; letter-spacing: normal; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+  .swatch { border: 1px solid #ddd; background: var(--white); }
+  .swatch-chip { height: 78px; }
+  .swatch-body { padding: 12px 14px; }
+  .swatch-name { font-size: 15px; font-weight: 600; line-height: var(--lh-mid); letter-spacing: var(--ls-body); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: #888; margin-top: 4px; letter-spacing: normal; }
+  .swatch-use { font-size: 13px; line-height: 1.7; color: #555; margin-top: 7px; letter-spacing: var(--ls-body); }
+
+  /* TYPOGRAPHY TABLE */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 26px; padding: 22px 0; border-bottom: 1px solid #e2e2e2; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: #888; line-height: 1.8; letter-spacing: normal; }
+  .type-meta b { display: block; font-family: var(--font-jp); font-size: 14px; font-weight: 600; color: var(--black); letter-spacing: var(--ls-body); }
+  .scale-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; margin-bottom: 26px; }
+  .scale-bar span { background: var(--surface-gray); padding: 9px 15px; line-height: 1; letter-spacing: var(--ls-body); }
+
+  /* LS DEMO */
+  .ls-demo { display: grid; gap: 0; border: 1px solid #ddd; }
+  .ls-demo div { padding: 16px 20px; border-bottom: 1px solid #eee; font-size: 17px; line-height: var(--lh-mid); }
+  .ls-demo div:last-child { border-bottom: none; }
+  .ls-demo .tag { font-family: var(--font-mono); font-size: 11px; color: #888; display: block; margin-bottom: 6px; letter-spacing: normal; }
+
+  /* NEWS LIST */
+  .news { max-width: 880px; }
+  .news-item { display: grid; grid-template-columns: 300px 1fr; gap: 26px; padding: 22px 0; border-bottom: 1px solid #e2e2e2; align-items: baseline; }
+  .news-date { font-family: var(--font-en); font-size: 19px; font-weight: 700; line-height: var(--lh-tight); letter-spacing: var(--ls-list); color: var(--notice-red); }
+  .news-cat { display: inline-block; background: var(--label-gray); color: var(--white); font-size: 12px; line-height: 1; letter-spacing: var(--ls-list); padding: 6px 10px; border-radius: var(--r); margin-left: 12px; }
+  .news-text { font-size: 15px; line-height: var(--lh-mid); letter-spacing: var(--ls-list); }
+
+  /* PRODUCTS */
+  .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 26px; }
+  .product .img { aspect-ratio: 4 / 3; background: linear-gradient(150deg,#efe7d8,#cdbb9b); }
+  .product .name { font-size: 15px; line-height: var(--lh-mid); letter-spacing: var(--ls-list); margin-top: 14px; }
+
+  /* ARTICLE（下層の本文組み） */
+  .article { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+  .article h3 { font-size: 27px; font-weight: 600; line-height: var(--lh-mid); letter-spacing: var(--ls-head);
+                text-align: center; border-top: 1px solid var(--black); border-bottom: 1px solid var(--black); padding: 16px 0; margin-bottom: 26px; }
+  .article p { font-size: 16px; font-weight: 600; line-height: var(--lh-body); letter-spacing: var(--ls-body); margin-bottom: 1.6em; }
+  .article .figure { background: linear-gradient(150deg,#d8d2c4,#9c9079); aspect-ratio: 4 / 3; }
+  .article .cap { font-size: 16px; font-weight: 700; line-height: var(--lh-ui); letter-spacing: normal; margin-top: 14px; }
+  .quote { background: var(--surface-gray); padding: 26px 30px; margin-top: 30px; }
+  .quote .qt { font-size: 16px; font-weight: 700; line-height: var(--lh-ui); margin-bottom: 10px; }
+  .quote p { margin-bottom: 0; }
+
+  /* COMPONENTS */
+  .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 26px; }
+  .comp { border: 1px solid #ddd; padding: 24px; background: var(--white); }
+  .comp h4 { font-size: 15px; font-weight: 600; letter-spacing: var(--ls-body); line-height: var(--lh-mid); margin-bottom: 8px; }
+  .comp .spec { font-family: var(--font-mono); font-size: 11px; color: #888; line-height: 1.8; margin-top: 14px; letter-spacing: normal; }
+  .btn-shop { display: inline-flex; align-items: center; justify-content: center; width: 86px; height: 86px; border-radius: 100%;
+              background: var(--shop-red); color: var(--white); font-family: var(--font-en); font-size: 15px; line-height: 1.2; text-align: center; text-decoration: none; letter-spacing: var(--ls-list); }
+  .btn-tel { display: inline-block; border: 1px solid var(--pink-line); color: var(--pink); background: transparent;
+             font-family: var(--font-en); font-size: 16px; line-height: 1.88; letter-spacing: var(--ls-list); padding: 10px 26px; border-radius: var(--r); text-decoration: none; }
+  .btn-tel-dark { border-color: var(--maroon); color: var(--maroon); }
+  .btn-hero { display: inline-block; background: rgba(0,0,0,0.8); color: var(--white); padding: 14px 40px; border-radius: var(--r); font-size: 16px; letter-spacing: var(--ls-list); text-decoration: none; }
+  .bar-recruit { background: var(--recruit-bg); color: var(--white); font-size: 23px; line-height: 1; letter-spacing: normal; padding: 20px 26px; border-radius: var(--r); }
+  .label-update { display: inline-block; background: var(--update-bg); color: var(--white); font-size: 16px; line-height: 1.5; letter-spacing: var(--ls-label); padding: 6px 14px; border-radius: var(--r); }
+  .sns { display: flex; gap: 12px; }
+  .sns i { width: 44px; height: 44px; border-radius: 100%; background: var(--sumi); display: block; }
+  .is-focus { outline: 2px solid var(--notice-red); outline-offset: 3px; }
+
+  /* YAKUHAN DEMO */
+  .yaku { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+  .yaku .box { border: 1px solid #ddd; padding: 22px 24px; }
+  .yaku .box h4 { font-family: var(--font-mono); font-size: 11px; color: #888; margin-bottom: 12px; letter-spacing: normal; }
+  .yaku .box p { font-size: 20px; line-height: var(--lh-body); letter-spacing: var(--ls-body); }
+  .yaku .off p { font-family: "Noto Serif JP", "Hiragino Mincho ProN", serif; }   /* 約物フォントを外した比較 */
+
+  /* SPACING / RADIUS */
+  .tokens { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end; }
+  .tokens div { text-align: center; font-family: var(--font-mono); font-size: 11px; color: #888; letter-spacing: normal; }
+  .tokens .bar { background: var(--sumi); height: 26px; margin-bottom: 7px; }
+
+  /* FOOTER */
+  .footer { background: var(--white); border-top: 1px solid #e2e2e2; padding: 56px 28px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; display: flex; gap: 40px; align-items: center; flex-wrap: wrap; }
+  .footer-nav { display: flex; gap: 26px; flex-wrap: wrap; }
+  .footer-nav a { font-size: 15px; line-height: var(--lh-mid); letter-spacing: var(--ls-list); color: var(--black); text-decoration: none; }
+  .copyright { font-family: var(--font-en); font-size: 14px; line-height: 1.25; letter-spacing: var(--ls-list); color: #555; margin-left: auto; }
+
+  @media (max-width: 780px) {
+    .article, .yaku { grid-template-columns: 1fr; }
+    .type-row, .news-item { grid-template-columns: 1fr; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">船橋屋<small>元祖くず餅　創業文化二年</small></div>
+    <div class="header-actions">
+      <span class="lang">日本語</span>
+      <button class="menu-btn">Menu</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-frame">
+    <p class="hero-sub">1805年の創業より　無添加自然熟成</p>
+    <h1 class="hero-title">発酵の力で日本を元気に</h1>
+    <p class="hero-en">The Kuzumochi ReBIRTH Declaration.</p>
+    <a href="#" class="hero-btn">詳しくはこちら</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="block-title">黒と白。色は日付と通販ボタンだけ</h2>
+  <p class="lead">可視テキスト 56 要素のうち、色が付いているのは日付ラベルの 5 要素だけ。<b>赤が 2 つあるのは実装の実態</b>で、<code>#cf1030</code> は文字色、<code>#b93242</code> は右下に固定される通販ボタンの面色。役割が違うので統一しない。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#cf1030"></div><div class="swatch-body"><div class="swatch-name">Notice Red</div><div class="swatch-hex">#cf1030</div><div class="swatch-use">★日付ラベルの文字色。CSS 6 回 / 可視 5 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#b93242"></div><div class="swatch-body"><div class="swatch-name">Shop Red</div><div class="swatch-hex">#b93242</div><div class="swatch-use">ONLINE SHOP ボタンの面のみ。CSS 5 回 / 可視 1 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#080604"></div><div class="swatch-body"><div class="swatch-name">Sumi</div><div class="swatch-hex">#080604</div><div class="swatch-use">SNS アイコンの面（可視 6 要素）。純黒ではない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Black</div><div class="swatch-hex">#000000</div><div class="swatch-use">★本文・見出し・ナビ。可視 56 / 53 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#450510"></div><div class="swatch-body"><div class="swatch-name">Dark Maroon</div><div class="swatch-hex">#450510</div><div class="swatch-use">下層フッターの通販ダイヤル（可視 2 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f0b3be"></div><div class="swatch-body"><div class="swatch-name">Pale Pink</div><div class="swatch-hex">#f0b3be</div><div class="swatch-use">トップの通販ダイヤル（枠は #f1b7c1）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#747474"></div><div class="swatch-body"><div class="swatch-name">Label Gray</div><div class="swatch-hex">#747474</div><div class="swatch-use">カテゴリバッジの面（可視 5 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f6f5f8"></div><div class="swatch-body"><div class="swatch-name">Surface Lavender</div><div class="swatch-hex">#f6f5f8</div><div class="swatch-use">グローバルナビの引き出しの面</div></div></div>
+  </div>
+
+  <p class="note"><b>トップは全画面写真がビューポートを覆う</b>（<code>heroCover.heroCovered: true</code>）。それでも<b>ページの地色は写真の色ではなく <code>#ffffff</code></b>（<code>pageBackground.resolved</code> / 根拠 <code>body</code>）。</p>
+</section>
+
+<section class="section-alt">
+<div class="section-wide">
+  <div class="section-label">02 / Yakumono</div>
+  <h2 class="block-title">約物は CSS ではなくフォントで詰める</h2>
+  <p class="lead"><code>font-family</code> の 1 番目は書体ではなく <b><code>YakuHanMP_Noto</code></b>。括弧と句読点のグリフしか持たないので、残りの文字は 2 番目の <code>Noto Serif JP</code> が描く。<b><code>letter-spacing</code> も <code>palt</code> も使わずに、約物だけが半角になる。</b></p>
+
+  <div class="yaku">
+    <div class="box">
+      <h4>YakuHanMP_Noto あり（実サイトと同じ）</h4>
+      <p>明治初頭に出たかわら版「大江戸風流くらべ」において、『元祖くず餅・船橋屋』は（亀戸天神前）と記されている。</p>
+    </div>
+    <div class="box off">
+      <h4>YakuHanMP_Noto なし（比較用）</h4>
+      <p>明治初頭に出たかわら版「大江戸風流くらべ」において、『元祖くず餅・船橋屋』は（亀戸天神前）と記されている。</p>
+    </div>
+  </div>
+
+  <p class="note"><b><code>YakuHanMP</code>（明朝用）と <code>YakuHanJP</code>（ゴシック用）は別物。</b>明朝と組むときは <b>MP</b> を選ぶ。読み込みは <code>yakuhanjp@3.2.0</code> を jsDelivr から。Regular・SemiBold・Bold の 3 ウェイトが <code>loaded</code> している。</p>
+
+  <p class="note"><b><code>font-feature-settings: "palt"</code> は 1 要素も使っていない</b>（CSS 全文でも 0 回）。<b>約物フォントの上に palt を重ねると二重に詰まって字面が壊れる。</b></p>
+</div>
+</section>
+
+<section class="section-wide">
+  <div class="section-label">03 / Typography</div>
+  <h2 class="block-title">明朝一書体。本文の weight は 600</h2>
+  <p class="lead">サイト全体で和文書体は <b>Noto Serif JP ひとつ</b>（可視 63 / 54 要素）。ゴシック体は 1 要素も無い。欧文は日付・電話番号・コピーライトだけに <b>Neuton</b> を使う（可視 7 / 2 要素）。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:12px">12</span><span style="font-size:15px">15</span><span style="font-size:16px">16</span>
+    <span style="font-size:19px;font-family:var(--font-en);font-weight:700">19</span><span style="font-size:20px">20</span>
+    <span style="font-size:21px">21</span><span style="font-size:24px">24</span>
+    <span style="font-size:27px;font-weight:600">27</span><span style="font-size:30px;font-weight:600">30</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Section Heading ★</b>Noto Serif JP / 27px / 600<br>lh 1.70 / ls 0.12em</div><div style="font-size:27px;font-weight:600;line-height:1.70;letter-spacing:0.12em">船橋屋の創業と「くず餅」のはじまり</div></div>
+  <div class="type-row"><div class="type-meta"><b>Feature Heading</b>30px / 600<br>lh 1.70 / ls 0.12em</div><div style="font-size:30px;font-weight:600;line-height:1.70;letter-spacing:0.12em">本店に訪れた文化人</div></div>
+  <div class="type-row"><div class="type-meta"><b>Block Heading</b>24px / 400<br>lh 1.00 / ls 0.15em</div><div style="font-size:24px;font-weight:400;line-height:1.00;letter-spacing:0.15em">9月の商品情報</div></div>
+  <div class="type-row"><div class="type-meta"><b>Global Nav</b>21px / 400<br>lh 3.52（74px）/ ls 0.10em</div><div style="font-size:21px;font-weight:400;line-height:3.52;letter-spacing:0.10em">くず餅乳酸菌について</div></div>
+  <div class="type-row"><div class="type-meta"><b>Article Body ★</b>16px / <b style="display:inline">600</b><br>lh <b style="display:inline">2.00</b> / ls 0.06em</div><div style="font-size:16px;font-weight:600;line-height:2.00;letter-spacing:0.06em">東京の下町情緒が色濃く残る江東区亀戸三丁目、亀戸天神のすぐ側に「船橋屋」があります。船橋屋は、江戸は文化二年（1805年）、十一代将軍徳川家斉の頃、創業致しました。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Figure Caption</b>16px / 700<br>lh 1.50 / ls normal</div><div style="font-size:16px;font-weight:700;line-height:1.50">現在の船橋屋</div></div>
+  <div class="type-row"><div class="type-meta"><b>News Date ★</b>Neuton / 19px / 700<br>lh 1.00 / ls 0.15em / #cf1030</div><div style="font-family:var(--font-en);font-size:19px;font-weight:700;line-height:1.00;letter-spacing:0.15em;color:#cf1030">2026.08.31</div></div>
+  <div class="type-row"><div class="type-meta"><b>List Item ★</b>15px / 400<br>lh 1.70 / ls 0.15em（可視 32 要素）</div><div style="font-size:15px;font-weight:400;line-height:1.70;letter-spacing:0.15em">和フィナンシェ｜新作「黒糖と柚子」登場</div></div>
+  <div class="type-row"><div class="type-meta"><b>Category Badge</b>12px / 400<br>lh 1.00 / ls 0.15em</div><div><span class="news-cat" style="margin-left:0">催事情報</span> <span class="news-cat">お知らせ</span></div></div>
+  <div class="type-row"><div class="type-meta"><b>Update Label</b>16px / 400<br>lh 1.50 / ls 0.08em</div><div><span class="label-update">UPDATE 2026.08.31</span></div></div>
+
+  <p class="note"><b>本文の weight は 600。</b>明朝の本文を Regular ではなく SemiBold で組むのがこのサイトの調子で、<b>400 に落とすと本文が消える</b>（字間 0.06em と噛み合わなくなる）。</p>
+
+  <div class="section-label" style="margin-top:44px">03-b / Letter spacing</div>
+  <h3 class="block-title">字間は em の 3 段階だけ</h3>
+  <div class="ls-demo">
+    <div><span class="tag">本文 — 0.06em（CSS 全文で 15 回・最多）</span><span style="letter-spacing:0.06em">くず餅は、小麦澱粉を十五ヶ月間乳酸発酵させた和菓子です。</span></div>
+    <div><span class="tag">一覧・日付・小見出し・バッジ — 0.15em（CSS 6 回）</span><span style="letter-spacing:0.15em">くず餅は、小麦澱粉を十五ヶ月間乳酸発酵させた和菓子です。</span></div>
+    <div><span class="tag">大見出し — 0.12em（CSS 2 回）</span><span style="letter-spacing:0.12em">くず餅は、小麦澱粉を十五ヶ月間乳酸発酵させた和菓子です。</span></div>
+  </div>
+  <p class="note"><b>字間は必ず <code>em</code> で書く。</b>実サイトに px 宣言の字間は 1 つも無い（<code>0.06em</code> 15 回 / <code>0.15em</code> 6 回 / <code>0.12em</code> 2 回）。<b>本文と大見出しで倍の差をつける</b>のがこのサイトの調子。</p>
+</section>
+
+<section class="section-alt">
+<div class="section-wide">
+  <div class="section-label">04 / Article</div>
+  <h2 class="block-title">下層は「本文 ／ 写真」の 2 カラム</h2>
+  <div class="article">
+    <div>
+      <h3>江戸名物として番付</h3>
+      <p>明治初頭に出たかわら版「大江戸風流くらべ」において、当時の江戸の名物が番付として記されています。その中に「元祖くず餅・船橋屋」の名を見ることができます。</p>
+      <p>亀戸天神の参道に店を構え、参拝客に供してきた菓子が、いつしか江戸の名物として数えられるようになりました。</p>
+      <div class="quote">
+        <div class="qt">大江戸趣味風流くらべ</div>
+        <p>亀戸天神前　元祖くず餅　船橋屋</p>
+      </div>
+    </div>
+    <div>
+      <div class="figure"></div>
+      <p class="cap">現在の船橋屋</p>
+    </div>
+  </div>
+  <p class="note"><b>見出しの行間も 1.70 と広く取る。</b>見出しを詰めないのがこのサイトの特徴で、詰めるのはトップの 24px ブロック見出し（<code>line-height: 1.00</code>）だけ。</p>
+</div>
+</section>
+
+<section class="section-wide">
+  <div class="section-label">05 / News</div>
+  <h2 class="block-title">新着情報：日付は Neuton、本文は明朝</h2>
+  <div class="news">
+    <div class="news-item">
+      <div><span class="news-date">2026.08.31</span><span class="news-cat">催事情報</span></div>
+      <div class="news-text">2026.9月催事情報</div>
+    </div>
+    <div class="news-item">
+      <div><span class="news-date">2026.08.28</span><span class="news-cat">お知らせ</span></div>
+      <div class="news-text">店舗限定　くず餅の日特別企画</div>
+    </div>
+    <div class="news-item">
+      <div><span class="news-date">2026.08.27</span><span class="news-cat">委託販売スポット</span></div>
+      <div class="news-text">2026年9月　委託販売スポット情報</div>
+    </div>
+  </div>
+  <p class="note">日付は <b>Neuton 19px / weight 700 / <code>letter-spacing: 0.15em</code> / <code>#cf1030</code></b>。実サイトは <code>Neuton, sans-serif</code> と宣言しているが、<b>Neuton はセリフ体なので <code>serif</code> が正しい</b>。このプレビューは正しい方で組んでいる。</p>
+</section>
+
+<section class="section-alt">
+<div class="section-wide">
+  <div class="section-label">06 / Products</div>
+  <h2 class="block-title">商品一覧：15px / lh 1.70 / ls 0.15em</h2>
+  <div class="products">
+    <div class="product"><div class="img"></div><p class="name">中秋の名月しるこ</p></div>
+    <div class="product"><div class="img"></div><p class="name">中秋の名月しるこ プレミアム</p></div>
+    <div class="product"><div class="img"></div><p class="name">六穀おはぎ</p></div>
+    <div class="product"><div class="img"></div><p class="name">和フィナンシェ｜新作「黒糖と柚子」登場</p></div>
+    <div class="product"><div class="img"></div><p class="name">文豪の蜜パン</p></div>
+  </div>
+  <p class="note"><b>カードに枠線も影も付けない。</b>実サイトの <code>box-shadow</code> は <b>0 種</b>。カードの区別は写真と余白だけで行う。</p>
+</div>
+</section>
+
+<section class="section-wide">
+  <div class="section-label">07 / Components</div>
+  <h2 class="block-title">角丸は 0px。円は 2 つだけ</h2>
+  <div class="comp-grid">
+    <div class="comp">
+      <h4>Floating Shop Button</h4>
+      <a href="#" class="btn-shop">ONLINE<br>SHOP</a>
+      <div class="spec">bg #b93242 / color #fff<br>border-radius 100%<br>右下に固定。唯一の面色 CTA</div>
+    </div>
+    <div class="comp">
+      <h4>Hero Button</h4>
+      <a href="#" class="btn-hero">詳しくはこちら</a>
+      <div class="spec">bg rgba(0,0,0,.8) / color #fff<br>border-radius 0<br>白い 1px の額の中に置く</div>
+    </div>
+    <div class="comp">
+      <h4>Tel Button（トップ）</h4>
+      <a href="#" class="btn-tel">0120-8-27848</a>
+      <div class="spec">border 1px solid #f1b7c1<br>color #f0b3be / radius 0<br>Neuton 16px / lh 1.88 / ls 0.15em<br>★実サイトでもほぼ白の地（bg.png 平均 rgb(251,250,251)）に<br>載っており、コントラストは低い。実測どおり</div>
+    </div>
+    <div class="comp">
+      <h4>Tel Button（下層）</h4>
+      <a href="#" class="btn-tel btn-tel-dark">0120-8-27848</a>
+      <div class="spec">color #450510<br>下層フッターでは濃い臙脂に変わる</div>
+    </div>
+    <div class="comp">
+      <h4>Category Badge</h4>
+      <span class="news-cat" style="margin-left:0">催事情報</span>
+      <div class="spec">bg #747474 / color #fff<br>padding 6px 10px / radius 0<br>12px / 400 / ls 0.15em</div>
+    </div>
+    <div class="comp">
+      <h4>Update Label</h4>
+      <span class="label-update">UPDATE 2026.08.31</span>
+      <div class="spec">bg #333333 / color #fff<br>16px / ls 0.08em / radius 0</div>
+    </div>
+    <div class="comp">
+      <h4>SNS Icon</h4>
+      <div class="sns"><i></i><i></i><i></i><i></i></div>
+      <div class="spec">bg #080604 / border-radius 100%<br>可視 7 要素。テキストは font-size 0 で隠す</div>
+    </div>
+    <div class="comp">
+      <h4>Focus（キーボード操作）</h4>
+      <a href="#" class="btn-hero is-focus">詳しくはこちら</a>
+      <div class="spec">outline 2px solid #cf1030 / offset 3px<br>フォーカスにも日付と同じ赤を使う</div>
+    </div>
+    <div class="comp">
+      <h4>Recruit Bar</h4>
+      <div class="bar-recruit">採用情報</div>
+      <div class="spec">bg #3e3e3e / color #fff<br>23px / lh 1.00 / radius 0</div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt">
+<div class="section-wide">
+  <div class="section-label">08 / Layout & Depth</div>
+  <h2 class="block-title">余白・コンテナ・影</h2>
+  <div class="tokens">
+    <div><div class="bar" style="width:6px"></div>6</div>
+    <div><div class="bar" style="width:10px"></div>10</div>
+    <div><div class="bar" style="width:20px"></div>20</div>
+    <div><div class="bar" style="width:40px"></div>40</div>
+    <div><div class="bar" style="width:80px"></div>80</div>
+  </div>
+  <p class="note"><b>コンテナは 1400px</b>（CSS 全文で 4 回・最頻）。広いセクションは 1600px、本文セクションは 1200px。<b>ブレークポイントは 780 / 781px</b> の 1 本だけ（<code>max-width: 780px</code> 3 回 / <code>min-width: 781px</code> 3 回）。</p>
+  <p class="note"><b>影は 0 種。</b>階層は「写真か、白地か」「額の中か、外か」で作る。<b>カードに <code>box-shadow</code> を足さないこと。</b></p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-nav">
+      <a href="#">トップ</a><a href="#">発酵の力で日本を元気に</a><a href="#">元祖くず餅について</a><a href="#">商品紹介</a><a href="#">店舗紹介</a><a href="#">船橋屋について</a>
+    </div>
+    <div class="copyright">Copyright © 2026 Funabashiya Co., Ltd.</div>
+  </div>
+</footer>
+
+</body>
+</html>

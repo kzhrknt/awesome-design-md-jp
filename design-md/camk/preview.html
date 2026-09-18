@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 熊本市現代美術館（CAMK）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  /* ★実サイトと同じく html を 10px に落とす。以降の rem はすべて ×10 で読む。
+     1.45rem = 14.5px / 1.575rem = 15.75px。16px 基準で換算すると全部ずれる。 */
+  html { font-size: 10px; }
+
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は実サイトに 0 個（own = 0）。
+       以下は computed style と CSS 全文の実測値。2026-09-18 */
+    --green:      #5bb016;   /* ★CAMK グリーン。CSS 27 回 / 可視 35 要素 */
+    --green-85:   rgba(91, 176, 22, 0.85);  /* ブログの日付（可視 5 要素） */
+    --chip-dark:  #333333;   /* 「みどころ１」バッジの面（可視 3 要素） */
+    --black:      #000000;   /* ★見出し・本文。可視 449 / 112 要素 */
+    --white:      #ffffff;
+    --surface:    #eeeeee;   /* 検索欄の閉じるボタン */
+    --bg:         #ffffff;   /* pageBackground / viewportTopBySample 12/12 */
+
+    /* グレーは hex ではなく rgba(0,0,0,α) の 7 段階で作る */
+    --t-90: rgba(0, 0, 0, 0.90);  /* 一覧のタイトル行 */
+    --t-85: rgba(0, 0, 0, 0.85);  /* パンくず */
+    --t-80: rgba(0, 0, 0, 0.80);  /* ナビ */
+    --t-75: rgba(0, 0, 0, 0.75);  /* ページ内リンク */
+    --t-70: rgba(0, 0, 0, 0.70);  /* 作品キャプション */
+    --t-65: rgba(0, 0, 0, 0.65);  /* 説明文 */
+    --t-55: rgba(0, 0, 0, 0.55);  /* 会期 */
+    --t-50: rgba(0, 0, 0, 0.50);  /* 英語併記（可視 30 要素） */
+    --line: rgba(0, 0, 0, 0.12);  /* プレビュー用の罫（実サイトは罫線をほぼ使わない） */
+
+    /* === Fonts ===
+       和文は 2 段だけ。欧文を混ぜる箇所だけ Lato を先頭に足す。 */
+    --font-jp: "Noto Sans JP", sans-serif;
+    --font-en: Lato, "Noto Sans JP", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height === */
+    --lh-body:  2.00;   /* ★本文 15px / 30px（最多 75 要素） */
+    --lh-list:  1.60;   /* 一覧・説明（134 要素） */
+    --lh-nav:   1.80;   /* ヘッダーナビ（69 要素） */
+    --lh-mid:   1.40;
+    --lh-title: 1.20;   /* 32px の展覧会名 */
+    --lh-tight: 1.00;   /* 1 行で収めるラベル（185 要素） */
+
+    /* === Letter spacing ===
+       ★すべて rem 宣言。html 10px なので 0.01rem = 0.1px。em にも px にも読み替えない */
+    --ls:        0.01rem;   /* ★既定。可視 356 / 117 要素 */
+    --ls-nav:   -0.03rem;   /* ヘッダーナビ（37 要素） */
+    --ls-date:  -0.05rem;   /* 会期・日付（128 要素） */
+    --ls-year:   0.06rem;   /* 会期の年 */
+    --ls-latin:  0.08rem;   /* 英字ラベル */
+    --ls-menu:   0.10rem;   /* MENU */
+
+    --r:      0.4rem;   /* 4px。既定（可視 36 / 19 要素） */
+    --r-chip: 0.3rem;   /* 3px。みどころバッジ */
+    --r-bar:  0.2rem;   /* 2px。お知らせバー */
+    --r-full: 5rem;     /* 50px。丸ボタン */
+    --shadow: none;     /* ★実サイトの影は 0 種 */
+
+    --container: 129rem;  /* 1290px（CSS 全文で 3 回・最頻） */
+    --column:     70rem;  /* 700px（本文カラム） */
+    --column-m:   65.2rem;/* 652px */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--black);
+    font-family: var(--font-jp);
+    font-size: 1.6rem;              /* 16px。実サイトの body 既定 */
+    font-weight: 400;
+    line-height: 2;
+    letter-spacing: var(--ls);
+    /* font-feature-settings は実サイトで 0 要素。会期は letter-spacing で詰める */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid var(--line); }
+  .header-top { display: flex; align-items: center; gap: 2.4rem; max-width: var(--container); margin: 0 auto; padding: 2rem 2.8rem 1rem; }
+  .logo { font-size: 2.6rem; font-weight: 600; line-height: 1; letter-spacing: var(--ls-nav); }
+  .logo span { font-size: 1.5rem; font-weight: 400; letter-spacing: 0.3rem; margin-left: 1.2rem; }
+  .today { font-family: var(--font-en); font-size: 1.4rem; font-weight: 500; line-height: 1; letter-spacing: var(--ls); color: var(--green); }
+  .today .hours { font-size: 1.35rem; }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 1.6rem; }
+  .lang a { font-size: 1.4rem; line-height: 1.2; letter-spacing: var(--ls); text-decoration: none; color: var(--t-80); }
+  .lang a.current { color: var(--green); }
+  .menu-label { font-family: var(--font-en); font-size: 1.1rem; font-weight: 600; line-height: 1; letter-spacing: var(--ls-menu); }
+  .gnav { display: flex; gap: 2.6rem; max-width: var(--container); margin: 0 auto; padding: 0.6rem 2.8rem 1.8rem; flex-wrap: wrap; }
+  .gnav a { font-size: 1.45rem; font-weight: 400; line-height: var(--lh-nav); letter-spacing: var(--ls-nav); color: var(--black); text-decoration: none; }
+
+  /* BREADCRUMB */
+  .crumb { background: #f7f7f7; }
+  .crumb-inner { max-width: var(--container); margin: 0 auto; padding: 1rem 2.8rem; font-size: 1.35rem; line-height: 1.7; letter-spacing: var(--ls); color: var(--t-85); }
+
+  /* SECTIONS */
+  .section { max-width: var(--container); margin: 0 auto; padding: 6.4rem 2.8rem; }
+  .section-alt { background: #f7f7f7; }
+  .section-label { font-family: var(--font-mono); font-size: 1.2rem; color: #888; letter-spacing: normal; margin-bottom: 1.2rem; }
+  .eyebrow { font-size: 1.3rem; font-weight: 400; line-height: 1.4; letter-spacing: var(--ls); color: var(--green); }
+  .eyebrow .en { font-family: var(--font-en); letter-spacing: var(--ls-latin); margin-left: 0.8rem; color: var(--t-50); }
+  .h2 { font-size: 3.2rem; font-weight: 300; line-height: var(--lh-title); letter-spacing: var(--ls); margin: 1rem 0 2rem; }
+  .h3 { font-size: 2.8rem; font-weight: 300; line-height: var(--lh-list); letter-spacing: var(--ls); margin: 0 0 1.8rem; }
+  .lead { font-size: 1.575rem; line-height: var(--lh-body); letter-spacing: var(--ls); max-width: 86rem; margin-bottom: 2.6rem; }
+  .note { font-size: 1.45rem; line-height: var(--lh-body); letter-spacing: var(--ls); color: var(--t-70); max-width: 88rem; margin-top: 2rem; }
+  code { font-family: var(--font-mono); font-size: 1.2rem; background: #eee; padding: 0.1rem 0.5rem; letter-spacing: normal; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(21rem, 1fr)); gap: 1.4rem; }
+  .swatch { border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; background: var(--white); }
+  .swatch-chip { height: 7.6rem; }
+  .swatch-body { padding: 1.2rem 1.4rem; }
+  .swatch-name { font-size: 1.5rem; font-weight: 500; line-height: 1.4; letter-spacing: var(--ls); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 1.1rem; color: #888; margin-top: 0.4rem; letter-spacing: normal; }
+  .swatch-use { font-size: 1.3rem; line-height: 1.6; color: var(--t-65); margin-top: 0.7rem; letter-spacing: var(--ls); }
+  .alpha-row { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.8rem; }
+  .alpha-row div { padding: 1rem 1.4rem; border-radius: var(--r); background: #fff; border: 1px solid var(--line); font-family: var(--font-mono); font-size: 1.1rem; letter-spacing: normal; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 26rem 1fr; gap: 2.6rem; padding: 2.2rem 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 1.1rem; color: #888; line-height: 1.8; letter-spacing: normal; }
+  .type-meta b { display: block; font-family: var(--font-jp); font-size: 1.4rem; font-weight: 500; color: var(--black); letter-spacing: var(--ls); }
+  .scale-bar { display: flex; gap: 1rem; flex-wrap: wrap; align-items: baseline; margin-bottom: 2.6rem; }
+  .scale-bar span { background: #f1f1f1; padding: 0.9rem 1.5rem; line-height: 1; border-radius: var(--r); letter-spacing: var(--ls); }
+
+  /* REM TABLE */
+  .rem-table { width: 100%; border-collapse: collapse; font-size: 1.4rem; line-height: 1.8; letter-spacing: var(--ls); }
+  .rem-table th, .rem-table td { text-align: left; padding: 1rem 1.2rem; border-bottom: 1px solid var(--line); }
+  .rem-table th { font-weight: 500; color: var(--t-65); font-size: 1.3rem; }
+  .rem-table code { font-size: 1.25rem; }
+
+  /* LS DEMO */
+  .ls-demo { border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+  .ls-demo div { padding: 1.6rem 2rem; border-bottom: 1px solid var(--line); font-size: 1.8rem; line-height: 1.8; }
+  .ls-demo div:last-child { border-bottom: none; }
+  .ls-demo .tag { display: block; font-family: var(--font-mono); font-size: 1.1rem; color: #888; margin-bottom: 0.6rem; letter-spacing: normal; }
+
+  /* EXHIBITION LIST */
+  .exh-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(28rem, 1fr)); gap: 3rem; }
+  .exh .thumb { position: relative; aspect-ratio: 4 / 3; border-radius: var(--r); overflow: hidden;
+                background: linear-gradient(140deg,#e7dcdf 0%, #cdb7bd 55%, #a98d95 100%); }
+  .exh .ribbon { position: absolute; left: 0; top: 0; background: var(--green); color: var(--white);
+                 font-size: 1.5rem; line-height: 1; letter-spacing: var(--ls); padding: 0.6rem 1rem; border-radius: 0 0 var(--r) var(--r); }
+  .exh dt { font-size: 1.3rem; line-height: var(--lh-mid); letter-spacing: var(--ls); color: var(--green); margin-top: 1.4rem; }
+  .exh dd.title { font-size: 1.5rem; line-height: 1.4; letter-spacing: var(--ls); color: var(--t-90); margin-top: 0.6rem; }
+  .exh dd.date { font-family: var(--font-en); font-size: 2.4rem; font-weight: 600; line-height: 1; letter-spacing: var(--ls-date); color: var(--black); margin-top: 1rem; }
+  .exh dd.desc { font-size: 1.3rem; line-height: var(--lh-mid); letter-spacing: var(--ls); color: var(--t-65); margin-top: 0.8rem; }
+  .more { display: inline-block; margin-top: 1.2rem; font-size: 1.4rem; line-height: 1; letter-spacing: var(--ls); color: var(--green); text-decoration: none; }
+
+  /* NOTICE */
+  .notice { display: flex; align-items: center; gap: 1.6rem; max-width: var(--container); margin: 0 auto; }
+  .notice .bar { background: var(--green); color: var(--white); font-size: 1.8rem; font-weight: 500; line-height: 1; letter-spacing: var(--ls); padding: 0.8rem 1.5rem; border-radius: var(--r-bar); }
+  .notice .txt { font-size: 1.5rem; line-height: var(--lh-list); letter-spacing: var(--ls); }
+
+  /* ARTICLE */
+  .article { max-width: var(--column); }
+  .article .date { font-size: 1.5rem; font-weight: 500; line-height: 2; letter-spacing: var(--ls); color: var(--t-55); margin-bottom: 1.6rem; }
+  .article p { font-size: 1.5rem; line-height: var(--lh-body); letter-spacing: var(--ls); margin-bottom: 1.4em; }
+  .article .quote { font-size: 1.45rem; line-height: var(--lh-body); letter-spacing: var(--ls); background: #f4f4f4; border-radius: 0 var(--r) var(--r) 0; padding: 2rem 2.4rem; }
+  .point { margin-top: 3rem; }
+  .point .badge { display: inline-block; background: var(--chip-dark); color: var(--white); font-size: 1.2rem; font-weight: 500; line-height: 1; letter-spacing: var(--ls); padding: 0.8rem 1rem; border-radius: var(--r-chip); }
+  .point h4 { font-size: 2.1rem; font-weight: 500; line-height: var(--lh-list); letter-spacing: var(--ls); margin: 1.2rem 0 0.8rem; }
+  .caption { font-size: 1.3rem; line-height: var(--lh-list); letter-spacing: var(--ls); color: var(--t-70); margin-top: 0.8rem; }
+
+  /* COMPONENTS */
+  .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(28rem, 1fr)); gap: 2.6rem; }
+  .comp { border: 1px solid var(--line); border-radius: var(--r); padding: 2.4rem; background: var(--white); }
+  .comp h4 { font-size: 1.5rem; font-weight: 500; line-height: 1.6; letter-spacing: var(--ls); margin-bottom: 1.2rem; }
+  .comp .spec { font-family: var(--font-mono); font-size: 1.1rem; color: #888; line-height: 1.8; margin-top: 1.4rem; letter-spacing: normal; }
+  .btn-close { width: 4rem; height: 4rem; border-radius: var(--r-full); background: var(--surface); border: none; font-size: 1.6rem; cursor: pointer; }
+  .btn-arrow { width: 4.4rem; height: 4.4rem; border-radius: 50%; background: rgba(0,0,0,0.2); border: none; cursor: pointer; }
+  .card-link { display: block; border: 1px solid transparent; border-radius: 0; padding: 1rem 1rem 2rem; font-size: 1.5rem; line-height: var(--lh-list); letter-spacing: var(--ls); color: var(--black); text-decoration: none; background: #f7f7f7; }
+  .is-focus { outline: 2px solid var(--green); outline-offset: 3px; }
+
+  /* TOKENS */
+  .tokens { display: flex; gap: 1.4rem; flex-wrap: wrap; align-items: flex-end; }
+  .tokens div { text-align: center; font-family: var(--font-mono); font-size: 1.1rem; color: #888; letter-spacing: normal; }
+  .tokens .bar { background: var(--green); height: 2.6rem; margin-bottom: 0.7rem; border-radius: 0.2rem; }
+  .radius-row { display: flex; gap: 1.6rem; flex-wrap: wrap; margin-top: 1.6rem; }
+  .radius-row div { width: 9rem; height: 6rem; background: #e8f2e0; border: 1px solid var(--green); display: flex; align-items: center; justify-content: center;
+                    font-family: var(--font-mono); font-size: 1.1rem; color: #3f7a10; letter-spacing: normal; }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--line); padding: 5rem 2.8rem; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; display: flex; gap: 3rem; flex-wrap: wrap; align-items: center; }
+  .footer a { font-size: 1.45rem; line-height: var(--lh-nav); letter-spacing: var(--ls-nav); color: var(--black); text-decoration: none; }
+  .footer .copy { font-family: var(--font-en); font-size: 1.3rem; letter-spacing: var(--ls); color: var(--t-65); margin-left: auto; }
+
+  @media (max-width: 767px) {
+    .type-row { grid-template-columns: 1fr; gap: 1rem; }
+    .h2 { font-size: 2.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <div class="logo">CAMK<span>熊本市現代美術館</span></div>
+    <div class="today">2026年9月18日（金）　本日は開館日　<span class="hours">10:00 - 20:00</span></div>
+    <div class="header-right">
+      <div class="lang"><a href="#">English</a>　/　<a href="#" class="current">日本語</a></div>
+      <span class="menu-label">MENU</span>
+    </div>
+  </div>
+  <nav class="gnav">
+    <a href="#">来館案内</a><a href="#">展覧会</a><a href="#">イベントカレンダー</a><a href="#">アート・コミュニケーション</a>
+    <a href="#">団体・スクールプログラム</a><a href="#">アートワーク・コレクション</a><a href="#">美術館について</a>
+  </nav>
+</header>
+
+<div class="crumb"><div class="crumb-inner">ホーム　＞　展覧会　＞　プラカードのために</div></div>
+
+<section class="section">
+  <div class="section-label">01 / Root font-size</div>
+  <div class="eyebrow">Root<span class="en">10px</span></div>
+  <h2 class="h2">rem は ×10 で読む</h2>
+  <p class="lead">実サイトは <code>html { font-size: 10px }</code>。<b><code>1.45rem</code> は 23.2px ではなく 14.5px。</b>フォントサイズに <code>14.5px</code> <code>13.5px</code> <code>15.75px</code> といった半端な値が並ぶのはこのため。<b>16px 基準で換算すると設計が丸ごとずれる。</b></p>
+
+  <table class="rem-table">
+    <tr><th>宣言</th><th>実測（px）</th><th>役割</th></tr>
+    <tr><td><code>3.2rem</code></td><td>32px</td><td>展覧会名（weight 300）</td></tr>
+    <tr><td><code>2.8rem</code></td><td>28px</td><td>セクション見出し（weight 300）</td></tr>
+    <tr><td><code>2.4rem</code></td><td>24px</td><td>会期（Lato / weight 600）</td></tr>
+    <tr><td><code>1.575rem</code></td><td><b>15.75px</b></td><td>リード文</td></tr>
+    <tr><td><code>1.5rem</code></td><td>15px</td><td>★本文</td></tr>
+    <tr><td><code>1.45rem</code></td><td><b>14.5px</b></td><td>ヘッダーナビ・引用</td></tr>
+    <tr><td><code>1.35rem</code></td><td><b>13.5px</b></td><td>パンくず</td></tr>
+    <tr><td><code>1.3rem</code></td><td>13px</td><td>カテゴリ見出し・キャプション</td></tr>
+    <tr><td><code>1.1rem</code></td><td>11px</td><td>MENU（Lato / weight 600）</td></tr>
+  </table>
+</section>
+
+<section class="section-alt">
+<div class="section">
+  <div class="section-label">02 / Colors</div>
+  <div class="eyebrow">Color Palette<span class="en">Green &amp; Alpha Black</span></div>
+  <h2 class="h2">アクセントは緑 1 色。グレーは作らない</h2>
+  <p class="lead">色を使うのは <b>#5bb016</b> だけ（CSS 全文で 27 回 / 可視 35 要素）。<b>グレーは hex を増やさず <code>rgba(0,0,0,α)</code> の 7 段階で作る。</b></p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#5bb016"></div><div class="swatch-body"><div class="swatch-name">CAMK Green</div><div class="swatch-hex">#5bb016</div><div class="swatch-use">★CSS 27 回 / 可視 35 要素。開館情報・カテゴリ見出し・詳しく見る・お知らせ帯</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Dark Chip</div><div class="swatch-hex">#333333</div><div class="swatch-use">「みどころ１」バッジの面（可視 3 要素）。緑を使わない唯一のバッジ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Black</div><div class="swatch-hex">#000000</div><div class="swatch-use">★見出し・本文。可視 449 / 112 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#eeeeee"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#eeeeee</div><div class="swatch-use">検索欄の丸い閉じるボタン</div></div></div>
+  </div>
+
+  <div class="alpha-row">
+    <div style="color:rgba(0,0,0,.90)">rgba(0,0,0,.90) タイトル行</div>
+    <div style="color:rgba(0,0,0,.85)">rgba(0,0,0,.85) パンくず</div>
+    <div style="color:rgba(0,0,0,.80)">rgba(0,0,0,.80) ナビ</div>
+    <div style="color:rgba(0,0,0,.75)">rgba(0,0,0,.75) ページ内リンク</div>
+    <div style="color:rgba(0,0,0,.70)">rgba(0,0,0,.70) キャプション</div>
+    <div style="color:rgba(0,0,0,.65)">rgba(0,0,0,.65) 説明文</div>
+    <div style="color:rgba(0,0,0,.55)">rgba(0,0,0,.55) 会期</div>
+    <div style="color:rgba(0,0,0,.50)">rgba(0,0,0,.50) 英語併記（30 要素）</div>
+  </div>
+
+  <p class="note"><b>グレーの hex（<code>#666666</code> <code>#999999</code>）を足さないこと。</b>この設計だと写真の上でも紙の上でも同じ比率で沈むので、面色が変わっても調整が要らない。</p>
+</div>
+</section>
+
+<section class="section">
+  <div class="section-label">03 / Typography</div>
+  <div class="eyebrow">Typography<span class="en">Noto Sans JP &amp; Lato</span></div>
+  <h2 class="h2">大見出しは weight 300。700 は使わない</h2>
+  <p class="lead">和文は <b>Noto Sans JP</b> 1 本（可視 399 / 141 要素）、日付と英字だけ <b>Lato</b> を先頭に足す（164 / 13 要素）。<b>ウェイトの最大は 600。</b>見出しを太くするのではなく、大きく細くして静かにする。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:1.1rem">11</span><span style="font-size:1.2rem">12</span><span style="font-size:1.3rem">13</span>
+    <span style="font-size:1.35rem">13.5</span><span style="font-size:1.45rem">14.5</span><span style="font-size:1.5rem">15</span>
+    <span style="font-size:1.575rem">15.75</span><span style="font-size:1.8rem">18</span><span style="font-size:2.1rem">21</span>
+    <span style="font-size:2.4rem;font-family:var(--font-en);font-weight:600">24</span>
+    <span style="font-size:2.8rem;font-weight:300">28</span><span style="font-size:3.2rem;font-weight:300">32</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Page Title ★</b>Noto Sans JP / 3.2rem(32px) / <b style="display:inline">300</b><br>lh 1.20 / ls 0.01rem</div><div style="font-size:3.2rem;font-weight:300;line-height:1.20">プラカードのために</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Heading</b>2.8rem(28px) / 300<br>lh 1.60 / ls 0.01rem</div><div style="font-size:2.8rem;font-weight:300;line-height:1.60">展覧会のみどころ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Event Date ★</b>Lato / 2.4rem(24px) / 600<br>lh 1.00 / <b style="display:inline">ls -0.05rem</b></div><div style="font-family:var(--font-en);font-size:2.4rem;font-weight:600;line-height:1;letter-spacing:-0.05rem">2026.9.19（土）〜 11.29（日）</div></div>
+  <div class="type-row"><div class="type-meta"><b>Sub Heading</b>2.1rem(21px) / 500<br>lh 1.60</div><div style="font-size:2.1rem;font-weight:500;line-height:1.60">時を超える声と実践</div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Title</b>2.0rem(20px) / 300<br>lh 1.30 / color rgba(0,0,0,.9)</div><div style="font-size:2rem;font-weight:300;line-height:1.30;color:rgba(0,0,0,.9)">CAMKスクリーニング Vol.4</div></div>
+  <div class="type-row"><div class="type-meta"><b>Article Body ★</b>1.5rem(15px) / 400<br>lh <b style="display:inline">2.00</b> / ls 0.01rem</div><div style="font-size:1.5rem;line-height:2.00">「プラカードの為に」で言及される《プラカード》と、その後の制作を並べて展示します。美術家・田部光子を軸に、現在も制作を続ける作家たちの仕事を紹介する展覧会です。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Global Nav ★</b>1.45rem(14.5px) / 400<br>lh 1.80 / <b style="display:inline">ls -0.03rem</b></div><div style="font-size:1.45rem;line-height:1.80;letter-spacing:-0.03rem">アートワーク・コレクション</div></div>
+  <div class="type-row"><div class="type-meta"><b>Today Bar</b>Lato / 1.4rem(14px) / 500<br>lh 1.00 / color #5bb016</div><div style="font-family:var(--font-en);font-size:1.4rem;font-weight:500;line-height:1;color:#5bb016">2026年9月18日（金）　本日は開館日　10:00 - 20:00</div></div>
+  <div class="type-row"><div class="type-meta"><b>Category Label</b>1.3rem(13px) / 400<br>lh 1.40 / color #5bb016</div><div style="font-size:1.3rem;line-height:1.40;color:#5bb016">ギャラリーⅠ・Ⅱ 開催予定の展覧会</div></div>
+  <div class="type-row"><div class="type-meta"><b>Menu Label</b>Lato / 1.1rem(11px) / 600<br>lh 1.00 / <b style="display:inline">ls 0.1rem</b></div><div style="font-family:var(--font-en);font-size:1.1rem;font-weight:600;line-height:1;letter-spacing:0.1rem">MENU</div></div>
+
+  <div class="section-label" style="margin-top:4.4rem">03-b / Letter spacing</div>
+  <h3 class="h3">既定は「詰めない」ではなく「0.01rem 空ける」</h3>
+  <div class="ls-demo">
+    <div><span class="tag">既定 — 0.01rem（0.1px）／可視 356 要素</span><span style="letter-spacing:0.01rem">熊本市現代美術館のコレクションと企画展示</span></div>
+    <div><span class="tag">ヘッダーナビ — -0.03rem（-0.3px）／37 要素</span><span style="letter-spacing:-0.03rem">熊本市現代美術館のコレクションと企画展示</span></div>
+    <div><span class="tag">会期・日付 — -0.05rem（-0.5px）／128 要素</span><span style="letter-spacing:-0.05rem">熊本市現代美術館のコレクションと企画展示</span></div>
+    <div><span class="tag">英字ラベル — 0.08rem（0.8px）</span><span style="font-family:var(--font-en);letter-spacing:0.08rem">Contemporary Art Museum, Kumamoto</span></div>
+  </div>
+  <p class="note"><b>字間は <code>rem</code> のまま書く。</b><code>html</code> が 10px なので <code>0.01rem = 0.1px</code>。em にも px にも読み替えない。<b>詰めるのはナビと日付だけで、本文は詰めない。</b></p>
+  <p class="note"><b><code>font-feature-settings: "palt"</code> は 1 要素も使っていない</b>（CSS 全文でも 0 回）。括弧の多い会期表記（<code>2026.9.19（土）</code>）は <code>letter-spacing: -0.05rem</code> で詰めている。<b>同じ場所に palt を重ねない。</b></p>
+</section>
+
+<section class="section-alt">
+<div class="section">
+  <div class="section-label">04 / Exhibition List</div>
+  <div class="eyebrow">Exhibition<span class="en">Definition list</span></div>
+  <h2 class="h2">カテゴリ（緑）／タイトル／会期／説明</h2>
+
+  <div class="exh-grid">
+    <div class="exh">
+      <div class="thumb"><span class="ribbon">開催中／入場無料</span></div>
+      <dl>
+        <dt>ギャラリーⅠ・Ⅱ 開催予定の展覧会</dt>
+        <dd class="title">プラカードのために</dd>
+        <dd class="date">2026.9.19（土）〜 11.29（日）</dd>
+        <dd class="desc">2024年に死去した美術家・田部光子を軸に、九州の戦後美術を問い直す。</dd>
+      </dl>
+      <a href="#" class="more">― 詳しく見る →</a>
+    </div>
+    <div class="exh">
+      <div class="thumb" style="background:linear-gradient(140deg,#dfe6dc,#b6c6ae 60%,#8ea482)"><span class="ribbon">開催予定</span></div>
+      <dl>
+        <dt>井手宣通記念ギャラリー</dt>
+        <dd class="title">文化的処方</dd>
+        <dd class="date">2026.8.5（水）〜 10.31（土）</dd>
+        <dd class="desc">地域に根ざしたアート・文化で、心身ともに健やかな暮らしを考える。</dd>
+      </dl>
+      <a href="#" class="more">― 詳しく見る →</a>
+    </div>
+    <div class="exh">
+      <div class="thumb" style="background:linear-gradient(140deg,#e2dfe8,#bdb6cd 60%,#938aa8)"></div>
+      <dl>
+        <dt>天井照明のアートワーク</dt>
+        <dd class="title">MILK RUN SKY 2002</dd>
+        <dd class="date">常設</dd>
+        <dd class="desc">毎夜19:30〜15分間、光の色が変化します。</dd>
+      </dl>
+      <a href="#" class="more">― 詳しく見る →</a>
+    </div>
+  </div>
+
+  <p class="note"><b>カードに影も枠線も付けない。</b>実サイトの <code>box-shadow</code> は <b>0 種</b>。階層は文字の不透明度（緑 → <code>rgba(0,0,0,.9)</code> → <code>.65</code>）で作る。</p>
+</div>
+</section>
+
+<section class="section">
+  <div class="section-label">05 / Article</div>
+  <div class="eyebrow">Exhibition Detail<span class="en">Body 1.5rem / 2.00</span></div>
+  <h2 class="h2">プラカードのために</h2>
+  <div class="article">
+    <p class="date">2026.9.19（土）〜 11.29（日）</p>
+    <p>美術家・田部光子（1933-2024）は、1961年に《プラカード》を発表した。本展覧会では、物故作家の田部に加え、近年特に注目される作家たちの仕事を並べて展示する。</p>
+    <p class="quote">一流労組のカンパニヤの為のプラカードは何故こうも美しくないのか。<br>―田部光子「プラカードの為に」『九州派』より</p>
+
+    <div class="point">
+      <span class="badge">みどころ１</span>
+      <h4>時を超える声と実践</h4>
+      <p>「プラカードの為に」で言及される《プラカード》と、その後の制作を並べて見ることで、60年を隔てた二つの時間が重なる。</p>
+      <p class="caption">田部光子《プラカード》1961年、東京都現代美術館蔵</p>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt">
+<div class="section">
+  <div class="section-label">06 / Components</div>
+  <div class="eyebrow">Components<span class="en">Radius 4px</span></div>
+  <h2 class="h2">角丸は 4px が既定</h2>
+
+  <div class="notice" style="margin-bottom:3rem">
+    <span class="bar">お知らせ</span>
+    <span class="txt">アートロフト等のLED移行工事に伴う利用中止期間について</span>
+  </div>
+
+  <div class="comp-grid">
+    <div class="comp">
+      <h4>Notice Bar</h4>
+      <span class="bar" style="background:var(--green);color:#fff;font-size:1.8rem;font-weight:500;line-height:1;padding:0.8rem 1.5rem;border-radius:var(--r-bar);display:inline-block">お知らせ</span>
+      <div class="spec">bg #5bb016 / color #fff<br>padding 8px 15px / radius 2px<br>18px / weight 500 / lh 1.00</div>
+    </div>
+    <div class="comp">
+      <h4>Status Ribbon</h4>
+      <span style="background:var(--green);color:#fff;font-size:1.5rem;line-height:1;padding:0.6rem 1rem;border-radius:0 0 var(--r) var(--r);display:inline-block">開催中／入場無料</span>
+      <div class="spec">bg #5bb016 / color #fff<br>padding 6px 10px<br>radius 0 0 4px 4px（画像の下端に貼る）</div>
+    </div>
+    <div class="comp">
+      <h4>Point Badge</h4>
+      <span class="badge" style="display:inline-block;background:var(--chip-dark);color:#fff;font-size:1.2rem;font-weight:500;line-height:1;padding:0.8rem 1rem;border-radius:var(--r-chip)">みどころ１</span>
+      <div class="spec">bg #333333 / color #fff<br>padding 8px 10px / radius 3px<br>12px / weight 500</div>
+    </div>
+    <div class="comp">
+      <h4>Card Link</h4>
+      <a href="#" class="card-link">開催予定 ／ ギャラリーⅠ・Ⅱ</a>
+      <div class="spec">border 1px solid transparent<br>padding 10px 10px 20px / radius 0<br>枠は持つが透明（ホバーで出す）</div>
+    </div>
+    <div class="comp">
+      <h4>Close Button</h4>
+      <button class="btn-close">×</button>
+      <div class="spec">bg #eeeeee / radius 50px<br>16px / ls 0.01rem</div>
+    </div>
+    <div class="comp">
+      <h4>Carousel Arrow</h4>
+      <button class="btn-arrow" aria-label="次へ"></button>
+      <div class="spec">bg rgba(0,0,0,.2) / radius 50%<br>padding 12px 14px</div>
+    </div>
+    <div class="comp">
+      <h4>Focus（キーボード操作）</h4>
+      <a href="#" class="more is-focus">― 詳しく見る →</a>
+      <div class="spec">outline 2px solid #5bb016 / offset 3px</div>
+    </div>
+    <div class="comp">
+      <h4>Radius Scale</h4>
+      <div class="radius-row">
+        <div style="border-radius:2px">2px</div>
+        <div style="border-radius:3px">3px</div>
+        <div style="border-radius:4px">4px ★</div>
+      </div>
+      <div class="spec">既定は 4px（可視 36 / 19 要素）</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="section">
+  <div class="section-label">07 / Layout &amp; Depth</div>
+  <div class="eyebrow">Layout<span class="en">1290px / mobile first</span></div>
+  <h2 class="h2">余白・コンテナ・ブレークポイント</h2>
+  <div class="tokens">
+    <div><div class="bar" style="width:6px"></div>6</div>
+    <div><div class="bar" style="width:10px"></div>10</div>
+    <div><div class="bar" style="width:15px"></div>15</div>
+    <div><div class="bar" style="width:20px"></div>20</div>
+    <div><div class="bar" style="width:40px"></div>40</div>
+  </div>
+  <p class="note"><b>コンテナは 1290px</b>（CSS 全文で 3 回・最頻）。本文カラム 700px、中カラム 652px、狭カラム 528px。</p>
+  <p class="note"><b>ブレークポイントはモバイルファーストの <code>min-width</code>。</b>400 / 541 / 600 / <b>768</b> / <b>960</b> / 1024 / 1100 / <b>1280</b> / 1440px。<code>max-width</code> で書かない。</p>
+  <p class="note"><b>影は 0 種。</b>階層は文字の不透明度と「緑か黒か」で作る。<b>カードに <code>box-shadow</code> を足さないこと。</b></p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <a href="#">来館案内</a><a href="#">展覧会</a><a href="#">イベントカレンダー</a><a href="#">アート・コミュニケーション</a><a href="#">美術館について</a>
+    <span class="copy">Contemporary Art Museum, Kumamoto</span>
+  </div>
+</footer>
+
+</body>
+</html>
