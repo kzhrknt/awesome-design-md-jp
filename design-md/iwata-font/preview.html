@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 株式会社イワタ（IWATA）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       自社トークンは 69 個あるが、トップページで実際に描画される色は 11 個だけ。
+       以下は実測値（2026-09-20）。括弧内は実サイトの変数名。 */
+    --navy:        #123480;   /* ★ブランド紺（--color-blue01）。面色 8 要素 */
+    --orange:      #e29d4e;   /* アクセント（--color-orange01）。面色 2 要素 */
+    --green:       #529a77;   /* アクセント（--color-green03）。面色 1 要素 */
+    --ink:         #192030;   /* ★見出し・ナビ（--primaryText_black）。文字 59 要素 */
+    --body:        #333333;   /* 本文（--color-black01）。font-list では 4,640 要素 */
+    --white:       #ffffff;
+    --muted:       #c8c8c8;   /* フッターのリンク（--color-gray11）。10 要素 */
+    --date:        #949494;   /* 日付（--color-gray08）。4 要素 */
+    --surface:     #f4f5f6;   /* カードの面（--color-gray02）。10 要素 */
+    --surface-tbl: #f5f5f5;   /* 表ヘッダ（--color-gray09）。12 要素 */
+    --tag:         #efefef;   /* ★タグの面。どの --color-gray* とも一致しない直書き */
+    --dark:        #161f32;   /* 100周年カード（--color-black09） */
+    --dark2:       #383838;   /* フォント一覧カード（--color-black10） */
+    --bg:          #ffffff;   /* pageBackground.resolved / 根拠 html */
+
+    /* === Fonts ===
+       実サイトは自社配信の「イワタ細ゴシック体オールド_04」「イワタ中ゴシック体オールド_04」。
+       自社ドメイン配信のためローカルでは表示できず、Zen Kaku Gothic New で代替する。
+       実サイトは和文 1 本 + sans-serif だけで、OS フォントをチェーンに並べない。 */
+    --font-base:   "イワタ細ゴシック体オールド_04", "Zen Kaku Gothic New", sans-serif;
+    --font-medium: "イワタ中ゴシック体オールド_04", "Zen Kaku Gothic New", sans-serif;
+    --font-hero:   "WebTopSans Regular", "Zen Kaku Gothic New", sans-serif;  /* ヒーローのコピー専用 */
+    --font-mono:   SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: 本文 1.6 / 導入文 2.2 / セクション見出し 1.0 ===
+       --leading-tight (1.25) と --leading-loose (2) は宣言だけで実装 0 要素。
+       逆に 1.85 / 1.40 / 2.20 はトークンに無いが実装にある。 */
+    --lh-normal:  1.6;    /* ★既定。実測 46 要素で最多（--leading-normal） */
+    --lh-nav:     1.85;   /* ナビ・フッター（12 要素・トークン外） */
+    --lh-ui:      1.5;    /* UI ラベル（12 要素・--leading-snug） */
+    --lh-card:    1.75;   /* カード本文（8 要素・--leading-relaxed02） */
+    --lh-lead:    2.2;    /* 導入文（2 要素・トークン外） */
+    --lh-head:    1.0;    /* セクション見出し（7 要素） */
+    --lh-hero:    1.4;    /* ヒーロー（2 要素・トークン外） */
+
+    /* === Letter spacing: normal が 103/104 要素 ===
+       --tracking-tight (0.02em) は実装 0 要素。--tracking-normal (0.04em) も CTA の 1 要素だけ。 */
+    --ls:     normal;
+    --ls-cta: 0.04em;   /* 14px で 0.56px。サイト唯一の字間 */
+
+    /* === Radius: --rounded-full は calc(infinity*1px) 宣言だが実装は 48px / 100px === */
+    --r-badge: 4px;     /* ヒーローのバッジ（--rounded-sm） */
+    --r-card:  16px;    /* ★カード（--rounded-xl）。23 要素 */
+    --r-pill-s:24px;    /* ★小さいピル（--rounded-xxl）。27 要素で最多 */
+    --r-pill:  48px;    /* 主 CTA。トークン外の直書き */
+    --r-tag:   100px;   /* タグ。トークン外の直書き */
+
+    /* === Elevation: box-shadow の実測 0 種。影を一切使わない === */
+
+    --container: 1284px;   /* 実測 5 要素で最多。--innerWidth は 1228px 宣言だが 1 要素のみ */
+    --card:      384px;    /* カード 1 枚の実測幅 */
+    --gutter:    16px;     /* --innerPadingInline（綴りは実サイトのまま） */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--body);
+    font-family: var(--font-base);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: var(--lh-normal);
+    letter-spacing: var(--ls);
+    /* font-feature-settings は実サイトで 0 要素。palt を足さない。 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid #e7e7e7; }
+  .header-inner { display: flex; align-items: center; max-width: var(--container); margin: 0 auto; padding: 18px var(--gutter); gap: 28px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--navy); }
+  .logo-mark { width: 30px; height: 30px; background: var(--navy); color: var(--white); border-radius: var(--r-badge); display: flex; align-items: center; justify-content: center; font-family: var(--font-medium); font-size: 15px; font-weight: 700; }
+  .logo-text { font-family: var(--font-medium); font-size: 22px; font-weight: 700; color: var(--ink); }
+  .header-nav { display: flex; gap: 26px; margin-left: auto; align-items: center; }
+  .header-nav a { font-size: 14px; font-weight: 700; line-height: var(--lh-nav); color: var(--ink); text-decoration: none; }
+  .header-nav a.btn-primary { color: var(--white); }
+
+  /* SECTIONS */
+  .section { max-width: var(--container); margin: 0 auto; padding: 72px var(--gutter); }
+  .section-alt { background: var(--surface); }
+  .section-alt .section-inner { max-width: var(--container); margin: 0 auto; padding: 72px var(--gutter); }
+  .section-label { font-family: var(--font-mono); font-size: 11px; color: var(--date); letter-spacing: .08em; }
+  .eyebrow { font-family: var(--font-medium); font-size: 14px; font-weight: 500; color: var(--navy); margin-top: 10px; }
+  .section-title { font-size: 46px; font-weight: 700; line-height: var(--lh-head); color: var(--ink); margin-top: 14px; }
+  .section-lead { font-size: 18px; font-weight: 500; line-height: var(--lh-lead); color: var(--body); margin-top: 22px; max-width: 860px; }
+  .note { font-size: 14px; line-height: var(--lh-card); color: var(--body); background: var(--surface); border-radius: var(--r-card); padding: 20px 24px; margin-top: 26px; }
+  .section-alt .note { background: var(--white); }
+  code { font-family: var(--font-mono); font-size: .9em; background: rgba(18,52,128,.07); padding: 1px 5px; border-radius: var(--r-badge); }
+
+  /* HERO */
+  .hero { background: var(--bg); padding: 76px var(--gutter) 60px; }
+  .hero-inner { max-width: var(--container); margin: 0 auto; }
+  .hero-copy { font-family: var(--font-hero); font-size: 72px; font-weight: 400; line-height: var(--lh-hero); color: var(--ink); }
+  .hero-copy .u { border-bottom: 2px solid var(--ink); }
+  .hero-badges { display: flex; gap: 10px; margin-top: 30px; }
+  .hero-badge { background: var(--white); color: var(--ink); border: 1px solid #ddd; border-radius: var(--r-badge); padding: 8px; font-size: 20px; font-weight: 700; line-height: var(--lh-head); }
+  .hero-en { font-size: 12px; font-weight: 500; line-height: 1.6; color: var(--body); margin-top: 26px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 34px; }
+  .swatch { border-radius: var(--r-card); overflow: hidden; background: var(--white); border: 1px solid #e7e7e7; }
+  .swatch-chip { height: 74px; }
+  .swatch-body { padding: 14px 16px 18px; }
+  .swatch-name { font-family: var(--font-medium); font-size: 14px; font-weight: 500; line-height: var(--lh-ui); color: var(--ink); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 12px; color: var(--body); margin-top: 4px; }
+  .swatch-use { font-size: 12px; line-height: 1.6; color: var(--date); margin-top: 8px; }
+
+  /* TYPE */
+  .scale-bar { display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap; margin-top: 30px; color: var(--ink); }
+  .type-row { display: grid; grid-template-columns: 230px 1fr; gap: 26px; padding: 22px 0; border-top: 1px solid #e7e7e7; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; line-height: 1.7; color: var(--date); }
+  .type-meta b { display: block; font-family: var(--font-medium); font-size: 13px; color: var(--ink); margin-bottom: 5px; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 30px; }
+  .btn { display: inline-block; text-decoration: none; text-align: center; cursor: pointer; font-family: var(--font-medium); }
+  .btn-primary { background: var(--navy); color: var(--white); border: 1px solid var(--navy); border-radius: var(--r-pill); padding: 16px 32px; font-size: 14px; font-weight: 700; line-height: var(--lh-normal); letter-spacing: var(--ls-cta); }
+  .btn-wide { background: var(--navy); color: var(--white); border: 1px solid var(--navy); border-radius: var(--r-pill); padding: 24px 64px; font-size: 16px; font-weight: 500; line-height: var(--lh-normal); }
+  .btn-accent { background: var(--orange); color: var(--white); border: 1px solid var(--orange); border-radius: var(--r-pill); padding: 24px 28px; font-size: 19.2px; font-weight: 500; line-height: var(--lh-normal); }
+  .btn-small { background: var(--navy); color: var(--white); border: none; border-radius: var(--r-pill-s); padding: 13px 28px; font-size: 14px; font-weight: 700; line-height: var(--lh-normal); }
+  .tag { display: inline-block; background: var(--tag); color: var(--ink); border-radius: var(--r-tag); padding: 4px 16px; font-family: var(--font-medium); font-size: 14px; font-weight: 500; line-height: var(--lh-normal); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 38px; margin-top: 34px; }
+  .card { background: var(--surface); border-radius: var(--r-card); padding: 48px 30px 30px; text-decoration: none; color: var(--body); display: block; }
+  .card-title { font-size: 20px; font-weight: 500; line-height: var(--lh-normal); color: var(--ink); }
+  .card-text { font-size: 16px; line-height: var(--lh-card); margin-top: 12px; }
+  .cta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 38px; margin-top: 38px; }
+  /* 実サイトの実測 padding は 44px 64px。このプレビューは 3 列に収めるため左右を 36px に詰めてある */
+  .cta { border-radius: var(--r-card); padding: 44px 36px; color: var(--white); }
+  .cta.navy { background: var(--navy); }
+  .cta.green { background: var(--green); }
+  .cta.orange { background: var(--orange); }
+  .cta-title { font-size: 32px; font-weight: 700; line-height: var(--lh-ui); }
+  .cta-text { font-size: 16px; line-height: var(--lh-card); margin-top: 12px; }
+  .plain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 30px; }
+  .plain { background: var(--white); border-radius: var(--r-card); padding: 40px 26px; }
+  .section-alt .plain { border: 1px solid #e7e7e7; }
+  .plain-title { font-size: 24px; font-weight: 700; line-height: var(--lh-card); color: var(--ink); }
+
+  /* NEWS */
+  .news { border-top: 1px solid #e7e7e7; margin-top: 30px; }
+  .news-item { display: flex; gap: 22px; align-items: center; padding: 20px 0; border-bottom: 1px solid #e7e7e7; }
+  .news-date { font-size: 14px; line-height: 1.71; color: var(--date); font-family: var(--font-mono); white-space: nowrap; }
+  .news-title { font-size: 16px; font-weight: 400; line-height: var(--lh-normal); color: var(--body); }
+
+  /* TABLE（font-list の書体見本） */
+  .table { width: 100%; border-collapse: collapse; margin-top: 30px; font-size: 12px; line-height: 1.6; }
+  .table th { background: var(--surface-tbl); color: var(--ink); font-family: var(--font-medium); font-weight: 500; text-align: left; padding: 10px 14px; border-bottom: 1px solid #ddd; }
+  .table td { color: var(--body); padding: 10px 14px; border-bottom: 1px solid #e7e7e7; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 30px; }
+  .field label { display: block; font-family: var(--font-medium); font-size: 14px; font-weight: 500; line-height: var(--lh-ui); color: var(--ink); margin-bottom: 8px; }
+  .field input, .field select {
+    width: 100%; background: var(--white); color: var(--body);
+    border: 1px solid #d6d6d6; border-radius: var(--r-pill-s);
+    padding: 13px 20px; font-size: 16px; line-height: var(--lh-normal);
+    font-family: var(--font-base);
+  }
+  .field.is-focus input { outline: 2px solid var(--navy); border-color: var(--navy); }
+  .field.is-error input { outline: 2px solid #c0392b; border-color: #c0392b; }
+  .field-msg { font-size: 12px; line-height: 1.6; color: var(--date); margin-top: 7px; }
+  .field.is-error .field-msg { color: #c0392b; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-top: 30px; }
+  .elev { background: var(--white); border: 1px solid #e7e7e7; border-radius: var(--r-card); padding: 28px; text-align: center; }
+  .elev-name { font-family: var(--font-medium); font-size: 16px; font-weight: 500; line-height: var(--lh-ui); color: var(--ink); }
+  .elev-val { font-family: var(--font-mono); font-size: 11px; line-height: 1.7; color: var(--date); margin-top: 8px; }
+
+  /* LAYOUT */
+  .layout-demo { display: flex; flex-direction: column; gap: 10px; align-items: center; margin-top: 30px; }
+  .layout-bar { background: var(--surface); border-radius: var(--r-badge); height: 38px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; color: #555; }
+  .section-alt .layout-bar { background: var(--white); }
+  .radius-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 34px; justify-content: center; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 112px; height: 72px; background: var(--surface); border: 1px solid #ddd; }
+  .section-alt .radius-box { background: var(--white); }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; line-height: 1.6; color: var(--date); margin-top: 7px; }
+
+  /* FOOTER */
+  .footer { background: var(--navy); color: var(--white); padding: 56px var(--gutter); }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-head { font-family: var(--font-medium); font-size: 26px; font-weight: 700; line-height: var(--lh-ui); }
+  .footer-cols { display: flex; gap: 56px; margin-top: 26px; flex-wrap: wrap; }
+  .footer-col-title { font-family: var(--font-medium); font-size: 16px; font-weight: 500; line-height: var(--lh-ui); }
+  .footer-col a { display: block; font-size: 14px; font-weight: 700; line-height: var(--lh-nav); color: var(--muted); text-decoration: none; }
+  .footer-copy { font-size: 12px; line-height: 1.7; color: var(--muted); margin-top: 34px; }
+
+  @media (max-width: 991px) {
+    .section, .section-alt .section-inner { padding: 48px var(--gutter); }
+    .section-title { font-size: 28px; }
+    .hero-copy { font-size: 36px; }
+    .type-row { grid-template-columns: 1fr; gap: 10px; }
+    .header-nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo"><span class="logo-mark">イ</span><span class="logo-text">イワタ</span></a>
+    <nav class="header-nav">
+      <a href="#">フォント一覧</a><a href="#">サービス</a><a href="#">活用事例</a><a href="#">サポート</a><a href="#">会社情報</a>
+      <a href="#" class="btn btn-primary">お問い合わせ</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <p class="hero-copy"><span class="u">楽しくつくる、</span><br>だから<span class="u">愛される。</span></p>
+    <div class="hero-badges">
+      <span class="hero-badge">100年超えベンチャー</span>
+      <span class="hero-badge">イワタの伝統と情熱</span>
+    </div>
+    <p class="hero-en">Made with joy.<br>Loved with heart.</p>
+  </div>
+</div>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="eyebrow">Color Palette</div>
+  <h2 class="section-title">紺を軸に、導線の種類で3色</h2>
+  <p class="section-lead">面色を持つ CTA は <b>紺 #123480 / オレンジ #e29d4e / 緑 #529a77</b> の3色。危険・成功といった状態ではなく、<b>行き先の種類</b>で色を分ける。色トークンは 37 個あるが、トップページで実際に描画されるのは 11 色だけ。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#123480"></div><div class="swatch-body"><div class="swatch-name">Iwata Navy</div><div class="swatch-hex">#123480</div><div class="swatch-use">★面色 8 要素（--color-blue01）。CTA・フッター</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e29d4e"></div><div class="swatch-body"><div class="swatch-name">Accent Orange</div><div class="swatch-hex">#e29d4e</div><div class="swatch-use">面色 2 要素（--color-orange01）。フォント一覧・カタログ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#529a77"></div><div class="swatch-body"><div class="swatch-name">Accent Green</div><div class="swatch-hex">#529a77</div><div class="swatch-use">面色 1 要素（--color-green03）。ライセンス情報</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#192030"></div><div class="swatch-body"><div class="swatch-name">Ink Navy</div><div class="swatch-hex">#192030</div><div class="swatch-use">★見出し・ナビ 59 要素（--primaryText_black）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Body</div><div class="swatch-hex">#333333</div><div class="swatch-use">本文（--color-black01）。font-list では 4,640 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f4f5f6"></div><div class="swatch-body"><div class="swatch-name">Surface Card</div><div class="swatch-hex">#f4f5f6</div><div class="swatch-use">カードの面 10 要素（--color-gray02）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#efefef"></div><div class="swatch-body"><div class="swatch-name">Tag Fill</div><div class="swatch-hex">#efefef</div><div class="swatch-use">★タグの面。どの --color-gray* とも一致しない直書き</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#c8c8c8"></div><div class="swatch-body"><div class="swatch-name">Muted</div><div class="swatch-hex">#c8c8c8</div><div class="swatch-use">フッターのリンク 10 要素（--color-gray11）</div></div></div>
+  </div>
+
+  <p class="note"><b>宣言 ≠ 実装。</b><code>--color-green01</code>(#639e81) / <code>--color-green02</code>(#478566) / <code>--color-brown01〜03</code> / <code>--color-pink01</code> / <code>--color-blue02〜04</code> は<b>いずれも可視 0 要素</b>。逆にタグの面 <code>#efefef</code> はトークンに無い直書き。<b>変数一覧をそのままパレットとして採用しないこと。</b></p>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <div class="eyebrow">Typography</div>
+  <h2 class="section-title">自社書体2本だけで組む</h2>
+  <p class="section-lead">和文は <b>イワタ細ゴシック体オールド_04</b>（72/104 要素）と <b>イワタ中ゴシック体オールド_04</b>（28 要素）の2本。Noto Sans JP も游ゴシックもヒラギノもチェーンに並べない。<b>太さは <code>font-weight</code> ではなく書体名で切り替える。</b></p>
+
+  <div class="scale-bar">
+    <span style="font-size:12px">12</span><span style="font-size:14px">14</span><span style="font-size:16px">16</span>
+    <span style="font-size:18px">18</span><span style="font-size:20px">20</span><span style="font-size:24px">24</span>
+    <span style="font-size:26px">26</span><span style="font-size:32px">32</span><span style="font-size:40px">40</span>
+    <span style="font-size:46px;font-weight:700">46</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Hero Copy ★</b>WebTopSans Regular / 72px / 400<br>lh 1.40 / ls normal</div><div style="font-family:var(--font-hero);font-size:72px;line-height:1.4;color:var(--ink)">楽しくつくる、</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Heading</b>細ゴシック体オールド / 46px / 700<br>lh <b style="display:inline">1.00</b> / ls normal</div><div style="font-size:46px;font-weight:700;line-height:1;color:var(--ink)">サービス</div></div>
+  <div class="type-row"><div class="type-meta"><b>Lead Heading</b>細ゴシック体オールド / 40px / 400<br>lh 1.60</div><div style="font-size:40px;line-height:1.6;color:var(--ink)">文字へのこだわり、未来への挑戦。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Heading L</b>細ゴシック体オールド / 32px / 700<br>lh 1.50</div><div style="font-size:32px;font-weight:700;line-height:1.5;color:var(--ink)">お問い合わせ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Heading S</b>細ゴシック体オールド / 24px / 700<br>lh 1.75</div><div style="font-size:24px;font-weight:700;line-height:1.75;color:var(--ink)">商利用のご案内</div></div>
+  <div class="type-row"><div class="type-meta"><b>Lead Text ★</b>細ゴシック体オールド / 18px / 500<br>lh <b style="display:inline">2.20</b></div><div style="font-size:18px;font-weight:500;line-height:2.2">1920年創業のイワタは書体デザインの先駆者として、文芸、学術、ビジネス、クリエイティブなど幅広い用途に応える書体をつくり続けてきました。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Sub Heading</b>細ゴシック体オールド / 20px / 500<br>lh 1.60</div><div style="font-size:20px;font-weight:500;line-height:1.6;color:var(--ink)">デスクトップライセンス</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>細ゴシック体オールド / 16px / 400<br>lh <b style="display:inline">1.60</b> / ls normal</div><div style="font-size:16px;line-height:1.6">書体は読まれてはじめて意味を持ちます。イワタは長く読み続けられる字面をつくることを設計の中心に置いています。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav / Label</b>細ゴシック体オールド / 14px / 700<br>lh 1.85</div><div style="font-size:14px;font-weight:700;line-height:1.85;color:var(--ink)">フォント一覧　サービス　活用事例　サポート</div></div>
+  <div class="type-row"><div class="type-meta"><b>Tag</b>中ゴシック体オールド / 14px / 500<br>lh 1.60 / radius 100px</div><div><span class="tag">イベント・展示会</span> <span class="tag">プレスリリース</span> <span class="tag">新書体</span></div></div>
+  <div class="type-row"><div class="type-meta"><b>CTA ★</b>細ゴシック体オールド / 14px / 700<br>lh 1.60 / <b style="display:inline">ls 0.04em</b></div><div><a href="#" class="btn btn-primary">お問い合わせ</a></div></div>
+  <div class="type-row"><div class="type-meta"><b>Date</b>細ゴシック体オールド / 14px / 400<br>lh 1.71 / color #949494</div><div style="font-size:14px;line-height:1.71;color:var(--date)">2026.08.21</div></div>
+  <div class="type-row"><div class="type-meta"><b>Table Cell</b>細ゴシック体オールド / 12px / 400<br>font-list の 4,639 要素</div><div style="font-size:12px;color:var(--body)">イワタ明朝体オールド / R / JIS2004 / OpenType</div></div>
+
+  <p class="note"><b><code>letter-spacing</code> は <code>normal</code> が 103/104 要素。</b>字間トークン（<code>--tracking-tight: 0.02em</code> / <code>--tracking-normal: 0.04em</code>）はあるが、実装に出るのは CTA の <code>0.56px</code>（= 14px × 0.04em）1 要素だけ。<b>書体の字面に任せるのが、書体屋の構え。</b></p>
+
+  <p class="note"><b><code>font-feature-settings</code> は 2 ページとも 0 要素。</b>書体側の字面設計をそのまま見せるのが狙いなので、<b>palt を足さないこと</b>。書体メーカーのサイトで詰め組みをすると、書体の素の姿が分からなくなる。</p>
+
+  <p class="note"><b><code>@font-face</code> は 108 本宣言されているが <code>loaded</code> は 8 本だけ。</b>残り 100 本（<code>みんなの文字ゴ…</code> <code>I-OTF-UDゴ表示Pr6N…</code> 等）は<b>フォント見本を表示するための在庫宣言</b>。<b><code>@font-face</code> の本数を「使える書体の数」と読まないこと。</b></p>
+
+  <p class="note"><b>太さは合成で作られている。</b><code>@font-face</code> はどちらの書体も <code>font-weight: normal</code> でしか宣言されていないのに、CSS は <code>700</code> を 34 要素・<code>500</code> を 35 要素に当てている（＝ブラウザの合成太字）。<b>再現するときは、書体名で太さを切り替えられる書体を用意するか、実ウェイトを持つ書体に差し替える。</b></p>
+</div>
+</section>
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons</div>
+  <div class="eyebrow">Buttons</div>
+  <h2 class="section-title">ピルは48px、カードは16px</h2>
+  <p class="section-lead">主 CTA は <code>border-radius: 48px</code> のピル。小さいピルは <code>24px</code>、タグは <code>100px</code>。<b><code>--rounded-full: calc(infinity * 1px)</code> という変数は宣言だけで実装 0 要素</b>で、実際は 48px / 100px の直書き。</p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-primary">お問い合わせ</a>
+    <a href="#" class="btn btn-accent">フォント一覧</a>
+    <a href="#" class="btn btn-wide">もっと見る</a>
+    <a href="#" class="btn btn-small">お知らせ一覧</a>
+    <span class="tag">イベント・展示会</span>
+    <span class="hero-badge">100年超えベンチャー</span>
+  </div>
+
+  <p class="note"><b>面色 CTA が 3 種類ある。</b>紺（お問い合わせ・もっと見る）、オレンジ（フォント一覧・カタログ）、緑（ライセンス情報）。<b>行き先の種類で色を分けているので、状態色として流用しない。</b></p>
+</section>
+
+<section class="section-alt" id="cards">
+<div class="section-inner">
+  <div class="section-label">04 / Cards</div>
+  <div class="eyebrow">Cards</div>
+  <h2 class="section-title">影ゼロ。角丸と面色だけで階層を作る</h2>
+  <p class="section-lead"><code>box-shadow</code> は実測 <b>0 種</b>。カードの区別は <code>#f4f5f6</code> の面と <code>border-radius: 16px</code> だけで行う。</p>
+
+  <div class="card-grid">
+    <a href="#" class="card"><div class="card-title">デスクトップライセンス</div><p class="card-text">Mac や Windows PC にフォントをインストールしてお使いいただくライセンスです。</p></a>
+    <a href="#" class="card"><div class="card-title">サブスクリプション</div><p class="card-text">年間定額制のサブスクリプションサービスです。必要な書体を必要なときに。</p></a>
+    <a href="#" class="card"><div class="card-title">組込みフォント</div><p class="card-text">電子機器・アプリケーションに書体を組み込んでご利用いただけます。</p></a>
+  </div>
+
+  <div class="cta-grid">
+    <div class="cta navy"><div class="cta-title">お問い合わせ</div><p class="cta-text">フォントやサービスについて相談したい方へ</p></div>
+    <div class="cta green"><div class="cta-title">ライセンス情報</div><p class="cta-text">フォントのライセンスについて知りたい方へ</p></div>
+    <div class="cta orange"><div class="cta-title">カタログダウンロード</div><p class="cta-text">フォントの詳細資料が見たい方へ</p></div>
+  </div>
+
+  <div class="plain-grid">
+    <div class="plain"><div class="plain-title">商利用のご案内</div></div>
+    <div class="plain"><div class="plain-title">よくある質問</div></div>
+    <div class="plain"><div class="plain-title">会社概要</div></div>
+    <div class="plain"><div class="plain-title">書体開発の姿勢</div></div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="news">
+  <div class="section-label">05 / News &amp; Table</div>
+  <div class="eyebrow">News</div>
+  <h2 class="section-title">お知らせと書体見本の表</h2>
+  <p class="section-lead">お知らせは日付 14px（<code>#949494</code>）＋ タグ（<code>#efefef</code> / radius 100px）＋ 本文 16px。<code>/font-list</code> の書体見本は <b>12px の表が 4,639 要素</b>で、同じ書体を「読み物」と「一覧」の両方で見せる。</p>
+
+  <div class="news">
+    <div class="news-item"><span class="news-date">2026.08.21</span><span class="tag">イベント・展示会</span><span class="news-title">『東京ゲームショウ2026』に出展いたします。</span></div>
+    <div class="news-item"><span class="news-date">2026.07.31</span><span class="tag">新書体</span><span class="news-title">『イワタ鄭道昭（ていどうしょう）』発売のお知らせ</span></div>
+    <div class="news-item"><span class="news-date">2026.07.15</span><span class="tag">プレスリリース</span><span class="news-title">『PAGE2026』に出展いたします。</span></div>
+  </div>
+
+  <table class="table">
+    <thead><tr><th>ファミリー名</th><th>書体名</th><th>ウェイト</th><th>文字セット</th></tr></thead>
+    <tbody>
+      <tr><td>イワタ明朝体オールド</td><td>イワタ明朝体オールド R</td><td>R</td><td>JIS2004</td></tr>
+      <tr><td>イワタ細ゴシック体オールド</td><td>イワタ細ゴシック体オールド L</td><td>L</td><td>JIS2004</td></tr>
+      <tr><td>イワタUD新聞明朝</td><td>イワタUD新聞明朝 M</td><td>M</td><td>Pr6N</td></tr>
+      <tr><td>イワタ隷書体</td><td>イワタ隷書体 R</td><td>R</td><td>StdN</td></tr>
+    </tbody>
+  </table>
+
+  <div style="text-align:center;margin-top:30px"><a href="#" class="btn btn-wide">もっと見る</a></div>
+</section>
+
+<section class="section-alt" id="forms">
+<div class="section-inner">
+  <div class="section-label">06 / Forms</div>
+  <div class="eyebrow">Forms</div>
+  <h2 class="section-title">入力欄も角丸24pxに揃える</h2>
+  <p class="section-lead">実サイトのトップに入力欄は無い。フォームを作る場合は <b>小さいピルの <code>24px</code></b> に合わせ、<b>影を付けない</b>。フォーカスは紺 <code>#123480</code> のアウトライン。</p>
+
+  <div class="form-grid">
+    <div class="field">
+      <label for="s1">お名前</label>
+      <input id="s1" type="text" placeholder="岩田 太郎">
+      <div class="field-msg">全角でご入力ください</div>
+    </div>
+    <div class="field is-focus">
+      <label for="s2">メールアドレス（フォーカス時）</label>
+      <input id="s2" type="email" value="taro@example.com">
+      <div class="field-msg">紺のアウトラインが付く</div>
+    </div>
+    <div class="field is-error">
+      <label for="s3">お問い合わせ内容（エラー時）</label>
+      <input id="s3" type="text" value="">
+      <div class="field-msg">お問い合わせ内容をご入力ください</div>
+    </div>
+    <div class="field">
+      <label for="s4">ご利用を検討中のライセンス</label>
+      <select id="s4"><option>デスクトップライセンス</option><option>サブスクリプション</option><option>組込みフォント</option><option>Web フォント</option></select>
+      <div class="field-msg">複数ある場合は代表的なものをお選びください</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <div class="eyebrow">Elevation</div>
+  <h2 class="section-title">影は1つも使わない</h2>
+  <p class="section-lead">2 ページとも <code>box-shadow</code> の実測は <b>0 種</b>。階層は角丸の大きさ（4 → 16 → 24 → 48 → 100px）と面色（<code>#ffffff</code> / <code>#f4f5f6</code> / <code>#efefef</code> / <code>#123480</code>）で作る。</p>
+
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">Level 0</div><div class="elev-val">none — すべて。実測 0 種</div></div>
+  </div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">--rounded-sm<br>4px（バッジ・2 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:16px"></div><div class="radius-label">--rounded-xl<br>16px（カード・23 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:24px"></div><div class="radius-label">--rounded-xxl<br>24px（27 要素で最多）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:48px"></div><div class="radius-label">直書き<br>48px（主 CTA）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:100px"></div><div class="radius-label">直書き<br>100px（タグ）</div></div>
+  </div>
+
+  <p class="note"><b>トークンにあって実装 0 要素の角丸</b>：<code>--rounded-min</code>(2px) / <code>--rounded-md</code>(8px) / <code>--rounded-lg</code>(12px) / <code>--rounded-full</code>(<code>calc(infinity * 1px)</code>)。<b>逆に 9px / 15px / 48px / 100px はトークンに無いが実装にある。</b></p>
+</section>
+
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">08 / Layout</div>
+  <div class="eyebrow">Layout</div>
+  <h2 class="section-title">コンテナ 1284px / カード 384px</h2>
+  <p class="section-lead"><code>--innerWidth: 1228px</code> という宣言はあるが、実測のコンテナ幅は <b>1284px</b>（5 要素）と <b>1440px</b>（3 要素）が多く、1228px は 1 要素だけ。カード 1 枚は 384px、列の gap は 38px。</p>
+
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:100%;max-width:1440px">1440px（実測 3 要素）</div>
+    <div class="layout-bar" style="width:1284px;max-width:100%">1284px（実測 5 要素で最多）</div>
+    <div class="layout-bar" style="width:1228px;max-width:100%">--innerWidth: 1228px（宣言。実測 1 要素）</div>
+    <div class="layout-bar" style="width:384px;max-width:100%">カード 384px（実測 6 要素）</div>
+  </div>
+
+  <p class="note"><b>変数名の綴りが <code>--innerPadingInline</code></b>（<code>d</code> が 1 つ足りない）。実サイトのままなので、このサイトの CSS に追記するときはこの綴りに合わせる。新規に書き起こすなら <code>--inner-padding-inline</code> に直す。</p>
+
+  <p class="note">ブレークポイントは <b><code>(min-width: 992px)</code> が 357 回</b>で圧倒的に最多。768 / 992 / 1200 は Bootstrap 系の列で、<b>モバイルファースト（<code>min-width</code> 優先）で分岐の実質的な軸は 992px 1 本</b>。ホバーは <code>(any-hover: hover)</code> で出し分け、<code>--hover-opacity: 0.8</code>。</p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-head">文字と歩んだイワタの100年</div>
+    <div class="footer-cols">
+      <div class="footer-col"><div class="footer-col-title">フォント</div><a href="#">フォント一覧</a><a href="#">新書体</a><a href="#">フォントの特長</a></div>
+      <div class="footer-col"><div class="footer-col-title">サービス</div><a href="#">デスクトップ</a><a href="#">サブスクリプション</a><a href="#">組込みフォント</a><a href="#">Web フォント</a></div>
+      <div class="footer-col"><div class="footer-col-title">サポート</div><a href="#">商利用のご案内</a><a href="#">よくあるご質問</a><a href="#">各種ダウンロード</a></div>
+      <div class="footer-col"><div class="footer-col-title">会社情報</div><a href="#">会社概要</a><a href="#">書体開発の姿勢</a><a href="#">100周年特設ページ</a></div>
+    </div>
+    <p class="footer-copy">これは DESIGN.md の再現用サンプルです。株式会社イワタの実サイトではありません。和文の「イワタ細ゴシック体オールド_04」「イワタ中ゴシック体オールド_04」は自社ドメイン配信のためローカルでは表示できず、Zen Kaku Gothic New で代替しています。</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (508 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (511 sites)</a>
 </p>
 
 <table>
@@ -776,6 +776,11 @@
 </tr>
 <tr>
 <td align="center"><strong>Findy</strong><br><img src="design-md/findy/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>イワタ</strong><br><img src="design-md/iwata-font/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>玄光社</strong><br><img src="design-md/genkosha/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>一条工務店</strong><br><img src="design-md/ichijo/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1345,11 +1350,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [船橋屋 (FUNABASHIYA)](https://www.funabashiya.co.jp/) | Food / Traditional Confectionery | [DESIGN.md](design-md/funabashiya/DESIGN.md) | [preview.html](design-md/funabashiya/preview.html) |
 | [熊本市現代美術館 (CAMK)](https://www.camk.jp/) | Museum / Contemporary Art | [DESIGN.md](design-md/camk/DESIGN.md) | [preview.html](design-md/camk/preview.html) |
 | [Findy (ファインディ)](https://findy-code.io/) | SaaS / IT Recruiting | [DESIGN.md](design-md/findy/DESIGN.md) | [preview.html](design-md/findy/preview.html) |
+| [株式会社イワタ (IWATA)](https://www.iwatafont.co.jp/) | Type Foundry / Fonts | [DESIGN.md](design-md/iwata-font/DESIGN.md) | [preview.html](design-md/iwata-font/preview.html) |
+| [玄光社 (GENKOSHA)](https://www.genkosha.co.jp/) | Publishing / Photo &amp; Video Books | [DESIGN.md](design-md/genkosha/DESIGN.md) | [preview.html](design-md/genkosha/preview.html) |
+| [一条工務店 (ICHIJO)](https://www.ichijo.co.jp/) | Housing / Home Builder | [DESIGN.md](design-md/ichijo/DESIGN.md) | [preview.html](design-md/ichijo/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (508 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (511 sites)</a>
 </p>
 
 <table>
@@ -2091,6 +2099,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>Findy</strong><br><img src="design-md/findy/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>イワタ</strong><br><img src="design-md/iwata-font/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>玄光社</strong><br><img src="design-md/genkosha/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>一条工務店</strong><br><img src="design-md/ichijo/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
