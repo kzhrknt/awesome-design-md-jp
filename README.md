@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (511 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (514 sites)</a>
 </p>
 
 <table>
@@ -781,6 +781,11 @@
 </tr>
 <tr>
 <td align="center"><strong>一条工務店</strong><br><img src="design-md/ichijo/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>国立科学博物館</strong><br><img src="design-md/kahaku/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>鹿島建設</strong><br><img src="design-md/kajima/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>ＪＲ東海</strong><br><img src="design-md/jr-central/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1353,11 +1358,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [株式会社イワタ (IWATA)](https://www.iwatafont.co.jp/) | Type Foundry / Fonts | [DESIGN.md](design-md/iwata-font/DESIGN.md) | [preview.html](design-md/iwata-font/preview.html) |
 | [玄光社 (GENKOSHA)](https://www.genkosha.co.jp/) | Publishing / Photo &amp; Video Books | [DESIGN.md](design-md/genkosha/DESIGN.md) | [preview.html](design-md/genkosha/preview.html) |
 | [一条工務店 (ICHIJO)](https://www.ichijo.co.jp/) | Housing / Home Builder | [DESIGN.md](design-md/ichijo/DESIGN.md) | [preview.html](design-md/ichijo/preview.html) |
+| [国立科学博物館 (National Museum of Nature and Science)](https://www.kahaku.go.jp/) | Museum / Science | [DESIGN.md](design-md/kahaku/DESIGN.md) | [preview.html](design-md/kahaku/preview.html) |
+| [鹿島建設 (KAJIMA)](https://www.kajima.co.jp/) | Construction / Corporate | [DESIGN.md](design-md/kajima/DESIGN.md) | [preview.html](design-md/kajima/preview.html) |
+| [ＪＲ東海 (Central Japan Railway)](https://jr-central.co.jp/) | Transport / Railway | [DESIGN.md](design-md/jr-central/DESIGN.md) | [preview.html](design-md/jr-central/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (511 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (514 sites)</a>
 </p>
 
 <table>
@@ -2104,6 +2112,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>一条工務店</strong><br><img src="design-md/ichijo/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>国立科学博物館</strong><br><img src="design-md/kahaku/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>鹿島建設</strong><br><img src="design-md/kajima/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>ＪＲ東海</strong><br><img src="design-md/jr-central/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

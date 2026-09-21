@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 鹿島建設（KAJIMA）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Roboto+Condensed:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は実質存在しない（実測 4 個のうち 2 個は Swiper、
+       残りは --lock-scroll-spacing と --fw: 100vw）。以下は computed style の実測値。2026-09-21 */
+    --red:        #e6002d;   /* 鹿島レッド。可視は 1 要素だけ。面として多用しない */
+    --grad:       linear-gradient(90deg, #a4001d 0%, #ff626c 100%);  /* ★採用セクション。可視 71 要素 */
+    --text:       #363434;   /* ★本文。可視 78 / 83 要素。純黒ではなく暖かい墨色 */
+    --text-sub:   #595757;   /* 日付・カテゴリ（可視 23 要素） */
+    --text-muted: #999999;   /* パンくずの現在地 */
+    --white:      #ffffff;
+    --dark:       #1e1e1e;   /* 採用カードの下地（可視 71 要素） */
+    --line:       #9ea3a6;   /* ★枠。box-shadow: 0 0 0 1px で引く（21 要素） */
+    --line-dark:  #595757;   /* 暗面の枠（1px solid） */
+    --cool:       #d8dce0;   /* フィードバック帯（可視 72 要素） */
+    --divider:    #cccccc;
+    --bg:         #f5f6f7;   /* ★トップの地色 */
+    --bg-page:    #ffffff;   /* 下層ページの地色 */
+
+    /* === Fonts === 和文 Noto Sans JP、英字見出しだけ Roboto Condensed。
+       どちらも Google Fonts なのでこのプレビューは実サイトと同じ書体で出る。
+       Oswald は @font-face 宣言だけで unloaded。使わない。 */
+    --font:      "Noto Sans JP", sans-serif;
+    --font-en:   "Roboto Condensed", sans-serif;
+    --font-mix:  "Roboto Condensed", "Noto Sans JP", sans-serif;
+    --font-num:  Roboto, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Letter spacing: em の三段階しかない ===
+       実測は px で返るが、font-size で割ると 0.05 / 0.08 / 0.1 に綺麗に揃う。
+       16px→0.8px / 14px→0.7px / 18px→0.9px / 12px→0.6px …すべて 0.05em */
+    --ls:       0.05em;   /* ★既定（body） */
+    --ls-card:  0.08em;   /* カード見出し（18px→1.44px） */
+    --ls-lead:  0.1em;    /* セクション大見出し・グローバルナビ（42px→4.2px / 16px→1.6px） */
+    --ls-tight: 0.02em;   /* 記事タイトルだけ詰める（31px→0.62px） */
+
+    /* === Line height ===
+       body は normal。見出しは一律 1.40、本文ブロック 1.50、ナビ・ラベル 1.00（最多 92 要素） */
+    --lh-head:  1.40;
+    --lh-body:  1.50;
+    --lh-label: 1.00;
+
+    --r:      4px;   /* ★既定の角丸。実測 76 要素で最多 */
+    --r-flat: 0px;   /* 塗りボタン */
+
+    --container: 1440px;
+    --wide:      1680px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: normal;          /* ★body で行間を決めない */
+    letter-spacing: var(--ls);    /* ★0.05em を1回書いて継承させる */
+    /* font-feature-settings は実サイトで 1 要素も使われていない（実測 0 件） */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { background: var(--white); }
+  .header-inner { max-width: var(--container); margin: 0 auto; padding: 18px 28px; display: flex; align-items: center; gap: 40px; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-mark { width: 34px; height: 34px; background: var(--red); border-radius: 2px; }
+  .logo-sub { font-size: 12px; line-height: var(--lh-body); color: var(--text-sub); }
+  .logo-name { font-size: 26px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-lead); }
+  .gnav { display: flex; gap: 28px; margin-left: auto; }
+  .gnav a { font-size: 16px; font-weight: 500; line-height: var(--lh-label); letter-spacing: var(--ls-lead); color: var(--text); text-decoration: none; }
+  .util { display: flex; gap: 16px; }
+  .util a { font-size: 14px; font-weight: 500; line-height: var(--lh-label); letter-spacing: var(--ls); color: var(--text); text-decoration: none; }
+
+  /* SECTIONS */
+  .section { max-width: var(--container); margin: 0 auto; padding: 60px 28px; }
+  .section-alt { background: var(--white); }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--text-sub); line-height: var(--lh-body); margin-bottom: 10px; letter-spacing: var(--ls); }
+  .eyebrow { font-family: var(--font-en); font-size: 14px; font-weight: 700; line-height: var(--lh-label); letter-spacing: var(--ls-lead); color: var(--text-sub); }
+  .section-title { font-size: 42px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-lead); margin: 10px 0 16px; }
+  .section-lead { font-size: 16px; font-weight: 500; line-height: var(--lh-body); letter-spacing: var(--ls); max-width: 900px; margin-bottom: 30px; }
+  .note { font-size: 14px; line-height: 1.8; letter-spacing: var(--ls); color: #4a4747; margin-top: 20px; max-width: 900px; background: var(--bg); border-radius: var(--r); padding: 16px 20px; }
+  .section-alt .note { background: var(--bg); }
+  code { font-family: var(--font-mono); font-size: 12px; background: #e9ebec; padding: 1px 6px; border-radius: 2px; letter-spacing: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+  .swatch { background: var(--white); border-radius: var(--r); overflow: hidden; box-shadow: 0 0 0 1px var(--line); }
+  .swatch-chip { height: 78px; }
+  .swatch-body { padding: 14px 16px 16px; }
+  .swatch-name { font-size: 15px; font-weight: 700; line-height: var(--lh-head); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--text-sub); line-height: 1.6; margin-top: 3px; letter-spacing: 0; }
+  .swatch-use { font-size: 12px; line-height: 1.7; color: #4a4747; margin-top: 7px; }
+
+  /* TYPOGRAPHY */
+  .scale-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; margin-bottom: 26px; }
+  .scale-bar span { background: var(--bg); padding: 8px 14px; border-radius: var(--r); line-height: var(--lh-head); }
+  .section-alt .scale-bar span { background: var(--bg); }
+  .type-row { display: grid; grid-template-columns: 260px 1fr; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--divider); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-sub); line-height: 1.8; letter-spacing: 0; }
+  .type-meta b { display: block; font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: var(--ls); }
+
+  /* LETTER SPACING DEMO */
+  .ls-demo { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .ls-card { background: var(--white); border-radius: var(--r); padding: 20px; box-shadow: 0 0 0 1px var(--line); }
+  .ls-value { font-family: var(--font-mono); font-size: 11px; color: var(--text-sub); line-height: 1.6; letter-spacing: 0; }
+  .ls-sample { font-size: 20px; font-weight: 700; line-height: var(--lh-head); margin: 10px 0 8px; }
+  .ls-use { font-size: 12px; line-height: 1.7; color: #4a4747; }
+
+  /* COMPONENTS */
+  .row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
+  .btn { font-family: var(--font); background: var(--text); color: var(--white); border: 1px solid var(--text); font-size: 16px; font-weight: 500; line-height: var(--lh-body); letter-spacing: var(--ls); padding: 12px 24px; border-radius: var(--r-flat); cursor: pointer; }
+  .btn-wide { padding: 12px 28px; }
+  .btn.is-focus { outline: 3px solid var(--red); outline-offset: 2px; }
+  .badge-grad { display: inline-block; background: var(--grad); color: var(--white); font-size: 14px; font-weight: 500; line-height: var(--lh-head); letter-spacing: var(--ls); padding: 4px 12px; border-radius: var(--r); }
+  .tab { font-family: var(--font); background: none; border: none; color: var(--text-sub); font-size: 16px; font-weight: 500; line-height: var(--lh-label); letter-spacing: var(--ls); padding: 16px 8px; border-radius: var(--r); cursor: pointer; }
+  .tab.is-active { color: var(--text); font-size: 18px; font-weight: 700; letter-spacing: var(--ls); border-bottom: 2px solid var(--text); }
+  .accordion { background: var(--white); border-radius: var(--r); box-shadow: 0 0 0 1px var(--line); font-size: 18px; font-weight: 500; line-height: var(--lh-head); letter-spacing: var(--ls); padding: 18px 24px 18px 28px; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .card { background: var(--white); border-radius: var(--r); box-shadow: 0 0 0 1px var(--line); overflow: hidden; }
+  .card-thumb { height: 150px; background: linear-gradient(155deg, #c7ccd1, #8d959c); }
+  .card-body { padding: 20px; }
+  .card-meta { font-size: 16px; font-weight: 500; line-height: var(--lh-label); letter-spacing: var(--ls); color: var(--text-sub); margin-bottom: 10px; }
+  .card-title { font-size: 18px; font-weight: 500; line-height: var(--lh-head); letter-spacing: var(--ls-card); }
+
+  .recruit { background: var(--dark); border: 1px solid var(--line-dark); border-radius: var(--r); padding: 32px; color: var(--white); }
+  .recruit-en { font-family: var(--font-en); font-size: 22px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-lead); }
+  .recruit-jp { font-size: 22px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls); margin-top: 8px; }
+  .recruit p { font-size: 16px; line-height: var(--lh-body); letter-spacing: var(--ls); margin-top: 12px; color: #ddd; }
+
+  .feedback { background: var(--cool); border-radius: var(--r); padding: 22px 26px; font-size: 16px; font-weight: 500; line-height: var(--lh-body); letter-spacing: var(--ls); }
+
+  table { border-collapse: collapse; width: 100%; background: var(--white); border-radius: var(--r); overflow: hidden; box-shadow: 0 0 0 1px var(--line); }
+  th, td { text-align: left; padding: 12px 18px; border-bottom: 1px solid var(--divider); font-size: 15px; line-height: var(--lh-body); letter-spacing: var(--ls); }
+  th { font-weight: 700; background: var(--bg); }
+
+  .footer { background: var(--text); color: var(--white); }
+  .footer-inner { max-width: var(--container); margin: 0 auto; padding: 44px 28px; }
+  .footer-title { font-family: var(--font-en); font-size: 20px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-lead); margin-bottom: 12px; }
+  .footer p { font-size: 12px; line-height: var(--lh-body); letter-spacing: var(--ls); color: #d5d2d2; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-mark"></div>
+      <div>
+        <div class="logo-sub">100年をつくる会社</div>
+        <div class="logo-name">鹿島</div>
+      </div>
+    </div>
+    <nav class="gnav">
+      <a href="#">企業情報</a><a href="#">IR情報</a><a href="#">事業</a><a href="#">実績</a><a href="#">技術</a><a href="#">サステナビリティ</a><a href="#">採用情報</a>
+    </nav>
+    <div class="util"><a href="#">FAQ</a><a href="#">お問い合わせ</a><a href="#">English</a></div>
+  </div>
+</header>
+
+<section class="section" id="colors">
+  <div class="eyebrow">COLOR</div>
+  <h2 class="section-title">赤は面ではなくグラデーションで出る</h2>
+  <p class="section-lead">単色の鹿島レッド <b>#e6002d</b> は<b>可視 1 要素だけ</b>。ブランドの赤が面積を取るのは採用セクションの<b>グラデーション（可視 71 要素）</b>。本文は純黒ではなく暖かい墨色 <b>#363434</b>。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:linear-gradient(90deg,#a4001d 0%,#ff626c 100%)"></div><div class="swatch-body"><div class="swatch-name">Recruit Gradient</div><div class="swatch-hex">#a4001d → #ff626c</div><div class="swatch-use">★可視 71 要素。採用カード面・ラベル。このサイトで最も面積を取るブランド表現</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e6002d"></div><div class="swatch-body"><div class="swatch-name">鹿島レッド</div><div class="swatch-hex">#e6002d</div><div class="swatch-use">可視 1 要素（現在地マーカー）。ベタ塗りで多用しない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#363434"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#363434</div><div class="swatch-use">★本文・見出し。可視 78 要素（トップ）/ 83 要素（企業情報）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#595757"></div><div class="swatch-body"><div class="swatch-name">Text Secondary</div><div class="swatch-hex">#595757</div><div class="swatch-use">日付・カテゴリ・補助（可視 23 要素）。暗面の枠にも使う</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#1e1e1e"></div><div class="swatch-body"><div class="swatch-name">Surface Dark</div><div class="swatch-hex">#1e1e1e</div><div class="swatch-use">採用カードの下地（可視 71 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#9ea3a6"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#9ea3a6</div><div class="swatch-use">★枠。<code>box-shadow: 0 0 0 1px</code> で引く（21 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#d8dce0"></div><div class="swatch-body"><div class="swatch-name">Surface Cool</div><div class="swatch-hex">#d8dce0</div><div class="swatch-use">「お探しの情報はありましたか？」の帯（可視 72 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f5f6f7;border-bottom:1px solid #9ea3a6"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#f5f6f7</div><div class="swatch-use">★トップの地色。下層ページは #ffffff</div></div></div>
+  </div>
+
+  <p class="note"><b><code>#4b81e8</code> は採用しないこと。</b>クッキー同意バナー（外部 CMP）の「同意する」ボタン専用で、書体も <code>Helvetica, Calibri, Arial</code> とサイト本体（Noto Sans JP）と別系統になっている。</p>
+</section>
+
+<section class="section-alt">
+<div class="section" id="typography">
+  <div class="eyebrow">TYPOGRAPHY</div>
+  <h2 class="section-title">字間は em の三段階しかない</h2>
+  <p class="section-lead">実測はすべて px で返るが、<code>font-size</code> で割ると <b>0.05em / 0.08em / 0.1em</b> に綺麗に揃う。<b>文字が大きいほど字間を広げる。</b><code>palt</code> は 1 要素も使わず、字送りは <code>letter-spacing</code> だけで作る。</p>
+
+  <div class="ls-demo">
+    <div class="ls-card"><div class="ls-value">0.05em（既定）<br>16px→0.8px / 14px→0.7px<br>18px→0.9px / 12px→0.6px</div><div class="ls-sample" style="letter-spacing:0.05em">鹿島の技術</div><div class="ls-use">body に 1 回書いて継承させる。本文・ナビ・ラベル・フッターすべて</div></div>
+    <div class="ls-card"><div class="ls-value">0.08em（カード見出し）<br>18px→1.44px</div><div class="ls-sample" style="letter-spacing:0.08em">鹿島の技術</div><div class="ls-use">ニュース記事のタイトル。本文より少し開く</div></div>
+    <div class="ls-card"><div class="ls-value">0.1em（大見出し・ナビ）<br>42px→4.2px / 28px→2.8px<br>24px→2.4px / 16px→1.6px</div><div class="ls-sample" style="letter-spacing:0.1em">鹿島の技術</div><div class="ls-use">セクション見出しとグローバルナビ。サイズが違っても比率は同じ</div></div>
+    <div class="ls-card"><div class="ls-value">0.02em（記事タイトル）<br>31px→0.62px</div><div class="ls-sample" style="letter-spacing:0.02em">鹿島の技術</div><div class="ls-use">★唯一詰める場所。大きい見出しの中でここだけ例外</div></div>
+  </div>
+
+  <div class="scale-bar" style="margin-top:30px">
+    <span style="font-size:12px">12</span><span style="font-size:14px">14</span><span style="font-size:16px">16</span>
+    <span style="font-size:18px">18</span><span style="font-size:20px">20</span><span style="font-size:22px">22</span>
+    <span style="font-size:24px">24</span><span style="font-size:28px">28</span><span style="font-size:31px">31</span>
+    <span style="font-size:42px;font-weight:700">42</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Section Display ★</b>Noto Sans JP / 42px / 700<br>lh 58.8px (1.40) / <b style="display:inline">ls 0.1em</b></div><div style="font-size:42px;font-weight:700;line-height:1.4;letter-spacing:0.1em">鹿島の事業</div></div>
+  <div class="type-row"><div class="type-meta"><b>Page Heading</b>Noto Sans JP / 28px / 700<br>lh 39.2px (1.40) / ls 0.1em</div><div style="font-size:28px;font-weight:700;line-height:1.4;letter-spacing:0.1em">鹿島について</div></div>
+  <div class="type-row"><div class="type-meta"><b>Hero Copy</b>Noto Sans JP / 32px / 700<br>lh normal / ls 0.05em</div><div style="font-size:32px;font-weight:700;line-height:normal;letter-spacing:0.05em">KAJIMAはつくる。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Article Title ★</b>Noto Sans JP / 31px / 700<br>lh 31px (1.00) / <b style="display:inline">ls 0.02em</b></div><div style="font-size:31px;font-weight:700;line-height:1.0;letter-spacing:0.02em">社長ごあいさつ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Heading 3</b>Noto Sans JP / 24px / 700<br>lh 33.6px (1.40) / ls 0.1em</div><div style="font-size:24px;font-weight:700;line-height:1.4;letter-spacing:0.1em">サステナビリティ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Heading ★</b>Noto Sans JP / 18px / 500<br>lh 25.2px (1.40) / <b style="display:inline">ls 0.08em</b></div><div style="font-size:18px;font-weight:500;line-height:1.4;letter-spacing:0.08em">鹿島建設がわかる、未来が見えるはやわかりKAJIMA</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body / Nav ★</b>Noto Sans JP / 16px / 400<br>lh <b style="display:inline">normal</b> / ls 0.05em</div><div style="font-size:16px;line-height:normal;letter-spacing:0.05em">鹿島の最新トピックスをご紹介します。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body (block)</b>Noto Sans JP / 16px / 500<br>lh 24px (1.50) / ls 0.05em</div><div style="font-size:16px;font-weight:500;line-height:1.5;letter-spacing:0.05em">このたびの令和8年熊本地震により亡くなられた方々に謹んで哀悼の意を表しますとともに、被災された皆さまに心よりお見舞い申し上げます。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Global Nav</b>Noto Sans JP / 16px / 500<br>lh 16px (1.00) / ls 0.1em</div><div style="font-size:16px;font-weight:500;line-height:1.0;letter-spacing:0.1em">企業情報　IR情報　事業</div></div>
+  <div class="type-row"><div class="type-meta"><b>English Heading</b>Roboto Condensed / 42px / 700<br>lh 1.40 / ls 0.1em</div><div style="font-family:var(--font-en);font-size:42px;font-weight:700;line-height:1.4;letter-spacing:0.1em">NEWS &nbsp; PROJECTS</div></div>
+  <div class="type-row"><div class="type-meta"><b>Utility</b>Noto Sans JP / 14px / 500<br>lh 14px (1.00) / ls 0.05em</div><div style="font-size:14px;font-weight:500;line-height:1.0;letter-spacing:0.05em">FAQ　お問い合わせ　English</div></div>
+  <div class="type-row"><div class="type-meta"><b>Small</b>Noto Sans JP / 12px / 400<br>ls 0.05em</div><div style="font-size:12px;letter-spacing:0.05em">このサイトについて　ウェブアクセシビリティ　個人情報保護方針</div></div>
+
+  <p class="note"><b><code>body { line-height: normal }</code>。</b>日本語サイトとしては珍しく body で行間を決めない。<b>見出しは一律 1.40</b>（42 / 28 / 24 / 22 / 18px すべて）、<b>本文ブロックは 1.50</b>、<b>ナビ・ラベル・日付は 1.00</b>（実測 92 要素で最多）。長い本文を置くときだけ 1.5 を明示する。</p>
+
+  <p class="note"><b><code>font-feature-settings</code> は実測 0 件。</b><code>palt</code> も <code>kern</code> も <code>tnum</code> も当てていない。<b>約物を詰めたいときは <code>letter-spacing</code> を 0.02em 側へ動かす</b>のがこのサイトの流儀（記事タイトル 31px の例）。</p>
+
+  <p class="note"><b>欧文は Roboto Condensed。</b>英字のセクション見出し（<code>NEWS</code> <code>PROJECTS</code> <code>TECHNOLOGY</code>）だけコンデンス体に切り替え、和欧が混ざる見出しは <code>"Roboto Condensed", "Noto Sans JP"</code> の順で<b>英字はコンデンス・和文は Noto</b> の二層にする。<b>Oswald は宣言のみで <code>unloaded</code>。使わない。</b></p>
+</div>
+</section>
+
+<section class="section" id="components">
+  <div class="eyebrow">COMPONENTS</div>
+  <h2 class="section-title">角丸 4px、枠は box-shadow で引く</h2>
+  <p class="section-lead">角丸は <b>4px</b> が既定（実測 76 要素）で、塗りボタンだけ <b>0px</b>。枠線は <code>border</code> ではなく <b><code>box-shadow: 0 0 0 1px #9ea3a6</code></b> で描いている（ぼかし 0 ＝実質 1px の枠で、影ではない）。</p>
+
+  <div class="row">
+    <button class="btn">すべてのお知らせを見る</button>
+    <button class="btn btn-wide">サステナビリティTOPへ</button>
+    <button class="btn is-focus">フォーカス状態</button>
+    <span class="badge-grad">採用　Recruting</span>
+  </div>
+
+  <div class="row">
+    <button class="tab is-active">すべて</button>
+    <button class="tab">プレスリリース</button>
+    <button class="tab">更新情報</button>
+    <button class="tab">IR</button>
+  </div>
+
+  <div class="row" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+    <div class="accordion">経営理念</div>
+    <div class="accordion">ビジョン</div>
+    <div class="accordion">基本方針と安全衛生・環境・品質方針</div>
+  </div>
+
+  <div class="card-grid" style="margin-bottom:20px">
+    <div class="card"><div class="card-thumb"></div><div class="card-body"><div class="card-meta">2026年9月18日</div><div class="card-title">月報KAJIMA 8月号特集　福島第一原子力発電所の廃炉に向けて</div></div></div>
+    <div class="card"><div class="card-thumb"></div><div class="card-body"><div class="card-meta">2026年9月12日</div><div class="card-title">鹿島の光ファイバで描く近未来のインフラ</div></div></div>
+    <div class="card"><div class="card-thumb"></div><div class="card-body"><div class="card-meta">2026年9月4日</div><div class="card-title">橋ってなんで折れないの？ー「つくる」の教室 ー</div></div></div>
+  </div>
+
+  <div class="row" style="align-items:stretch;gap:12px">
+    <div class="recruit" style="flex:1">
+      <div class="recruit-en">Recruiting &amp; Internship</div>
+      <div class="recruit-jp">採用情報TOP</div>
+      <p>暗面 #1e1e1e に 1px solid #595757 の枠、padding 32px、border-radius 4px。</p>
+    </div>
+    <div class="feedback" style="flex:1">お探しの情報はありましたか？<br><span style="font-size:14px;font-weight:400">面は #d8dce0（可視 72 要素）。フィードバック帯だけこの色を使う。</span></div>
+  </div>
+
+  <p class="note"><b>ぼかしのある影はほぼ使わない。</b>階層は枠線と地色（<code>#f5f6f7</code> / <code>#ffffff</code>）で作る。現在地マーカーの <code>rgba(0,0,0,0.2) 8px 4px 0 0</code> も<b>ぼかし 0 のズレ影</b>で、浮かせるためのものではない。</p>
+</section>
+
+<section class="section-alt">
+<div class="section" id="layout">
+  <div class="eyebrow">LAYOUT</div>
+  <h2 class="section-title">1440px、gap 12px、min-width 768px</h2>
+
+  <table>
+    <tr><th style="width:220px">項目</th><th>値</th><th>実測</th></tr>
+    <tr><td>Container</td><td><code>1440px</code></td><td>12 要素（最多）</td></tr>
+    <tr><td>Wide</td><td><code>1680px</code> / <code>1730px</code> / <code>1880px</code></td><td>ヒーロー・全幅セクション</td></tr>
+    <tr><td>Gap（カード）</td><td><code>12px</code></td><td><b>35 件（最多）</b></td></tr>
+    <tr><td>Gap（大カード）</td><td><code>24px 32px</code></td><td>7 件</td></tr>
+    <tr><td>Gap（セクション）</td><td><code>40px</code></td><td>10 件</td></tr>
+    <tr><td>Breakpoint（主）</td><td><code>min-width: 768px</code></td><td><b>377 件（圧倒的最多）</b>。モバイルファースト</td></tr>
+    <tr><td>Breakpoint（SP）</td><td><code>max-width: 767px</code></td><td>50 件</td></tr>
+    <tr><td>Breakpoint（Wide）</td><td><code>min-width: 1440px</code></td><td>18 件</td></tr>
+  </table>
+
+  <p class="note"><b>モバイルファースト。</b>既定をモバイルで書き、<code>min-width: 768px</code> で PC を上書きする（<code>min-width</code> 系が <code>max-width</code> 系の 7 倍）。<br><b><code>letter-spacing</code> を em で書いてあるので、ブレークポイントでサイズが変われば字間も自動で追従する。</b></p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-title">KAJIMA CORPORATION</div>
+    <p>このサイトについて　ウェブアクセシビリティ　個人情報保護方針　協力会社の皆様へ</p>
+    <p style="margin-top:8px;font-family:var(--font-num)">Copyright (C) 1995–2026 KAJIMA CORPORATION</p>
+  </div>
+</footer>
+
+</body>
+</html>

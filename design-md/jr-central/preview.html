@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ＪＲ東海（Central Japan Railway Company）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は実質 2 個（--header-height / --header-height-compact）。
+       トップで 21 個検出されるうち 19 個は --vc-* ＝ カルーセルライブラリの既定値で自社トークンではない。
+       以下は computed style の実測値。2026-09-21 */
+    --orange:      #fc6b01;   /* ★JR東海オレンジ。可視 106 要素 */
+    --orange-head: #f87b22;   /* ヘッダー「企業情報」・ヒーロー帯（可視 11 要素） */
+    --alert:       #e70d1e;   /* 重要なお知らせのリンク文字 */
+    --new:         #cc0000;   /* NEW バッジの文字色（面は付けない） */
+    --link:        #0092ef;   /* 下層ページのアイコンボタン */
+    --text:        #333333;   /* ★本文・見出し。可視 84 要素 */
+    --text-black:  #000000;   /* body の既定色・運行情報（可視 18 要素） */
+    --text-muted:  #575757;   /* コピーライト */
+    --white:       #ffffff;
+    --gray:        #666666;   /* 「閉じる」pill */
+    --bg:          #f8f4f0;   /* ★トップの地色。暖色のオフホワイト */
+    --bg-page:     #ffffff;   /* 下層ページの地色 */
+    --surface:     #fffcf8;   /* カード面（可視 7 要素） */
+    --surface-2:   #fff6f0;   /* カテゴリタブ（可視 3 要素） */
+    --border:      #dedede;   /* 入力欄の枠 */
+
+    /* === Fonts ===
+       Noto Sans JP を 400 / 500 / 700 / 900 の 4 本に分けて @font-face 宣言し、4 本とも loaded。
+       可変版（100 900）も宣言されているが unloaded。使えるのはこの 4 段だけ。
+       ── 実サイトは末尾を "sans-serif" とクォートして書いているが、クォートすると
+          総称ファミリとして機能しない。ここでは正しくクォートなしで書いている。
+       ── Lato / Montserrat も loaded だが、可視テキストの font-family 分布には 1 要素も現れない。 */
+    --font: "Noto Sans JP", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3",
+            メイリオ, Meiryo, "ＭＳ Ｐゴシック", Arial, Verdana, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Letter spacing ===
+       ★body に 0.048em を1回だけ書いて継承させる。実測は 0.864px（18px × 0.048）が 86 要素。
+          子要素で em を再宣言していないので、font-size が変わっても 0.864px のまま継承される。 */
+    --ls:       0.048em;   /* ★既定 → 0.864px */
+    --ls-lead:  0.096em;   /* 下層ページの h1 だけ 2 倍（38px → 3.648px） */
+
+    /* === Line height: 本文 1.78 / 見出し 1.50 === */
+    --lh-body:  1.78;   /* 18px → 32px。body の既定 */
+    --lh-head:  1.50;
+    --lh-title: 1.18;   /* 38px → 45px */
+
+    /* === Radius: pill（15-30px）とカード（8-12px）の二系統 === */
+    --r-pill:   18px;
+    --r-pill-l: 22px;
+    --r-pill-xl:30px;
+    --r-input:  15px;
+    --r-card:   12px;   /* 最多 17 要素 */
+    --r-row:     8px;
+    --r-mini:    4px;
+    --r-chip:    6px;
+
+    --container: 1286px;
+    --header-height: 126px;
+    --header-height-compact: 90px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-black);
+    font-family: var(--font);
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 32px;              /* 1.78 */
+    letter-spacing: var(--ls);      /* ★ここに1回だけ。子要素で再宣言しない */
+    /* font-feature-settings は実測 3 要素だけ。実質使っていないので書かない */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { background: var(--white); }
+  .header-top { max-width: var(--container); margin: 0 auto; padding: 14px 24px 0; display: flex; align-items: center; gap: 18px; }
+  .util { margin-left: auto; display: flex; align-items: center; gap: 18px; }
+  .util a { font-size: 13px; font-weight: 500; line-height: var(--lh-head); color: var(--text); text-decoration: none; letter-spacing: 0.04em; }
+  .split { display: inline-flex; }
+  .split .split-a { background: var(--orange-head); color: var(--text); font-size: 13px; font-weight: 500; line-height: var(--lh-head); letter-spacing: 0.04em; padding: 6px 12px 6px 16px; border-radius: 15px 0 0 15px; text-decoration: none; }
+  .split .split-b { background: var(--text); color: var(--white); font-size: 13px; font-weight: 500; line-height: var(--lh-head); letter-spacing: 0.04em; padding: 6px 16px 6px 12px; border-radius: 0 15px 15px 0; text-decoration: none; }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-mark { width: 62px; height: 34px; background: var(--orange); border-radius: var(--r-mini); }
+  .logo-en { font-size: 15px; font-weight: 700; line-height: 1.3; color: var(--text); }
+  .gnav { max-width: var(--container); margin: 0 auto; padding: 12px 24px 18px; display: flex; gap: 34px; justify-content: flex-end; }
+  .gnav a { font-size: 16px; font-weight: 500; line-height: var(--lh-head); letter-spacing: 0.04em; color: var(--text); text-decoration: none; }
+
+  .alertbar { background: var(--white); }
+  .alertbar-inner { max-width: var(--container); margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; gap: 14px; }
+  .alert-tag { background: var(--alert); color: var(--white); font-size: 14px; font-weight: 700; line-height: 1.78; letter-spacing: normal; padding: 2px 14px; border-radius: var(--r-mini); }
+  .alert-text { font-size: 14px; font-weight: 700; line-height: 1.78; letter-spacing: normal; color: var(--alert); }
+
+  /* SECTIONS */
+  .section { max-width: var(--container); margin: 0 auto; padding: 56px 24px; }
+  .section-alt { background: var(--bg-page); }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); line-height: var(--lh-head); margin-bottom: 8px; letter-spacing: 0; }
+  .section-title { font-size: 38px; font-weight: 400; line-height: var(--lh-title); letter-spacing: var(--ls-lead); margin-bottom: 16px; color: var(--text-black); }
+  .section-lead { font-size: 18px; line-height: var(--lh-body); max-width: 920px; margin-bottom: 28px; }
+  .note { font-size: 15px; line-height: 1.85; color: #3d3d3d; margin-top: 20px; max-width: 920px; background: var(--surface-2); border-radius: var(--r-card); padding: 16px 20px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: #efe8e2; padding: 1px 6px; border-radius: 3px; letter-spacing: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+  .swatch { background: var(--surface); border-radius: var(--r-card); overflow: hidden; border: 1px solid var(--border); }
+  .swatch-chip { height: 78px; }
+  .swatch-body { padding: 14px 16px 16px; }
+  .swatch-name { font-size: 15px; font-weight: 700; line-height: var(--lh-head); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); line-height: 1.6; margin-top: 3px; letter-spacing: 0; }
+  .swatch-use { font-size: 12px; line-height: 1.8; color: #3d3d3d; margin-top: 7px; }
+
+  /* TYPOGRAPHY */
+  .scale-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; margin-bottom: 26px; }
+  .scale-bar span { background: var(--surface-2); padding: 8px 14px; border-radius: var(--r-mini); line-height: var(--lh-head); }
+  .type-row { display: grid; grid-template-columns: 260px 1fr; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--border); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); line-height: 1.8; letter-spacing: 0; }
+  .type-meta b { display: block; font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: var(--ls); }
+
+  /* COMPONENTS */
+  .row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
+  .btn-orange { background: var(--orange); color: var(--white); border: 1px solid transparent; font-family: var(--font); font-size: 14px; font-weight: 700; line-height: var(--lh-head); letter-spacing: normal; padding: 6px 30px; border-radius: var(--r-pill); cursor: pointer; }
+  .btn-dark { background: var(--text); color: var(--white); border: 2px solid var(--text); font-family: var(--font); font-size: 16px; font-weight: 700; line-height: var(--lh-head); letter-spacing: normal; padding: 8px 30px; border-radius: var(--r-pill-l); cursor: pointer; }
+  .btn-search { background: var(--text); color: var(--white); border: 1px solid var(--text); font-family: var(--font); font-size: 20px; font-weight: 700; line-height: var(--lh-head); letter-spacing: normal; padding: 15px 64px 15px 48px; border-radius: var(--r-pill-xl); cursor: pointer; }
+  .btn-outline { background: var(--white); color: var(--orange); border: 1px solid var(--orange); font-family: var(--font); font-size: 14px; font-weight: 400; line-height: var(--lh-head); letter-spacing: normal; padding: 6px 14px; border-radius: var(--r-chip); cursor: pointer; }
+  .btn-outline.is-focus { outline: 3px solid var(--link); outline-offset: 2px; }
+  .btn-gray { background: var(--gray); color: var(--white); border: none; font-family: var(--font); font-size: 12px; font-weight: 500; line-height: var(--lh-head); letter-spacing: 0.04em; padding: 5px 20px; border-radius: 21px; cursor: pointer; }
+  .input { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-input); font-family: var(--font); font-size: 13px; font-weight: 500; letter-spacing: 0.04em; padding: 9px 16px 9px 30px; color: var(--text); width: 280px; }
+  .tag-new { color: var(--new); font-size: 14px; font-weight: 700; line-height: var(--lh-head); letter-spacing: normal; }
+
+  .grid-2 { display: grid; grid-template-columns: 320px 1fr; gap: 20px 32px; align-items: start; }
+  .status-card { background: var(--surface); border-radius: 0 var(--r-card) var(--r-card) 0; padding: 22px 26px; }
+  .status-title { font-size: 19px; font-weight: 500; line-height: var(--lh-body); color: var(--text); }
+  .status-row { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .status-row:last-child { border-bottom: none; }
+  .status-mark { width: 30px; height: 30px; border-radius: 50%; border: 3px solid var(--orange); }
+  .status-name { font-size: 17px; font-weight: 500; line-height: var(--lh-body); color: var(--text-black); }
+
+  .news-card { background: var(--surface); border-radius: var(--r-card); padding: 26px 30px; }
+  .news-head { font-size: 24px; font-weight: 700; line-height: var(--lh-head); color: var(--text); margin-bottom: 14px; }
+  .news-row { display: flex; align-items: baseline; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .news-row:last-child { border-bottom: none; }
+  .news-date { font-size: 15px; line-height: var(--lh-head); color: var(--text); white-space: nowrap; }
+  .news-cat { background: var(--surface-2); font-size: 13px; font-weight: 500; line-height: var(--lh-head); color: var(--text); padding: 3px 12px; border-radius: var(--r-card); white-space: nowrap; }
+  .news-title { font-size: 15px; line-height: var(--lh-head); color: var(--text); }
+
+  table { border-collapse: collapse; width: 100%; background: var(--surface); border-radius: var(--r-card); overflow: hidden; border: 1px solid var(--border); }
+  th, td { text-align: left; padding: 12px 18px; border-bottom: 1px solid var(--border); font-size: 15px; line-height: var(--lh-head); }
+  th { font-weight: 700; background: var(--surface-2); }
+
+  .footer { background: var(--text); color: var(--white); }
+  .footer-inner { max-width: var(--container); margin: 0 auto; padding: 44px 24px; }
+  .footer-title { font-size: 20px; font-weight: 700; line-height: var(--lh-head); margin-bottom: 12px; }
+  .footer p { font-size: 11px; font-weight: 500; line-height: 1.2; color: #d8d8d8; }
+  .footer-links { display: flex; gap: 20px; margin-bottom: 16px; }
+  .footer-links a { font-size: 15px; font-weight: 500; line-height: var(--lh-head); color: var(--white); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-mark"></div>
+      <div class="logo-en">Central Japan<br>Railway Company</div>
+    </div>
+    <div class="util">
+      <a href="#">よくあるご質問</a>
+      <a href="#">お問い合わせ</a>
+      <input class="input" type="text" placeholder="検索">
+      <span class="split"><a class="split-a" href="#">企業情報</a><a class="split-b" href="#">採用情報</a></span>
+    </div>
+  </div>
+  <nav class="gnav">
+    <a href="#">駅・電車ご利用</a><a href="#">新幹線予約・EX</a><a href="#">観光・お買い物</a><a href="#">リニア中央新幹線</a>
+  </nav>
+</header>
+
+<div class="alertbar">
+  <div class="alertbar-inner">
+    <span class="alert-tag">重要なお知らせ</span>
+    <span class="alert-text">「東海道・山陽・九州・西九州新幹線への特大荷物のお持ち込みに関するご案内」はこちら</span>
+  </div>
+</div>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">オレンジが2つ、地色は暖色</h2>
+  <p class="section-lead">ブランドのオレンジは <b>#fc6b01</b>（可視 106 要素）。ヘッダー右上の「企業情報」とヒーロー帯だけ<b>やや明るい #f87b22</b>（可視 11 要素）を使う。<b>ページの地色は白ではなく暖色のオフホワイト #f8f4f0。</b></p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#fc6b01"></div><div class="swatch-body"><div class="swatch-name">JR東海オレンジ</div><div class="swatch-hex">#fc6b01</div><div class="swatch-use">★可視 106 要素。pill ボタン・検索ボックスの面・リンク色</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f87b22"></div><div class="swatch-body"><div class="swatch-name">Orange (Header)</div><div class="swatch-hex">#f87b22</div><div class="swatch-use">可視 11 要素。ヘッダーの「企業情報」・ヒーロー上部の帯</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e70d1e"></div><div class="swatch-body"><div class="swatch-name">Alert Red</div><div class="swatch-hex">#e70d1e</div><div class="swatch-use">重要なお知らせのリンク文字（可視 1 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#cc0000"></div><div class="swatch-body"><div class="swatch-name">New Red</div><div class="swatch-hex">#cc0000</div><div class="swatch-use">NEW バッジ（可視 3 要素）。★面ではなく文字色で出す</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Text / Surface Dark</div><div class="swatch-hex">#333333</div><div class="swatch-use">★本文・見出し 可視 84 要素。墨 pill の面にも使う</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f8f4f0;border-bottom:1px solid #dedede"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#f8f4f0</div><div class="swatch-use">★トップの地色（根拠 body）。下層ページは #ffffff</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fffcf8;border-bottom:1px solid #dedede"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#fffcf8</div><div class="swatch-use">運行状況・ニュース・アクセス検索のカード面（可視 7 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fff6f0;border-bottom:1px solid #dedede"></div><div class="swatch-body"><div class="swatch-name">Surface 2</div><div class="swatch-hex">#fff6f0</div><div class="swatch-use">カテゴリタブの面（可視 3 要素）</div></div></div>
+  </div>
+
+  <p class="note"><b><code>#efefef</code> はページの地色ではない。</b>DOM 上は<b>可視 315 要素</b>で最多だが、これは折りたたまれた FAQ ウィジェットの地色で<b>スクリーンショットには写らない</b>。<code>uniqueBackgrounds</code> の上位をそのまま採用しないこと。</p>
+</section>
+
+<section class="section-alt">
+<div class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">body に 0.048em を1回だけ</h2>
+  <p class="section-lead"><code>letter-spacing</code> は <b><code>body</code> に <code>0.048em</code> を1回書いて継承させる</b>。実測は <b>0.864px（18px × 0.048）が 86 要素</b>で最多。<b>子要素で em を再宣言していない</b>ので、<code>font-size</code> が変わっても字間の px 値は 0.864px のまま継承される。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:11px">11</span><span style="font-size:13px">13</span><span style="font-size:14px">14</span>
+    <span style="font-size:15px">15</span><span style="font-size:16px">16</span><span style="font-size:18px">18</span>
+    <span style="font-size:20px">20</span><span style="font-size:24px;font-weight:700">24</span>
+    <span style="font-size:38px;font-weight:400">38</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Page Title</b>Noto Sans JP / 38px / <b style="display:inline">400</b><br>lh 45px (1.18) / <b style="display:inline">ls 0.096em</b></div><div style="font-size:38px;font-weight:400;line-height:1.18;letter-spacing:0.096em">重要なお知らせ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Heading</b>Noto Sans JP / 24px / 700<br>lh 36px (1.50) / ls 継承（0.864px）</div><div style="font-size:24px;font-weight:700;line-height:1.5;color:#333">ニュースリリース</div></div>
+  <div class="type-row"><div class="type-meta"><b>Heading (fluid)</b>Noto Sans JP / 18.9751px / 500<br>lh 33.7335px (1.78)</div><div style="font-size:18.9751px;font-weight:500;line-height:1.78;color:#333">運行状況</div></div>
+  <div class="type-row"><div class="type-meta"><b>Heading 3</b>Noto Sans JP / 20px / 700<br>lh 30px (1.50)</div><div style="font-size:20px;font-weight:700;line-height:1.5;color:#333">アクセス検索</div></div>
+  <div class="type-row"><div class="type-meta"><b>Heading 4</b>Noto Sans JP / 18px / 500<br>lh 27px (1.50)</div><div style="font-size:18px;font-weight:500;line-height:1.5;color:#333">お客様窓口ご案内</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>Noto Sans JP / 18px / 400<br>lh <b style="display:inline">32px (1.78)</b> / ls 0.048em</div><div style="font-size:18px;line-height:1.78">東海道・山陽新幹線に遅れ等の情報はありません。ご利用の際は最新の運行状況をご確認ください。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Label</b>Noto Sans JP / 16px / 700<br>lh 28.4444px (1.78)</div><div style="font-size:16px;font-weight:700;line-height:1.78;color:#333">出発駅</div></div>
+  <div class="type-row"><div class="type-meta"><b>Alert ★</b>Noto Sans JP / 14px / 700<br>lh 24.8889px (1.78) / <b style="display:inline">ls normal</b></div><div style="font-size:14px;font-weight:700;line-height:1.78;letter-spacing:normal;color:#e70d1e">重要なお知らせ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Utility</b>Noto Sans JP / 13px / 500<br>lh 19.5px (1.50) / ls 0.52px</div><div style="font-size:13px;font-weight:500;line-height:1.5;letter-spacing:0.52px;color:#333">よくあるご質問　お問い合わせ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Note</b>Noto Sans JP / 13px / 500<br>lh 22.1px (1.70) / <b style="display:inline">ls 0.312px</b></div><div style="font-size:13px;font-weight:500;line-height:1.7;letter-spacing:0.312px;color:#333">最高の粋を結集した新幹線。安全性、安定性、快適性、環境性能を高い次元で両立させています。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Copyright</b>Noto Sans JP / 11px / 500<br>lh 13.2px (1.20)</div><div style="font-size:11px;font-weight:500;line-height:1.2;color:#575757">©Central Japan Railway Company</div></div>
+
+  <p class="note"><b>ウェイトは 400 / 500 / 700 / 900 の4本だけ。</b><code>@font-face</code> をこの4段に分けて宣言し、4本とも <code>loaded</code>。<b>可変版（<code>100 900</code>）は <code>unloaded</code>。</b>既定ウェイトは <b>500</b>（実測 93 要素）で、400 はほぼ <code>body</code> だけ。<br><b>下層ページの h1 が <code>font-weight: 300</code> を指定しているが、300 は読み込まれていないので実際には 400 が出る。</b>設計意図ほど細くならないので、新規実装では 300 を当てない（このプレビューも 400 で組んである）。</p>
+
+  <p class="note"><b>字間の例外は少ない。</b>既定 0.864px（86 要素）のほか、ユーティリティ 0.52px（0.04em・6 要素）、グローバルナビ 0.64px（0.04em・4 要素）、車両紹介のキャプション 0.312px（0.024em・8 要素）、<code>重要なお知らせ</code> の帯だけ <code>normal</code>。<b>下層ページの h1 のみ 0.096em ＝ 既定の2倍に開く。</b></p>
+
+  <p class="note"><b>実サイトの <code>font-family</code> は末尾を <code>"sans-serif"</code> とクォートして書いている。</b>クォートすると「sans-serif という名前のフォント」を探すことになり、<b>総称ファミリとして機能しない</b>。正しくはクォートなしの <code>sans-serif</code>（このプレビューは直してある）。<br>また <b>Lato / Montserrat が <code>loaded</code> になっているが、可視テキストの <code>font-family</code> 分布には 1 要素も現れない</b>。読み込まれているだけで描画に使われていないので、前提に組まないこと。</p>
+
+  <p class="note"><b>サイト本体と外部ウィジェットで書体系統が違う。</b>検索ボックスと FAQ ウィジェットだけ <code>メイリオ, Meiryo, "ヒラギノ角ゴ　Pro W3", …</code> のレガシースタックで、字間も <code>normal</code>。このスタックは <code>"ヒラギノ角ゴ　Pro W3"</code> の中に<b>全角スペースが 2 つ</b>入っていて実在するファミリ名と一致しない。<b>本体側のスタックだけを使うこと。</b></p>
+</div>
+</section>
+
+<section class="section" id="components">
+  <div class="section-label">03 / Components</div>
+  <h2 class="section-title">pill とカードの二系統</h2>
+  <p class="section-lead">ボタンは <b>pill（18 / 21 / 22 / 30px）</b>、カードは <b>12px</b>、小要素は <b>4px</b>。ヘッダーの「企業情報／採用情報」は <code>15px 0 0 15px</code> と <code>0 15px 15px 0</code> を並べて<b>1つの pill に見せている</b>。</p>
+
+  <div class="row">
+    <button class="btn-orange">最初に戻る</button>
+    <button class="btn-dark">インフォメーション</button>
+    <button class="btn-search">検索する</button>
+  </div>
+  <div class="row">
+    <button class="btn-outline">定期券</button>
+    <button class="btn-outline is-focus">フォーカス状態</button>
+    <button class="btn-gray">メニューを閉じる</button>
+    <span class="split"><a class="split-a" href="#">企業情報</a><a class="split-b" href="#">採用情報</a></span>
+    <span class="tag-new">NEW</span>
+  </div>
+
+  <div class="grid-2">
+    <div class="status-card">
+      <div class="status-title">運行状況</div>
+      <div class="status-row"><div class="status-mark"></div><div class="status-name">東海道・山陽新幹線</div></div>
+      <div class="status-row"><div class="status-mark" style="border-radius:0;border-width:0;width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-bottom:26px solid #fc6b01"></div><div class="status-name">在来線</div></div>
+    </div>
+    <div class="news-card">
+      <div class="news-head">ニュースリリース</div>
+      <div class="news-row"><span class="news-date">2026年9月17日</span><span class="news-cat">商品・サービス</span><span class="tag-new">NEW</span><span class="news-title">【社長会見】ＥＸサービス２５周年記念キャンペーンの実施について</span></div>
+      <div class="news-row"><span class="news-date">2026年9月16日</span><span class="news-cat">その他</span><span class="news-title">「いざいざ奈良」キャンペーン 東大寺編の展開について</span></div>
+      <div class="news-row"><span class="news-date">2026年9月12日</span><span class="news-cat">商品・サービス</span><span class="news-title">在来線の駅・車内における多言語放送の試行について</span></div>
+    </div>
+  </div>
+
+  <p class="note"><b>影で階層を作らないサイト。</b><code>box-shadow</code> はトップで <code>rgba(47,48,52,0.05) 0 4px 8px 0</code> が 1 要素だけ、下層ページは 0 件。カードの区別は<b>暖色の面の階調</b>（地色 <code>#f8f4f0</code> → カード <code>#fffcf8</code> → タブ <code>#fff6f0</code>）と角丸で行う。<br><b>運行状況カードのように、左端だけ角を落とすカードがある</b>（<code>border-radius: 0 12px 12px 0</code>・6 要素）。</p>
+
+  <p class="note"><b>外部ウィジェット側にブラウザ既定のボタン枠（<code>2px outset</code>）が残っている</b>（<code>MENU</code> <code>CLOSE</code> <code>閉じる</code>）。実サイトの実装漏れなので真似しないこと。</p>
+</section>
+
+<section class="section-alt">
+<div class="section" id="layout">
+  <div class="section-label">04 / Layout</div>
+  <h2 class="section-title">1286px の一本勝負</h2>
+
+  <table>
+    <tr><th style="width:230px">項目</th><th>値</th><th>実測</th></tr>
+    <tr><td>Container</td><td><code>1286px</code></td><td>4 要素。<b>このサイト唯一のコンテナ幅</b></td></tr>
+    <tr><td>Header Height</td><td><code>126px</code> → <code>90px</code></td><td><code>--header-height</code> / <code>--header-height-compact</code>（<b>自社トークンはこの 2 個だけ</b>）</td></tr>
+    <tr><td>Gap</td><td><code>normal 8px</code> / <code>normal 40px</code></td><td>2 件 / 1 件</td></tr>
+    <tr><td>Gap（カード）</td><td><code>20px 32px</code> / <code>20px 40px</code></td><td>2 件 / 1 件</td></tr>
+    <tr><td>Breakpoint</td><td><code>min-width: 1206px</code></td><td>2 件</td></tr>
+    <tr><td>Breakpoint</td><td><code>max-width: 860px</code> / <code>751px</code> / <code>330px</code></td><td>各 1 件</td></tr>
+  </table>
+
+  <p class="note"><b>ブレークポイントの宣言数が極端に少ない。</b>レイアウトは主に流体サイズで作っている（見出しに <code>18.9751px</code> <code>16.8668px</code> の半端な値が出るのはそのため）。<br><b>字間は px 継承なので、サイズが変わっても字間は変わらない</b>点に注意する。</p>
+
+  <p class="note"><b>CSS Custom Properties を数えるときは中身を見ること。</b>トップで 21 個検出されるうち <b>19 個は <code>--vc-*</code>（カルーセルライブラリの既定値）</b>で自社トークンではない。カルーセルの無い下層ページでは 2 個に減る。</p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-title">Central Japan Railway Company</div>
+    <div class="footer-links"><a href="#">サイトマップ</a><a href="#">よくいただくご質問</a><a href="#">お問い合わせ</a><a href="#">このページのトップへ</a></div>
+    <p>©Central Japan Railway Company All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>
