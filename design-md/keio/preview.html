@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 京王電鉄（Keio Corporation）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Oswald:wght@400&display=swap" rel="stylesheet">
+<style>
+  /* ★html のルートが 10px。rem は「表示 px ÷ 10」になる。
+       16px 前提で読み替えると全サイズが 1.6 倍ずれる。 */
+  html { font-size: 10px; }
+
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は 0 個（トップ・下層とも）。以下は computed style の実測値。2026-09-22 */
+    --navy:      #0f3675;   /* ★京王ネイビー。背景 26 要素・文字 9 要素。構造（ナビ・枠・h1） */
+    --magenta:   #d6007f;   /* ★京王マゼンタ。背景 6 要素・文字 3 要素。強調（「あなた」・タグ） */
+    --cyan:      #0175ab;   /* 座席指定列車の帯（可視 1 要素） */
+    --slate:     #27455c;   /* 画像オーバーレイ（可視 8 要素） */
+
+    --text:      #333333;   /* ★本文・ナビ（可視 96 要素で最多） */
+    --text-head: #222222;   /* カード見出し・記事タイトル（可視 34 要素） */
+    --text-muted:#555555;   /* 日付・説明文（可視 13 要素） */
+
+    --bg:        #ffffff;   /* ★ページの地色（viewportTopBySample 2/3） */
+    --surface:   #eff3f6;   /* 固定サイドメニューの面 */
+    --surface-2: #cddcf2;   /* グローバルナビのホバー面 */
+    --border:    #cccccc;   /* 区切り線（可視 20 要素） */
+    --footer-bg: #333333;   /* フッターの面（可視 44 要素） */
+
+    /* セクション帯：ブランド2色をそれぞれ極端に薄めて -30deg でつなぐ */
+    --grad: linear-gradient(-30deg, #f8edf4, #e8f4fb);
+
+    /* === Fonts ===
+       ★Noto Sans JP 一本（@font-face は 300 / 400 / 500 / 700 の4本、4本とも loaded）。
+         フォールバックは sans-serif のみ。OS 和文（游ゴシック・ヒラギノ・メイリオ）を並べていない。
+       ── フッターのコピーライトが font-weight: 100 を指定しているが 100 は読み込まれていない。
+          実際には最も近い 300 で描かれる（このプレビューも 300 で組んである）。
+       ── Oswald は 300/400/500/700 を宣言しているが loaded は 400 だけ。 */
+    --font: "Noto Sans JP", sans-serif;
+    --font-en: Oswald, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Letter spacing ===
+       ★body の 0.4px を全要素に継承させる。可視 216 / 233 要素。
+          10px × 0.04em の結果を、14px でも 50px でも 0.4px のまま受け継ぐ。em に読み替えない。 */
+    --ls: 0.4px;
+
+    /* === Line height: 見出し・ラベル 1.4 / 読ませる文章 1.6 === */
+    --lh-head: 1.4;
+    --lh-body: 1.6;
+
+    /* === Radius === */
+    --r-card:  1.2rem;   /* 12px。19 要素 */
+    --r-btn:   0.8rem;   /* 8px。16 要素 */
+    --r-tag:   3.6rem;   /* 36px。pill */
+    --r-tab:   1.2rem 1.2rem 0 0;
+
+    /* === Elevation: 1 種類だけ。黒ではなく紺を薄めた影 === */
+    --sh: 0 4px 24px rgba(0,25,65,.12);   /* 123 要素 */
+
+    --container: 128rem;  /* 1280px */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 1.6rem;              /* 16px */
+    font-weight: 400;
+    line-height: var(--lh-head);    /* 1.4 */
+    letter-spacing: var(--ls);      /* ★ここに1回だけ。子要素で再宣言しない */
+    /* font-feature-settings は実測 0 件。palt を当てない */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { background: #fff; box-shadow: var(--sh); position: relative; z-index: 2; }
+  .header-top { max-width: var(--container); margin: 0 auto; padding: 1.6rem 2.4rem; display: flex; align-items: center; gap: 2.4rem; }
+  .logo { font-family: var(--font-en); font-size: 3.2rem; color: var(--navy); letter-spacing: 0.1rem; }
+  .util { margin-left: auto; display: flex; gap: 2rem; align-items: center; }
+  .util a { font-size: 1.3rem; color: var(--text); text-decoration: none; }
+  .gnav { display: flex; gap: 2.8rem; max-width: var(--container); margin: 0 auto; padding: 0 2.4rem 1.6rem; justify-content: flex-end; }
+  .gnav a { font-size: 1.6rem; font-weight: 500; color: var(--text); text-decoration: none; }
+
+  .opbar { max-width: var(--container); margin: 0 auto; padding: 1.8rem 2.4rem; display: flex; align-items: center; gap: 1.6rem; }
+  .opbar-label { color: var(--navy); font-size: 1.4rem; font-weight: 500; }
+  .opbar-text { font-size: 1.4rem; line-height: var(--lh-body); }
+
+  /* HERO */
+  .hero { background: var(--grad); }
+  .hero-in { max-width: var(--container); margin: 0 auto; padding: 6rem 2.4rem; display: flex; align-items: center; gap: 3rem; }
+  .hero-copy { font-size: 5.2rem; font-weight: 500; line-height: var(--lh-head); color: var(--navy); }
+  .hero-copy em { font-style: normal; color: var(--magenta); }
+  .circle { margin-left: auto; width: 14rem; height: 14rem; border-radius: 50%; background: var(--navy); color: #fff; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 1.6rem; font-weight: 500; line-height: var(--lh-head); }
+
+  /* SECTIONS */
+  .section { max-width: var(--container); margin: 0 auto; padding: 5.6rem 2.4rem; }
+  .section-alt { background: var(--surface); }
+  .section-label { font-family: var(--font-mono); font-size: 1.2rem; color: var(--text-muted); margin-bottom: 0.8rem; }
+  .section-title { font-size: 5rem; font-weight: 500; line-height: var(--lh-head); margin-bottom: 1.6rem; color: var(--text-head); }
+  .section-lead { font-size: 1.6rem; line-height: var(--lh-body); max-width: 92rem; margin-bottom: 2.8rem; }
+  .en-head { font-family: var(--font-en); font-size: 2.8rem; color: var(--text); margin-bottom: 1.2rem; }
+  .note { font-size: 1.5rem; line-height: 1.85; color: var(--text-muted); margin-top: 2rem; max-width: 96rem; background: #fff; border-radius: var(--r-card); box-shadow: var(--sh); padding: 1.6rem 2.2rem; }
+  code { font-family: var(--font-mono); font-size: 1.2rem; background: var(--surface); padding: 0.1rem 0.6rem; border-radius: 0.3rem; letter-spacing: normal; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(23rem, 1fr)); gap: 1.6rem; }
+  .swatch { background: #fff; border-radius: var(--r-card); overflow: hidden; box-shadow: var(--sh); }
+  .swatch-chip { height: 7.6rem; }
+  .swatch-body { padding: 1.4rem 1.8rem 1.8rem; }
+  .swatch-name { font-size: 1.5rem; font-weight: 500; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 1.1rem; color: var(--text-muted); margin-top: 0.3rem; }
+  .swatch-use { font-size: 1.2rem; line-height: 1.8; color: var(--text-muted); margin-top: 0.7rem; }
+
+  /* TYPOGRAPHY */
+  .scale-bar { display: flex; gap: 1rem; flex-wrap: wrap; align-items: baseline; margin-bottom: 2.6rem; }
+  .scale-bar span { background: #fff; box-shadow: var(--sh); padding: 0.8rem 1.4rem; border-radius: var(--r-btn); }
+  .type-row { display: grid; grid-template-columns: 26rem 1fr; gap: 2.4rem; padding: 1.8rem 0; border-bottom: 1px solid var(--border); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 1.1rem; color: var(--text-muted); line-height: 1.8; }
+  .type-meta b { display: block; font-family: var(--font); font-size: 1.3rem; font-weight: 500; color: var(--text); }
+
+  /* COMPONENTS */
+  .row { display: flex; gap: 1.4rem; flex-wrap: wrap; align-items: center; margin-bottom: 2rem; }
+  .btn-outline { background: #fff; color: var(--text); border: 1px solid var(--navy); font-family: var(--font); font-size: 1.6rem; font-weight: 500; letter-spacing: var(--ls); padding: 2rem 4.5rem 2rem 3.5rem; border-radius: var(--r-btn); cursor: pointer; }
+  .btn-outline.is-focus { outline: 3px solid var(--magenta); outline-offset: 2px; }
+  .btn-reload { background: #fff; color: var(--text); border: 1px solid var(--navy); font-family: var(--font); font-size: 1.2rem; letter-spacing: normal; padding: 0.5rem 1.5rem; border-radius: var(--r-btn); cursor: pointer; }
+  .tag { background: #fff; color: var(--magenta); border: 1px solid var(--magenta); font-size: 1.2rem; padding: 0.2rem 1.5rem 0.3rem; border-radius: var(--r-tag); }
+  .tab { background: var(--magenta); color: #fff; font-size: 1.4rem; padding: 0.5rem 1.5rem; border-radius: var(--r-tab); display: inline-block; }
+  .tabpanel { background: #fff; box-shadow: var(--sh); border-radius: 0 var(--r-card) var(--r-card); padding: 2rem 2.4rem; font-size: 1.5rem; line-height: var(--lh-body); color: var(--text-muted); max-width: 52rem; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  .card { background: #fff; border-radius: var(--r-card); box-shadow: var(--sh); padding: 2.4rem 2.6rem; }
+  .card-label { font-size: 1.8rem; font-weight: 500; line-height: var(--lh-head); color: var(--text-head); margin-bottom: 0.8rem; }
+  .card-body { font-size: 1.5rem; line-height: var(--lh-body); color: var(--text-muted); }
+
+  .side { display: inline-flex; flex-direction: column; border-radius: var(--r-btn); overflow: hidden; box-shadow: var(--sh); }
+  .side a { background: var(--surface); color: var(--text); font-size: 1rem; padding: 2rem 0.5rem; width: 6.4rem; text-align: center; text-decoration: none; }
+  .side a.is-brand { background: var(--navy); color: #fff; }
+
+  table { border-collapse: collapse; width: 100%; background: #fff; border-radius: var(--r-card); overflow: hidden; box-shadow: var(--sh); }
+  th, td { text-align: left; padding: 1.2rem 1.8rem; border-bottom: 1px solid var(--border); font-size: 1.5rem; line-height: var(--lh-head); }
+  th { font-weight: 500; background: var(--surface); }
+
+  .footer { background: var(--footer-bg); color: #fff; }
+  .footer-in { max-width: var(--container); margin: 0 auto; padding: 4.4rem 2.4rem; }
+  .footer-links { display: flex; gap: 2rem; margin-bottom: 1.4rem; }
+  .footer-links a { font-size: 1.3rem; color: #fff; text-decoration: none; }
+  .footer p { font-size: 1rem; font-weight: 300; line-height: 1.15; color: #d8d8d8; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <div class="logo">KEIO</div>
+    <div class="util">
+      <a href="#">よくあるご質問/お問合せ</a><a href="#">採用情報</a><a href="#">法人の方へ</a><a href="#">京王グループ</a>
+    </div>
+  </div>
+  <nav class="gnav">
+    <a href="#">電車に乗る</a><a href="#">暮らす</a><a href="#">おでかけ</a><a href="#">京王の取り組み</a><a href="#">IR・企業情報</a><a href="#">ニュース</a>
+  </nav>
+  <div class="opbar">
+    <span class="opbar-label">運行情報</span>
+    <span class="opbar-text">[09:03] 京王線・井の頭線は平常通り運転しています。</span>
+    <button class="btn-reload">更新</button>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-in">
+    <div class="hero-copy"><em>あなた</em>とあたらしいあしたへ</div>
+    <div class="circle">京王の<br>取り組み</div>
+  </div>
+</div>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">紺が構造、マゼンタが人</h2>
+  <p class="section-lead">ブランドは <b>紺 <code>#0f3675</code></b> と <b>マゼンタ <code>#d6007f</code></b> の2色。紺がナビ・枠・見出しといった<b>構造</b>を受け持ち、マゼンタは<b>ヒーローの「あなた」・記事タグ・チケットレスサービス</b>だけに出る。<b>マゼンタを面で広く使わない。</b></p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#0f3675"></div><div class="swatch-body"><div class="swatch-name">京王ネイビー</div><div class="swatch-hex">#0f3675</div><div class="swatch-use">★背景 26 要素・文字 9 要素。ナビ／丸ボタン／h1／アイコン</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#d6007f"></div><div class="swatch-body"><div class="swatch-name">京王マゼンタ</div><div class="swatch-hex">#d6007f</div><div class="swatch-use">★背景 6 要素・文字 3 要素。強調だけに使う</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#333333</div><div class="swatch-use">★本文・ナビ（可視 96 要素で最多）。フッターの面にも使う</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#222222"></div><div class="swatch-body"><div class="swatch-name">Text Heading</div><div class="swatch-hex">#222222</div><div class="swatch-use">カード見出し・記事タイトル（可視 34 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#eff3f6;border-bottom:1px solid #cccccc"></div><div class="swatch-body"><div class="swatch-name">Surface Cool</div><div class="swatch-hex">#eff3f6</div><div class="swatch-use">画面右の固定サイドメニューの面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:linear-gradient(-30deg,#f8edf4,#e8f4fb)"></div><div class="swatch-body"><div class="swatch-name">Section Gradient</div><div class="swatch-hex">-30deg, #f8edf4 → #e8f4fb</div><div class="swatch-use">ブランド2色をそれぞれ薄めてつないだ帯</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#0175ab"></div><div class="swatch-body"><div class="swatch-name">Cyan</div><div class="swatch-hex">#0175ab</div><div class="swatch-use">座席指定列車（京王ライナー）の帯</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000088"></div><div class="swatch-body"><div class="swatch-name">（採用しない）CMP</div><div class="swatch-hex">#000088</div><div class="swatch-use">★OneTrust のクッキーバナー（可視 7 要素）。<b>サイトの色ではない</b></div></div></div>
+  </div>
+
+  <p class="note"><b>クッキーバナー（OneTrust）の値は混ぜない。</b><code>#000088</code> のボタン、<code>13.008px</code> の文字、<code>0.13008px</code> の字間、<code>font-weight: 600</code> は<b>このサイトに存在しない値</b>。分布にこの半端な数値が出てきたら CMP と判断してよい。</p>
+</section>
+
+<section class="section-alt">
+<div class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <div class="en-head">TYPOGRAPHY</div>
+  <h2 class="section-title">ルートが 10px、字間は 0.4px の継承</h2>
+  <p class="section-lead"><code>html { font-size: 10px }</code>。<b><code>rem</code> がそのまま「px ÷ 10」</b>になる（<code>1.4rem</code> = 14px）。字間は <code>body</code> の <code>0.4px</code> を<b>可視 216 / 233 要素</b>が継承し、<b>14px でも 50px でも 0.4px のまま</b>。<code>font-feature-settings</code> は <b>0 件</b>で、<code>palt</code> を使っていない。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:1rem">10</span><span style="font-size:1.2rem">12</span><span style="font-size:1.3rem">13</span>
+    <span style="font-size:1.4rem">14</span><span style="font-size:1.6rem">16</span><span style="font-size:1.8rem;font-weight:500">18</span>
+    <span style="font-size:2.2rem;font-weight:500">22</span><span style="font-size:4rem;font-weight:500">40</span><span style="font-size:5rem;font-weight:500">50</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Hero / h1 ★</b>Noto Sans JP / 52px (5.2rem) / <b style="display:inline">500</b><br>lh 72.8px (1.40) / ls 0.4px</div><div style="font-size:5.2rem;font-weight:500;line-height:1.4;color:var(--navy)"><span style="color:var(--magenta)">あなた</span>とあたらしいあしたへ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Heading</b>Noto Sans JP / 50px (5.0rem) / 500<br>lh 70px (1.40)</div><div style="font-size:5rem;font-weight:500;line-height:1.4;color:var(--text-head)">電車に乗る</div></div>
+  <div class="type-row"><div class="type-meta"><b>English Heading</b><b style="display:inline">Oswald</b> / 28px / 400<br>★loaded は 400 だけ</div><div style="font-family:var(--font-en);font-size:2.8rem;line-height:1.4">TOPICS 01</div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Label (L)</b>Noto Sans JP / 22px (2.2rem) / 500<br>lh 30.8px (1.40)</div><div style="font-size:2.2rem;font-weight:500;line-height:1.4;color:var(--text-head)">駅・時刻表・路線図</div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Label ★</b>Noto Sans JP / 18px (1.8rem) / 500<br>lh 25.2px (1.40)</div><div style="font-size:1.8rem;font-weight:500;line-height:1.4;color:var(--text-head)">きっぷ・定期・PASMO・タッチ決済</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav / Body ★</b>Noto Sans JP / 16px (1.6rem) / 500<br>lh 22.4px (1.40)・<b style="display:inline">可視 83 要素で最多</b></div><div style="font-size:1.6rem;font-weight:500;line-height:1.4">暮らす　おでかけ　京王の取り組み</div></div>
+  <div class="type-row"><div class="type-meta"><b>List / Info ★</b>Noto Sans JP / 14px (1.4rem) / 400<br>lh 22.4px (1.60)・可視 69 要素</div><div style="font-size:1.4rem;line-height:1.6">[09:03] 京王線・井の頭線は平常通り運転しています。振替輸送は実施しておりません。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Sub</b>Noto Sans JP / 15px (1.5rem) / 400<br>lh 1.60</div><div style="font-size:1.5rem;line-height:1.6;color:var(--text-muted)">沿線遊園地利用券や他社線乗車券がセットになった、おとくなきっぷをご案内します。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Utility</b>Noto Sans JP / 13px (1.3rem) / 400</div><div style="font-size:1.3rem;line-height:1.6">よくあるご質問/お問合せ　採用情報</div></div>
+  <div class="type-row"><div class="type-meta"><b>Copyright</b>Noto Sans JP / 10px / <b style="display:inline">100 →（実効 300）</b><br>lh 11.5px (1.15)</div><div style="font-size:1rem;font-weight:300;line-height:1.15;color:var(--text-muted)">Copyright(C) Keio Corporation All Rights Reserved.</div></div>
+
+  <p class="note"><b>ウェイトは 400 と 500 が主。</b>実測 <b>400 (144) / 500 (84) / 700 (2) / 100 (1)</b>。見出し・ナビ・ラベルが 500、本文と一覧が 400。<b><code>font-weight: 100</code> は <code>@font-face</code> に無い</b>ので、コピーライトは実際には 300 で描かれる。<b>新規実装で 100 を当てない。</b></p>
+  <p class="note"><b>行間は 1.40 と 1.60 の2値。</b>1.40 が 140 要素（見出し・ナビ・カードラベル）、1.60 が 84 要素（運行情報・ニュース・説明文）。<code>body</code> の <code>1.15</code> は継承の起点で、可視テキストには使われていない。</p>
+  <p class="note"><b><code>palt</code> を足さないこと。</b><code>font-feature-settings</code> は実測 0 件。字送りは <code>letter-spacing: 0.4px</code> の継承だけで作っている。<b>字間を <code>em</code> に読み替えるのも誤り</b>（大きい見出しほど相対的に詰まって見えるのがこのサイトの字面）。</p>
+  <p class="note"><b>フォールバックが <code>sans-serif</code> 1 つだけ。</b>OS 和文（游ゴシック・ヒラギノ・メイリオ）を並べていない。<b>Windows の游ゴシック問題を「そもそも游ゴシックを使わない」ことで回避している</b>型。</p>
+</div>
+</section>
+
+<section class="section" id="components">
+  <div class="section-label">03 / Components</div>
+  <h2 class="section-title">影は1種類しかない</h2>
+  <p class="section-lead"><code>0 4px 24px rgba(0,25,65,.12)</code> が <b>123 要素</b>。ヘッダーもカードもパネルも固定メニューも<b>全部同じ深さ</b>で浮いている。角丸は<b>カード 12px ／ ボタン 8px ／ タグ 36px ／ 丸ボタン 50%</b>。</p>
+
+  <div class="row">
+    <button class="btn-outline">電車に乗るトップ</button>
+    <button class="btn-outline is-focus">フォーカス状態</button>
+    <button class="btn-reload">更新</button>
+    <span class="tag">生活</span>
+    <span class="tag">バス・タクシー</span>
+    <span class="side"><a class="is-brand" href="#">京王アプリ</a><a href="#">遅延証明書</a></span>
+  </div>
+
+  <div class="row" style="align-items:flex-start;flex-direction:column;gap:0">
+    <span class="tab">Takao Area</span>
+    <div class="tabpanel">高尾エリア — 季節を問わず楽しめる高尾山と、その麓のまちをご紹介します。</div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-label">駅・時刻表・路線図</div>
+      <div class="card-body">各駅の時刻表、構内図、バリアフリー設備をご案内します。</div>
+    </div>
+    <div class="card">
+      <div class="card-label">京王ライナー / Mt.TAKAO号</div>
+      <div class="card-body">WEBサイト上で事前に予約できる有料座席指定列車です。</div>
+    </div>
+    <div class="card">
+      <div class="card-label">京王トレインポイント</div>
+      <div class="card-body">京王の鉄道乗車ポイントサービスをご覧いただけます。</div>
+    </div>
+  </div>
+
+  <p class="note"><b>タブは上だけ角丸、パネルは下だけ角丸。</b><code>12px 12px 0 0</code> と <code>0 12px 12px</code> を組にして「タブが面に刺さっている」形を作る（各 4 要素）。</p>
+  <p class="note"><b>ボタンの主力は「白地・紺枠・radius 8px」。</b>padding は <code>20px 45px 20px 35px</code> で<b>右にアイコン分のアキ</b>を取る。面で塗った紺のボタンはヒーローの丸ボタン（<code>50%</code>）と固定サイドメニューだけ。</p>
+</section>
+
+<section class="section-alt">
+<div class="section" id="layout">
+  <div class="section-label">04 / Layout</div>
+  <h2 class="section-title">961px を主、1200px を副</h2>
+
+  <table>
+    <tr><th style="width:23rem">項目</th><th>値</th><th>実測</th></tr>
+    <tr><td>Root</td><td><code>html { font-size: 10px }</code></td><td><b>★rem = px ÷ 10</b></td></tr>
+    <tr><td>Container</td><td><code>1280px</code></td><td>トップ 15 要素 / 下層 11 要素。記事幅は <code>810px</code></td></tr>
+    <tr><td>Gap</td><td><code>0 20px</code></td><td>8 要素で最多。次いで <code>0 15px</code> / <code>10px 8px</code></td></tr>
+    <tr><td>Gap（%）</td><td><code>0 5%</code> / <code>0 4%</code> / <code>0 3%</code> / <code>0 2%</code></td><td>％指定の gap も併用</td></tr>
+    <tr><td>Breakpoint（SP）</td><td><code>max-width: 960.98px</code></td><td><b>1123 件で主力</b></td></tr>
+    <tr><td>Breakpoint（PC）</td><td><code>min-width: 961px</code> / <code>1200px</code></td><td>146 件 / 26 件</td></tr>
+    <tr><td>Breakpoint（小型）</td><td><code>max-width: 348.98px</code></td><td>25 件。<b>349px 未満を個別に見ている</b></td></tr>
+  </table>
+
+  <p class="note"><b>CSS Custom Properties は 0 個。</b>色も余白もすべて生値。<b>再実装ではこのページの <code>:root</code> のようにトークン化して使う。</b></p>
+  <p class="note"><b>深さの段差を作らない。</b><code>box-shadow</code> は <code>0 4px 24px rgba(0,25,65,.12)</code> の1種類だけ（123 要素）。もう1件ある <code>0 0 18px rgba(0,0,0,.2)</code> は CMP のバナーで、サイトの実装ではない。</p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-in">
+    <div class="footer-links"><a href="#">サイトマップ</a><a href="#">個人情報保護方針</a><a href="#">ご利用にあたって</a><a href="#">Language</a></div>
+    <p>Copyright(C) Keio Corporation All Rights Reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>

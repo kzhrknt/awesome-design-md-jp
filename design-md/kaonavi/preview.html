@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: カオナビ（kaonavi）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       自社トークン 58 個（WordPress 由来の --wp--preset--* 47 個は除く）。
+       実サイトの変数名をそのまま使っている。値は computed style の実測。2026-09-22 */
+    --sun:    #ffda1b;   /* ★マーカー引き・ラベル・ヒーロー1枚目の地色（可視 11 要素） */
+    --water:  #447fe0;   /* ★CTA の面色（可視 10 要素）。文字色には使わない */
+    --night:  #202226;   /* ★本文色（可視 146 要素） */
+    --cloud:  #ffffff;
+    --leaf:   #2f7417;   /* 変数にはあるが実装に現れない（実際の緑は --av-400/500） */
+
+    /* リンク・タブの文字色。面の青（--water）とは別の値 */
+    --pu-400: #3f6ecc;   /* ★可視 107 要素 */
+    --pu-600: #303560;   /* チップの文字（可視 15 要素） */
+    --pu-50:  #edf6ff;   /* 導入事例セクション・ヒーロー3枚目 */
+
+    --av-500: #197f38;   /* 機能バッジ（可視 9 要素） */
+    --av-400: #30a143;   /* 「新機能が登場」バッジ */
+    --pa-400: #ee7100;   /* 「人数」バッジ */
+    --ly-400: #d64c3a;   /* 変数のみ（トップには出ない） */
+
+    --gr-50:  #fafafc;   /* セミナー・料金カードの面 */
+    --gr-100: #f0f1f5;   /* ★チップの面（可視 64 要素で最多） */
+    --gr-500: #737378;   /* 日付 */
+    --gr-600: #56575b;   /* 補足 */
+    --sa-50:  #fbf8ee;   /* ドロワー・タブの面 */
+    --sand:   #f6efdc;   /* ヒーロー2枚目の地色 */
+    --bg:     #ffffff;   /* ★ページの地色（下層 pageBackground.resolved 4/4） */
+
+    /* === Fonts ===
+       ★実サイトのスタックは先頭が YakuHanJP（約物だけのサブセットフォント）。
+         document.fonts でも loaded。palt と併用して二重に詰めている。
+         YakuHanJP は npm/CDN 配布のため、このプレビューでは読み込まず 2 番目以降で描画している。
+       ── Noto Sans JP は 400 / 700 が loaded、500 は unloaded。
+       ── Adobe Fonts の ryo-gothic-plusn(800) / tbudmincho-std(500,900) も loaded だが、
+          可視テキストの font-family 分布には 1 要素も現れない（読み込まれているだけ）。 */
+    --font: YakuHanJP, 游ゴシック体, YuGothic, "Yu Gothic M", "游ゴシック Medium",
+            "Yu Gothic Medium", "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN W3",
+            "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, Osaka,
+            "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+    --font-noto: "Noto Sans JP", sans-serif;   /* 変数 --noto。ヒーロー見出しの 24 要素だけ */
+    --font-num:  Inter, sans-serif;            /* 変数 --inter。数字 */
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height / Letter spacing ===
+       ★body の letter-spacing は normal。字間は要素ごとに当てる（継承型ではない）。 */
+    --lh-body: 1.80;    /* 16px → 28.8px */
+    --lh-head: 1.40;
+    --ls-cta:  2.4px;   /* 0.1em（24px 基準）。大型 CTA */
+    --ls-head: 1px;     /* セクション見出し */
+
+    /* === Radius === */
+    --r-card:  12px;   /* 最多 50 要素 */
+    --r-chip:  14px;
+    --r-badge: 32px;
+    --r-mini:   4px;
+    --r-pill:  20px;
+
+    /* === Elevation ===
+       変数 --elevation-1-box / --elevation-2-box（rgba(32,34,38,…)）は定義されているが
+       実装では 1 要素しか使っていない。主力は下の 3 重の影（35 要素）。 */
+    --sh-cta:  0 2px 2px rgba(0,0,0,.14), 0 6px 10px -2px rgba(0,0,0,.14), 0 1px 5px rgba(0,0,0,.2);
+    --sh-chip: 0 2px 8px rgba(0,0,0,.25);
+
+    --container: 1280px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--night);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: var(--lh-body);      /* 1.80 */
+    letter-spacing: normal;           /* ★body は normal。詰めは palt が担当する */
+    font-feature-settings: "palt";    /* ★1111 要素。事実上ページ全体 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { background: #fff; box-shadow: 0 1px 4px rgba(32,34,38,.12); }
+  .header-in { max-width: var(--container); margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; gap: 28px; }
+  .logo { display: flex; align-items: center; gap: 8px; font-size: 22px; font-weight: 700; }
+  .logo-mark { width: 26px; height: 26px; background: var(--water); border-radius: 50% 50% 50% 4px; position: relative; }
+  .logo-mark::after { content: ""; position: absolute; right: -6px; top: -4px; width: 12px; height: 12px; background: var(--sun); border-radius: 50%; }
+  .gnav { display: flex; gap: 22px; margin-left: 8px; }
+  .gnav a { font-size: 14px; font-weight: 700; color: var(--night); text-decoration: none; letter-spacing: 0.7658px; }
+  .header-cta { margin-left: auto; display: flex; gap: 10px; }
+
+  /* SECTIONS */
+  .section { max-width: var(--container); margin: 0 auto; padding: 56px 24px; }
+  .section-alt { background: var(--sa-50); }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--gr-500); margin-bottom: 8px; }
+  .section-title { font-family: var(--font-noto); font-size: 40px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-head); margin-bottom: 16px; }
+  .section-lead { font-size: 16px; line-height: var(--lh-body); max-width: 920px; margin-bottom: 28px; }
+  .mark { background-image: linear-gradient(rgba(0,0,0,0) 70%, var(--sun) 30%); }
+  .note { font-size: 15px; line-height: 1.85; color: var(--gr-600); margin-top: 20px; max-width: 960px; background: var(--gr-50); border-radius: 10px; padding: 16px 20px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--gr-100); padding: 1px 6px; border-radius: 3px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+  .swatch { background: #fff; border-radius: var(--r-card); overflow: hidden; border: 1px solid var(--gr-100); }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 14px 16px 16px; }
+  .swatch-name { font-size: 15px; font-weight: 700; line-height: var(--lh-head); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--gr-500); margin-top: 3px; }
+  .swatch-use { font-size: 12px; line-height: 1.8; color: var(--gr-600); margin-top: 7px; }
+  .scale-row { display: flex; margin-top: 18px; border-radius: 8px; overflow: hidden; }
+  .scale-row div { flex: 1; height: 44px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 10px; }
+
+  /* TYPOGRAPHY */
+  .scale-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; margin-bottom: 26px; }
+  .scale-bar span { background: var(--gr-100); padding: 8px 14px; border-radius: var(--r-mini); line-height: var(--lh-head); }
+  .type-row { display: grid; grid-template-columns: 270px 1fr; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--gr-100); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--gr-500); line-height: 1.8; }
+  .type-meta b { display: block; font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--night); }
+
+  /* COMPONENTS */
+  .row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
+  .btn-primary { background: var(--water); color: #fff; border: 2px solid var(--water); font-family: var(--font); font-size: 24px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-cta); padding: 12px 24px; border-radius: var(--r-card); box-shadow: var(--sh-cta); cursor: pointer; font-feature-settings: "palt"; }
+  .btn-secondary { background: #fff; color: var(--pu-400); border: 2px solid var(--water); font-family: var(--font); font-size: 24px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-cta); padding: 12px 24px; border-radius: var(--r-card); box-shadow: var(--sh-cta); cursor: pointer; font-feature-settings: "palt"; }
+  .btn-small { background: var(--water); color: #fff; border: 2px solid var(--water); font-family: var(--font); font-size: 14px; font-weight: 700; padding: 8px 18px; border-radius: var(--r-mini); cursor: pointer; }
+  .btn-ghost { background: #fff; color: var(--pu-400); border: 2px solid var(--water); font-family: var(--font); font-size: 14px; font-weight: 700; padding: 8px 18px; border-radius: var(--r-mini); cursor: pointer; }
+  .btn-ghost.is-focus { outline: 3px solid var(--pa-400); outline-offset: 2px; }
+  .btn-pill { background: var(--water); color: #fff; border: 1px solid var(--water); font-family: var(--font); font-size: 16px; font-weight: 700; padding: 9.888px 16px; border-radius: 25.888px; cursor: pointer; }
+  .cta-2line { display: inline-flex; flex-direction: column; align-items: center; }
+  .cta-2line small { font-size: 20px; font-weight: 700; letter-spacing: normal; }
+
+  .badge { color: #fff; font-size: 18px; font-weight: 700; letter-spacing: 1px; padding: 4px 12px; border-radius: var(--r-badge); }
+  .badge-new { background: var(--av-400); font-size: 14px; letter-spacing: 1.12px; border-radius: var(--r-pill); padding: 2px 16px; }
+  .label-sun { background: var(--sun); color: var(--night); font-size: 14px; font-weight: 700; letter-spacing: 1px; padding: 2px 16px; border-radius: var(--r-card); }
+  .chip { background: var(--gr-100); color: var(--pu-600); font-size: 16px; padding: 4px 16px; border-radius: var(--r-chip); }
+  .chip.is-on { background: var(--pu-50); box-shadow: var(--sh-chip); }
+
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .card { background: #fff; border-radius: var(--r-card); box-shadow: var(--sh-cta); padding: 20px 24px; }
+  .card-head { font-size: 22px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-head); margin-bottom: 10px; }
+  .card-body { font-size: 16px; line-height: var(--lh-body); color: var(--gr-600); }
+  .card-num { font-family: var(--font-num); font-size: 48px; font-weight: 900; color: var(--water); line-height: 1.1; }
+
+  table { border-collapse: collapse; width: 100%; background: #fff; border-radius: var(--r-card); overflow: hidden; border: 1px solid var(--gr-100); }
+  th, td { text-align: left; padding: 12px 18px; border-bottom: 1px solid var(--gr-100); font-size: 15px; line-height: var(--lh-head); }
+  th { font-weight: 700; background: var(--gr-50); }
+
+  .footer { background: var(--gr-100); }
+  .footer-in { max-width: var(--container); margin: 0 auto; padding: 40px 24px; }
+  .footer-links { display: flex; gap: 20px; margin-bottom: 14px; }
+  .footer-links a { font-size: 14px; font-weight: 700; color: var(--pu-400); text-decoration: none; }
+  .footer p { font-family: var(--font-num); font-size: 12px; color: var(--gr-500); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-in">
+    <div class="logo"><span class="logo-mark"></span>kaonavi</div>
+    <nav class="gnav">
+      <a href="#">カオナビとは</a><a href="#">機能</a><a href="#">活用シーン</a><a href="#">サポート</a><a href="#">料金</a><a href="#">導入事例</a>
+    </nav>
+    <div class="header-cta">
+      <button class="btn-ghost">お役立ち資料</button>
+      <button class="btn-small">お問い合わせ</button>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">太陽・水・夜・雲で名付ける</h2>
+  <p class="section-lead">自社トークンは <b>58 個</b>。基本色が <code>--sun</code> <code>--water</code> <code>--night</code> <code>--cloud</code> <code>--leaf</code> という<b>自然物の名前</b>で、そこに 6 系統のスケール（<code>--gr-*</code> <code>--pu-*</code> <code>--av-*</code> <code>--ly-*</code> <code>--pa-*</code> <code>--sa-*</code>）が 50〜600 で付く。<b>面の青（<code>#447fe0</code>）と文字の青（<code>#3f6ecc</code>）は別の値</b>なので混ぜない。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#ffda1b"></div><div class="swatch-body"><div class="swatch-name">--sun</div><div class="swatch-hex">#ffda1b</div><div class="swatch-use">★マーカー引き・強調ラベル・ヒーロー1枚目の地色（可視 11 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#447fe0"></div><div class="swatch-body"><div class="swatch-name">--water</div><div class="swatch-hex">#447fe0</div><div class="swatch-use">★CTA の面色（可視 10 要素）。<b>文字色には使わない</b></div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#3f6ecc"></div><div class="swatch-body"><div class="swatch-name">--pu-400</div><div class="swatch-hex">#3f6ecc</div><div class="swatch-use">★リンク・タブの文字色（可視 107 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#202226"></div><div class="swatch-body"><div class="swatch-name">--night</div><div class="swatch-hex">#202226</div><div class="swatch-use">★本文色（可視 146 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#197f38"></div><div class="swatch-body"><div class="swatch-name">--av-500</div><div class="swatch-hex">#197f38</div><div class="swatch-use">機能バッジの面（可視 9 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ee7100"></div><div class="swatch-body"><div class="swatch-name">--pa-400</div><div class="swatch-hex">#ee7100</div><div class="swatch-use">「人数」バッジの面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f0f1f5;border-bottom:1px solid #dadcdf"></div><div class="swatch-body"><div class="swatch-name">--gr-100</div><div class="swatch-hex">#f0f1f5</div><div class="swatch-use">★チップの面（可視 64 要素で最多）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fbf8ee;border-bottom:1px solid #eddfbb"></div><div class="swatch-body"><div class="swatch-name">--sa-50</div><div class="swatch-hex">#fbf8ee</div><div class="swatch-use">グローバルナビのドロワー・タブの面</div></div></div>
+  </div>
+
+  <div class="scale-row">
+    <div style="background:#edf6ff;color:#303560">--pu-50</div><div style="background:#a2caf9;color:#303560">100</div><div style="background:#579ef2;color:#fff">200</div><div style="background:#4b86df;color:#fff">300</div><div style="background:#3f6ecc;color:#fff">400</div><div style="background:#385296;color:#fff">500</div><div style="background:#303560;color:#fff">600</div>
+  </div>
+
+  <p class="note"><b>ヒーローの地色はスライドごとに変わる。</b><code>#f6efdc</code> / <code>#ffda1b</code> / <code>#edf6ff</code> の 3 枚が <code>swiper-slide</code> として同時に DOM 上にあるため、<code>pageBackground.resolved</code> は <code>#edf6ff</code> を返す。<b>ページの地色は白。</b></p>
+  <p class="note"><b><code>--leaf: #2f7417</code> は変数にあるだけで実装に現れない。</b>実際の緑は <code>--av-400: #30a143</code> と <code>--av-500: #197f38</code>。<b>変数の宣言値をそのまま実装値として書かないこと。</b></p>
+</section>
+
+<section class="section-alt">
+<div class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title"><span class="mark">YakuHanJP</span> と palt で二重に詰める</h2>
+  <p class="section-lead"><code>font-feature-settings: "palt"</code> が <b>1111 要素</b>（下層 531 要素）。さらに <code>font-family</code> の先頭に<b>約物だけのサブセットフォント <code>YakuHanJP</code></b> を置く。<b><code>body</code> の <code>letter-spacing</code> は <code>normal</code></b> で、字間は要素ごとに当てる（継承型ではない）。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:10px">10</span><span style="font-size:12px">12</span><span style="font-size:14px">14</span>
+    <span style="font-size:16px">16</span><span style="font-size:18px">18</span><span style="font-size:20px">20</span>
+    <span style="font-size:24px;font-weight:700">24</span><span style="font-size:32px;font-weight:700">32</span>
+    <span style="font-size:48px;font-weight:700">48</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Hero Headline</b>Noto Sans JP / 44px / 700<br>lh 70.4px (1.60) / ls 2.46297px</div><div style="font-family:var(--font-noto);font-size:44px;font-weight:700;line-height:1.6;letter-spacing:2.46297px">人事から現場まで根付く</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Heading ★</b>Noto Sans JP / 48px / 700<br>lh 67.2px (1.40) / <b style="display:inline">ls 1px</b></div><div style="font-family:var(--font-noto);font-size:48px;font-weight:700;line-height:1.4;letter-spacing:1px"><span class="mark">タレントマネジメント</span>システム</div></div>
+  <div class="type-row"><div class="type-meta"><b>Number</b>Inter / 48px / 900<br>数字だけ欧文に切り替える</div><div style="font-family:var(--font-num);font-size:48px;font-weight:900;color:var(--water);line-height:1.1">4,500</div></div>
+  <div class="type-row"><div class="type-meta"><b>CTA Label ★</b>游ゴシック / 24px / 700<br>lh 33.6px (1.40) / <b style="display:inline">ls 2.4px（0.1em）</b></div><div style="font-size:24px;font-weight:700;line-height:1.4;letter-spacing:2.4px">見積もりしてみる</div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Heading</b>游ゴシック / 22px / 700</div><div style="font-size:22px;font-weight:700;line-height:1.4;letter-spacing:1px">カオナビとは</div></div>
+  <div class="type-row"><div class="type-meta"><b>Badge</b>游ゴシック / 18px / 700 / ls 1px</div><div style="font-size:18px;font-weight:700;letter-spacing:1px;color:var(--av-500)">従業員データベース</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>游ゴシック / 16px / 400<br>lh <b style="display:inline">28.8px (1.80)</b> / <b style="display:inline">ls normal</b></div><div style="font-size:16px;line-height:1.8">人材配置や育成など、組織の未来を左右する判断を誤らないために、人事データを一元化して可視化します。</div></div>
+  <div class="type-row"><div class="type-meta"><b>UI / Nav ★</b>游ゴシック / 14px / 700<br>lh 28.8px (2.06)・<b style="display:inline">可視 145 要素で最多</b></div><div style="font-size:14px;font-weight:700;line-height:2.06;letter-spacing:0.7658px;color:var(--pu-400)">活用シーン　一覧を見る</div></div>
+  <div class="type-row"><div class="type-meta"><b>Chip</b>游ゴシック / 12px / 400 / ls 0.6564px</div><div style="font-size:12px;letter-spacing:0.6564px;color:var(--pu-600)">小規模向け　中規模向け　大規模向け</div></div>
+  <div class="type-row"><div class="type-meta"><b>Note</b>游ゴシック / 10px / 400</div><div style="font-size:10px;color:var(--gr-500)">※:タレントマネジメントシステム シェアNo.1</div></div>
+
+  <p class="note"><b>ウェイトは 700 が既定。</b>実測は <b>700 (172) / 400 (138) / 500 (17) / 900 (6) / 800 (1)</b>。見出しもナビも 700 で、中間の 500 はほとんど使わない。<b><code>Noto Sans JP</code> の 500 は <code>unloaded</code></b> なので、500 を当てても Noto Sans JP では描かれない。</p>
+  <p class="note"><b>本文に <code>letter-spacing</code> を当てない。</b>既定は <code>normal</code>（242 要素）。開くのは<b>セクション見出し（1px）と大型 CTA（2.4px ＝ 0.1em）だけ</b>。日本語の大きな文字は放っておくと詰まって見えるため、サイズが上がったときだけ広げる。</p>
+  <p class="note"><b>変数 <code>--noto</code> は定義されているが、Noto Sans JP で描かれるのは 24 要素だけ。</b>残り 296 要素は <code>YakuHanJP ＋ 游ゴシック体</code> のローカルスタック。<b>Windows の游ゴシック問題は「<code>Yu Gothic M</code> という別名の <code>@font-face</code> ＋ スタックに <code>游ゴシック Medium</code> を並べる」合わせ技で解いている。</b></p>
+</div>
+</section>
+
+<section class="section" id="components">
+  <div class="section-label">03 / Components</div>
+  <h2 class="section-title">影で浮かせる大きな CTA</h2>
+  <p class="section-lead">CTA は <b>radius 12px・3 重の影</b>。バッジは <b>32px</b>、チップは <b>14px</b>、ヘッダーの小ボタンだけ <b>4px</b>。強調は下線でも面色でもなく、<b>文字の下 30% を黄色く塗るマーカー引き</b>で作る。</p>
+
+  <div class="row">
+    <button class="btn-primary"><span class="cta-2line"><small>目的・企業規模別にわかる</small>詳しい料金を知りたい</span></button>
+    <button class="btn-secondary"><span class="cta-2line"><small>3分でわかるカオナビ</small>資料をダウンロード</span></button>
+  </div>
+  <div class="row">
+    <button class="btn-small">お問い合わせ</button>
+    <button class="btn-ghost">お役立ち資料</button>
+    <button class="btn-ghost is-focus">フォーカス状態</button>
+    <button class="btn-pill">詳細はこちら</button>
+  </div>
+  <div class="row">
+    <span class="badge" style="background:var(--av-500)">機能</span>
+    <span class="badge" style="background:var(--pa-400)">人数</span>
+    <span class="badge-new badge">新機能が登場</span>
+    <span class="label-sun">だから、カオナビは</span>
+    <span class="chip">1000〜4999名</span>
+    <span class="chip is-on">製造・メーカー</span>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-head">人材情報の一元化</div>
+      <div class="card-body">紙とExcelに散らばった情報を1か所にまとめ、異動検討の工数を削減します。</div>
+    </div>
+    <div class="card">
+      <div class="card-head">人事評価</div>
+      <div class="card-body">いまお使いの評価シートをそのまま再現。運用を変えずに電子化できます。</div>
+    </div>
+    <div class="card">
+      <div class="card-num">4,500</div>
+      <div class="card-body">社以上のユーザーが集うコミュニティ（※2026年6月時点）</div>
+    </div>
+  </div>
+
+  <p class="note"><b>影は 3 重が主力。</b><code>0 2px 2px rgba(0,0,0,.14), 0 6px 10px -2px rgba(0,0,0,.14), 0 1px 5px rgba(0,0,0,.2)</code> が 35 要素。選択中のチップだけ <code>0 2px 8px rgba(0,0,0,.25)</code>。<br><b>変数 <code>--elevation-1-box</code> / <code>--elevation-2-box</code>（<code>rgba(32,34,38,…)</code>）は定義されているのに実装では 1 要素しか使っていない。</b></p>
+  <p class="note"><b>マーカー引きの実装:</b> <code>background-image: linear-gradient(rgba(0,0,0,0) 70%, #ffda1b 30%)</code>。ヒーローだけ下 40%（<code>60% / 0%</code>）。<b>下線でも面色でもない</b>ので、`text-decoration` で代用しないこと。</p>
+</section>
+
+<section class="section-alt">
+<div class="section" id="layout">
+  <div class="section-label">04 / Layout</div>
+  <h2 class="section-title">1280px と 768px の一本道</h2>
+
+  <table>
+    <tr><th style="width:230px">項目</th><th>値</th><th>実測</th></tr>
+    <tr><td>Container</td><td><code>1280px</code></td><td>30 要素で最多。読み物は <code>962px</code> / <code>800px</code> / <code>760px</code></td></tr>
+    <tr><td>Wide</td><td><code>1440px</code> / <code>1760px</code></td><td>画像を含む帯</td></tr>
+    <tr><td>Gap</td><td><code>0 10px</code></td><td>11 要素で最多。カードは 16 / 20 / 30 / 40px</td></tr>
+    <tr><td>Breakpoint</td><td><code>max-width: 768px</code></td><td><b>138 件。これ1本で PC / SP を切り替える</b></td></tr>
+    <tr><td>Breakpoint（補助）</td><td><code>max-width: 1024px</code></td><td>2 件</td></tr>
+    <tr><td>Radius</td><td>12 / 14 / 32 / 20 / 4px</td><td>カード 50 要素・チップ 15・バッジ 10</td></tr>
+  </table>
+
+  <p class="note"><b>CSS 変数は 105 個検出されるが、自社トークンは 58 個。</b>残り 47 個は <code>--wp--preset--*</code>（WordPress / Gutenberg の既定値）で設計トークンではない。<b>件数だけで「トークンが充実している」と判断しないこと。</b></p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-in">
+    <div class="footer-links"><a href="#">プライバシーポリシー</a><a href="#">情報セキュリティ方針</a><a href="#">サイトマップ</a></div>
+    <p>© 2012-2026 kaonavi, inc.</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 近畿日本鉄道（Kintetsu Railway）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は 0 個（トップ・下層とも）。色は生値で書かれている。
+       以下は computed style の実測値をトークン化したもの。2026-09-22 */
+    --blue:       #0068b7;   /* ★近鉄ブルー。背景 234 要素・文字 19 要素。ブランド色はこの1色 */
+    --yellow:     #f8b500;   /* ★「特急券購入」だけに使う（可視 3 要素）。他の CTA に流用しない */
+    --blue-info:  #2891e1;   /* 遅延証明書タイル */
+    --blue-pale:  #c2e0f6;   /* 列車走行位置タイル */
+    --blue-steel: #6094bb;   /* デジタルきっぷタイル */
+    --brown:      #755735;   /* 沿線まちづくりの本文（可視 1 要素） */
+
+    --text:       #222222;   /* ★見出し・本文（可視 52 要素） */
+    --text-2:     #444444;   /* 下層リンク・小見出し（可視 14 要素） */
+    --text-muted: #666666;   /* ★日付（可視 37 要素） */
+    --text-footer:#888888;   /* フッターのユーティリティ */
+
+    --bg:         #ffffff;   /* ★ページの地色（viewportTopBySample 3/3） */
+    --sf-1:       #f2f8ff;   /* 「電車に乗る」セクション */
+    --sf-2:       #f8fbff;   /* カード */
+    --sf-3:       #deeffc;   /* ヒーロー下の帯 */
+    --sf-4:       #edf2f8;   /* お知らせ・ニュースリリース */
+    --border:     #ccd2d6;   /* 検索・お知らせ pill の枠 */
+
+    /* === Fonts ===
+       Noto Sans JP の @font-face は 400 と 500 の 2 本だけ（どちらも loaded）。
+       ★700 は宣言も指定も無い。書くとブラウザの合成太字になる。
+       slick（カルーセルのアイコンフォント）は status: error。本文の描画には影響しない。 */
+    --font: "Noto Sans JP", 游ゴシック体, YuGothic, 游ゴシック, "Yu Gothic",
+            "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", ヒラギノ角ゴシック,
+            "Hiragino Sans", Verdana, メイリオ, Meiryo, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Letter spacing ===
+       ★body に 0.04em を1回だけ書いて継承させる。実測は 0.64px（16px × 0.04）が 147/156 要素。
+          font-size が 14px でも 44px でも 0.64px のまま。「サイズ × 0.04em」で計算し直さない。 */
+    --ls: 0.04em;
+
+    /* === Line height: 読ませる 1.6 / 一覧 1.3 の2値 === */
+    --lh-body: 1.6;
+    --lh-list: 1.3;
+
+    /* === Radius: pill 900px / カード 20px / タイル 5px === */
+    --r-pill: 900px;
+    --r-card: 20px;
+    --r-tile:  5px;
+
+    /* === Elevation: 黒を使わない。紺 rgba(5,48,81,α) を 5px 8px 30px で === */
+    --sh-1: 5px 8px 30px rgba(5,48,81,.08);
+    --sh-2: 5px 8px 30px rgba(5,48,81,.1);
+    --sh-3: 5px 8px 30px rgba(5,48,81,.35);
+    --sh-y: 5px 8px 30px rgba(4,65,102,.12);
+
+    --container: 1280px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 400;                /* ★400 と 500 だけ。700 は使わない */
+    line-height: var(--lh-body);     /* 1.6 → 25.6px */
+    letter-spacing: var(--ls);       /* ★ここに1回だけ。子要素で再宣言しない */
+    font-feature-settings: "palt";   /* ★846 要素。全面適用 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { background: #fff; }
+  .header-top { max-width: var(--container); margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; gap: 20px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 500; color: var(--blue); }
+  .logo-mark { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--blue); }
+  .util { margin-left: auto; display: flex; gap: 22px; }
+  .util a { font-size: 14px; color: var(--text-2); text-decoration: none; }
+  .gnav { border-top: 1px solid var(--sf-4); border-bottom: 1px solid var(--sf-4); }
+  .gnav-in { max-width: var(--container); margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: repeat(4, 1fr); }
+  .gnav-in a { padding: 18px 0; text-align: center; font-size: 16px; font-weight: 500; color: var(--text); text-decoration: none; border-left: 1px solid var(--sf-4); }
+  .gnav-in a:last-child { border-right: 1px solid var(--sf-4); }
+
+  /* 運行情報バー：機能ごとに色を割り当てる */
+  .opbar { max-width: var(--container); margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; gap: 12px; }
+  .opbar-label { color: var(--blue); font-size: 15px; font-weight: 500; white-space: nowrap; }
+  .opbar-text { font-size: 15px; color: var(--text); }
+  .tiles { margin-left: auto; display: flex; }
+  .tile { color: var(--text); font-size: 14px; font-weight: 500; padding: 14px 15px; border-radius: var(--r-tile); text-decoration: none; }
+
+  /* SECTIONS */
+  .section { max-width: var(--container); margin: 0 auto; padding: 56px 24px; }
+  .section-alt { background: var(--sf-1); }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+  .section-title { font-size: 44px; font-weight: 400; line-height: var(--lh-list); margin-bottom: 16px; }
+  .section-lead { font-size: 16px; line-height: var(--lh-body); max-width: 920px; margin-bottom: 28px; }
+  .note { font-size: 15px; line-height: 1.85; color: var(--text-2); margin-top: 20px; max-width: 960px; background: var(--sf-4); border-radius: var(--r-card); padding: 16px 22px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--sf-3); padding: 1px 6px; border-radius: 3px; letter-spacing: normal; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+  .swatch { background: #fff; border-radius: var(--r-card); overflow: hidden; border: 1px solid var(--sf-4); }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 14px 18px 18px; }
+  .swatch-name { font-size: 15px; font-weight: 500; line-height: var(--lh-list); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+  .swatch-use { font-size: 12px; line-height: 1.8; color: var(--text-2); margin-top: 7px; }
+
+  /* TYPOGRAPHY */
+  .scale-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; margin-bottom: 26px; }
+  .scale-bar span { background: var(--sf-2); border: 1px solid var(--sf-4); padding: 8px 14px; border-radius: var(--r-tile); line-height: var(--lh-list); }
+  .type-row { display: grid; grid-template-columns: 265px 1fr; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--sf-4); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); line-height: 1.8; }
+  .type-meta b { display: block; font-family: var(--font); font-size: 13px; font-weight: 500; color: var(--text); }
+
+  /* COMPONENTS */
+  .row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
+  .btn-primary { background: var(--blue); color: #fff; border: 2px solid var(--blue); font-family: var(--font); font-size: 16px; font-weight: 500; letter-spacing: var(--ls); padding: 18px 40px; border-radius: var(--r-pill); cursor: pointer; }
+  .btn-outline { background: #fff; color: var(--blue); border: 2px solid var(--blue); font-family: var(--font); font-size: 16px; font-weight: 500; letter-spacing: var(--ls); padding: 18px 40px; border-radius: var(--r-pill); cursor: pointer; }
+  .btn-outline.is-focus { outline: 3px solid var(--yellow); outline-offset: 2px; }
+  .btn-accent { background: var(--yellow); color: var(--text); border: none; font-family: var(--font); font-size: 18px; font-weight: 500; letter-spacing: var(--ls); padding: 16px 36px; border-radius: var(--r-pill); box-shadow: var(--sh-y); cursor: pointer; }
+  .btn-note { background: #fff; color: var(--text); border: 1px solid var(--border); font-family: var(--font); font-size: 15px; font-weight: 500; letter-spacing: var(--ls); padding: 15px 15px 15px 40px; border-radius: var(--r-pill); cursor: pointer; }
+  .btn-small { background: var(--blue); color: #fff; border: none; font-family: var(--font); font-size: 14px; font-weight: 500; letter-spacing: var(--ls); padding: 14px 15px; border-radius: var(--r-tile); cursor: pointer; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .card { background: #fff; border: 4px solid #fff; border-radius: var(--r-card); box-shadow: var(--sh-1); padding: 35px 30px 38px; }
+  .card.is-feature { box-shadow: var(--sh-3); }
+  .card-label { font-size: 20px; font-weight: 500; line-height: var(--lh-body); margin-bottom: 10px; }
+  .card-body { font-size: 15px; line-height: var(--lh-list); color: var(--text-muted); }
+
+  .news-row { display: flex; align-items: baseline; gap: 18px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .news-date { font-size: 14px; color: var(--text-muted); white-space: nowrap; }
+  .news-title { font-size: 14px; line-height: var(--lh-list); color: var(--text); }
+
+  table { border-collapse: collapse; width: 100%; background: #fff; border-radius: var(--r-card); overflow: hidden; border: 1px solid var(--sf-4); }
+  th, td { text-align: left; padding: 12px 18px; border-bottom: 1px solid var(--sf-4); font-size: 15px; line-height: var(--lh-list); }
+  th { font-weight: 500; background: var(--sf-2); }
+
+  .footer { background: var(--sf-4); }
+  .footer-in { max-width: var(--container); margin: 0 auto; padding: 40px 24px; }
+  .footer-links { display: flex; gap: 20px; margin-bottom: 14px; }
+  .footer-links a { font-size: 13px; color: var(--text-footer); text-decoration: none; }
+  .footer p { font-size: 13px; color: var(--text-footer); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <div class="logo"><span class="logo-mark"></span>近畿日本鉄道</div>
+    <div class="util"><a href="#">お知らせ</a><a href="#">ニュースリリース</a><a href="#">LANGUAGE</a><a href="#">よくあるご質問</a></div>
+  </div>
+  <nav class="gnav">
+    <div class="gnav-in"><a href="#">電車に乗る</a><a href="#">観光・おでかけ</a><a href="#">暮らす</a><a href="#">企業・採用情報</a></div>
+  </nav>
+  <div class="opbar">
+    <span class="opbar-label">運行情報</span>
+    <span class="opbar-text">現在は15分以上の列車の遅れはございません</span>
+    <div class="tiles">
+      <a class="tile" href="#" style="background:var(--blue);color:#fff">運行情報詳細</a>
+      <a class="tile" href="#" style="background:var(--blue-pale)">列車走行位置</a>
+      <a class="tile" href="#" style="background:var(--blue-info)">遅延証明書</a>
+      <a class="tile" href="#" style="background:var(--yellow)">特急券購入</a>
+      <a class="tile" href="#" style="background:var(--blue-steel)">デジタルきっぷ</a>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">ブランド色は青1色、黄は特急券だけ</h2>
+  <p class="section-lead">ナビの面も、pill ボタンも、リンクもアイコンも<b>すべて <code>#0068b7</code></b>（背景 234 要素）。<b>黄色 <code>#f8b500</code> は「特急券を買う」動線にしか出てこない</b>（可視 3 要素）ので、他の CTA に流用しない。面はグレーではなく<b>青みのオフホワイト 4 種</b>から選ぶ。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#0068b7"></div><div class="swatch-body"><div class="swatch-name">近鉄ブルー</div><div class="swatch-hex">#0068b7</div><div class="swatch-use">★背景 234 要素・文字 19 要素。ナビ／CTA／リンク／アイコンのすべて</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f8b500"></div><div class="swatch-body"><div class="swatch-name">アクセント（特急券）</div><div class="swatch-hex">#f8b500</div><div class="swatch-use">★可視 3 要素。<b>特急券の動線専用</b></div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#2891e1"></div><div class="swatch-body"><div class="swatch-name">Info Blue</div><div class="swatch-hex">#2891e1</div><div class="swatch-use">遅延証明書タイル</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#c2e0f6"></div><div class="swatch-body"><div class="swatch-name">Pale Blue</div><div class="swatch-hex">#c2e0f6</div><div class="swatch-use">列車走行位置タイル</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#222222"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#222222</div><div class="swatch-use">★見出し・本文（可視 52 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#666666"></div><div class="swatch-body"><div class="swatch-name">Text Muted</div><div class="swatch-hex">#666666</div><div class="swatch-use">★日付（可視 37 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f2f8ff;border-bottom:1px solid #ccd2d6"></div><div class="swatch-body"><div class="swatch-name">Surface Blue 1</div><div class="swatch-hex">#f2f8ff</div><div class="swatch-use">「電車に乗る」セクションの面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#edf2f8;border-bottom:1px solid #ccd2d6"></div><div class="swatch-body"><div class="swatch-name">Surface Gray Blue</div><div class="swatch-hex">#edf2f8</div><div class="swatch-use">お知らせ・ニュースリリースのセクション</div></div></div>
+  </div>
+
+  <p class="note"><b>運行情報バーは機能ごとに色を変える。</b><code>#0068b7</code>（詳細）/ <code>#c2e0f6</code>（走行位置）/ <code>#2891e1</code>（遅延証明書）/ <code>#f8b500</code>（特急券）/ <code>#6094bb</code>（デジタルきっぷ）。<b>5 つのタイルが並ぶこと自体がこのサイトの顔</b>なので、1 色に揃えない。</p>
+  <p class="note"><b>CSS Custom Properties は 0 個。</b>色も余白も生値で書かれている。<b>トークンが無いこと自体が実装の実態</b>なので、再実装ではこのページの変数のように名前を与えて使う。</p>
+</section>
+
+<section class="section-alt">
+<div class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">太字を使わない</h2>
+  <p class="section-lead"><code>font-weight</code> は <b>400（114 要素）と 500（42 要素）だけ。700 は 1 要素も無い</b>。<code>@font-face</code> も Noto Sans JP の 400 / 500 の 2 本しか読み込んでいない。<b>階層はサイズと色で作る。</b>字間は <code>body</code> に <code>0.04em</code> を 1 回書いて継承させる（実測 <b>0.64px が 147/156 要素</b>）。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:13px">13</span><span style="font-size:14px">14</span><span style="font-size:15px">15</span>
+    <span style="font-size:16px">16</span><span style="font-size:18px;font-weight:500">18</span><span style="font-size:20px;font-weight:500">20</span>
+    <span style="font-size:26px">26</span><span style="font-size:38px">38</span><span style="font-size:44px">44</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Page Title ★</b>Noto Sans JP / 44px / <b style="display:inline">400</b><br>lh 57.2px (1.30) / ls 継承（0.64px）</div><div style="font-size:44px;font-weight:400;line-height:1.3">電車に乗る</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Heading</b>Noto Sans JP / 38px / 400<br>lh 60.8px (1.60)</div><div style="font-size:38px;font-weight:400;line-height:1.6">近鉄特急のご案内</div></div>
+  <div class="type-row"><div class="type-meta"><b>Heading 2</b>Noto Sans JP / 26px / 400<br>lh 33.8px (1.30)</div><div style="font-size:26px;font-weight:400;line-height:1.3">お知らせ・ニュースリリース</div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Label ★</b>Noto Sans JP / 20px / <b style="display:inline">500</b><br>lh 32px (1.60)</div><div style="font-size:20px;font-weight:500;line-height:1.6">観光特急「しまかぜ」</div></div>
+  <div class="type-row"><div class="type-meta"><b>Sub Heading</b>Noto Sans JP / 18px / 500<br>lh 28.8px (1.60)</div><div style="font-size:18px;font-weight:500;line-height:1.6">ダイヤ案内（乗換検索）</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>Noto Sans JP / 16px / 400<br>lh <b style="display:inline">25.6px (1.60)</b> / ls 0.04em</div><div style="font-size:16px;line-height:1.6">大阪難波・京都・近鉄名古屋から賢島まで、観光特急がむすびます。ご乗車には特急券が必要です。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Lead</b>Noto Sans JP / 15px / 400<br>lh 19.5px (1.30)</div><div style="font-size:15px;line-height:1.3">現在は15分以上の列車の遅れはございません</div></div>
+  <div class="type-row"><div class="type-meta"><b>List / Nav ★</b>Noto Sans JP / 14px / 400<br>lh 18.2px (1.30)・<b style="display:inline">可視 50 要素で最多</b></div><div style="font-size:14px;line-height:1.3">2026年09月21日　「きんてつ旅育キャンペーン」の実施について</div></div>
+  <div class="type-row"><div class="type-meta"><b>Footer</b>Noto Sans JP / 13px / 400<br>lh 20.8px (1.60)</div><div style="font-size:13px;line-height:1.6;color:var(--text-footer)">ソーシャルメディアのご案内　サイトマップ　個人情報保護方針</div></div>
+
+  <p class="note"><b>行間は 1.60 と 1.30 の 2 値。</b>読ませる文章が 1.60（103 要素）、一覧・ナビ・リード文が 1.30（43 要素）。<b>「一覧は詰める、文章は空ける」</b>という切り分けで、中間の値を作らない。</p>
+  <p class="note"><b>字間は継承。</b><code>body</code> の <code>0.04em</code>（＝16px × 0.04 = <b>0.64px</b>）が 147 要素に降りてくる。<b>14px の要素も 44px の見出しも 0.64px のまま</b>。<b>「サイズ × 0.04em」で計算し直すと別物になる。</b>例外は下層の <code>p</code> 2 要素（0.56px ＝ 14px で再宣言）と、カルーセルの <code>Previous</code> / <code>Next</code>（<code>normal</code>・9 要素）だけ。</p>
+  <p class="note"><b><code>font-feature-settings: "palt"</code> が 846 要素（下層 699 要素）。</b>本文・ナビ・フッターまで全面適用。<b><code>palt</code> ＋ <code>0.04em</code> の組み合わせ</b>がこのサイトの字送りで、片方だけでは再現できない。</p>
+</div>
+</section>
+
+<section class="section" id="components">
+  <div class="section-label">03 / Components</div>
+  <h2 class="section-title">pill・カード・タイルの3段</h2>
+  <p class="section-lead">角丸は <b>ボタン 900px（pill）／ カード 20px ／ タイル 5px</b> の3段。影は<b>黒を使わず</b>、紺 <code>rgba(5,48,81,α)</code> を <code>5px 8px 30px</code>（<b>X に 5px ずらす</b>）で、透明度だけ 0.08 / 0.1 / 0.35 と変える。</p>
+
+  <div class="row">
+    <button class="btn-primary">観光特急「しまかぜ」残席照会はこちら</button>
+    <button class="btn-outline">近鉄特急のご案内</button>
+    <button class="btn-outline is-focus">フォーカス状態</button>
+  </div>
+  <div class="row">
+    <button class="btn-accent">特急券購入（近鉄特急チケットレスサービス）</button>
+    <button class="btn-note">ハイキング中止のお知らせ</button>
+    <button class="btn-small">運行情報詳細</button>
+  </div>
+
+  <div class="card-grid">
+    <div class="card is-feature">
+      <div class="card-label">しまかぜ</div>
+      <div class="card-body">大阪難波・京都・近鉄名古屋〜賢島</div>
+    </div>
+    <div class="card is-feature">
+      <div class="card-label">ひのとり</div>
+      <div class="card-body">大阪難波〜近鉄名古屋</div>
+    </div>
+    <div class="card">
+      <div class="card-label">青の交響曲</div>
+      <div class="card-body">大阪阿部野橋 〜 吉野</div>
+    </div>
+  </div>
+
+  <div style="margin-top:32px">
+    <div class="news-row"><span class="news-date">2026年09月21日</span><span class="news-title">「きんてつ旅育キャンペーン」の実施について</span></div>
+    <div class="news-row"><span class="news-date">2026年09月18日</span><span class="news-title">定期券WEB予約サービスのメンテナンスに伴う一時停止について</span></div>
+    <div class="news-row"><span class="news-date">2026年09月15日</span><span class="news-title">駅バリアフリー施設のご案内を更新しました</span></div>
+  </div>
+
+  <p class="note"><b>影に色が付いている。</b>通常カード <code>rgba(5,48,81,.08)</code>、特集 <code>.1</code>、<b>特急車両のカードだけ <code>.35</code> と濃い</b>（9 要素）。黄色の CTA は <code>rgba(4,65,102,.12)</code>。<b><code>rgba(0,0,0,…)</code> は 1 件も無い。</b></p>
+  <p class="note"><b>pill の角丸は <code>900px</code>。</b><code>9999px</code> でも <code>50%</code> でもない実装値。ボタンの上下 padding は <code>9px 25px 6px</code> のように<b>上を 3px 多く取る</b>（和文のベースライン補正）。</p>
+</section>
+
+<section class="section-alt">
+<div class="section" id="layout">
+  <div class="section-label">04 / Layout</div>
+  <h2 class="section-title">951px の一本、print は PC 側</h2>
+
+  <table>
+    <tr><th style="width:230px">項目</th><th>値</th><th>実測</th></tr>
+    <tr><td>Container</td><td><code>1280px</code></td><td>トップ 13 要素 / 下層 14 要素</td></tr>
+    <tr><td>Container（SP）</td><td><code>345px</code></td><td>2 要素</td></tr>
+    <tr><td>Gap</td><td>—</td><td><b>0 件。余白は margin / padding で作っている</b></td></tr>
+    <tr><td>Breakpoint（PC）</td><td><code>print, screen and (min-width: 951px)</code></td><td><b>1618 件。<code>print</code> を PC 側に含めている</b></td></tr>
+    <tr><td>Breakpoint（SP）</td><td><code>only screen and (max-width: 950.98px)</code></td><td>1580 件</td></tr>
+    <tr><td>Breakpoint（補助）</td><td><code>871px</code> / <code>1100px</code></td><td>18 件 / 数件</td></tr>
+  </table>
+
+  <p class="note"><b>印刷時に PC レイアウトで出す設計。</b>メディアクエリの PC 側が <code>print, screen and (min-width: 951px)</code> で始まる。時刻表・きっぷ案内を紙に出す利用を想定した鉄道サイトらしい実装。</p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-in">
+    <div class="footer-links"><a href="#">ソーシャルメディアのご案内</a><a href="#">サイトマップ</a><a href="#">個人情報保護方針</a><a href="#">このサイトについて</a></div>
+    <p>近畿日本鉄道株式会社</p>
+  </div>
+</footer>
+
+</body>
+</html>
