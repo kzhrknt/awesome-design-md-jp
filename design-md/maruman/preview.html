@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: マルマン</title>
+<!-- 実サイトが読み込む Web フォントは Montserrat 400 だけ（欧文ラベル専用）。
+     和文は OS ローカルの游ゴシック体。 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
+<style>
+  /* ★実サイトは別名 @font-face を 2 本書いている。
+       @font-face { font-family: MyYuGothicM; font-weight: normal; src: local("YuGothic-Medium"); }
+       @font-face { font-family: MyYuGothicM; font-weight: bold;   src: local("YuGothic-Bold"); }
+     実測（macOS / Chrome）では両方 status: error、document.fonts.check も false で解決していない。
+     描画に使われているのはスタックの次点 YuGothic。
+     このプレビューは落ちる @font-face を再現せず、実際に当たっているスタックをそのまま書く。
+     別名方式を新規に書くなら local() を複数並べること：
+       src: local("YuGothic-Medium"), local("Yu Gothic Medium"), local("YuGothic-Regular"); */
+
+  :root {
+    /* === Design Tokens ===
+       ★実サイトの CSS Custom Properties は 0 個。以下はすべて実測値から起こした。2026-09-24 */
+    --ink:      #231815;   /* ★文字 76 要素。印刷のスミに近い暖色寄りの黒 */
+    --black:    #000000;   /* 文字 15 要素。カテゴリ見出しとアウトライン CTA の枠 */
+    --yellow:   #f8b500;   /* 文字 11 要素 / 面 3 要素。欧文ラベルと面だけ */
+    --muted:    #999999;   /* 文字 20 要素。日付・タグ・パンくず */
+    --surface:  #f7f7f7;   /* 面 7 要素 */
+    --overlay:  rgba(247, 248, 249, 0.8);
+    --divider:  #eeeeee;
+    --dot:      #cccccc;
+    --alert:    #ff0000;   /* NEW の丸バッジ 1 要素 */
+    --white:    #ffffff;
+
+    /* ★1 番目の MyYuGothicM は実測で解決しないので、実際は 2 番目の YuGothic が当たる */
+    --font: YuGothic, "游ゴシック体", -apple-system, "system-ui",
+            "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    --font-en: Montserrat, sans-serif;
+
+    --ls-heading: 0.06em;  /* ★見出しと欧文ラベルに「各要素へ」当てる。本文は normal */
+    --lh-body: 2.00;       /* 16px / 32px */
+    --lh-heading: 1.60;
+    --container: 1300px;
+    --container-wide: 1500px;
+  }
+
+  /* ★実サイトは html { font-size: 10px }。rem は 10px 基準（1.6rem = 16px）。 */
+  html { font-size: 10px; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 16px;                 /* = 1.6rem */
+    font-weight: 400;                /* ★このサイトはウェイトが 1 段しかない */
+    line-height: var(--lh-body);     /* 32px */
+    letter-spacing: normal;          /* ★本文は字間を足さない（95 / 126 要素） */
+    font-feature-settings: normal;   /* ★palt は 0 要素 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .86em;
+         background: var(--surface); padding: 1px 5px; }
+  /* ★太字を使わないサイトなので、強調は「太さ」ではなくブランド色のマーカーで示す */
+  b { font-weight: 400; background: linear-gradient(transparent 42%, rgba(248,181,0,.42) 42%); }
+
+  /* ---------- header ---------- */
+  .header { border-bottom: 1px solid var(--divider); padding: 14px 40px; background: var(--white); }
+  .header-in { max-width: var(--container-wide); margin: 0 auto; display: flex; align-items: center; gap: 24px; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-mark { width: 34px; height: 34px; background: var(--yellow);
+               clip-path: polygon(0 0, 100% 0, 0 100%); }
+  .logo-text { font-size: 26px; line-height: 1.0; letter-spacing: -0.01em; color: var(--ink); }
+  .header-util { margin-left: auto; display: flex; align-items: center; gap: 22px; }
+  .header-util a { font-size: 14px; color: var(--ink); text-decoration: none; line-height: var(--lh-body); }
+  .pill { background: var(--muted); color: var(--white); border-radius: 40px;
+          padding: 6px 20px; font-size: 14px; line-height: 1.2; text-decoration: none; }
+  .header-nav { border-bottom: 1px solid var(--divider); padding: 0 40px; background: var(--white); }
+  .header-nav-in { max-width: var(--container-wide); margin: 0 auto;
+                   display: flex; justify-content: space-between; }
+  .header-nav a { font-size: 16px; line-height: 1.0; color: var(--ink);
+                  text-decoration: none; padding: 18px 0; }
+
+  /* ---------- sections ---------- */
+  .section { max-width: var(--container); margin: 0 auto; padding: 72px 40px; }
+  .section-alt { background: var(--surface); }
+  .label-en { font-family: var(--font-en); font-size: 16px; line-height: var(--lh-body);
+              letter-spacing: var(--ls-heading); color: var(--yellow); }
+  .section-title { font-size: 36px; line-height: var(--lh-heading);
+                   letter-spacing: var(--ls-heading); margin: 4px 0 16px; }
+  .section-lead { font-size: 16px; line-height: var(--lh-body); margin-bottom: 34px; max-width: 840px; }
+  .rule { height: 1px; background: var(--divider); }
+  .note { font-size: 14px; line-height: var(--lh-body); color: var(--muted); margin-top: 18px; }
+
+  /* ---------- colors ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--divider); }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 12px 14px; }
+  .swatch-name { font-size: 14px; line-height: 1.6; letter-spacing: var(--ls-heading); }
+  .swatch-hex { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .swatch-use { font-size: 12px; line-height: 1.6; margin-top: 4px; }
+
+  /* ---------- typography rows ---------- */
+  .type-row { padding: 22px 0; display: grid; grid-template-columns: 230px 1fr; gap: 28px; align-items: baseline; }
+  .type-meta { font-size: 12px; line-height: 1.6; color: var(--muted); }
+  .t-36 { font-size: 36px; line-height: var(--lh-heading); letter-spacing: var(--ls-heading); }
+  .t-30 { font-size: 30px; line-height: var(--lh-heading); letter-spacing: var(--ls-heading); }
+  .t-26 { font-size: 26px; line-height: var(--lh-heading); letter-spacing: var(--ls-heading); }
+  .t-20 { font-size: 20px; line-height: var(--lh-body); }
+  .t-18 { font-size: 18px; line-height: 1.5; letter-spacing: var(--ls-heading); }
+  .t-16 { font-size: 16px; line-height: var(--lh-body); }
+  .t-en { font-family: var(--font-en); font-size: 16px; line-height: var(--lh-body);
+          letter-spacing: var(--ls-heading); }
+  .t-14 { font-size: 14px; line-height: var(--lh-body); color: var(--muted); }
+  .t-12 { font-size: 12px; line-height: var(--lh-heading); }
+
+  /* ---------- weight demo ---------- */
+  .w-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .w-box { border: 1px solid var(--divider); padding: 20px 22px; background: var(--white); }
+  .w-box .lbl { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 10px; }
+  .w-sample { font-size: 22px; line-height: var(--lh-heading); letter-spacing: var(--ls-heading); }
+  .w400 { font-weight: 400; } .w500 { font-weight: 500; } .w700 { font-weight: 700; }
+
+  /* ---------- hierarchy demo ---------- */
+  .h-demo { border: 1px solid var(--divider); padding: 28px 30px; background: var(--white); }
+  .h-demo > * + * { margin-top: 14px; }
+
+  /* ---------- letter spacing demo ---------- */
+  .ls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .ls-box { border: 1px solid var(--divider); padding: 20px 22px; background: var(--white); }
+  .ls-box .lbl { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 10px; }
+  .ls-a { font-size: 26px; line-height: var(--lh-heading); letter-spacing: 0.06em; }
+  .ls-b { font-size: 16px; line-height: var(--lh-body); letter-spacing: normal; }
+
+  /* ---------- buttons ---------- */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+  .btn { display: inline-block; text-decoration: none; border-radius: 0;   /* ★角丸なし */
+         font-size: 18px; font-weight: 400; line-height: 27px; letter-spacing: normal;
+         padding: 12px 40px; }
+  .btn-yellow { background: var(--yellow); color: var(--white); border: 1px solid var(--yellow); }
+  .btn-outline { background: transparent; color: var(--black); border: 1px solid var(--black); }
+  .btn-outline-sm { font-size: 12px; line-height: 19.2px; padding: 6px 14px; }
+
+  /* ---------- category grid ---------- */
+  .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .cat { text-decoration: none; color: var(--ink); display: block; }
+  .cat-visual { aspect-ratio: 4 / 3; background: linear-gradient(135deg, #e9e6df, #cfc9bd); }
+  .cat-ja { font-size: 26px; line-height: var(--lh-heading);
+            letter-spacing: var(--ls-heading); color: var(--black); margin-top: 14px; }
+  .cat-en { font-family: var(--font-en); font-size: 16px; line-height: var(--lh-body);
+            letter-spacing: var(--ls-heading); color: var(--yellow); }
+
+  /* ---------- news ---------- */
+  .news-row { display: grid; grid-template-columns: 130px 1fr auto; gap: 20px;
+              align-items: baseline; padding: 22px 0; }
+  .news-date { font-size: 14px; line-height: var(--lh-body); color: var(--muted); }
+  .news-text { font-size: 16px; line-height: var(--lh-body); }
+  .news-tag { font-size: 14px; line-height: var(--lh-body); color: var(--muted); }
+  .new-dot { display: inline-grid; place-items: center; width: 34px; height: 34px;
+             border-radius: 50%; background: var(--alert); color: var(--white);
+             font-family: var(--font-en); font-size: 16px; line-height: 1;
+             letter-spacing: var(--ls-heading); }
+
+  /* ---------- tables ---------- */
+  table.spec { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.8; background: var(--white); }
+  table.spec th, table.spec td { border: 1px solid var(--divider); padding: 9px 12px; text-align: left; vertical-align: top; }
+  table.spec th { background: var(--surface); letter-spacing: var(--ls-heading); }
+
+  /* ---------- scene cards ---------- */
+  .scene-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .scene { position: relative; aspect-ratio: 3 / 4; background: linear-gradient(160deg, #d9d3c6, #aba392);
+           display: grid; place-items: center; }
+  .scene-inner { background: var(--overlay); padding: 18px 26px; text-align: center; }
+  .scene-ja { font-size: 26px; line-height: var(--lh-heading); letter-spacing: var(--ls-heading); color: var(--black); }
+  .scene-en { font-family: var(--font-en); font-size: 16px; line-height: var(--lh-body);
+              letter-spacing: var(--ls-heading); color: var(--yellow); }
+
+  /* ---------- footer ---------- */
+  .footer { background: var(--surface); padding: 56px 40px 40px; margin-top: 0; }
+  .footer-in { max-width: var(--container); margin: 0 auto; }
+  .footer-title { font-family: var(--font-en); font-size: 24px; line-height: var(--lh-body);
+                  letter-spacing: 0.06em; color: var(--ink); margin-bottom: 20px; }
+  .footer-links { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px 24px; margin-bottom: 26px; }
+  .footer-links a { font-size: 14px; color: var(--ink); text-decoration: none; line-height: var(--lh-body); }
+  .copyright { font-size: 12px; line-height: var(--lh-heading); color: var(--muted); }
+
+  @media (max-width: 1024px) {
+    .cat-grid, .scene-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 767px) {
+    .section { padding: 44px 20px; }
+    .cat-grid, .scene-grid, .w-grid, .ls-grid { grid-template-columns: 1fr; }
+    .footer-links { grid-template-columns: repeat(2, 1fr); }
+    .header-nav { display: none; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-in">
+    <div class="logo">
+      <span class="logo-mark"></span>
+      <span class="logo-text">maruman</span>
+    </div>
+    <div class="header-util">
+      <a href="#colors">お気に入り</a>
+      <a href="#typography">お問い合わせ</a>
+      <a href="#weight">Language</a>
+      <a class="pill" href="#buttons">オリジナル文具サイト</a>
+    </div>
+  </div>
+</header>
+<nav class="header-nav">
+  <div class="header-nav-in">
+    <a href="#colors">読む文具</a>
+    <a href="#typography">製品情報</a>
+    <a href="#weight">マルマンのこだわり</a>
+    <a href="#ls">会社情報</a>
+    <a href="#buttons">採用情報</a>
+    <a href="#cats">取扱店舗</a>
+    <a href="#layout">オンラインショップ</a>
+  </div>
+</nav>
+
+<!-- 00 HERO -->
+<section class="section" style="padding-bottom:40px">
+  <div class="label-en">DESIGN SYSTEM PREVIEW</div>
+  <h1 class="section-title">マルマン — 太字を使わず、サイズと 0.06em の字空けで階層をつくる</h1>
+  <p class="section-lead">
+    実測日 2026-09-24。<code>https://www.e-maruman.co.jp/</code> と <code>/policy/paper/</code> の computed style から起こした。
+    <b>CSS Custom Properties は 0 個</b>。<code>html</code> の <code>font-size</code> は <b>10px</b> で、<code>rem</code> は 10px 基準。
+    可視 126 要素のうち <code>font-weight: 700</code> は<b>わずか 1 要素</b>。
+  </p>
+</section>
+
+<!-- 01 COLORS -->
+<div class="section-alt">
+<section class="section" id="colors">
+  <div class="label-en">01 / COLOR</div>
+  <h2 class="section-title">色は 4 つ。黒が 2 種類あって役割が違う</h2>
+  <p class="section-lead">
+    本文は <b><code>#231815</code></b>（印刷のスミに近い暖色寄りの黒・76 要素）。
+    純黒 <code>#000000</code> は<b>「カテゴリから探す」「シーンから探す」の見出しとアウトライン CTA の枠</b>だけ。
+    黄 <code>#f8b500</code> は<b>欧文ラベルと、面を塗る 3 箇所</b>だけ。
+  </p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#231815"></div><div class="swatch-body"><div class="swatch-name">Ink</div><div class="swatch-hex">#231815</div><div class="swatch-use">★本文・ナビ。純黒ではない。紙の会社が選んだ黒</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Black</div><div class="swatch-hex">#000000</div><div class="swatch-use">カテゴリ見出し・アウトライン CTA の枠と文字</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f8b500"></div><div class="swatch-body"><div class="swatch-name">Brand Yellow</div><div class="swatch-hex">#f8b500</div><div class="swatch-use">★欧文ラベル 11 要素 / 面 3 要素だけ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#999999"></div><div class="swatch-body"><div class="swatch-name">Text Muted</div><div class="swatch-hex">#999999</div><div class="swatch-use">日付・タグ・パンくず</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f7f7f7;border-bottom:1px solid #e0e0e0"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#f7f7f7</div><div class="swatch-use">ニュース・サイトマップ帯の下地</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#eeeeee"></div><div class="swatch-body"><div class="swatch-name">Divider</div><div class="swatch-hex">#eeeeee</div><div class="swatch-use">フッター上の区切り</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#cccccc"></div><div class="swatch-body"><div class="swatch-name">Dot</div><div class="swatch-hex">#cccccc</div><div class="swatch-use">カルーセルの非アクティブなページャ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ff0000"></div><div class="swatch-body"><div class="swatch-name">Alert</div><div class="swatch-hex">#ff0000</div><div class="swatch-use">ニュースの NEW 丸バッジ 1 要素だけ</div></div></div>
+  </div>
+</section>
+</div>
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="label-en">02 / TYPOGRAPHY</div>
+  <h2 class="section-title">和文は游ゴシック、欧文ラベルだけ Montserrat</h2>
+  <p class="section-lead">
+    可視 126 要素のうち 111 要素が游ゴシックのスタック、15 要素が Montserrat。
+    Montserrat の用途は <code>SCROLL</code> / <code>PICK UP</code> / <code>VIEW MORE</code> のような
+    <b>小さな英字ラベル専用</b>で、そこに 0.06em の字空けを掛けるのがこのサイトの型。
+  </p>
+
+  <table class="spec">
+    <tr><th style="width:80px">位置</th><th>名前</th><th>当たる環境</th></tr>
+    <tr><td>1</td><td><code>MyYuGothicM</code></td><td><b>@font-face の別名。実測（macOS / Chrome）では status: error で解決しない</b></td></tr>
+    <tr><td>2</td><td><code>YuGothic</code></td><td><b>macOS の游ゴシック体（Regular）。実測ではここが当たっている</b></td></tr>
+    <tr><td>3–4</td><td>-apple-system / "system-ui"</td><td>Apple 系の保険</td></tr>
+    <tr><td>5</td><td>"Hiragino Kaku Gothic ProN"</td><td>游ゴシック非搭載の macOS</td></tr>
+    <tr><td>6</td><td>Meiryo</td><td>旧 Windows</td></tr>
+  </table>
+  <p class="note">
+    ★別名 <code>MyYuGothicM</code> の <code>src</code> は <code>local("YuGothic-Medium")</code> <b>1 名だけ</b>。
+    一般的な別名方式は <code>local()</code> を複数並べて環境差を吸収するが、ここは 1 名なので落ちやすい。
+    <b>意図は「Windows で游ゴシック Medium を当てる」、実態は「落ちたら YuGothic（Regular）」。</b>
+    新規に真似るなら <code>src: local("YuGothic-Medium"), local("Yu Gothic Medium"), local("YuGothic-Regular");</code> と書く。
+  </p>
+
+  <div class="rule" style="margin:36px 0 0"></div>
+  <div class="type-row">
+    <div class="type-meta">セクション見出し<br>36px · <b>400</b> · 1.60<br>ls 2.16px = 0.06em</div>
+    <div class="t-36">紙へのこだわり</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">中見出し<br>30px · <b>400</b> · 1.60<br>ls 1.8px = 0.06em</div>
+    <div class="t-30">書きやすい紙がもたらすもの</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">カテゴリ見出し<br>26px · <b>400</b> · 1.60<br>ls 1.56px = 0.06em</div>
+    <div class="t-26">カテゴリから探す</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">リード文<br>20px · 400 · 2.00<br>ls normal</div>
+    <div class="t-20">楽しくて役に立つ、文具のあれこれ</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">記事見出し・CTA<br>18px · 400 · 1.50<br>ls 1.08px = 0.06em</div>
+    <div class="t-18">ルーズリーフ手帳＆ダイアリーカタログ</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">★本文<br>16px · 400 · <b>2.00（32px）</b><br>ls normal · 最頻（52 要素）</div>
+    <div class="t-16">身のまわりにある紙だからこそ、マルマンはこだわります。書き味は、紙の表面のわずかな凹凸で決まります。鉛筆でもボールペンでも、同じ紙が同じように応えること。それがわたしたちの考える「書きやすさ」です。</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">欧文ラベル<br>Montserrat 16px · 400 · 2.00<br>ls 0.96px = 0.06em</div>
+    <div class="t-en">STATIONERY ARTICLE</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">補助・日付<br>14px · 400 · 2.00 · #999999</div>
+    <div class="t-14">2026.09.14　＃ルーズリーフ　＃ノート・メモ</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">シーンラベル（小）<br>12px · 400 · 1.60</div>
+    <div class="t-12">学ぶ　働く　書く　描く</div>
+  </div>
+  <div class="rule"></div>
+</section>
+
+<!-- 03 WEIGHT -->
+<div class="section-alt">
+<section class="section" id="weight">
+  <div class="label-en">03 / FONT WEIGHT</div>
+  <h2 class="section-title">ウェイトは 400 一本。太字で強調しない</h2>
+  <p class="section-lead">
+    トップ 126 要素中 <b>400 が 125 / 700 が 1</b>、下層 61 要素中 <b>400 が 60 / 700 が 1</b>。
+    500 と 600 は 1 要素も無い。<b>見出しを目立たせる手段は「サイズを上げる」と「0.06em を掛ける」の 2 つだけ。</b>
+  </p>
+  <div class="w-grid">
+    <div class="w-box"><div class="lbl">★400 — このサイトのすべて</div><div class="w-sample w400">書く・描く楽しさを届けたい</div></div>
+    <div class="w-box"><div class="lbl">500 — 実サイトに 0 要素。持ち込まない</div><div class="w-sample w500">書く・描く楽しさを届けたい</div></div>
+    <div class="w-box"><div class="lbl">700 — 1 ページに 1 要素だけの例外</div><div class="w-sample w700">書く・描く楽しさを届けたい</div></div>
+  </div>
+  <p class="note">
+    ★別名の bold 面（<code>local("YuGothic-Bold")</code>）も <code>error</code> なので、
+    <b>700 を書いても意図した太さでは出ない</b>（YuGothic Bold か合成太字になる）。
+  </p>
+
+  <h3 class="t-26" style="margin:44px 0 16px">太字なしで階層をつくる</h3>
+  <div class="h-demo">
+    <div class="label-en">PICK UP</div>
+    <div class="t-36">ピックアップ</div>
+    <div class="t-26">カテゴリから探す</div>
+    <div class="t-18">ルーズリーフ手帳＆ダイアリーカタログ 2027</div>
+    <div class="t-16">16 → 18 → 26 → 36px とサイズを上げ、26px 以上には 0.06em を掛ける。これだけで 4 段の階層が読める。ウェイトは全部 400 のまま。</div>
+    <div class="t-14">2026.09.14</div>
+  </div>
+</section>
+</div>
+
+<!-- 04 LETTER SPACING -->
+<section class="section" id="ls">
+  <div class="label-en">04 / LETTER SPACING</div>
+  <h2 class="section-title">本文 normal、見出しと欧文ラベル 0.06em</h2>
+  <p class="section-lead">
+    16px→0.96px、18px→1.08px、24px→1.44px、26px→1.56px、30px→1.8px、32px→1.92px、34px→2.04px、36px→2.16px。
+    <b>どのサイズでも 0.06em に揃う＝ <code>em</code> を各要素に当てている</b>。body に 1 回書いて継承させる設計ではない。
+  </p>
+  <div class="ls-grid">
+    <div class="ls-box">
+      <div class="lbl">★見出し・欧文ラベル — letter-spacing: 0.06em</div>
+      <div class="ls-a">シーンから探す</div>
+    </div>
+    <div class="ls-box">
+      <div class="lbl">★本文 — letter-spacing: normal（95 / 126 要素）</div>
+      <div class="ls-b">紙を手がけて 100 年あまり。それは貧しかった時代から、書くこと描くことを支えてきた時間でもあります。</div>
+    </div>
+  </div>
+  <table class="spec" style="margin-top:28px">
+    <tr><th style="width:130px">実測値</th><th style="width:90px">出現</th><th style="width:110px">サイズ</th><th>em 換算</th></tr>
+    <tr><td><code>normal</code></td><td><b>95</b></td><td>本文・ナビ・補助</td><td>—</td></tr>
+    <tr><td>1.44px</td><td>13</td><td>24px</td><td><b>0.06em</b></td></tr>
+    <tr><td>1.56px</td><td>10</td><td>26px</td><td><b>0.06em</b></td></tr>
+    <tr><td>0.96px</td><td>5</td><td>16px</td><td><b>0.06em</b></td></tr>
+    <tr><td>1.08px</td><td>2</td><td>18px</td><td><b>0.06em</b></td></tr>
+    <tr><td>2.16px</td><td>1</td><td>36px</td><td><b>0.06em</b></td></tr>
+  </table>
+  <p class="note">
+    <code>font-feature-settings</code> は<b>可視 126 要素すべてが <code>normal</code></b>。
+    <b>詰めと開きを同時にやらない。</b><code>palt</code> を足すと見出しの字面が締まって、このサイトの印象が変わる。
+  </p>
+</section>
+
+<!-- 05 BUTTONS -->
+<div class="section-alt">
+<section class="section" id="buttons">
+  <div class="label-en">05 / BUTTONS</div>
+  <h2 class="section-title">角丸を使わない。CTA は radius 0</h2>
+  <p class="section-lead">
+    radius が付くのは<b>ヘッダー右上のピル 1 つ（40px）と、円形のドット（50%）だけ</b>。
+    CTA・カード・入力欄はすべて角のまま。<b>影も実質ゼロ</b>（唯一の影は spread <code>-10px</code> でほとんど見えない）。
+  </p>
+  <div class="btn-row">
+    <a class="btn btn-yellow" href="#buttons">VIEW MORE</a>
+    <a class="btn btn-outline" href="#buttons">製品情報をみる</a>
+    <a class="btn btn-outline btn-outline-sm" href="#buttons">＃ルーズリーフ</a>
+    <a class="pill" href="#buttons">オリジナル文具サイト</a>
+    <span class="new-dot">N</span>
+  </div>
+  <table class="spec" style="margin-top:28px">
+    <tr><th style="width:190px">種類</th><th>面 / 文字</th><th>radius</th><th>font</th></tr>
+    <tr><td>Primary（黄）</td><td>#f8b500 / #ffffff</td><td><b>0px</b></td><td>18px · 400 · normal</td></tr>
+    <tr><td>Secondary（アウトライン）</td><td>transparent / #000000（枠 1px #000000）</td><td><b>0px</b></td><td>18px · 400 · normal</td></tr>
+    <tr><td>ヘッダーのピル（唯一の角丸）</td><td>#999999 / #ffffff</td><td>40px</td><td>14px · 400 · normal</td></tr>
+    <tr><td>NEW バッジ</td><td>#ff0000 / #ffffff</td><td>50%</td><td>Montserrat 16px · 0.06em</td></tr>
+  </table>
+</section>
+</div>
+
+<!-- 06 CATEGORY / SCENE -->
+<section class="section" id="cats">
+  <div class="label-en">06 / CATEGORY &amp; SCENE</div>
+  <h2 class="section-title">和文 26px ＋ 欧文 16px の二段ラベル</h2>
+  <p class="section-lead">
+    カテゴリとシーンのカードは、<b>和文（26px・純黒・0.06em）の下に欧文（Montserrat 16px・黄・0.06em）</b>を敷く。
+    この 2 段が、このサイトのラベルの型。
+  </p>
+  <div class="cat-grid">
+    <a class="cat" href="#cats"><div class="cat-visual"></div><div class="cat-ja">バインダー</div><div class="cat-en">BINDER</div></a>
+    <a class="cat" href="#cats"><div class="cat-visual" style="background:linear-gradient(135deg,#e3e7e2,#c3ccc2)"></div><div class="cat-ja">ルーズリーフ</div><div class="cat-en">LOOSE LEAF</div></a>
+    <a class="cat" href="#cats"><div class="cat-visual" style="background:linear-gradient(135deg,#e7e2e6,#c9bfc6)"></div><div class="cat-ja">ノート／メモ</div><div class="cat-en">NOTEBOOK</div></a>
+    <a class="cat" href="#cats"><div class="cat-visual" style="background:linear-gradient(135deg,#e6e3da,#c8c1ac)"></div><div class="cat-ja">スケッチブック</div><div class="cat-en">SKETCHBOOK</div></a>
+  </div>
+
+  <h3 class="t-26" style="margin:56px 0 18px">シーンから探す</h3>
+  <div class="scene-grid">
+    <div class="scene"><div class="scene-inner"><div class="scene-ja">書く</div><div class="scene-en">WRITE</div></div></div>
+    <div class="scene" style="background:linear-gradient(160deg,#cdd6d2,#96a49e)"><div class="scene-inner"><div class="scene-ja">描く</div><div class="scene-en">DRAW</div></div></div>
+    <div class="scene" style="background:linear-gradient(160deg,#d6cfd3,#a2969c)"><div class="scene-inner"><div class="scene-ja">学ぶ</div><div class="scene-en">STUDY</div></div></div>
+    <div class="scene" style="background:linear-gradient(160deg,#d3d6cd,#9ca396)"><div class="scene-inner"><div class="scene-ja">働く</div><div class="scene-en">WORK</div></div></div>
+  </div>
+</section>
+
+<!-- 07 NEWS + LAYOUT -->
+<div class="section-alt">
+<section class="section" id="layout">
+  <div class="label-en">07 / LAYOUT</div>
+  <h2 class="section-title">コンテナ 1300px、本文の行間は 2.00</h2>
+  <div style="background:var(--white);padding:4px 26px 12px;margin-bottom:34px">
+    <div class="news-row">
+      <span class="news-date">2026.09.14</span>
+      <span class="news-text">ルーズリーフ手帳＆ダイアリーカタログ 2027 を公開しました</span>
+      <span class="news-tag">＃ダイアリー</span>
+    </div>
+    <div class="rule"></div>
+    <div class="news-row">
+      <span class="news-date">2026.08.28</span>
+      <span class="news-text">図案スケッチブックの新サイズを発売します</span>
+      <span class="news-tag">＃スケッチブック</span>
+    </div>
+    <div class="rule"></div>
+    <div class="news-row">
+      <span class="news-date">2026.07.03</span>
+      <span class="news-text">「紙へのこだわり」ページをリニューアルしました</span>
+      <span class="news-tag">＃お知らせ</span>
+    </div>
+  </div>
+
+  <table class="spec">
+    <tr><th style="width:230px">項目</th><th>値</th></tr>
+    <tr><td>コンテナ（本文）</td><td><b>1300px</b>（6 箇所）</td></tr>
+    <tr><td>コンテナ（全幅寄り）</td><td>1500px（3 箇所）</td></tr>
+    <tr><td>root font-size</td><td><b>10px</b>（<code>1.6rem = 16px</code>）</td></tr>
+    <tr><td>本文の行間</td><td><b>2.00</b>（16px / 32px）</td></tr>
+    <tr><td>見出しの行間</td><td>1.60</td></tr>
+    <tr><td>ナビの行間</td><td>1.00</td></tr>
+    <tr><td>影</td><td><b>実質なし</b>（唯一 <code>0 5px 10px -10px rgba(0,0,0,0.3)</code> が 1 要素）</td></tr>
+    <tr><td>ブレークポイント</td><td><code>max-width: 1024px</code>（143 件）/ <code>max-width: 767px</code>（288 件）</td></tr>
+  </table>
+  <p class="note">
+    ★<b>すべて <code>max-width</code>。デスクトップファーストで、狭い方を上書きしていく書き方。</b>
+  </p>
+</section>
+</div>
+
+<footer class="footer">
+  <div class="footer-in">
+    <div class="footer-title">FOLLOW US</div>
+    <div class="footer-links">
+      <a href="#colors">読む文具</a><a href="#typography">製品情報</a><a href="#weight">マルマンのこだわり</a><a href="#ls">会社情報</a>
+      <a href="#buttons">採用情報</a><a href="#cats">取扱店舗</a><a href="#layout">オンラインショップ</a><a href="#colors">サイトマップ</a>
+    </div>
+    <div class="rule" style="margin-bottom:22px"></div>
+    <p class="copyright">© Maruman &amp; Co., Ltd.</p>
+  </div>
+</footer>
+
+</body>
+</html>

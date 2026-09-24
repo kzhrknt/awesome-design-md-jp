@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 九州国立博物館</title>
+<!-- ★実サイトと同じ読み込み。ただし macOS ではヒラギノ角ゴ ProN がスタックの先頭で当たるため、
+     Noto Sans JP はテキスト 521 要素中 4 要素しか使われない。Windows 向けの備え。 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Design Tokens ===
+       ★実サイトの自社トークンは --kx-* の 9 個だけ。値は実サイトの :root をそのまま写した。2026-09-24 */
+    --kx-primary:      #1a63bc;
+    --kx-primary-dark: #0f3d75;
+    --kx-text:         #333333;   /* 実サイトは #333 と 3 桁で書かれている */
+    --kx-text-light:   #555555;
+    --kx-text-muted:   #666666;   /* ★宣言はあるが可視 0 要素 */
+    --kx-heading:      #111111;
+    --kx-border:       #dddddd;
+
+    --kx-ff-base: "Hiragino Kaku Gothic ProN", "Hiragino Sans", -apple-system,
+                  BlinkMacSystemFont, "Segoe UI", "BIZ UDPGothic",
+                  "Yu Gothic Medium", "Yu Gothic", Meiryo, sans-serif;
+    /* ★見出しだけ 5 番目に "Noto Sans JP" が挟まる。
+       Windows では 見出し = Web フォント / 本文 = ローカルの BIZ UDPGothic になる */
+    --kx-ff-heading: "Hiragino Kaku Gothic ProN", "Hiragino Sans", -apple-system,
+                     BlinkMacSystemFont, "Noto Sans JP", "BIZ UDPGothic",
+                     "Yu Gothic Medium", "Yu Gothic", Meiryo, sans-serif;
+
+    /* 以下は実測から起こした補助トークン（実サイトに変数は無い） */
+    --bg:            #e4e4e4;   /* ★ページの地色。白ではない */
+    --surface:       #f5f5f7;
+    --surface-tint:  #eef4fb;
+    --white:         #ffffff;
+    --bs-blue:       #0d6efd;   /* ★Bootstrap 既定青。移行の残留物 */
+    --bs-red:        #dc3545;
+    --bs-green:      #198754;
+    --bs-cyan:       #0dcaf0;
+    --bs-purple:     #6f42c1;
+    --shadow-card:   0 2px 12px rgba(0,0,0,0.06);
+    --shadow-btn:    0 4px 12px rgba(0,0,0,0.15);
+    --container:     1320px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 16px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+  /* ★実サイトの body をそのまま移植。字間・行間を画面幅で落とすのがこのサイトの核心 */
+  body {
+    background: var(--bg);
+    color: var(--kx-text);
+    font-family: var(--kx-ff-base);
+    font-size: clamp(1rem, 0.975rem + 0.15vw, 1.0625rem);  /* 16px → 17px */
+    font-weight: 400;
+    line-height: 1.8;
+    letter-spacing: 0.04em;
+    -webkit-font-smoothing: auto;      /* ★antialiased にしない */
+    -moz-osx-font-smoothing: auto;
+    text-rendering: optimizeLegibility;
+    font-kerning: normal;
+  }
+  @media (min-width: 768px) and (max-width: 1024px) {
+    body { line-height: 1.75; letter-spacing: 0.035em; }
+  }
+  @media (max-width: 767.98px) {
+    body { line-height: 1.7; letter-spacing: 0.03em; }
+  }
+
+  /* ★見出しは palt ＋ 0.02em。h1/h2 だけ 700、h3〜h6 は 600 */
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--kx-heading);
+    font-family: var(--kx-ff-heading);
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+    font-feature-settings: "palt" 1;
+    -webkit-font-feature-settings: "palt" 1;
+    margin-top: 0; margin-bottom: 1.5rem;
+  }
+  h1 { font-size: clamp(1.625rem, 1.35rem + 1.4vw, 2.5rem); }
+  h2 { font-size: clamp(1.375rem, 1.15rem + 1.1vw, 2rem); margin-top: 2.5rem; }
+  h3 { font-size: clamp(1.1875rem, 1.05rem + 0.7vw, 1.625rem); font-weight: 600; margin-top: 2rem; }
+  h4 { font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.3125rem); font-weight: 600; margin-bottom: 1rem; }
+  h5 { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; }
+  h6 { font-size: 0.875rem; font-weight: 600; }
+
+  a { color: var(--kx-primary); text-decoration: none; }
+  a:hover { color: var(--kx-primary-dark); }
+  small { font-size: 0.875em; }
+
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .86em;
+         background: var(--surface); padding: 1px 5px; border-radius: 3px; }
+  b { font-weight: 700; }
+
+  /* ---------- header ---------- */
+  .header { background: var(--white); border-bottom: 3px solid var(--kx-primary); padding: 14px 40px; }
+  .header-in { max-width: var(--container); margin: 0 auto; display: flex; align-items: center; gap: 22px; }
+  .logo-mark { width: 46px; height: 46px; border-radius: 12px; background: var(--kx-primary);
+               color: var(--white); display: grid; place-items: center;
+               font-size: 20px; font-weight: 700; letter-spacing: 0.02em; }
+  .logo-ja { font-size: 20px; font-weight: 600; line-height: 1.4; letter-spacing: 0.02em;
+             color: var(--kx-heading); font-feature-settings: "palt" 1; }
+  .header-nav { margin-left: auto; display: flex; gap: 20px; }
+  .header-nav a { font-size: 15px; font-weight: 600; letter-spacing: 0.02em; color: var(--kx-text); }
+  .header-band { background: var(--kx-primary); padding: 10px 40px; }
+  .header-band-in { max-width: var(--container); margin: 0 auto; display: flex; flex-wrap: wrap; gap: 26px; }
+  .header-band a { color: var(--white); font-size: 14px; font-weight: 700; letter-spacing: 0.02em; }
+
+  /* ---------- sections ---------- */
+  .section { max-width: var(--container); margin: 0 auto; padding: 56px 40px; }
+  .band-white { background: var(--white); }
+  .band-surface { background: var(--surface); }
+  .section-label { font-size: 13px; font-weight: 700; color: var(--kx-primary);
+                   letter-spacing: 0.02em; margin-bottom: 8px; }
+  .lead { max-width: 860px; margin-bottom: 28px; }
+  .note { font-size: 14px; line-height: 1.7; color: var(--kx-text-light); margin-top: 18px; }
+  .rule { height: 1px; background: var(--kx-border); }
+
+  /* ---------- colors ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--kx-border); border-radius: 12px; overflow: hidden; background: var(--white); }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 12px 14px; }
+  .swatch-name { font-size: 14px; font-weight: 700; letter-spacing: 0.02em; }
+  .swatch-hex { font-size: 12px; color: var(--kx-text-light); }
+  .swatch-use { font-size: 12px; line-height: 1.6; margin-top: 4px; }
+
+  /* ---------- tables ---------- */
+  table.spec { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.7; background: var(--white); }
+  table.spec th, table.spec td { border: 1px solid var(--kx-border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  table.spec th { background: var(--surface); font-weight: 700; letter-spacing: 0.02em; }
+
+  /* ---------- weight demo ---------- */
+  .w-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .w-box { border: 1px solid var(--kx-border); border-radius: 12px; padding: 18px 20px; background: var(--white); }
+  .w-box .lbl { font-size: 12px; color: var(--kx-text-light); line-height: 1.6; margin-bottom: 10px; }
+  .w-sample { font-size: 21px; line-height: 1.4; letter-spacing: 0.02em; font-feature-settings: "palt" 1;
+              color: var(--kx-heading); }
+  .w400 { font-weight: 400; } .w500 { font-weight: 500; }
+  .w600 { font-weight: 600; } .w700 { font-weight: 700; } .w900 { font-weight: 900; }
+
+  /* ---------- palt demo ---------- */
+  .palt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .palt-box { border: 1px solid var(--kx-border); border-radius: 12px; padding: 18px 20px; background: var(--white); }
+  .palt-box .lbl { font-size: 12px; color: var(--kx-text-light); margin-bottom: 10px; line-height: 1.6; }
+  .palt-on  { font-size: 21px; font-weight: 600; line-height: 1.4; letter-spacing: 0.02em;
+              font-feature-settings: "palt" 1; color: var(--kx-heading); }
+  .palt-off { font-size: 21px; font-weight: 600; line-height: 1.4; letter-spacing: 0.02em;
+              font-feature-settings: normal; color: var(--kx-text-light); }
+
+  /* ---------- badges ---------- */
+  .badge { display: inline-block; border-radius: 4px; padding: 4px 8px;
+           font-size: 11.4px; font-weight: 700; letter-spacing: 0.02em; color: var(--white); }
+  .badge-news { background: var(--bs-red); }
+  .badge-event { background: var(--bs-green); }
+  .badge-press { background: var(--bs-cyan); color: #000000; }
+  .badge-count { background: var(--bs-purple); border-radius: 5.42px;
+                 font-size: 14.45px; font-weight: 600; line-height: 1; padding: 6px 10px; }
+
+  /* ---------- buttons ---------- */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .btn { display: inline-block; border-radius: 4px; padding: 6px 18px;
+         font-size: 14px; font-weight: 700; line-height: 19.6px; letter-spacing: 0.02em; }
+  .btn-primary { background: #1e6bb8; color: var(--white); border: 2px solid #1e6bb8; }
+  .btn-outline { background: var(--white); color: var(--kx-primary);
+                 border: 1px solid var(--kx-primary); font-size: 17px; padding: 8px 20px; }
+  .btn-large { background: linear-gradient(135deg, #2b7fbd 0%, #1a63bc 100%);
+               color: var(--white); border-radius: 14px; padding: 22px 30px;
+               font-size: 20px; font-weight: 900; line-height: 1.2; letter-spacing: 0.04em;
+               box-shadow: var(--shadow-btn); text-align: center; }
+  .btn-large-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .btn-large small { display: block; font-size: 11px; font-weight: 400; line-height: 1.6;
+                     letter-spacing: 0.02em; margin-top: 6px; opacity: .9; }
+
+  /* ---------- cards ---------- */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .card { background: var(--white); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-card); }
+  .card-visual { aspect-ratio: 16 / 9; background: linear-gradient(135deg, #7fb8a6, #2f8f6f); }
+  .card-body { padding: 16px 18px 20px; }
+  .card-kicker { font-size: 16px; font-weight: 600; line-height: 1.6; letter-spacing: 0.02em;
+                 color: var(--bs-blue); font-feature-settings: "palt" 1; margin-bottom: 4px; }
+  .card-title { font-size: 18.8px; font-weight: 600; line-height: 1.6; letter-spacing: 0.02em;
+                color: var(--kx-heading); font-feature-settings: "palt" 1; }
+  .card-meta { font-size: 13.3px; line-height: 1.7; color: var(--kx-text-light); margin-top: 8px; }
+
+  /* ---------- news list ---------- */
+  .news { background: var(--white); border-radius: 12px; padding: 4px 22px 10px; box-shadow: var(--shadow-card); }
+  .news h4 { color: var(--kx-primary); border-bottom: 2px solid var(--kx-primary);
+             display: inline-block; margin: 18px 0 10px; padding-bottom: 4px; }
+  .news-row { display: grid; grid-template-columns: 104px 96px 1fr; gap: 16px;
+              align-items: baseline; padding: 12px 0; }
+  .news-date { font-size: 13.3px; color: var(--kx-heading); }
+  .news-text { font-size: 15.2px; line-height: 1.7; }
+
+  /* ---------- status panel ---------- */
+  .status { display: inline-block; background: var(--white); border: 2px solid var(--kx-primary);
+            border-radius: 12px; padding: 14px 26px; text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .status-date { font-size: 18px; font-weight: 700; line-height: 1.2; letter-spacing: 0.02em;
+                 color: var(--kx-heading); }
+  .status-open { display: inline-block; margin-top: 8px; background: #1e6bb8; color: var(--white);
+                 border-radius: 4px; padding: 4px 16px; font-size: 14px; font-weight: 700; }
+
+  /* ---------- responsive demo ---------- */
+  .resp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .resp-box { background: var(--white); border: 1px solid var(--kx-border); border-radius: 12px; padding: 18px 20px; }
+  .resp-box .lbl { font-size: 12px; color: var(--kx-text-light); margin-bottom: 8px; }
+  .resp-1 { font-size: 17px; line-height: 1.8;  letter-spacing: 0.04em; }
+  .resp-2 { font-size: 17px; line-height: 1.75; letter-spacing: 0.035em; }
+  .resp-3 { font-size: 16px; line-height: 1.7;  letter-spacing: 0.03em; }
+
+  /* ---------- footer ---------- */
+  .footer { background: var(--kx-primary); color: var(--white); padding: 44px 40px 32px; }
+  .footer-in { max-width: var(--container); margin: 0 auto; }
+  .footer a { color: var(--white); font-size: 14px; }
+  .footer-links { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px 24px; margin-bottom: 26px; }
+  .footer small { display: block; margin-top: 18px; opacity: .9; }
+
+  @media (max-width: 767.98px) {
+    .section { padding: 36px 20px; }
+    .card-grid, .w-grid, .palt-grid, .btn-large-row, .resp-grid { grid-template-columns: 1fr; }
+    .footer-links { grid-template-columns: repeat(2, 1fr); }
+    .header-nav { display: none; }
+    h1, h2 { margin-bottom: 1rem; }
+    h2 { margin-top: 1.75rem; }
+    h3 { margin-top: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-in">
+    <div class="logo-mark">九</div>
+    <div class="logo-ja">九州国立博物館</div>
+    <nav class="header-nav">
+      <a href="#colors">展示案内</a>
+      <a href="#typography">催し物情報</a>
+      <a href="#weight">楽しむ・学ぶ</a>
+      <a href="#components">博物館について</a>
+      <a href="#layout">ご利用案内</a>
+    </nav>
+  </div>
+</header>
+<div class="header-band">
+  <div class="header-band-in">
+    <a href="#layout">開館時間・休館日・観覧料・駐車料金</a>
+    <a href="#layout">博物館の年間スケジュール</a>
+    <a href="#layout">博物館へのアクセス</a>
+  </div>
+</div>
+
+<!-- 00 HERO -->
+<div class="band-white">
+<section class="section" style="padding-bottom:36px">
+  <div class="section-label">Design System Preview</div>
+  <h1>九州国立博物館 — 見出しは 600、字間は画面幅で変わる</h1>
+  <p class="lead">
+    実測日 2026-09-24。<code>https://www.kyuhaku.jp/</code> と <code>/visit/visit_top.html</code> の computed style と
+    インライン <code>&lt;style&gt;</code> から起こした。自社トークンは <code>--kx-*</code> の <b>9 個</b>だけ。
+    ページの地色は <b><code>#e4e4e4</code></b> で、カードが白。
+  </p>
+  <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+    <div class="status">
+      <div class="status-date">9月24日（木）</div>
+      <span class="status-open">本日開館日</span>
+    </div>
+    <div class="news" style="flex:1;min-width:360px">
+      <h4>博物館からのお知らせ</h4>
+      <div class="news-row">
+        <span class="badge badge-news">お知らせ</span>
+        <span class="news-date">2026.9.17</span>
+        <span class="news-text">特別展「氷河期展」のチケット販売についてのご案内</span>
+      </div>
+      <div class="rule"></div>
+      <div class="news-row">
+        <span class="badge badge-event">イベント</span>
+        <span class="news-date">2026.9.11</span>
+        <span class="news-text">第15回きゅーはく子どもフェスタを開催します</span>
+      </div>
+      <div class="rule"></div>
+      <div class="news-row">
+        <span class="badge badge-press">プレス</span>
+        <span class="news-date">2026.9.02</span>
+        <span class="news-text">アジア文化交流センター研究論集を公開しました</span>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- 01 COLORS -->
+<section class="section" id="colors">
+  <div class="section-label">01 / Color</div>
+  <h2>青が 2 つある。新規に書くなら #1a63bc に統一する</h2>
+  <p class="lead">
+    自社トークン <code>--kx-primary: #1a63bc</code> があるのに、カードの見出しは Tailwind の任意値クラス
+    <code>text-[#0d6efd]</code>（Bootstrap の既定青）で書かれている。
+    <b>Bootstrap から Tailwind へ移行したときの残留物</b>であって、設計意図ではない。
+  </p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#1a63bc"></div><div class="swatch-body"><div class="swatch-name">Primary</div><div class="swatch-hex">#1a63bc（--kx-primary）</div><div class="swatch-use">★リンク・見出し・ヘッダー帯。文字 21 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#0f3d75"></div><div class="swatch-body"><div class="swatch-name">Primary Dark</div><div class="swatch-hex">#0f3d75（--kx-primary-dark）</div><div class="swatch-use">a:hover</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#0d6efd"></div><div class="swatch-body"><div class="swatch-name">Bootstrap Blue</div><div class="swatch-hex">#0d6efd</div><div class="swatch-use">★移行の残留。新規には使わない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:linear-gradient(135deg,#2b7fbd,#1a63bc)"></div><div class="swatch-body"><div class="swatch-name">Primary Gradient</div><div class="swatch-hex">135deg, #2b7fbd → #1a63bc</div><div class="swatch-use">3 連の大ボタン</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#111111"></div><div class="swatch-body"><div class="swatch-name">Heading</div><div class="swatch-hex">#111111（--kx-heading）</div><div class="swatch-use">見出し。本文より濃い</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Text</div><div class="swatch-hex">#333333（--kx-text）</div><div class="swatch-use">本文</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#dc3545"></div><div class="swatch-body"><div class="swatch-name">Danger</div><div class="swatch-hex">#dc3545</div><div class="swatch-use">「お知らせ」「予告」バッジ（面 8 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#198754"></div><div class="swatch-body"><div class="swatch-name">Success</div><div class="swatch-hex">#198754</div><div class="swatch-use">「イベント」バッジ（面 10 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#0dcaf0"></div><div class="swatch-body"><div class="swatch-name">Info</div><div class="swatch-hex">#0dcaf0</div><div class="swatch-use">「関係者」「プレス」。★文字は黒にする</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#6f42c1"></div><div class="swatch-body"><div class="swatch-name">Purple</div><div class="swatch-hex">#6f42c1</div><div class="swatch-use">「残り N 日」のカウントダウン</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e4e4e4"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#e4e4e4</div><div class="swatch-use">★ページの地色。白ではない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f5f5f7"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#f5f5f7</div><div class="swatch-use">ヘッダー帯・タブ・カード下地</div></div></div>
+  </div>
+  <p class="note">
+    <code>--kx-text-muted: #666666</code> は宣言されているが<b>可視 0 要素</b>。使われている色として扱わないこと。
+  </p>
+</section>
+
+<!-- 02 TYPOGRAPHY -->
+<div class="band-white">
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2>本文はローカル、見出しだけ Web フォント</h2>
+  <p class="lead">
+    <code>--kx-ff-base</code> と <code>--kx-ff-heading</code> の違いは <b>5 番目が <code>"Segoe UI"</code> か
+    <code>"Noto Sans JP"</code> か</b>だけ。macOS ではどちらもヒラギノ角ゴ ProN が当たるが、
+    <b>Windows では見出しだけ Web フォント、本文はローカルの BIZ UDPGothic</b> になる。
+    実測ではテキストを持つ 521 要素のうち<b>ヒラギノ角ゴ ProN が 517、Noto Sans JP は 4</b>。
+  </p>
+
+  <table class="spec">
+    <tr><th style="width:80px">位置</th><th>名前</th><th>当たる環境</th></tr>
+    <tr><td>1–2</td><td>"Hiragino Kaku Gothic ProN" / "Hiragino Sans"</td><td><b>macOS・iOS</b></td></tr>
+    <tr><td>3–4</td><td>-apple-system / BlinkMacSystemFont</td><td>Apple 系の保険</td></tr>
+    <tr><td><b>5</b></td><td><b>"Segoe UI"（本文）/ "Noto Sans JP"（見出し）</b></td><td><b>ここが分岐点</b></td></tr>
+    <tr><td><b>6</b></td><td><b>"BIZ UDPGothic"</b></td><td><b>Windows 10 (1809) 以降に標準搭載の UD フォント</b></td></tr>
+    <tr><td>7–8</td><td>"Yu Gothic Medium" / "Yu Gothic"</td><td>Windows の保険（Medium が先）</td></tr>
+    <tr><td>9</td><td>Meiryo</td><td>旧 Windows</td></tr>
+  </table>
+  <p class="note">
+    ★<b>Windows の游ゴシック問題を「BIZ UDPGothic を游ゴシックより前に置く」ことで解いている。</b>
+    このリポジトリの収録例では 5 つ目の流儀（SmartHR の <code>AdjustedYuGothic</code>、白鶴酒造の <code>MyYuGothicM</code>、
+    カリモク家具の <code>Yu Gothic</code> 上書き、東京オペラシティ AG のスタック順に続く）。
+    UD フォントは字形が読みやすく、游ゴシックの細さ問題も同時に避けられる。公共施設らしい選択。
+  </p>
+
+  <h3>サイズはすべて clamp()</h3>
+  <table class="spec">
+    <tr><th style="width:110px">役割</th><th>font-size</th><th style="width:100px">px 換算</th><th style="width:90px">weight</th></tr>
+    <tr><td>h1</td><td><code>clamp(1.625rem, 1.35rem + 1.4vw, 2.5rem)</code></td><td>26 → 40px</td><td><b>700</b></td></tr>
+    <tr><td>h2</td><td><code>clamp(1.375rem, 1.15rem + 1.1vw, 2rem)</code></td><td>22 → 32px</td><td><b>700</b></td></tr>
+    <tr><td>h3</td><td><code>clamp(1.1875rem, 1.05rem + 0.7vw, 1.625rem)</code></td><td>19 → 26px</td><td><b>600</b></td></tr>
+    <tr><td>h4</td><td><code>clamp(1.0625rem, 1rem + 0.35vw, 1.3125rem)</code></td><td>17 → 21px</td><td><b>600</b></td></tr>
+    <tr><td>h5</td><td><code>1rem</code></td><td>16px</td><td><b>600</b></td></tr>
+    <tr><td>h6</td><td><code>0.875rem</code></td><td>14px</td><td><b>600</b></td></tr>
+    <tr><td><b>本文</b></td><td><code>clamp(1rem, 0.975rem + 0.15vw, 1.0625rem)</code></td><td><b>16 → 17px</b></td><td>400</td></tr>
+  </table>
+  <p class="note">★<b>固定 px に置き換えないこと。</b>メディアクエリでサイズを書き直す設計になっていない。</p>
+</section>
+</div>
+
+<!-- 03 WEIGHT -->
+<section class="section" id="weight">
+  <div class="section-label">03 / Font Weight</div>
+  <h2>主役は 600。ヒラギノの W6 に素直に当たる太さ</h2>
+  <p class="lead">
+    可視 113 要素のうち <b>600 が 61、700 が 26、400 が 17、500 が 6、900 が 3</b>。
+    本番書体のヒラギノ角ゴ ProN は <b>W3 と W6 の 2 本しか持たない</b>ので、
+    <b>600 を指定すると W6 がそのまま当たり、合成が入らない</b>。
+    <b>700 と 900 は W6 に対する合成太字</b>になる。
+  </p>
+  <div class="w-grid">
+    <div class="w-box"><div class="lbl">400 — 本文（ヒラギノ W3）</div><div class="w-sample w400">氷河期展　人類が見た4万年前の世界</div></div>
+    <div class="w-box"><div class="lbl">★600 — 見出しの主役（ヒラギノ W6 が素直に当たる）</div><div class="w-sample w600">氷河期展　人類が見た4万年前の世界</div></div>
+    <div class="w-box"><div class="lbl">700 — h1/h2 のみ（<b>W6 の合成太字</b>）</div><div class="w-sample w700">氷河期展　人類が見た4万年前の世界</div></div>
+    <div class="w-box"><div class="lbl">900 — 3 連の大ボタンだけ（同じく合成）</div><div class="w-sample w900">氷河期展　人類が見た4万年前の世界</div></div>
+  </div>
+  <p class="note">
+    ★base 層は <code>h1〜h6 { font-weight: 700 }</code> と書いてあるが、<b><code>h3</code>〜<code>h6</code> の規則が 600 に上書きしている</b>。
+    実装を読むときは base だけを見ないこと。<b>小見出しに 700 を使わない。</b>
+  </p>
+  <table class="spec" style="margin-top:24px">
+    <tr><th style="width:220px">ページ</th><th>400</th><th>500</th><th>600</th><th>700</th><th>900</th></tr>
+    <tr><td>トップ</td><td>17</td><td>6</td><td><b>61</b></td><td>26</td><td>3</td></tr>
+    <tr><td>ご利用案内（下層）</td><td>88</td><td>—</td><td><b>50</b></td><td>26</td><td>2</td></tr>
+  </table>
+</section>
+
+<!-- 04 LETTER SPACING / palt -->
+<div class="band-white">
+<section class="section" id="ls">
+  <div class="section-label">04 / Letter Spacing &amp; palt</div>
+  <h2>画面が狭いほど、行間も字間も詰める</h2>
+  <p class="lead">
+    このサイトで最も特徴的な設計。<b>Desktop <code>0.04em / 1.8</code> → Tablet <code>0.035em / 1.75</code> →
+    Mobile <code>0.03em / 1.7</code></b>。狭い画面で 0.04em を保つと 1 行の文字数が落ちて読みづらくなるため。
+  </p>
+  <div class="resp-grid">
+    <div class="resp-box"><div class="lbl">Desktop（≥ 1025px）— ls 0.04em / lh 1.8</div><p class="resp-1">開館時間は 9 時 30 分から 17 時 00 分まで（入館は 16 時 30 分まで）です。</p></div>
+    <div class="resp-box"><div class="lbl">Tablet（768–1024px）— ls 0.035em / lh 1.75</div><p class="resp-2">開館時間は 9 時 30 分から 17 時 00 分まで（入館は 16 時 30 分まで）です。</p></div>
+    <div class="resp-box"><div class="lbl">Mobile（≤ 767.98px）— ls 0.03em / lh 1.7</div><p class="resp-3">開館時間は 9 時 30 分から 17 時 00 分まで（入館は 16 時 30 分まで）です。</p></div>
+  </div>
+
+  <h3>palt は見出し専用</h3>
+  <p class="lead" style="margin-bottom:16px">
+    base 層の <code>h1〜h6</code> に <code>font-feature-settings: "palt" 1</code> と <code>letter-spacing: 0.02em</code> を
+    セットで書いている。<b>本文には掛けていない</b>（トップで 136 要素、下層で 76 要素が継承で palt を持つ）。
+  </p>
+  <div class="palt-grid">
+    <div class="palt-box">
+      <div class="lbl">★見出し — palt 1 ＋ letter-spacing 0.02em（このサイトの仕様）</div>
+      <div class="palt-on">特別展「卑弥呼の鏡」―三角縁神獣鏡がヤマト王権をつくった―</div>
+    </div>
+    <div class="palt-box">
+      <div class="lbl">本文と同じ設定（palt なし）— 約物が空いて見える</div>
+      <div class="palt-off">特別展「卑弥呼の鏡」―三角縁神獣鏡がヤマト王権をつくった―</div>
+    </div>
+  </div>
+
+  <table class="spec" style="margin-top:28px">
+    <tr><th style="width:130px">実測値（下層）</th><th style="width:90px">出現</th><th>出どころ</th></tr>
+    <tr><td><code>0.68px</code></td><td><b>109</b></td><td><b>body の 0.04em が px に解決され、サイズ違いの子要素まで継承されている</b></td></tr>
+    <tr><td>0.42px</td><td>35</td><td>中間コンテナ（14px × 0.03em）からの継承</td></tr>
+    <tr><td>0.32px</td><td>17</td><td>見出しの 0.02em（16px）</td></tr>
+    <tr><td>0.52px</td><td>4</td><td>見出しの 0.02em（26px）</td></tr>
+  </table>
+  <p class="note">
+    ★同じ <code>0.68px</code> が 109 要素・サイズはバラバラ = <b>継承</b>。
+    <code>em</code> は body に 1 回だけ書いて、<b>子で再宣言しない</b>。見出しだけ <code>0.02em</code> を明示する。
+  </p>
+</section>
+</div>
+
+<!-- 05 COMPONENTS -->
+<section class="section" id="components">
+  <div class="section-label">05 / Components</div>
+  <h2>カードは radius 12〜16px、影は 0.06 の 1 段</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-visual"></div>
+      <div class="card-body">
+        <div class="card-kicker">特別展</div>
+        <div class="card-title">氷河期展 〜人類が見た4万年前の世界〜</div>
+        <div class="card-meta">令和8年7月18日（土）〜 9月27日（日）</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-visual" style="background:linear-gradient(135deg,#8aa7d6,#3b5f9e)"></div>
+      <div class="card-body">
+        <div class="card-kicker">特集展示</div>
+        <div class="card-title">さわって体験！本物のひみつ2026</div>
+        <div class="card-meta">令和8年8月1日（土）〜 10月4日（日）</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-visual" style="background:linear-gradient(135deg,#d3b48c,#a0764a)"></div>
+      <div class="card-body">
+        <div class="card-kicker">文化交流展</div>
+        <div class="card-title">卑弥呼の鏡 ―三角縁神獣鏡がヤマト王権をつくった―</div>
+        <div class="card-meta">令和9年1月6日（水）〜 3月14日（日）</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>ボタンとバッジ</h3>
+  <div class="btn-row" style="margin-bottom:20px">
+    <a class="btn btn-primary" href="#components">本日開館日</a>
+    <a class="btn btn-outline" href="#components">チケットの購入方法はこちら</a>
+    <span class="badge badge-news">お知らせ</span>
+    <span class="badge badge-event">イベント</span>
+    <span class="badge badge-press">プレス</span>
+    <span class="badge badge-count">残り4日</span>
+  </div>
+  <div class="btn-large-row">
+    <a class="btn-large" href="#layout">年間スケジュール<small>休館日・展示計画・イベント情報をカレンダーでご確認いただけます</small></a>
+    <a class="btn-large" href="#layout">アクセス・交通案内<small>公共交通機関でのアクセス方法・周辺地図・駐車場情報</small></a>
+    <a class="btn-large" href="#layout">お知らせ・公告<small>館内情報・イベント告知・公告・入札情報などを掲載</small></a>
+  </div>
+  <p class="note">
+    ★3 連の大ボタンだけ <code>font-weight: 900</code>。ヒラギノに W9 相当は無いので合成太字になる。<b>多用しない。</b>
+  </p>
+
+  <table class="spec" style="margin-top:28px">
+    <tr><th style="width:90px">Level</th><th style="width:270px">Shadow</th><th>用途</th><th style="width:80px">実測</th></tr>
+    <tr><td>0</td><td><code>none</code></td><td>本文・帯</td><td>大半</td></tr>
+    <tr><td><b>1</b></td><td><code>0 2px 12px rgba(0,0,0,0.06)</code></td><td><b>カード（基準）</b></td><td>12</td></tr>
+    <tr><td>2</td><td><code>0 4px 12px rgba(0,0,0,0.15)</code></td><td>3 連の大ボタン</td><td>3</td></tr>
+    <tr><td>3</td><td><code>0 2px 8px rgba(0,0,0,0.1)</code></td><td>開館状況パネル</td><td>1</td></tr>
+  </table>
+</section>
+
+<!-- 06 LAYOUT -->
+<div class="band-white">
+<section class="section" id="layout">
+  <div class="section-label">06 / Layout &amp; Responsive</div>
+  <h2>コンテナ 1320px、帯は全幅</h2>
+  <table class="spec">
+    <tr><th style="width:250px">項目</th><th>値</th></tr>
+    <tr><td>コンテナ</td><td><b>1320px</b>（幅いっぱいのセクションが 17 箇所・中身だけ 1320px）</td></tr>
+    <tr><td>root font-size</td><td>16px</td></tr>
+    <tr><td>スクロールオフセット</td><td><code>--kx-scroll-offset: 105px</code>（固定ヘッダー分）</td></tr>
+    <tr><td>見出しの下マージン</td><td>h1–h3 = 1.5rem / h4–h5 = 1rem（モバイルは h1/h2 が 1rem）</td></tr>
+    <tr><td>ブレークポイント</td><td>576 / <b>768</b> / 992 / 1200 / 1400px（Tailwind）＋ <code>max-width: 767.98px</code>・<code>991.98px</code>（Bootstrap 由来の端数）</td></tr>
+    <tr><td>アクセシビリティ</td><td><code>prefers-reduced-motion: reduce</code> に 3 件対応（カルーセルの自動送りを止める）</td></tr>
+  </table>
+  <p class="note">
+    ★<b>このサイトの CSS には「旧サイトの computed 値を実測して base 層に移植した」というコメントが残っている。</b>
+    Bootstrap で組まれていたサイトを Tailwind に載せ替えるとき、<code>@layer base</code> に旧サイトの数値を流し込んで
+    見た目を保っている。<code>#0d6efd</code> や <code>small { font-size: 0.875em }</code> はその名残。
+  </p>
+</section>
+</div>
+
+<footer class="footer">
+  <div class="footer-in">
+    <div class="footer-links">
+      <a href="#colors">展示案内</a><a href="#typography">催し物情報</a><a href="#weight">楽しむ・学ぶ</a><a href="#components">博物館について</a>
+      <a href="#layout">ご利用案内</a><a href="#ls">アクセス</a><a href="#colors">お知らせ・公告</a><a href="#typography">寄附について</a>
+    </div>
+    <small>〒818-0118 福岡県太宰府市石坂4-7-2　九州国立博物館</small>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (517 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (520 sites)</a>
 </p>
 
 <table>
@@ -791,6 +791,11 @@
 </tr>
 <tr>
 <td align="center"><strong>京王電鉄</strong><br><img src="design-md/keio/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>京都国立博物館</strong><br><img src="design-md/kyohaku/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>九州国立博物館</strong><br><img src="design-md/kyuhaku/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>マルマン</strong><br><img src="design-md/maruman/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1369,11 +1374,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [カオナビ (kaonavi)](https://www.kaonavi.jp/) | SaaS / HR Tech | [DESIGN.md](design-md/kaonavi/DESIGN.md) | [preview.html](design-md/kaonavi/preview.html) |
 | [近畿日本鉄道 (Kintetsu Railway)](https://www.kintetsu.co.jp/) | Transport / Railway | [DESIGN.md](design-md/kintetsu/DESIGN.md) | [preview.html](design-md/kintetsu/preview.html) |
 | [京王電鉄 (Keio Corporation)](https://www.keio.co.jp/) | Transport / Railway | [DESIGN.md](design-md/keio/DESIGN.md) | [preview.html](design-md/keio/preview.html) |
+| [京都国立博物館 (Kyoto National Museum)](https://www.kyohaku.go.jp/jp/) | Museum / Culture | [DESIGN.md](design-md/kyohaku/DESIGN.md) | [preview.html](design-md/kyohaku/preview.html) |
+| [九州国立博物館 (Kyushu National Museum)](https://www.kyuhaku.jp/) | Museum / Culture | [DESIGN.md](design-md/kyuhaku/DESIGN.md) | [preview.html](design-md/kyuhaku/preview.html) |
+| [マルマン (Maruman)](https://www.e-maruman.co.jp/) | Stationery / Manufacturer | [DESIGN.md](design-md/maruman/DESIGN.md) | [preview.html](design-md/maruman/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (517 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (520 sites)</a>
 </p>
 
 <table>
@@ -2130,6 +2138,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>京王電鉄</strong><br><img src="design-md/keio/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>京都国立博物館</strong><br><img src="design-md/kyohaku/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>九州国立博物館</strong><br><img src="design-md/kyuhaku/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>マルマン</strong><br><img src="design-md/maruman/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
