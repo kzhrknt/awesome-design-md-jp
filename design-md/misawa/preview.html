@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ミサワホーム</title>
+<!-- ★YakuHanJP は約物（、。「」（）・：；）だけを収録したサブセットフォント。
+     実サイトの @font-face は 9 ウェイト宣言だが loaded は 400 だけ。 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/yakuhanjp@3.4.1/dist/css/yakuhanjp.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&family=Outfit:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Design Tokens ===
+       ★実サイトの CSS Custom Properties は自社トークン 1 個だけ（他 1 個は Swiper 由来）。
+       以下はすべて実測値から起こした。2026-09-25 */
+    --blue:       #0078be;   /* 面 71 要素・文字 31 要素。CTA の枠線と文字・セクションラベル */
+    --ink:        #333333;   /* 文字 225 要素。黒ではなく墨 */
+    --navy:       #0e3e6a;   /* 文字 19 要素。サービスブランド名 */
+    --surface:    #f8f8f8;   /* 面 3 要素。お知らせ・ニュースリリースの帯 */
+    --contact-bg: #d6dee3;   /* 面 1 要素。「ご相談窓口 CONTACT」 */
+    --about-bg:   #6d7b84;   /* 面 1 要素。「ミサワホームについて ABOUT US」 */
+    --faint:      #c7c7c7;   /* 文字 5 要素。縦組みの欧文ラベル */
+    --muted:      #666666;   /* 文字 7 要素。フッターの説明文 */
+    --lounge-1:   #0c436f;   /* ホームラウンジ 住まい */
+    --lounge-2:   #882e2e;   /* ホームラウンジ 土地活用 */
+    --lounge-3:   #7e6e27;   /* ホームラウンジ リフォーム */
+    --white:      #ffffff;
+    --shadow: rgba(0, 0, 0, 0.12) 0 0 10px 0;   /* ★実測 1 種・15 要素・offset なし */
+
+    /* ★YakuHanJP を先頭に置くと約物のアキだけ詰まり、かな漢字は Noto Sans JP が描く。
+       実サイトは Yakuhanjp と小文字で書いているが、@font-face の宣言は YakuHanJP。
+       CSS は大文字小文字を区別しないので動くが、新規実装では正しく書くこと。 */
+    --font-yaku: YakuHanJP, "Noto Sans JP", sans-serif;  /* 見出し・リード・CTA（176 要素） */
+    --font-base: "Noto Sans JP", sans-serif;             /* ナビ・メガメニュー・リスト（102 要素） */
+    --font-en:   Outfit, sans-serif;                     /* 欧文ラベル（20 要素） */
+
+    --ls-inherit-yaku: 0.96px;  /* ★YakuHanJP 系の継承値。15px でも 30px でも 0.96px */
+    --ls-inherit-base: 0.36px;  /* ★Noto Sans JP 系の継承値。10px でも 15px でも 0.36px */
+    --ls-heading: 0.1em;        /* ★見出しだけ em を各要素に */
+    --lh-nav:  1.46;            /* 92 要素 */
+    --lh-body: 1.40;            /* 84 要素。★日本語サイトとしては狭い */
+    --lh-long: 1.80;            /* 8 要素。緊急告知だけ */
+    --radius: 4px;              /* 150 要素 */
+    --radius-lg: 8px;           /* 6 要素 */
+    --container: 1200px;        /* 21 箇所 */
+    --gap: 50px;                /* 最頻値 7 箇所 */
+  }
+
+  /* ★実サイトは html { font-size: 10px }、body も 10px。rem は 10px 基準。
+     このプレビューは px で書いているが、実装時は 1.5rem = 15px と読み替える。 */
+  html { font-size: 10px; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font-yaku);
+    font-size: 15px;
+    font-weight: 400;                          /* ★400 で通す */
+    line-height: var(--lh-body);
+    letter-spacing: var(--ls-inherit-yaku);    /* ★px で継承させる。子要素で em に書き直さない */
+    /* ★実サイトは font-feature-settings: "palt" を 860 要素に継承させ、YakuHanJP と併用している。
+       同じ目的の処理が二重に入っているので、このプレビューでは YakuHanJP 側に寄せて palt を書かない。 */
+    font-feature-settings: normal;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .86em;
+         background: var(--surface); padding: 1px 5px; border-radius: 3px; }
+  b { font-weight: 600; }
+
+  /* ---------- header ---------- */
+  .header { position: sticky; top: 0; z-index: 10; background: var(--white);
+            border-bottom: 1px solid var(--surface); padding: 14px 40px; }
+  .header-in { max-width: var(--container); margin: 0 auto; display: flex; align-items: center; gap: 24px; }
+  .logo { font-family: var(--font-en); font-size: 30px; font-weight: 400;
+          line-height: 1.27; letter-spacing: var(--ls-inherit-yaku); color: var(--blue); }
+  .header-nav { margin-left: auto; display: flex; gap: 22px; }
+  .header-nav a { font-family: var(--font-base); font-size: 15px; font-weight: 400;
+                  line-height: 21.9px; letter-spacing: var(--ls-inherit-base);
+                  color: var(--ink); text-decoration: none; }
+  .header-menu { font-family: var(--font-base); font-size: 15px; font-weight: 600;
+                 line-height: 21.9px; letter-spacing: normal;
+                 color: var(--white); background: var(--blue);
+                 border: 0; border-radius: var(--radius); padding: 10px 20px; cursor: pointer; }
+
+  /* ---------- sections ---------- */
+  .section { max-width: var(--container); margin: 0 auto; padding: 64px 40px; }
+  .section-alt { background: var(--surface); }
+  .section-no { font-family: var(--font-en); font-size: 12px; letter-spacing: var(--ls-inherit-yaku);
+                color: var(--muted); line-height: var(--lh-nav); margin-bottom: 10px; }
+  .section-label { font-family: var(--font-en); font-size: 30px; font-weight: 400;
+                   line-height: 1.27; letter-spacing: var(--ls-inherit-yaku);
+                   color: var(--blue); margin-bottom: 6px; }
+  .section-title { font-size: 26px; font-weight: 400; line-height: 1.77;
+                   letter-spacing: 0.08em;   /* ★見出しは em を各要素に */
+                   color: var(--blue); margin-bottom: 14px; }
+  .section-lead { font-size: 15px; line-height: var(--lh-body);
+                  letter-spacing: var(--ls-inherit-yaku); margin-bottom: 32px; max-width: 840px; }
+  .rule { height: 1px; background: var(--surface); }
+  .note { font-family: var(--font-base); font-size: 12px; line-height: 1.6;
+          letter-spacing: var(--ls-inherit-base); color: var(--muted); margin-top: 18px; }
+
+  /* ---------- colors ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--surface); background: var(--white); border-radius: var(--radius); overflow: hidden; }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 12px 14px; }
+  .swatch-name { font-size: 14px; font-weight: 600; line-height: var(--lh-nav); }
+  .swatch-hex { font-family: var(--font-en); font-size: 12px; color: var(--muted); line-height: var(--lh-nav); }
+  .swatch-use { font-family: var(--font-base); font-size: 12px; line-height: 1.6;
+                letter-spacing: var(--ls-inherit-base); margin-top: 6px; }
+
+  /* ---------- typography rows ---------- */
+  .type-row { padding: 20px 0; display: grid; grid-template-columns: 240px 1fr; gap: 28px; align-items: baseline; }
+  .type-meta { font-family: var(--font-base); font-size: 12px; line-height: 1.6;
+               letter-spacing: var(--ls-inherit-base); color: var(--muted); }
+  .t-31 { font-size: 31px; font-weight: 400; line-height: 1.35; letter-spacing: var(--ls-heading); }
+  .t-30 { font-family: var(--font-en); font-size: 30px; font-weight: 400; line-height: 1.27; letter-spacing: var(--ls-inherit-yaku); }
+  .t-26 { font-size: 26px; font-weight: 400; line-height: 1.77; letter-spacing: 0.08em; }
+  .t-24 { font-size: 24px; font-weight: 400; line-height: 1.46; letter-spacing: var(--ls-heading); }
+  .t-22 { font-family: var(--font-base); font-size: 22px; font-weight: 400; line-height: 1.46; letter-spacing: 0.88px; }
+  .t-15lead { font-size: 15px; font-weight: 400; line-height: var(--lh-long); letter-spacing: var(--ls-heading); }
+  .t-15 { font-size: 15px; font-weight: 400; line-height: var(--lh-body); letter-spacing: var(--ls-inherit-yaku); }
+  .t-15n { font-family: var(--font-base); font-size: 15px; font-weight: 400; line-height: 21.9px; letter-spacing: var(--ls-inherit-base); }
+  .t-12 { font-size: 12px; font-weight: 400; line-height: 16.8px; letter-spacing: var(--ls-inherit-yaku); }
+
+  /* ---------- yakuhan demo ---------- */
+  .yh-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+  .yh-box { border: 1px solid var(--surface); border-radius: var(--radius); padding: 20px 22px; background: var(--white); }
+  .yh-box .lbl { font-family: var(--font-base); font-size: 12px; color: var(--muted);
+                 line-height: 1.6; letter-spacing: var(--ls-inherit-base); margin-bottom: 12px; }
+  .yh-on  { font-family: var(--font-yaku); font-size: 20px; line-height: 1.6; letter-spacing: var(--ls-inherit-yaku); }
+  .yh-off { font-family: var(--font-base); font-size: 20px; line-height: 1.6; letter-spacing: var(--ls-inherit-yaku); }
+
+  /* ---------- letter-spacing demo ---------- */
+  .ls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+  .ls-box { border: 1px solid var(--surface); border-radius: var(--radius); padding: 20px 22px; background: var(--white); }
+  .ls-box .lbl { font-family: var(--font-base); font-size: 12px; color: var(--muted);
+                 line-height: 1.6; letter-spacing: var(--ls-inherit-base); margin-bottom: 12px; }
+  .ls-inh-30 { font-size: 30px; line-height: 1.3; letter-spacing: var(--ls-inherit-yaku); }
+  .ls-inh-15 { font-size: 15px; line-height: var(--lh-body); letter-spacing: var(--ls-inherit-yaku); }
+  .ls-em-30 { font-size: 30px; line-height: 1.3; letter-spacing: 0.1em; }
+  .ls-em-15 { font-size: 15px; line-height: var(--lh-body); letter-spacing: 0.1em; }
+
+  /* ---------- weight demo ---------- */
+  .w-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 8px; }
+  .w-box { border: 1px solid var(--surface); border-radius: var(--radius); padding: 20px 22px; background: var(--white); }
+  .w-box .lbl { font-family: var(--font-base); font-size: 12px; color: var(--muted);
+                line-height: 1.6; letter-spacing: var(--ls-inherit-base); margin-bottom: 12px; }
+  .w-sample { font-size: 20px; line-height: 1.5; letter-spacing: var(--ls-inherit-yaku); }
+  .w400 { font-weight: 400; }
+  .w600 { font-weight: 600; }
+  .w700 { font-weight: 700; }
+
+  /* ---------- vertical labels ---------- */
+  .v-row { display: flex; gap: 26px; align-items: flex-start; margin-top: 8px; }
+  .v-label { writing-mode: vertical-rl; font-family: var(--font-en);
+             font-size: 15px; font-weight: 400; line-height: 19px;
+             letter-spacing: 1.2px; color: var(--faint); height: 200px; }
+
+  /* ---------- buttons ---------- */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 8px; }
+  .btn { font-family: var(--font-yaku); font-size: 12px; font-weight: 400;
+         line-height: 16.8px; letter-spacing: var(--ls-inherit-yaku);
+         padding: 14px 26px; border-radius: var(--radius); text-decoration: none;
+         display: inline-block; box-shadow: none; cursor: pointer; }
+  .btn-primary { color: var(--blue); background: var(--white); border: 1px solid var(--blue); }
+  .btn-plain { font-family: var(--font-base); color: var(--ink); background: var(--white);
+               border: 0; letter-spacing: var(--ls-inherit-base); }
+  .btn-menu-demo { font-family: var(--font-base); font-size: 15px; font-weight: 600;
+                   line-height: 21.9px; letter-spacing: normal; color: var(--white);
+                   background: var(--blue); border: 0; border-radius: var(--radius);
+                   padding: 12px 24px; text-decoration: none; display: inline-block; }
+  .btn.is-focus { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+  /* ---------- lounge ---------- */
+  .lounge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); margin-top: 8px; }
+  .lounge { border-radius: var(--radius); padding: 24px 26px; background: var(--white);
+            box-shadow: var(--shadow); }
+  .lounge-title { font-size: 15px; font-weight: 400; line-height: var(--lh-body);
+                  letter-spacing: var(--ls-inherit-yaku); }
+  .lounge-en { font-family: var(--font-en); font-size: 12px; line-height: 1.27;
+               letter-spacing: var(--ls-inherit-yaku); color: var(--navy); margin-top: 8px; }
+
+  /* ---------- cards ---------- */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); margin-top: 8px; }
+  .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .card-thumb { height: 150px; background: var(--contact-bg); }
+  .card-body { padding: 20px 22px 24px; }
+  .card-title { font-size: 24px; font-weight: 400; line-height: 1.46;
+                letter-spacing: var(--ls-heading); color: var(--blue); }
+  .card-text { font-family: var(--font-base); font-size: 12px; font-weight: 400;
+               line-height: 1.6; letter-spacing: var(--ls-inherit-base); margin-top: 10px; }
+
+  /* ---------- news ---------- */
+  .news-row { display: grid; grid-template-columns: 120px 1fr; gap: 18px; align-items: baseline; padding: 16px 0; }
+  .news-date { font-family: var(--font-base); font-size: 12px; line-height: 17.52px;
+               letter-spacing: var(--ls-inherit-base); color: var(--muted); }
+  .news-text { font-size: 15px; line-height: var(--lh-body); letter-spacing: var(--ls-inherit-yaku); }
+  .news-urgent { font-size: 15px; line-height: var(--lh-long); letter-spacing: var(--ls-inherit-yaku); }
+
+  /* ---------- spec table ---------- */
+  .spec { width: 100%; border-collapse: collapse; margin-top: 18px; }
+  .spec th, .spec td { border: 1px solid var(--surface); padding: 11px 14px; text-align: left;
+                       font-family: var(--font-base); font-size: 13px; line-height: 1.7;
+                       letter-spacing: var(--ls-inherit-base); }
+  .spec th { background: var(--surface); font-weight: 600; }
+
+  /* ---------- footer ---------- */
+  .footer { background: var(--about-bg); padding: 34px 40px; }
+  .footer-in { max-width: var(--container); margin: 0 auto; }
+  .footer-links { display: flex; flex-wrap: wrap; gap: 22px; margin-bottom: 22px; }
+  .footer-links a { font-family: var(--font-base); font-size: 12px; font-weight: 400;
+                    line-height: 17.52px; letter-spacing: var(--ls-inherit-base);
+                    color: var(--white); text-decoration: none; }
+  .copyright { font-family: var(--font-base); font-size: 11px; line-height: 1.45;
+               letter-spacing: var(--ls-inherit-base); color: var(--white); }
+
+  @media (hover: hover) {
+    .btn-primary:hover { color: var(--white); background: var(--blue); }
+  }
+  @media screen and (max-width: 480px) {
+    .section { padding: 40px 20px; }
+    .card-grid, .lounge-grid, .yh-grid, .ls-grid, .w-grid { grid-template-columns: 1fr; }
+    .type-row { grid-template-columns: 1fr; gap: 10px; }
+    .section-title { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-in">
+    <div class="logo">MISAWA</div>
+    <nav class="header-nav">
+      <a href="#colors">住まい</a><a href="#typography">土地活用</a><a href="#weight">リフォーム</a>
+      <a href="#buttons">複合開発</a><a href="#layout">オーナーサポート</a>
+    </nav>
+    <button class="header-menu" type="button">メニュー</button>
+  </div>
+</header>
+
+<!-- 00 OVERVIEW -->
+<section class="section" id="overview">
+  <div class="section-no">00 / Overview</div>
+  <div class="section-label">MISAWA DESIGN</div>
+  <h2 class="section-title">約物サブセット ＋ 和文 ＋ 欧文の 3 層</h2>
+  <p class="section-lead">
+    <code>body</code> の <code>font-family</code> は <code>"Hiragino Kaku Gothic ProN"</code> だが、
+    <b>それが効いているのは可視 309 要素のうち 11 要素だけ</b>。実体は
+    <b><code>YakuHanJP, "Noto Sans JP", sans-serif</code></b>（176 要素）と
+    <b><code>"Noto Sans JP", sans-serif</code></b>（102 要素）。
+    <b><code>computedStyles.body</code> を根拠に書体を決めないこと。</b>
+  </p>
+  <table class="spec">
+    <tr><th style="width:230px">用途</th><th>font-family</th><th style="width:100px">実測</th></tr>
+    <tr><td>見出し・リード・CTA（約物が出る文）</td><td><code>YakuHanJP, "Noto Sans JP", sans-serif</code></td><td><b>176 要素</b></td></tr>
+    <tr><td>ナビ・メガメニュー・リスト（短い語）</td><td><code>"Noto Sans JP", sans-serif</code></td><td><b>102 要素</b></td></tr>
+    <tr><td>欧文ラベル</td><td><code>Outfit, sans-serif</code></td><td>20 要素</td></tr>
+    <tr><td>フッターの注記のみ</td><td><code>"Hiragino Kaku Gothic ProN"</code></td><td>11 要素</td></tr>
+  </table>
+  <p class="note">
+    ★<b>スタックを 2 系統に分けているのが設計。</b>全域に YakuHanJP を当てていない。
+    約物が出てこない短い語（ナビ項目）には素の Noto Sans JP を使う。
+  </p>
+</section>
+
+<!-- 01 COLORS -->
+<div class="section-alt">
+<section class="section" id="colors">
+  <div class="section-no">01 / Color</div>
+  <h2 class="section-title">青 1 色を導線に、文字は墨</h2>
+  <p class="section-lead">
+    <b><code>#0078be</code></b> が<b>面 71 要素・文字 31 要素</b>。本文は墨 <b><code>#333333</code></b>（225 要素）。
+    サービスブランド名だけ <b><code>#0e3e6a</code></b>（19 要素）に分けている。<b>2 つの青を混ぜないこと。</b>
+  </p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#0078be"></div><div class="swatch-body"><div class="swatch-name">Primary（ブルー）</div><div class="swatch-hex">#0078be</div><div class="swatch-use">★CTA の枠線と文字・セクションラベル・見出しの強調</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Ink</div><div class="swatch-hex">#333333</div><div class="swatch-use">★本文・ナビ（文字 225 要素）。黒ではなく墨</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#0e3e6a"></div><div class="swatch-body"><div class="swatch-name">Navy</div><div class="swatch-hex">#0e3e6a</div><div class="swatch-use">MISAWA HOME LOUNGE / Home Club などのサービス名</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f8f8f8;border-bottom:1px solid #e6e6e6"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#f8f8f8</div><div class="swatch-use">お知らせ・ニュースリリースの帯（面 3 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#d6dee3"></div><div class="swatch-body"><div class="swatch-name">Contact 面</div><div class="swatch-hex">#d6dee3</div><div class="swatch-use">「ご相談窓口 CONTACT」（面 1 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#6d7b84"></div><div class="swatch-body"><div class="swatch-name">About 面</div><div class="swatch-hex">#6d7b84</div><div class="swatch-use">「ミサワホームについて ABOUT US」（面 1 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#0c436f"></div><div class="swatch-body"><div class="swatch-name">Lounge 住まい</div><div class="swatch-hex">#0c436f</div><div class="swatch-use">ホームラウンジ 3 導線の色分け（各 1 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#882e2e"></div><div class="swatch-body"><div class="swatch-name">Lounge 土地活用</div><div class="swatch-hex">#882e2e</div><div class="swatch-use">同上（臙脂）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#7e6e27"></div><div class="swatch-body"><div class="swatch-name">Lounge リフォーム</div><div class="swatch-hex">#7e6e27</div><div class="swatch-use">同上（黄土）</div></div></div>
+  </div>
+</section>
+</div>
+
+<!-- 02 YAKUHAN -->
+<section class="section" id="yakuhan">
+  <div class="section-no">02 / YakuHanJP</div>
+  <h2 class="section-title">約物だけ半角にするサブセットを先頭に置く</h2>
+  <p class="section-lead">
+    <b>YakuHanJP は「、。「」（）・：；」などの約物だけを収録したサブセットフォント。</b>
+    先頭に置くと約物のアキだけが詰まり、かな漢字は次の <code>"Noto Sans JP"</code> が描く。
+    <b><code>palt</code> を使わずに約物を詰める手段。</b>
+  </p>
+  <div class="yh-grid">
+    <div class="yh-box">
+      <div class="lbl">★<code>YakuHanJP, "Noto Sans JP", sans-serif</code>（176 要素）</div>
+      <div class="yh-on">「住まいは、巣まい」（1967年）という原点。</div>
+    </div>
+    <div class="yh-box">
+      <div class="lbl"><code>"Noto Sans JP", sans-serif</code>（102 要素・約物は全角のまま）</div>
+      <div class="yh-off">「住まいは、巣まい」（1967年）という原点。</div>
+    </div>
+  </div>
+  <p class="note">
+    ★<b>実サイトは <code>font-feature-settings: "palt"</code> を 860 要素に継承させ、YakuHanJP と併用している。</b>
+    約物を詰める処理が二重に入っている状態。<b>新規実装ではどちらか一方に寄せること</b>——
+    YakuHanJP を使うなら <code>palt</code> は書かない、<code>palt</code> だけで済ませるなら YakuHanJP を読み込まない。
+    このプレビューは YakuHanJP 側に寄せている。<br>
+    ★<b><code>YakuHanJP</code> は 9 ウェイト宣言されているが <code>loaded</code> は 400 だけ。</b>
+    400 以外を当てると<b>約物だけ Noto Sans JP に落ちて全角に戻る</b>。<br>
+    ★<b>下層（<code>/kodate/</code>）では <code>font-feature-settings</code> が 0 要素。</b>同じサイト内で <code>palt</code> の有無が分かれている。
+  </p>
+</section>
+
+<!-- 03 TYPOGRAPHY -->
+<div class="section-alt">
+<section class="section" id="typography">
+  <div class="section-no">03 / Typography</div>
+  <h2 class="section-title">rem は 10px 基準、行間は 1.40〜1.46</h2>
+  <p class="section-lead">
+    <code>html</code> も <code>body</code> も <code>font-size: 10px</code>。
+    行間は <b>1.46（92 要素）</b>と <b>1.40（84 要素）</b>に集中していて、
+    <b>日本語サイトの標準（1.7〜2.0）より詰まっている</b>。広げてよいのは緊急告知（1.80）だけ。
+  </p>
+
+  <div class="rule" style="margin:36px 0 0"></div>
+  <div class="type-row">
+    <div class="type-meta">大見出し（CTA セクション）<br>31px · 400 · 1.35<br>ls 3.1px = <b>0.1em</b></div>
+    <div class="t-31">ご相談窓口</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">欧文セクションラベル<br>Outfit · 30px · 400 · 1.27<br>ls 0.96px（<b>継承</b>）</div>
+    <div class="t-30">PICK UP</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">セクション見出し<br>26px · 400 · 1.77<br>ls 2.08px = <b>0.08em</b></div>
+    <div class="t-26">ミサワホームグループは「5つの事業」を推進します</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">小見出し<br>24px · 400 · 1.46<br>ls 2.4px = <b>0.1em</b></div>
+    <div class="t-24">新築戸建・土地活用</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">メガメニューの見出し<br>Noto Sans JP · 22px · 400 · 1.46<br>ls 0.88px（<b>継承</b>）</div>
+    <div class="t-22">建てる［注文住宅］</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">★本文（リード）<br>15px · 400 · <b>1.80</b><br>ls 1.5px = <b>0.1em</b></div>
+    <div class="t-15lead">「住まいは、巣まい」という原点を大切にしながら、家族の暮らしと人生を豊かにする住まいをつくり続けています。</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">★本文（一般）<br>15px · 400 · <b>1.40</b><br>ls 0.96px（<b>継承</b>）</div>
+    <div class="t-15">多彩な動画やこだわりが詰まった建築実例、注目のトピックスなど、住まいづくりのヒントをご紹介します。</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">ナビ・リスト<br>Noto Sans JP · 15px · 400 · 1.46<br>ls 0.36px（<b>継承</b>）</div>
+    <div class="t-15n">商品ラインアップ　デザイン　テクノロジー</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">CTA・補助<br>12px · 400 · 1.40<br>ls 0.96px（継承）</div>
+    <div class="t-12">カタログ請求はこちら</div>
+  </div>
+  <div class="rule"></div>
+</section>
+</div>
+
+<!-- 04 WEIGHT -->
+<section class="section" id="weight">
+  <div class="section-no">04 / Weight</div>
+  <h2 class="section-title">400 一本。太くすると約物が全角に戻る</h2>
+  <p class="section-lead">
+    可視 309 要素のうち <b>400 が 301 要素</b>。600 はメガメニューの開閉ボタン 7 要素、
+    700 は緊急のお見舞い告知 1 要素だけ。
+    <b><code>Noto Sans JP</code> と <code>Outfit</code> は可変フォント（100〜900）で読み込んでいる</b>のに、
+    太さで階層を作っていない。
+  </p>
+  <div class="w-grid">
+    <div class="w-box"><div class="lbl">400 · ほぼ全域<br><b>301 要素</b></div><div class="w-sample w400">「住まいは、巣まい」</div></div>
+    <div class="w-box"><div class="lbl">600 · メガメニューの開閉<br>7 要素</div><div class="w-sample w600">「住まいは、巣まい」</div></div>
+    <div class="w-box"><div class="lbl">700 · 緊急告知のみ<br>1 要素</div><div class="w-sample w700">「住まいは、巣まい」</div></div>
+  </div>
+  <p class="note">
+    ★<b><code>font-weight</code> を 400 以外にすると YakuHanJP が外れる</b>（<code>loaded</code> は 400 のみ）。
+    上の 600 / 700 のサンプルでは<b>鉤括弧と読点が全角に戻っている</b>はず。見出しを太くしてはいけない実務上の理由がこれ。
+  </p>
+</section>
+
+<!-- 05 LETTER-SPACING -->
+<div class="section-alt">
+<section class="section" id="ls">
+  <div class="section-no">05 / Letter-spacing</div>
+  <h2 class="section-title">継承の px と見出しの em が同居している</h2>
+  <p class="section-lead">
+    <b><code>0.96px</code>（79 要素）・<code>0.36px</code>（61 要素）・<code>0.88px</code>（18 要素）は継承値。</b>
+    サイズが違うのに px が同じ＝上位要素に書いた <code>em</code> が px として降りている。
+    一方<b>見出しは <code>0.1em</code> / <code>0.08em</code> を各要素に当てている</b>ので、サイズに比例して px が変わる。
+  </p>
+  <div class="ls-grid">
+    <div class="ls-box">
+      <div class="lbl">★継承：30px も 15px も <b>0.96px</b> のまま</div>
+      <div class="ls-inh-30">住まいづくり</div>
+      <div class="ls-inh-15" style="margin-top:10px">住まいづくりのヒントをご紹介します。</div>
+    </div>
+    <div class="ls-box">
+      <div class="lbl">見出し：<code>0.1em</code> を各要素に（30px→3px、15px→1.5px）</div>
+      <div class="ls-em-30">住まいづくり</div>
+      <div class="ls-em-15" style="margin-top:10px">住まいづくりのヒントをご紹介します。</div>
+    </div>
+  </div>
+  <p class="note">
+    ★<b>継承値を <code>em</code> に読み替えないこと。</b>
+    本文・ナビは上位要素に書いて px で降ろし、見出しにだけ <code>em</code> を当てる——
+    <b>この使い分けそのものが設計</b>。
+  </p>
+</section>
+</div>
+
+<!-- 06 VERTICAL -->
+<section class="section" id="vertical">
+  <div class="section-no">06 / Vertical</div>
+  <h2 class="section-title">縦に組むのは和文ではなく欧文</h2>
+  <p class="section-lead">
+    <code>writing-mode: vertical-rl</code> は <b>5 要素</b>。すべて <b><code>Outfit</code> の欧文ラベル</b>で、
+    色は <code>#c7c7c7</code> の淡いグレー。<b>背景の装飾として置かれている。</b>
+    下層（<code>/kodate/</code>）には縦組みが無い。
+  </p>
+  <div class="v-row">
+    <span class="v-label">HOME+Advanced</span>
+    <span class="v-label">HOME+Upgrade Life</span>
+    <span class="v-label">HOME+Create-Value</span>
+    <span class="v-label">HOME+Global Partners</span>
+    <span class="v-label">HOME+More Heart</span>
+  </div>
+  <p class="note">
+    ★15px / 400 / <code>line-height: 19px</code>（1.27）/ <code>letter-spacing: 1.2px</code>（0.08em）。
+    <b>欧文を縦組みにすると字が横倒しになる。</b>ここでは意図的にそうしている。
+    <b>読ませる文字には使わないこと。</b>外部ウィジェット由来ではない自前クラス（<code>section-projects__copy</code>）。
+  </p>
+</section>
+
+<!-- 07 BUTTONS -->
+<div class="section-alt">
+<section class="section" id="buttons">
+  <div class="section-no">07 / Components</div>
+  <h2 class="section-title">CTA は白地＋青枠。ベタ塗りにしない</h2>
+  <p class="section-lead">
+    青は<b>枠線と文字</b>に使う。ベタ塗りにするのは<b>メガメニューの開閉ボタンだけ</b>。
+    <code>border-radius</code> は <b>4px</b>（150 要素）が既定。
+  </p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">カタログ請求</a>
+    <a class="btn btn-primary" href="#">住まいのご相談</a>
+    <a class="btn btn-plain" href="#">商品ラインアップ</a>
+    <a class="btn btn-primary is-focus" href="#">フォーカス状態</a>
+    <a class="btn-menu-demo" href="#">メニュー（600・ベタ塗りはここだけ）</a>
+  </div>
+  <p class="note">
+    ★<code>:hover</code> は <code>@media (hover: hover)</code> の中だけに書く。
+    実サイトは <code>(hover: hover)</code> と <code>(hover: none)</code> を<b>両方</b>宣言して、
+    タッチデバイスにはホバーの代わりの表現を当てている。
+  </p>
+
+  <div class="rule" style="margin:36px 0 28px"></div>
+  <h2 class="section-title">ホームラウンジの 3 導線だけ色分けする</h2>
+  <div class="lounge-grid">
+    <div class="lounge" style="border-left:4px solid var(--lounge-1)">
+      <div class="lounge-title">これから住まいをご検討の方</div>
+      <div class="lounge-en" style="color:var(--lounge-1)">MISAWA HOME LOUNGE</div>
+    </div>
+    <div class="lounge" style="border-left:4px solid var(--lounge-2)">
+      <div class="lounge-title">これから土地活用・賃貸経営をご検討の方</div>
+      <div class="lounge-en" style="color:var(--lounge-2)">Home Club</div>
+    </div>
+    <div class="lounge" style="border-left:4px solid var(--lounge-3)">
+      <div class="lounge-title">これからリフォームをご検討の方</div>
+      <div class="lounge-en" style="color:var(--lounge-3)">THINK LIFE</div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- 08 CARDS -->
+<section class="section" id="cards">
+  <div class="section-no">08 / Cards</div>
+  <h2 class="section-title">影は 1 種類だけ。offset なしの全方向ぼかし</h2>
+  <p class="section-lead">
+    <b><code>box-shadow: rgba(0,0,0,0.12) 0 0 10px 0</code></b> が実測 <b>15 要素</b>。
+    これ以外の影は無い。<b>下に落とさず、全方向に均等にぼかす。</b>
+  </p>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-body">
+        <div class="card-title">新築戸建</div>
+        <p class="card-text">多彩な動画やこだわりが詰まった建築実例、注目のトピックスをご紹介します。</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-body">
+        <div class="card-title">土地活用</div>
+        <p class="card-text">賃貸住宅・賃貸併用住宅・店舗・各種施設まで、土地の可能性を広げます。</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-body">
+        <div class="card-title">リフォーム</div>
+        <p class="card-text">戸建て・マンションのリフォームから事業用リノベーションまで。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 09 NEWS -->
+<div class="section-alt">
+<section class="section" id="news">
+  <div class="section-no">09 / News</div>
+  <h2 class="section-title">緊急告知だけ行間を 1.80 に広げる</h2>
+  <div class="news-row">
+    <span class="news-date">お見舞い</span>
+    <span class="news-urgent">熊本県を中心とする地震に関するお見舞いとご相談窓口設置のお知らせ</span>
+  </div>
+  <div class="rule"></div>
+  <div class="news-row">
+    <span class="news-date">2026.09.18</span>
+    <span class="news-text">「MISAWA DESIGN」特集ページを公開しました</span>
+  </div>
+  <div class="rule"></div>
+  <div class="news-row">
+    <span class="news-date">2026.09.05</span>
+    <span class="news-text">全国の住宅展示場・イベント情報を更新しました</span>
+  </div>
+  <div class="rule"></div>
+  <p class="note">
+    ★本文の行間は <b>1.40</b>。<b>1.80 に広げているのは緊急告知の 8 要素だけ。</b>
+    日付は <code>Noto Sans JP</code> 12px・<code>#666666</code>。
+  </p>
+</section>
+</div>
+
+<!-- 10 LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-no">10 / Layout</div>
+  <h2 class="section-title">コンテナ 1200px、480px で二分する</h2>
+  <table class="spec">
+    <tr><th style="width:250px">項目</th><th>値</th></tr>
+    <tr><td>コンテナ</td><td><b>1200px</b>（トップ 21 箇所・下層 1 箇所）。ほぼ唯一の幅</td></tr>
+    <tr><td>全幅帯</td><td><code>calc(100% - 120px)</code>（左右 60px ずつ余白）</td></tr>
+    <tr><td>root font-size</td><td><b>10px</b>（<code>1.5rem = 15px</code>）</td></tr>
+    <tr><td>本文の行間</td><td><b>1.40</b>（84 要素）／ ナビ・カード 1.46（92 要素）／ 緊急告知だけ 1.80</td></tr>
+    <tr><td>字間</td><td>継承 <b>0.96px</b>（YakuHanJP 系）/ <b>0.36px</b>（Noto Sans JP 系）／ 見出しは <code>0.1em</code>・<code>0.08em</code></td></tr>
+    <tr><td><code>gap</code></td><td>4 / 14 / 15 / 30 / 32 / <b>50</b> / 58 / 80px（最頻値 <b>50px</b>・7 箇所）</td></tr>
+    <tr><td>主ブレークポイント</td><td><code>screen and (max-width: 480px)</code> <b>447 件</b> / <code>min-width: 481px</code> 47 件</td></tr>
+    <tr><td>縦向きタブレット</td><td><code>(min-width: 481px) and (max-width: 768px) and (max-aspect-ratio: 1/1)</code> 3 件</td></tr>
+    <tr><td>ホバーの扱い</td><td><code>(hover: hover)</code> 19 件 / <code>(hover: none)</code> 19 件（<b>両方書く</b>）</td></tr>
+    <tr><td><code>border-radius</code></td><td><b>4px</b>（150 要素・既定）／ 50%（116 要素・アイコン）／ 8px（6 要素）</td></tr>
+    <tr><td><code>box-shadow</code></td><td><b>1 種類</b> <code>rgba(0,0,0,0.12) 0 0 10px 0</code>（15 要素）</td></tr>
+    <tr><td>CSS Custom Properties</td><td><b>自社トークン 1 個</b>（他 1 個は Swiper 由来）</td></tr>
+  </table>
+  <p class="note">
+    ★<b>480px を境に二分している。</b>中間のタブレット幅に専用レイアウトを持たず、
+    <code>max-aspect-ratio: 1/1</code>（画面が縦長かどうか）で<b>縦向きタブレットだけを拾う</b>のが特徴。
+  </p>
+
+  <div class="rule" style="margin:36px 0 28px"></div>
+  <h2 class="section-title">同一サイト内に 2 つのデザインシステムがある</h2>
+  <table class="spec">
+    <tr><th style="width:180px"></th><th>トップ（コーポレート）</th><th>/kodate/（注文住宅）</th></tr>
+    <tr><td>和文スタック</td><td><code>YakuHanJP, "Noto Sans JP", sans-serif</code></td><td><b><code>"Noto Sans JP", sans-serif</code> 単独</b></td></tr>
+    <tr><td>欧文</td><td>Outfit（可変）</td><td><b>Oswald / Nobel-Book</b></td></tr>
+    <tr><td>font-weight</td><td>400 / 600 / 700</td><td><b>300 / 400 / 500 / 700 / 900</b></td></tr>
+    <tr><td>font-feature-settings</td><td><code>palt</code> 860 要素</td><td><b>0 要素</b></td></tr>
+    <tr><td>字間</td><td>継承の px ＋ 見出しの em</td><td><b><code>normal</code> が 174 要素</b></td></tr>
+    <tr><td>body の font-size</td><td>10px</td><td><b>11px</b></td></tr>
+    <tr><td>縦組み</td><td>5 要素</td><td>0</td></tr>
+  </table>
+  <p class="note">
+    ★<b>この DESIGN.md はコーポレート（トップ）側を採用している。</b>
+    <code>/kodate/</code> は <code>font-weight: 300</code> の細い見出し（45px / 58px）と
+    <code>Nobel-Book</code> の大きな欧文（78px）という別の顔を持つ。
+    <b>混ぜると字間（px 継承 vs <code>normal</code>）と太さ（400 一本 vs 300〜900）が衝突する。</b>
+  </p>
+</section>
+
+<footer class="footer">
+  <div class="footer-in">
+    <div class="footer-links">
+      <a href="#overview">住まい</a><a href="#colors">土地活用</a><a href="#yakuhan">リフォーム</a>
+      <a href="#typography">複合開発・投資開発</a><a href="#weight">オーナーサポート</a>
+      <a href="#ls">企業・IR情報</a><a href="#vertical">採用情報</a><a href="#layout">お問い合わせ</a>
+    </div>
+    <p class="copyright">ミサワホームは、未来志向のまちづくりと豊かな地域社会の実現に取り組んでいます。</p>
+    <p class="copyright" style="margin-top:10px">
+      これは DESIGN.md の再現用サンプルです。ミサワホーム株式会社の実サイトではありません。
+      書体は実サイトと同じ YakuHanJP ＋ Noto Sans JP ＋ Outfit を CDN から読み込んでいます。
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

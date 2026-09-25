@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 加島屋</title>
+<!-- ★実サイトと同じウェイトだけ読み込む。
+     Noto Serif JP は 400 と 700 が loaded（600 は宣言だけで unloaded）。
+     Noto Sans JP は 400 と 700。欧文見出しは Sorts Mill Goudy 400。 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Sorts+Mill+Goudy&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Design Tokens ===
+       ★実サイトの CSS Custom Properties は自社トークン 0 個（検出された 2 個は WordPress 由来）。
+       以下はすべて実測値から起こした。2026-09-25 */
+    --navy:       #0b0d3b;   /* 面 43 要素・文字 21 要素。ヘッダー帯・ナビ・縦組み導線 */
+    --ink:        #333333;   /* 文字 133 要素（トップ）。黒ではなく墨 */
+    --link:       #003cb3;   /* 文字 7 要素。ページャ・SNS アカウント。UA 青ではなく指定色 */
+    --maroon:     #800000;   /* 文字 7 要素。「送料無料」専用 */
+    --orange:     #ff7e00;   /* 面 2 要素。「開催中」バッジ */
+    --gray-badge: #666666;   /* 面 8 要素。「終了」バッジ */
+    --surface:    #f1f1f3;   /* 面 5 要素。News 一覧・ページャの下地 */
+    --surface-2:  #f8f8f9;   /* 面 2 要素。「ピックアップ情報」 */
+    --moss:       #5d6153;   /* 面 1 要素。「重要なお知らせ一覧を見る」 */
+    --muted:      #84859c;   /* News の日付。濃紺を薄めた色 */
+    --white:      #ffffff;
+    --shadow-card: #cccccc 0 0 3px 0;  /* 下層の商品カード 6 要素だけ。黒ではない */
+
+    /* ★末尾は serif（引用符なし）。実サイトは "serif" と引用符付きで書いているが、これは誤り。
+       引用符を付けるとジェネリックファミリーではなく「serif という名前のフォント」を探しにいく。 */
+    --font-mincho: "Noto Serif JP", YuMincho, "Yu Mincho", "Hiragino Mincho ProN", serif;
+    --font-gothic: "Noto Sans JP", sans-serif;   /* News のタブラベル・Load More・コピーライト */
+    --font-en:     "Sorts Mill Goudy", serif;    /* 英字のセクション見出し 8 要素 */
+
+    --ls-heading: 0.1em;     /* ★見出し・ナビ・日付に「各要素へ」当てる */
+    --lh-body: 1.90;         /* 本文 60 要素（16px→30.4px / 14px→26.6px） */
+    --lh-lead: 1.70;         /* セクションのリード 6 要素 */
+    --container: 1160px;     /* 標準 */
+    --container-read: 900px; /* 読み物 */
+    --radius-more: 4px;      /* Load More だけ */
+  }
+
+  /* ★実サイトは html { font-size: 10px }、body も 10px。rem は 10px 基準。
+     このプレビューは px で書いているが、実装時は 1.6rem = 16px と読み替える。 */
+  html { font-size: 10px; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font-mincho);
+    font-size: 10px;                /* ★body は 10px。本文は 16px を各要素に書く */
+    font-weight: 400;
+    line-height: normal;            /* ★明示していない。本文だけ 1.9 を当てる */
+    letter-spacing: 0.5px;          /* ★body の 10px に 0.05em → 0.5px。197 要素が継承で受け取る */
+    font-feature-settings: normal;  /* ★palt は 0 要素。約物は全角のまま */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .86em;
+         background: var(--surface); padding: 1px 5px; border-radius: 3px; }
+  b { font-weight: 700; }
+
+  /* ---------- header ---------- */
+  .header { position: sticky; top: 0; z-index: 10; background: var(--white);
+            border-bottom: 1px solid var(--surface); }
+  .header-util { background: var(--navy); padding: 12px 40px; }
+  .header-util-in { max-width: var(--container); margin: 0 auto; display: flex;
+                    justify-content: flex-end; gap: 26px; }
+  .header-util a { font-size: 12px; font-weight: 400; line-height: normal;
+                   color: var(--white); text-decoration: none; }
+  .header-main { padding: 18px 40px; }
+  .header-main-in { max-width: var(--container); margin: 0 auto; display: flex;
+                    align-items: center; gap: 24px; }
+  .logo-ja { font-size: 28px; font-weight: 400; line-height: normal; color: var(--navy); }
+  .logo-en { font-family: var(--font-en); font-size: 14px; line-height: normal;
+             letter-spacing: var(--ls-heading); color: var(--ink); margin-top: 6px; }
+  .header-nav { margin-left: auto; display: flex; gap: 20px; }
+  .header-nav a { font-size: 14px; font-weight: 400; line-height: 1.25;
+                  letter-spacing: 1.4px;   /* ★0.1em を各要素に */
+                  color: var(--navy); text-decoration: none; }
+
+  /* ---------- vertical CTA ---------- */
+  .v-cta { writing-mode: vertical-rl; font-family: var(--font-mincho);
+           font-size: 19px; font-weight: 400; line-height: normal;
+           letter-spacing: 0.95px;   /* 0.05em */
+           color: var(--white); background: var(--navy);
+           padding: 26px 16px; text-decoration: none; display: inline-block; }
+
+  /* ---------- sections ---------- */
+  .section { max-width: var(--container); margin: 0 auto; padding: 64px 40px; }
+  .section-read { max-width: var(--container-read); }
+  .section-alt { background: var(--surface-2); }
+  /* ★左半分だけ地色を変える帯（実サイトに 2 箇所） */
+  .section-split { background: linear-gradient(to right,
+                     var(--surface) 0%, var(--surface) 50%,
+                     var(--white) 50%, var(--white) 100%); }
+  .section-no { font-family: var(--font-en); font-size: 14px; letter-spacing: var(--ls-heading);
+                color: var(--muted); line-height: normal; margin-bottom: 10px; }
+  .section-en { font-family: var(--font-en); font-size: 28px; line-height: normal;
+                letter-spacing: var(--ls-heading); color: var(--navy); margin-bottom: 4px; }
+  .section-title { font-size: 20px; font-weight: 400; line-height: normal;
+                   letter-spacing: 2px;   /* ★0.1em */
+                   color: var(--navy); margin-bottom: 16px; }
+  .section-lead { font-size: 16px; line-height: var(--lh-body); margin-bottom: 32px; max-width: 840px; }
+  .rule { height: 1px; background: var(--surface); }
+  .note { font-size: 14px; line-height: var(--lh-body); color: var(--muted); margin-top: 18px; }
+
+  /* ---------- colors ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--surface); background: var(--white); }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 12px 14px; }
+  .swatch-name { font-size: 14px; font-weight: 700; line-height: normal; letter-spacing: 1.4px; }
+  .swatch-hex { font-family: var(--font-gothic); font-size: 12px; color: var(--muted); line-height: normal; }
+  .swatch-use { font-size: 12px; line-height: 1.6; margin-top: 6px; }
+
+  /* ---------- typography rows ---------- */
+  .type-row { padding: 20px 0; display: grid; grid-template-columns: 230px 1fr; gap: 28px; align-items: baseline; }
+  .type-meta { font-family: var(--font-gothic); font-size: 12px; line-height: 1.6; color: var(--muted); }
+  .t-38 { font-size: 38px; font-weight: 400; line-height: normal; letter-spacing: 8.36px; }  /* 0.22em */
+  .t-30 { font-size: 30px; font-weight: 400; line-height: normal; }                          /* 継承 0.5px */
+  .t-20h { font-size: 20px; font-weight: 400; line-height: normal; letter-spacing: 2px; }    /* 0.1em */
+  .t-18 { font-size: 18px; font-weight: 700; line-height: normal; }
+  .t-16h { font-size: 16px; font-weight: 400; line-height: normal; letter-spacing: 1.6px; }  /* 0.1em */
+  .t-16 { font-size: 16px; font-weight: 400; line-height: var(--lh-body); }
+  .t-15 { font-size: 15px; font-weight: 400; line-height: normal; letter-spacing: 1.6px; }
+  .t-14n { font-size: 14px; font-weight: 400; line-height: 1.25; letter-spacing: 1.4px; }
+  .t-14 { font-size: 14px; font-weight: 400; line-height: var(--lh-body); }
+  .t-12 { font-size: 12px; font-weight: 400; line-height: normal; }
+  .t-en { font-family: var(--font-en); font-size: 28px; line-height: normal; letter-spacing: var(--ls-heading); }
+
+  /* ---------- letter-spacing demo ---------- */
+  .ls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+  .ls-box { border: 1px solid var(--surface); padding: 20px 22px; background: var(--white); }
+  .ls-box .lbl { font-family: var(--font-gothic); font-size: 12px; color: var(--muted);
+                 line-height: 1.6; margin-bottom: 12px; }
+  /* ★継承側：letter-spacing を書かない（body の 0.5px がそのまま降りてくる） */
+  .ls-inherit-16 { font-size: 16px; line-height: var(--lh-body); }
+  .ls-inherit-12 { font-size: 12px; line-height: var(--lh-body); }
+  /* ★誤り側：子要素で 0.05em を書き直すとサイズに比例して広がる */
+  .ls-wrong-16 { font-size: 16px; line-height: var(--lh-body); letter-spacing: 0.05em; }
+  .ls-wrong-12 { font-size: 12px; line-height: var(--lh-body); letter-spacing: 0.05em; }
+
+  /* ---------- line-height demo ---------- */
+  .lh-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+  .lh-box { border: 1px solid var(--surface); padding: 20px 22px; background: var(--white); }
+  .lh-box .lbl { font-family: var(--font-gothic); font-size: 12px; color: var(--muted);
+                 line-height: 1.6; margin-bottom: 12px; }
+  .lh-normal { font-size: 16px; line-height: normal; }
+  .lh-19 { font-size: 16px; line-height: 1.9; }
+
+  /* ---------- weight demo ---------- */
+  .w-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 8px; }
+  .w-box { border: 1px solid var(--surface); padding: 20px 22px; background: var(--white); }
+  .w-box .lbl { font-family: var(--font-gothic); font-size: 12px; color: var(--muted);
+                line-height: 1.6; margin-bottom: 12px; }
+  .w-sample { font-size: 22px; line-height: 1.5; }
+  .w400 { font-weight: 400; }
+  .w700 { font-weight: 700; }
+
+  /* ---------- buttons ---------- */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 8px; }
+  .btn { font-family: var(--font-mincho); font-size: 12px; font-weight: 400;
+         line-height: normal; padding: 15px 26px; border: 0; border-radius: 0;
+         text-decoration: none; display: inline-block; box-shadow: none; cursor: pointer; }
+  .btn-primary { color: var(--white); background: var(--navy); }
+  .btn-moss { color: var(--white); background: var(--moss); }
+  .btn-more { font-family: var(--font-gothic); font-size: 13px; font-weight: 700;
+              line-height: 19.5px; letter-spacing: 0.5px;
+              color: var(--white); background: var(--ink);
+              border: 0; border-radius: var(--radius-more);
+              padding: 13px 34px; text-decoration: none; display: inline-block; cursor: pointer; }
+  .btn.is-focus { outline: 2px solid var(--link); outline-offset: 3px; }
+
+  /* ---------- badges ---------- */
+  .badge { font-family: var(--font-gothic); font-size: 14px; font-weight: 400;
+           line-height: normal; letter-spacing: 1.4px; padding: 5px 14px;
+           border-radius: 0; display: inline-block; color: var(--white); }
+  .badge-open { background: var(--orange); border: 1px solid var(--orange); }
+  .badge-closed { background: var(--gray-badge); border: 1px solid var(--gray-badge); }
+  .badge-ship { color: var(--maroon); background: transparent; border: 0;
+                font-family: var(--font-mincho); padding: 5px 0; }
+
+  /* ---------- cards ---------- */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 8px; }
+  .card { background: var(--white); border: 0; border-radius: 0;
+          box-shadow: var(--shadow-card); }   /* ★下層の商品カードだけ */
+  .card-thumb { height: 150px; background: var(--surface); }
+  .card-body { padding: 18px 20px 22px; }
+  .card-title { font-size: 18px; font-weight: 700; line-height: normal; }
+  .card-text { font-size: 14px; font-weight: 400; line-height: var(--lh-body); margin-top: 8px; }
+
+  /* ---------- news ---------- */
+  .tab-row { display: flex; gap: 0; border-bottom: 1px solid var(--surface); }
+  .tab { font-family: var(--font-gothic); font-size: 14px; font-weight: 400;
+         line-height: normal; letter-spacing: 1.4px; color: var(--navy);
+         padding: 12px 22px; text-decoration: none; }
+  .tab.is-active { background: var(--navy); color: var(--white); }
+  .news-row { display: grid; grid-template-columns: 110px 90px 1fr; gap: 18px;
+              align-items: center; padding: 18px 0; }
+  .news-date { font-size: 15px; line-height: normal; letter-spacing: 1.6px; color: var(--muted); }
+  .news-text { font-size: 16px; line-height: var(--lh-body); }
+
+  /* ---------- spec table ---------- */
+  .spec { width: 100%; border-collapse: collapse; margin-top: 18px; }
+  .spec th, .spec td { border: 1px solid var(--surface); padding: 11px 14px; text-align: left;
+                       font-size: 14px; line-height: var(--lh-body); }
+  .spec th { background: var(--surface); font-weight: 700; }
+
+  /* ---------- footer ---------- */
+  .footer { background: var(--navy); padding: 34px 40px; }
+  .footer-in { max-width: var(--container); margin: 0 auto; }
+  .footer-links { display: flex; flex-wrap: wrap; gap: 22px; margin-bottom: 22px; }
+  .footer-links a { font-size: 12px; font-weight: 400; line-height: normal;
+                    color: var(--white); text-decoration: none; }
+  .copyright { font-family: var(--font-gothic); font-size: 10px; line-height: normal; color: var(--white); }
+
+  @media (max-width: 480px) {
+    .section { padding: 40px 20px; }
+    .card-grid, .ls-grid, .lh-grid, .w-grid { grid-template-columns: 1fr; }
+    .type-row { grid-template-columns: 1fr; gap: 10px; }
+    .t-38 { font-size: 26px; letter-spacing: 5.72px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-util">
+    <div class="header-util-in">
+      <a href="#colors">商品カタログ</a><a href="#typography">加島屋ネットショップ</a>
+      <a href="#ls">かんたんレシピ</a><a href="#layout">SNS</a>
+    </div>
+  </div>
+  <div class="header-main">
+    <div class="header-main-in">
+      <div>
+        <div class="logo-ja">新潟　加島屋</div>
+        <div class="logo-en">KASHIMAYA — Since 1855 —</div>
+      </div>
+      <nav class="header-nav">
+        <a href="#colors">創業170周年</a><a href="#typography">加島屋の心</a><a href="#weight">店舗のご案内</a>
+        <a href="#buttons">会社概要</a><a href="#cards">ご注文について</a><a href="#layout">お問い合わせ</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- 00 OVERVIEW -->
+<section class="section" id="overview">
+  <div class="section-no">00 / Overview</div>
+  <div class="section-en">Kashimaya</div>
+  <h2 class="section-title">明朝 1 系統・濃紺・rem は 10px 基準</h2>
+  <p class="section-lead">
+    書体は <b><code>"Noto Serif JP", YuMincho, "Yu Mincho", "Hiragino Mincho ProN", serif</code></b> の
+    <b>5 段スタック</b>（トップ 157 要素）。Web フォントが落ちても<b>游明朝 → ヒラギノ明朝 → OS 既定の明朝</b>と
+    段階的に縮退する。濃紺 <b><code>#0b0d3b</code></b> が面 43 要素・文字 21 要素。
+  </p>
+  <div style="display:flex;gap:30px;align-items:flex-start">
+    <a class="v-cta" href="#">加島屋ネットショップはこちらから</a>
+    <div style="flex:1">
+      <p class="t-16">
+        トップのヒーロー右に置かれた縦組みの導線。<code>writing-mode: vertical-rl</code> は
+        <b>2 要素だけ</b>で、<b><code>a</code> 要素そのものに当てている</b>（外側のコンテナではない）。
+        下層ページには縦組みが無い。
+      </p>
+      <p class="note">
+        ★19px / 400 / <code>line-height: normal</code> / <code>letter-spacing: 0.95px</code>（0.05em）。
+        外部ウィジェット由来ではない自前の縦組み。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 01 COLORS -->
+<div class="section-alt">
+<section class="section" id="colors">
+  <div class="section-no">01 / Color</div>
+  <h2 class="section-title">濃紺 1 色で締め、文字は墨</h2>
+  <p class="section-lead">
+    <b><code>#0b0d3b</code></b> が<b>面 43 要素・文字 21 要素</b>。本文は墨 <b><code>#333333</code></b>（133 要素）。
+    リンクの青は <b><code>#003cb3</code></b> で、<b>ブラウザ既定の <code>#0000ee</code> ではなく濃紺に寄せた指定色</b>。
+  </p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#0b0d3b"></div><div class="swatch-body"><div class="swatch-name">Brand（濃紺）</div><div class="swatch-hex">#0b0d3b</div><div class="swatch-use">★ヘッダー帯・ナビ・縦組み導線・見出しの文字</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Ink</div><div class="swatch-hex">#333333</div><div class="swatch-use">★本文 133 要素。「Load More」の面にも使う</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#003cb3"></div><div class="swatch-body"><div class="swatch-name">Link</div><div class="swatch-hex">#003cb3</div><div class="swatch-use">ページャ・SNS アカウント（文字 7 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#800000"></div><div class="swatch-body"><div class="swatch-name">Accent（朱）</div><div class="swatch-hex">#800000</div><div class="swatch-use">★「送料無料」専用。CTA に使わない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ff7e00"></div><div class="swatch-body"><div class="swatch-name">Status（開催中）</div><div class="swatch-hex">#ff7e00</div><div class="swatch-use">News のバッジ（面 2 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#666666"></div><div class="swatch-body"><div class="swatch-name">Status（終了）</div><div class="swatch-hex">#666666</div><div class="swatch-use">終了バッジ（面 8 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f1f1f3"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#f1f1f3</div><div class="swatch-use">News 一覧・ページャの下地（面 5 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#5d6153"></div><div class="swatch-body"><div class="swatch-name">Moss</div><div class="swatch-hex">#5d6153</div><div class="swatch-use">「重要なお知らせ一覧を見る」だけの深緑</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffffff;border-bottom:1px solid #f1f1f3"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-use">ページ背景（body に直接指定）</div></div></div>
+  </div>
+</section>
+</div>
+
+<!-- 01b SPLIT BAND -->
+<div class="section-split">
+<section class="section" id="split">
+  <div class="section-no">01b / Split</div>
+  <h2 class="section-title">左半分だけ地色を敷く帯</h2>
+  <p class="section-lead">
+    グラデーションとしてではなく<b>色の切り替え</b>として使っている。<code>50%</code> で両端を揃えて段差を作る。
+    実サイトでは「加島屋本店のご案内」「加島屋からのNews」の 2 箇所。
+  </p>
+  <p class="t-16" style="max-width:520px">
+    <code>background: linear-gradient(to right, #f1f1f3 0%, #f1f1f3 50%, #ffffff 50%, #ffffff 100%);</code>
+  </p>
+</section>
+</div>
+
+<!-- 02 TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-no">02 / Typography</div>
+  <div class="section-en">Typography</div>
+  <h2 class="section-title">明朝 1 系統、ゴシックは補助だけ</h2>
+  <p class="section-lead">
+    可視 221 要素のうち <b>157 要素</b>が 5 段の明朝スタック。ゴシック（<code>"Noto Sans JP"</code>）は
+    <b>News のタブラベルとコピーライトの 13 要素だけ</b>。英字のセクション見出しには
+    <b><code>"Sorts Mill Goudy"</code></b>（8 要素）を使う。
+  </p>
+
+  <table class="spec">
+    <tr><th style="width:230px">用途</th><th>font-family</th></tr>
+    <tr><td>本文・見出し・ナビ・CTA</td><td><code>"Noto Serif JP", YuMincho, "Yu Mincho", "Hiragino Mincho ProN", serif</code></td></tr>
+    <tr><td>News のタブ・Load More・コピーライト</td><td><code>"Noto Sans JP", sans-serif</code></td></tr>
+    <tr><td>英字のセクション見出し</td><td><code>"Sorts Mill Goudy", serif</code></td></tr>
+  </table>
+  <p class="note">
+    ★<b>実サイトは末尾を <code>"serif"</code> と引用符付きで書いている。これは誤り。</b>
+    引用符を付けるとジェネリックファミリーではなく「serif という名前のフォント」を探しにいく。
+    <b>新規実装では <code>serif</code> と引用符を外すこと。</b><br>
+    ★<b><code>Noto Serif JP</code> の 600 は宣言だけで <code>unloaded</code>。</b>当てても 400 か 700 に丸められる。
+  </p>
+
+  <div class="rule" style="margin:36px 0 0"></div>
+  <div class="type-row">
+    <div class="type-meta">ページ見出し（下層 h1）<br>38px · 400 · normal<br>ls 8.36px = <b>0.22em</b></div>
+    <div class="t-38">加島屋の心</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">商品名・カード見出し<br>30px · 400 · normal<br>ls 0.5px（<b>継承</b>）</div>
+    <div class="t-30">敬老の日ギフト</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">英字セクション見出し<br>Sorts Mill Goudy · 28px<br>ls <b>0.1em</b></div>
+    <div class="t-en">Store Locations</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">セクション見出し（h2）<br>20px · 400 · normal<br>ls 2px = <b>0.1em</b></div>
+    <div class="t-20h">すべては「美味しい！」の笑顔のために</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">商品名（強調）<br>18px · <b>700</b> · normal<br>ls 0.5px（継承）</div>
+    <div class="t-18">さけ茶漬</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">リード（h3）<br>16px · 400 · normal<br>ls 1.6px = <b>0.1em</b></div>
+    <div class="t-16h">安政2年創業。愛情と真心をこめた手づくりの味</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">★本文<br>16px · 400 · <b>1.90（30.4px）</b><br>ls 0.5px（<b>継承</b>）</div>
+    <div class="t-16">今日の食事は、明日を生きる糧となります。だからこそ、素材を選び、手を掛け、味を守る。加島屋の歴史は古く、創業は安政2年（1855年）。現在の看板商品である『さけ茶漬』が誕生したのは、それからおよそ一世紀のちのことでした。</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">News の日付<br>15px · 400 · normal<br>ls 1.6px = <b>0.1em</b></div>
+    <div class="t-15">2026/09/23</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">グローバルナビ<br>14px · 400 · 1.07 / 1.25<br>ls 1.4px = <b>0.1em</b></div>
+    <div class="t-14n">創業170周年　加島屋の心　店舗のご案内</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">お知らせ本文・定休日<br>14px · 400 · <b>1.90（26.6px）</b><br>ls 0.5px（継承）</div>
+    <div class="t-14">定休日：毎週日曜日（中元・歳暮・催事期間は日曜も営業いたします）</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">ユーティリティナビ<br>12px · 400 · normal<br>ls 0.5px（継承）</div>
+    <div class="t-12">商品カタログ　加島屋ネットショップ</div>
+  </div>
+  <div class="rule"></div>
+</section>
+
+<!-- 03 WEIGHT -->
+<div class="section-alt">
+<section class="section" id="weight">
+  <div class="section-no">03 / Weight</div>
+  <h2 class="section-title">400 と 700 だけ。見出しは全部 400</h2>
+  <p class="section-lead">
+    トップの可視 221 要素のうち <b>400 が 177 要素・700 が 44 要素</b>。
+    700 が出るのは<b>商品名とページャの数字だけ</b>で、<b>見出しは全部 400</b>。
+    太さで階層を作らず、<b>サイズと字間</b>で作る。
+  </p>
+  <div class="w-grid">
+    <div class="w-box"><div class="lbl">400 · 本文・見出し・ナビ<br>トップ 177 要素</div><div class="w-sample w400">越後村上　さけ茶漬</div></div>
+    <div class="w-box"><div class="lbl">700 · 商品名・ページャ<br>トップ 44 要素</div><div class="w-sample w700">越後村上　さけ茶漬</div></div>
+  </div>
+  <p class="note">
+    ★<b><code>font-weight: 500</code> / <code>600</code> を書かないこと。</b>
+    <code>@font-face</code> に無く（Noto Serif JP の 600 は <code>unloaded</code>）、400 か 700 に丸められる。
+  </p>
+</section>
+</div>
+
+<!-- 04 LETTER-SPACING -->
+<section class="section" id="ls">
+  <div class="section-no">04 / Letter-spacing</div>
+  <h2 class="section-title">body に 1 回書いて px で継承させる</h2>
+  <p class="section-lead">
+    <code>body { font-size: 10px; letter-spacing: 0.05em }</code> の結果である <b><code>0.5px</code></b> が、
+    可視 221 要素のうち <b>197 要素</b>にそのまま降りてくる。
+    <b>16px の本文でも 12px のナビでも 0.5px のまま。</b>
+    子要素で <code>0.05em</code> と書き直すと 16px では 0.8px になり、<b>実サイトと変わってしまう</b>。
+  </p>
+  <div class="ls-grid">
+    <div class="ls-box">
+      <div class="lbl">★正しい：body から継承した <b>0.5px</b>（子要素に letter-spacing を書かない）</div>
+      <div class="ls-inherit-16">加島屋伝統の味覚をご自宅にお届けいたします。</div>
+      <div class="ls-inherit-12" style="margin-top:10px">加島屋伝統の味覚をご自宅にお届けいたします。</div>
+    </div>
+    <div class="ls-box">
+      <div class="lbl">誤り：子要素に <code>letter-spacing: 0.05em</code> を書き直した場合（16px→0.8px）</div>
+      <div class="ls-wrong-16">加島屋伝統の味覚をご自宅にお届けいたします。</div>
+      <div class="ls-wrong-12" style="margin-top:10px">加島屋伝統の味覚をご自宅にお届けいたします。</div>
+    </div>
+  </div>
+  <p class="note">
+    ★<b>見出しだけは逆に <code>em</code> を各要素に当てている</b>（14px→1.4px、16px→1.6px、20px→2px＝すべて <b>0.1em</b>）。
+    下層の h1 だけ <b>0.22em</b>（38px→8.36px）と極端に空ける。<b>2 つの流儀が同居している。</b><br>
+    ★<b><code>font-feature-settings</code> は 2 ページとも 0 要素。</b><code>palt</code> は使っていない。
+    約物は全角のまま出し、<b>字間 0.05em で全体を少し空ける</b>方向に振っている。
+  </p>
+
+  <div class="rule" style="margin:36px 0 28px"></div>
+  <h2 class="section-title">行間は「normal か 1.90 か」の 2 択</h2>
+  <div class="lh-grid">
+    <div class="lh-box">
+      <div class="lbl"><code>line-height: normal</code> — <b>128 要素（最多）</b><br>ナビ・見出し・ラベル・CTA</div>
+      <div class="lh-normal">創業安政二年。新潟の食卓に寄り添ってきた加島屋の味を、季節の贈り物としてお届けします。</div>
+    </div>
+    <div class="lh-box">
+      <div class="lbl"><code>line-height: 1.9</code> — <b>60 要素</b><br>本文・リード・お知らせ本文</div>
+      <div class="lh-19">創業安政二年。新潟の食卓に寄り添ってきた加島屋の味を、季節の贈り物としてお届けします。</div>
+    </div>
+  </div>
+  <p class="note">
+    ★<b>明示的に指定しているのは本文の 1.90 だけ。</b>それ以外は書体の既定（<code>normal</code>）に任せている。
+  </p>
+</section>
+
+<!-- 05 BUTTONS -->
+<div class="section-alt">
+<section class="section" id="buttons">
+  <div class="section-no">05 / Components</div>
+  <h2 class="section-title">CTA は濃紺ベタ・角は丸めない</h2>
+  <p class="section-lead">
+    <code>border-radius</code> は <b>0 が既定</b>。丸めるのは「Load More」（4px）とカルーセルの操作ボタン（5px）だけ。
+    <b>CTA は明朝、「Load More」だけゴシック</b>——UI の操作系はゴシックに寄せている。
+  </p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">商品カタログ</a>
+    <a class="btn btn-primary" href="#">加島屋ネットショップ</a>
+    <a class="btn btn-moss" href="#">重要なお知らせ一覧を見る</a>
+    <a class="btn btn-primary is-focus" href="#">フォーカス状態</a>
+    <a class="btn-more" href="#">Load More</a>
+  </div>
+
+  <div class="rule" style="margin:36px 0 28px"></div>
+  <div class="btn-row">
+    <span class="badge badge-open">開催中</span>
+    <span class="badge badge-closed">終了</span>
+    <span class="badge badge-ship">送料無料</span>
+  </div>
+  <p class="note">
+    ★バッジはゴシック 14px・<code>letter-spacing: 1.4px</code>（0.1em）・<b><code>border-radius: 0</code></b>。
+    「送料無料」だけ面を塗らず、<b><code>#800000</code></b> の文字色で表す。
+  </p>
+</section>
+</div>
+
+<!-- 06 CARDS -->
+<section class="section" id="cards">
+  <div class="section-no">06 / Cards</div>
+  <h2 class="section-title">影は下層の商品カードだけ・しかも #cccccc</h2>
+  <p class="section-lead">
+    トップは <code>box-shadow</code> が <b>0 種類</b>。下層（加島屋の心）の商品カードにだけ
+    <b><code>#cccccc 0 0 3px 0</code></b> が 6 要素ある。<b>黒（<code>rgba(0,0,0,α)</code>）ではない。</b>
+  </p>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-body">
+        <div class="card-title">さけ茶漬</div>
+        <p class="card-text">半世紀以上愛され続ける加島屋の看板商品。<span class="badge-ship">送料無料</span></p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-body">
+        <div class="card-title">加島屋DELI</div>
+        <p class="card-text">レンジであたためるだけで本格デリの味わいに。</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-body">
+        <div class="card-title">焼き牡蠣のオイル漬</div>
+        <p class="card-text">香ばしく焼き上げた牡蠣を風味豊かなオイルに漬け込みました。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 NEWS -->
+<div class="section-alt">
+<section class="section" id="news">
+  <div class="section-no">07 / News</div>
+  <h2 class="section-title">タブラベルだけゴシックに変わる</h2>
+  <div class="tab-row">
+    <a class="tab is-active" href="#">すべてのNews</a>
+    <a class="tab" href="#">ネットショップ</a>
+    <a class="tab" href="#">加島屋本店</a>
+    <a class="tab" href="#">百貨店</a>
+    <a class="tab" href="#">その他</a>
+  </div>
+  <div class="news-row">
+    <span class="news-date">2026/09/23</span>
+    <span><span class="badge badge-open">開催中</span></span>
+    <span class="news-text">きびしい残暑のサービス企画</span>
+  </div>
+  <div class="rule"></div>
+  <div class="news-row">
+    <span class="news-date">2026/09/20</span>
+    <span><span class="badge badge-closed">終了</span></span>
+    <span class="news-text">敬老の日ギフトのご案内</span>
+  </div>
+  <div class="rule"></div>
+  <div class="news-row">
+    <span class="news-date">2026/09/12</span>
+    <span></span>
+    <span class="news-text">2026年10月1日からの商品価格改定のお知らせ</span>
+  </div>
+  <div class="rule"></div>
+  <p class="note">
+    ★日付は <code>#84859c</code>（濃紺を薄めた色）の明朝 15px・<code>letter-spacing: 1.6px</code>（0.1em）。
+    <b>タブラベル（「百貨店」「ネットショップ」）だけが <code>"Noto Sans JP"</code></b>——13 要素しかないゴシックの出番。
+  </p>
+</section>
+</div>
+
+<!-- 08 LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-no">08 / Layout</div>
+  <h2 class="section-title">標準 1160px、読み物は 900px</h2>
+  <table class="spec">
+    <tr><th style="width:250px">項目</th><th>値</th></tr>
+    <tr><td>コンテナ（標準）</td><td><b>1160px</b></td></tr>
+    <tr><td>コンテナ（読み物）</td><td><b>900px</b>（本文 16px・行間 1.9 で 1 行が長くなりすぎないように）</td></tr>
+    <tr><td>コンテナ（下層ワイド）</td><td>1280px</td></tr>
+    <tr><td>root font-size</td><td><b>10px</b>（<code>1.6rem = 16px</code>）</td></tr>
+    <tr><td>本文の行間</td><td><b>1.90</b>（16px→30.4px / 14px→26.6px）</td></tr>
+    <tr><td>それ以外の行間</td><td><b><code>normal</code></b>（128 要素・最多）</td></tr>
+    <tr><td>字間</td><td>body に <code>0.05em</code> → <b>0.5px が 197 要素に継承</b>／見出しだけ <code>0.1em</code></td></tr>
+    <tr><td><code>gap</code></td><td><b>0 件</b>（<code>margin</code> / <code>padding</code> で組む）</td></tr>
+    <tr><td>自前ブレークポイント</td><td><code>max-width: 480px</code>（3 件）/ 640px / 800px</td></tr>
+    <tr><td>WordPress 由来の BP</td><td><code>min-width: 600px</code>（7 件）/ <code>782px</code>（5 件）— <b>このサイトの設計ではない</b></td></tr>
+    <tr><td><code>border-radius</code></td><td><b>0 が既定</b>／ Load More 4px ／ カルーセル操作 5px</td></tr>
+    <tr><td><code>box-shadow</code></td><td>トップ <b>0 種</b>／ 下層の商品カードのみ <code>#cccccc 0 0 3px 0</code></td></tr>
+    <tr><td>CSS Custom Properties</td><td><b>自社トークン 0 個</b>（2 個は WordPress / Gutenberg 由来）</td></tr>
+  </table>
+</section>
+
+<footer class="footer">
+  <div class="footer-in">
+    <div class="footer-links">
+      <a href="#overview">創業170周年</a><a href="#colors">加島屋の心</a><a href="#typography">店舗のご案内</a>
+      <a href="#weight">会社概要</a><a href="#ls">SDGs</a><a href="#buttons">ご注文について</a>
+      <a href="#cards">お問い合わせ</a><a href="#news">個人情報保護方針</a>
+    </div>
+    <p class="copyright">Copyright (C) Kashimaya All Rights Reserved.</p>
+    <p class="copyright" style="margin-top:10px">
+      これは DESIGN.md の再現用サンプルです。加島屋の実サイトではありません。
+      書体は実サイトと同じ Noto Serif JP ／ Noto Sans JP ／ Sorts Mill Goudy を CDN から読み込んでいます。
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

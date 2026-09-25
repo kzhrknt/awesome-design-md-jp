@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: MOA美術館</title>
+<!-- ★実サイトと同じウェイトだけ読み込む（Zen Old Mincho は 400 と 500 が loaded、700 は無い）。
+     本文の dnp-shuei-gothic-gin-std（秀英角ゴシック銀 / Adobe Fonts）はドメインライセンスのため
+     ローカルでは出ない。同じモリサワ系で字形の近い Zen Kaku Gothic New で代替している。 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500&family=Cardo:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Design Tokens ===
+       ★実サイトの CSS Custom Properties は自社トークン 0 個
+       （検出された 60 個はすべて WordPress / Gutenberg 由来）。以下はすべて実測値から起こした。2026-09-25 */
+    --ink:        #212121;   /* 文字 128 要素（トップ）/ 67 要素（下層）。面としても 79 要素 */
+    --accent:     #0267cb;   /* 面 32 要素・文字 10 要素。チケット CTA と「本日開館」 */
+    --alert-text: #ff3f5f;   /* 文字 4 要素。「重要」バッジ専用 */
+    --alert-bg:   #ffecef;   /* 面 4 要素 */
+    --surface:    #f4f3f1;   /* 面 2 要素。セクションの下地 */
+    --surface-sister: #f2f8f1; /* 面 1 要素。箱根美術館の導線だけ */
+    --divider:    #e6e6e6;   /* 面 31 要素。カレンダーのマス・一覧の区切り */
+    --sub-band:   #5c5c5c;   /* 面 26 要素。フッターのサブメニュー帯 */
+    --muted:      #929292;   /* 文字 10 要素。お知らせの日付 */
+    --faint:      #cccccc;   /* 文字 2 要素。コピーライト */
+    --white:      #ffffff;
+
+    --font-mincho: "Zen Old Mincho", serif;          /* 見出し・ナビ・ラベル・CTA（トップ 121 要素） */
+    --font-gothic: "Zen Kaku Gothic New", sans-serif;/* ★実サイトは dnp-shuei-gothic-gin-std（Adobe Fonts） */
+    --font-en:     Cardo, serif;                     /* 数字・欧文ラベル（トップ 69 要素） */
+
+    --ls-heading: 0.05em;    /* ★見出し・ナビ・ラベルに「各要素へ」当てる */
+    --ls-body:    0.025em;   /* ★本文のみ */
+    --lh-tight: 1.00;        /* 109 要素。1 行しか入らない要素 */
+    --lh-body:  1.60;        /* 84 要素 */
+    --lh-long:  1.80;        /* 2 要素。長文の導入 */
+    --radius:   2px;         /* 22 要素。CTA・バッジ */
+    --radius-panel: 4px;     /* 2 要素 */
+    --container: 1280px;     /* 13 箇所 */
+    --container-wide: 1360px;/* 3 箇所 */
+  }
+
+  /* ★実サイトは html { font-size: 16px }（既定のまま）。rem の基準を変えていない。 */
+  html { font-size: 16px; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);         /* ★トップのヒーローは動画で暗いが、地色は白 */
+    color: var(--ink);
+    font-family: var(--font-gothic);  /* ★本文はゴシック。見出しだけ明朝 */
+    font-size: 16px;
+    font-weight: 400;
+    line-height: var(--lh-long);      /* body の実測は 28.8px = 1.8 */
+    letter-spacing: var(--ls-body);   /* 0.4px = 0.025em */
+    font-feature-settings: normal;    /* ★palt は 0 要素。約物は全角のまま */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .86em;
+         background: var(--surface); padding: 1px 5px; border-radius: 3px; }
+  b { font-weight: 500; }   /* ★700 は使わない。太字は 500 で表す */
+
+  /* ---------- header ---------- */
+  .header { position: sticky; top: 0; z-index: 10; background: var(--ink);
+            padding: 14px 40px; }
+  .header-in { max-width: var(--container-wide); margin: 0 auto;
+               display: flex; align-items: center; gap: 28px; }
+  .logo-ja { font-family: var(--font-mincho); font-size: 24px; font-weight: 500;
+             line-height: var(--lh-tight); letter-spacing: var(--ls-heading); color: var(--white); }
+  .logo-en { font-family: var(--font-en); font-size: 10px; font-weight: 400;
+             line-height: 1.10; letter-spacing: var(--ls-heading); color: var(--white); margin-top: 6px; }
+  .header-nav { margin-left: auto; display: flex; gap: 22px; }
+  .header-nav a { font-family: var(--font-mincho); font-size: 14px; font-weight: 500;
+                  line-height: var(--lh-tight); letter-spacing: var(--ls-heading);
+                  color: var(--white); text-decoration: none; }
+  .header-lang { font-family: var(--font-en); font-size: 10px; font-weight: 400;
+                 line-height: 1.10; letter-spacing: var(--ls-heading); color: var(--white); }
+
+  /* ---------- open panel ---------- */
+  .panel { border: 1px solid var(--divider); border-radius: var(--radius-panel);
+           padding: 22px 26px; width: 240px; text-align: center; background: var(--white); }
+  .panel-date { font-family: var(--font-en); font-size: 30px; font-weight: 400;
+                line-height: var(--lh-tight); letter-spacing: var(--ls-heading); }
+  .panel-open { font-family: var(--font-mincho); font-size: 18px; font-weight: 500;
+                line-height: 1.20; letter-spacing: var(--ls-heading); color: var(--accent); margin: 12px 0 8px; }
+  .panel-time { font-family: var(--font-en); font-size: 16px; font-weight: 400;
+                line-height: var(--lh-tight); letter-spacing: var(--ls-heading); }
+  .panel-note { font-family: var(--font-mincho); font-size: 12px; font-weight: 500;
+                line-height: var(--lh-tight); letter-spacing: var(--ls-heading); margin-top: 8px; }
+
+  /* ---------- sections ---------- */
+  .section { max-width: var(--container); margin: 0 auto; padding: 64px 40px; }
+  .section-alt { background: var(--surface); }
+  .section-label { font-family: var(--font-en); font-size: 40px; font-weight: 400;
+                   line-height: 1.20; letter-spacing: var(--ls-heading); margin-bottom: 6px; }
+  .section-no { font-family: var(--font-en); font-size: 12px; letter-spacing: var(--ls-heading);
+                color: var(--muted); line-height: var(--lh-tight); margin-bottom: 10px; }
+  .section-title { font-family: var(--font-mincho); font-size: 24px; font-weight: 500;
+                   line-height: var(--lh-body); letter-spacing: var(--ls-heading); margin-bottom: 14px; }
+  .section-lead { font-size: 16px; line-height: var(--lh-long);
+                  letter-spacing: var(--ls-body); margin-bottom: 32px; max-width: 840px; }
+  .rule { height: 1px; background: var(--divider); }
+  .note { font-size: 14px; line-height: var(--lh-body); letter-spacing: var(--ls-body);
+          color: var(--muted); margin-top: 18px; }
+
+  /* ---------- colors ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--divider); background: var(--white); }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 12px 14px; }
+  .swatch-name { font-family: var(--font-mincho); font-size: 14px; font-weight: 500;
+                 line-height: var(--lh-body); letter-spacing: var(--ls-heading); }
+  .swatch-hex { font-family: var(--font-en); font-size: 12px; color: var(--muted); line-height: var(--lh-body); }
+  .swatch-use { font-size: 12px; line-height: 1.5; letter-spacing: var(--ls-body); margin-top: 4px; }
+
+  /* ---------- typography rows ---------- */
+  .type-row { padding: 20px 0; display: grid; grid-template-columns: 230px 1fr; gap: 28px; align-items: baseline; }
+  .type-meta { font-size: 12px; line-height: var(--lh-body); letter-spacing: var(--ls-body); color: var(--muted); }
+  .t-40 { font-family: var(--font-en); font-size: 40px; font-weight: 400; line-height: 1.20; letter-spacing: var(--ls-heading); }
+  .t-30 { font-family: var(--font-en); font-size: 30px; font-weight: 400; line-height: var(--lh-tight); letter-spacing: var(--ls-heading); }
+  .t-24 { font-family: var(--font-mincho); font-size: 24px; font-weight: 500; line-height: var(--lh-body); letter-spacing: var(--ls-heading); }
+  .t-20 { font-family: var(--font-mincho); font-size: 20px; font-weight: 500; line-height: 1.20; letter-spacing: var(--ls-heading); }
+  .t-16 { font-family: var(--font-gothic); font-size: 16px; font-weight: 400; line-height: var(--lh-long); letter-spacing: var(--ls-body); }
+  .t-14n { font-family: var(--font-mincho); font-size: 14px; font-weight: 500; line-height: var(--lh-tight); letter-spacing: var(--ls-heading); }
+  .t-14g { font-family: var(--font-gothic); font-size: 14px; font-weight: 400; line-height: var(--lh-body); letter-spacing: var(--ls-body); }
+  .t-12 { font-family: var(--font-mincho); font-size: 12px; font-weight: 500; line-height: var(--lh-tight); letter-spacing: var(--ls-heading); }
+  .t-10 { font-family: var(--font-en); font-size: 10px; font-weight: 400; line-height: 1.10; letter-spacing: var(--ls-heading); }
+
+  /* ---------- font role demo ---------- */
+  .role-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 8px; }
+  .role-box { border: 1px solid var(--divider); padding: 20px 22px; background: var(--white); }
+  .role-box .lbl { font-size: 12px; color: var(--muted); line-height: var(--lh-body);
+                   letter-spacing: var(--ls-body); margin-bottom: 10px; }
+  .role-mincho { font-family: var(--font-mincho); font-size: 20px; font-weight: 500; line-height: 1.5; letter-spacing: var(--ls-heading); }
+  .role-gothic { font-family: var(--font-gothic); font-size: 16px; font-weight: 400; line-height: var(--lh-body); letter-spacing: var(--ls-body); }
+  .role-en { font-family: var(--font-en); font-size: 24px; font-weight: 400; line-height: 1.20; letter-spacing: var(--ls-heading); }
+
+  /* ---------- weight demo ---------- */
+  .w-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 8px; }
+  .w-box { border: 1px solid var(--divider); padding: 20px 22px; background: var(--white); }
+  .w-box .lbl { font-size: 12px; color: var(--muted); line-height: var(--lh-body); letter-spacing: var(--ls-body); margin-bottom: 10px; }
+  .w-sample { font-family: var(--font-mincho); font-size: 22px; line-height: 1.5; letter-spacing: var(--ls-heading); }
+  .w400 { font-weight: 400; }
+  .w500 { font-weight: 500; }
+  .w700 { font-weight: 700; }   /* ★合成太字。実装では使わない */
+
+  /* ---------- letter-spacing demo ---------- */
+  .ls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+  .ls-box { border: 1px solid var(--divider); padding: 20px 22px; background: var(--white); }
+  .ls-box .lbl { font-size: 12px; color: var(--muted); line-height: var(--lh-body); letter-spacing: var(--ls-body); margin-bottom: 10px; }
+  .ls-a { font-family: var(--font-mincho); font-size: 20px; font-weight: 500; line-height: 1.5; letter-spacing: 0.05em; }
+  .ls-b { font-family: var(--font-gothic); font-size: 16px; font-weight: 400; line-height: var(--lh-body); letter-spacing: 0.025em; }
+
+  /* ---------- buttons ---------- */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 8px; }
+  .btn { font-family: var(--font-mincho); font-size: 12px; font-weight: 500;
+         line-height: var(--lh-tight); letter-spacing: var(--ls-heading);
+         padding: 15px 26px; border-radius: var(--radius); text-decoration: none;
+         display: inline-block; box-shadow: none; cursor: pointer; }
+  .btn-primary { color: var(--white); background: var(--accent); border: 1px solid var(--accent); }
+  .btn-secondary { color: var(--accent); background: transparent; border: 1px solid var(--accent); }
+  .btn-link { font-family: var(--font-gothic); font-size: 14px; font-weight: 400;
+              line-height: var(--lh-body); letter-spacing: var(--ls-body);
+              color: var(--ink); background: transparent; border: 0; border-radius: 0;
+              padding: 15px 0; text-decoration: none; }
+  .btn.is-focus { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* ---------- badges ---------- */
+  .badge { font-family: var(--font-mincho); font-size: 12px; font-weight: 500;
+           line-height: var(--lh-tight); letter-spacing: var(--ls-heading);
+           padding: 7px 12px; border-radius: var(--radius); display: inline-block; }
+  .badge-important { color: var(--alert-text); background: var(--alert-bg); }
+  .badge-status { font-size: 20px; letter-spacing: var(--ls-heading);
+                  color: var(--accent); background: transparent; padding: 0; }
+
+  /* ---------- cards ---------- */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 8px; }
+  .card { background: var(--white); border: 0; border-radius: 0; box-shadow: none; }
+  .card-thumb { height: 150px; background: var(--divider); }
+  .card-body { padding: 18px 0 0; }
+  .card-status { font-family: var(--font-mincho); font-size: 20px; font-weight: 500;
+                 line-height: 1.20; letter-spacing: var(--ls-heading); color: var(--accent); }
+  .card-title { font-family: var(--font-mincho); font-size: 20px; font-weight: 500;
+                line-height: 1.20; letter-spacing: var(--ls-heading); margin: 8px 0 10px; }
+  .card-meta { font-family: var(--font-gothic); font-size: 14px; font-weight: 400;
+               line-height: var(--lh-body); letter-spacing: var(--ls-body); color: var(--muted); }
+  .card-sister { background: var(--surface-sister); border-radius: var(--radius-panel);
+                 padding: 26px 28px; margin-top: 40px; }
+
+  /* ---------- news ---------- */
+  .news-row { display: grid; grid-template-columns: 110px 66px 1fr; gap: 18px;
+              align-items: center; padding: 18px 0; }
+  .news-date { font-family: var(--font-gothic); font-size: 14px; line-height: var(--lh-body);
+               letter-spacing: var(--ls-body); color: var(--muted); }
+  .news-text { font-family: var(--font-gothic); font-size: 14px; line-height: var(--lh-body);
+               letter-spacing: var(--ls-body); }
+
+  /* ---------- spec table ---------- */
+  .spec { width: 100%; border-collapse: collapse; margin-top: 18px; }
+  .spec th, .spec td { border: 1px solid var(--divider); padding: 11px 14px; text-align: left;
+                       font-size: 14px; line-height: var(--lh-body); letter-spacing: var(--ls-body); }
+  .spec th { background: var(--surface); font-family: var(--font-mincho); font-weight: 500; }
+
+  /* ---------- footer ---------- */
+  .footer-sub { background: var(--sub-band); padding: 26px 40px; }
+  .footer-sub-in { max-width: var(--container); margin: 0 auto; display: flex; flex-wrap: wrap; gap: 22px; }
+  .footer-sub a { font-family: var(--font-mincho); font-size: 12px; font-weight: 500;
+                  line-height: var(--lh-tight); letter-spacing: var(--ls-heading);
+                  color: var(--white); text-decoration: none; }
+  .footer { background: var(--ink); padding: 30px 40px; }
+  .footer-in { max-width: var(--container); margin: 0 auto; }
+  .copyright { font-family: var(--font-en); font-size: 10px; line-height: 1.10;
+               letter-spacing: var(--ls-heading); color: var(--faint); }
+
+  @media (max-width: 768px) {
+    .section { padding: 40px 20px; }
+    .card-grid, .role-grid, .w-grid { grid-template-columns: 1fr; }
+    .type-row { grid-template-columns: 1fr; gap: 10px; }
+    .section-label { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-in">
+    <div>
+      <div class="logo-ja">MOA美術館</div>
+      <div class="logo-en">MOA MUSEUM OF ART</div>
+    </div>
+    <nav class="header-nav">
+      <a href="#colors">展覧会</a><a href="#typography">イベント</a><a href="#weight">利用案内</a>
+      <a href="#buttons">お食事・カフェ</a><a href="#layout">フロアマップ</a>
+    </nav>
+    <span class="header-lang">language</span>
+  </div>
+</header>
+
+<!-- 00 OPEN PANEL -->
+<section class="section" id="panel">
+  <div class="section-no">00 / Overview</div>
+  <h2 class="section-title">白地・墨・3 書体の役割分担</h2>
+  <p class="section-lead">
+    和文の見出しとナビは <b><code>"Zen Old Mincho", serif</code></b>（トップ 121 要素）、本文は
+    <b>秀英角ゴシック銀</b>（下層 57 要素）、数字と欧文ラベルは <b><code>Cardo, serif</code></b>（69 要素）。
+    <b>影は 2 ページとも 0 種類</b>。
+  </p>
+  <div class="panel">
+    <div class="panel-date">9.25</div>
+    <div class="panel-open">本日開館</div>
+    <div class="panel-time">9:30-16:30</div>
+    <div class="panel-note">最終 16:00</div>
+  </div>
+  <p class="note">
+    ★開館情報パネル。日付「9.25」と時刻は <b>Cardo</b>、「本日開館」「最終 16:00」は <b>Zen Old Mincho</b>。
+    <b>数字を和文書体に描かせていない。</b>枠は <code>1px</code> の罫と <code>border-radius: 4px</code> だけで、影は無い。
+  </p>
+</section>
+
+<!-- 01 COLORS -->
+<div class="section-alt">
+<section class="section" id="colors">
+  <div class="section-no">01 / Color</div>
+  <h2 class="section-title">文字は墨 1 色、アクセントは青 1 色</h2>
+  <p class="section-lead">
+    本文・見出し・ナビはすべて <b><code>#212121</code></b>（文字 128 要素）。同じ色が<b>面としても 79 要素</b>
+    （ヘッダー帯・フッター）に使われる。赤 <b><code>#ff3f5f</code></b> は「重要」バッジ<b>専用</b>で、CTA には出てこない。
+  </p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#212121"></div><div class="swatch-body"><div class="swatch-name">Ink</div><div class="swatch-hex">#212121</div><div class="swatch-use">★文字 128 要素・面 79 要素。黒ではなく墨</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#0267cb"></div><div class="swatch-body"><div class="swatch-name">Accent（青）</div><div class="swatch-hex">#0267cb</div><div class="swatch-use">★チケット CTA の面・「本日開館」の文字</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffecef"></div><div class="swatch-body"><div class="swatch-name">Alert 面</div><div class="swatch-hex">#ffecef</div><div class="swatch-use">「重要」バッジの下地（文字は #ff3f5f）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f4f3f1"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#f4f3f1</div><div class="swatch-use">セクションの下地（面 2 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f2f8f1"></div><div class="swatch-body"><div class="swatch-name">Surface（姉妹館）</div><div class="swatch-hex">#f2f8f1</div><div class="swatch-use">箱根美術館の導線だけの薄緑（面 1 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e6e6e6"></div><div class="swatch-body"><div class="swatch-name">Divider</div><div class="swatch-hex">#e6e6e6</div><div class="swatch-use">カレンダーのマス・一覧の区切り（面 31 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#5c5c5c"></div><div class="swatch-body"><div class="swatch-name">Sub Band</div><div class="swatch-hex">#5c5c5c</div><div class="swatch-use">フッターのサブメニュー帯（面 26 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#929292"></div><div class="swatch-body"><div class="swatch-name">Text Muted</div><div class="swatch-hex">#929292</div><div class="swatch-use">お知らせの日付（文字 10 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffffff;border-bottom:1px solid #e6e6e6"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-use">★ページ背景。ヒーローが動画で暗いだけ</div></div></div>
+  </div>
+  <p class="note">
+    ★トップのファーストビューは全画面の動画だが、<code>heroCovered: false</code> で<b>ページの地色は白</b>。
+    下層も <code>viewportTopBySample (3/3)</code> で白。<b>ページ全体を黒地だと思って組まないこと。</b>
+  </p>
+</section>
+</div>
+
+<!-- 02 FONT ROLES -->
+<section class="section" id="typography">
+  <div class="section-no">02 / Typography</div>
+  <h2 class="section-title">和文に明朝とゴシック、数字に欧文セリフ</h2>
+  <p class="section-lead">
+    <b>見せる文字は明朝、読ませる文章はゴシック、数字と欧文ラベルは Cardo。</b>
+    本文量の多い下層ページでは<b>ゴシックが明朝を逆転する</b>（明朝 54 : ゴシック 57）。
+  </p>
+
+  <div class="role-grid">
+    <div class="role-box">
+      <div class="lbl">見出し・ナビ・ラベル・CTA<br>Zen Old Mincho（400 / 500）<br>トップ 121 要素</div>
+      <div class="role-mincho">自然とアートが響きあう</div>
+    </div>
+    <div class="role-box">
+      <div class="lbl">本文・長文<br>秀英角ゴシック銀（normal / 500）<br>下層 57 要素<br>★ここでは Zen Kaku Gothic New で代替</div>
+      <div class="role-gothic">相模灘を望む高台に建つ美術館。四季の花が咲く庭園から、国宝を含む東洋美術のコレクションまで。</div>
+    </div>
+    <div class="role-box">
+      <div class="lbl">数字・欧文ラベル<br>Cardo（400）<br>トップ 69 要素</div>
+      <div class="role-en">exhibition<br>9:30-16:30</div>
+    </div>
+  </div>
+
+  <table class="spec">
+    <tr><th style="width:230px">用途</th><th>font-family</th></tr>
+    <tr><td>見出し・ナビ・ラベル・CTA</td><td><code>"Zen Old Mincho", serif</code></td></tr>
+    <tr><td>本文・長文・一覧リンク</td><td><code>dnp-shuei-gothic-gin-std, sans-serif</code></td></tr>
+    <tr><td>数字・欧文ラベル</td><td><code>Cardo, serif</code></td></tr>
+  </table>
+  <p class="note">
+    ★<b>和文のローカルフォント名を一切書いていない。</b>Zen Old Mincho が落ちたら <code>serif</code>、
+    秀英角ゴシック銀が落ちたら <code>sans-serif</code> に直行する。游ゴシック問題の書き分けはしていない。<br>
+    ★<b><code>Crimson Text</code> と <code>Inter</code> は <code>@font-face</code> があるが全ウェイト <code>unloaded</code>。</b>実装に持ち込まないこと。
+  </p>
+
+  <div class="rule" style="margin:36px 0 0"></div>
+  <div class="type-row">
+    <div class="type-meta">欧文セクションラベル<br>Cardo · 40px · 400 · 1.20<br>ls 2px = <b>0.05em</b></div>
+    <div class="t-40">exhibition</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">開館日の数字<br>Cardo · 30px · 400 · 1.00<br>ls 1.5px = <b>0.05em</b></div>
+    <div class="t-30">9.25</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">セクション見出し（h2）<br>Zen Old Mincho · 24px · 500 · 1.60<br>ls 1.2px = <b>0.05em</b></div>
+    <div class="t-24">姉妹館　箱根美術館</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">展覧会タイトル<br>Zen Old Mincho · 20px · 500 · 1.20<br>ls 1px = <b>0.05em</b></div>
+    <div class="t-20">伊豆の仏像　PART１</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">★本文<br>秀英角ゴシック銀 · 16px · 400 · <b>1.80</b><br>ls 0.4px = <b>0.025em</b></div>
+    <div class="t-16">MOA美術館は昭和57（1982）年に開館し、国宝「紅白梅図屏風」をはじめとする東洋美術のコレクションを公開しています。相模灘を望む高台に建ち、四季の花が咲く庭園と茶室を併せ持ちます。</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">一覧リンク・カード本文<br>秀英角ゴシック銀 · 14px · 400 · 1.60<br>ls 0.35px = <b>0.025em</b></div>
+    <div class="t-14g">お知らせ一覧　／　展覧会情報一覧</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">グローバルナビ<br>Zen Old Mincho · 14px · 500 · <b>1.00</b><br>ls 0.7px = <b>0.05em</b></div>
+    <div class="t-14n">展覧会　イベント　利用案内</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">CTA・バッジ・補助<br>Zen Old Mincho · 12px · 500 · <b>1.00</b><br>ls 0.6px = <b>0.05em</b></div>
+    <div class="t-12">オンラインチケット</div>
+  </div>
+  <div class="rule"></div>
+  <div class="type-row">
+    <div class="type-meta">言語切替<br>Cardo · 10px · 400 · 1.10<br>ls 0.5px = <b>0.05em</b></div>
+    <div class="t-10">language</div>
+  </div>
+  <div class="rule"></div>
+</section>
+
+<!-- 03 WEIGHT -->
+<div class="section-alt">
+<section class="section" id="weight">
+  <div class="section-no">03 / Weight</div>
+  <h2 class="section-title">400 と 500 だけ。700 は合成太字になる</h2>
+  <p class="section-lead">
+    <code>document.fonts</code> で <code>loaded</code> なのは <b>Zen Old Mincho の 400 と 500</b>、
+    <b>秀英角ゴシック銀の normal と 500</b>、<b>Cardo の 400</b> だけ。
+    <b><code>700</code> の <code>@font-face</code> はどの書体にも無い。</b>
+    実サイトの <code>h1</code>（32px）と <code>h3</code> には UA 既定の <code>bold</code> が残っていて、
+    そこだけ<b>ブラウザが太らせている</b>。
+  </p>
+  <div class="w-grid">
+    <div class="w-box"><div class="lbl">400 · 本文・数字・欧文<br>トップ 126 要素</div><div class="w-sample w400">国宝　紅白梅図屏風</div></div>
+    <div class="w-box"><div class="lbl">500 · 見出し・ナビ・CTA<br>トップ 90 要素</div><div class="w-sample w500">国宝　紅白梅図屏風</div></div>
+    <div class="w-box"><div class="lbl">★700 · <b>実測 0 要素</b><br>@font-face が無く合成太字になる</div><div class="w-sample w700">国宝　紅白梅図屏風</div></div>
+  </div>
+  <p class="note">
+    ★<b>新規実装では <code>font-weight</code> を 400 と 500 しか書かない。</b>
+    階層は太さではなく、<b>サイズ（40 / 30 / 24 / 20 / 16 / 14 / 12 / 10px）と書体の切り替え</b>で作る。
+  </p>
+</section>
+</div>
+
+<!-- 04 LETTER-SPACING -->
+<section class="section" id="ls">
+  <div class="section-no">04 / Letter-spacing</div>
+  <h2 class="section-title">字間は 0.05em と 0.025em の 2 値だけ</h2>
+  <p class="section-lead">
+    しかも <b><code>em</code> を各要素に当てている</b>。14px→0.7px、20px→1px、24px→1.2px、40px→2px と
+    <b>サイズに比例して px が変わる</b>（すべて 0.05em）。本文系だけ 0.025em（16px→0.4px、14px→0.35px）。
+    <b>body から px を継承させる設計ではない。</b>
+  </p>
+  <div class="ls-grid">
+    <div class="ls-box"><div class="lbl">見出し・ナビ・ラベル<br><b>letter-spacing: 0.05em</b></div><div class="ls-a">展覧会・イベントのご案内</div></div>
+    <div class="ls-box"><div class="lbl">本文<br><b>letter-spacing: 0.025em</b></div><div class="ls-b">展覧会・イベントのご案内</div></div>
+  </div>
+  <p class="note">
+    ★<b><code>font-feature-settings</code> は 2 ページとも 0 要素。</b><code>palt</code> も <code>tnum</code> も使っていない。
+    約物（「」、。）は<b>全角のまま</b>出る。<b>詰めないこと。</b>数字の字幅は <code>tnum</code> ではなく
+    <b>Cardo に振ること</b>で揃えている。<br>
+    ★<b>縦組みは 2 ページとも 0 要素。</b>ファーストビューの「SCROLL」は <code>writing-mode</code> ではなく
+    1 文字ずつ要素を分けて積んだもの。
+  </p>
+</section>
+
+<!-- 05 BUTTONS -->
+<div class="section-alt">
+<section class="section" id="buttons">
+  <div class="section-no">05 / Components</div>
+  <h2 class="section-title">面の CTA は青 1 種類、radius は 2px、影なし</h2>
+  <p class="section-lead">
+    CTA は <b>Zen Old Mincho の 12px / 500</b>。面は <b><code>#0267cb</code></b> の 1 色で、
+    <code>border-radius</code> は <b>2px</b>（22 要素）。<b>ピル型にも直角にもしない。</b>
+  </p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#">オンラインチケット</a>
+    <a class="btn btn-primary" href="#">イベントチケット</a>
+    <a class="btn btn-secondary" href="#">メンバーシップ</a>
+    <a class="btn btn-primary is-focus" href="#">フォーカス状態</a>
+    <a class="btn-link" href="#">お知らせ一覧 →</a>
+  </div>
+  <p class="note">
+    ★<b>一覧リンクだけ書体がゴシックに変わる</b>（14px / 400 / 1.60 / 0.025em）。
+    <b>CTA は明朝、読み進める導線はゴシック。</b>フォーカスは <code>#0267cb</code> のアウトライン。
+  </p>
+
+  <div class="rule" style="margin:36px 0 28px"></div>
+  <div class="btn-row">
+    <span class="badge badge-important">重要</span>
+    <span class="badge badge-status">開催中</span>
+    <span class="badge badge-status">開催予定</span>
+  </div>
+  <p class="note">
+    ★「重要」は文字 <code>#ff3f5f</code> ／ 面 <code>#ffecef</code>（各 4 要素）。
+    「開催中」「開催予定」は<b>面を塗らず</b>、20px の文字色 <code>#0267cb</code> だけで表す。
+  </p>
+</section>
+</div>
+
+<!-- 06 CARDS -->
+<section class="section" id="cards">
+  <div class="section-no">06 / Cards</div>
+  <h2 class="section-title">影ゼロ。カードは余白と罫だけで分ける</h2>
+  <p class="section-lead">
+    <b><code>box-shadow</code> は 2 ページとも 0 種類。</b>層は<b>面色の差・余白・1px の罫</b>の 3 つで作る。
+  </p>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-body">
+        <div class="card-status">開催中</div>
+        <div class="card-title">生誕150年　吉田博展</div>
+        <div class="card-meta">2026.09.07 — 2026.11.24</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-body">
+        <div class="card-status">開催予定</div>
+        <div class="card-title">伊豆の仏像　PART１</div>
+        <div class="card-meta">2026.12.05 — 2027.02.15</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb"></div>
+      <div class="card-body">
+        <div class="card-status">開催予定</div>
+        <div class="card-title">万華鏡リニューアル</div>
+        <div class="card-meta">2026.09.01 —</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-sister">
+    <div class="t-24">姉妹館　箱根美術館</div>
+    <p class="t-16" style="margin-top:10px">箱根美術館は箱根の中で最も歴史のある美術館として、昭和27年に開館しました。</p>
+  </div>
+  <p class="note">
+    ★<b>姉妹館の導線だけ薄緑 <code>#f2f8f1</code> の面を敷き、<code>border-radius: 4px</code> を当てている</b>（面 1 要素）。
+    ここだけ例外。
+  </p>
+</section>
+
+<!-- 07 NEWS -->
+<div class="section-alt">
+<section class="section" id="news">
+  <div class="section-no">07 / News</div>
+  <h2 class="section-title">お知らせは日付・バッジ・本文の 3 列</h2>
+  <div class="rule"></div>
+  <div class="news-row">
+    <span class="news-date">2026.09.07</span>
+    <span><span class="badge badge-important">重要</span></span>
+    <span class="news-text">万華鏡リニューアルのお知らせ</span>
+  </div>
+  <div class="rule"></div>
+  <div class="news-row">
+    <span class="news-date">2026.09.01</span>
+    <span></span>
+    <span class="news-text">観覧料改定のお知らせ（2026年10月1日より）</span>
+  </div>
+  <div class="rule"></div>
+  <div class="news-row">
+    <span class="news-date">2026.08.14</span>
+    <span></span>
+    <span class="news-text">夏季の開館時間について</span>
+  </div>
+  <div class="rule"></div>
+  <p class="note">
+    ★日付は <code>#929292</code>（文字 10 要素）のゴシック 14px。本文も同じゴシック 14px。
+    <b>日付を Cardo にしていない</b>のは、和文の本文と同じ行に並ぶため。
+  </p>
+</section>
+</div>
+
+<!-- 08 LAYOUT -->
+<section class="section" id="layout">
+  <div class="section-no">08 / Layout</div>
+  <h2 class="section-title">コンテナ 1280px、主ブレークポイント 768px</h2>
+  <table class="spec">
+    <tr><th style="width:250px">項目</th><th>値</th></tr>
+    <tr><td>コンテナ（標準）</td><td><b>1280px</b>（トップ 13 箇所・下層 6 箇所）</td></tr>
+    <tr><td>コンテナ（広め）</td><td>1360px（3 箇所）</td></tr>
+    <tr><td>root font-size</td><td><b>16px</b>（既定のまま・<code>rem</code> の基準を変えていない）</td></tr>
+    <tr><td>本文の行間</td><td><b>1.80</b>（body）／ カード本文 1.60</td></tr>
+    <tr><td>1 行要素の行間</td><td><b>1.00</b>（109 要素）</td></tr>
+    <tr><td><code>gap</code></td><td>20 / 26 / 30 / 40 / 80 / 100px（<b>10 の倍数</b>）</td></tr>
+    <tr><td>主ブレークポイント</td><td><code>(max-width: 768px)</code> <b>84 件</b></td></tr>
+    <tr><td>ホバーの扱い</td><td><code>(any-hover: hover)</code> <b>25 件</b></td></tr>
+    <tr><td>モーション</td><td><code>(prefers-reduced-motion: no-preference)</code> 2 件</td></tr>
+    <tr><td><code>border-radius</code></td><td><b>2px</b>（22 要素・CTA / バッジ）／ 4px（2 要素）／ それ以外は 0</td></tr>
+    <tr><td><code>box-shadow</code></td><td><b>0 種類</b></td></tr>
+    <tr><td>CSS Custom Properties</td><td><b>自社トークン 0 個</b>（60 個はすべて WordPress / Gutenberg 由来）</td></tr>
+  </table>
+  <p class="note">
+    ★<b><code>:hover</code> を <code>@media (any-hover: hover)</code> で囲っている</b>のが特徴。
+    タッチデバイスでホバー状態が貼り付くのを避けている。新規実装でも同じように書くこと。<br>
+    ★アニメーションは <code>prefers-reduced-motion: no-preference</code> の中だけで動かす。
+  </p>
+</section>
+
+<div class="footer-sub">
+  <div class="footer-sub-in">
+    <a href="#colors">MOA美術館とは</a><a href="#typography">コレクション</a><a href="#weight">カレンダー</a>
+    <a href="#buttons">メンバーシップ</a><a href="#cards">寄附</a><a href="#news">プレスリリース</a>
+    <a href="#layout">施設貸し出し</a><a href="#panel">パンフレット</a>
+  </div>
+</div>
+<footer class="footer">
+  <div class="footer-in">
+    <p class="copyright">© MOA Museum of Art</p>
+    <p class="copyright" style="margin-top:10px">
+      これは DESIGN.md の再現用サンプルです。MOA美術館の実サイトではありません。
+      見出しは実サイトと同じ Zen Old Mincho、数字・欧文は Cardo を CDN から読み込んでいます。
+      本文の秀英角ゴシック銀（Adobe Fonts）はドメインライセンスのためローカルでは出ないので、
+      同じモリサワ系で字形の近い Zen Kaku Gothic New で代替しています。
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
