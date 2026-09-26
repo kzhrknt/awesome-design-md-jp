@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ニッカウヰスキー（NIKKA WHISKY）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Lato:wght@300;400&family=Vollkorn:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は自社トークン 0 個（トップの 2 個は Swiper の既定値）。
+       以下は computed style の実測値。2026-09-26 */
+    --black:      #000000;   /* ★本文かつ面。可視テキスト 108 要素（/about/） */
+    --white:      #ffffff;   /* 黒地の上の見出し（可視 8〜10 要素） */
+    --muted:      #cccccc;   /* ★黒地の上の第2階層。フッター・メガメニュー（可視 24 要素） */
+    --bg:         #e9e9e9;   /* ★ページ地色。body の背景 */
+    --bg-html:    #f9f7ef;   /* html の背景。body に覆われて通常は見えない */
+    --search:     #92a6a9;   /* 検索オーバーレイの面。サイト唯一の有彩色の面 */
+    --header:     rgba(0, 0, 0, 0.8);   /* ヘッダーの帯 */
+
+    /* === Fonts ===
+       3 書体すべて Google Fonts にあるので、この preview は実サイトと同一の書体で描画される。
+       実サイトの宣言は "Noto Sans JP", serif / Lato, serif / Vollkorn, serif だが、
+       前 2 つはサンセリフなので serif は誤り。ここでは正しい sans-serif に直してある。 */
+    --font-jp:   "Noto Sans JP", sans-serif;
+    --font-en:   Lato, "Noto Sans JP", sans-serif;
+    --font-disp: Vollkorn, "Noto Serif JP", serif;   /* Vollkorn はセリフなので serif で正しい */
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Letter spacing: トラックは 3 本だけ ===
+       body に .18em を1回だけ書く（13px 基準なので computed は 2.34px）。
+       子要素の多くはこの px をそのまま継承し、見出し・本文だけ .18em を再宣言する。 */
+    --ls:       0.18em;   /* ★和文すべて */
+    --ls-en:    0.10em;   /* Lato の欧文ラベル */
+    --ls-disp:  0.05em;   /* Vollkorn の大英字 */
+    --ls-lead:  0.25em;   /* 会社案内のリード文だけ */
+
+    /* === Line height === */
+    --lh-base:  1.20;   /* body 既定（13px / 15.6px） */
+    --lh-body:  2.33;   /* ★本文（15px / 35px） */
+    --lh-lead:  3.10;   /* ★リード文（18px / 55.8px） */
+    --lh-head:  1.30;   /* 大見出し（32px / 41.6px） */
+    --lh-nav:   1.04;   /* Lato ナビ */
+
+    --r:      0px;      /* 既定。角丸はピル 100px と連番 50% だけ */
+    --r-pill: 100px;
+
+    --container: 1200px;
+    --gap:    24px;     /* トップで最多 */
+    --gap-l:  34px;     /* 下層で最多 */
+    --gap-xl: 80px;     /* セクション間 */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { font-size: 13px; background: var(--bg-html); }   /* ★ルートは 13px。16px ではない */
+
+  body {
+    background: var(--bg);
+    color: var(--black);
+    font-family: var(--font-jp);
+    font-size: 13px;
+    font-weight: 400;
+    line-height: var(--lh-base);
+    letter-spacing: var(--ls);   /* ★ここ1回だけ。computed は 2.34px */
+    /* font-feature-settings は実サイトで 1 要素も使われていない（実測 0 件）。palt を足さない。 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { background: var(--header); position: relative; }
+  .header-inner { display: flex; align-items: center; height: 80px; padding: 0 0 0 24px; }
+  .brand { font-family: var(--font-disp); font-size: 22px; font-weight: 600; color: var(--white); letter-spacing: var(--ls-disp); line-height: var(--lh-nav); }
+  .gnav { display: flex; gap: 34px; margin-left: 64px; }
+  .gnav a { font-family: var(--font-en); font-size: 15px; font-weight: 300; line-height: var(--lh-nav); letter-spacing: var(--ls-en); color: var(--white); text-decoration: none; }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 20px; padding-right: 24px; }
+  .lang { display: flex; align-items: center; gap: 6px; }
+  .lang span { font-size: 13px; color: var(--white); line-height: var(--lh-nav); }
+  .lang .on { background: var(--white); color: var(--black); border-radius: var(--r-pill); padding: 3px 12px; }
+  .store { background: var(--black); color: var(--white); height: 80px; display: flex; align-items: center; padding: 0 26px; font-family: var(--font-en); font-size: 13px; letter-spacing: var(--ls-en); }
+
+  /* SECTIONS */
+  .section { max-width: var(--container); margin: 0 auto; padding: var(--gap-xl) 24px; }
+  .section-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: #777; margin-bottom: 8px; }
+  .disp { font-family: var(--font-disp); font-size: 56px; font-weight: 400; line-height: 0.90; letter-spacing: var(--ls-disp); }
+  .disp-row { display: flex; align-items: baseline; gap: 24px; margin-bottom: 20px; }
+  .disp-jp { font-size: 15px; letter-spacing: var(--ls); line-height: var(--lh-body); }
+  .lead { font-size: 15px; line-height: var(--lh-body); letter-spacing: var(--ls); max-width: 860px; margin-bottom: 34px; }
+  .note { font-size: 13px; line-height: 1.9; letter-spacing: 0.04em; color: #444; margin-top: 22px; max-width: 900px; }
+  code { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; background: #dcdcdc; padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+  .swatch { background: var(--white); border: 1px solid #d2d2d2; }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 12px 14px 14px; }
+  .swatch-name { font-size: 13px; font-weight: 500; line-height: 1.5; letter-spacing: 0.06em; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: #777; margin-top: 3px; }
+  .swatch-use { font-size: 12px; line-height: 1.7; letter-spacing: 0.02em; color: #555; margin-top: 6px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 240px 1fr; gap: var(--gap); padding: 22px 0; border-bottom: 1px solid #cfcfcf; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: #777; line-height: 1.8; }
+  .type-meta b { display: block; font-family: var(--font-jp); font-size: 13px; font-weight: 500; letter-spacing: 0.06em; color: var(--black); }
+  .scale-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; margin-bottom: 26px; }
+  .scale-bar span { font-family: var(--font-disp); background: #dcdcdc; padding: 6px 12px; letter-spacing: var(--ls-disp); line-height: 1; }
+
+  /* TRACK COMPARISON */
+  .track { display: grid; grid-template-columns: 150px 1fr; gap: 20px; padding: 14px 0; border-bottom: 1px solid #cfcfcf; align-items: baseline; }
+  .track-key { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; color: #444; }
+  .track-sample { font-size: 18px; line-height: 2.0; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; gap: var(--gap); flex-wrap: wrap; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: transparent; color: var(--black);
+    border: 1px solid var(--black); border-radius: var(--r);
+    font-family: var(--font-jp); font-size: 15px; font-weight: 500;
+    line-height: var(--lh-nav); letter-spacing: 2.34px;   /* ★body から継承する px をそのまま */
+    padding: 18px 40px; text-decoration: none; cursor: pointer;
+  }
+  .btn:hover, .btn.is-hover { background: var(--black); color: var(--white); }
+  .btn-pill { border-radius: var(--r-pill); padding: 8px 22px; font-size: 13px; font-weight: 400; }
+  .num { width: 56px; height: 56px; border-radius: 50%; border: 1px solid var(--black); display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-disp); font-size: 22px; letter-spacing: var(--ls-disp); }
+
+  /* SEARCH */
+  .search { background: var(--search); padding: 34px; }
+  .search-inner { max-width: 640px; }
+  .search input { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--black); color: var(--black); font-family: var(--font-jp); font-size: 13px; letter-spacing: 2.34px; line-height: var(--lh-base); padding: 10px 0; }
+  .search input::placeholder { color: #3d4a4c; }
+  .search .is-focus { border-bottom: 2px solid var(--black); }
+  .search-label { font-family: var(--font-en); font-size: 13px; letter-spacing: var(--ls-en); color: var(--black); margin-bottom: 6px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); }
+  .card { text-decoration: none; color: var(--black); }
+  .card-img { aspect-ratio: 4 / 3; background: linear-gradient(150deg, #3f3a33, #8a8378); display: flex; align-items: flex-end; padding: 18px; }
+  .card-img span { font-family: var(--font-disp); font-size: 26px; color: var(--white); letter-spacing: var(--ls-disp); line-height: 1.1; }
+  .card-cat { font-family: var(--font-en); font-size: 12px; letter-spacing: var(--ls-en); line-height: 1.3; margin-top: 16px; color: #555; }
+  .card-title { font-size: 15px; line-height: var(--lh-body); letter-spacing: var(--ls); margin-top: 4px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); }
+  .elev { background: var(--white); padding: 24px; min-height: 120px; }
+  .elev-name { font-size: 13px; font-weight: 500; letter-spacing: 0.06em; line-height: 1.6; }
+  .elev-val { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: #666; margin-top: 8px; line-height: 1.7; }
+  .e-inset { box-shadow: rgb(0, 0, 0) 0 0 0 2px inset; }
+
+  /* LAYOUT */
+  .layout-bar { background: #d2d2d2; border-left: 2px solid var(--black); padding: 12px 14px; margin-bottom: 10px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; }
+  .radius-row { display: flex; gap: 28px; margin-top: 26px; flex-wrap: wrap; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 92px; height: 60px; border: 1px solid var(--black); }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: #666; margin-top: 8px; line-height: 1.6; }
+
+  /* FOOTER */
+  .footer { background: var(--black); color: var(--muted); padding: 64px 24px 34px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap-l); }
+  .footer-head { font-family: var(--font-en); font-size: 13px; letter-spacing: var(--ls-en); color: var(--white); line-height: 1.2; margin-bottom: 18px; }
+  .footer-col a { display: block; color: var(--muted); font-size: 13px; line-height: 2.0; letter-spacing: var(--ls); text-decoration: none; }
+  .footer-sub { display: flex; gap: 34px; margin-top: 44px; }
+  .footer-sub a { font-family: var(--font-en); font-size: 13px; letter-spacing: var(--ls-en); color: var(--white); text-decoration: none; }
+  .footer-legal { font-size: 11px; line-height: 1.6; letter-spacing: normal; color: var(--muted); margin-top: 34px; }
+  .footer-brand { font-family: var(--font-disp); font-size: 20px; font-weight: 600; color: var(--white); letter-spacing: var(--ls-disp); margin-top: 26px; }
+
+  .on-dark { background: var(--black); padding: 34px; }
+  .on-dark .gnav a { color: var(--white); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">NIKKA WHISKY</div>
+    <nav class="gnav">
+      <a href="#">OUR BRANDS</a><a href="#">DISTILLERIES</a><a href="#">DISCOVER</a><a href="#">STORY</a><a href="#">ABOUT US</a>
+    </nav>
+    <div class="header-right">
+      <div class="lang"><span class="on">JP</span><span>EN</span></div>
+    </div>
+    <div class="store">STORE</div>
+  </div>
+</header>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="disp-row"><div class="disp">COLORS</div><div class="disp-jp">配色</div></div>
+  <p class="lead">ブランド色は<b>黒</b>。地色は <code>#e9e9e9</code>、<code>html</code> 側だけアイボリー <code>#f9f7ef</code> を敷いている。黒地の上の第2階層は <code>#cccccc</code> の1色だけで、それ以外に有彩色の面は検索オーバーレイの <code>#92a6a9</code> しかない。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Black</div><div class="swatch-hex">#000000</div><div class="swatch-use">★本文（可視 108 要素）／ヘッダー帯 rgba(0,0,0,.8)／フッター全面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e9e9e9;border-bottom:1px solid #d2d2d2"></div><div class="swatch-body"><div class="swatch-name">Page Gray</div><div class="swatch-hex">#e9e9e9</div><div class="swatch-use">★実質のページ地色（body の背景）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f9f7ef;border-bottom:1px solid #d2d2d2"></div><div class="swatch-body"><div class="swatch-name">Ivory</div><div class="swatch-hex">#f9f7ef</div><div class="swatch-use">html の背景。body に覆われ、通常は見えない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#cccccc"></div><div class="swatch-body"><div class="swatch-name">Muted on Dark</div><div class="swatch-hex">#cccccc</div><div class="swatch-use">★黒地の上の第2階層。フッター・メガメニュー（可視 24 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#92a6a9"></div><div class="swatch-body"><div class="swatch-name">Search Surface</div><div class="swatch-hex">#92a6a9</div><div class="swatch-use">検索オーバーレイの面。サイト唯一の有彩色の面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffffff;border-bottom:1px solid #d2d2d2"></div><div class="swatch-body"><div class="swatch-name">White</div><div class="swatch-hex">#ffffff</div><div class="swatch-use">黒地の上の見出し（可視 8〜10 要素）</div></div></div>
+  </div>
+
+  <p class="note"><b>青 <code>#0033ff</code> は採用しない。</b>OneTrust（Cookie バナー）の色で、<code>font-size</code> も <code>13.008px</code> / <code>14.4px</code> と CMP 特有の端数。<b><code>#27455c</code> も採用しない</b>——<code>uniqueBackgrounds</code> に 8 要素あるが可視テキストを持たず、フルページのスクリーンショットでも確認できなかった。</p>
+</section>
+
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <div class="disp-row"><div class="disp">TYPE</div><div class="disp-jp">書体と字送り</div></div>
+  <p class="lead"><b>ルートは 13px。</b><code>html</code> も <code>body</code> も <code>font-size: 13px</code> で、<code>1rem = 13px</code>。<code>letter-spacing: .18em</code> を body に1回書くと computed は <code>2.34px</code> になり、多くの子要素はこの px をそのまま継承する。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:11px">11</span><span style="font-size:12px">12</span><span style="font-size:13px">13</span>
+    <span style="font-size:14px">14</span><span style="font-size:15px">15</span><span style="font-size:18px">18</span>
+    <span style="font-size:32px">32</span><span style="font-size:40px">40</span><span style="font-size:56px">56</span><span style="font-size:72px">72</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Display ★</b>Vollkorn / 72px / 400<br>lh 1.10 / ls .05em</div><div style="font-family:var(--font-disp);font-size:72px;font-weight:400;line-height:1.1;letter-spacing:.05em">OUR BRANDS</div></div>
+  <div class="type-row"><div class="type-meta"><b>Display S</b>Vollkorn / 56px / 400<br>lh 0.90 / ls .05em</div><div style="font-family:var(--font-disp);font-size:56px;font-weight:400;line-height:.9;letter-spacing:.05em">ABOUT US</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Title ★</b>Noto Sans JP / 32px / <b style="display:inline">400</b><br>lh 1.30 / ls .18em (5.76px)</div><div style="font-size:32px;font-weight:400;line-height:1.3;letter-spacing:.18em">ご挨拶</div></div>
+  <div class="type-row"><div class="type-meta"><b>Sub Heading</b>Noto Sans JP / 32px / 400<br>lh 1.50 / ls .18em</div><div style="font-size:32px;font-weight:400;line-height:1.5;letter-spacing:.18em">北海道 余市蒸溜所</div></div>
+  <div class="type-row"><div class="type-meta"><b>Lead ★</b>Noto Sans JP / 18px / 400<br>lh <b style="display:inline">3.10</b> / ls <b style="display:inline">.25em</b></div><div style="font-size:18px;line-height:3.1;letter-spacing:.25em">1934年、北海道余市町に<br>「大日本果汁株式会社」を設立したことから<br>ニッカウヰスキーの歴史は始まりました。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>Noto Sans JP / 15px / 400<br>lh <b style="display:inline">2.33</b> / ls .18em (2.7px)</div><div style="font-size:15px;line-height:2.33;letter-spacing:.18em">現在は、アサヒグループの中でウイスキーを中心とした国内外のマーケティング、海外事業、国内事業の販売支援などの役割を担っています。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav（欧文）</b>Lato / 15px / <b style="display:inline">300</b><br>lh 1.04 / ls .10em</div><div class="on-dark"><nav class="gnav" style="margin-left:0"><a href="#">OUR BRANDS</a><a href="#">DISTILLERIES</a><a href="#">DISCOVER</a></nav></div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav Label（和文）</b>Noto Sans JP / 14px / 400<br>lh 1.11 / ls .18em (2.52px)</div><div style="font-size:14px;line-height:1.11;letter-spacing:.18em">商品紹介　　蒸溜所　　知る・愉しむ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Base / Footer</b>Noto Sans JP / 13px / 400<br>lh 1.20 / ls .18em (2.34px)</div><div style="font-size:13px;line-height:1.2;letter-spacing:.18em">竹鶴ピュアモルト</div></div>
+  <div class="type-row"><div class="type-meta"><b>Breadcrumb</b>Lato, Noto Sans JP / 12px<br>lh 1.30 / ls .10em</div><div style="font-family:var(--font-en);font-size:12px;line-height:1.3;letter-spacing:.10em">TOP ＞ 会社案内</div></div>
+  <div class="type-row"><div class="type-meta"><b>Legal</b>Noto Sans JP / 11px / 400<br>lh 1.42 / ls <b style="display:inline">normal</b></div><div style="font-size:11px;line-height:1.42;letter-spacing:normal">ストップ！20歳未満飲酒・飲酒運転。妊娠中や授乳期の飲酒はやめましょう。</div></div>
+
+  <h3 style="font-size:15px;font-weight:500;letter-spacing:.1em;margin:44px 0 14px">トラックは 3 本しかない</h3>
+  <div class="track"><div class="track-key">0.05em — Vollkorn</div><div class="track-sample" style="font-family:var(--font-disp);letter-spacing:.05em">DISTILLERIES</div></div>
+  <div class="track"><div class="track-key">0.10em — Lato</div><div class="track-sample" style="font-family:var(--font-en);letter-spacing:.10em">DISTILLERIES</div></div>
+  <div class="track"><div class="track-key">0.18em — 和文（既定）</div><div class="track-sample" style="letter-spacing:.18em">生きるを愉しむウイスキー。</div></div>
+  <div class="track"><div class="track-key">0.25em — リード文のみ</div><div class="track-sample" style="letter-spacing:.25em">生きるを愉しむウイスキー。</div></div>
+  <div class="track"><div class="track-key">normal — 参考（不採用）</div><div class="track-sample" style="letter-spacing:normal">生きるを愉しむウイスキー。</div></div>
+
+  <p class="note"><b><code>font-feature-settings: "palt"</code> は 1 要素も使っていない</b>（実測 0 件）。字を詰めるのではなく空ける設計なので、<code>palt</code> を足すと約物が閉じて意図が反転する。</p>
+
+  <p class="note"><b>実サイトのフォールバックは誤り。</b><code>"Noto Sans JP", serif</code> / <code>Lato, serif</code> / <code>Vollkorn, serif</code> と宣言されているが、前 2 つはサンセリフ。Web フォントが落ちると和文ゴシックが明朝に化ける。<b>新規実装では <code>sans-serif</code> に直すこと</b>（<code>Vollkorn, serif</code> だけは正しい）。</p>
+
+  <p class="note"><b>Lato の 700 は <code>unloaded</code>。</b><code>@font-face</code> は宣言されているが参照する要素が無く、<b>欧文に太字は用意されていない</b>。和文の見出しも 32px で weight 400 のまま。</p>
+</section>
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons</div>
+  <div class="disp-row"><div class="disp">BUTTONS</div><div class="disp-jp">ボタン</div></div>
+  <p class="lead">主要 CTA は <b><code>1px solid #000000</code> / <code>border-radius: 0</code></b> の枠線ボタン1種類だけ。<b>面で塗る CTA は存在しない。</b>字間は body から継承した <code>2.34px</code> をそのまま使い、15px でも再宣言しない。</p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn">詳しくはこちら</a>
+    <a href="#" class="btn is-hover">ホバー時</a>
+    <a href="#" class="btn btn-pill">JP</a>
+    <span class="num">01</span>
+    <span class="num">02</span>
+  </div>
+
+  <p class="note"><b>青い塗りボタンは OneTrust のもの。</b><code>#0033ff</code> / <code>border-radius: 2px</code> / weight 600〜700 はすべて Cookie バナーで、ニッカの部品ではない。<b>「目立つボタン」を作りたくなっても、罫線1本に留める。</b></p>
+</section>
+
+<section class="section" id="search">
+  <div class="section-label">04 / Search</div>
+  <div class="disp-row"><div class="disp">SEARCH</div><div class="disp-jp">検索</div></div>
+  <p class="lead">入力欄はサイト内で唯一の有彩色の面 <code>#92a6a9</code> の上に置き、下線 1 本だけで表す。角丸なし・枠なし。</p>
+
+  <div class="search">
+    <div class="search-inner">
+      <div class="search-label">KEYWORD</div>
+      <input type="text" placeholder="検索キーワード入力">
+      <div style="height:18px"></div>
+      <div class="search-label">KEYWORD（フォーカス時）</div>
+      <input class="is-focus" type="text" value="余市">
+    </div>
+  </div>
+</section>
+
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <div class="disp-row"><div class="disp">CARDS</div><div class="disp-jp">カード</div></div>
+  <p class="lead">カードは面でも枠でもなく、<b>画像と余白だけ</b>で区切る。角丸も影も付けない。カテゴリは Lato、本文は Noto Sans JP <code>.18em</code>。</p>
+
+  <div class="card-grid">
+    <a href="#" class="card"><div class="card-img"><span>TAKETSURU</span></div><div class="card-cat">OUR BRANDS</div><div class="card-title">竹鶴ピュアモルト</div></a>
+    <a href="#" class="card"><div class="card-img"><span>YOICHI</span></div><div class="card-cat">DISTILLERIES</div><div class="card-title">北海道 余市蒸溜所</div></a>
+    <a href="#" class="card"><div class="card-img"><span>MIYAGIKYO</span></div><div class="card-cat">DISTILLERIES</div><div class="card-title">仙台 宮城峡蒸溜所</div></a>
+  </div>
+</section>
+
+<section class="section" id="elevation">
+  <div class="section-label">06 / Elevation</div>
+  <div class="disp-row"><div class="disp">DEPTH</div><div class="disp-jp">奥行き</div></div>
+  <p class="lead">実サイトに <code>box-shadow</code> は事実上存在しない。奥行きは「黒帯 <code>rgba(0,0,0,.8)</code> を重ねる」ことだけで表す。</p>
+
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">Level 0（既定）</div><div class="elev-val">none — カード・ボタン・見出しすべて</div></div>
+    <div class="elev e-inset"><div class="elev-name">内側リング</div><div class="elev-val">rgb(0,0,0) 0 0 0 2px inset（実測 2 要素）。枠線の代用</div></div>
+    <div class="elev"><div class="elev-name">除外</div><div class="elev-val">rgba(0,0,0,.2) 0 0 18px 0 は OneTrust の Cookie バナーだけ（実測 1 要素）</div></div>
+  </div>
+</section>
+
+<section class="section" id="layout">
+  <div class="section-label">07 / Layout</div>
+  <div class="disp-row"><div class="disp">LAYOUT</div><div class="disp-jp">レイアウト</div></div>
+  <p class="lead">コンテナは <code>1200px</code>。gap はトップ 24px、下層 34px、セクション間 80px。</p>
+
+  <div class="layout-bar" style="width:100%;max-width:1200px">--container: 1200px（実測 6 要素で最多）</div>
+
+  <div style="display:flex;gap:28px;align-items:flex-end;margin-top:20px">
+    <div class="radius-item"><div style="width:24px;height:44px;background:#000"></div><div class="radius-label">24px<br>トップの gap</div></div>
+    <div class="radius-item"><div style="width:34px;height:44px;background:#000"></div><div class="radius-label">34px<br>下層の gap</div></div>
+    <div class="radius-item"><div style="width:62px;height:44px;background:#000"></div><div class="radius-label">62px<br>セクション内</div></div>
+    <div class="radius-item"><div style="width:80px;height:44px;background:#000"></div><div class="radius-label">80px<br>セクション間</div></div>
+  </div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:0"></div><div class="radius-label">既定<br>0px</div></div>
+    <div class="radius-item"><div class="radius-box" style="width:70px;border-radius:100px"></div><div class="radius-label">JP / EN<br>100px</div></div>
+    <div class="radius-item"><div class="radius-box" style="width:60px;height:60px;border-radius:50%"></div><div class="radius-label">連番<br>50%</div></div>
+  </div>
+
+  <p class="note">ブレークポイントは <b>576px / 767px / 768px / 1280px / 1511px</b>。主要な切替点は <code>screen and (max-width: 767px)</code>（実測 7 回）。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-cols">
+      <div class="footer-col"><div class="footer-head">OUR BRANDS</div><a href="#">竹鶴ピュアモルト</a><a href="#">シングルモルト 余市・宮城峡</a><a href="#">フロム・ザ・バレル</a><a href="#">商品一覧</a></div>
+      <div class="footer-col"><div class="footer-head">DISTILLERIES</div><a href="#">北海道 余市蒸溜所</a><a href="#">仙台 宮城峡蒸溜所</a></div>
+      <div class="footer-col"><div class="footer-head">DISCOVER</div><a href="#">ウイスキーの基礎知識</a><a href="#">ウイスキーの飲み方・愉しみ方</a></div>
+      <div class="footer-col"><div class="footer-head">STORY</div><a href="#">創業者 竹鶴政孝</a><a href="#">歴史</a><a href="#">受賞歴</a></div>
+    </div>
+    <div class="footer-sub"><a href="#">ABOUT US</a><a href="#">CONTACT US</a><a href="#">SITEMAP</a><a href="#">PRIVACY POLICY</a></div>
+    <p class="footer-legal">※お酒にまつわる情報については、20歳未満の方への共有（シェア）はご遠慮ください。</p>
+    <p class="footer-legal">これは DESIGN.md の再現用サンプルです。ニッカウヰスキー株式会社の実サイトではありません。書体（Noto Sans JP / Lato / Vollkorn）はいずれも Google Fonts で配信されているため、実サイトと同じ書体で描画しています。</p>
+    <div class="footer-brand">NIKKA WHISKY</div>
+  </div>
+</footer>
+
+</body>
+</html>

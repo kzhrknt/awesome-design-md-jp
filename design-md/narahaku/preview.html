@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 奈良国立博物館（NARA NATIONAL MUSEUM）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は自社トークン 0 個。60 個はすべて WordPress / Gutenberg 由来
+       （WordPress admin 11 / WordPress・Gutenberg 49）。--wp--preset--* を設計トークンと
+       読み違えないこと。以下は computed style の実測値。2026-09-26 */
+    --green:      #198479;   /* ★Nara Green。塗り 26 要素 / 文字 8 要素 */
+    --charcoal:   #2e2e2e;   /* 塗り 17 要素。導線ピル */
+    --red:        #e71337;   /* 会期バッジ。塗り 2 / 文字 2 */
+    --gold:       #c57f23;   /* 「数字で知る」の所蔵数（可視 6 要素） */
+    --purple:     #6f3e8f;   /* 「数字で知る」の人物（可視 5 要素） */
+    --text:       #323131;   /* ★本文。純黒ではない（可視 64 要素） */
+    --black:      #000000;   /* 一部の見出し・リンク（可視 9 要素） */
+    --white:      #ffffff;
+    --border:     #707070;   /* 1px solid の枠線 */
+    --surface:    #f5f5f5;   /* お知らせ・展覧会カード（可視 4 要素） */
+    --surface-warm: #f9f8f4; /* 「参加する」「奈良博について」 */
+    --surface-sand: #e8e3de; /* 「学ぶ・調べる」 */
+    --surface-sub:  #f8f8f8; /* 下層のタイトル帯 */
+    --marker:     #f0f0f0;   /* 見出しの下半分に敷く帯 */
+    --stone:      #7a7671;   /* 下層の導線カード */
+    --bg:         #ffffff;   /* pageBackground.resolved / 根拠 body（両ページ一致） */
+
+    /* === Font ===
+       Noto Sans JP 一本。@font-face は 400 / 500 / 700 の3本立て（可変フォントではない）。
+       Google Fonts で同じ 3 ウェイトを読み込んでいるので、この preview は実サイトと同一。 */
+    --font: "Noto Sans JP", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === 密度は「太さ」で作る ===
+       字間は normal、palt も無し。本文を含むほぼ全要素が weight 500（Medium）。 */
+    --weight-body: 500;   /* ★可視 167/194 要素 */
+    --lh: 1.8;            /* ★見出しから注記まで一様。下層は 67/67 要素 */
+    --ls: normal;         /* ★既定（可視 170/194 要素） */
+
+    --r-pill: 100px;
+    --r-card: 0px;
+    --r-corner: 60px;     /* 片側だけ大きく落とす */
+
+    --container: 1080px;
+    --column: 1000px;
+    --wide: 1120px;
+    --gap: 10px;
+    --gap-m: 12px;
+    --gap-l: 25px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { font-size: 10px; }   /* ★ルートは 10px。16px ではない（1.4rem = 14px） */
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: var(--weight-body);   /* ★本文が Medium */
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+    /* font-feature-settings は実サイトで 1 要素も使われていない（実測 0 件）。palt を足さない。 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { display: flex; align-items: flex-start; height: 86px; border-bottom: 1px solid #e4e4e4; }
+  .logo { background: var(--green); color: var(--white); width: 254px; height: 74px; border-radius: 0 0 15px 0; display: flex; flex-direction: column; justify-content: center; padding-left: 20px; }
+  .logo-jp { font-size: 22px; font-weight: 700; line-height: 1.3; letter-spacing: 3px; }
+  .logo-en { font-size: 10px; font-weight: 500; line-height: 1.6; letter-spacing: 1px; }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 14px; padding: 18px 24px 0 0; }
+  .lang { background: transparent; border: 1px solid var(--border); border-radius: var(--r-pill); color: var(--text); font-family: var(--font); font-size: 12px; font-weight: 500; line-height: var(--lh); padding: 6px 20px 8px 35px; position: relative; }
+  .lang::before { content: "⊕"; position: absolute; left: 14px; top: 6px; font-size: 14px; }
+  .circle-btn { width: 52px; height: 52px; border-radius: 100%; background: var(--green); color: var(--white); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+  .circle-btn i { font-style: normal; font-size: 15px; line-height: 1; }
+  .circle-btn span { font-size: 7px; font-weight: 500; line-height: var(--lh); letter-spacing: 0.5px; }
+
+  /* SECTIONS */
+  .section { max-width: var(--container); margin: 0 auto; padding: 56px 20px; }
+  .section-label { font-family: var(--font-mono); font-size: 11px; color: #777; margin-bottom: 8px; }
+  .h-marker { display: inline-block; font-size: 27px; font-weight: 700; line-height: var(--lh); letter-spacing: 2px; color: var(--green);
+              background: linear-gradient(rgba(0, 0, 0, 0) 60%, var(--marker) 60%); margin-bottom: 18px; }
+  .lead { font-size: 16px; font-weight: 500; line-height: var(--lh); max-width: 880px; margin-bottom: 30px; }
+  .note { font-size: 14px; font-weight: 500; line-height: var(--lh); color: #55524f; margin-top: 20px; max-width: 900px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--surface); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(205px, 1fr)); gap: var(--gap-m); }
+  .swatch { border: 1px solid #dcdcdc; background: var(--white); }
+  .swatch-chip { height: 74px; }
+  .swatch-body { padding: 12px; }
+  .swatch-name { font-size: 14px; font-weight: 700; line-height: 1.6; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: #777; margin-top: 3px; }
+  .swatch-use { font-size: 12px; font-weight: 500; line-height: 1.7; color: #55524f; margin-top: 6px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: var(--gap-l); padding: 18px 0; border-bottom: 1px solid #e4e4e4; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: #777; line-height: 1.8; }
+  .type-meta b { display: block; font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--text); }
+  .scale-bar { display: flex; gap: var(--gap); flex-wrap: wrap; align-items: baseline; margin-bottom: 24px; }
+  .scale-bar span { background: var(--surface); padding: 7px 12px; line-height: 1; font-weight: 500; }
+
+  .weight-row { display: grid; grid-template-columns: 250px 1fr; gap: var(--gap-l); padding: 14px 0; border-bottom: 1px solid #e4e4e4; align-items: baseline; }
+  .weight-row .s { font-size: 18px; line-height: var(--lh); }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .btn { display: inline-flex; align-items: center; font-family: var(--font); font-weight: 500; line-height: var(--lh); letter-spacing: normal; text-decoration: none; border: none; cursor: pointer; }
+  .btn-green { background: var(--green); color: var(--white); border-radius: var(--r-pill); font-size: 15px; padding: 14px 26px; }
+  .btn-ghost { background: var(--white); color: var(--text); border-radius: var(--r-pill); font-size: 15px; padding: 14px 26px; }
+  .btn-dark { background: var(--charcoal); color: var(--white); border-radius: var(--r-pill); font-size: 14px; padding: 10px 70px 10px 60px; }
+  .btn-card { background: var(--white); color: var(--text); border: 1px solid var(--border); border-radius: var(--r-card); font-size: 13px; padding: 18px 12px; }
+  .btn-card-arrow { background: var(--white); color: var(--text); border: 1px solid var(--border); border-radius: var(--r-card); font-size: 13px; padding: 11px 55px 11px 12px; }
+
+  .badge { display: inline-flex; align-items: center; font-weight: 500; line-height: var(--lh); border-radius: 0; }
+  .badge-cat { background: var(--green); color: var(--white); font-size: 12px; padding: 4px 10px; }
+  .badge-now { background: var(--red); color: var(--white); font-size: 14px; padding: 4px 12px; }
+  /* ★枠線は border ではなく box-shadow の内側 1px リング（実測値どおり） */
+  .badge-soon { background: var(--white); color: var(--red); font-size: 14px; padding: 4px 12px; border: 0 solid var(--red); box-shadow: rgb(231, 19, 55) 0 0 0 1px inset; }
+
+  /* PANELS */
+  .panel-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap-m); margin-top: 20px; }
+  .panel { padding: 30px 24px; }
+  .panel h4 { font-size: 18px; font-weight: 700; line-height: var(--lh); margin-bottom: 8px; }
+  .panel p { font-size: 14px; font-weight: 500; line-height: var(--lh); }
+  .p-a { background: var(--surface); border-radius: 60px 0 0; }
+  .p-b { background: var(--surface-warm); border-radius: 0 0 60px; }
+  .p-c { background: var(--surface-sand); border-radius: 60px 0; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--gap-m); }
+  .card { background: var(--surface); padding: 20px; text-decoration: none; color: var(--text); display: block; }
+  .card-meta { display: flex; gap: var(--gap); align-items: center; margin-bottom: 10px; }
+  .card-title { font-size: 18px; font-weight: 700; line-height: var(--lh); }
+  .card-desc { font-size: 16px; font-weight: 500; line-height: 2.2; margin-top: 6px; }
+
+  /* STATS */
+  .stats { display: flex; gap: 48px; flex-wrap: wrap; background: var(--surface-warm); padding: 34px 28px; border-radius: 0 0 60px; }
+  .stat-label { font-size: 16px; font-weight: 500; line-height: var(--lh); }
+  .stat-line { font-size: 24px; font-weight: 400; line-height: 1.2; letter-spacing: 4px; }
+  .stat-gold { color: var(--gold); }
+  .stat-purple { color: var(--purple); }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap-m); }
+  .elev { background: var(--white); border: 1px solid #e4e4e4; padding: 22px; min-height: 118px; }
+  .elev-name { font-size: 14px; font-weight: 700; line-height: 1.7; }
+  .elev-val { font-family: var(--font-mono); font-size: 11px; color: #666; margin-top: 8px; line-height: 1.7; }
+
+  /* LAYOUT */
+  .layout-bar { background: var(--surface); border-left: 3px solid var(--green); padding: 11px 14px; margin-bottom: var(--gap); font-family: var(--font-mono); font-size: 11px; }
+  .radius-row { display: flex; gap: 26px; margin-top: 24px; flex-wrap: wrap; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 100px; height: 64px; background: var(--green); }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; color: #666; margin-top: 8px; line-height: 1.7; }
+
+  /* FORM */
+  .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--gap-l); }
+  .field label { display: block; font-size: 14px; font-weight: 700; line-height: var(--lh); margin-bottom: 6px; }
+  .field input, .field select { width: 100%; background: var(--white); border: 1px solid var(--border); border-radius: 0; font-family: var(--font); font-size: 16px; font-weight: 500; line-height: var(--lh); color: var(--text); padding: 11px 12px; }
+  .field.is-focus input { box-shadow: var(--green) 0 0 0 2px inset; border-color: var(--green); }
+  .field.is-error input { box-shadow: var(--red) 0 0 0 1px inset; border-color: var(--red); }
+  .field-msg { font-size: 12px; font-weight: 500; line-height: var(--lh); color: #55524f; margin-top: 5px; }
+  .field.is-error .field-msg { color: var(--red); }
+
+  /* FOOTER */
+  .footer { background: var(--charcoal); color: var(--white); margin-top: 56px; padding: 46px 20px 30px; }
+  .footer-inner { max-width: var(--wide); margin: 0 auto; }
+  .footer-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap-l); }
+  .footer-head { font-size: 14px; font-weight: 700; line-height: var(--lh); margin-bottom: 8px; }
+  .footer-col a { display: block; color: var(--white); font-size: 13px; font-weight: 500; line-height: var(--lh); text-decoration: none; }
+  .footer-addr { font-size: 13px; font-weight: 500; line-height: var(--lh); margin-top: 30px; }
+  .footer-note { font-size: 12px; font-weight: 500; line-height: var(--lh); margin-top: 18px; color: #d6d4d2; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-jp">奈良国立博物館</div>
+    <div class="logo-en">NARA NATIONAL MUSEUM</div>
+  </div>
+  <div class="header-right">
+    <button class="lang">Language</button>
+    <div class="circle-btn"><i>⌕</i><span>SEARCH</span></div>
+    <div class="circle-btn"><i>≡</i><span>MENU</span></div>
+  </div>
+</header>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="h-marker">深緑ひとつと、数字のための2色</div>
+  <p class="lead">ブランド色は <b>Nara Green <code>#198479</code></b>。導線は <code>#2e2e2e</code> のチャコール、会期は <code>#e71337</code> の赤。金 <code>#c57f23</code> と紫 <code>#6f3e8f</code> は<b>「奈良博を数字で知る」ブロック専用</b>で、通常の UI には出さない。本文色は純黒ではなく <code>#323131</code>。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#198479"></div><div class="swatch-body"><div class="swatch-name">Nara Green</div><div class="swatch-hex">#198479</div><div class="swatch-use">★塗り 26 要素 / 文字 8 要素。ロゴ・丸ボタン・タブ・展覧会バッジ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#2e2e2e"></div><div class="swatch-body"><div class="swatch-name">Charcoal</div><div class="swatch-hex">#2e2e2e</div><div class="swatch-use">塗り 17 要素。導線ピル・フッター</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e71337"></div><div class="swatch-body"><div class="swatch-name">Alert Red</div><div class="swatch-hex">#e71337</div><div class="swatch-use">会期バッジ（開催中＝塗り／開催予定＝内側リング）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#323131"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#323131</div><div class="swatch-use">★本文（可視 64 要素）。純黒ではない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#c57f23"></div><div class="swatch-body"><div class="swatch-name">Gold</div><div class="swatch-hex">#c57f23</div><div class="swatch-use">「数字で知る」の所蔵数（可視 6 要素）。UI には出さない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#6f3e8f"></div><div class="swatch-body"><div class="swatch-name">Purple</div><div class="swatch-hex">#6f3e8f</div><div class="swatch-use">「数字で知る」の人物（可視 5 要素）。UI には出さない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f5f5f5;border-bottom:1px solid #dcdcdc"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#f5f5f5</div><div class="swatch-use">お知らせ・展覧会カードの面（可視 4 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f9f8f4;border-bottom:1px solid #dcdcdc"></div><div class="swatch-body"><div class="swatch-name">Surface Warm</div><div class="swatch-hex">#f9f8f4</div><div class="swatch-use">「参加する」「奈良博について」のブロック</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e8e3de"></div><div class="swatch-body"><div class="swatch-name">Surface Sand</div><div class="swatch-hex">#e8e3de</div><div class="swatch-use">「学ぶ・調べる」のブロック</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#707070"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#707070</div><div class="swatch-use">1px solid の枠線。リンクカード・Language ピル</div></div></div>
+  </div>
+
+  <p class="note"><b>Cookie バナー（STRIGHT by IIJ）もブランド緑を使っている。</b>ただし同じ緑がロゴ・丸ボタン・タブ・展覧会バッジにも出ているので、サイトの色と判定してよい。<b><code>border-radius: 18px</code> と <code>#004d8a</code> のリンク色だけは CMP のもの</b>なので採用しない。</p>
+</section>
+
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <div class="h-marker">密度を「太さ」で作る</div>
+  <p class="lead"><b>ルートは 10px</b>（<code>html { font-size: 10px }</code>、<code>1.4rem = 14px</code>）。字間は <code>normal</code>、<code>palt</code> も無し。代わりに<b>可視 194 要素のうち 167 要素が <code>font-weight: 500</code></b>で、<b>行間は 1.80 が全ページで一様</b>（下層は 67/67 要素）。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:7px">7</span><span style="font-size:11px">11</span><span style="font-size:12px">12</span>
+    <span style="font-size:13px">13</span><span style="font-size:14px">14</span><span style="font-size:15px">15</span>
+    <span style="font-size:16px">16</span><span style="font-size:18px">18</span><span style="font-size:24px">24</span><span style="font-size:27px">27</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Page Title</b>Noto Sans JP / 27px / 700<br>lh 1.80 / ls 2px</div><div style="font-size:27px;font-weight:700;line-height:1.8;letter-spacing:2px">館長あいさつ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Stat Number</b>Noto Sans JP / 24px / 400<br>lh 1.80 / ls 4px</div><div><span style="font-size:24px;font-weight:400;line-height:1.8;letter-spacing:4px;color:#6f3e8f">現在の館長は 26代目</span></div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Title</b>Noto Sans JP / 18px / 700<br>lh 1.80 / ls normal</div><div style="font-size:18px;font-weight:700;line-height:1.8">名品展「ナラハク仏像セレクション　―受け継ぎ、未来へ―」</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>Noto Sans JP / 16px / <b style="display:inline">500</b><br>lh <b style="display:inline">1.80</b> / ls normal</div><div style="font-size:16px;font-weight:500;line-height:1.8">奈良国立博物館は、東大寺、興福寺、春日大社などに囲まれた奈良公園の一角に位置しています。寺院・神社をはじめとした文化財所有者のご協力を得て、特に仏教と関わりの深い古美術品や考古遺品などの文化財の保存を図っています。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body Lead</b>Noto Sans JP / 16px / 500<br>lh <b style="display:inline">2.20</b></div><div style="font-size:16px;font-weight:500;line-height:2.2">館蔵品・寄託品の中から選りすぐった仏像を通して、日本の仏教美術の流れをたどります。</div></div>
+  <div class="type-row"><div class="type-meta"><b>UI / Caption</b>Noto Sans JP / 14px / 500<br>lh 1.80（実測 44 要素）</div><div style="font-size:14px;font-weight:500;line-height:1.8">仏像館は改修工事のため令和10年（2028）春頃（予定）まで休館いたします。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Small</b>Noto Sans JP / 12px / 500<br>lh 1.80（実測 40 要素）</div><div style="font-size:12px;font-weight:500;line-height:1.8">本日開館　9:30 - 17:00</div></div>
+  <div class="type-row"><div class="type-meta"><b>Building Label</b>Noto Sans JP / 11px / 500<br>lh <b style="display:inline">1.00</b></div><div style="font-size:11px;font-weight:500;line-height:1">仏像館　青銅器館　東新館</div></div>
+
+  <h3 style="font-size:18px;font-weight:700;line-height:1.8;margin:40px 0 10px">ウェイトは 400 / 500 / 700 の3本だけ</h3>
+  <div class="weight-row"><div class="type-meta"><b>400 Regular</b>可視 10 要素だけ</div><div class="s" style="font-weight:400">奈良国立博物館　仏教美術の殿堂</div></div>
+  <div class="weight-row"><div class="type-meta"><b>500 Medium ★</b>可視 167 要素。<b style="display:inline">本文の既定</b></div><div class="s" style="font-weight:500">奈良国立博物館　仏教美術の殿堂</div></div>
+  <div class="weight-row"><div class="type-meta"><b>700 Bold</b>可視 17 要素。見出し・カード名</div><div class="s" style="font-weight:700">奈良国立博物館　仏教美術の殿堂</div></div>
+  <div class="weight-row"><div class="type-meta"><b>900 は存在しない</b>実サイトは 900 を指定しているが<br>@font-face が 3 本なので <b style="display:inline">700 で出る</b></div><div class="s" style="font-weight:900">奈良国立博物館　仏教美術の殿堂</div></div>
+
+  <p class="note"><b><code>letter-spacing</code> を <code>em</code> に読み替えないこと。</b>このサイトは px で直書きしており、サイズとの比も揃っていない（27px に <code>2px</code> = 0.074em、24px に <code>4px</code> = 0.167em）。字間を足すのは <b>24 要素だけ</b>で、残り 170 要素は <code>normal</code>。</p>
+
+  <p class="note"><b><code>font-feature-settings: "palt"</code> は 1 要素も使っていない</b>（実測 0 件）。鉤括弧・ダーシの多い展覧会名でも詰めない。<b>密度はウェイトで出している。</b></p>
+
+  <p class="note"><b><code>font-family</code> に游ゴシック・ヒラギノを足さないこと。</b>チェーンは <code>"Noto Sans JP", sans-serif</code> の2段だけ。OS フォントを挟むと、Medium（500）の見え方が環境ごとに変わる。</p>
+</section>
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons &amp; Badges</div>
+  <div class="h-marker">ピルは 100px、カードは 0px</div>
+  <p class="lead">導線はすべて <code>border-radius: 100px</code> のピル。カード状のリンクは <code>1px solid #707070</code> ＋ 角丸なし。<b>会期バッジの枠は <code>border</code> ではなく <code>box-shadow: inset 0 0 0 1px</code></b>で描かれている（レイアウトが 1px もずれない）。</p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-green">すべて</a>
+    <a href="#" class="btn btn-ghost">トピックス</a>
+    <a href="#" class="btn btn-dark">見るトップ</a>
+    <a href="#" class="btn btn-card">組織・職員紹介</a>
+    <a href="#" class="btn btn-card-arrow">会員制度</a>
+  </div>
+
+  <div class="btn-grid" style="margin-top:20px">
+    <span class="badge badge-cat">名品展</span>
+    <span class="badge badge-cat">特別展</span>
+    <span class="badge badge-now">開催中</span>
+    <span class="badge badge-soon">開催予定</span>
+  </div>
+
+  <p class="note"><code>btn-dark</code> の <code>padding</code> は <b><code>10px 70px 10px 60px</code> と左右非対称</b>。左にアイコン、右に矢印の場所を空けている。<code>border-radius: 18px</code> は Cookie バナー専用なので採用しない。</p>
+</section>
+
+<section class="section" id="panels">
+  <div class="section-label">04 / Panels</div>
+  <div class="h-marker">角は1〜2隅だけ大きく落とす</div>
+  <p class="lead">このサイトの角丸は「全部丸める」のではなく、<b>1〜2 隅だけ <code>60px</code> 落とす</b>。ロゴパネルは右下だけ <code>15px</code>。</p>
+
+  <div class="panel-grid">
+    <div class="panel p-a"><h4>お知らせ</h4><p>border-radius: 60px 0 0<br>左上だけ 60px</p></div>
+    <div class="panel p-b"><h4>奈良博について</h4><p>border-radius: 0 0 60px<br>右下だけ 60px</p></div>
+    <div class="panel p-c"><h4>学ぶ・調べる</h4><p>border-radius: 60px 0<br>左上・右下</p></div>
+  </div>
+
+  <h3 style="font-size:18px;font-weight:700;line-height:1.8;margin:36px 0 10px">「奈良博を数字で知る」ブロック</h3>
+  <div class="stats">
+    <div>
+      <div class="stat-label">館蔵品には</div>
+      <div class="stat-line stat-gold">国宝 13件</div>
+    </div>
+    <div>
+      <div class="stat-label">現在の館長は</div>
+      <div class="stat-line stat-purple">26代目</div>
+    </div>
+    <div>
+      <div class="stat-label">奈良博は日本で</div>
+      <div class="stat-line stat-gold">2番目に古い</div>
+    </div>
+  </div>
+  <p class="note">数字だけ <code>font-size: 24px</code> / <code>font-weight: 400</code> / <code>letter-spacing: 4px</code> に落とし、金・紫で色分けする。<b>この 2 色を通常の UI に持ち込まない。</b></p>
+</section>
+
+<section class="section" id="cards">
+  <div class="section-label">05 / Cards</div>
+  <div class="h-marker">カードは面と罫線だけ</div>
+  <p class="lead">面は <code>#f5f5f5</code>、角丸 <code>0px</code>、影なし。会期バッジとカテゴリバッジを頭に並べる。</p>
+
+  <div class="card-grid">
+    <a href="#" class="card">
+      <div class="card-meta"><span class="badge badge-cat">名品展</span><span class="badge badge-now">開催中</span></div>
+      <div class="card-title">ナラハク仏像セレクション ―受け継ぎ、未来へ―</div>
+      <div class="card-desc">館蔵品・寄託品の中から選りすぐった仏像を通して、日本の仏教美術の流れをたどります。</div>
+    </a>
+    <a href="#" class="card">
+      <div class="card-meta"><span class="badge badge-cat">特別展</span><span class="badge badge-soon">開催予定</span></div>
+      <div class="card-title">第78回 正倉院展</div>
+      <div class="card-desc">毎年秋、正倉院宝物の中から選ばれた宝物を公開します。</div>
+    </a>
+  </div>
+</section>
+
+<section class="section" id="forms">
+  <div class="section-label">06 / Forms</div>
+  <div class="h-marker">入力欄も角丸なし</div>
+  <p class="lead">枠は <code>1px solid #707070</code>、角丸 <code>0px</code>。フォーカスとエラーは、バッジと同じ<b>内側リング</b>（<code>box-shadow: inset</code>）で示す。</p>
+
+  <div class="form-grid">
+    <div class="field">
+      <label for="f1">お名前</label>
+      <input id="f1" type="text" placeholder="奈良　太郎">
+      <div class="field-msg">全角でご入力ください</div>
+    </div>
+    <div class="field is-focus">
+      <label for="f2">メールアドレス（フォーカス時）</label>
+      <input id="f2" type="email" value="taro@example.jp">
+      <div class="field-msg">ブランド緑の内側リングが付く</div>
+    </div>
+    <div class="field is-error">
+      <label for="f3">ご希望の講座（エラー時）</label>
+      <input id="f3" type="text" value="">
+      <div class="field-msg">ご希望の講座をご入力ください</div>
+    </div>
+    <div class="field">
+      <label for="f4">ご来館予定日</label>
+      <select id="f4"><option>2026年10月25日（土）</option><option>2026年10月26日（日）</option><option>2026年11月01日（土）</option></select>
+      <div class="field-msg">休館日は選択できません</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <div class="h-marker">影を使わない</div>
+  <p class="lead">区別は「緑・チャコールの塗り」「<code>1px solid #707070</code> の枠」「<code>#f5f5f5</code> / <code>#f9f8f4</code> / <code>#e8e3de</code> の淡い面」で作る。</p>
+
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">Level 0（既定）</div><div class="elev-val">none — カード・ボタン・バッジ・パネルすべて</div></div>
+    <div class="elev"><div class="elev-name">内側リング</div><div class="elev-val">rgb(231,19,55) 0 0 0 1px inset（実測 2 要素）。「開催予定」バッジ。枠線の代用</div></div>
+    <div class="elev"><div class="elev-name">除外</div><div class="elev-val">rgba(0,0,0,.5) 0 5px 15px 0 は Cookie バナーだけ（実測 1 要素）</div></div>
+  </div>
+</section>
+
+<section class="section" id="layout">
+  <div class="section-label">08 / Layout</div>
+  <div class="h-marker">コンテナ 1080px、gap は 10〜12px</div>
+  <p class="lead">記事カラムは 1000px、ヘッダー・フッターは 1120px。gap をかなり詰めるのがこのサイトの型。</p>
+
+  <div class="layout-bar" style="width:100%;max-width:1120px">1120px — ヘッダー・フッター</div>
+  <div class="layout-bar" style="width:100%;max-width:1080px">--container: 1080px（実測 7 要素で最多）</div>
+  <div class="layout-bar" style="width:100%;max-width:1000px">1000px — 記事カラム</div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:0"></div><div class="radius-label">カード<br>0px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:100px"></div><div class="radius-label">ピル<br>100px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:60px 0 0"></div><div class="radius-label">セクション面<br>60px 0 0</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:0 0 60px"></div><div class="radius-label">ブロック<br>0 0 60px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:0 0 15px 0"></div><div class="radius-label">ロゴパネル<br>0 0 15px 0</div></div>
+  </div>
+
+  <p class="note">ブレークポイントの主役は <code>screen and (max-width: 767px)</code>（実測 <b>217 回</b>）。ほかに <code>min-width: 767px</code>（18 回）、<code>max-device-width: 1024px</code>（17 回・<b><code>device-width</code> である点に注意</b>）、Gutenberg 既定の <code>600px</code> / <code>782px</code>。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-cols">
+      <div class="footer-col"><div class="footer-head">見る</div><a href="#">名品展</a><a href="#">特別展・特別陳列他</a><a href="#">展覧会カレンダー</a></div>
+      <div class="footer-col"><div class="footer-head">参加する</div><a href="#">講座</a><a href="#">催し物</a><a href="#">ガイド</a></div>
+      <div class="footer-col"><div class="footer-head">学ぶ・調べる</div><a href="#">データベース</a><a href="#">刊行物</a><a href="#">奈良博だより</a></div>
+      <div class="footer-col"><div class="footer-head">奈良博について</div><a href="#">館長あいさつ</a><a href="#">歴史・沿革</a><a href="#">組織・職員紹介</a></div>
+    </div>
+    <p class="footer-addr">〒630-8213　奈良市登大路町50番地</p>
+    <p class="footer-note">これは DESIGN.md の再現用サンプルです。独立行政法人国立文化財機構 奈良国立博物館の実サイトではありません。書体（Noto Sans JP 400 / 500 / 700）は Google Fonts で配信されているため、実サイトと同じ書体・同じウェイトで描画しています。</p>
+  </div>
+</footer>
+
+</body>
+</html>

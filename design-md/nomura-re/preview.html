@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 野村不動産（NOMURA REAL ESTATE）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は自社トークン 0 個（2 個は Swiper の既定値）。
+       以下は computed style の実測値。2026-09-26 */
+    --orange:       #b85911;   /* ★セクション面。塗り 2 要素（事業紹介・採用情報の大パネル） */
+    --orange-deep:  #9c4300;   /* ★パネル内のカード・外部リンク。塗り 11 要素。文字は白 */
+    --purple:       #610f7a;   /* ロゴマークと見出し頭の小さな四角。塗り 1 要素 */
+    --cat-home:     #3862a5;   /* 住まい（塗り 3 要素） */
+    --cat-town:     #e29460;   /* 街づくり（複合開発）・商業施設（塗り 2 要素） */
+    --cat-logi:     #8aad45;   /* ロジスティクス（塗り 1 要素） */
+    --black:        #000000;   /* ★本文。可視 31 要素。グレーは使わない */
+    --white:        #ffffff;   /* ★可視 92 要素 */
+    --surface:      #f4f0ed;   /* ★最多の面（14 要素）。ニュースカード・導線・本文ブロック */
+    --surface-2:    #e9e4e1;   /* 採用セクションの下半分 */
+    --input:        #e6e6e6;   /* 検索フォームの面 */
+    --footer:       #211f22;
+    --footer-2:     #2b282c;
+    --bg:           #ffffff;   /* html / body に塗り指定なし。地色は白 */
+
+    /* === Font ===
+       Noto Sans JP のみ。@font-face は可変フォント weight: 100 900（loaded）だが、
+       実際に使うのは 400 / 500 / 700 の3段だけ。Google Fonts で同じ3ウェイトを読み込む。 */
+    --font: "Noto Sans JP", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === 詰めて読ませる ===
+       palt をトップページの 562 要素に全面適用。
+       letter-spacing は body に .04em を1回だけ書き、子要素は px（0.64px）で継承する。 */
+    --ls:      0.04em;   /* ★可視 119/123 要素（computed 0.64px） */
+    --ls-hero: 0.1em;    /* ヒーローのリードだけ再宣言（1.6px） */
+    --lh:      1.75;     /* ★本文（16px / 28px）。可視 103/123 要素 */
+    --lh-head: 1.5;      /* 見出し */
+    --lh-ui:   1.2;      /* ナビ・ボタン */
+    --lh-hero: 2.1;      /* ヒーローのリード */
+
+    --r-card:  10px;     /* ★既定のカード角丸（実測 66 要素） */
+    --r-pill:  20px;
+    --r-panel: 50px 50px 0 0;   /* 大パネルは上 2 隅だけ */
+    --r-tag:   0px;      /* タグだけ角丸なし */
+    --r-btn:   4px;
+
+    --shadow:   rgba(0, 0, 0, 0.04) 3px 3px 5px 0;   /* ★既定（実測 28 要素） */
+    --shadow-2: rgba(0, 0, 0, 0.1) 5px 5px 10px 0;
+    --shadow-3: rgba(0, 0, 0, 0.15) 0 0 10px 0;
+
+    --container: 1120px;
+    --gap: 32px;
+    --gap-col: 6.639%;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--black);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);            /* ★body に1回だけ。computed は 0.64px */
+    font-feature-settings: "palt";        /* ★全要素に適用。実測 562 要素 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { display: flex; align-items: flex-start; padding: 20px 24px 0; border-bottom: 1px solid #e6e6e6; }
+  .logo-wrap { display: flex; align-items: center; gap: 12px; }
+  .logo-mark { width: 44px; height: 26px; background: linear-gradient(100deg, var(--purple) 0 48%, var(--orange-deep) 48% 100%); border-radius: 13px; }
+  .logo-tag { font-size: 12px; line-height: var(--lh-ui); }
+  .logo-name { font-size: 20px; font-weight: 500; line-height: var(--lh-ui); }
+  .header-right { margin-left: auto; text-align: right; }
+  .header-top { display: flex; align-items: center; gap: 14px; justify-content: flex-end; }
+  .header-top span, .header-top a { font-size: 14px; line-height: var(--lh-ui); color: var(--black); text-decoration: none; }
+  .search-box { background: var(--input); border: none; border-radius: 0; font-family: var(--font); font-size: 14px; line-height: var(--lh-ui); letter-spacing: var(--ls); color: var(--black); padding: 5px 10px; width: 160px; }
+  .btn-contact { display: inline-block; background: transparent; color: var(--black); border: 1px solid var(--black); border-radius: var(--r-btn); font-family: var(--font); font-size: 14px; line-height: var(--lh-ui); letter-spacing: var(--ls); padding: 5px 10px; text-decoration: none; }
+  .gnav { display: flex; gap: 22px; justify-content: flex-end; margin-top: 14px; }
+  .gnav a { font-size: 14px; line-height: var(--lh-ui); color: var(--black); text-decoration: none; padding-bottom: 12px; }
+  .gnav a.is-current { font-weight: 700; border-bottom: 2px solid var(--orange); }
+
+  /* SECTIONS */
+  .section { max-width: var(--container); margin: 0 auto; padding: 56px 24px; }
+  .section-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: #666; margin-bottom: 8px; }
+  .h2 { display: flex; align-items: center; gap: 10px; font-size: 28px; font-weight: 500; line-height: var(--lh-head); margin-bottom: 18px; }
+  .h2::before { content: ""; width: 7px; height: 16px; background: var(--purple); flex: none; }
+  .h2.on-orange::before { background: var(--white); }
+  .lead { font-size: 16px; line-height: var(--lh); max-width: 900px; margin-bottom: 28px; }
+  .note { font-size: 14px; line-height: var(--lh); color: #333; margin-top: 20px; max-width: 920px; }
+  code { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0; background: var(--surface); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(206px, 1fr)); gap: 14px; }
+  .swatch { background: var(--white); border-radius: var(--r-card); box-shadow: var(--shadow); overflow: hidden; }
+  .swatch-chip { height: 74px; }
+  .swatch-body { padding: 12px 14px 14px; }
+  .swatch-name { font-size: 14px; font-weight: 500; line-height: var(--lh-head); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: #555; margin-top: 3px; }
+  .swatch-use { font-size: 12px; line-height: 1.7; color: #333; margin-top: 6px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: var(--gap); padding: 18px 0; border-bottom: 1px solid #e6e6e6; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: #666; line-height: 1.8; }
+  .type-meta b { display: block; font-family: var(--font); font-size: 13px; font-weight: 500; letter-spacing: var(--ls); color: var(--black); }
+  .scale-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; margin-bottom: 24px; }
+  .scale-bar span { background: var(--surface); border-radius: var(--r-card); padding: 7px 13px; line-height: 1; }
+
+  .palt-row { display: grid; grid-template-columns: 250px 1fr; gap: var(--gap); padding: 16px 0; border-bottom: 1px solid #e6e6e6; align-items: baseline; }
+  .palt-row .s { font-size: 24px; font-weight: 500; line-height: var(--lh); }
+
+  /* ORANGE PANEL */
+  .panel { background: var(--orange); border-radius: var(--r-panel); padding: 44px 40px; color: var(--white); }
+  .panel .lead { color: var(--white); }
+  .panel-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .biz-card { display: flex; background: var(--orange-deep); border-radius: var(--r-card); overflow: hidden; text-decoration: none; min-height: 104px; }
+  .biz-card .ph { width: 46%; background: linear-gradient(150deg, #6d7f8c, #b9c4cb); }
+  .biz-card .lb { flex: 1; display: flex; align-items: center; padding: 0 16px; color: var(--white); font-size: 20px; line-height: var(--lh); }
+  .biz-link { display: block; background: var(--orange-deep); color: var(--white); border-radius: var(--r-card); padding: 16px 44px 16px 20px; font-size: 16px; line-height: var(--lh); text-decoration: none; }
+
+  /* LIST LINKS */
+  .link-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .list-link { display: block; background: var(--surface); color: var(--black); border-radius: var(--r-card); padding: 16px 44px 16px 20px; font-size: 16px; line-height: var(--lh); text-decoration: none; position: relative; }
+  .list-link::after { content: "›"; position: absolute; right: 18px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; border-radius: 50%; background: var(--footer); color: var(--white); font-size: 12px; line-height: 20px; text-align: center; }
+
+  /* NEWS CARDS */
+  .news-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--gap); }
+  .news { display: block; background: var(--surface); border-radius: var(--r-card); box-shadow: var(--shadow); padding: 32px 32px 70px; text-decoration: none; color: var(--black); position: relative; }
+  .news-date { font-size: 14px; line-height: var(--lh); }
+  .news-title { font-size: 16px; line-height: var(--lh); margin-top: 8px; }
+  .tag { display: inline-block; border-radius: var(--r-tag); color: var(--white); font-size: 12px; line-height: var(--lh); padding: 2px 10px 4px; }
+  .t-home { background: var(--cat-home); }
+  .t-town { background: var(--cat-town); }
+  .t-logi { background: var(--cat-logi); }
+  .news .tag { position: absolute; left: 32px; bottom: 28px; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .btn-pill { display: inline-flex; align-items: center; gap: 10px; background: var(--black); color: var(--white); border: 1px solid var(--black); border-radius: var(--r-pill); font-family: var(--font); font-size: 16px; line-height: var(--lh); letter-spacing: var(--ls); padding: 6px 20px; text-decoration: none; }
+  .btn-pill i { font-style: normal; width: 18px; height: 18px; border-radius: 50%; background: var(--white); color: var(--black); font-size: 11px; line-height: 18px; text-align: center; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .elev { background: var(--white); border-radius: var(--r-card); padding: 20px; min-height: 130px; }
+  .e1 { box-shadow: var(--shadow); }
+  .e2 { box-shadow: var(--shadow-2); }
+  .e3 { box-shadow: var(--shadow-3); }
+  .e0 { border: 1px solid #e6e6e6; }
+  .elev-name { font-size: 14px; font-weight: 500; line-height: var(--lh-head); }
+  .elev-val { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: #555; margin-top: 8px; line-height: 1.7; }
+
+  /* LAYOUT */
+  .layout-bar { background: var(--surface); border-left: 4px solid var(--orange); border-radius: 0 var(--r-card) var(--r-card) 0; padding: 11px 14px; margin-bottom: 10px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; }
+  .radius-row { display: flex; gap: 26px; margin-top: 24px; flex-wrap: wrap; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 104px; height: 64px; background: var(--orange-deep); }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0; color: #555; margin-top: 8px; line-height: 1.7; }
+
+  /* HERO */
+  .hero { background: linear-gradient(160deg, #2e4f73, #7fa3c4); color: var(--white); padding: 70px 24px; text-align: center; }
+  .hero-copy { font-size: 44px; font-weight: 400; line-height: var(--lh-head); letter-spacing: 0.18em; }
+  .hero-lead { font-size: 16px; line-height: var(--lh-hero); letter-spacing: var(--ls-hero); margin-top: 20px; }
+
+  /* STATEMENT */
+  .statement-wrap { background: var(--surface); border-radius: var(--r-panel); padding: 48px 40px; }
+  .statement { font-size: 24px; font-weight: 500; line-height: var(--lh); }
+
+  /* FOOTER */
+  .footer { background: var(--footer); color: var(--white); margin-top: 56px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; padding: 44px 24px; }
+  .footer-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); }
+  .footer-head { font-size: 14px; font-weight: 500; line-height: var(--lh); margin-bottom: 8px; }
+  .footer-col a { display: block; color: var(--white); font-size: 12px; line-height: var(--lh); text-decoration: none; }
+  .footer-sub { background: var(--footer-2); }
+  .footer-sub-inner { max-width: var(--container); margin: 0 auto; padding: 18px 24px; display: flex; gap: 22px; flex-wrap: wrap; }
+  .footer-sub-inner a { color: var(--white); font-size: 12px; line-height: var(--lh); text-decoration: none; }
+  .footer-copy { max-width: var(--container); margin: 0 auto; padding: 0 24px 26px; font-size: 10px; line-height: var(--lh); color: var(--white); }
+  .footer-note { max-width: var(--container); margin: 0 auto; padding: 0 24px 30px; font-size: 12px; line-height: var(--lh); color: #d8d4d6; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo-wrap">
+    <div class="logo-mark"></div>
+    <div>
+      <div class="logo-tag">あしたを、つなぐ ―― 野村不動産グループ</div>
+      <div class="logo-name">野村不動産</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="header-top">
+      <a href="#">野村不動産ホールディングス</a>
+      <span>JP ｜ EN</span>
+      <input class="search-box" type="text" placeholder="検索">
+      <a href="#" class="btn-contact">お問い合わせ</a>
+    </div>
+    <nav class="gnav">
+      <a href="#" class="is-current">会社情報</a><a href="#">事業紹介</a><a href="#">BLUE FRONT SHIBAURA</a><a href="#">ニュース</a><a href="#">採用情報</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-copy">あしたを、つなぐ</div>
+  <div class="hero-lead">私たちは、人、街が大切にしているものを活かし未来につながる街づくりとともに<br>豊かな時を人びとと共に育み社会に向けて、新たな価値を創造し続けます。</div>
+</section>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="h2">色は事業セグメントの識別子</h2>
+  <p class="lead">文字色は <b><code>#000000</code> と <code>#ffffff</code> の2色だけ</b>（可視 31 / 92 要素）。グレーの補助テキストすら使わない。色は「分類」に割り当てられていて、バーントオレンジがブランド面、青・橙・緑が事業セグメントのタグ。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#b85911"></div><div class="swatch-body"><div class="swatch-name">Burnt Orange</div><div class="swatch-hex">#b85911</div><div class="swatch-use">★セクション面（塗り 2 要素）。border-radius: 50px 50px 0 0</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#9c4300"></div><div class="swatch-body"><div class="swatch-name">Burnt Orange Deep</div><div class="swatch-hex">#9c4300</div><div class="swatch-use">★パネル内のカード・外部リンク（塗り 11 要素）。文字は白</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#610f7a"></div><div class="swatch-body"><div class="swatch-name">Brand Purple</div><div class="swatch-hex">#610f7a</div><div class="swatch-use">ロゴマークと見出し頭の小さな四角（塗り 1 要素）。面として広く使わない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#3862a5"></div><div class="swatch-body"><div class="swatch-name">住まい</div><div class="swatch-hex">#3862a5</div><div class="swatch-use">カテゴリタグ（塗り 3 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e29460"></div><div class="swatch-body"><div class="swatch-name">街づくり・商業施設</div><div class="swatch-hex">#e29460</div><div class="swatch-use">カテゴリタグ（塗り 2 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#8aad45"></div><div class="swatch-body"><div class="swatch-name">ロジスティクス</div><div class="swatch-hex">#8aad45</div><div class="swatch-use">カテゴリタグ（塗り 1 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f4f0ed"></div><div class="swatch-body"><div class="swatch-name">Surface Warm</div><div class="swatch-hex">#f4f0ed</div><div class="swatch-use">★最多の面（14 要素）。ニュースカード・導線・本文ブロック</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e9e4e1"></div><div class="swatch-body"><div class="swatch-name">Surface Warm 2</div><div class="swatch-hex">#e9e4e1</div><div class="swatch-use">採用セクションの下半分</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#211f22"></div><div class="swatch-body"><div class="swatch-name">Footer Dark</div><div class="swatch-hex">#211f22</div><div class="swatch-use">フッター上段（下段は #2b282c）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#000000</div><div class="swatch-use">★本文（可視 31 要素）。純黒を使う</div></div></div>
+  </div>
+
+  <p class="note"><b><code>interactive</code> の <code>color</code> を鵜呑みにしない。</b><code>分譲住宅</code>（bg <code>#9c4300</code>）の <code>color</code> は <code>rgb(0,0,0)</code> と出るが、<b>ラベルを子の <code>&lt;span&gt;</code> に置いている構造</b>で、実際に描画される文字は白。スクリーンショットで確認済み。</p>
+</section>
+
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="h2">palt を全面に、字間は body に1回だけ</h2>
+  <p class="lead"><code>font-feature-settings: "palt"</code> を<b>トップページの 562 要素</b>に適用している。<code>letter-spacing: .04em</code> は body に1回書くだけで、computed <code>0.64px</code> が可視 <b>119/123 要素</b>へ px のまま継承される。<code>em</code> を再宣言しているのは<b>ヒーローのリードだけ</b>（<code>.1em</code> = 1.6px）。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:10px">10</span><span style="font-size:12px">12</span><span style="font-size:13px">13</span>
+    <span style="font-size:14px">14</span><span style="font-size:16px">16</span><span style="font-size:20px">20</span>
+    <span style="font-size:24px">24</span><span style="font-size:28px">28</span><span style="font-size:36px">36</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Page Title</b>Noto Sans JP / 36px / 500<br>lh 1.50 / ls 0.64px（継承）</div><div style="font-size:36px;font-weight:500;line-height:1.5">代表ご挨拶</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Title</b>Noto Sans JP / 28px / 500<br>lh 1.50</div><div style="font-size:28px;font-weight:500;line-height:1.5">事業紹介</div></div>
+  <div class="type-row"><div class="type-meta"><b>Statement ★</b>Noto Sans JP / 24px / 500<br>lh 1.75 / <b style="display:inline">palt が効く</b></div><div style="font-size:24px;font-weight:500;line-height:1.75">「人々の“幸せ”と社会の“豊かさ”の最大化」を目指し、<br>価値創造の変革を推進してまいります。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Title</b>Noto Sans JP / 20px / 400<br>lh 1.75</div><div style="font-size:20px;line-height:1.75">分譲住宅</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>Noto Sans JP / 16px / 400<br>lh <b style="display:inline">1.75</b> / ls .04em (0.64px)</div><div style="font-size:16px;line-height:1.75">野村不動産は1957年の創業以来、宅地造成を起点に多様な事業へ挑戦し続け、総合デベロッパーとして歩みを進めてきました。65年以上にわたり、社会の要請とお客様の期待に応えながら、柔軟な発想で新たな価値の創出に努めております。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Hero Copy ★</b>Noto Sans JP / 16px / 400<br>lh <b style="display:inline">2.10</b> / ls <b style="display:inline">.1em</b>（唯一の再宣言）</div><div style="font-size:16px;line-height:2.1;letter-spacing:.1em">私たちは、人、街が大切にしているものを活かし未来につながる街づくりとともに</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav / UI</b>Noto Sans JP / 14px / 400<br>lh 1.20（実測 59 要素で最多）</div><div style="font-size:14px;line-height:1.2">会社情報　事業紹介　BLUE FRONT SHIBAURA　ニュース　採用情報</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav Bold</b>Noto Sans JP / 14px / <b style="display:inline">700</b><br>lh 1.20（実測 5 要素だけ）</div><div style="font-size:14px;font-weight:700;line-height:1.2">会社情報</div></div>
+  <div class="type-row"><div class="type-meta"><b>Category Tag</b>Noto Sans JP / 12px / 400<br>lh 1.75 / 白文字</div><div><span class="tag t-home">住まい</span> <span class="tag t-town">街づくり（複合開発）</span> <span class="tag t-logi">ロジスティクス</span></div></div>
+  <div class="type-row"><div class="type-meta"><b>Copyright</b>Noto Sans JP / 10px / 400<br>lh 1.75</div><div style="font-size:10px;line-height:1.75">© NOMURA REAL ESTATE DEVELOPMENT CO., LTD.</div></div>
+
+  <h3 style="font-size:20px;font-weight:500;line-height:1.5;margin:40px 0 10px">palt の有無を並べる</h3>
+  <div class="palt-row"><div class="type-meta"><b>palt あり（実サイト）</b>font-feature-settings: "palt"</div><div class="s" style="font-feature-settings:'palt'">「人々の“幸せ”と社会の“豊かさ”の最大化」</div></div>
+  <div class="palt-row"><div class="type-meta"><b>palt なし（参考・不採用）</b>font-feature-settings: normal</div><div class="s" style="font-feature-settings:normal">「人々の“幸せ”と社会の“豊かさ”の最大化」</div></div>
+
+  <p class="note"><b>可変フォントで 100〜900 が使えるのに、実際の設計は 400 / 500 / 700 の3段だけ。</b>400 が 102/123 要素、500 が 16、700 は 5（選択中のナビ）。<b>36px の h1 も 28px のセクション見出しも 500</b>。700 にしないこと。</p>
+
+  <p class="note"><b><code>line-height: 1.75</code> と <code>palt</code> はセット。</b><code>palt</code> で横が詰まる分、縦を 1.75 空けてバランスを取っている。片方だけ真似ない。</p>
+
+  <p class="note"><b><code>font-family</code> は <code>"Noto Sans JP", sans-serif</code> の2段だけ</b>（可視 123/123 要素が同一）。游ゴシック・ヒラギノを挟むとメトリクスが変わり、<code>palt</code> の詰め方が変わる。</p>
+</section>
+
+<section class="section" id="panels">
+  <div class="section-label">03 / Panels</div>
+  <h2 class="h2">大パネルは上 2 隅だけ 50px</h2>
+  <p class="lead">セクション全体を <code>#b85911</code> の面で囲み、<code>border-radius: 50px 50px 0 0</code> で上 2 隅だけ大きく落とす。中のカードは <code>#9c4300</code> ＋ <code>10px</code>。</p>
+
+  <div class="panel">
+    <h2 class="h2 on-orange">事業紹介</h2>
+    <div class="panel-grid">
+      <a href="#" class="biz-card"><div class="ph"></div><div class="lb">分譲住宅</div></a>
+      <a href="#" class="biz-card"><div class="ph"></div><div class="lb">賃貸住宅</div></a>
+      <a href="#" class="biz-card"><div class="ph"></div><div class="lb">シニア住宅</div></a>
+      <a href="#" class="biz-card"><div class="ph"></div><div class="lb">ホテル</div></a>
+      <a href="#" class="biz-card"><div class="ph"></div><div class="lb">オフィス</div></a>
+      <a href="#" class="biz-card"><div class="ph"></div><div class="lb">商業施設</div></a>
+    </div>
+  </div>
+
+  <div class="statement-wrap" style="margin-top:34px">
+    <p class="statement">「人々の“幸せ”と社会の“豊かさ”の最大化」を目指し、<br>価値創造の変革を推進してまいります。</p>
+  </div>
+</section>
+
+<section class="section" id="links">
+  <div class="section-label">04 / List Links</div>
+  <h2 class="h2">導線は #f4f0ed のカード、外部リンクは #9c4300</h2>
+  <p class="lead"><code>padding: 16px 44px 16px 20px</code>。右の 44px は矢印の丸のための場所。<b>外部リンクだけ塗りをオレンジに替えて白文字</b>にする。</p>
+
+  <div class="link-grid">
+    <a href="#" class="list-link">代表ご挨拶</a>
+    <a href="#" class="list-link">役員一覧・組織図</a>
+    <a href="#" class="list-link">会社概要</a>
+    <a href="#" class="list-link">グループ企業一覧</a>
+    <a href="#" class="biz-link">野村不動産ホールディングス ⧉</a>
+    <a href="#" class="biz-link">IR情報　野村不動産ホールディングス ⧉</a>
+  </div>
+
+  <div class="btn-grid" style="margin-top:26px">
+    <a href="#" class="btn-pill">View more <i>›</i></a>
+    <a href="#" class="btn-contact">お問い合わせ</a>
+  </div>
+</section>
+
+<section class="section" id="news">
+  <div class="section-label">05 / News Cards</div>
+  <h2 class="h2">カードは 10px、タグは 0px</h2>
+  <p class="lead">カードの角丸は <code>10px</code>（実測 <b>66 要素</b>でこのサイトの既定）。<b>タグだけ <code>border-radius: 0</code></b>。<code>padding: 32px 32px 70px</code> の下 70px は日付とタグの場所。</p>
+
+  <div class="news-grid">
+    <a href="#" class="news">
+      <div class="news-date">2026年09月25日</div>
+      <div class="news-title">ジャンルの垣根を超えた物流自動化ソリューションを実現 21社と「国際物流総合展2026」に共同出展</div>
+      <span class="tag t-logi">ロジスティクス</span>
+    </a>
+    <a href="#" class="news">
+      <div class="news-date">2026年08月31日</div>
+      <div class="news-title">野村不動産「プラウド」の新TVCM＆スペシャルムービー「暮らすほどに、幸せが見つかる。」篇を放映開始</div>
+      <span class="tag t-home">住まい</span>
+    </a>
+  </div>
+</section>
+
+<section class="section" id="elevation">
+  <div class="section-label">06 / Elevation</div>
+  <h2 class="h2">影は右下に同量ずらす</h2>
+  <p class="lead">既定は <code>rgba(0, 0, 0, 0.04) 3px 3px 5px 0</code>（実測 <b>28 要素</b>）。<code>0 2px 4px</code> のような真下の影ではなく、<b>X と Y に同じ量ずらす</b>のがこのサイトの型。不透明度 0.04 は見えるか見えないかの境目で、濃くしない。</p>
+
+  <div class="elev-grid">
+    <div class="elev e0"><div class="elev-name">Level 0</div><div class="elev-val">none — タグ・ボタン・オレンジパネル</div></div>
+    <div class="elev e1"><div class="elev-name">Level 1 ★</div><div class="elev-val">rgba(0,0,0,0.04) 3px 3px 5px 0（実測 28 要素）</div></div>
+    <div class="elev e2"><div class="elev-name">Level 2</div><div class="elev-val">rgba(0,0,0,0.1) 5px 5px 10px 0（実測 2 要素）</div></div>
+    <div class="elev e3"><div class="elev-name">Level 3</div><div class="elev-val">rgba(0,0,0,0.15) 0 0 10px 0（実測 1 要素・ドロップダウン）</div></div>
+  </div>
+</section>
+
+<section class="section" id="layout">
+  <div class="section-label">07 / Layout</div>
+  <h2 class="h2">コンテナは 1120px ひとつだけ</h2>
+  <p class="lead">実測 8 要素すべてが <code>1120px</code>。全幅パネルだけコンテナの外まで広がる。列間は <code>6.639%</code>（可変）か <code>32px</code>（固定）。</p>
+
+  <div class="layout-bar" style="width:100%;max-width:1120px">--container: 1120px（実測 8 要素。このサイトはこれ1つだけ）</div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:10px"></div><div class="radius-label">カード<br>10px（66 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:20px"></div><div class="radius-label">ピル<br>20px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:50px 50px 0 0"></div><div class="radius-label">大パネル<br>50px 50px 0 0</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">小ボタン<br>4px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:0"></div><div class="radius-label">タグ<br>0px</div></div>
+  </div>
+
+  <p class="note">ブレークポイントは <code>576px</code>（実測 7 回・主要）／<code>767px</code>／<code>768px</code>／<code>1000px</code>／<code>1152px</code>／<code>1440px</code>／<b><code>1760px</code>／<code>1920px</code></b>。<b>上限側を持っているのが特徴</b>で、コンテナは 1120px 固定のまま、ヒーローと全幅パネルだけ超ワイドで伸びすぎないよう抑えている。<code>(any-hover: hover)</code> / <code>(hover: none)</code> でタッチ端末のホバー演出も切っている。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-cols">
+      <div class="footer-col"><div class="footer-head">会社情報</div><a href="#">代表ご挨拶</a><a href="#">会社概要</a><a href="#">沿革</a><a href="#">役員一覧・組織図</a></div>
+      <div class="footer-col"><div class="footer-head">事業紹介</div><a href="#">野村不動産の街づくり</a><a href="#">分譲住宅</a><a href="#">オフィス</a><a href="#">物流施設</a></div>
+      <div class="footer-col"><div class="footer-head">BLUE FRONT SHIBAURA</div><a href="#">プロジェクト概要</a></div>
+      <div class="footer-col"><div class="footer-head">採用情報</div><a href="#">インターンシップ情報</a><a href="#">キャリア採用情報</a><a href="#">再入社採用</a></div>
+    </div>
+  </div>
+  <div class="footer-sub">
+    <div class="footer-sub-inner">
+      <a href="#">サイトマップ</a><a href="#">個人情報の取扱いについて</a><a href="#">ソーシャルメディアポリシー</a><a href="#">電子公告</a>
+    </div>
+  </div>
+  <p class="footer-copy">© NOMURA REAL ESTATE DEVELOPMENT CO., LTD.</p>
+  <p class="footer-note">これは DESIGN.md の再現用サンプルです。野村不動産株式会社の実サイトではありません。書体（Noto Sans JP）は Google Fonts で配信されているため、実サイトと同じ書体で描画しています。</p>
+</footer>
+
+</body>
+</html>
