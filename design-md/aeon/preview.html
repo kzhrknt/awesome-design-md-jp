@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: イオン（AEON）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Poppins:wght@400;500&family=Noto+Serif+JP:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトの自社トークンは 155 個あるが、色で生きているのは実質 2 つ。
+       --color-main-20〜90（青）と --color-sub-10〜90（黄）は Fluent UI の既定ランプが
+       そのまま残っていて 2 ページとも可視 0 要素。ここでは採用していない。実測 2026-11-01 */
+    --color-main:      #b60081;  /* ★--color-main-10 / --color-main / --color-link。文字 27・面 7 要素 */
+    --color-type:      #000000;  /* ★本文。可視 120 要素で最多。純黒を使う */
+    --color-muted:     #808080;  /* 日付・カードの補足文。49 要素 */
+    --color-on-dark:   #ffffff;  /* 9 要素 */
+    --color-copy:      #999999;  /* コピーライト */
+    --color-gray-20:   #ebebeb;  /* --color-gray / --color-border */
+    --color-gray-30:   #f2f2f2;  /* --color-border-light。下層のタイトル帯 */
+    --color-gray-40:   #cccccc;  /* 罫線。18 要素 */
+    --color-tag-bg:    #e6e6e6;  /* ニュース種別タグの面。10 要素 */
+    --color-surface:   rgba(235, 235, 235, .6);  /* セクションの地。3 要素 */
+    --color-footer:    #3f3f3f;
+    --bg:              #ffffff;
+
+    /* === Fonts ===
+       実サイトは Cloudflare Fonts（/cf-fonts/s/...）でセルフホスト。
+       Zen Kaku Gothic New 400/500/700、Poppins 400/500/600/700。
+       --font-serif（游明朝）は 2 ページとも可視 0。明朝が出るのは緊急告知バーの
+       "Noto Serif JP", serif だけ。 */
+    --font-sans-serif: "Zen Kaku Gothic New", sans-serif;
+    --font-en:         "Poppins", sans-serif;
+    --font-notice:     "Noto Serif JP", serif;
+
+    /* === Weight（3 段しかない。600 は設計に存在しない）=== */
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-bold:   700;
+
+    /* === 行間（すべて無単位）=== */
+    --line-height-xs: 1.4;   /* ナビ。40 要素 */
+    --line-height-sm: 1.5;   /* カード見出し。49 要素で最多 */
+    --line-height-md: 1.6;   /* body 既定。33 要素 */
+    --line-height-lg: 1.8;   /* 本文ブロック。48 要素 */
+    /* --line-height-xl: 2.2 は宣言だけで可視 0。採用していない */
+
+    /* === サイズ（すべて clamp の連続流体。html は 10px 固定）=== */
+    --text-2xs: clamp(1rem, 0.909rem + 0.38vw, 1.2rem);
+    --text-xs:  clamp(1.2rem, 1.109rem + 0.38vw, 1.4rem);
+    --text-sm:  clamp(1.2rem, 0.845rem + 0.74vw, 1.4rem);
+    --text-md:  clamp(1.4rem, 1.309rem + 0.38vw, 1.6rem);   /* ★body。1440px で 16px / 375px で 14.515px */
+    --text-lg:  clamp(1.6rem, 1.245rem + 0.74vw, 1.8rem);
+    --text-xl:  clamp(1.8rem, 0.733rem + 2.22vw, 2.4rem);
+    --text-2xl: clamp(2.4rem, 2.218rem + 0.77vw, 2.8rem);
+    --text-3xl: clamp(2.8rem, 2.09rem + 1.49vw, 3.2rem);
+    --text-4xl: clamp(3.8rem, 3.346rem + 1.94vw, 4.8rem);   /* 英字セクション見出し 48px */
+
+    /* === Shape ===
+       32px がこのサイトの形。カードの画像部は上端だけ丸める。 */
+    --radius-card:  32px;   /* 実測 53 要素 */
+    --radius-top:   32px 32px 0 0;  /* 実測 48 要素 */
+    --radius-tag:   25px;
+    --shadow-card:  2px 4px 32px rgba(0, 0, 0, .1);  /* ★実測 5 要素。影はこの 1 種類だけ */
+
+    /* === Space（--space-8 と --space-28 だけ Tailwind と値が違う）=== */
+    --space-2:  8px;
+    --space-4:  16px;
+    --space-6:  24px;
+    --space-8:  30px;   /* ★Tailwind なら 32px */
+    --space-12: 48px;
+    --space-16: 64px;
+    --space-28: 114px;  /* ★Tailwind なら 112px */
+
+    --container: 1344px;
+  }
+
+  * { box-sizing: border-box; }
+
+  /* ★html は 10px 固定。6 幅すべてで動かない */
+  html { font-size: 62.5%; }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans-serif);
+    /* ★html は固定なのに body だけが clamp() で連続して縮む。
+       1440〜767px は上限 16px に張り付き、375px で 14.515px */
+    font-size: var(--text-md);
+    font-weight: var(--font-normal);
+    line-height: var(--line-height-md);
+    color: var(--color-type);
+    background: var(--bg);
+    text-rendering: optimizespeed;
+    -webkit-font-smoothing: antialiased;
+    /* letter-spacing は書かない。可視 206 要素中 201 要素が normal。
+       font-feature-settings（palt / halt）も宣言 0 件 */
+  }
+
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 var(--space-6) 80px; }
+
+  /* ===== ヘッダー（白い角丸の島として浮かせる）===== */
+  .hdr { padding: 16px var(--space-6) 0; }
+  .hdr .inner {
+    max-width: 1400px; margin: 0 auto; padding: 14px var(--space-8);
+    background: #fff; border-radius: 50px;
+    display: flex; align-items: center; gap: var(--space-8); flex-wrap: wrap;
+  }
+  .logo { font-family: var(--font-en); font-size: 2.8rem; font-weight: var(--font-medium); line-height: 1; color: var(--color-main); }
+  .nav { display: flex; gap: var(--space-6); flex: 1; flex-wrap: wrap; }
+  .nav a { color: var(--color-type); font-size: 1.4rem; font-weight: var(--font-bold); line-height: var(--line-height-xs); text-decoration: none; }
+  .nav a:hover { color: var(--color-main); }
+
+  /* ===== 緊急告知バー（唯一の明朝）===== */
+  .notice { max-width: 1400px; margin: 16px auto 0; padding: 0 var(--space-6); }
+  .notice .inner {
+    background: var(--color-surface); border-radius: var(--radius-card);
+    padding: var(--space-6) var(--space-8);
+  }
+  .notice p {
+    margin: 0; font-family: var(--font-notice);
+    font-size: 1.8rem; font-weight: var(--font-bold); line-height: var(--line-height-lg);
+    text-align: center; color: var(--color-type);
+  }
+
+  /* ===== ヒーロー（写真の代わりにグラデーションの面）===== */
+  .hero {
+    margin-top: 16px; min-height: 420px; position: relative;
+    background: linear-gradient(170deg, #9ad0f0 0%, #cfe8c4 55%, #7fae6a 100%);
+    display: flex; align-items: flex-end;
+  }
+  .hero .veil {
+    width: 100%; padding: 120px var(--space-12) var(--space-12);
+    background-image: linear-gradient(rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, .7));
+  }
+  .hero h1 {
+    margin: 0; color: var(--color-on-dark);
+    font-size: var(--text-3xl); font-weight: var(--font-bold); line-height: var(--line-height-sm);
+  }
+
+  /* ===== セクション ===== */
+  .sec { padding-top: var(--space-16); }
+  .secttl {
+    margin: 0 0 var(--space-2); text-align: center;
+    font-family: var(--font-en);
+    font-size: var(--text-4xl); font-weight: var(--font-medium);
+    line-height: 1; letter-spacing: -0.02em;      /* ★48px に対して −0.96px */
+    color: var(--color-main);
+  }
+  .secttl-ja { margin: 0 0 var(--space-8); text-align: center; font-size: 1.4rem; font-weight: var(--font-medium); line-height: 1; color: var(--color-type); }
+  .lead { margin: 0 0 var(--space-6); font-size: 2.4rem; font-weight: var(--font-bold); line-height: var(--line-height-md); text-align: center; }
+  .body-text { margin: 0 auto var(--space-6); max-width: 660px; font-size: 1.6rem; font-weight: var(--font-normal); line-height: var(--line-height-lg); }
+  .note { margin: var(--space-4) 0 0; font-size: 1.4rem; line-height: var(--line-height-lg); color: var(--color-muted); }
+
+  table.spec { width: 100%; border-collapse: collapse; font-size: 1.4rem; line-height: var(--line-height-lg); }
+  table.spec th, table.spec td { border: 1px solid var(--color-gray-20); padding: 10px 14px; text-align: left; vertical-align: top; }
+  table.spec th { background: var(--color-gray-30); width: 160px; font-weight: var(--font-bold); }
+  code { background: var(--color-gray-30); padding: 1px 5px; font-size: .92em; }
+
+  /* ===== タイポグラフィ階層 ===== */
+  .scale .row { display: grid; grid-template-columns: 240px 1fr; gap: 0 var(--space-8); padding: 14px 0; border-bottom: 1px solid var(--color-gray-20); align-items: baseline; }
+  .scale .meta { font-size: 1.2rem; font-weight: var(--font-medium); line-height: var(--line-height-xs); color: var(--color-muted); }
+
+  /* ===== カード ===== */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-8) 32px; }
+  .card { background: #fff; border-radius: var(--radius-card); box-shadow: var(--shadow-card); overflow: hidden; }
+  .card .media { height: 160px; border-radius: var(--radius-top); background: linear-gradient(135deg, #e6d9ef, #f6e7f1); }
+  .card .inner { padding: var(--space-6); }
+  .card .tag { display: inline-block; background: var(--color-tag-bg); color: var(--color-type); border-radius: var(--radius-tag); padding: 4px 8px; font-size: 1.4rem; font-weight: var(--font-medium); line-height: var(--line-height-xs); }
+  .card h3 { margin: 12px 0 8px; font-size: 1.8rem; font-weight: var(--font-bold); line-height: var(--line-height-sm); }
+  .card p { margin: 0; font-size: 1.4rem; font-weight: var(--font-normal); line-height: var(--line-height-lg); color: var(--color-muted); }
+  .card time { display: block; margin-bottom: 6px; font-family: var(--font-en); font-size: 1.4rem; font-weight: var(--font-normal); line-height: var(--line-height-lg); color: var(--color-muted); }
+
+  /* ===== 丸ボタン ===== */
+  .btnrow { display: flex; gap: var(--space-6); align-items: center; flex-wrap: wrap; }
+  .circle { width: 64px; height: 64px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: var(--font-medium); line-height: 1; text-decoration: none; }
+  .circle.fill { background: var(--color-main); color: var(--color-on-dark); border: 0; }
+  .circle.outline { background: #fff; color: var(--color-main); border: 2px solid var(--color-main); }
+  .circle.is-focus { outline: 2px solid var(--color-main); outline-offset: 3px; }
+  .arrow { width: 48px; height: 48px; border-radius: 50px; background: #fff; border: 1px solid var(--color-gray-40); display: inline-flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--color-type); }
+
+  .pill { display: inline-block; background: var(--color-tag-bg); border-radius: var(--radius-tag); padding: 4px 8px; font-size: 1.4rem; font-weight: var(--font-medium); line-height: var(--line-height-xs); }
+  .pill.brand { background: transparent; color: var(--color-main); line-height: 1; padding: 4px 0; }
+
+  /* ===== 大きな角丸のリンクカード（下層）===== */
+  .linkcards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
+  .linkcard { background: var(--color-gray-30); border-radius: var(--radius-card); padding: var(--space-8); font-size: 1.8rem; font-weight: var(--font-normal); line-height: 1.6; color: var(--color-type); text-decoration: none; display: block; }
+  .linkcard:hover { background: var(--color-gray-20); }
+
+  /* ===== 入力 ===== */
+  .field { display: grid; gap: 8px; max-width: 420px; }
+  .field label { font-size: 1.4rem; font-weight: var(--font-bold); line-height: var(--line-height-xs); }
+  .field input { border: 1px solid var(--color-gray-40); border-radius: var(--radius-tag); padding: 12px 20px; font-family: var(--font-sans-serif); font-size: 1.6rem; color: var(--color-type); background: #fff; }
+  .field input.is-focus { outline: 2px solid var(--color-main); outline-offset: 1px; }
+
+  /* ===== 色ランプの対比 ===== */
+  .ramp { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 8px; }
+  .ramp div { border-radius: 8px; padding: 10px 8px; font-size: 1.1rem; line-height: 1.4; text-align: center; border: 1px solid var(--color-gray-20); }
+
+  /* ===== フッター ===== */
+  .ftr { margin-top: var(--space-16); background: var(--color-footer); padding: var(--space-8) var(--space-6); }
+  .ftr .inner { max-width: var(--container); margin: 0 auto; }
+  .ftr a { color: var(--color-on-dark); font-size: 1.4rem; font-weight: var(--font-medium); line-height: var(--line-height-md); text-decoration: none; margin-right: var(--space-6); }
+  .ftr p { margin: var(--space-4) 0 0; color: var(--color-copy); font-size: 1.8rem; font-weight: var(--font-normal); line-height: var(--line-height-lg); }
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="inner">
+    <div class="logo">ÆON</div>
+    <nav class="nav">
+      <a href="#">企業情報</a>
+      <a href="#">グループ事業・企業紹介</a>
+      <a href="#">ニュースリリース</a>
+      <a href="#">サステナビリティ</a>
+      <a href="#">株主・投資家の皆さま</a>
+      <a href="#">採用情報</a>
+    </nav>
+  </div>
+</header>
+
+<div class="notice">
+  <div class="inner">
+    <p>このたび、地域の皆さまにご不便をおかけしておりますことを深くお詫び申し上げます。</p>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="veil">
+    <h1>地域とともに豊かな未来へ</h1>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <section class="sec">
+    <h2 class="secttl">Type Setting</h2>
+    <p class="secttl-ja">組版の置き方</p>
+    <table class="spec">
+      <tr><th><code>html</code></th><td><code>font-size: 62.5%</code> = <strong>10px</strong>。1440 / 1200 / 1024 / 834 / 768 / 767 / 375px の <strong>7 幅すべてで固定</strong></td></tr>
+      <tr><th><code>body</code></th><td><code>font-size: var(--text-md)</code> = <code>clamp(1.4rem, 1.309rem + 0.38vw, 1.6rem)</code>。<strong>html は固定なのに body だけが連続して縮む</strong>。1440〜767px は上限 16px、<strong>375px で 14.515px</strong></td></tr>
+      <tr><th>行間</th><td><code>--line-height-xs/sm/md/lg/xl</code> = <code>1.4 / 1.5 / 1.6 / 1.8 / 2.2</code>。すべて<strong>無単位</strong>。body は <code>1.6</code>、本文ブロックは <code>1.8</code></td></tr>
+      <tr><th>字間</th><td><strong>書かない。</strong>可視 206 要素中 <strong>201 要素</strong>が <code>normal</code>。負の字間は Poppins の 48px 見出し（<code>-0.02em</code>）5 要素だけ</td></tr>
+      <tr><th>字詰め</th><td><strong>使わない。</strong><code>palt</code> も <code>halt</code> も宣言 0 件。<code>font-feature-settings</code> が出るのはアイコンフォントの <code>"liga"</code>（9 要素）だけ</td></tr>
+      <tr><th>書体</th><td>和文 <code>"Zen Kaku Gothic New"</code>（159 要素）／ 欧文 <code>"Poppins"</code>（36 要素）。Cloudflare Fonts でセルフホスト</td></tr>
+      <tr><th>CSS 変数</th><td>自社トークン <strong>155 個</strong>。ただし<strong>色の 18 個は Fluent UI の既定ランプが残っているだけ</strong>で可視 0</td></tr>
+    </table>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl">Scale</h2>
+    <p class="secttl-ja">タイポグラフィ階層（1440px）</p>
+    <div class="scale">
+      <div class="row"><div class="meta">Poppins · 48px · <strong>500</strong> · lh 1.0 · ls −0.02em<br>セクション英字見出し</div><div style="font-family:var(--font-en);font-size:4.8rem;font-weight:500;line-height:1;letter-spacing:-0.02em;color:var(--color-main);">Group Topics</div></div>
+      <div class="row"><div class="meta">Zen Kaku · 32px · <strong>500</strong> · lh 1.5<br>カード見出し（大）</div><div style="font-size:3.2rem;font-weight:500;line-height:1.5;">環境・地域・人</div></div>
+      <div class="row"><div class="meta">Zen Kaku · 24px · 700 · lh 1.6<br>リード</div><div style="font-size:2.4rem;font-weight:700;line-height:1.6;">一つひとつ、お困りごとへ応えていくこと</div></div>
+      <div class="row"><div class="meta">Noto Serif JP · 18px · 700 · lh 1.8<br>緊急告知（唯一の明朝）</div><div style="font-family:var(--font-notice);font-size:1.8rem;font-weight:700;line-height:1.8;">重要なお知らせを掲載しています</div></div>
+      <div class="row"><div class="meta">Zen Kaku · 18px · 700 · lh 1.5<br>カード見出し</div><div style="font-size:1.8rem;font-weight:700;line-height:1.5;">「令和８年熊本地震 緊急支援金」の贈呈について</div></div>
+      <div class="row"><div class="meta"><strong>Zen Kaku · 16px · 400 · lh 1.8</strong><br>本文</div><div style="font-size:1.6rem;font-weight:400;line-height:1.8;">人々の暮らしには、時代ごとにさまざまな困りごとがあります。イオンは基本理念のもと、お客さまを原点に事業を営んでいます。</div></div>
+      <div class="row"><div class="meta">Poppins · 16px · 400 · lh 1.4<br>日付</div><div style="font-family:var(--font-en);font-size:1.6rem;font-weight:400;line-height:1.4;color:var(--color-muted);">2026年10月29日</div></div>
+      <div class="row"><div class="meta">Zen Kaku · 14px · 700 · lh 1.4<br>ナビ</div><div style="font-size:1.4rem;font-weight:700;line-height:1.4;">グループ事業・企業紹介</div></div>
+      <div class="row"><div class="meta">Zen Kaku · 14px · 500 · lh 1.0<br>会社名タグ</div><div style="font-size:1.4rem;font-weight:500;line-height:1;color:var(--color-main);">イオン株式会社</div></div>
+      <div class="row"><div class="meta">Zen Kaku · 14px · 400 · lh 1.8<br>カードの補足文</div><div style="font-size:1.4rem;font-weight:400;line-height:1.8;color:var(--color-muted);">店頭掲示でグループの取り組みをご紹介</div></div>
+    </div>
+    <p class="note">ウェイトは <code>400 / 500 / 700</code> の <strong>3 段</strong>（<code>--font-normal / medium / bold</code>）。<strong>600 は設計に存在しない</strong>（Poppins の 600 は <code>@font-face</code> を読み込んでいるがどの要素にも当たっていない）。<strong>「見出しほど太い」ではない</strong> — いちばん大きい 48px と 32px の見出しは <strong>500</strong>、700 が出るのは 24px 以下。</p>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl">Cards</h2>
+    <p class="secttl-ja">角丸 32px がこのサイトの形</p>
+    <div class="cards">
+      <article class="card">
+        <div class="media"></div>
+        <div class="inner">
+          <time>2026年10月29日</time>
+          <span class="tag">経営・組織・人事・採用</span>
+          <h3>イオン物流構造改革の次世代自動化モデルセンターを開設</h3>
+          <p>革新し続けるイオンのエピソード集</p>
+        </div>
+      </article>
+      <article class="card">
+        <div class="media"></div>
+        <div class="inner">
+          <time>2026年10月27日</time>
+          <span class="tag">環境・社会</span>
+          <h3>イオンワンパーセントクラブ ふるさと未来支援 助成先の決定</h3>
+          <p>店頭掲示でグループの取り組みをご紹介</p>
+        </div>
+      </article>
+      <article class="card">
+        <div class="media"></div>
+        <div class="inner">
+          <time>2026年10月20日</time>
+          <span class="tag">商品・営業関連</span>
+          <h3>グループ横断の商品企画を開始しました</h3>
+          <p>多彩なメディアで、イオンの今を伝える</p>
+        </div>
+      </article>
+    </div>
+    <p class="note">カードは <code>border-radius: 32px</code>（実測 53 要素）、画像部は <strong><code>32px 32px 0 0</code>（上端だけ）</strong>が 48 要素。タグは <code>25px</code> のピル、丸ボタンは <code>50%</code>。影は <code>2px 4px 32px rgba(0,0,0,.1)</code> の <strong>1 種類が 5 要素だけ</strong>で、<strong>ぼかし 32px は角丸 32px と同じ数字</strong>。</p>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl">Buttons</h2>
+    <p class="secttl-ja">丸・ピル・大きな角丸</p>
+    <div class="btnrow">
+      <a class="circle fill" href="#">お知らせ</a>
+      <a class="circle outline" href="#">チャット</a>
+      <a class="circle outline is-focus" href="#">フォーカス</a>
+      <span class="arrow">‹</span>
+      <span class="arrow">›</span>
+      <span class="pill">経営・組織・人事・採用</span>
+      <span class="pill brand">イオン株式会社</span>
+    </div>
+    <div style="margin-top:24px;" class="linkcards">
+      <a class="linkcard" href="#">イオングループ未来ビジョン</a>
+      <a class="linkcard" href="#">沿革</a>
+      <a class="linkcard" href="#">AEON BOOK</a>
+    </div>
+    <div style="margin-top:24px;">
+      <div class="field">
+        <label for="q">キーワードで検索</label>
+        <input id="q" class="is-focus" type="text" value="サステナビリティ">
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl">Color</h2>
+    <p class="secttl-ja">生きている色と、残っているだけの色</p>
+    <p class="body-text">ブランド色は <code>--color-main-10: #b60081</code> と <code>--color-main: var(--color-main-10)</code> の <strong>2 つだけ</strong>。名前が連番でも、<code>--color-main-20</code> 以降は別物。</p>
+    <div class="ramp">
+      <div style="background:#b60081;color:#fff;">--color-main-10<br>#b60081<br><strong>可視 27 要素</strong></div>
+      <div style="background:#deecf9;">--color-main-20<br>#deecf9<br>可視 0</div>
+      <div style="background:#2b88d8;color:#fff;">--color-main-40<br>#2b88d8<br>可視 0</div>
+      <div style="background:#0078d4;color:#fff;">--color-main-50<br>#0078d4<br>可視 0</div>
+      <div style="background:#003055;color:#fff;">--color-main-90<br>#003055<br>可視 0</div>
+    </div>
+    <div class="ramp">
+      <div style="background:#fdf4e3;">--color-sub-10<br>#fdf4e3<br>可視 0</div>
+      <div style="background:#f0d396;">--color-sub-30<br>#f0d396<br>可視 0</div>
+      <div style="background:#d48c00;color:#fff;">--color-sub-50<br>#d48c00<br>可視 0</div>
+      <div style="background:#aa7000;color:#fff;">--color-sub-70<br>#aa7000<br>可視 0</div>
+      <div style="background:#533800;color:#fff;">--color-sub-90<br>#533800<br>可視 0</div>
+    </div>
+    <p class="note"><strong><code>--color-main-20</code>〜<code>90</code> は青、<code>--color-sub-*</code> は黄。</strong>Fluent UI の既定ランプがそのまま残っているだけで、2 ページとも 1 要素も使われていない。さらに <code>--color-main-rgb: 0,120,212</code> は<strong>青のまま差し替え漏れ</strong>しているので、<code>rgb(var(--color-main-rgb) / .5)</code> と書くと<strong>マゼンタではなく青が出る</strong>。</p>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl">Notes</h2>
+    <p class="secttl-ja">再現するときの注意</p>
+    <table class="spec">
+      <tr><th>サイズ</th><td><strong><code>clamp()</code> の式をそのまま写す。</strong>px だけで書くとモバイルで約 1.5px ずれる。px は「1440px のときの値」として併記する</td></tr>
+      <tr><th>ルート</th><td><code>html</code> は 7 幅すべて 10px。<strong>崖は無い</strong>。767px までは body も 16px で、そこから下だけ式が連いて縮む</td></tr>
+      <tr><th>色ランプ</th><td><strong><code>--color-main-20</code> 以降と <code>--color-sub-*</code> を参照しない。</strong>名前から「ブランド色の濃淡」と読むと画面に青と黄が出る</td></tr>
+      <tr><th><code>-rgb</code> 別名</th><td><code>--color-main-rgb</code> ほか 10 本が Fluent の青のまま。<strong>透明度が要るなら <code>#B60081</code> から自分で rgba を作る</strong></td></tr>
+      <tr><th>明朝</th><td><code>--font-serif</code>（游明朝）は<strong>2 ページとも可視 0</strong>。明朝が出るのは緊急告知バーの <code>"Noto Serif JP", serif</code> <strong>1 要素だけ</strong>で、この変数を通っていない</td></tr>
+      <tr><th>行間</th><td><code>--line-height-xl: 2.2</code> は<strong>宣言だけで可視 0</strong>。無単位なので <code>px</code> / <code>em</code> に書き換えない</td></tr>
+      <tr><th>実サイトの誤り</th><td><code>letter-spacing: 6%</code> が 1 件ある。<strong><code>letter-spacing</code> は <code>%</code> を取らない</strong>ので宣言ごと捨てられ、実際は <code>normal</code> で出ている。意図は <code>0.06em</code></td></tr>
+      <tr><th>下層テンプレート</th><td><code>/company/concept/</code> のナビとフッターは <code>-apple-system, …, 游ゴシック体, Meiryo</code>（24 要素）で、本文の Zen Kaku（19 要素）と<strong>同じページに同居</strong>している。CTA も <code>#AF1D7B</code> とトップの <code>#B60081</code> で違う。<strong>新規実装では真似ない</strong></td></tr>
+      <tr><th>余白</th><td><code>--space-8: 30px</code> と <code>--space-28: 114px</code> は Tailwind（32px / 112px）と値が違う。<strong>そのまま写す</strong></td></tr>
+    </table>
+  </section>
+
+</div>
+
+<footer class="ftr">
+  <div class="inner">
+    <a href="#">店舗情報</a><a href="#">お問い合わせ</a><a href="#">サイトマップ</a><a href="#">プライバシーポリシー</a>
+    <p>© ÆON CO., LTD. All rights reserved. — これは DESIGN.md の内容を確認するためのプレビューです。</p>
+  </div>
+</footer>
+
+</body>
+</html>

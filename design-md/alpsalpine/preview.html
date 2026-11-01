@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: アルプスアルパイン（ALPS ALPINE）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトの CSS 変数は 22 個あるが、画面に出るのは 3 つだけ。
+       --site-color-subA/subB/link/member/caution/baseB とテーブル系 4 つは
+       2 ページとも可視 0 要素なので採用していない。実測 2026-11-01
+       ※ Cookiebot（CMP）由来の #141414 / #1032CF / #2A4EEF / #F4F4F4 / radius 3.75px /
+         font-weight 600 / letter-spacing 0.1px はサイトの値ではない。 */
+    --site-color-main:  #002f70;  /* ★Alps Alpine Navy。面 25 要素 / 文字 3〜10 要素 */
+    --site-color-text:  #000000;  /* ★本文。可視 57 要素で最多。純黒を使う */
+    --site-color-baseA: #ffffff;  /* ★背景。body に直接指定。文字でも 34 要素 */
+    --badge-ir:         #003399;  /* 適時開示バッジ。変数に無い別の青 */
+    --badge-doc:        #717171;  /* IR資料バッジ */
+    --rule:             #d6d6d6;  /* 罫線（プレビュー用に起こした値） */
+
+    /* === Fonts ===
+       Google Fonts 配信。@font-face はサイト全体で 6 本だけ
+       （Noto Sans JP 400/500/700 ＋ Roboto 400/700/900）。
+       Roboto の 900 は読み込んでいるが可視 0。500 は読み込んでいない。 */
+    --font-ja: 'Noto Sans JP', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN',
+               'Yu Gothic', 'Meiryo', sans-serif;
+    --font-en: Roboto, sans-serif;
+
+    /* === Weight（3 段）=== */
+    --fw-regular: 400;
+    --fw-medium:  500;
+    --fw-bold:    700;
+
+    /* === 行間（無単位）=== */
+    --lh-body:    1.5;    /* ★body 既定。可視 57 要素で最多 */
+    --lh-card:    1.45;   /* カード見出し 12 要素 */
+    --lh-cardlg:  1.46;   /* 大きいカード見出し */
+    --lh-btn:     1.43;   /* ボタン */
+    --lh-ticker:  1.25;   /* ニュースティッカー */
+    --lh-en:      1;      /* ★英字セクション見出し（47px） */
+
+    /* === Shape ===
+       部分角丸（左側だけ 46px）がこのサイトの形。影はほぼ使わない。 */
+    --radius-btn:   4px;    /* 塗りボタン・バッジ */
+    --radius-util:  2px;    /* ユーティリティボタン。20 要素 */
+    --radius-left:  46px 0 0 46px;   /* ★実測 6 要素 */
+    --header-height: 90px;
+    --hover-transition: ease .2s;
+    --hover-opacity: .7;
+    --ani-cb-01: cubic-bezier(.27, .14, .02, .99);
+
+    --container: 1440px;
+  }
+
+  * { box-sizing: border-box; }
+
+  /* ★62.5% = 10px。374px 以下だけ 50% = 8px に落ちる（崖の 2 つ目） */
+  html { font-size: 62.5%; height: 100%; }
+  @media screen and (max-width: 374px) { html { font-size: 50%; } }
+
+  body {
+    margin: 0;
+    font-family: var(--font-ja);
+    font-size: 1.6rem;              /* 16px */
+    line-height: var(--lh-body);    /* ★無単位。各要素が自分のサイズで再計算する */
+    font-weight: var(--fw-regular);
+    color: var(--site-color-text);
+    background-color: var(--site-color-baseA);
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    /* ★letter-spacing は書かない。可視 95 要素すべて normal。
+       font-feature-settings も CSS 全文で宣言 0 件 */
+  }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 20px 80px; }
+
+  /* ===== ヘッダー ===== */
+  .hdr { background: var(--site-color-main); }
+  .hdr .inner {
+    max-width: var(--container); margin: 0 auto;
+    min-height: var(--header-height); padding: 16px 20px;
+    display: flex; align-items: center; gap: 0 20px; flex-wrap: wrap;
+  }
+  .logo { color: var(--site-color-baseA); }
+  .logo .mark { font-family: var(--font-en); font-size: 2.6rem; font-weight: var(--fw-bold); line-height: 1; letter-spacing: .02em; }
+  .logo .tag { font-family: var(--font-en); font-size: 1.1rem; font-weight: var(--fw-regular); line-height: 1.4; }
+  .nav { display: flex; gap: 0 24px; flex: 1; flex-wrap: wrap; justify-content: flex-end; }
+  .nav a { color: var(--site-color-baseA); font-size: 1.6rem; font-weight: var(--fw-bold); line-height: var(--lh-body); text-decoration: none; }
+  .nav a:hover { opacity: var(--hover-opacity); transition: opacity var(--hover-transition); }
+  .util { display: flex; gap: 0 10px; align-items: center; }
+
+  /* ===== ヒーロー（写真の代わりにグラデーションの面）===== */
+  .hero {
+    min-height: 460px; display: flex; align-items: center;
+    background: linear-gradient(115deg, #0a1b3c 0%, #123a6e 45%, #2f84a8 100%);
+  }
+  .hero .inner { max-width: var(--container); margin: 0 auto; padding: 0 50px; width: 100%; }
+  .hero .sub {
+    margin: 0 0 16px; color: var(--site-color-baseA);
+    font-size: 2.8rem; font-weight: var(--fw-bold); line-height: var(--lh-body);
+  }
+  .hero .main {
+    margin: 0; color: var(--site-color-baseA);
+    font-family: var(--font-en);
+    font-size: 6.8rem; font-weight: var(--fw-bold); line-height: 1.4;
+  }
+
+  /* ===== セクション ===== */
+  .sec { padding-top: 64px; }
+  .c-heading01 { margin-bottom: 32px; }
+  .c-heading01__main {
+    margin: 0; font-family: var(--font-en);
+    font-size: 4.7rem; font-weight: var(--fw-regular);   /* ★400。太くしない */
+    line-height: var(--lh-en); color: var(--site-color-text);
+  }
+  .c-heading01__sub {
+    margin: 8px 0 0; font-size: 1.6rem; font-weight: var(--fw-bold);
+    line-height: var(--lh-body); color: var(--site-color-text);
+  }
+  .lead { margin: 0 0 20px; font-size: 1.6rem; font-weight: var(--fw-regular); line-height: var(--lh-body); }
+  .note { margin: 16px 0 0; font-size: 1.4rem; line-height: var(--lh-body); color: #555; }
+
+  table.spec { width: 100%; border-collapse: collapse; font-size: 1.4rem; line-height: var(--lh-body); }
+  table.spec th, table.spec td { border: 1px solid var(--rule); padding: 10px 14px; text-align: left; vertical-align: top; }
+  table.spec th { background: #f3f3f3; width: 160px; font-weight: var(--fw-bold); }
+  code { background: #f3f3f3; padding: 1px 5px; font-size: .92em; }
+
+  /* ===== タイポグラフィ階層 ===== */
+  .scale .row { display: grid; grid-template-columns: 240px 1fr; gap: 0 50px; padding: 14px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  .scale .meta { font-size: 1.2rem; font-weight: var(--fw-medium); line-height: var(--lh-body); color: #555; }
+
+  /* ===== ボタン（3 種・角丸が違う）===== */
+  .btnrow { display: flex; gap: 0 20px; flex-wrap: wrap; align-items: center; row-gap: 16px; }
+  .c-btn01 {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--site-color-main); color: var(--site-color-baseA);
+    border: 1px solid var(--site-color-main); border-radius: var(--radius-btn);
+    padding: 13px 20px; min-width: 230px;
+    font-size: 1.4rem; font-weight: var(--fw-medium); line-height: var(--lh-btn);
+    text-decoration: none;
+  }
+  .c-btn01:hover { opacity: var(--hover-opacity); transition: opacity var(--hover-transition); }
+  .c-btn-util {
+    display: inline-flex; align-items: center;
+    background: var(--site-color-baseA); color: var(--site-color-main);
+    border: 1px solid var(--site-color-main); border-radius: var(--radius-util);
+    padding: 0 10px; height: 24px;
+    font-size: 1.2rem; font-weight: var(--fw-bold); line-height: 1;
+    text-decoration: none;
+  }
+  .c-btn-link {
+    display: inline-flex; align-items: center;
+    background: var(--site-color-baseA); color: var(--site-color-main);
+    border: 1px solid var(--site-color-main); border-radius: 0;
+    padding: 0 30px; height: 42px;
+    font-size: 1.8rem; font-weight: var(--fw-bold); line-height: var(--lh-body);
+    text-decoration: none;
+  }
+  .is-focus { outline: 2px solid var(--site-color-main); outline-offset: 3px; }
+
+  /* ===== 部分角丸（左側だけ 46px）===== */
+  .leftround {
+    border-radius: var(--radius-left);
+    background: linear-gradient(rgba(255, 255, 255, .84) 0%, rgb(255, 255, 255) 30%), #e5eaf5;
+    border: 1px solid var(--rule);
+    padding: 28px 32px 28px 56px;
+  }
+  .leftround h3 { margin: 0 0 6px; font-size: 2.6rem; font-weight: var(--fw-bold); line-height: var(--lh-cardlg); }
+  .leftround p { margin: 0; font-size: 1.6rem; line-height: var(--lh-body); }
+
+  /* ===== カード ===== */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 50px 27px; }
+  .card { background: var(--site-color-baseA); }
+  .card .media { height: 150px; background: linear-gradient(135deg, #d4ddec, #eef2f8); border-radius: var(--radius-util); }
+  .card .title { margin: 14px 0 0; font-size: 2.0rem; font-weight: var(--fw-medium); line-height: var(--lh-card); }
+
+  /* ===== ニュース ===== */
+  .newsrow { display: flex; gap: 0 20px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--rule); flex-wrap: wrap; }
+  .badge {
+    display: inline-flex; align-items: center;
+    background: var(--badge-ir); color: var(--site-color-baseA);
+    border: 1px solid var(--badge-ir); border-radius: var(--radius-btn);
+    padding: 5px 10px; font-size: 1.2rem; font-weight: var(--fw-bold); line-height: var(--lh-body);
+  }
+  .badge.doc { background: var(--badge-doc); border-color: var(--badge-doc); }
+  .newsrow h3 { margin: 0; font-size: 1.872rem; font-weight: var(--fw-bold); line-height: var(--lh-body); }
+  .newsrow .ttl { flex: 1; font-size: 1.6rem; font-weight: var(--fw-regular); line-height: var(--lh-body); }
+
+  /* ===== 入力 ===== */
+  .field { display: grid; gap: 8px; max-width: 420px; }
+  .field label { font-size: 1.4rem; font-weight: var(--fw-bold); line-height: var(--lh-body); }
+  .field input { border: 1px solid var(--site-color-main); border-radius: var(--radius-util); padding: 10px 12px; font-family: var(--font-ja); font-size: 1.6rem; color: var(--site-color-text); background: #fff; }
+
+  /* ===== フッター ===== */
+  .ftr { margin-top: 72px; background: var(--site-color-main); padding: 32px 20px; }
+  .ftr .inner { max-width: var(--container); margin: 0 auto; }
+  .ftr a { color: var(--site-color-baseA); font-size: 1.2rem; font-weight: var(--fw-regular); line-height: var(--lh-body); text-decoration: none; margin-right: 24px; }
+  .ftr p { margin: 16px 0 0; color: var(--site-color-baseA); font-size: 1.0rem; font-weight: var(--fw-regular); line-height: var(--lh-body); }
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="inner">
+    <div class="logo">
+      <div class="mark">ALPSALPINE</div>
+      <div class="tag">extends your senses</div>
+    </div>
+    <nav class="nav">
+      <a href="#">ニュース</a>
+      <a href="#">会社情報</a>
+      <a href="#">製品・技術</a>
+      <a href="#">株主・投資家情報</a>
+      <a href="#">サステナビリティ</a>
+      <a href="#">採用情報</a>
+    </nav>
+    <div class="util">
+      <a class="c-btn-util" href="#">お問い合わせ</a>
+      <a class="c-btn-util" href="#">電子部品検索・サンプル購入</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="inner">
+    <p class="sub">人と地球に喜ばれる新たな価値を創造します</p>
+    <p class="main">Shaping a future<br>where technology<br>extends your senses</p>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <section class="sec">
+    <div class="c-heading01">
+      <h2 class="c-heading01__main">Type Setting</h2>
+      <p class="c-heading01__sub">組版の置き方</p>
+    </div>
+    <table class="spec">
+      <tr><th><code>html</code></th><td><code>font-size: 62.5%</code> = <strong>10px</strong>。ただし <code>@media screen and (max-width: 374px)</code> で <code>50%</code> = <strong>8px</strong> に落ちる</td></tr>
+      <tr><th><code>body</code></th><td><code>font-size: 1.6rem</code>（16px）/ <code>line-height: 1.5</code> / <code>font-weight: 400</code>。7 幅で固定</td></tr>
+      <tr><th>字間</th><td><strong>可視 95 要素すべて <code>normal</code>。</strong><code>body</code> にも要素にも 1 つも書かれていない</td></tr>
+      <tr><th>字詰め</th><td><strong><code>font-feature-settings</code> の宣言が CSS 全文で 0 件。</strong><code>palt</code> も <code>halt</code> も使わない</td></tr>
+      <tr><th>書体</th><td>和文 Noto Sans JP（87 要素）／ 欧文 Roboto（<strong>8 要素だけ</strong>）。<code>@font-face</code> はサイト全体で <strong>6 本</strong></td></tr>
+      <tr><th>多言語</th><td><code>body</code> の <code>font-family</code> を<strong>言語ごと丸ごと差し替える</strong>（中国語は <code>'PingFang SC', 'Microsoft YaHei', sans-serif</code>）。スタックを足すのではなく置き換える</td></tr>
+      <tr><th>CSS 変数</th><td><strong>22 個のうち画面に出るのは 3 つだけ</strong>（<code>--site-color-main</code> / <code>--site-color-text</code> / <code>--site-color-baseA</code>）</td></tr>
+    </table>
+  </section>
+
+  <section class="sec">
+    <div class="c-heading01">
+      <h2 class="c-heading01__main">Scale</h2>
+      <p class="c-heading01__sub">タイポグラフィ階層（1440px）</p>
+    </div>
+    <div class="scale">
+      <div class="row"><div class="meta">Roboto · 68px · 700 · lh 1.4<br>ヒーロー英文</div><div style="font-family:var(--font-en);font-size:6.8rem;font-weight:700;line-height:1.4;">Shaping a future</div></div>
+      <div class="row"><div class="meta">Noto Sans JP · 28px · 700 · lh 1.5<br>ヒーロー和文</div><div style="font-size:2.8rem;font-weight:700;line-height:1.5;">人と地球に喜ばれる新たな価値を創造します</div></div>
+      <div class="row"><div class="meta"><strong>Roboto · 47px · 400 · lh 1.0</strong><br>セクション見出し（英字）<br>※太くしない</div><div style="font-family:var(--font-en);font-size:4.7rem;font-weight:400;line-height:1;">Products/Technologies</div></div>
+      <div class="row"><div class="meta"><strong>Noto Sans JP · 16px · 700 · lh 1.5</strong><br>セクション見出し（和文サブ）</div><div style="font-size:1.6rem;font-weight:700;line-height:1.5;">製品・技術</div></div>
+      <div class="row"><div class="meta">Noto Sans JP · 26px · 700 · lh 1.46<br>カード見出し（大）</div><div style="font-size:2.6rem;font-weight:700;line-height:1.46;">製品・技術</div></div>
+      <div class="row"><div class="meta">Noto Sans JP · 20px · 500 · lh 1.45<br>カード見出し</div><div style="font-size:2.0rem;font-weight:500;line-height:1.45;">数字で見るアルプスアルパイン</div></div>
+      <div class="row"><div class="meta">Noto Sans JP · 18.72px · 700 · lh 1.5<br>ニュース見出し（本文の 1.17 倍）</div><div style="font-size:1.872rem;font-weight:700;line-height:1.5;">企業情報 / IR情報</div></div>
+      <div class="row"><div class="meta"><strong>Noto Sans JP · 16px · 400 · lh 1.5</strong><br>本文・リード</div><div style="font-size:1.6rem;font-weight:400;line-height:1.5;">アルプスアルパインは、「コンポーネント」「センサ」「モジュール」「システム」を軸に、世界初やNo.1の価値を届けてきました。</div></div>
+      <div class="row"><div class="meta">Noto Sans JP · 14px · 500 · lh 1.43<br>ボタン</div><div style="font-size:1.4rem;font-weight:500;line-height:1.43;">会社情報 / 詳しく見る</div></div>
+      <div class="row"><div class="meta">Noto Sans JP · 12px · 700 · lh 1.0<br>ユーティリティボタン</div><div style="font-size:1.2rem;font-weight:700;line-height:1;color:var(--site-color-main);">電子部品検索・サンプル購入</div></div>
+      <div class="row"><div class="meta">Noto Sans JP · 10px · 400 · lh 1.5<br>コピーライト</div><div style="font-size:1.0rem;font-weight:400;line-height:1.5;">©2026 ALPS ALPINE CO., LTD.</div></div>
+    </div>
+    <p class="note">ウェイトは <code>400 / 500 / 700</code> の <strong>3 段</strong>。Noto Sans JP は <code>wght@400;500;700</code> を読み込んでおり 3 段とも実在する。<strong>Roboto には 500 が無い</strong>（読み込みは 400 / 700 / 900、<strong>900 は可視 0</strong>）。セクション見出しが <code>font-weight: 400</code> なのは意図で、<strong>ここを 500 にしても 400 のまま出る</strong>。</p>
+  </section>
+
+  <section class="sec">
+    <div class="c-heading01">
+      <h2 class="c-heading01__main">Buttons</h2>
+      <p class="c-heading01__sub">3 種類・角丸がそれぞれ違う</p>
+    </div>
+    <div class="btnrow">
+      <a class="c-btn01" href="#">会社情報</a>
+      <a class="c-btn01" href="#">株主・投資家情報</a>
+      <a class="c-btn-util" href="#">お問い合わせ</a>
+      <a class="c-btn-link" href="#">Web CMの詳細はこちら</a>
+      <a class="c-btn01 is-focus" href="#">フォーカス時</a>
+    </div>
+    <div style="margin-top:24px;">
+      <div class="field">
+        <label for="q">電子部品検索</label>
+        <input id="q" type="text" value="力覚センサ">
+      </div>
+    </div>
+    <p class="note">塗りは <code>#002F70</code> / <code>border-radius: 4px</code> / <code>padding: 13px 20px</code>（実測 230×48）、ユーティリティは白面 / <code>2px</code> / 高さ 24px、テキストリンクは白面 / <strong>角丸 0</strong> / <code>padding: 0 30px</code>（284×42）。<strong>どのボタンも <code>1px solid #002F70</code> を持つ</strong>（塗りボタンも枠を持っている）。ホバーは影ではなく <code>opacity: .7</code>。</p>
+  </section>
+
+  <section class="sec">
+    <div class="c-heading01">
+      <h2 class="c-heading01__main">Shape</h2>
+      <p class="c-heading01__sub">左側だけ 46px の部分角丸</p>
+    </div>
+    <div class="leftround">
+      <h3>アルプスアルパインをもっと詳しく</h3>
+      <p>一般のカードは <code>border-radius: 2px</code>（20 要素）か <code>4px</code>（13 要素）。強い形が要る箇所だけ <code>46px 0 0 46px</code> を当てる（6 要素）。</p>
+    </div>
+    <div class="cards" style="margin-top:32px;">
+      <article class="card"><div class="media"></div><p class="title">CEOメッセージ</p></article>
+      <article class="card"><div class="media"></div><p class="title">事業紹介</p></article>
+      <article class="card"><div class="media"></div><p class="title">数字で見るアルプスアルパイン</p></article>
+    </div>
+    <p class="note">カードグリッドの <code>gap</code> は <code>50px 27px</code>（行 50px / 列 27px）。いちばん多い <code>gap</code> は <code>0 10px</code>（15 件）。コンテナの最大幅は <strong>1440px</strong>（9 件）。</p>
+  </section>
+
+  <section class="sec">
+    <div class="c-heading01">
+      <h2 class="c-heading01__main">News</h2>
+      <p class="c-heading01__sub">IR のバッジ</p>
+    </div>
+    <div class="newsrow"><span class="badge">適時開示</span><span class="ttl">2027年3月期 第2四半期決算短信〔日本基準〕（連結）</span></div>
+    <div class="newsrow"><span class="badge doc">IR資料</span><span class="ttl">2027年3月期 第2四半期決算説明会資料を掲載しました</span></div>
+    <div class="newsrow"><span class="badge">適時開示</span><span class="ttl">剰余金の配当（中間配当）に関するお知らせ</span></div>
+    <p class="note">適時開示バッジの <code>#003399</code> は <strong>CSS 変数に無いハードコード</strong>で、ブランドの <code>#002F70</code> とは別の青。IR 資料は <code>#717171</code>。</p>
+  </section>
+
+  <section class="sec">
+    <div class="c-heading01">
+      <h2 class="c-heading01__main">Notes</h2>
+      <p class="c-heading01__sub">再現するときの注意</p>
+    </div>
+    <table class="spec">
+      <tr><th>字間</th><td><strong><code>letter-spacing</code> を書かない。</strong>可視 95 要素すべて <code>normal</code> がこのサイトの設計。親切のつもりで <code>0.05em</code> を足すと別物になる</td></tr>
+      <tr><th>字詰め</th><td><strong><code>palt</code> / <code>halt</code> を足さない。</strong>宣言が 1 件も無く、約物はベタ組みのまま出る</td></tr>
+      <tr><th>見出しの太さ</th><td><strong>英字 47px は <code>400</code>、和文サブ 16px は <code>700</code>。</strong>英字を太字にしない。Roboto には 500 が無いので指定しても 400 で出る</td></tr>
+      <tr><th>ルート</th><td><strong>10px 固定と決めつけない。</strong>374px 以下で <code>50%</code> = 8px に落ち、<strong>ページ全体が 0.8 倍</strong>になる（本文 16px → 12.8px、見出し 37px → 29.6px）</td></tr>
+      <tr><th>計測の罠</th><td>374px では <code>getComputedStyle(document.documentElement).fontSize</code> が <strong><code>10px</code> を返す</strong>。同時に置いた <code>width: 10rem</code> のプローブは <strong>80px</strong>（＝ 1rem が 8px）。<strong>CSS の宣言と <code>1rem</code> プローブで確かめる</strong></td></tr>
+      <tr><th>使わない変数</th><td><code>--site-color-subA #4378e2</code> <code>subB #1da4b4</code> <code>link #6795d6</code> <code>member #007575</code> <code>caution #cf0101</code> <code>baseB #f8f8f8</code> とテーブル系 4 つは<strong>2 ページとも可視 0</strong>。<code>--dydmvp0</code> は JS が書く動的変数でトークンではない</td></tr>
+      <tr><th>影</th><td><strong>足さない。</strong>実測で出るのはヘッダーの言語切替パネル 1 要素だけ。奥行きは 1px の枠線と部分角丸で作り、ホバーは <code>opacity: .7</code> ＋ <code>ease .2s</code></td></tr>
+      <tr><th>游ゴシック</th><td>受け皿が <code>'Yu Gothic'</code> だけなので、Windows では <strong>Regular（細い）</strong>が当たる。Medium を当てたいなら <code>"游ゴシック Medium", "Yu Gothic Medium"</code> を<strong>前に</strong>置く</td></tr>
+      <tr><th>CMP</th><td>Cookiebot が画面を覆う。<code>font-family: sans-serif</code> <code>font-weight: 600</code> <code>letter-spacing: 0.1px / 0.5px / 0.25px</code> <code>border-radius: 3.75px</code> <code>#141414</code> <code>#1032CF</code> <code>#2A4EEF</code> <code>#F4F4F4</code> と <code>0 30px 70px</code> の影は<strong>全部 CMP</strong>で、サイトの値ではない</td></tr>
+    </table>
+  </section>
+
+</div>
+
+<footer class="ftr">
+  <div class="inner">
+    <a href="#">サイトマップ</a><a href="#">ご利用にあたって</a><a href="#">プライバシーポリシー</a><a href="#">お問い合わせ</a>
+    <p>©2026 ALPS ALPINE CO., LTD. — これは DESIGN.md の内容を確認するためのプレビューです。</p>
+  </div>
+</footer>
+
+</body>
+</html>

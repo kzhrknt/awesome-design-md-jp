@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: アドバンテスト（ADVANTEST）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトの CSS Custom Properties は UPPER_SNAKE 命名で 53 個（自社）＋ Swiper 2 個。
+       値は宣言と実測が一致していたものだけを採用している。実測 2026-11-01
+       ※ #474C59（英字セクション見出し）は変数に無いハードコード。
+       ※ --COLOR_BRAND_SUB_1..5 / --COLOR_ROLE_IMPORTANT / --LINER_GRADIENT（水色→薄紫）は
+         2 ページとも可視 0 要素なので採用していない。 */
+    --brand:        #91003c;  /* ★--COLOR_BRAND_PRIMARY。CTA 面・検索ボタン。可視 20 面 */
+    --brand-light:  #c31f66;  /* --COLOR_BRAND_SECONDARY。製品カテゴリ文字 7 要素 */
+    --brand-dark:   #750031;  /* --COLOR_TEXT_LINK_HOVER。メガメニュー第1階層 */
+    --ink:          #333333;  /* ★--COLOR_FOREGROUND_DARK。本文。可視 93 要素で最多 */
+    --ink-black:    #222222;  /* --COLOR_TEXT_BLACK。ナビ第1階層 16 要素 */
+    --ink-tab:      #5f605d;  /* タブ非選択 5 要素 */
+    --ink-date:     #747572;  /* --COLOR_TEXT_DATE。日付 5 要素 */
+    --ink-section:  #474c59;  /* ★英字セクション見出し 40px。変数に無い */
+    --on-dark:      #ffffff;  /* --COLOR_FOREGROUND_LIGHT。可視 22 要素 */
+    --surface:      #f2f2f2;  /* --COLOR_BACKGROUND_LIGHT。17 要素 */
+    --surface-menu: #efefef;  /* メガメニューのカード面 30 要素 */
+    --surface-tint: #f2f4f7;  /* 下層の強みカード 3 要素 */
+    --outline:      #dfe0de;  /* --COLOR_OUTLINE_LIGHT */
+    --outline-dark: #c0c3bb;  /* --COLOR_OUTLINE_DARK */
+    --bg:           #faf8f9;  /* ★ページ地色 .l-content__outer */
+
+    /* === Gradients（変数名は実サイトのまま LINER_。LINEAR_ ではない）=== */
+    --grad-heading: linear-gradient(90deg, #91003c, #e60f6d);   /* 下層のページタイトル帯 */
+    --grad-footer:  linear-gradient(45deg, #91003c, #c81160);   /* フッター上帯 */
+    --grad-card:    linear-gradient(#c31f66, #91003c);          /* ページネーション */
+
+    /* === Fonts ===
+       実サイトは 4 言語の Noto を 1 スタックに畳み、セルフホストで @font-face 482 本
+       （SC 145 / TC 127 / JP 122 / KR 84 / Roboto 3 / swiper-icons 1）。
+       日本語ページで loaded になるのは Noto Sans JP と Roboto だけなので、
+       ここでは Google Fonts の同書体で代替し SC/TC/KR は省いている。 */
+    --font: Roboto, "Noto Sans JP", sans-serif;
+
+    /* === 行間（無単位の比率）=== */
+    --lh-body:    1.7;   /* ★--LINE_HEIGHT。body 既定。可視 80 要素で最多 */
+    --lh-card:    1.5;   /* カード・ナビ。63 要素 */
+    --lh-heading: 1.38;  /* 見出し。14 要素 */
+    --lh-lead:    2.0;   /* ヒーローのリードだけ */
+
+    /* === Weight（3 段しかない）=== */
+    --fw-regular: 400;
+    --fw-medium:  500;
+    --fw-bold:    700;
+
+    /* === Shape / Shadow ===
+       ボタンは角丸 0。影は黒ではなくブランド寄りの暗赤 #800035。 */
+    --radius-s: 2px;   /* --BORDER_RADIUS_SMALL */
+    --radius-l: 4px;   /* --BORDER_RADIUS_LARGE。可視 10 要素 */
+    --shadow-card:       2px 6px 16px 0 rgba(128, 0, 53, .12);  /* ★実測 5 要素 */
+    --shadow-card-hover: 2px 14px 20px 0 rgba(128, 0, 53, .16);
+
+    /* === Space === */
+    --space-module: 40px;  /* --SIZE_MODULE_MARGIN */
+    --space-nested: 24px;  /* --SIZE_NESTED_MODULE_MARGIN */
+    --space-side:   60px;  /* --SIZE_CONTENT_SIDE_MARGIN。gap 0 60px が最多（17 件） */
+    --header-h:    112px;  /* --SIZE_HEADER_HEIGHT */
+    --container:   948px;  /* 下層のコンテンツ幅 */
+  }
+
+  * { box-sizing: border-box; }
+
+  /* ★html に font-size の宣言が無い。UA 既定の 16px がそのまま rem の基準になる。 */
+
+  body {
+    margin: 0;
+    font-family: var(--font);
+    /* ★サイト全体でこの 1 行だけ。可視 153 要素 / DOM 全体 598 要素へ継承される。
+       halt = 全角の約物を一律に半角幅へ揃える。palt（文字ごとに詰める）とは別物。
+       実測 40px: normal 519.2px → halt 439.2px（−15.4%） */
+    font-feature-settings: "halt";
+    font-size: 0.875rem;        /* 14px。≥768px で 1rem に上がる */
+    font-weight: var(--fw-regular);
+    line-height: var(--lh-body);  /* ★無単位。各要素が自分のサイズで再計算する */
+    color: var(--ink);
+    background: var(--bg);
+    /* letter-spacing は書かない。可視 172 要素中 163 要素が normal */
+  }
+  @media (min-width: 768px) { body { font-size: 1rem; } }   /* ★崖はここ 1 箇所 */
+
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 var(--space-side) 80px; }
+
+  /* ===== ヘッダー ===== */
+  .hdr { background: #fff; border-bottom: 1px solid var(--outline); }
+  .hdr .inner {
+    max-width: 1320px; margin: 0 auto; padding: 20px var(--space-side);
+    display: flex; align-items: center; gap: var(--space-side); flex-wrap: wrap;
+  }
+  .logo {
+    font-size: 30px; font-weight: var(--fw-bold); line-height: 1;
+    color: var(--brand); letter-spacing: -0.5px;
+  }
+  .nav { display: flex; gap: 32px; flex: 1; flex-wrap: wrap; }
+  .nav a {
+    color: var(--ink); font-size: 16px; font-weight: var(--fw-bold);
+    line-height: var(--lh-body); text-decoration: none;
+  }
+  .nav a:hover { color: var(--brand-dark); }
+  .util { display: flex; gap: 20px; align-items: center; }
+  .util span { font-size: 12px; font-weight: var(--fw-medium); line-height: var(--lh-card); color: var(--ink); }
+
+  /* ===== ヒーロー（写真カルーセルの代わりにグラデーションの面）===== */
+  .hero {
+    position: relative; overflow: hidden;
+    background: linear-gradient(120deg, #3d2733 0%, #6b2742 42%, #91003c 100%);
+    min-height: 420px; display: flex; align-items: center;
+  }
+  .hero .panel {
+    margin: 0 0 0 var(--space-side); padding: 44px 40px;
+    background: rgba(0, 0, 0, .1); backdrop-filter: blur(2px);
+    max-width: 440px;
+  }
+  .hero h1 {
+    margin: 0 0 20px; color: var(--on-dark);
+    font-size: 34px; font-weight: var(--fw-bold); line-height: var(--lh-heading);
+    /* letter-spacing は normal */
+  }
+  .hero .lead {
+    margin: 0 0 28px; color: var(--on-dark);
+    font-size: 16px; font-weight: var(--fw-regular);
+    line-height: var(--lh-lead);      /* ★2.0。ここだけ */
+    letter-spacing: 0.8px;            /* ★16px に対して 0.05em。px の絶対値で書かれている */
+  }
+
+  /* ===== セクション ===== */
+  .sec { padding-top: 56px; }
+  .secttl-en {
+    margin: 0 0 8px; color: var(--ink-section);
+    font-size: 40px; font-weight: var(--fw-bold); line-height: var(--lh-heading);
+    letter-spacing: 1px;              /* ★40px に対して 0.025em */
+  }
+  .secttl-ja { margin: 0 0 24px; font-size: 16px; font-weight: var(--fw-bold); line-height: var(--lh-card); }
+  .lead { margin: 0 0 20px; font-size: 16px; line-height: var(--lh-body); }
+  .note { margin: 16px 0 0; font-size: 14px; line-height: var(--lh-body); color: var(--ink-tab); }
+
+  table.spec { width: 100%; border-collapse: collapse; font-size: 14px; line-height: var(--lh-body); }
+  table.spec th, table.spec td {
+    border: 1px solid var(--outline); padding: 10px 14px; text-align: left; vertical-align: top;
+  }
+  table.spec th { background: var(--surface); width: 150px; font-weight: var(--fw-bold); }
+  code { background: var(--surface); padding: 1px 5px; font-size: .92em; }
+
+  /* ===== タイポグラフィ階層 ===== */
+  .scale .row {
+    display: grid; grid-template-columns: 230px 1fr; gap: 0 var(--space-side);
+    padding: 14px 0; border-bottom: 1px solid var(--outline); align-items: baseline;
+  }
+  .scale .meta { font-size: 12px; font-weight: var(--fw-medium); line-height: var(--lh-card); color: var(--ink-tab); }
+
+  /* ===== 約物の比較 ===== */
+  .halt-demo { display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--space-side); margin-top: 8px; }
+  .halt-demo > div { border: 1px solid var(--outline); padding: 18px 20px; background: #fff; }
+  .halt-demo .cap { font-size: 12px; font-weight: var(--fw-medium); color: var(--ink-tab); margin-bottom: 8px; }
+  .halt-demo .sample { font-size: 22px; line-height: var(--lh-card); }
+  .halt-demo .off { font-feature-settings: normal; }
+  .halt-demo .on  { font-feature-settings: "halt"; }
+
+  /* ===== ボタン（角丸 0）===== */
+  .btnrow { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 0; text-decoration: none;
+    font-size: 15px; font-weight: var(--fw-bold); line-height: var(--lh-card);
+  }
+  .btn.primary { background: var(--brand); color: var(--on-dark); border: 0; padding: 16px 24px; }
+  .btn.primary:hover { background: var(--brand-dark); }
+  /* 枠線ぶん padding を 1px 減らして高さ 55px を揃える */
+  .btn.outline { background: transparent; color: var(--ink); border: 1px solid var(--ink); padding: 15px 24px; }
+  .btn.is-focus { outline: 2px solid var(--brand-light); outline-offset: 2px; }
+
+  .searchbar { display: flex; margin-top: 20px; max-width: 520px; }
+  .searchbar input {
+    flex: 1; border: 1px solid var(--outline-dark); border-right: 0;
+    border-radius: var(--radius-s) 0 0 var(--radius-s);
+    padding: 12px 14px; font-family: var(--font); font-size: 16px; background: #fff; color: var(--ink);
+  }
+  .searchbar button {
+    background: var(--brand); color: var(--on-dark); border: 0;
+    border-radius: 0 var(--radius-s) var(--radius-s) 0;
+    padding: 14px 28px; font-family: var(--font); font-size: 16px; cursor: pointer;
+  }
+
+  /* ===== カード ===== */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-nested) var(--space-side); }
+  .card {
+    background: #fff; border-radius: var(--radius-l);
+    box-shadow: var(--shadow-card);     /* ★黒ではなく rgba(128,0,53,.12) */
+    padding: 24px;
+  }
+  .card:hover { box-shadow: var(--shadow-card-hover); }
+  .card .cat { font-size: 14px; font-weight: var(--fw-regular); line-height: var(--lh-body); color: var(--ink); }
+  .card time { display: block; font-size: 13px; font-weight: var(--fw-medium); line-height: var(--lh-body); color: var(--ink-date); }
+  .card h3 { margin: 10px 0 0; font-size: 16px; font-weight: var(--fw-bold); line-height: var(--lh-card); color: var(--ink); }
+
+  /* ===== 製品カルーセルのタイル ===== */
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 var(--space-side); }
+  .tile { background: var(--surface-menu); padding: 32px 24px; }
+  .tile .cat { font-size: 11px; font-weight: var(--fw-bold); line-height: var(--lh-card); color: var(--brand-light); }
+  .tile h3 { margin: 8px 0 6px; font-size: 20px; font-weight: var(--fw-bold); line-height: var(--lh-card); color: #000; }
+  .tile p { margin: 0; font-size: 16px; line-height: var(--lh-card); color: #000; }
+
+  /* ===== グラデーションの帯 ===== */
+  .titleband { background: var(--grad-heading); padding: 36px var(--space-side); }
+  .titleband h2 { margin: 0; color: var(--on-dark); font-size: 34px; font-weight: var(--fw-bold); line-height: var(--lh-heading); letter-spacing: 1.9px; }
+
+  /* ===== タブ ===== */
+  .tabs { display: flex; gap: 32px; border-bottom: 1px solid var(--outline); }
+  .tabs a { padding: 0 0 12px; text-decoration: none; font-size: 16px; font-weight: var(--fw-bold); line-height: var(--lh-card); color: var(--ink-tab); }
+  .tabs a.on { color: var(--brand); border-bottom: 3px solid var(--brand); }
+
+  /* ===== フッター ===== */
+  .ftr { margin-top: 72px; }
+  .ftr .band { background: var(--grad-footer); padding: 14px var(--space-side); }
+  .ftr .band p { margin: 0; color: var(--on-dark); font-size: 12px; line-height: 1; }
+  .ftr .body { background: #333; padding: 28px var(--space-side); }
+  .ftr .body p { margin: 0; color: var(--on-dark); font-size: 13px; line-height: var(--lh-body); }
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="inner">
+    <div class="logo">ADVANTEST</div>
+    <nav class="nav">
+      <a href="#">企業情報</a>
+      <a href="#">製品・ソリューション</a>
+      <a href="#">カスタマー・サービス</a>
+      <a href="#">投資家の皆様へ</a>
+      <a href="#">採用情報</a>
+    </nav>
+    <div class="util">
+      <span>Language</span>
+      <span>お問い合わせ</span>
+      <span>サイト内検索</span>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="panel">
+    <h1>先端技術を<br>先端で支える</h1>
+    <p class="lead">半導体の信頼性を支える最先端のテストソリューションで、持続的社会の発展に貢献します。</p>
+    <a class="btn outline" href="#" style="color:#fff;border-color:#fff;">詳しく見る</a>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <section class="sec">
+    <h2 class="secttl-en">TYPE SETTING</h2>
+    <p class="secttl-ja">組版の置き方</p>
+    <table class="spec">
+      <tr><th><code>html</code></th><td><strong><code>font-size</code> の宣言が CSS 全文に 1 つも無い。</strong>UA 既定の <strong>16px</strong> がそのまま <code>rem</code> の基準になる</td></tr>
+      <tr><th><code>body</code></th><td><code>font-size: var(--FONT_SIZE)</code>。既定 <code>0.875rem</code>（14px）、<code>@media (min-width: 768px)</code> でだけ <code>1rem</code>（16px）</td></tr>
+      <tr><th>行間</th><td><code>--LINE_HEIGHT: 1.7</code> を <code>body</code> に 1 回。<strong>無単位</strong>なので各要素が自分のサイズで再計算する（可視 80 要素で最多）</td></tr>
+      <tr><th>字間</th><td><strong>書かない。</strong>可視 172 要素中 <strong>163 要素</strong>が <code>normal</code>。足すのは英字見出しの <code>1px</code> とヒーローのリードの <code>0.8px</code> だけ</td></tr>
+      <tr><th>字詰め</th><td><code>body</code> に <code>font-feature-settings: "halt"</code> を <strong>1 行だけ</strong>。可視 153 要素 / DOM 全体 <strong>598 要素</strong>へ継承（下層 427 要素）</td></tr>
+      <tr><th>書体</th><td><code>Roboto, "Noto Sans JP", "Noto Sans SC", "Noto Sans TC", "Noto Sans KR", sans-serif</code> の <strong>1 スタックのみ</strong>。セルフホストで <code>@font-face</code> <strong>482 本</strong></td></tr>
+      <tr><th>CSS 変数</th><td>自社トークン <strong>53 個</strong>（UPPER_SNAKE 命名）。うち色の 8 個は 2 ページとも可視 0</td></tr>
+    </table>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl-en">HALT</h2>
+    <p class="secttl-ja">約物を一律に半角幅へ揃える</p>
+    <div class="halt-demo">
+      <div>
+        <div class="cap">font-feature-settings: normal（実サイトには存在しない状態）</div>
+        <div class="sample off">「半導体テスト」（SoC・メモリ）、<br>計測の未来へ。</div>
+      </div>
+      <div>
+        <div class="cap">font-feature-settings: "halt" ← 実サイト</div>
+        <div class="sample on">「半導体テスト」（SoC・メモリ）、<br>計測の未来へ。</div>
+      </div>
+    </div>
+    <p class="note">同一スタック・40px・<code>letter-spacing: normal</code> の隠し要素で実測すると <code>normal</code> <strong>519.2px</strong> → <code>"halt"</code> <strong>439.2px</strong>（<strong>−15.4%</strong>）。参考までに <code>"palt"</code> なら 422.28px。<strong><code>halt</code> を <code>palt</code> に置き換えないこと</strong> — 約物の幅が一律でなくなり字面が変わる。</p>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl-en">SCALE</h2>
+    <p class="secttl-ja">タイポグラフィ階層（1440px）</p>
+    <div class="scale">
+      <div class="row"><div class="meta">40px · 700 · lh 1.38 · ls 1px<br>英字セクション見出し</div><div style="font-size:40px;font-weight:700;line-height:1.38;letter-spacing:1px;color:var(--ink-section);">NEWS &amp; EVENTS</div></div>
+      <div class="row"><div class="meta">34px · 700 · lh 1.38<br>ヒーロー見出し</div><div style="font-size:34px;font-weight:700;line-height:1.38;">先端技術を先端で支える</div></div>
+      <div class="row"><div class="meta">30px · 700 · lh 1.7<br>メガメニュー見出し</div><div style="font-size:30px;font-weight:700;line-height:1.7;">製品・ソリューション</div></div>
+      <div class="row"><div class="meta">20px · 700 · lh 1.5<br>製品名</div><div style="font-size:20px;font-weight:700;line-height:1.5;color:#000;">V93000 EXA Scale</div></div>
+      <div class="row"><div class="meta">18px · 700 · lh 1.5<br>ナビ第1階層</div><div style="font-size:18px;font-weight:700;line-height:1.5;color:var(--ink-black);">サステナビリティ</div></div>
+      <div class="row"><div class="meta"><strong>16px · 400 · lh 1.7</strong><br>本文（≥768px）</div><div style="font-size:16px;font-weight:400;line-height:1.7;">半導体の信頼性を支える最先端のテストソリューションで、持続的社会の発展に貢献します。</div></div>
+      <div class="row"><div class="meta">16px · 500 · lh 1.7<br>リンクリスト</div><div style="font-size:16px;font-weight:500;line-height:1.7;">テストシステム周辺機器</div></div>
+      <div class="row"><div class="meta">15px · 700 · lh 1.5<br>ボタン・言語切替</div><div style="font-size:15px;font-weight:700;line-height:1.5;">日本語 / English / 简体中文</div></div>
+      <div class="row"><div class="meta">14px · 400 · lh 1.7<br>カテゴリ</div><div style="font-size:14px;font-weight:400;line-height:1.7;">投資家の皆様へ</div></div>
+      <div class="row"><div class="meta">13px · 500 · lh 1.7<br>日付</div><div style="font-size:13px;font-weight:500;line-height:1.7;color:var(--ink-date);">2026/10/30</div></div>
+      <div class="row"><div class="meta">11px · 700 · lh 1.5<br>製品カテゴリ</div><div style="font-size:11px;font-weight:700;line-height:1.5;color:var(--brand-light);">SoCテストシステム</div></div>
+    </div>
+    <p class="note">ウェイトは <code>400 / 500 / 700</code> の <strong>3 段</strong>（<code>--FONT_WEIGHT_REGULAR / MEDIUM / BOLD</code>）。実測も 700（86）/ 400（71）/ 500（13）の 3 つだけ。<strong>600 や 900 を当てると Roboto（静的 3 本）側だけ太さがずれる</strong>。和文の Noto Sans JP は可変（<code>100 900</code>）なので出てしまい、英数字と和文で段差が生まれる。</p>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl-en">BUTTONS</h2>
+    <p class="secttl-ja">角丸を使わない</p>
+    <div class="btnrow">
+      <a class="btn primary" href="#">イベントカレンダー</a>
+      <a class="btn outline" href="#">詳しく見る</a>
+      <a class="btn outline is-focus" href="#">フォーカス時</a>
+    </div>
+    <div class="searchbar">
+      <input type="text" value="EXA Scale" aria-label="サイト内検索">
+      <button type="button">検索</button>
+    </div>
+    <p class="note">プライマリは <code>#91003C</code> の塗り・<code>border-radius: 0</code>・<code>padding: 16px 24px</code>（実測 240×55）。写真の上に置く枠線ボタンは <code>padding: 15px 24px</code> で、<strong>枠 1px ぶんを引いて高さを揃えている</strong>。角丸が出るのは検索ボタンの右端 <code>0 2px 2px 0</code>（<code>--BORDER_RADIUS_SMALL</code>）とカードの <code>4px</code> だけ。</p>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl-en">CARDS</h2>
+    <p class="secttl-ja">影はブランド寄りの暗赤</p>
+    <div class="cards">
+      <article class="card">
+        <div class="cat">投資家の皆様へ</div>
+        <time>2026/10/30</time>
+        <h3>譲渡制限付株式報酬としての自己株式の処分に関するお知らせ</h3>
+      </article>
+      <article class="card">
+        <div class="cat">投資家の皆様へ</div>
+        <time>2026/10/28</time>
+        <h3>「2026年度 第2四半期決算説明会」開催のご案内</h3>
+      </article>
+      <article class="card">
+        <div class="cat">製品情報</div>
+        <time>2026/10/28</time>
+        <h3>次世代超高速DRAMのテストソリューションを拡充</h3>
+      </article>
+    </div>
+    <p class="note">影は <code>2px 6px 16px 0 rgba(128, 0, 53, .12)</code> の <strong>1 種類だけ</strong>（実測 5 要素）。<code>#800035</code> はワインレッドに近い暗赤で、<strong><code>rgba(0,0,0,.12)</code> に置き換えないこと</strong>。オフセットも <code>x: 2px / y: 6px</code> と右下に寄せた非対称。</p>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl-en">TILES</h2>
+    <p class="secttl-ja">製品カルーセルのタイル</p>
+    <div class="tiles">
+      <div class="tile">
+        <div class="cat">SoCテストシステム</div>
+        <h3>V93000 EXA Scale</h3>
+        <p>新時代のテスト技術課題に応える最先端半導体テストプラットフォーム。</p>
+      </div>
+      <div class="tile">
+        <div class="cat">メモリテストシステム</div>
+        <h3>T5801</h3>
+        <p>大容量メモリの並列測定を高いスループットで実現します。</p>
+      </div>
+      <div class="tile">
+        <div class="cat">Advantest Cloud Solution</div>
+        <h3>ACS Gemini Digital Twin</h3>
+        <p>テスト工程をクラウド上で再現し、立ち上げ期間を短縮します。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl-en">TABS</h2>
+    <p class="secttl-ja">ニュースの切替</p>
+    <div class="tabs">
+      <a class="on" href="#">新着</a>
+      <a href="#">トピックス</a>
+      <a href="#">イベント情報</a>
+      <a href="#">製品情報</a>
+    </div>
+  </section>
+
+</div>
+
+<div class="titleband">
+  <h2>アドバンテストの強み</h2>
+</div>
+
+<div class="wrap">
+  <section class="sec">
+    <h2 class="secttl-en">NOTES</h2>
+    <p class="secttl-ja">再現するときの注意</p>
+    <table class="spec">
+      <tr><th>字詰め</th><td><strong><code>"halt"</code> を <code>"palt"</code> に置き換えない。</strong><code>halt</code> は全角の約物を一律に半角幅へ揃える機能で、文字ごとに詰め幅を変える <code>palt</code> とは別物。<code>palt</code> は 1 要素も使っていない</td></tr>
+      <tr><th>字間</th><td><strong><code>em</code> で全体に配らない。</strong>このサイトは字間を触らないのが設計。足す 2 箇所も <code>px</code> の絶対値</td></tr>
+      <tr><th>書体の読み方</th><td><code>getComputedStyle</code> が返す <code>font-family</code> の先頭は常に <code>Roboto</code> だが、<strong>和文を描いているのは Noto Sans JP</strong>。第 1 項を「描画されている書体」と読まない</td></tr>
+      <tr><th>多言語スタック</th><td>SC / TC / KR は<strong>宣言だけで日本語ページでは読まれない</strong>（<code>loaded</code> は JP と Roboto のみ）。日本語だけなら <code>Roboto, "Noto Sans JP", sans-serif</code> で足りる</td></tr>
+      <tr><th>使わない色</th><td><code>--COLOR_BRAND_SUB_1..5</code>（<code>#651366</code> <code>#001c77</code> <code>#005180</code> <code>#005777</code> <code>#8c003d</code>）<code>--COLOR_ROLE_IMPORTANT: #f9827c</code> <code>--COLOR_TEXT_PLACEHOLDER: #9fa19c</code> <code>--LINER_GRADIENT</code>（水色→薄紫）は<strong>2 ページとも可視 0</strong></td></tr>
+      <tr><th>変数名</th><td>グラデーションの変数は実サイトのまま <strong><code>--LINER_*</code></strong>（<code>LINEAR</code> ではない）。6 つすべてこの綴り</td></tr>
+      <tr><th>英字見出しの色</th><td><code>#474C59</code> は <strong>CSS 変数に無いハードコード</strong>。ブランド色ではない</td></tr>
+      <tr><th>CMP</th><td>OneTrust が画面下部を覆う。<code>font-size: 16.26px</code> <code>font-weight: 600</code> <code>letter-spacing: 0.1626px</code> <code>border-radius: 2px</code> の組や <code>#3860BE</code> は<strong>全部 CMP</strong>で、サイトの値ではない</td></tr>
+    </table>
+  </section>
+</div>
+
+<footer class="ftr">
+  <div class="band"><p>東京証券取引所プライム市場上場（コード：6857）</p></div>
+  <div class="body"><p>Copyright 1995 - 2026 ADVANTEST CORPORATION — これは DESIGN.md の内容を確認するためのプレビューです。</p></div>
+</footer>
+
+</body>
+</html>
