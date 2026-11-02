@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (604 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (607 sites)</a>
 </p>
 
 <table>
@@ -936,6 +936,11 @@
 </tr>
 <tr>
 <td align="center"><strong>アルプスアルパイン</strong><br><img src="design-md/alpsalpine/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ドトールコーヒー</strong><br><img src="design-md/doutor/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>福田美術館</strong><br><img src="design-md/fukuda-art/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>ハレクラニ沖縄</strong><br><img src="design-md/halekulani-okinawa/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1601,11 +1606,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [アドバンテスト (ADVANTEST)](https://www.advantest.com/ja/) | Semiconductor Test / Corporate | [DESIGN.md](design-md/advantest/DESIGN.md) | [preview.html](design-md/advantest/preview.html) |
 | [イオン (AEON)](https://www.aeon.info/) | Retail Group / Corporate | [DESIGN.md](design-md/aeon/DESIGN.md) | [preview.html](design-md/aeon/preview.html) |
 | [アルプスアルパイン (ALPS ALPINE)](https://www.alpsalpine.com/j/) | Electronic Components / Corporate | [DESIGN.md](design-md/alpsalpine/DESIGN.md) | [preview.html](design-md/alpsalpine/preview.html) |
+| [ドトールコーヒー (DOUTOR COFFEE)](https://www.doutor.co.jp/) | Food & Beverage / Corporate | [DESIGN.md](design-md/doutor/DESIGN.md) | [preview.html](design-md/doutor/preview.html) |
+| [福田美術館 (FUKUDA ART MUSEUM)](https://fukuda-art-museum.jp/) | Museum / Art | [DESIGN.md](design-md/fukuda-art/DESIGN.md) | [preview.html](design-md/fukuda-art/preview.html) |
+| [ハレクラニ沖縄 (HALEKULANI OKINAWA)](https://www.okinawa.halekulani.com/) | Hotel & Resort | [DESIGN.md](design-md/halekulani-okinawa/DESIGN.md) | [preview.html](design-md/halekulani-okinawa/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (604 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (607 sites)</a>
 </p>
 
 <table>
@@ -2507,6 +2515,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>アルプスアルパイン</strong><br><img src="design-md/alpsalpine/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ドトールコーヒー</strong><br><img src="design-md/doutor/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>福田美術館</strong><br><img src="design-md/fukuda-art/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>ハレクラニ沖縄</strong><br><img src="design-md/halekulani-okinawa/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

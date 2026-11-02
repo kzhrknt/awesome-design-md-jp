@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 福田美術館（FUKUDA ART MUSEUM）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  /* ===========================================================
+     福田美術館 実測プレビュー（2026-11-02）
+     実サイトの CSS Custom Properties は 60 個あるが全て WordPress / Gutenberg 由来で、
+     自社トークンは 0 個。以下は computed style の実測値を整理したもの。
+     =========================================================== */
+  :root {
+    /* === Colors（実測） === */
+    --pink:       #c81a54;  /* ★福田ピンク。文字 15 要素 / 塗り面 48 要素 */
+    --pink-pale:  #f7dde5;  /* ★トップで最多の塗り面（84 要素） */
+    --pink-pale2: #f2dee5;
+    --paper:      #f1efe7;  /* 生成りの面（1 要素） */
+    --ink:        #333333;  /* ★本文。可視 400 要素（トップ）/ 432 要素（下層） */
+    --black:      #000000;  /* ヘッダーのナビ・ルビボタン（可視 169 要素） */
+    --muted:      #898989;  /* 日付・補助（可視 38 要素） */
+    --slider:     #313233;  /* カルーセルの矢印（8 要素） */
+    --white:      #ffffff;
+    --bg:         #ffffff;  /* pageBackground.resolved / 根拠 viewportTopBySample (3/3) */
+
+    /* === Fonts ===
+       Web フォントは Noto Serif JP の 300 / 400 だけが loaded。
+       Google Fonts の URL は :200,300,400 で、700 は読み込まれていない。 */
+    --font-body: "Yu Gothic", YuGothic, "Hiragino Sans", "Hiragino Kaku Gothic Std",
+                 "Hiragino Kaku Gothic Pro", Meiryo, メイリオ, Osaka, "MS PGothic",
+                 arial, helvetica, sans-serif;
+    --font-mincho: "Noto Serif JP", "ヒラギノ明朝 ProN W2", HiraMinProN-W2,
+                   "Yu Mincho", YuMincho, HG明朝E, "ＭＳ Ｐ明朝", "MS PMincho",
+                   "MS 明朝", serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height（実測 1.62 / 1.66 / 1.90 / 2.00 の多段） === */
+    --lh-body:  2.00;   /* 本文 16px / 32px */
+    --lh-nav:   1.90;   /* ナビ 14px / 26.6px */
+    --lh-mid:   1.80;   /* 見出し 24px / 43.2px */
+    --lh-card:  1.60;
+
+    /* === Letter spacing: body は normal。要素ごとに em で足す ===
+       小さい文字ほど大きく空ける。実測 5 段。 */
+    --ls-xs: 0.40em;   /* 12〜13px（実測 21 + 7 要素） */
+    --ls-s:  0.30em;   /* 14.4px（7 要素） */
+    --ls-m:  0.20em;   /* 24px の大見出し（37 要素） */
+    --ls-l:  0.15em;   /* 15px のリード（3 要素） */
+    --ls-xl: 0.10em;   /* 12px の一部・8px（11 + 4 要素） */
+
+    --r-pill: 52.8px;  /* チケット購入のピル */
+    --r-s:    3px;
+    --r-m:    5px;
+    --r-btn:  8px;     /* ルビ切替ボタン */
+    --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);   /* トップの 1 要素のみ。下層は影ゼロ */
+
+    --container: 1000px;   /* ★実測 6 要素で最多 */
+    --container-wide: 1100px;
+  }
+
+  /* ★html / body は 6 幅すべてで固定（流体なし） */
+  html { font-size: 16px; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 14px;                /* 実サイトの body */
+    font-weight: 400;
+    line-height: 1.90;              /* 26.6px / 14px */
+    letter-spacing: normal;         /* ★body では字間を配らない */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===========================================================
+     ★ルビ。表示・非表示は body のクラス 1 つだけ。
+     =========================================================== */
+  ruby { ruby-position: over; ruby-align: space-around; }
+  rt   { font-size: 50%; font-weight: 300; }
+  /* 実サイトは rt に letter-spacing を宣言していないため、親の em が px で降り、
+     rt から見ると 2 倍の em になる（親 15px/0.15em → rt 7.5px/0.30em）。
+     ここでは「正しい書き方」として宣言し直す。比較は 03 節で見せる。 */
+  .ruby-fixed rt { letter-spacing: 0.15em; }
+  .is-ruby-off rt { display: none; }   /* ★実サイトの実装はこの 1 行だけ */
+
+  /* HEADER */
+  .header { border-bottom: 1px solid rgba(51,51,51,.14); background: var(--bg); }
+  .header-inner { display: flex; align-items: center; gap: 30px; max-width: var(--container-wide);
+                  margin: 0 auto; padding: 20px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--black); }
+  .logo-mark { width: 40px; height: 40px; border: 1px solid var(--black); display: flex;
+               align-items: center; justify-content: center; font-family: var(--font-mincho);
+               font-size: 18px; font-weight: 300; }
+  .logo-text { font-family: var(--font-mincho); font-size: 20px; font-weight: 300; letter-spacing: 0.15em; }
+  .logo-sub { font-family: var(--font-mono); font-size: 9px; color: var(--muted); letter-spacing: 0.2em; }
+  .header-nav { display: flex; gap: 22px; margin-left: auto; align-items: baseline; }
+  .header-nav a { font-family: var(--font-mincho); font-size: 15px; font-weight: 300;
+                  letter-spacing: var(--ls-l); color: var(--black); text-decoration: none; line-height: 1.4; }
+  .ruby-toggle { background: var(--white); color: var(--black); border: 1px solid var(--black);
+                 border-radius: var(--r-btn); padding: 8px; font-size: 14px; font-weight: 400;
+                 font-family: var(--font-body); cursor: pointer; }
+
+  /* HERO */
+  .hero { background: var(--pink-pale); padding: 60px 20px; }
+  .hero-inner { max-width: var(--container); margin: 0 auto; text-align: center; }
+  .hero-band { background: linear-gradient(160deg, #c81a54, #8d1038); color: var(--white);
+               padding: 56px 24px; }
+  .hero-en { font-family: var(--font-mincho); font-size: 22px; font-weight: 300;
+             letter-spacing: var(--ls-m); }
+  .hero-ja { font-family: var(--font-mincho); font-size: 44px; font-weight: 300;
+             letter-spacing: var(--ls-m); line-height: 1.5; margin-top: 12px; }
+  .hero-date { font-family: var(--font-mono); font-size: 16px; margin-top: 18px; letter-spacing: 0.1em; }
+
+  /* SECTIONS */
+  .section { padding: 100px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--paper); }
+  .section-alt .section-inner { padding: 100px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-pale { background: var(--pink-pale); }
+  .section-pale .section-inner { padding: 100px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--muted);
+                   letter-spacing: var(--ls-xs); margin-bottom: 12px; }
+  .eyebrow { display: inline-block; background: var(--pink); color: var(--white);
+             border: 1px solid var(--pink); font-size: 13px; padding: 5.2px 13px; }
+  .section-title { font-size: 24px; font-weight: 300; line-height: var(--lh-mid);
+                   letter-spacing: var(--ls-m); margin: 18px 0 20px; }
+  .section-lead { font-size: 16px; line-height: var(--lh-body); max-width: 860px; margin-bottom: 40px; }
+  .note { font-size: 14px; line-height: var(--lh-nav); color: #555; margin-top: 28px; max-width: 860px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--paper); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+  .swatch { border: 1px solid rgba(51,51,51,.14); background: var(--bg); }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 13px; }
+  .swatch-name { font-size: 14px; font-weight: 400; line-height: var(--lh-card); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .swatch-use { font-size: 12px; line-height: 1.6; color: #555; margin-top: 7px; }
+
+  /* RUBY DEMO */
+  .ruby-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+  .ruby-box { border: 1px solid rgba(51,51,51,.16); padding: 26px; background: var(--bg); }
+  .ruby-box h3 { font-family: var(--font-mincho); font-size: 15px; font-weight: 300;
+                 letter-spacing: var(--ls-l); margin-bottom: 16px; color: var(--pink); }
+  .ruby-sample { font-family: var(--font-mincho); font-size: 15px; font-weight: 300;
+                 letter-spacing: var(--ls-l); line-height: 2.4; }
+  .ruby-meta { font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+               margin-top: 18px; line-height: 1.8; }
+  .ruby-meta b { font-family: var(--font-body); color: var(--ink); }
+
+  .ruby-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+  .ruby-table th, .ruby-table td { font-size: 14px; line-height: var(--lh-card); text-align: left;
+                                   padding: 10px 14px; border-bottom: 1px solid rgba(51,51,51,.14); }
+  .ruby-table th { background: var(--paper); font-weight: 400; }
+  .ruby-table td.num { font-family: var(--font-mono); font-size: 13px; }
+  .ruby-table tr.bad td { background: var(--pink-pale); }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 230px 1fr; gap: 26px; padding: 20px 0;
+              border-bottom: 1px solid rgba(51,51,51,.14); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--muted); line-height: 1.8; }
+  .type-meta b { display: block; font-family: var(--font-body); font-size: 13px; font-weight: 700; color: var(--ink); }
+  .t-h1 { font-size: 24px; font-weight: 300; line-height: var(--lh-mid); letter-spacing: var(--ls-m); }
+  .t-h2 { font-family: var(--font-mincho); font-size: 18px; font-weight: 300; line-height: var(--lh-mid); }
+  .t-body { font-size: 16px; font-weight: 400; line-height: var(--lh-body); }
+  .t-lead { font-family: var(--font-mincho); font-size: 15px; font-weight: 300;
+            line-height: 1.4; letter-spacing: var(--ls-l); }
+  .t-nav { font-size: 14px; font-weight: 400; line-height: var(--lh-nav); letter-spacing: var(--ls-s); }
+  .t-label { font-size: 13px; font-weight: 400; letter-spacing: var(--ls-xs); }
+  .t-small { font-size: 12px; font-weight: 400; letter-spacing: var(--ls-xs); }
+
+  /* LETTER SPACING LADDER */
+  .ls-ladder { display: flex; flex-direction: column; gap: 18px; margin-top: 24px; }
+  .ls-item { display: grid; grid-template-columns: 170px 1fr; gap: 20px; align-items: baseline; }
+  .ls-meta { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+  .ls-15 { font-family: var(--font-mincho); font-size: 15px; font-weight: 300; letter-spacing: 0.15em; }
+  .ls-144 { font-family: var(--font-mincho); font-size: 14.4px; font-weight: 300; letter-spacing: 0.30em; }
+  .ls-13 { font-size: 13px; letter-spacing: 0.40em; }
+  .ls-12 { font-size: 12px; letter-spacing: 0.40em; }
+  .ls-9  { font-family: var(--font-mincho); font-size: 9px; font-weight: 300; letter-spacing: 0.20em; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; }
+  .btn { font-family: var(--font-body); cursor: pointer; text-decoration: none;
+         display: inline-flex; align-items: center; }
+  .btn-pill { background: var(--pink); color: var(--white); border: none;
+              border-radius: var(--r-pill); padding: 19.36px 42.24px 19.36px 21.12px;
+              font-size: 17.6px; font-weight: 400; position: relative; }
+  .btn-pill::after { content: "›"; position: absolute; right: 20px; font-size: 20px; }
+  .btn-flat { background: var(--pink); color: var(--white); border: none; border-radius: 0;
+              padding: 20px 40px; font-size: 14px; font-weight: 600; letter-spacing: 0.05em; }
+  .btn-outline { background: transparent; color: var(--ink); border: 1px solid var(--ink);
+                 border-radius: 0; padding: 10px 24px; font-size: 14px; font-weight: 300; }
+  .btn-tag { background: var(--pink); color: var(--white); border: none;
+             border-radius: 0 0 3px; padding: 5px 15px; font-size: 12px; }
+  .badge { display: inline-block; background: var(--pink); color: var(--white);
+           border: 1px solid var(--pink); font-size: 13px; padding: 5.2px 13px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+  .card { background: var(--bg); border: 1px solid rgba(51,51,51,.14); text-decoration: none;
+          color: var(--ink); display: block; }
+  .card-img { height: 170px; background: linear-gradient(150deg, #e7d2d9, #c99bab); }
+  .card-body { padding: 20px; }
+  .card-title { font-family: var(--font-mincho); font-size: 18px; font-weight: 300;
+                line-height: var(--lh-mid); }
+  .card-date { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; margin-top: 12px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 30px; }
+  .elev { background: var(--bg); border: 1px solid rgba(51,51,51,.14); padding: 28px; text-align: center; }
+  .elev.e1 { box-shadow: var(--shadow); border-color: transparent; }
+  .elev-name { font-size: 16px; font-weight: 400; }
+  .elev-val { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 8px; }
+  .radius-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 30px; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 108px; height: 60px; background: var(--pink-pale); border: 1px solid var(--pink); }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 7px; }
+
+  /* BREAKPOINTS */
+  .bp { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  .bp th, .bp td { font-size: 14px; line-height: var(--lh-card); text-align: left;
+                   padding: 10px 14px; border-bottom: 1px solid rgba(51,51,51,.14); }
+  .bp th { background: var(--paper); font-weight: 400; }
+  .bp td.num { font-family: var(--font-mono); font-size: 13px; }
+
+  /* FOOTER */
+  .footer { background: var(--ink); color: var(--white); padding: 60px 20px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-head { font-family: var(--font-mincho); font-size: 20px; font-weight: 300;
+                 letter-spacing: var(--ls-m); }
+  .footer-cols { display: flex; gap: 48px; margin-top: 26px; flex-wrap: wrap; }
+  .footer-col a { display: block; font-size: 14px; line-height: 2; color: var(--white);
+                  text-decoration: none; opacity: .85; }
+  .footer-copy { font-family: var(--font-mono); font-size: 11px; margin-top: 34px; opacity: .7; }
+
+  @media (max-width: 767px) {
+    .section, .section-alt .section-inner, .section-pale .section-inner { padding: 60px 16px; }
+    .section-title { font-size: 14px; }
+    .section-lead { font-size: 12px; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .header-nav { display: none; }
+  }
+</style>
+</head>
+<body class="is-ruby-on">
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <span class="logo-mark">福</span>
+      <span><span class="logo-text">福田美術館</span><br><span class="logo-sub">FUKUDA ART MUSEUM</span></span>
+    </a>
+    <nav class="header-nav">
+      <a href="#"><ruby>美術館<rt>びじゅつかん</rt></ruby>について</a>
+      <a href="#">コレクション</a>
+      <a href="#"><ruby>展覧会<rt>てんらんかい</rt></ruby></a>
+      <a href="#"><ruby>通信販売<rt>つうしんはんばい</rt></ruby></a>
+      <button class="ruby-toggle" type="button">ルビON</button>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-band">
+      <div class="hero-en">Forms of love</div>
+      <div class="hero-ja">愛のカタチ</div>
+      <div class="hero-date">2026.9.19 sat — 2027.1.17 sun</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="ruby">
+  <div class="section-label">01 / Ruby</div>
+  <div class="eyebrow">このサイトの核心</div>
+  <h2 class="section-title">ルビ 363 組と、クラス 1 つの切り替え</h2>
+  <p class="section-lead">下層ページだけで <code>&lt;ruby&gt;</code> が <b>363 組</b>。美術館の情報を子どもも読めるようにするための設計で、日本語ウェブでは稀。<b>表示・非表示は <code>body</code> のクラス 1 つで切り替える</b>（既定は <code>is-ruby-on</code>）。</p>
+
+  <div class="ruby-grid">
+    <div class="ruby-box">
+      <h3>実サイトの状態（rt に字間を宣言していない）</h3>
+      <p class="ruby-sample"><ruby>美術館<rt>びじゅつかん</rt></ruby>の<ruby>概要<rt>がいよう</rt></ruby>と<ruby>利用案内<rt>りようあんない</rt></ruby>をご<ruby>覧<rt>らん</rt></ruby>ください。</p>
+      <div class="ruby-meta">親 15px / letter-spacing 0.15em（= 2.25px）<br>rt 7.5px / letter-spacing <b>2.25px（親から px のまま継承）</b><br>★rt から見ると <b>0.30em</b>。本文の 2 倍に広がる</div>
+    </div>
+    <div class="ruby-box ruby-fixed">
+      <h3>正しい書き方（rt { letter-spacing: 0.15em }）</h3>
+      <p class="ruby-sample"><ruby>美術館<rt>びじゅつかん</rt></ruby>の<ruby>概要<rt>がいよう</rt></ruby>と<ruby>利用案内<rt>りようあんない</rt></ruby>をご<ruby>覧<rt>らん</rt></ruby>ください。</p>
+      <div class="ruby-meta">親 15px / letter-spacing 0.15em<br>rt 7.5px / letter-spacing <b>0.15em（宣言し直し）</b><br>親と同じ見かけの字間にそろう</div>
+    </div>
+  </div>
+
+  <table class="ruby-table">
+    <tr><th>親の font-size</th><th>親の letter-spacing</th><th>rt の font-size</th><th>rt の letter-spacing</th><th>rt から見た em</th></tr>
+    <tr class="bad"><td class="num">15px</td><td class="num">2.25px（0.15em）</td><td class="num">7.5px（50%）</td><td class="num">2.25px（同じ）</td><td class="num"><b>0.30em</b></td></tr>
+    <tr class="bad"><td class="num">14px</td><td class="num">2.1px（0.15em）</td><td class="num">7px（50%）</td><td class="num">2.1px（同じ）</td><td class="num"><b>0.30em</b></td></tr>
+  </table>
+
+  <p class="note"><b><code>letter-spacing</code> を <code>em</code> で宣言すると、算出された絶対 px が子へ降りる。</b><code>&lt;rt&gt;</code> は親の半分のサイズなので、同じ px は 2 倍の em に相当する。<b>実測 6/6 サンプルで ratio は 0.50、字間は 0.30em。</b>363 組すべてでこれが起きている。</p>
+
+  <p class="note">実装は <code>.is-ruby-off rt { display: none }</code> の <b>たった 1 行</b>。<code>&lt;rt&gt;</code> の computed は <code>ruby-position: over</code> / <code>ruby-align: space-around</code> / <code>display: ruby-text</code>。<b>ルビ切り替えボタンだけ <code>font-family: "MS Gothic"...</code> でサイトの書体スタックから外れている</b>（rubyful ライブラリの既定が残っている）。実装するなら游ゴシックのスタックに揃える。</p>
+</section>
+
+<section class="section-alt" id="colors">
+<div class="section-inner">
+  <div class="section-label">02 / Colors</div>
+  <div class="eyebrow">Color Palette</div>
+  <h2 class="section-title">ピンク 1 色と、その淡い面</h2>
+  <p class="section-lead">ブランド色は <b>福田ピンク <code>#c81a54</code></b> ひとつ。トップで最も多い塗り面は、それを 10% 程度に薄めた <code>#f7dde5</code>（84 要素）。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#c81a54"></div><div class="swatch-body"><div class="swatch-name">福田ピンク</div><div class="swatch-hex">#c81a54</div><div class="swatch-use">★文字 15 要素 / 塗り面 48 要素。CTA・バッジ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f7dde5"></div><div class="swatch-body"><div class="swatch-name">ペールピンク</div><div class="swatch-hex">#f7dde5</div><div class="swatch-use">★トップで最多の塗り面（84 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f1efe7"></div><div class="swatch-body"><div class="swatch-name">Paper</div><div class="swatch-hex">#f1efe7</div><div class="swatch-use">紙のような生成りの面（1 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#333333</div><div class="swatch-use">★本文。可視 400 / 432 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Text Black</div><div class="swatch-hex">#000000</div><div class="swatch-use">ヘッダーのナビ・ルビボタン（可視 169 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#898989"></div><div class="swatch-body"><div class="swatch-name">Muted</div><div class="swatch-hex">#898989</div><div class="swatch-use">日付・補助情報（可視 38 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#313233"></div><div class="swatch-body"><div class="swatch-name">Slider UI</div><div class="swatch-hex">#313233</div><div class="swatch-use">カルーセルの矢印ボタン（8 要素）</div></div></div>
+  </div>
+
+  <p class="note"><b>下層に <code>rgb(0, 0, 238)</code> が 1 要素ある</b>（<code>&lt;p&gt;</code> 直下の <code>&lt;a&gt;</code>）。色指定が抜けてブラウザ既定の青が出ている実装の誤りで、<b>設計色ではない。再現しない。</b></p>
+</div>
+</section>
+
+<section class="section" id="typography">
+  <div class="section-label">03 / Typography</div>
+  <div class="eyebrow">游ゴシック ＋ Noto Serif JP</div>
+  <h2 class="section-title">本文ゴシック、読み物は明朝の Light</h2>
+  <p class="section-lead">下層の実測は游ゴシック 488 要素 / Noto Serif JP 105 要素。<b>明朝は weight 300（Light）が 48 要素</b>で、細い明朝が基調。明朝のフォールバックは「ヒラギノ明朝 ProN <b>W2</b>」（最も細いウェイト）で、Noto Serif JP の 300 に合わせた選び方。</p>
+
+  <div class="type-row"><div class="type-meta"><b>大見出し</b>24px / lh 1.80<br>weight 300 / ls 0.20em<br>ゴシック・実測 37 要素</div><div class="t-h1">福田美術館について</div></div>
+  <div class="type-row"><div class="type-meta"><b>中見出し</b>18px / weight 300<br>明朝・実測 32 要素</div><div class="t-h2">嵯峨嵐山、渡月橋のほとりに</div></div>
+  <div class="type-row"><div class="type-meta"><b>★本文</b>16px / lh 2.00<br>weight 400 / ls normal<br>ゴシック・実測 145 要素</div><div class="t-body">渡月橋が最も美しく見える場所に建つ美術館です。江戸時代から近代にかけての日本画を中心に、約 1800 点を収蔵しています。</div></div>
+  <div class="type-row"><div class="type-meta"><b>リード</b>15px / lh 1.40<br>weight 300 / ls 0.15em<br>明朝</div><div class="t-lead">美しい自然と日本美術のある時間</div></div>
+  <div class="type-row"><div class="type-meta"><b>ナビ・リンク</b>14px / lh 1.90<br>weight 400 / ls 0.30em<br>実測 54 要素</div><div class="t-nav">ご利用案内</div></div>
+  <div class="type-row"><div class="type-meta"><b>ラベル</b>13px / ls 0.40em<br>実測 7 要素</div><div class="t-label">開催中の展覧会</div></div>
+  <div class="type-row"><div class="type-meta"><b>小ラベル</b>12px / ls 0.40em<br>実測 41 要素</div><div class="t-small">カフェ＆ショップ</div></div>
+
+  <p class="note"><b>Google Fonts の URL は <code>family=Noto+Serif+JP:200,300,400</code>。700 は読み込んでいない。</b>にもかかわらず明朝に <code>font-weight: 700</code> を当てた要素が 16 個あり、<b>実際は 400 で描画される</b>。太く見せたいなら URL に 700 を足すか、宣言を 400 に直す。</p>
+
+  <p class="note"><b>游ゴシック問題には別名方式で対応している</b>（<code>@font-face { font-family: "Yu Gothic"; src: local("Yu Gothic Medium"); font-weight: 100〜400 }</code>）。ただし <code>document.fonts</code> では 300 / 400 / bold とも <b><code>status: error</code></b>。macOS に「Yu Gothic Medium」という名前のフォントが無いため外れ、スタックの次に落ちる。Windows では意図どおり当たる。<b><code>error</code> は「宣言はあるがこの端末に該当 local フォントが無い」の印。</b></p>
+</section>
+
+<section class="section-pale" id="ls">
+<div class="section-inner">
+  <div class="section-label">04 / Letter Spacing</div>
+  <div class="eyebrow">サイズに反比例</div>
+  <h2 class="section-title">小さい文字ほど字間を空ける</h2>
+  <p class="section-lead"><code>body</code> は <code>letter-spacing: normal</code>。<b>字間は各要素が自分で <code>em</code> を宣言する</b>（サイズに比例して px が変わる型）。実測は 5 段で、<b>サイズが小さいほど em が大きい</b>。</p>
+
+  <div class="ls-ladder">
+    <div class="ls-item"><div class="ls-meta">15px / 2.25px / <b>0.15em</b><br>実測 3 要素（明朝）</div><div class="ls-15">美しい自然と日本美術</div></div>
+    <div class="ls-item"><div class="ls-meta">14.4px / 4.32px / <b>0.30em</b><br>実測 7 要素（明朝）</div><div class="ls-144">美しい自然と日本美術</div></div>
+    <div class="ls-item"><div class="ls-meta">13px / 5.2px / <b>0.40em</b><br>実測 7 要素（ゴシック）</div><div class="ls-13">美しい自然と日本美術</div></div>
+    <div class="ls-item"><div class="ls-meta">12px / 4.8px / <b>0.40em</b><br>実測 21 要素（ゴシック）</div><div class="ls-12">美しい自然と日本美術</div></div>
+    <div class="ls-item"><div class="ls-meta">9px / 1.8px / <b>0.20em</b><br>実測 26 要素（明朝）</div><div class="ls-9">美しい自然と日本美術</div></div>
+  </div>
+
+  <p class="note"><b><code>letter-spacing</code> を <code>body</code> にまとめて書かない。</b>このサイトの <code>body</code> は <code>normal</code> で、字間は要素ごとに足していく。<code>font-feature-settings</code> は 1 要素も使っておらず、縦組みも 0 件。</p>
+</div>
+</section>
+
+<section class="section" id="buttons">
+  <div class="section-label">05 / Buttons</div>
+  <div class="eyebrow">ピルと角丸なしの共存</div>
+  <h2 class="section-title">主要導線はピル、その他は radius 0</h2>
+  <p class="section-lead"><code>border-radius</code> は <code>3px</code> / <code>5px</code> / <code>8px</code> / <code>52.8px</code>（ピル）/ <code>100%</code> の 5 種。<b>ピルと角丸なしが混在する。</b></p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-pill">チケット<ruby>購入<rt>こうにゅう</rt></ruby></a>
+    <a href="#" class="btn btn-flat">「愛のカタチ」展のお得な前売券はこちら！</a>
+    <a href="#" class="btn btn-outline"><ruby>展覧会<rt>てんらんかい</rt></ruby>一覧を見る</a>
+    <a href="#" class="btn btn-tag">詳細</a>
+    <span class="badge">開催中の展覧会</span>
+  </div>
+
+  <p class="note">ピルの <code>padding</code> は <code>19.36px 42.24px 19.36px 21.12px</code>。<b>右に矢印分のアキを取る非対称。</b>アウトラインボタンは <code>1px solid #333333</code> / <b><code>font-weight: 300</code></b>（細い）。</p>
+</section>
+
+<section class="section-alt" id="cards">
+<div class="section-inner">
+  <div class="section-label">06 / Cards</div>
+  <div class="eyebrow">Components</div>
+  <h2 class="section-title">カードにもルビを振る</h2>
+
+  <div class="card-grid">
+    <a href="#" class="card"><div class="card-img"></div><div class="card-body"><div class="card-title"><ruby>愛<rt>あい</rt></ruby>のカタチ</div><div class="card-date">2026.09.19 — 2027.01.17</div></div></a>
+    <a href="#" class="card"><div class="card-img"></div><div class="card-body"><div class="card-title"><ruby>渡月橋<rt>とげつきょう</rt></ruby>を望む</div><div class="card-date">2026.11.01</div></div></a>
+    <a href="#" class="card"><div class="card-img"></div><div class="card-body"><div class="card-title">ミュージアム<ruby>併設<rt>へいせつ</rt></ruby>のカフェ</div><div class="card-date">2026.10.21</div></div></a>
+  </div>
+</div>
+</section>
+
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation & Responsive</div>
+  <div class="eyebrow">影は 1 種・ルートは固定</div>
+  <h2 class="section-title">下層ページには影が 1 つも無い</h2>
+
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">影なし（下層は全要素）</div><div class="elev-val">box-shadow: none</div></div>
+    <div class="elev e1"><div class="elev-name">トップの 1 要素のみ</div><div class="elev-val">rgba(0,0,0,.1) 0 2px 5px</div></div>
+  </div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:0"></div><div class="radius-label">0px（既定）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:3px"></div><div class="radius-label">3px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:5px"></div><div class="radius-label">5px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">8px（ルビボタン）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:52.8px"></div><div class="radius-label">52.8px（ピル）</div></div>
+  </div>
+
+  <h3 class="section-title" style="margin-top:50px">ルートは 6 幅すべてで固定</h3>
+  <p class="section-lead"><code>html: 16px</code> / <code>body: 14px</code> が 1440 / 1200 / 1024 / 834 / 768 / 767 / 375px のすべてで同値。<b>切り替わるのは要素側だけで、境目は 768px と 767px の間。</b></p>
+
+  <table class="bp">
+    <tr><th>要素</th><th>≥834px</th><th>834〜768px</th><th>≤767px</th></tr>
+    <tr><td>h2</td><td class="num">20px / 32px</td><td class="num">17px / 27.2px</td><td class="num">14px / 22.4px</td></tr>
+    <tr><td>p</td><td class="num">15px / 24px</td><td class="num">14px / 22.4px</td><td class="num">12px / 19.2px</td></tr>
+    <tr><td>h1</td><td class="num">14px / 26.6px</td><td class="num">14px / 26.6px</td><td class="num">14px / 26.6px</td></tr>
+    <tr><td>h3</td><td class="num">12px / 19.44px</td><td class="num">12px / 19.44px</td><td class="num">12px / 19.44px</td></tr>
+    <tr><td>html / body</td><td class="num">16px / 14px</td><td class="num">16px / 14px</td><td class="num">16px / 14px</td></tr>
+  </table>
+
+  <p class="note"><b><code>h2</code> と <code>p</code> だけが 3 段。</b><code>h1</code> / <code>h3</code> / <code>body</code> は動かない。<code>line-height</code> は比率（1.60）を保ったまま px が変わる＝無単位で宣言している。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="footer-head">京都・嵯峨嵐山　福田美術館</p>
+    <div class="footer-cols">
+      <div class="footer-col"><a href="#">コンセプト・概要</a><a href="#">ご利用案内</a><a href="#">アクセス</a></div>
+      <div class="footer-col"><a href="#">コレクション</a><a href="#">展覧会</a><a href="#">通信販売</a></div>
+      <div class="footer-col"><a href="#">運営団体について</a><a href="#">個人情報保護方針</a><a href="#">サイトポリシー</a></div>
+    </div>
+    <p class="footer-copy">© FUKUDA ART MUSEUM — Design tokens measured 2026-11-02</p>
+  </div>
+</footer>
+
+</body>
+</html>

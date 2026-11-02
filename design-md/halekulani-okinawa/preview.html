@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ハレクラニ沖縄（HALEKULANI OKINAWA）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ===========================================================
+     ハレクラニ沖縄 実測プレビュー（2026-11-02）
+     実サイトの CSS Custom Properties は 0 個。
+     以下は computed style の実測値を整理したもの。
+     =========================================================== */
+  :root {
+    /* === Colors（実測） === */
+    --blue:      #5ea4bf;  /* ★ハレクラニブルー。塗り面 10 要素。既定の CTA */
+    --blue-pale: #eff6f8;  /* ブルーを薄めた面（6 要素） */
+    --gold:      #bda67c;  /* 下層の「宿泊予約」専用の 1 要素 */
+    --gold-text: #d3ad6f;  /* 見出しのアクセント（可視 2 要素） */
+    --gray-cta:  #646464;  /* オンラインショップの面 / 補助テキスト */
+    --ink:       #464646;  /* ★本文。可視 113 要素。純黒ではない */
+    --heading:   #010101;  /* ★見出し。#000000 ではない（可視 71 要素） */
+    --sub:       #666666;  /* 言語切替の JP */
+    --white:     #ffffff;
+    --surface:   #eeeeee;  /* ★最も多い面（13 要素） */
+    --surface-l: #f6f6f6;  /* グローバルナビの面（最大面積 1,296,000px²） */
+    --surface-ll:#fcfcfc;
+    --surface-d: #f0f0f0;
+    --bg:        #ffffff;  /* pageBackground.resolved / 根拠 body */
+
+    /* === Fonts ===
+       和文 Web フォントは 0 本（フォント要求 2 件は Font Awesome と gstatic）。
+       游明朝・游ゴシックは OS ローカル。preview では Shippori Mincho を後ろに足す。 */
+    --font-mincho: 游明朝, YuMincho, "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro",
+                   HG明朝E, "ＭＳ Ｐ明朝", "MS PMincho", "Shippori Mincho", serif;
+    /* ★実サイトは YuGothicM が 游ゴシック の後ろにあり一生届かない。正しくは前に出す。 */
+    --font-gothic: -apple-system, "system-ui", "Helvetica Neue",
+                   YuGothicM, "游ゴシック Medium", "Yu Gothic Medium",
+                   游ゴシック, YuGothic, "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro",
+                   メイリオ, Meiryo, "ＭＳ Ｐゴシック", Arial, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height（実測 1.80 が 157 要素で最多） === */
+    --lh-body:  1.80;
+    --lh-mid:   1.40;
+    --lh-tight: 1.30;
+    --lh-flat:  1.00;
+
+    /* === Letter spacing: body は normal。要素ごとに em === */
+    --ls-hero: 0.60em;   /* ヒーローコピー（768px 以上） */
+    --ls-head: 0.20em;   /* 見出し（実測 26 + 6 要素） */
+    --ls-nav:  0.10em;   /* ナビ・SCROLL */
+
+    --r: 3px;   /* CTA の角丸。実測 5 要素 */
+    /* 影は 3 種。既定は alpha 0.05 と非常に薄い */
+    --shadow:       0 15px 15px rgba(0, 0, 0, 0.05);
+    --shadow-side:  9px 0 16px rgba(0, 0, 0, 0.25);
+    --shadow-wide:  0 0 60px rgba(0, 0, 0, 0.1);
+    /* ヒーローの白文字。ぼかし 0・左に 2px だけずらす */
+    --ts-hero: rgba(0, 0, 0, 0.4) -2px 0 0;
+
+    --column:    550px;   /* ★本文カラム。実測 16 要素で最多 */
+    --container: 1280px;
+    --wide:      1900px;
+  }
+
+  /* ★ルートが CSS キーワード。ブラウザ既定 16px のとき 13px に解決される。
+     6 幅（1440/1200/1024/834/768/767/375px）すべてで固定。 */
+  html { font-size: small; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-gothic);
+    font-size: 124%;              /* = 16.12px。以降は全部この % 積み */
+    font-weight: 400;             /* ★太字を使わない */
+    line-height: var(--lh-body);
+    letter-spacing: normal;       /* ★body では字間を配らない */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { background: var(--surface-l); }
+  .header-inner { display: flex; align-items: center; gap: 16px; padding: 20px 30px; }
+  .logo { display: flex; flex-direction: column; align-items: center; gap: 4px;
+          text-decoration: none; color: var(--heading); }
+  .logo-mark { font-family: var(--font-mincho); font-size: 175%; letter-spacing: var(--ls-nav); }
+  .logo-sub { font-family: var(--font-mono); font-size: 70%; letter-spacing: 0.2em; color: var(--sub); }
+  .header-actions { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+  .lang { background: rgba(238,238,238,.9); color: var(--sub); border-radius: var(--r);
+          padding: 2px 22.7292px; font-family: var(--font-mincho); font-size: 94%; }
+
+  /* HERO */
+  .hero { position: relative; min-height: 560px; display: flex; align-items: center;
+          background: linear-gradient(170deg, #2f7f9e 0%, #37b5c4 45%, #6fd6d0 100%); }
+  .hero-inner { padding: 0 57px; }
+  /* ★ヒーローコピー: 游明朝 132% / letter-spacing 0.60em / text-shadow はぼかしゼロ */
+  .hero-catch { font-family: var(--font-mincho); font-size: 132%; font-weight: 400;
+                line-height: var(--lh-body); letter-spacing: var(--ls-hero);
+                color: var(--white); text-shadow: var(--ts-hero); }
+  .hero-scroll { position: absolute; left: 57px; bottom: 40px; font-family: var(--font-mincho);
+                 font-size: 69%; letter-spacing: var(--ls-nav); color: var(--white);
+                 text-shadow: var(--ts-hero); }
+
+  /* SECTIONS */
+  .section { padding: 72px 30px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--surface-l); }
+  .section-alt .section-inner { padding: 72px 30px; max-width: var(--container); margin: 0 auto; }
+  .section-blue { background: var(--blue-pale); }
+  .section-blue .section-inner { padding: 72px 30px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 82%; color: var(--gray-cta);
+                   letter-spacing: var(--ls-nav); margin-bottom: 12px; }
+  .eyebrow { display: inline-block; font-family: var(--font-mincho); font-size: 94%;
+             color: var(--gold-text); letter-spacing: var(--ls-head); }
+  .section-title { font-family: var(--font-mincho); font-size: 300%; font-weight: 400;
+                   line-height: var(--lh-body); letter-spacing: var(--ls-head);
+                   color: var(--heading); margin: 14px 0 22px; }
+  .section-sub { font-family: var(--font-mincho); font-size: 225%; font-weight: 400;
+                 line-height: var(--lh-body); letter-spacing: var(--ls-head);
+                 color: var(--heading); margin: 40px 0 18px; }
+  /* ★本文カラムは 550px に絞る */
+  .section-lead { font-size: 100%; line-height: var(--lh-body); max-width: var(--column);
+                  margin-bottom: 36px; font-feature-settings: "palt"; }
+  .note { font-size: 94%; line-height: var(--lh-body); color: var(--gray-cta);
+          margin-top: 26px; max-width: 760px; }
+  code { font-family: var(--font-mono); font-size: 82%; background: var(--surface); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+  .swatch { border: 1px solid rgba(70,70,70,.14); background: var(--bg); border-radius: var(--r); overflow: hidden; }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 14px; }
+  .swatch-name { font-family: var(--font-mincho); font-size: 94%; letter-spacing: var(--ls-nav); color: var(--heading); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 70%; color: var(--gray-cta); margin-top: 4px; }
+  .swatch-use { font-size: 82%; line-height: var(--lh-mid); color: var(--gray-cta); margin-top: 8px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 240px 1fr; gap: 26px; padding: 22px 0;
+              border-bottom: 1px solid rgba(70,70,70,.14); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 70%; color: var(--gray-cta); line-height: 1.8; }
+  .type-meta b { display: block; font-family: var(--font-gothic); font-size: 118%;
+                 font-weight: 400; color: var(--heading); }
+  .t-hero { font-family: var(--font-mincho); font-size: 132%; letter-spacing: var(--ls-hero); line-height: var(--lh-body); }
+  .t-h3 { font-family: var(--font-mincho); font-size: 350%; line-height: var(--lh-flat); color: var(--heading); }
+  .t-h2 { font-family: var(--font-mincho); font-size: 300%; letter-spacing: var(--ls-head); line-height: var(--lh-body); color: var(--heading); }
+  .t-sub { font-family: var(--font-mincho); font-size: 225%; letter-spacing: var(--ls-head); line-height: var(--lh-body); color: var(--heading); }
+  .t-nav { font-family: var(--font-mincho); font-size: 175%; letter-spacing: var(--ls-nav); line-height: var(--lh-mid); color: var(--heading); }
+  .t-navmid { font-family: var(--font-mincho); font-size: 113%; letter-spacing: var(--ls-nav); color: var(--heading); }
+  .t-body { font-size: 100%; line-height: var(--lh-body); font-feature-settings: "palt"; }
+  .t-small { font-family: var(--font-mincho); font-size: 94%; }
+  .t-xs { font-family: var(--font-mincho); font-size: 70%; }
+
+  /* PERCENT LADDER */
+  .pct { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  .pct th, .pct td { font-size: 94%; line-height: var(--lh-mid); text-align: left;
+                     padding: 10px 14px; border-bottom: 1px solid rgba(70,70,70,.14); }
+  .pct th { background: var(--surface); font-weight: 400; font-family: var(--font-mincho); }
+  .pct td.num { font-family: var(--font-mono); font-size: 82%; }
+  .pct tr.key td { background: var(--blue-pale); }
+
+  /* PALT DEMO */
+  .palt-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; }
+  .palt-box { border: 1px solid rgba(70,70,70,.16); padding: 24px; background: var(--bg); border-radius: var(--r); }
+  .palt-label { font-family: var(--font-mono); font-size: 70%; color: var(--gray-cta); margin-bottom: 12px; }
+  .palt-on  { font-feature-settings: "palt"; font-size: 100%; line-height: var(--lh-body); }
+  .palt-off { font-feature-settings: normal; font-size: 100%; line-height: var(--lh-body); }
+  .palt-head { font-family: var(--font-mincho); font-size: 225%; letter-spacing: var(--ls-head);
+               line-height: var(--lh-body); color: var(--heading); font-feature-settings: normal; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+  .btn { font-family: var(--font-mincho); font-weight: 400; cursor: pointer; text-decoration: none;
+         display: inline-flex; align-items: center; border: none; }
+  .btn-blue  { background: var(--blue);     color: var(--white); border-radius: var(--r); padding: 8px 16px; font-size: 100%; }
+  .btn-gold  { background: var(--gold);     color: var(--white); border-radius: var(--r); padding: 8px 16px; font-size: 100%; }
+  .btn-gray  { background: var(--gray-cta); color: var(--white); border-radius: var(--r); padding: 8px 16px; font-size: 100%; }
+  .btn-submit{ background: var(--blue);     color: var(--white); border-radius: 0; padding: 6.5px 13px; font-size: 94%; font-family: var(--font-gothic); }
+  .pager { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px;
+           background: var(--blue); color: var(--heading); border-radius: 50%; border: none;
+           font-family: Arial; font-size: 82%; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+  .card { background: var(--bg); border-radius: var(--r); box-shadow: var(--shadow);
+          text-decoration: none; color: var(--ink); display: block; overflow: hidden; }
+  .card-img { height: 180px; background: linear-gradient(150deg, #8fd3dd, #3f8fae); }
+  .card-body { padding: 7.0928px 16px 20px; }
+  .card-title { font-family: var(--font-mincho); font-size: 225%; letter-spacing: var(--ls-head);
+                line-height: var(--lh-body); color: var(--heading); }
+  .card-desc { font-size: 94%; line-height: var(--lh-body); margin-top: 10px; font-feature-settings: "palt"; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 30px; }
+  .elev { background: var(--bg); border: 1px solid rgba(70,70,70,.14); padding: 28px; text-align: center;
+          border-radius: var(--r); }
+  .elev.e1 { box-shadow: var(--shadow); border-color: transparent; }
+  .elev.e2 { box-shadow: var(--shadow-side); border-color: transparent; }
+  .elev.e3 { box-shadow: var(--shadow-wide); border-color: transparent; }
+  .elev-name { font-family: var(--font-mincho); font-size: 113%; color: var(--heading); }
+  .elev-val { font-family: var(--font-mono); font-size: 70%; color: var(--gray-cta); margin-top: 8px; }
+
+  /* SHADOW TEXT DEMO */
+  .ts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 26px; }
+  .ts-box { background: linear-gradient(160deg, #3b9ab4, #7ad2cd); padding: 40px 28px; border-radius: var(--r); }
+  .ts-copy { font-family: var(--font-mincho); font-size: 132%; letter-spacing: var(--ls-hero);
+             line-height: var(--lh-body); color: var(--white); }
+  .ts-a { text-shadow: var(--ts-hero); }
+  .ts-b { text-shadow: 0 2px 4px rgba(0,0,0,.5); }
+  .ts-label { font-family: var(--font-mono); font-size: 70%; color: var(--white); margin-top: 16px; opacity: .9; }
+
+  /* COLUMN DEMO */
+  .col-demo { display: flex; flex-direction: column; gap: 10px; }
+  .col-bar { background: var(--surface); height: 32px; display: flex; align-items: center;
+             justify-content: center; font-family: var(--font-mono); font-size: 70%; color: var(--gray-cta); }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 26px; }
+  .field label { display: block; font-family: var(--font-mincho); font-size: 94%;
+                 letter-spacing: var(--ls-nav); color: var(--heading); margin-bottom: 8px; }
+  .field input { width: 100%; background: var(--white); color: var(--ink);
+                 border: 1px solid rgba(70,70,70,.3); border-radius: var(--r);
+                 padding: 10px 13px; font-size: 100%; font-family: var(--font-gothic); }
+  .field.is-focus input { outline: 2px solid var(--blue); outline-offset: 1px; }
+  .field-msg { font-size: 82%; color: var(--gray-cta); margin-top: 8px; }
+
+  /* FOOTER */
+  .footer { background: var(--surface); color: var(--ink); padding: 72px 30px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-head { font-family: var(--font-mincho); font-size: 225%; letter-spacing: var(--ls-head);
+                 color: var(--heading); }
+  .footer-cols { display: flex; gap: 48px; margin-top: 28px; flex-wrap: wrap; }
+  .footer-col a { display: block; font-family: var(--font-mincho); font-size: 94%; line-height: 2;
+                  color: var(--ink); text-decoration: none; }
+  .footer-copy { font-family: var(--font-mono); font-size: 70%; margin-top: 36px; color: var(--gray-cta); }
+
+  /* ★767px 以下で body が 116% に落ち、ヒーローの字間が 0.6em → 0.1em になる */
+  @media (max-width: 767px) {
+    body { font-size: 116%; }
+    .hero-catch { letter-spacing: var(--ls-nav); }
+    .section-title { font-size: 130%; }
+    .section-sub { font-size: 120%; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .section, .section-alt .section-inner, .section-blue .section-inner { padding: 48px 16px; }
+  }
+  /* 375px ではヒーローの字間が 0.45em に戻る（実測） */
+  @media (max-width: 480px) {
+    .hero-catch { letter-spacing: 0.45em; }
+  }
+  /* 1024〜768px では見出しだけ 1 段落ちる（body は動かない） */
+  @media (max-width: 1199px) and (min-width: 768px) {
+    .section-title { font-size: 250%; }
+    .t-h2 { font-size: 250%; }
+    .t-h3 { font-size: 225%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo"><span class="logo-mark">H</span><span class="logo-sub">HALEKULANI OKINAWA</span></a>
+    <div class="header-actions">
+      <a href="#" class="btn btn-gray">オンラインショップ</a>
+      <a href="#" class="btn btn-blue">お問合せ</a>
+      <a href="#" class="btn btn-blue">宿泊予約</a>
+      <span class="lang">JP</span>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-catch">天国の名に<br>もっともふさわしい楽園へ</p>
+  </div>
+  <div class="hero-scroll">SCROLL</div>
+</section>
+
+<section class="section" id="root">
+  <div class="section-label">01 / Root</div>
+  <div class="eyebrow">font-size: small</div>
+  <h2 class="section-title">ルートが CSS キーワード</h2>
+  <p class="section-lead">実サイトの <code>html</code> の宣言は <b><code>font-size: small</code></b>。px でも <code>%</code> でも <code>vw</code> でもない。ブラウザ既定が 16px のとき <b>13px</b> に解決され、<b>ユーザーが OS／ブラウザの文字サイズ設定を変えると全体が連動する</b>。この上に <code>body { font-size: 124% }</code>（= 16.12px）が乗り、以降のサイズは <b>CSS 全文で 145 箇所の <code>font-size: %</code></b> で積み上げる。</p>
+
+  <table class="pct">
+    <tr><th>実測 px</th><th>計算</th><th>用途</th></tr>
+    <tr class="key"><td class="num">16.12px</td><td class="num">13px × 124%</td><td>★本文（可視 60 要素で最多）</td></tr>
+    <tr><td class="num">15.1528px</td><td class="num">16.12 × 94%</td><td>サブナビ・ボタンラベル（33 要素）</td></tr>
+    <tr><td class="num">14.1856px</td><td class="num">16.12 × 88%</td><td>カルーセルのサムネラベル</td></tr>
+    <tr><td class="num">13.2184px</td><td class="num">16.12 × 82%</td><td>小ラベル（36 要素）</td></tr>
+    <tr class="key"><td class="num">11.3646px</td><td class="num">16.12 × 94% × 75%</td><td>★入れ子で掛け算される（13 要素）</td></tr>
+    <tr><td class="num">17.1227px</td><td class="num">16.12 × 94% × 113%</td><td>入れ子（下層の見出し）</td></tr>
+    <tr><td class="num">18.2156px</td><td class="num">16.12 × 113%</td><td>ナビの中見出し（19 要素）</td></tr>
+    <tr><td class="num">21.2784px</td><td class="num">16.12 × 132%</td><td>ヒーローコピー</td></tr>
+    <tr><td class="num">28.21px</td><td class="num">16.12 × 175%</td><td>ナビの大見出し</td></tr>
+    <tr><td class="num">36.27px</td><td class="num">16.12 × 225%</td><td>セクション小見出し（16 要素）</td></tr>
+    <tr><td class="num">48.36px</td><td class="num">16.12 × 300%</td><td>h2</td></tr>
+    <tr><td class="num">56.42px</td><td class="num">16.12 × 350%</td><td>h3</td></tr>
+  </table>
+
+  <p class="note"><b><code>font-size</code> を px で書き直さない。</b><code>small</code> キーワードを使う意味（ユーザーのブラウザ文字サイズ設定への追従）が失われる。<code>11.3646px</code> のような端数は、<code>%</code> が入れ子で掛け算された結果。</p>
+</section>
+
+<section class="section-alt" id="colors">
+<div class="section-inner">
+  <div class="section-label">02 / Colors</div>
+  <div class="eyebrow">Color Palette</div>
+  <h2 class="section-title">ブルーとゴールド、純黒は使わない</h2>
+  <p class="section-lead">本文は <code>#464646</code>、見出しは <code>#010101</code>。<b><code>#000000</code> も使わない。</b>CTA の面色は 3 種類で、ブルーが既定、ゴールドは下層の宿泊予約、グレーはオンラインショップ。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#5ea4bf"></div><div class="swatch-body"><div class="swatch-name">ハレクラニブルー</div><div class="swatch-hex">#5ea4bf</div><div class="swatch-use">★塗り面 10 要素。既定の CTA・カルーセルのページャ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#bda67c"></div><div class="swatch-body"><div class="swatch-name">ゴールド</div><div class="swatch-hex">#bda67c</div><div class="swatch-use">下層の「宿泊予約」専用の 1 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#d3ad6f"></div><div class="swatch-body"><div class="swatch-name">ゴールド（文字）</div><div class="swatch-hex">#d3ad6f</div><div class="swatch-use">見出しのアクセント（可視 2 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#eff6f8"></div><div class="swatch-body"><div class="swatch-name">ペールブルー</div><div class="swatch-hex">#eff6f8</div><div class="swatch-use">ブルーを薄めたセクションの地（6 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#464646"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#464646</div><div class="swatch-use">★本文。可視 113 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#010101"></div><div class="swatch-body"><div class="swatch-name">Text Heading</div><div class="swatch-hex">#010101</div><div class="swatch-use">★見出し。#000000 ではない（可視 71 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#646464"></div><div class="swatch-body"><div class="swatch-name">Gray CTA / Muted</div><div class="swatch-hex">#646464</div><div class="swatch-use">オンラインショップの面・補助テキスト</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#eeeeee"></div><div class="swatch-body"><div class="swatch-name">Surface Gray</div><div class="swatch-hex">#eeeeee</div><div class="swatch-use">★最も多い面（13 要素）。カードの地</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f6f6f6"></div><div class="swatch-body"><div class="swatch-name">Surface Light</div><div class="swatch-hex">#f6f6f6</div><div class="swatch-use">グローバルナビの面</div></div></div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="typography">
+  <div class="section-label">03 / Typography</div>
+  <div class="eyebrow">游明朝 400 だけで組む</div>
+  <h2 class="section-title">太字を 1 つも使わない</h2>
+  <p class="section-lead">可視要素の <code>font-weight</code> は <b>400 が 233 要素、600 が 1 要素だけ</b>（下層は 98 要素すべて 400）。見出し・ナビ・CTA のラベルまで游明朝で、<b>階層はサイズと字間だけで作る</b>。和文 Web フォントは 0 本。</p>
+
+  <div class="type-row"><div class="type-meta"><b>ヒーローコピー</b>132% / 21.2784px<br>ls 0.60em / lh 1.80<br>游明朝 400</div><div class="t-hero">天国の名に</div></div>
+  <div class="type-row"><div class="type-meta"><b>h3</b>350% / 56.42px<br>ls normal / lh 1.00<br>游明朝 400</div><div class="t-h3">OUR HOTEL</div></div>
+  <div class="type-row"><div class="type-meta"><b>h2</b>300% / 48.36px<br>ls 0.20em / lh 1.80<br>游明朝 400</div><div class="t-h2">STAY</div></div>
+  <div class="type-row"><div class="type-meta"><b>セクション小見出し</b>225% / 36.27px<br>ls 0.20em / 実測 16 要素</div><div class="t-sub">Villas</div></div>
+  <div class="type-row"><div class="type-meta"><b>ナビ大見出し</b>175% / 28.21px<br>ls 0.10em / lh 1.40</div><div class="t-nav">ACCOMMODATION</div></div>
+  <div class="type-row"><div class="type-meta"><b>ナビ中見出し</b>113% / 18.2156px<br>ls 0.10em / 実測 19 要素</div><div class="t-navmid">ダイナミックパッケージ</div></div>
+  <div class="type-row"><div class="type-meta"><b>★本文</b>100% / 16.12px<br>lh 1.80 / ls normal<br>游ゴシック・palt・実測 60 要素</div><div class="t-body">76m² からプライベートプール付きの客室まで、海を望む部屋をご用意しています。まばゆい朝の光に包まれながら、ブッフェで一日を始めてください。</div></div>
+  <div class="type-row"><div class="type-meta"><b>サブナビ</b>94% / 15.1528px<br>游明朝・実測 33 要素</div><div class="t-small">スタンダードルーム</div></div>
+  <div class="type-row"><div class="type-meta"><b>小ラベル</b>70% / 11.3646px<br>游明朝・実測 13 要素</div><div class="t-xs">インルームダイニング</div></div>
+
+  <p class="note"><b>ゴシック側のスタックには実装の誤りがある。</b>CSS には <code>@font-face { font-family: YuGothicM; src: local("Yu Gothic Medium") }</code> が <b>5 回（同内容の重複）</b>宣言されているが、スタック上 <code>YuGothicM</code> は <code>游ゴシック</code> と <code>YuGothic</code> の<b>後ろ</b>にある。Windows ではその手前に当たるので、<b>Medium を狙った別名が一生使われず Regular（細い）が出る。</b>このプレビューでは Medium を前に出した「正しい」順序にしてある。</p>
+</section>
+
+<section class="section-blue" id="palt">
+<div class="section-inner">
+  <div class="section-label">04 / Font Feature Settings</div>
+  <div class="eyebrow">本文は詰め、見出しは空ける</div>
+  <h2 class="section-title">palt は本文の span 46 要素だけ</h2>
+  <p class="section-lead"><code>font-feature-settings: "palt"</code> は本文の <code>&lt;span&gt;</code> <b>46 要素</b>に当たっており、軸は <code>horizontal-tb</code> で正しい。<b>見出しには当たっていない</b>（見出しは <code>palt</code> 無しで <code>0.2em</code> 空ける）。トップのみ 46 要素で、下層ページは 0 件。</p>
+
+  <div class="palt-grid">
+    <div class="palt-box">
+      <div class="palt-label">★本文: font-feature-settings: "palt"</div>
+      <p class="palt-on">日本料理「AOMI」では、上質な沖縄の食材（旬の魚介・島野菜）を使った会席をご用意しています。</p>
+    </div>
+    <div class="palt-box">
+      <div class="palt-label">比較: normal（約物が全角幅のまま）</div>
+      <p class="palt-off">日本料理「AOMI」では、上質な沖縄の食材（旬の魚介・島野菜）を使った会席をご用意しています。</p>
+    </div>
+  </div>
+
+  <div class="palt-head" style="margin-top:34px">見出しは詰めずに 0.2em 空ける</div>
+
+  <p class="note"><b>「詰める（<code>palt</code>）本文」と「空ける（<code>0.2em</code>）見出し」を書き分ける</b>のがこのサイトの組み方。見出しに <code>palt</code> を当てない。</p>
+</div>
+</section>
+
+<section class="section" id="ls">
+  <div class="section-label">05 / Letter Spacing</div>
+  <div class="eyebrow">ブレークポイントで 6 倍変わる</div>
+  <h2 class="section-title">ヒーローの字間は 1 つの値では書けない</h2>
+  <p class="section-lead"><code>body</code> は <code>letter-spacing: normal</code>。字間は各要素が自分で <code>em</code> を宣言する（サイズに比例して px が変わる型）。<b>ヒーローコピーだけはブレークポイントで大きく変わる。</b></p>
+
+  <table class="pct">
+    <tr><th>ビューポート幅</th><th>font-size</th><th>letter-spacing</th><th>em 換算</th><th>line-height</th></tr>
+    <tr class="key"><td>1440 / 1024 / 768px</td><td class="num">21.2784px</td><td class="num">12.767px</td><td class="num"><b>0.60em</b></td><td class="num">38.3011px（1.80）</td></tr>
+    <tr class="key"><td>767px</td><td class="num">16.4905px</td><td class="num">1.64905px</td><td class="num"><b>0.10em</b></td><td class="num">29.6829px（1.80）</td></tr>
+    <tr class="key"><td>375px</td><td class="num">13.125px</td><td class="num">5.90625px</td><td class="num"><b>0.45em</b></td><td class="num">23.625px（1.80）</td></tr>
+  </table>
+
+  <p class="note"><b>768px と 767px の間で 0.6em → 0.1em に落ち、375px でまた 0.45em に戻る。</b>1 回の計測で「このサイトの字間」を決めてはいけない。<code>line-height</code> は 1.80 を保つ（比率で宣言している）。</p>
+
+  <p class="note"><b>負の字間が 8 要素ある</b>（カルーセルのサムネイルラベル、<code>14.1856px</code> に <code>-2.5px</code> = <b>-0.176em</b>）。「イノベーティブ」「オールデイダイニング」などの長いラベルを固定幅のサムネに押し込むための処理で、<b>設計の字間ではない。再現しない。</b></p>
+</section>
+
+<section class="section-alt" id="buttons">
+<div class="section-inner">
+  <div class="section-label">06 / Buttons</div>
+  <div class="eyebrow">游明朝 400 / radius 3px</div>
+  <h2 class="section-title">CTA のラベルまで明朝</h2>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-blue">お問合せ</a>
+    <a href="#" class="btn btn-gold">宿泊予約</a>
+    <a href="#" class="btn btn-gray">オンラインショップ</a>
+    <button class="btn btn-submit" type="button">登録する</button>
+    <button class="pager" type="button">2</button>
+    <span class="lang">JP</span>
+  </div>
+
+  <p class="note">Primary は <code>#5ea4bf</code> / <code>border-radius: 3px</code> / <code>padding: 8px 16px</code> / 游明朝 / <b>weight 400</b>。送信ボタンだけ <code>radius 0</code> / <code>padding 6.5px 13px</code> / 94%。言語切替は <code>rgba(238,238,238,0.9)</code> の半透明。</p>
+</div>
+</section>
+
+<section class="section" id="shadow">
+  <div class="section-label">07 / Elevation</div>
+  <div class="eyebrow">薄い影と、片側だけの text-shadow</div>
+  <h2 class="section-title">写真の上の白い明朝を読ませる</h2>
+
+  <div class="ts-grid">
+    <div class="ts-box">
+      <p class="ts-copy ts-a">天国の名に</p>
+      <div class="ts-label">★実サイト: rgba(0,0,0,.4) -2px 0 0（ぼかし 0・左に 2px）</div>
+    </div>
+    <div class="ts-box">
+      <p class="ts-copy ts-b">天国の名に</p>
+      <div class="ts-label">比較: 0 2px 4px rgba(0,0,0,.5)（明朝の細い縦画がにじむ）</div>
+    </div>
+  </div>
+
+  <div class="elev-grid" style="margin-top:40px">
+    <div class="elev e1"><div class="elev-name">既定（4 要素・両ページ共通）</div><div class="elev-val">rgba(0,0,0,.05) 0 15px 15px</div></div>
+    <div class="elev e2"><div class="elev-name">ドロワーの側面（1 要素）</div><div class="elev-val">rgba(0,0,0,.25) 9px 0 16px</div></div>
+    <div class="elev e3"><div class="elev-name">大きくぼかす面（1 要素）</div><div class="elev-val">rgba(0,0,0,.1) 0 0 60px</div></div>
+  </div>
+
+  <p class="note"><b>既定の影は alpha 0.05 と非常に薄い。</b><code>border-radius</code> は <code>3px</code>（5 要素）と <code>100%</code>（1 要素）の 2 種のみ。</p>
+</section>
+
+<section class="section-blue" id="layout">
+<div class="section-inner">
+  <div class="section-label">08 / Layout</div>
+  <div class="eyebrow">本文は 550px に絞る</div>
+  <h2 class="section-title">コンテンツ 1280px の中で、文字だけさらに細く</h2>
+
+  <div class="col-demo">
+    <div class="col-bar" style="max-width:1900px">1900px — 全幅に近いセクション（5 要素）</div>
+    <div class="col-bar" style="max-width:1280px">1280px — 標準のコンテンツ幅（4 要素）</div>
+    <div class="col-bar" style="max-width:550px">★550px — 本文カラム（実測 16 要素で最多）</div>
+    <div class="col-bar" style="max-width:430px">430px</div>
+  </div>
+
+  <div class="card-grid" style="margin-top:44px">
+    <a href="#" class="card"><div class="card-img"></div><div class="card-body"><div class="card-title">Villas</div><p class="card-desc">153m² からプライベートプール付きの空間。</p></div></a>
+    <a href="#" class="card"><div class="card-img"></div><div class="card-body"><div class="card-title">Suites</div><p class="card-desc">正面に大きな窓を望むリビングと、海へ続くテラス。</p></div></a>
+    <a href="#" class="card"><div class="card-img"></div><div class="card-body"><div class="card-title">Dining</div><p class="card-desc">ステーキ＆ワイン「Kingdom」では、炭火で仕上げる。</p></div></a>
+  </div>
+
+  <p class="note">カード内側の上下は <code>7.0928px</code>（= 16.12px の 0.44em）。<b>実測 12 箇所で最多の余白値</b>で、余白も <code>em</code> で決まっている。</p>
+</div>
+</section>
+
+<section class="section" id="forms">
+  <div class="section-label">09 / Forms</div>
+  <div class="eyebrow">Inputs</div>
+  <h2 class="section-title">ラベルも明朝</h2>
+
+  <div class="form-grid">
+    <div class="field"><label for="f1">お名前</label><input id="f1" type="text" placeholder="山田 太郎"><div class="field-msg">全角でご入力ください</div></div>
+    <div class="field is-focus"><label for="f2">メールアドレス（フォーカス状態）</label><input id="f2" type="text" value="guest@example.com"><div class="field-msg">ご予約の確認をお送りします</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="footer-head">HALEKULANI OKINAWA</p>
+    <div class="footer-cols">
+      <div class="footer-col"><a href="#">天国にふさわしい館</a><a href="#">スタンダードルーム</a><a href="#">スイート</a></div>
+      <div class="footer-col"><a href="#">ヴィラ</a><a href="#">クラブラウンジ</a><a href="#">ダイニング</a></div>
+      <div class="footer-col"><a href="#">アクセス</a><a href="#">お問合せ</a><a href="#">宿泊予約</a></div>
+    </div>
+    <p class="footer-copy">© HALEKULANI OKINAWA — Design tokens measured 2026-11-02</p>
+  </div>
+</footer>
+
+</body>
+</html>

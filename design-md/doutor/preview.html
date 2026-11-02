@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ドトールコーヒー（DOUTOR COFFEE）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Shippori+Mincho:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ===========================================================
+     ドトールコーヒー 実測プレビュー（2026-11-02）
+     実サイトは CSS Custom Properties を 0 個しか持たない。
+     以下は computed style の実測値を変数に整理したもの。
+     =========================================================== */
+  :root {
+    /* === Colors（実測） === */
+    --brown:  #191311;  /* ★本文（可視 87 要素）かつ最多の塗り面（23 要素）。純黒は 0 要素 */
+    --yellow: #f5b101;  /* ★ドトールイエロー。可視 15 要素。一次 CTA とバッジの文字 */
+    --green:  #264f23;  /* 「マウカメドウズ」の 1 ボタン専用 */
+    --muted:  #8f8c8b;  /* 日付・補助（可視 33 要素） */
+    --white:  #ffffff;
+    --bg:     #ffffff;  /* トップの背景（pageBackground.resolved / 根拠 body） */
+    --cream:  #f7f2e5;  /* /quality/ の背景（同じく body） */
+    --beige:  #eae3da;  /* /quality/ のセクション面（最大面積 294,210px²） */
+    --ivory:  #fefbf6;  /* トップの home-message の面 */
+    --coffee: #623c21;  /* /quality/ の面（1 要素） */
+
+    /* === Fonts ===
+       Web フォントは Roboto 1 本だけ（フォント要求 1 件）。和文は OS ローカル。
+       preview では游明朝が無い環境のために Shippori Mincho を後ろに足している。
+       実サイトのスタックは Windows の游ゴシック問題に未対応（DESIGN.md 3.3）。 */
+    --font-body: "Yu Gothic", "SF Pro Text", "Hiragino Sans", sans-serif;
+    --font-fixed: "游ゴシック Medium", "Yu Gothic Medium", "Yu Gothic",
+                  "SF Pro Text", "Hiragino Sans", sans-serif;   /* 正しくはこちら */
+    --font-mincho: "Yu Mincho", "Hiragino Mincho ProN", "Shippori Mincho", serif;
+    --font-en: Roboto, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height（無単位・実測 1.80 が 72 要素で最多） === */
+    --lh-body: 1.80;
+    --lh-mid:  1.50;
+    --lh-tight: 1.30;
+    --lh-flat: 1.00;
+
+    --r: 0px;   /* ★border-radius は 0 種。角丸が 1 要素も無い */
+    /* 影は 1 種類だけ。色は黒ではなく本文色の 25%、オフセットもぼかしも 0.4rem */
+    --shadow: 0 0.4rem 0.4rem rgba(25, 19, 17, 0.25);
+  }
+
+  /* ===========================================================
+     ★このサイトの核心：html が vw、要素は全部 rem。
+     769px 以上 0.588235vw（= 100vw/170・設計幅 1700px）
+     768px 以下 2.41546vw（= 100vw/41.4・設計幅 414px）
+     769px → 4.524px が最小、768px → 18.551px と 4.1 倍に跳ぶ。
+     =========================================================== */
+  html { font-size: 10px; }
+  @media (min-width: 769px) { html { font-size: 0.588235vw; } }
+  @media (max-width: 768px) { html { font-size: 2.41546vw; } }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--brown);
+    font-family: var(--font-body);
+    font-size: 1.8rem;             /* 1440px で 15.2471px */
+    font-weight: 500;
+    line-height: var(--lh-body);
+    letter-spacing: 0.01em;        /* ★body に 1 回だけ。px で全子孫へ降りる */
+    word-break: break-all;         /* ★実サイトの指定。日本語の禁則を無効化する */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid rgba(25,19,17,.12); background: var(--bg); }
+  .header-inner { display: flex; align-items: center; gap: 3rem; padding: 2rem 4rem; }
+  .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--brown); }
+  .logo-mark { width: 4.4rem; height: 2.6rem; background: var(--brown); border-radius: 50% / 50%;
+               display: flex; align-items: center; justify-content: center; }
+  .logo-mark i { display: block; width: 1.6rem; height: 1.6rem; background: var(--yellow); border-radius: 50%; }
+  .logo-text { font-size: 2.2rem; font-weight: 700; }
+  .header-nav { display: flex; gap: 3rem; margin-left: auto; }
+  .header-nav a { font-size: 1.6rem; color: var(--brown); text-decoration: none; }
+
+  /* HERO */
+  .hero { position: relative; background: linear-gradient(160deg, #d9c9ae, #b79b74); min-height: 48rem;
+          display: flex; align-items: center; }
+  .hero-inner { padding: 0 4rem; }
+  /* ★ヒーローコピーだけ rem ではなく 3.125vw（ルートの 0.588235vw とは別係数） */
+  .hero-copy { font-family: var(--font-mincho); font-size: 3.125vw; font-weight: 600;
+               line-height: var(--lh-body); color: var(--brown); }
+  .hero-copy .split-char { display: inline-block; }   /* 実サイトは 1 文字ずつ span に分割（33 要素） */
+  .hero-note { margin-top: 3rem; font-size: 1.6rem; color: var(--brown); opacity: .85; }
+
+  /* SECTIONS */
+  .section { padding: 7rem 4rem; }           /* ★7rem はセクション上の最多値（5 箇所） */
+  .section-alt { background: var(--ivory); }
+  .section-cream { background: var(--cream); }
+  .section-label { font-family: var(--font-en); font-size: 1.2rem; color: var(--muted); margin-bottom: 1rem;
+                   letter-spacing: .08em; }
+  .eyebrow { display: inline-block; font-family: var(--font-en); font-size: 1.2rem; font-weight: 700;
+             color: var(--brown); background: var(--yellow); padding: .3rem 1rem; }
+  .section-title { font-family: var(--font-mincho); font-size: 3.6rem; font-weight: 700;
+                   line-height: var(--lh-mid); margin: 1.6rem 0 1.6rem; }
+  .section-lead { font-size: 1.8rem; line-height: var(--lh-body); max-width: 86rem; margin-bottom: 4rem; }
+  .note { font-size: 1.6rem; line-height: var(--lh-body); color: #4a403c; margin-top: 3rem; max-width: 86rem; }
+  code { font-family: var(--font-mono); font-size: 1.4rem; background: var(--beige); padding: .1rem .6rem; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(26rem, 1fr)); gap: 1rem; }
+  .swatch { border: 1px solid rgba(25,19,17,.14); background: var(--bg); border-radius: var(--r); }
+  .swatch-chip { height: 8rem; }
+  .swatch-body { padding: 1.4rem; }
+  .swatch-name { font-size: 1.6rem; font-weight: 700; line-height: var(--lh-tight); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 1.2rem; color: var(--muted); margin-top: .4rem; }
+  .swatch-use { font-size: 1.3rem; line-height: 1.6; color: #4a403c; margin-top: .8rem; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 30rem 1fr; gap: 3rem; padding: 2.4rem 0;
+              border-bottom: 1px solid rgba(25,19,17,.12); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 1.2rem; color: var(--muted); line-height: 1.8; }
+  .type-meta b { display: block; font-family: var(--font-body); font-size: 1.4rem; font-weight: 700; color: var(--brown); }
+  .t-hero { font-family: var(--font-mincho); font-size: 3.125vw; font-weight: 600; line-height: var(--lh-body); }
+  .t-h1 { font-family: var(--font-mincho); font-size: 6rem; font-weight: 700; line-height: var(--lh-mid); }
+  .t-h2 { font-family: var(--font-mincho); font-size: 3.6rem; font-weight: 700; line-height: var(--lh-mid); }
+  .t-h3 { font-size: 2.8rem; font-weight: 600; line-height: var(--lh-mid); }
+  .t-h4 { font-size: 2.4rem; font-weight: 600; line-height: var(--lh-mid); }
+  .t-cta { font-size: 2rem; font-weight: 600; line-height: var(--lh-mid); }
+  .t-body { font-size: 1.8rem; font-weight: 500; line-height: var(--lh-body); }
+  .t-sub { font-size: 1.6rem; font-weight: 600; line-height: var(--lh-flat); }
+  .t-cap { font-size: 1.4rem; font-weight: 500; line-height: var(--lh-mid); }
+  .t-badge { font-size: 1.2rem; font-weight: 500; line-height: var(--lh-flat); }
+
+  /* WEIGHT DEMO */
+  .weight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr)); gap: 2rem; margin-top: 2rem; }
+  .weight-card { border: 1px solid rgba(25,19,17,.14); padding: 2rem; background: var(--bg); }
+  .weight-card .sample { font-size: 2.8rem; line-height: var(--lh-mid); }
+  .weight-card .label { font-family: var(--font-mono); font-size: 1.2rem; color: var(--muted); margin-top: 1rem; }
+  .w400 { font-weight: 400; } .w500 { font-weight: 500; } .w600 { font-weight: 600; } .w700 { font-weight: 700; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; }
+  .btn { font-family: var(--font-body); font-size: 2rem; font-weight: 600; line-height: var(--lh-mid);
+         letter-spacing: 0.01em; border: none; border-radius: var(--r); cursor: pointer;
+         text-decoration: none; display: inline-flex; align-items: center;
+         padding: 1.6rem 6.2rem 1.6rem 5rem; position: relative; }  /* ★右に矢印分のアキ（非対称） */
+  .btn::after { content: "›"; position: absolute; right: 2.6rem; font-size: 2.4rem; line-height: 1; }
+  .btn-primary { background: var(--yellow); color: var(--brown); }
+  .btn-default { background: var(--brown); color: var(--white); }
+  .btn-farm    { background: var(--green);  color: var(--white); }
+
+  .badge { display: inline-block; background: var(--brown); color: var(--yellow);
+           font-family: var(--font-en); font-size: 1.2rem; font-weight: 500; line-height: 1;
+           padding: .3rem .8rem .2rem; border-radius: var(--r); letter-spacing: .06em; }
+
+  /* NEWS */
+  .news-list { border-top: 1px solid rgba(25,19,17,.14); }
+  .news-item { display: flex; gap: 2rem; align-items: baseline; padding: 2rem 0;
+               border-bottom: 1px solid rgba(25,19,17,.14); text-decoration: none; color: var(--brown); }
+  .news-date { font-family: var(--font-en); font-size: 1.6rem; color: var(--muted); flex-shrink: 0; }
+  .news-title { font-size: 1.8rem; line-height: var(--lh-body); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr)); gap: 1rem; }
+  .card { background: var(--bg); border: 1px solid rgba(25,19,17,.14); border-radius: var(--r);
+          text-decoration: none; color: var(--brown); display: block; }
+  .card-img { height: 16rem; background: linear-gradient(150deg, #cdb79a, #8d7257); }
+  .card-body { padding: 2rem; }
+  .card-title { font-size: 2rem; font-weight: 600; line-height: var(--lh-mid); }
+  .card-desc { font-size: 1.6rem; line-height: var(--lh-body); color: #4a403c; margin-top: 1rem; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(28rem, 1fr)); gap: 3rem; }
+  .elev { background: var(--bg); border: 1px solid rgba(25,19,17,.14); padding: 3rem; text-align: center; }
+  .elev.e1 { box-shadow: var(--shadow); border-color: transparent; }
+  .elev-name { font-size: 1.8rem; font-weight: 700; }
+  .elev-val { font-family: var(--font-mono); font-size: 1.2rem; color: var(--muted); margin-top: 1rem; }
+
+  /* SPACING */
+  .space-demo { display: flex; flex-direction: column; gap: 1rem; }
+  .space-row { display: flex; align-items: center; gap: 2rem; }
+  .space-bar { background: var(--beige); height: 2.4rem; }
+  .space-label { font-family: var(--font-mono); font-size: 1.2rem; color: var(--muted); }
+
+  /* BREAKPOINT TABLE */
+  .bp { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+  .bp th, .bp td { font-size: 1.5rem; line-height: var(--lh-mid); text-align: left;
+                   padding: 1rem 1.4rem; border-bottom: 1px solid rgba(25,19,17,.14); }
+  .bp th { font-weight: 700; background: var(--beige); }
+  .bp td.num { font-family: var(--font-mono); font-size: 1.4rem; }
+  .bp tr.cliff td { background: var(--yellow); font-weight: 700; }
+
+  /* WORD-BREAK DEMO */
+  .wb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(28rem, 1fr)); gap: 3rem; }
+  .wb-box { border: 1px solid rgba(25,19,17,.14); padding: 2rem; }
+  .wb-box p { width: 23rem; font-size: 1.8rem; line-height: var(--lh-body); }
+  .wb-all { word-break: break-all; }
+  .wb-normal { word-break: normal; }
+  .wb-label { font-family: var(--font-mono); font-size: 1.2rem; color: var(--muted); margin-bottom: 1rem; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(32rem, 1fr)); gap: 3rem; }
+  .field label { display: block; font-size: 1.6rem; font-weight: 600; margin-bottom: 1rem; }
+  .field input {
+    width: 100%; background: var(--white); color: var(--brown);
+    border: 1px solid rgba(25,19,17,.3); border-radius: var(--r);
+    padding: 1.4rem 1.6rem; font-size: 1.8rem; line-height: var(--lh-mid);
+    font-family: var(--font-body); letter-spacing: 0.01em;
+  }
+  .field.is-focus input { outline: 2px solid var(--yellow); outline-offset: 1px; }
+  .field-msg { font-size: 1.4rem; color: var(--muted); margin-top: .8rem; }
+
+  /* FOOTER */
+  .footer { background: var(--brown); color: var(--white); padding: 6rem 4rem; }
+  .footer-head { font-family: var(--font-mincho); font-size: 2.8rem; font-weight: 600; line-height: var(--lh-mid); }
+  .footer-cols { display: flex; gap: 6rem; margin-top: 3rem; flex-wrap: wrap; }
+  .footer-col a { display: block; font-size: 1.6rem; line-height: 2; color: var(--white); text-decoration: none; opacity: .85; }
+  .footer-copy { font-family: var(--font-en); font-size: 1.2rem; margin-top: 4rem; opacity: .7; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo"><span class="logo-mark"><i></i></span><span class="logo-text">株式会社ドトールコーヒー</span></a>
+    <nav class="header-nav">
+      <a href="#">ニュースリリース</a><a href="#">企業情報</a><a href="#">事業案内</a><a href="#">IR情報</a><a href="#">採用情報</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-copy"><span class="split-char">一</span><span class="split-char">杯</span><span class="split-char">の</span><span class="split-char">お</span><span class="split-char">い</span><span class="split-char">し</span><span class="split-char">い</span><span class="split-char">コ</span><span class="split-char">ー</span><span class="split-char">ヒ</span><span class="split-char">ー</span><span class="split-char">を</span><span class="split-char">通</span><span class="split-char">じ</span><span class="split-char">て</span><span class="split-char">、</span><br><span class="split-char">お</span><span class="split-char">客</span><span class="split-char">様</span><span class="split-char">に</span><span class="split-char">や</span><span class="split-char">す</span><span class="split-char">ら</span><span class="split-char">ぎ</span><span class="split-char">と</span><span class="split-char">活</span><span class="split-char">力</span><span class="split-char">を</span><span class="split-char">提</span><span class="split-char">供</span><span class="split-char">す</span><span class="split-char">る</span><span class="split-char">。</span></p>
+    <p class="hero-note">游明朝 / font-size: 3.125vw / weight 600 / line-height 1.80 ― 1 文字ずつ span に分割（実測 33 要素）</p>
+  </div>
+</section>
+
+<section class="section" id="fluid">
+  <div class="section-label">01 / Fluid Root</div>
+  <div class="eyebrow">Responsive</div>
+  <h2 class="section-title">最大幅を持たない、完全流体</h2>
+  <p class="section-lead">実サイトには <code>max-width</code> の宣言が <b>1 件も無い</b>。文字サイズも余白も <code>gap</code> も影のぼかしまで <code>rem</code> で書かれ、<code>html</code> 自身が <code>vw</code> で動く。<b>769px を境にルートの係数が 4.1 倍に跳ぶ</b>のがこのサイトの最大の落とし穴で、規定の 4 幅（1440 / 1200 / 834 / 375px）だけ測ると見えない。</p>
+
+  <table class="bp">
+    <tr><th>ビューポート幅</th><th>html</th><th>body</th><th>本文 line-height</th><th>letter-spacing</th></tr>
+    <tr><td>1440px</td><td class="num">8.47059px</td><td class="num">15.2471px</td><td class="num">27.4447px</td><td class="num">0.152471px</td></tr>
+    <tr><td>1200px</td><td class="num">7.05882px</td><td class="num">12.7059px</td><td class="num">22.8706px</td><td class="num">0.127059px</td></tr>
+    <tr><td>1024px</td><td class="num">6.02353px</td><td class="num">10.8424px</td><td class="num">19.5162px</td><td class="num">0.108424px</td></tr>
+    <tr><td>834px</td><td class="num">4.90588px</td><td class="num">8.83059px</td><td class="num">15.8951px</td><td class="num">0.0883059px</td></tr>
+    <tr class="cliff"><td>769px（最小）</td><td class="num">4.524px</td><td class="num">8.14px</td><td class="num">—</td><td class="num">—</td></tr>
+    <tr class="cliff"><td>768px（4.1 倍に跳ぶ）</td><td class="num">18.5507px</td><td class="num">29.6812px</td><td class="num">53.4261px</td><td class="num">0.296812px</td></tr>
+    <tr><td>375px</td><td class="num">9.05797px</td><td class="num">14.4928px</td><td class="num">26.087px</td><td class="num">0.144928px</td></tr>
+  </table>
+
+  <p class="note"><b>設計幅はデスクトップ 1700px、モバイル 414px。</b><code>0.588235vw</code> が 10px になるのが 1700px、<code>2.41546vw</code> が 10px になるのが 414px。<b>1440px の表示は設計幅より 15% 縮んだ状態で、1700px を超えて初めて「設計どおり」になる。</b></p>
+</section>
+
+<section class="section section-alt" id="colors">
+  <div class="section-label">02 / Colors</div>
+  <div class="eyebrow">Color Palette</div>
+  <h2 class="section-title">純黒を使わない。本文は #191311</h2>
+  <p class="section-lead">文字色でも塗り面でも使うのは <b>ダークブラウン <code>#191311</code></b>。<code>#000000</code> は可視 0 要素。<b>CTA の面色は 3 種類</b>あり、黄が一次導線、ダークブラウンが既定、深緑は農園ページ専用。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#f5b101"></div><div class="swatch-body"><div class="swatch-name">ドトールイエロー</div><div class="swatch-hex">#f5b101</div><div class="swatch-use">★可視 15 要素。一次 CTA の面、黒バッジ上の文字色</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#191311"></div><div class="swatch-body"><div class="swatch-name">ダークブラウン</div><div class="swatch-hex">#191311</div><div class="swatch-use">★本文 87 要素かつ塗り面 23 要素。純黒は使わない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#264f23"></div><div class="swatch-body"><div class="swatch-name">ディープグリーン</div><div class="swatch-hex">#264f23</div><div class="swatch-use">「マウカメドウズ」の 1 ボタン専用</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#8f8c8b"></div><div class="swatch-body"><div class="swatch-name">Muted</div><div class="swatch-hex">#8f8c8b</div><div class="swatch-use">日付・補助情報（可視 33 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f7f2e5"></div><div class="swatch-body"><div class="swatch-name">Background Cream</div><div class="swatch-hex">#f7f2e5</div><div class="swatch-use">/quality/ のページ背景（根拠 body）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#eae3da"></div><div class="swatch-body"><div class="swatch-name">Surface Beige</div><div class="swatch-hex">#eae3da</div><div class="swatch-use">/quality/ のセクション面（最大面積 294,210px²）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fefbf6"></div><div class="swatch-body"><div class="swatch-name">Surface Ivory</div><div class="swatch-hex">#fefbf6</div><div class="swatch-use">トップの home-message の面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#623c21"></div><div class="swatch-body"><div class="swatch-name">Accent Brown</div><div class="swatch-hex">#623c21</div><div class="swatch-use">/quality/ の面（1 要素）</div></div></div>
+  </div>
+</section>
+
+<section class="section" id="typography">
+  <div class="section-label">03 / Typography</div>
+  <div class="eyebrow">游ゴシック ＋ 游明朝</div>
+  <h2 class="section-title">本文ゴシック、コピー明朝の拮抗</h2>
+  <p class="section-lead">実測は游ゴシック系 69 要素 / 游明朝系 55 要素で、<b>明朝が本文と同じくらい使われている</b>。和文 Web フォントは 0 本で、フォントファイルの要求は <code>fonts.gstatic.com</code> の Roboto 1 件だけ。</p>
+
+  <div class="type-row"><div class="type-meta"><b>ヒーローコピー</b>3.125vw / 1440px→45px<br>weight 600 / lh 1.80<br>游明朝・実測 33 要素</div><div class="t-hero">一杯のおいしいコーヒー</div></div>
+  <div class="type-row"><div class="type-meta"><b>大見出し</b>6rem / 50.8235px<br>weight 700 / 游明朝<br>実測 3 要素</div><div class="t-h1">おいしさへのこだわり</div></div>
+  <div class="type-row"><div class="type-meta"><b>セクション見出し</b>3.6rem / 30.4941px<br>weight 700 / 游明朝<br>実測 5 要素</div><div class="t-h2">世界厳選、日本焙煎</div></div>
+  <div class="type-row"><div class="type-meta"><b>中見出し</b>2.8rem / 23.7176px<br>weight 600 / 游ゴシック<br>実測 3 要素</div><div class="t-h3">ハワイ島コーヒー農園</div></div>
+  <div class="type-row"><div class="type-meta"><b>小見出し</b>2.4rem / 20.3294px<br>weight 600 / 実測 9 要素</div><div class="t-h4">フランチャイズビジネス</div></div>
+  <div class="type-row"><div class="type-meta"><b>CTA ラベル</b>2rem / 16.9412px<br>weight 600 / 実測 25 要素</div><div class="t-cta">株式会社ドトールコーヒーの事業案内はこちら</div></div>
+  <div class="type-row"><div class="type-meta"><b>★本文</b>1.8rem / 15.2471px<br>weight 500 / lh 1.80<br>実測 26 要素</div><div class="t-body">一杯のおいしいコーヒーを通じて、お客様にやすらぎと活力を提供する。この理念のもと、豆の調達から焙煎、抽出まで一貫して手がけています。</div></div>
+  <div class="type-row"><div class="type-meta"><b>補助テキスト</b>1.6rem / 13.5529px<br>weight 600 / lh 1.00</div><div class="t-sub">コンビニ・量販店向け商品（卸売事業）</div></div>
+  <div class="type-row"><div class="type-meta"><b>キャプション</b>1.4rem / 11.8588px<br>実測 16 要素</div><div class="t-cap">※ 価格は税込みです</div></div>
+  <div class="type-row"><div class="type-meta"><b>バッジ</b>1.2rem / 10.1647px<br>weight 500 / 実測 15 要素</div><div class="t-badge"><span class="badge">NEWS</span> <span class="badge">IR INFO</span></div></div>
+
+  <p class="note"><b><code>letter-spacing</code> は <code>body</code> に <code>0.01em</code> を 1 回だけ書いて px で継承させる。</b>1440px では <code>0.152471px</code> が可視 150 要素すべて。45px の見出しも 10px のバッジも同じ px 値になる。<b>子要素で <code>em</code> を書き直すと、45px のコピーの字間が本文の 3 倍（0.45px）になる。</b></p>
+</section>
+
+<section class="section section-cream" id="weight">
+  <div class="section-label">04 / Font Weight</div>
+  <div class="eyebrow">効くウェイトは 2 段だけ</div>
+  <h2 class="section-title">600 を 100 要素に当てているが、効かない</h2>
+  <p class="section-lead">隠し div に <code>font-weight</code> だけ変えた同一文字列を入れて幅を実測したところ、<b><code>400 / 500 / 600</code> が全部 <code>560.94px</code></b>、<code>700 / 900</code> だけ <code>562.14px</code>（合成太字）だった。游ゴシックは Regular と Bold の 2 本しか持たない。</p>
+
+  <div class="weight-grid">
+    <div class="weight-card"><div class="sample w400">一杯のおいしい珈琲</div><div class="label">weight 400 — 実測 560.94px</div></div>
+    <div class="weight-card"><div class="sample w500">一杯のおいしい珈琲</div><div class="label">weight 500 — 実測 560.94px（400 と同じ）</div></div>
+    <div class="weight-card"><div class="sample w600">一杯のおいしい珈琲</div><div class="label">★weight 600 — 実測 560.94px（100 要素に当てているが Regular で出る）</div></div>
+    <div class="weight-card"><div class="sample w700">一杯のおいしい珈琲</div><div class="label">weight 700 — 実測 562.14px（合成太字・実測 4 要素）</div></div>
+  </div>
+
+  <p class="note"><b>太く見せたいときは 700 を使う。</b>ただしこれも游ゴシック Bold ではなくブラウザの合成太字（幅の差はわずか 1.2px）。Web フォントが無いため、ウェイトで階層を作る設計には向かない。</p>
+</section>
+
+<section class="section" id="wordbreak">
+  <div class="section-label">05 / Line Breaking</div>
+  <div class="eyebrow">禁則処理</div>
+  <h2 class="section-title">body に word-break: break-all</h2>
+  <p class="section-lead">実サイトは <code>body</code> に <code>word-break: break-all</code> を書いており、<b>日本語の禁則処理が無効になって行末で熟語の途中でも折り返す</b>。6 幅すべてで <code>break-all</code> のまま。欧文の単語も途中で割れる。</p>
+
+  <div class="wb-grid">
+    <div class="wb-box">
+      <div class="wb-label">★実サイト: word-break: break-all</div>
+      <p class="wb-all">新しい価値の創造 Life-changing な一杯を、毎日のテーブルへ。</p>
+    </div>
+    <div class="wb-box">
+      <div class="wb-label">word-break: normal（比較）</div>
+      <p class="wb-normal">新しい価値の創造 Life-changing な一杯を、毎日のテーブルへ。</p>
+    </div>
+  </div>
+
+  <p class="note"><b>差が出るのは欧文語が行末に掛かったとき。</b><code>break-all</code> は <code>Life-changin / g</code> と割り、<code>normal</code> はハイフンで <code>Life- / changing</code> と割る。<b>再現するならこの 1 行を必ず入れる。</b></p>
+</section>
+
+<section class="section section-alt" id="buttons">
+  <div class="section-label">06 / Buttons</div>
+  <div class="eyebrow">角丸ゼロ・左右非対称</div>
+  <h2 class="section-title">border-radius は 0 種。角丸が 1 要素も無い</h2>
+  <p class="section-lead">CTA の <code>padding</code> は <code>0 6.2rem 0 5rem</code>。<b>右に矢印分のアキを取る非対称</b>で、1440px では <code>52.5177px</code> / <code>42.3529px</code> として出る。</p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-primary">トップメッセージ</a>
+    <a href="#" class="btn btn-default">店舗検索</a>
+    <a href="#" class="btn btn-farm">ハワイ島コーヒー農園「マウカメドウズ」</a>
+  </div>
+
+  <p class="note"><b>面色の使い分け。</b>黄 <code>#f5b101</code> が一次導線、ダークブラウン <code>#191311</code> が既定、深緑 <code>#264f23</code> は農園コンテンツ専用の 1 ボタンだけ。</p>
+</section>
+
+<section class="section" id="news">
+  <div class="section-label">07 / News & Cards</div>
+  <div class="eyebrow">Components</div>
+  <h2 class="section-title">バッジは黒地に黄文字</h2>
+
+  <div class="news-list">
+    <a href="#" class="news-item"><span class="news-date">2026.10.29</span><span class="badge">NEWS</span><span class="news-title">「本格珈琲 ドリップカフェ」シリーズ 秋の新商品を発売</span></a>
+    <a href="#" class="news-item"><span class="news-date">2026.10.28</span><span class="badge">IR INFO</span><span class="news-title">2027年2月期 第2四半期決算短信を公表しました</span></a>
+    <a href="#" class="news-item"><span class="news-date">2026.10.26</span><span class="badge">NEWS</span><span class="news-title">マウカメドウズ農園の収穫レポートを公開しました</span></a>
+  </div>
+
+  <div class="card-grid" style="margin-top:4rem">
+    <a href="#" class="card"><div class="card-img"></div><div class="card-body"><div class="card-title">世界厳選</div><p class="card-desc">産地を訪ね、農園とともに育てる。</p></div></a>
+    <a href="#" class="card"><div class="card-img"></div><div class="card-body"><div class="card-title">日本焙煎</div><p class="card-desc">豆の個性に合わせて焙煎度を変える。</p></div></a>
+    <a href="#" class="card"><div class="card-img"></div><div class="card-body"><div class="card-title">そして、お客様へ</div><p class="card-desc">一杯ずつ、店舗で抽出する。</p></div></a>
+  </div>
+</section>
+
+<section class="section section-cream" id="layout">
+  <div class="section-label">08 / Spacing & Elevation</div>
+  <div class="eyebrow">余白も影も rem</div>
+  <h2 class="section-title">1rem の gap が最多（実測 16 箇所）</h2>
+  <p class="section-lead">余白は全部 <code>rem</code>。<code>gap</code> は <code>1rem</code>（1440px で 8.47059px）が 16 箇所で最多、セクション上は <code>7rem</code>（59.2941px）が 5 箇所で最多。<b>px を直接書くとこの設計から外れる。</b></p>
+
+  <div class="space-demo">
+    <div class="space-row"><div class="space-label" style="width:16rem">0.3rem / 2.54118px</div><div class="space-bar" style="width:0.3rem"></div></div>
+    <div class="space-row"><div class="space-label" style="width:16rem">★1rem / 8.47059px</div><div class="space-bar" style="width:1rem"></div></div>
+    <div class="space-row"><div class="space-label" style="width:16rem">2rem / 16.9412px</div><div class="space-bar" style="width:2rem"></div></div>
+    <div class="space-row"><div class="space-label" style="width:16rem">3rem / 25.4118px</div><div class="space-bar" style="width:3rem"></div></div>
+    <div class="space-row"><div class="space-label" style="width:16rem">5rem / 42.3529px</div><div class="space-bar" style="width:5rem"></div></div>
+    <div class="space-row"><div class="space-label" style="width:16rem">6rem / 50.8235px</div><div class="space-bar" style="width:6rem"></div></div>
+    <div class="space-row"><div class="space-label" style="width:16rem">★7rem / 59.2941px</div><div class="space-bar" style="width:7rem"></div></div>
+    <div class="space-row"><div class="space-label" style="width:16rem">12rem / 101.647px</div><div class="space-bar" style="width:12rem"></div></div>
+    <div class="space-row"><div class="space-label" style="width:16rem">14.5rem / 122.824px</div><div class="space-bar" style="width:14.5rem"></div></div>
+  </div>
+
+  <div class="elev-grid" style="margin-top:5rem">
+    <div class="elev"><div class="elev-name">影なし（既定）</div><div class="elev-val">box-shadow: none</div></div>
+    <div class="elev e1"><div class="elev-name">唯一の影</div><div class="elev-val">rgba(25,19,17,.25) 0 0.4rem 0.4rem</div></div>
+  </div>
+
+  <p class="note"><b>影は 1 種類だけ</b>（両ページとも 1 要素）。色が黒ではなく本文色 <code>#191311</code> の 25%、オフセットもぼかしも <code>0.4rem</code>。<b>ぼかし半径を px で固定しない。</b></p>
+</section>
+
+<section class="section" id="forms">
+  <div class="section-label">09 / Forms</div>
+  <div class="eyebrow">Inputs</div>
+  <h2 class="section-title">フォーカスはブランドの黄</h2>
+
+  <div class="form-grid">
+    <div class="field"><label for="f1">お名前</label><input id="f1" type="text" placeholder="山田 太郎"><div class="field-msg">全角でご入力ください</div></div>
+    <div class="field is-focus"><label for="f2">メールアドレス（フォーカス状態）</label><input id="f2" type="text" value="info@example.co.jp"><div class="field-msg">確認のご連絡を差し上げます</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p class="footer-head">一杯のおいしいコーヒーを通じて、お客様にやすらぎと活力を提供する。</p>
+  <div class="footer-cols">
+    <div class="footer-col"><a href="#">企業情報</a><a href="#">事業案内</a><a href="#">IR情報</a></div>
+    <div class="footer-col"><a href="#">サステナビリティ</a><a href="#">採用情報</a><a href="#">フランチャイズ</a></div>
+    <div class="footer-col"><a href="#">サイトマップ</a><a href="#">ご利用にあたって</a><a href="#">プライバシーポリシー</a></div>
+  </div>
+  <p class="footer-copy">© DOUTOR COFFEE CO., LTD. — Design tokens measured 2026-11-02</p>
+</footer>
+
+</body>
+</html>
