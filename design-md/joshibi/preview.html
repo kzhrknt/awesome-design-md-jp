@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 女子美術大学（Joshibi University of Art and Design）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- ★実サイトが使っているものと同じ YakuHanJP 4.0.1（約物だけのサブセット）。
+     このプレビューの核心なので実物を読み込む。 -->
+<link href="https://cdn.jsdelivr.net/npm/yakuhanjp@4.0.1/dist/css/yakuhanjp.min.css" rel="stylesheet">
+<style>
+  /* ===========================================================
+     女子美術大学 実測プレビュー（2026-11-03）
+     対象: https://www.joshibi.ac.jp/ , /about/
+     実サイトの CSS Custom Properties は 25 個（＋ Swiper 由来 2 個）。
+     名前と値はすべて実サイトの :root をそのまま写している。
+     =========================================================== */
+  :root {
+    /* === Key Colors（学科・領域カラー・実測） === */
+    --color-key-01: #F2879F;  /* ★ピンク。可視 28 要素で最多。NEW バッジの面 */
+    --color-key-02: #57ACCE;  /* ブルー。デザイン・工芸学科（13 要素）／下層の見出し色 */
+    --color-key-03: #C38A57;  /* ブラウン（面 3 要素） */
+    --color-key-04: #62B47B;  /* グリーン。アート・デザイン表現学科（15 要素） */
+    --color-key-05: #EA9C07;  /* アンバー。短期大学部（8 要素） */
+    --color-key-06: #E67556;  /* オレンジ。美術館・ギャラリー／開催中バッジ */
+    --color-key-07: #4A699B;  /* ネイビー。★宣言はあるが両ページとも可視 0 要素 */
+    --color-key-08: #BC8E9C;  /* ダスティローズ。お知らせラベル（7 要素） */
+    --color-course-04: #FFF000; /* 蛍光イエロー。共創デザイン学科だけの色（3 要素） */
+    --color-examinee: #A2FF8B;  /* ★宣言のみ。可視 0 要素（ヒーロー写真に焼き込み） */
+
+    /* === Neutral（実測） === */
+    --color-main-01: #333;    /* ★本文・見出し（可視 104 要素）。純黒は使わない */
+    --color-main-02: #707070; /* 補助リンク（50 要素） */
+    --color-main-03: #999;    /* 肩書き・キャンパス名（7 要素） */
+    --color-border-01: #999;
+    --color-border-02: #ccc;
+    --color-focus-01: #ccc;
+    --color-gray-01: #F7F7F5; /* ★タブの面。かつ下層ページのページ背景 */
+    --color-red-01: #FF0000;  /* 宣言のみ・可視 0 要素 */
+    --white: #fff;
+
+    /* === Fonts（実サイトの宣言そのまま） ===
+       --font-ja-01 の実体は YakuHanJP ＋ 秀英角ゴシック銀 Std（Adobe Fonts）。
+       秀英角ゴ銀はドメインライセンスで手元に出ないため Zen Kaku Gothic New で代替。
+       YakuHanJP は実物を読み込んでいるので、約物の詰まり方は実サイトと同じ。
+       --font-en-01 の tt-commons-pro（TypeType）は Jost で代替。 */
+    --font-ja-01: YakuHanJP, "dnp-shuei-gothic-gin-std", "Zen Kaku Gothic New",
+                  "Hiragino Sans", sans-serif;
+    --font-en-01: "tt-commons-pro", Jost, sans-serif;
+
+    /* === Line height（無単位・実測 1.50 が 156 要素で最多） === */
+    --lh-body:  2.00;   /* 本文 14px / 28px */
+    --lh-card:  1.80;   /* 学科紹介 */
+    --lh-ttl:   1.85;   /* 縦組み見出し 20px / 37px */
+    --lh-ui:    1.50;   /* ★最多 */
+    --lh-tight: 1.30;
+
+    --container: 1074px;  /* ★実測 7 要素で最多の本文幅 */
+  }
+
+  /* ===========================================================
+     ★ルートは 390px まで 16px 固定、それ以下だけ vw で縮む。
+     4.1025641026vw（= 100vw ÷ 24.375）は 390px でちょうど 16px に
+     着地するので、境目で段差が出ない（連続）。モバイル設計幅 390px。
+     実測: 390px→16px / 389px→15.959px / 375px→15.3846px
+     =========================================================== */
+  html { font-size: 16px; }
+  @media (max-width: 389px) { html { font-size: 4.1025641026vw; } }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--color-main-01);
+    /* ★実サイトの body は素の sans-serif 1 語だけ。これは取りこぼしなので
+       プレビューでは正しく --font-ja-01 を当てている（DESIGN.md 3.3 / 7章） */
+    font-family: var(--font-ja-01);
+    font-size: 14px;
+    font-weight: 500;              /* ★本文の既定は 500。400 ではない */
+    line-height: var(--lh-body);
+    -webkit-font-smoothing: antialiased;
+    /* ★font-feature-settings は書かない。約物の詰めは YakuHanJP が担当する */
+  }
+
+  /* ---------- 共通パーツ ---------- */
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+
+  .header { border-bottom: 1px solid var(--color-border-02); background: var(--white); }
+  .header-top { display: flex; align-items: center; gap: 24px; padding: 20px 24px 12px;
+                max-width: var(--container); margin: 0 auto; }
+  .logo { font-size: 20px; font-weight: 700; letter-spacing: 0.05em; color: var(--color-main-01);
+          text-decoration: none; line-height: 1.3; }
+  .logo small { display: block; font-size: 11px; font-weight: 500; color: var(--color-main-02);
+                font-family: var(--font-en-01); letter-spacing: 0.08em; }
+  .util { margin-left: auto; display: flex; gap: 20px; }
+  .util a { font-size: 12px; font-weight: 500; letter-spacing: 0.05em; line-height: 2.0;
+            color: var(--color-main-01); text-decoration: none; }
+  .gnav { display: flex; max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+  .gnav a { flex: 1; text-align: center; padding: 10px 0; font-size: 15px; font-weight: 600;
+            letter-spacing: 0.05em; line-height: var(--lh-ui); color: var(--color-main-01);
+            text-decoration: none; border-left: 1px solid var(--color-border-02); }
+  .gnav a:last-child { border-right: 1px solid var(--color-border-02); }
+
+  .section { padding: 72px 0; }
+  .section-alt { background: var(--color-gray-01); }
+  .section-label { font-family: var(--font-en-01); font-size: 12px; font-weight: 400;
+                   letter-spacing: 0.12em; color: var(--color-main-03); margin-bottom: 8px; }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.05em;
+             color: var(--color-key-08); margin-bottom: 6px; }
+  .section-title { font-size: 24px; font-weight: 700; line-height: 1.5;
+                   letter-spacing: 0.05em; margin-bottom: 14px; }
+  .section-lead { font-size: 14px; font-weight: 500; line-height: var(--lh-body);
+                  letter-spacing: 0.05em; max-width: 72ch; }
+  .note { margin-top: 24px; padding: 14px 18px; background: var(--color-gray-01);
+          border-left: 3px solid var(--color-key-02); font-size: 13px; font-weight: 500;
+          line-height: 1.9; letter-spacing: 0.05em; }
+  .section-alt .note { background: var(--white); }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .92em;
+         background: rgba(51,51,51,.07); padding: 1px 5px; border-radius: 2px; }
+  b { font-weight: 700; }
+
+  /* ---------- 01 Vertical headings ---------- */
+  /* ★実サイトの home-ttl-01。37px 幅の列を本文カラムの左に立てる。
+     <b> で行を包み、vertical-rl の自然な折り返しに任せる。
+     display:flex で並べ直すと DOM 順に左→右へ置かれ、読む向きと逆になる。 */
+  .ttl-demo { display: flex; gap: 40px; align-items: flex-start; margin-top: 32px; }
+  .home-ttl-01 {
+    writing-mode: vertical-rl;
+    font-family: var(--font-ja-01);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: var(--lh-ttl);        /* 37px */
+    letter-spacing: 0.05em;            /* 実測 0.7px */
+    height: 200px;
+    flex: none;
+  }
+  .home-ttl-01 b { font-weight: 700; }
+  .ttl-pickup   { color: var(--color-key-01); }
+  .ttl-examinee { color: var(--color-key-04); }
+  .ttl-gallery  { color: var(--color-key-06); }
+  .ttl-body { flex: 1; }
+  .ttl-body p { font-size: 14px; line-height: var(--lh-body); letter-spacing: 0.05em; }
+  .ttl-caption { font-family: var(--font-en-01); font-size: 11px; letter-spacing: 0.08em;
+                 color: var(--color-main-03); margin-top: 10px; }
+
+  /* ---------- 02 Colors ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+                gap: 16px; margin-top: 28px; }
+  .swatch { border: 1px solid var(--color-border-02); background: var(--white); }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 10px 12px 14px; }
+  .swatch-name { font-size: 13px; font-weight: 600; letter-spacing: 0.05em; }
+  .swatch-hex  { font-family: var(--font-en-01); font-size: 12px; color: var(--color-main-02);
+                 letter-spacing: 0.06em; margin: 2px 0 6px; }
+  .swatch-use  { font-size: 11px; font-weight: 500; line-height: 1.7; color: var(--color-main-02); }
+  .swatch.is-unused .swatch-chip { position: relative; }
+  .swatch.is-unused .swatch-chip::after {
+    content: "可視 0"; position: absolute; inset: 0; display: flex; align-items: center;
+    justify-content: center; font-family: var(--font-en-01); font-size: 12px;
+    letter-spacing: .1em; color: #333; background: rgba(255,255,255,.72); }
+
+  /* ---------- 03 Typography ---------- */
+  .type-row { display: flex; gap: 28px; padding: 18px 0;
+              border-bottom: 1px solid var(--color-border-02); align-items: baseline; }
+  .type-meta { flex: none; width: 190px; font-family: var(--font-en-01); font-size: 11px;
+               line-height: 1.7; color: var(--color-main-02); letter-spacing: 0.04em; }
+  .type-meta b { display: block; font-family: var(--font-ja-01); font-size: 12px;
+                 font-weight: 600; color: var(--color-main-01); letter-spacing: 0.05em; }
+  .type-sample { flex: 1; min-width: 0; }
+  .t-h1    { font-size: 28px; font-weight: 700; line-height: 2.00; letter-spacing: 0.05em; }
+  .t-ttl   { font-size: 20px; font-weight: 700; line-height: 1.85; letter-spacing: 0.05em;
+             color: var(--color-key-01); }
+  .t-h2sub { font-size: 20px; font-weight: 500; line-height: 1.40; color: var(--color-key-02); }
+  .t-h3    { font-size: 18px; font-weight: 600; line-height: 1.80; letter-spacing: 0.05em; }
+  .t-nav   { font-size: 15px; font-weight: 600; line-height: 1.50; letter-spacing: 0.05em; }
+  .t-body  { font-size: 14px; font-weight: 500; line-height: 2.00; letter-spacing: 0.05em; }
+  .t-label { font-size: 13px; font-weight: 600; line-height: 1.50; letter-spacing: 0.05em; }
+  .t-util  { font-size: 12px; font-weight: 500; line-height: 2.00; letter-spacing: 0.05em; }
+  .t-date  { font-family: var(--font-en-01); font-size: 12px; font-weight: 400;
+             line-height: 2.00; letter-spacing: 0.05em; color: var(--color-main-01); }
+
+  /* ---------- 04 YakuHanJP ---------- */
+  .yaku-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 28px; }
+  .yaku-box { border: 1px solid var(--color-border-02); background: var(--white); padding: 20px; }
+  .yaku-label { font-family: var(--font-en-01); font-size: 11px; letter-spacing: .08em;
+                color: var(--color-main-02); margin-bottom: 10px; }
+  .yaku-sample { font-size: 22px; font-weight: 600; line-height: 1.9; letter-spacing: 0.05em; }
+  /* ★スタックの先頭から YakuHanJP を外した状態＝約物が詰まらない */
+  .yaku-off { font-family: "dnp-shuei-gothic-gin-std", "Zen Kaku Gothic New", "Hiragino Sans", sans-serif; }
+  .yaku-on  { font-family: var(--font-ja-01); }
+
+  /* ---------- 05 Letter spacing ---------- */
+  .ls-table { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 13px; }
+  .ls-table th, .ls-table td { border: 1px solid var(--color-border-02); padding: 9px 12px;
+                               text-align: left; letter-spacing: 0.05em; }
+  .ls-table th { background: var(--color-gray-01); font-weight: 600; font-size: 12px; }
+  .section-alt .ls-table th { background: var(--white); }
+  .ls-table .num { font-family: var(--font-en-01); letter-spacing: 0.04em; }
+  .ls-table tr.hl td { background: rgba(242,135,159,.12); font-weight: 600; }
+
+  /* ★「em を宣言した箱」と「そこから px が降りる子」のデモ */
+  .inherit-demo { margin-top: 26px; display: grid; gap: 14px; }
+  .inherit-box { border: 1px dashed var(--color-key-02); padding: 14px 16px; }
+  .inherit-box > .ib-label { font-family: var(--font-en-01); font-size: 11px; letter-spacing: .08em;
+                             color: var(--color-key-02); margin-bottom: 8px; }
+  .ib-14 { font-size: 14px; letter-spacing: 0.05em; }   /* → 0.7px が子へ降りる */
+  .ib-12 { font-size: 12px; letter-spacing: 0.05em; }   /* → 0.6px が子へ降りる */
+  .ib-14 .child-28 { font-size: 28px; font-weight: 700; line-height: 1.6; }
+  .ib-14 .child-16 { font-size: 16px; font-weight: 600; }
+  .ib-12 .child-20 { font-size: 20px; font-weight: 700; line-height: 1.6; }
+  .ib-note { font-family: var(--font-en-01); font-size: 11px; color: var(--color-main-02);
+             letter-spacing: .04em; margin-top: 6px; }
+
+  /* ---------- 06 Weight ---------- */
+  .weight-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                 gap: 16px; margin-top: 26px; }
+  .weight-card { border: 1px solid var(--color-border-02); background: var(--white); padding: 18px; }
+  .weight-card .sample { font-size: 22px; line-height: 1.6; letter-spacing: 0.05em; }
+  .weight-card .label { font-family: var(--font-en-01); font-size: 11px; letter-spacing: .05em;
+                        color: var(--color-main-02); margin-top: 10px; line-height: 1.6; }
+  .w400 { font-weight: 400; } .w500 { font-weight: 500; }
+  .w600 { font-weight: 600; } .w700 { font-weight: 700; }
+  .weight-card.is-same { border-color: var(--color-key-06); }
+
+  /* ---------- 07 Components ---------- */
+  .comp-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 24px; }
+  .pill { display: inline-flex; align-items: center; justify-content: center;
+          min-width: 220px; padding: 14px 28px; border-radius: 64px;
+          background: var(--color-gray-01); color: var(--color-main-02);
+          font-size: 16px; font-weight: 500; letter-spacing: 0.05em; line-height: 1.5;
+          text-decoration: none; border: 1px solid var(--color-border-02); }
+  .section-alt .pill { background: var(--white); }
+  .badge-new { display: inline-flex; align-items: center; justify-content: center;
+               width: 28px; height: 28px; border-radius: 50%;
+               background: var(--color-key-01); color: var(--white);
+               font-family: var(--font-en-01); font-size: 14px; font-weight: 400;
+               letter-spacing: 0.05em; }
+  .chip { display: inline-block; padding: 1.3px 6.5px; border-radius: 4px;
+          background: var(--color-key-06); color: var(--white);
+          font-size: 13px; font-weight: 500; letter-spacing: 0.05em; line-height: 1.3; }
+  .chip-soon { background: var(--color-main-02); }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+           gap: 24px; margin-top: 28px; }
+  /* ★学科カード：写真の上に linear-gradient を重ねて白文字を載せる（影は使わない）
+     面（写真の代役のグラデ）とヴェールは .course-card 自身に重ねて持たせる。
+     絶対配置の兄弟要素にすると lint が地色を追えず「白地に白文字」と誤検出する。 */
+  .course-card { position: relative; display: block; min-height: 150px; padding: 18px;
+                 text-decoration: none; color: var(--white); overflow: hidden;
+                 background-image: linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,.24) 100%),
+                                   linear-gradient(135deg, #9aa7b0 0%, #5d6b74 100%); }
+  .course-card .cc-body { position: relative; display: flex; flex-direction: column;
+                          justify-content: flex-end; min-height: 114px; }
+  .course-card .cc-dept { font-size: 13px; font-weight: 500; line-height: 1.80;
+                          letter-spacing: 0.05em; }
+  .course-card .cc-bar { height: 4px; width: 48px; margin-bottom: 10px; }
+  .bar-02 { background: var(--color-key-02); } .bar-04 { background: var(--color-key-04); }
+  .bar-05 { background: var(--color-key-05); } .bar-c4 { background: var(--color-course-04); }
+
+  /* 重要なお知らせ：角丸を上下で分けて指定する */
+  .important { margin-top: 28px; max-width: 520px; }
+  .important-head { background: var(--color-key-08); color: var(--white);
+                    border-radius: 8px 8px 0 0; padding: 8px 14px;
+                    font-size: 13px; font-weight: 600; letter-spacing: 0.05em; line-height: 1.5; }
+  .important-body { background: var(--white); border: 1px solid var(--color-border-02);
+                    border-top: none; border-radius: 0 0 8px 8px; padding: 14px; }
+  .important-body a { display: flex; gap: 12px; align-items: baseline;
+                      color: var(--color-main-01); text-decoration: none;
+                      font-size: 14px; font-weight: 500; letter-spacing: 0.05em; }
+  .important-body .d { font-family: var(--font-en-01); font-size: 12px; font-weight: 400;
+                       color: var(--color-main-02); flex: none; }
+
+  .tabs { display: flex; gap: 2px; margin-top: 28px; border-bottom: 1px solid var(--color-border-02); }
+  .tab { padding: 10px 22px; border-radius: 4px 4px 0 0; background: transparent;
+         color: var(--color-main-02); font-size: 16px; font-weight: 500;
+         letter-spacing: 0.05em; line-height: 1.5; text-decoration: none; }
+  .tab.is-on { background: var(--color-gray-01); color: var(--color-main-01); }
+  .section-alt .tab.is-on { background: var(--white); }
+
+  /* ---------- 08 News / Elevation ---------- */
+  .news { margin-top: 26px; border-top: 1px solid var(--color-border-02); }
+  .news a { display: flex; gap: 16px; align-items: center; padding: 14px 4px;
+            border-bottom: 1px solid var(--color-border-02);
+            color: var(--color-main-01); text-decoration: none; }
+  .news .d { font-family: var(--font-en-01); font-size: 12px; font-weight: 400;
+             letter-spacing: 0.05em; color: var(--color-main-01); flex: none; width: 92px; }
+  .news .t { font-size: 14px; font-weight: 500; letter-spacing: 0.05em; line-height: 1.8; }
+  .news .cat { font-size: 12px; font-weight: 600; letter-spacing: 0.05em;
+               color: var(--color-key-08); flex: none; width: 84px; }
+
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+               gap: 16px; margin-top: 26px; }
+  .elev { background: var(--white); border: 1px solid var(--color-border-02); padding: 20px; }
+  .elev-name { font-size: 13px; font-weight: 600; letter-spacing: 0.05em; }
+  .elev-val { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 11px;
+              color: var(--color-main-02); margin-top: 6px; }
+
+  /* ---------- 09 Forms ---------- */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+               gap: 20px; margin-top: 26px; }
+  .field label { display: block; font-size: 13px; font-weight: 600; letter-spacing: 0.05em;
+                 margin-bottom: 6px; }
+  .field input { width: 100%; padding: 10px 12px; border: 1px solid var(--color-border-02);
+                 border-radius: 4px; background: var(--white); color: var(--color-main-01);
+                 font-family: var(--font-ja-01); font-size: 14px; font-weight: 500;
+                 letter-spacing: 0.05em; }
+  /* ★autofocus は使わない。フォーカス状態はクラスで見せる */
+  .field.is-focus input { border-color: var(--color-key-02); outline: 2px solid var(--color-focus-01);
+                          outline-offset: 1px; }
+  .field-msg { font-size: 12px; font-weight: 500; letter-spacing: 0.05em;
+               color: var(--color-main-02); margin-top: 6px; }
+
+  /* ---------- Responsive table ---------- */
+  .bp { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 13px; }
+  .bp th, .bp td { border: 1px solid var(--color-border-02); padding: 9px 12px;
+                   text-align: left; letter-spacing: 0.05em; }
+  .bp th { background: var(--color-gray-01); font-weight: 600; font-size: 12px; }
+  .section-alt .bp th { background: var(--white); }
+  .bp .num { font-family: var(--font-en-01); letter-spacing: 0.04em; }
+  .bp tr.edge td { background: rgba(87,172,206,.14); font-weight: 600; }
+
+  /* ---------- Footer ---------- */
+  .footer { background: var(--color-main-01); color: var(--white); padding: 48px 0 32px; }
+  .footer .wrap { max-width: var(--container); }
+  .footer-head { font-size: 16px; font-weight: 600; letter-spacing: 0.05em; line-height: 1.8; }
+  .footer-cols { display: flex; flex-wrap: wrap; gap: 48px; margin-top: 24px; }
+  .footer-col a { display: block; font-size: 12px; font-weight: 500; letter-spacing: 0.05em;
+                  line-height: 2.0; color: var(--white); text-decoration: none; opacity: .86; }
+  .footer-copy { font-family: var(--font-en-01); font-size: 11px; letter-spacing: 0.06em;
+                 color: rgba(255,255,255,.72); margin-top: 32px; }
+
+  @media (max-width: 767px) {
+    .ttl-demo { gap: 20px; }
+    .yaku-grid { grid-template-columns: 1fr; }
+    .type-row { flex-direction: column; gap: 10px; }
+    .type-meta { width: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <a class="logo" href="#">女子美術大学<small>JOSHIBI UNIVERSITY OF ART AND DESIGN</small></a>
+    <nav class="util">
+      <a href="#">公開講座</a><a href="#">情報の公表</a><a href="#">アクセス案内</a><a href="#">お問い合わせ</a>
+    </nav>
+  </div>
+  <nav class="gnav">
+    <a href="#">NEWS・展覧会</a><a href="#">女子美について</a><a href="#">大学・短大・大学院</a>
+    <a href="#">入試情報</a><a href="#">学生生活</a><a href="#">進路と就職</a>
+  </nav>
+</header>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">01 / Vertical Headings</div>
+    <div class="eyebrow">このサイトの骨格</div>
+    <h2 class="section-title">セクション見出しは縦組み。37px の列を左に立てる</h2>
+    <p class="section-lead"><code>writing-mode: vertical-rl</code> が実測 <b>17 要素</b>。すべて自社クラス（<code>home-pickup__ttl</code> など計 7 本の <code>home-*__ttl home-ttl-01</code>）で、外部ウィジェット由来ではない。<b>20px / weight 700 / line-height 1.85（37px）</b>で、見出しの色はセクションごとに Key Color を使い分ける。</p>
+
+    <div class="ttl-demo">
+      <h3 class="home-ttl-01 ttl-pickup"><b>ピックアップ</b><br><b>ニュース</b></h3>
+      <h3 class="home-ttl-01 ttl-examinee"><b>受験生の</b><br><b>みなさまへ</b></h3>
+      <h3 class="home-ttl-01 ttl-gallery"><b>美術館・</b><br><b>ギャラリー</b></h3>
+      <div class="ttl-body">
+        <p>実測では 1 行目が <code>x=252</code>、2 行目が <code>x=215</code> と<b>右から左</b>に並んでいる。<code>&lt;b&gt;</code> で行を包み、<code>vertical-rl</code> の自然な折り返しに任せればこの順序になる。</p>
+        <p style="margin-top:14px"><b><code>display: flex</code> で並べ直してはいけない。</b>DOM 順に左→右へ置かれ、日本語の縦組みとして読む向きと逆になる。lint は <code>writing-mode</code> の有無しか見ないので、機械では検出できない。</p>
+        <div class="ttl-caption">measured: 20px / 700 / lh 37px / letter-spacing 0.7px / column width 37px</div>
+      </div>
+    </div>
+
+    <div class="note"><b>ヒーローの黄緑の縦組み（<code>受験生ナビ</code> <code>女子美</code>）は実テキストではない。</b><code>mv_img_*.jpg</code>（1440×630）に焼き込まれていて、DOM には該当要素が無い。<b>ここを Web フォントで再現しようとしないこと。</b></div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">02 / Colors</div>
+    <div class="eyebrow">Color Palette</div>
+    <h2 class="section-title">ブランド色は 1 色ではなく 8 色ある</h2>
+    <p class="section-lead"><code>--color-key-01</code>〜<code>08</code> として宣言され、<b>セクション見出しの文字色と学科カードの面色</b>に使い分けられる。本文は純黒ではなく <code>#333</code>（可視 104 要素）。</p>
+
+    <div class="color-grid">
+      <div class="swatch"><div class="swatch-chip" style="background:#F2879F"></div><div class="swatch-body"><div class="swatch-name">key-01 ピンク</div><div class="swatch-hex">#F2879F</div><div class="swatch-use">★可視 28 要素で最多。NEW バッジの面、ピックアップ見出し</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#57ACCE"></div><div class="swatch-body"><div class="swatch-name">key-02 ブルー</div><div class="swatch-hex">#57ACCE</div><div class="swatch-use">デザイン・工芸学科（13 要素）／下層の h1・h2 の文字色</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#62B47B"></div><div class="swatch-body"><div class="swatch-name">key-04 グリーン</div><div class="swatch-hex">#62B47B</div><div class="swatch-use">アート・デザイン表現学科（15 要素）／受験生見出し</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#EA9C07"></div><div class="swatch-body"><div class="swatch-name">key-05 アンバー</div><div class="swatch-hex">#EA9C07</div><div class="swatch-use">短期大学部のカード面（8 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#E67556"></div><div class="swatch-body"><div class="swatch-name">key-06 オレンジ</div><div class="swatch-hex">#E67556</div><div class="swatch-use">美術館・ギャラリー見出し／「開催中」バッジの面</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#BC8E9C"></div><div class="swatch-body"><div class="swatch-name">key-08 ダスティローズ</div><div class="swatch-hex">#BC8E9C</div><div class="swatch-use">「お知らせ」のラベル文字（7 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#C38A57"></div><div class="swatch-body"><div class="swatch-name">key-03 ブラウン</div><div class="swatch-hex">#C38A57</div><div class="swatch-use">面として 3 要素</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#FFF000"></div><div class="swatch-body"><div class="swatch-name">course-04 蛍光イエロー</div><div class="swatch-hex">#FFF000</div><div class="swatch-use">共創デザイン学科だけの色（3 要素）。key 系に同値が無い唯一の色</div></div></div>
+      <div class="swatch is-unused"><div class="swatch-chip" style="background:#4A699B"></div><div class="swatch-body"><div class="swatch-name">key-07 ネイビー</div><div class="swatch-hex">#4A699B</div><div class="swatch-use">★宣言はあるが両ページとも可視 0 要素。使わない</div></div></div>
+      <div class="swatch is-unused"><div class="swatch-chip" style="background:#A2FF8B"></div><div class="swatch-body"><div class="swatch-name">examinee ライム</div><div class="swatch-hex">#A2FF8B</div><div class="swatch-use">★宣言のみ・可視 0 要素（ヒーロー写真に焼き込み）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#333"></div><div class="swatch-body"><div class="swatch-name">main-01 本文</div><div class="swatch-hex">#333333</div><div class="swatch-use">★可視 104 要素。純黒 #000 は使わない</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#F7F7F5"></div><div class="swatch-body"><div class="swatch-name">gray-01 面</div><div class="swatch-hex">#F7F7F5</div><div class="swatch-use">タブの面・資料請求ブロック。★下層ページのページ背景でもある</div></div></div>
+    </div>
+
+    <div class="note"><b><code>--color-key-*</code> と <code>--color-course-*</code> は 5 色が同じ値で二重に宣言されている。</b>新規実装では <code>--color-key-*</code> 側を正とし、<code>--color-course-04</code> の <code>#FFF000</code> だけを別枠で持つとよい。</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">03 / Typography</div>
+    <div class="eyebrow">秀英角ゴシック銀 ＋ YakuHanJP ＋ tt-commons-pro</div>
+    <h2 class="section-title">書体は 3 本立て。数字だけ欧文書体に逃がす</h2>
+    <p class="section-lead">和文 <b>秀英角ゴシック銀 Std</b>（Adobe Fonts・M/DB の 2 ウェイト）、約物 <b>YakuHanJP 4.0.1</b>（npm CDN・3 ウェイト）、数字と欧文 <b>tt-commons-pro</b>（実測 25 要素）。フォント要求は計 8 件で、ホストは <code>cdn.jsdelivr.net</code> / <code>use.typekit.net</code> / <code>p.typekit.net</code> の 3 つ。</p>
+
+    <div class="type-row"><div class="type-meta"><b>サイトタイトル</b>28px / 700<br>lh 2.00（56px）<br>ls 0.7px</div><div class="type-sample"><div class="t-h1">女子美術大学・短期大学部・大学院</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>★縦組み見出し</b>20px / 700<br>lh 1.85（37px）<br>実測 7 本</div><div class="type-sample"><div class="t-ttl">ピックアップニュース</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>下層の中見出し</b>20px / <b>500</b><br>lh 1.40 / ls normal<br>★700 にしない</div><div class="type-sample"><div class="t-h2sub">教育理念と方針</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>カード見出し</b>18px / 600<br>lh 1.80（32.4px）</div><div class="type-sample"><div class="t-h3">受験生向け特設ページ【受験生ナビ】がリニューアルしました</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>グローバルナビ</b>15px / 600<br>lh 1.50 / ls 0.8px</div><div class="type-sample"><div class="t-nav">NEWS・展覧会／女子美について／大学・短大・大学院</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>★本文</b>14px / <b>500</b><br>lh 2.00（28px）<br>実測 109 要素</div><div class="type-sample"><div class="t-body">本学園は「芸術による女性の自立」、「女性の社会的地位の向上」、「専門の技術家・美術教師の養成」を建学の精神として掲げ、今日までの 100 有余年にわたる長い歴史を重ねてきました。</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>ラベル</b>13px / 600<br>lh 1.50（19.5px）</div><div class="type-sample"><div class="t-label">重要なお知らせ</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>ユーティリティ</b>12px / 500<br>lh 2.00 / ls 0.8px</div><div class="type-sample"><div class="t-util">公開講座　情報の公表　アクセス案内</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>★日付（欧文書体）</b>tt-commons-pro<br>12px / 400 / lh 2.00</div><div class="type-sample"><div class="t-date">2026.07.27 — 2026.10.29</div></div></div>
+
+    <div class="note"><b>実サイトの <code>body</code> は <code>font-family: sans-serif</code> の 1 語しかない。</b>設計上のスタックは <code>--font-ja-01</code> としてコンポーネント側に当てられている（実測 236 要素）。<b><code>body</code> の computed style を見て「このサイトはヒラギノ」と読むと間違える。</b></div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">04 / YakuHanJP</div>
+    <div class="eyebrow">palt を 1 要素も使わない</div>
+    <h2 class="section-title">約物の詰めは font-feature-settings ではなくサブセットフォントで</h2>
+    <p class="section-lead"><code>font-feature-settings</code> は両ページとも <b>0 要素</b>（全要素 <code>normal</code>）。代わりに <b>YakuHanJP</b>（<code>「」（）、。</code> だけを切り出したサブセット）を和文スタックの<b>先頭</b>に置く。仮名・漢字は秀英角ゴシック銀の素の字送りのまま残り、<b>約物だけが詰まる</b>。</p>
+
+    <div class="yaku-grid">
+      <div class="yaku-box">
+        <div class="yaku-label">★実サイト: YakuHanJP を先頭に置く</div>
+        <div class="yaku-sample yaku-on">「芸術による女性の自立」、<br>（女子美術大学・短期大学部）。</div>
+      </div>
+      <div class="yaku-box">
+        <div class="yaku-label">比較: YakuHanJP をスタックから外す</div>
+        <div class="yaku-sample yaku-off">「芸術による女性の自立」、<br>（女子美術大学・短期大学部）。</div>
+      </div>
+    </div>
+
+    <div class="note"><b><code>palt</code> を足さないこと。</b>YakuHanJP と二重になって約物が詰まりすぎる。また <b>YakuHanJP は必ずスタックの先頭に置く</b>——2 番目に置くと秀英角ゴ銀の約物が先に当たり、詰めがまったく効かない。</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">05 / Letter Spacing</div>
+    <div class="eyebrow">em 宣言 → px 継承</div>
+    <h2 class="section-title">0.6 / 0.7 / 0.8px の 3 値は「サイズ別」ではなく「親別」</h2>
+    <p class="section-lead">実測値は 3 つに割れるが、サイズごとに <code>em</code> を当て直しているのではない。<b>12px / 14px / 16px の箱がそれぞれ <code>0.05em</code> を宣言し、そこから px が子へ降りている。</b></p>
+
+    <table class="ls-table">
+      <tr><th>要素のサイズ</th><th>letter-spacing</th><th>実質 em</th><th>件数</th><th>読み方</th></tr>
+      <tr class="hl"><td>14px</td><td class="num">0.7px</td><td class="num">0.050em</td><td class="num">35</td><td>14px の箱が自分で宣言</td></tr>
+      <tr class="hl"><td>16px</td><td class="num">0.7px</td><td class="num">0.044em</td><td class="num">41</td><td><b>14px の親から継承</b></td></tr>
+      <tr class="hl"><td>28px</td><td class="num">0.7px</td><td class="num">0.025em</td><td class="num">1</td><td><b>14px の親から継承</b></td></tr>
+      <tr><td>12px</td><td class="num">0.6px</td><td class="num">0.050em</td><td class="num">57</td><td>12px の箱が自分で宣言</td></tr>
+      <tr><td>12px</td><td class="num">0.8px</td><td class="num">0.067em</td><td class="num">16</td><td><b>16px の親から継承</b></td></tr>
+      <tr><td>15px</td><td class="num">0.8px</td><td class="num">0.053em</td><td class="num">12</td><td>16px の親から継承</td></tr>
+      <tr><td>13px</td><td class="num">0.65px</td><td class="num">0.050em</td><td class="num">2</td><td>「開催中」バッジ</td></tr>
+    </table>
+
+    <div class="inherit-demo">
+      <div class="inherit-box ib-14">
+        <div class="ib-label">14px の箱に letter-spacing: 0.05em（= 0.7px）を 1 回だけ宣言</div>
+        <div class="child-28">28px の見出しも 0.7px（0.025em 相当）</div>
+        <div class="child-16">16px の小見出しも 0.7px（0.044em 相当）</div>
+        <div class="ib-note">子で em を書き直していないので、親の px がそのまま降りる</div>
+      </div>
+      <div class="inherit-box ib-12">
+        <div class="ib-label">12px の箱に letter-spacing: 0.05em（= 0.6px）を 1 回だけ宣言</div>
+        <div class="child-20">20px の見出しも 0.6px（0.030em 相当）</div>
+        <div class="ib-note">同じ 20px でも、親が 12px か 16px かで字間が変わる</div>
+      </div>
+    </div>
+
+    <div class="note"><b><code>letter-spacing: 0.05em</code> はブロックの先頭で 1 回だけ宣言する。</b>子要素で <code>em</code> を再宣言すると、28px の見出しの字間が 1.4px（倍）になってこのサイトの質感から外れる。一方 <b><code>line-height</code> は無単位の比率で書く</b>——px 固定にすると 14px / 20px / 28px で行送りが破綻する。</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">06 / Font Weight</div>
+    <div class="eyebrow">効くのは 500 と 600 の 2 段だけ</div>
+    <h2 class="section-title">700 を当てても DB（600）で出る</h2>
+    <p class="section-lead"><code>document.fonts</code> に載っている <code>dnp-shuei-gothic-gin-std</code> は <b>500（M）と 600（DB）の 2 本だけ</b>。CSS が 700 を指定している 15 要素は、CSS フォントマッチングで 600 に解決される。<b>本文の既定は 500</b>（実測 169 要素で最多。400 は 26 要素しかなく、そのほとんどが tt-commons-pro の日付）。</p>
+
+    <div class="weight-grid">
+      <div class="weight-card"><div class="sample w400">芸術による女性の自立</div><div class="label">weight 400 — @font-face に無い。500（M）で出る</div></div>
+      <div class="weight-card"><div class="sample w500">芸術による女性の自立</div><div class="label">★weight 500（M）— 本文の既定。実測 169 要素</div></div>
+      <div class="weight-card"><div class="sample w600">芸術による女性の自立</div><div class="label">★weight 600（DB）— 見出し・ナビ。実測 52 要素</div></div>
+      <div class="weight-card is-same"><div class="sample w700">芸術による女性の自立</div><div class="label">weight 700 — 実測 15 要素だが <b>600 と同じ DB で出る</b></div></div>
+    </div>
+
+    <div class="note"><b>太さで差を付けられるのは 500 → 600 の 1 段だけ。</b>「もっと太く」は作れないので、階層はサイズ・色・縦組みで付ける。<br><b>CJK の字幅は太さを変えても動かない</b>ので、隠し要素の幅を測る定番の手では和文のウェイト差を判定できない。判定は <code>document.fonts</code> に載っているウェイトの本数で行う。</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">07 / Components</div>
+    <div class="eyebrow">角丸は 50% / 64px / 4px</div>
+    <h2 class="section-title">バッジは正円、主要導線はピル</h2>
+    <p class="section-lead"><code>border-radius: 50%</code> が <b>実測 74 要素</b>でサイト最多（<code>NEW</code> バッジ）。主要導線は <code>64px</code> のピル（5 要素）、タグは <code>4px</code>。「重要なお知らせ」だけ <b>上下で角丸を分けて指定</b>している（<code>8px 8px 0 0</code> ／ <code>0 8px 8px</code>）。</p>
+
+    <div class="comp-row">
+      <a href="#" class="pill">女子美について</a>
+      <a href="#" class="pill">大学の学部・学科一覧</a>
+      <span class="badge-new">NEW</span>
+      <span class="chip">開催中</span>
+      <span class="chip chip-soon">近日開催</span>
+    </div>
+
+    <div class="tabs">
+      <a href="#" class="tab is-on">受験生向け</a>
+      <a href="#" class="tab">在学生向け</a>
+      <a href="#" class="tab">卒業生向け</a>
+      <a href="#" class="tab">企業・教育機関の方</a>
+    </div>
+
+    <div class="cards">
+      <a href="#" class="course-card"><div class="cc-body"><div class="cc-bar bar-02"></div><div class="cc-dept">デザイン・工芸学科<br>ヴィジュアルデザイン専攻</div></div></a>
+      <a href="#" class="course-card"><div class="cc-body"><div class="cc-bar bar-04"></div><div class="cc-dept">アート・デザイン表現学科<br>メディア表現領域</div></div></a>
+      <a href="#" class="course-card"><div class="cc-body"><div class="cc-bar bar-05"></div><div class="cc-dept">短期大学部<br>造形学科デザインコース</div></div></a>
+      <a href="#" class="course-card"><div class="cc-body"><div class="cc-bar bar-c4"></div><div class="cc-dept">共創デザイン学科</div></div></a>
+    </div>
+
+    <div class="important">
+      <div class="important-head">重要なお知らせ</div>
+      <div class="important-body">
+        <a href="#"><span class="d">2026.07.27</span><span>学生募集要項（芸術学部、短期大学部、大学院美術研究科）を公開しました</span></a>
+      </div>
+    </div>
+
+    <div class="note">学科カードの白文字は<b>影ではなく <code>linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,.24) 100%)</code> のオーバーレイ</b>で可読性を確保している（実測 3 要素）。</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">08 / News &amp; Elevation</div>
+    <div class="eyebrow">box-shadow は 0 種</div>
+    <h2 class="section-title">影を一切使わない。階層は面の色と角丸だけ</h2>
+    <p class="section-lead">両ページで <code>box-shadow</code> は <b>1 件も検出されなかった</b>。カードを浮かせず、<code>#ffffff</code> と <code>#F7F7F5</code> の 2 面と罫線（<code>#ccc</code>）で区切る。</p>
+
+    <div class="news">
+      <a href="#"><span class="d">2026.10.29</span><span class="cat">お知らせ</span><span class="t">女子美アートミュージアムで卒業生展を開催します</span><span class="badge-new">NEW</span></a>
+      <a href="#"><span class="d">2026.07.27</span><span class="cat">お知らせ</span><span class="t">学生募集要項（大学院美術研究科 博士前期課程）の公開について</span></a>
+      <a href="#"><span class="d">2026.06.14</span><span class="cat">展覧会</span><span class="t">【広報誌 最新版刊行のお知らせ】No.203 サステナビリティ特集</span></a>
+    </div>
+
+    <div class="elev-grid">
+      <div class="elev"><div class="elev-name">影なし（すべての要素）</div><div class="elev-val">box-shadow: none</div></div>
+      <div class="elev"><div class="elev-name">面で区切る</div><div class="elev-val">background: #F7F7F5</div></div>
+      <div class="elev"><div class="elev-name">罫線で区切る</div><div class="elev-val">border: 1px solid #ccc</div></div>
+    </div>
+
+    <div class="note"><b><code>0 2px 8px rgba(0,0,0,.1)</code> のような既定の影を足さないこと。</b>このサイトの平らな質感が壊れる。写真の上の白文字も、影ではなく <code>linear-gradient</code> のオーバーレイで処理する。</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">09 / Spacing &amp; Forms</div>
+    <div class="eyebrow">コンテナ 1074px</div>
+    <h2 class="section-title">本文幅は 1074px、gap は 10 / 24 / 26px</h2>
+    <p class="section-lead">実測のコンテナ幅は <code>1074px</code> が 7 要素で最多（両ページ共通）。広い面は <code>1116px</code> / <code>1212px</code>、記事カラムは <code>922px</code> / <code>994px</code>。<code>gap</code> はトップが <code>10px</code> / <code>24px</code>、下層が <code>0 26px</code>（7 要素）。</p>
+
+    <div class="form-grid">
+      <div class="field"><label for="f1">お名前</label><input id="f1" type="text" placeholder="女子美 花子"><div class="field-msg">全角でご入力ください</div></div>
+      <div class="field is-focus"><label for="f2">メールアドレス（フォーカス状態）</label><input id="f2" type="text" value="info@example.ac.jp"><div class="field-msg">資料請求の控えをお送りします</div></div>
+    </div>
+
+    <div class="section-label" style="margin-top:56px">Responsive</div>
+    <h2 class="section-title">390px まで固定、それ以下だけ流体</h2>
+    <table class="bp">
+      <tr><th>ビューポート幅</th><th>html</th><th>body</th><th>備考</th></tr>
+      <tr><td>1440px</td><td class="num">16px</td><td class="num">16px</td><td>固定</td></tr>
+      <tr><td>1024px</td><td class="num">16px</td><td class="num">16px</td><td>固定（カード見出しだけ 18px → 20px）</td></tr>
+      <tr><td>768px</td><td class="num">16px</td><td class="num">16px</td><td>固定</td></tr>
+      <tr class="edge"><td>390px（設計幅）</td><td class="num">16px</td><td class="num">16px</td><td>ここまで固定</td></tr>
+      <tr class="edge"><td>389px</td><td class="num">15.959px</td><td class="num">15.959px</td><td>4.1025641026vw に切り替わる</td></tr>
+      <tr><td>375px</td><td class="num">15.3846px</td><td class="num">15.3846px</td><td>—</td></tr>
+    </table>
+
+    <div class="note"><b>式は <code>4.1025641026vw</code>（= 100vw ÷ 24.375）。390px でちょうど 16px に着地するので、境目で段差が出ない（連続）。</b>モバイル設計幅は 390px で、<b>390px より広い画面では一切スケールしない</b>。可変なのは最小側だけ。<br>ブレークポイントは <code>767px</code> / <code>991px</code> / <code>1024px</code> / <code>992px</code> / <code>1025–1600px</code>。カード見出し <code>h3</code> だけ<b>タブレットで 18px → 20px と大きくなる</b>（767px 以下で 16px）。</div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <p class="footer-head">芸術による女性の自立、女性の社会的地位の向上</p>
+    <div class="footer-cols">
+      <div class="footer-col"><a href="#">NEWS・展覧会</a><a href="#">女子美について</a><a href="#">大学・短大・大学院</a></div>
+      <div class="footer-col"><a href="#">入試情報</a><a href="#">学生生活</a><a href="#">進路と就職</a></div>
+      <div class="footer-col"><a href="#">美術館・ギャラリー</a><a href="#">研究・社会貢献</a><a href="#">同窓会</a></div>
+      <div class="footer-col"><a href="#">サイトポリシー</a><a href="#">プライバシーポリシー</a><a href="#">サイトマップ</a></div>
+    </div>
+    <p class="footer-copy">© Joshibi University of Art and Design — Design tokens measured 2026-11-03</p>
+  </div>
+</footer>
+
+</body>
+</html>

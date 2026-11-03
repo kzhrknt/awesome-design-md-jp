@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (607 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (610 sites)</a>
 </p>
 
 <table>
@@ -941,6 +941,11 @@
 </tr>
 <tr>
 <td align="center"><strong>ハレクラニ沖縄</strong><br><img src="design-md/halekulani-okinawa/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>女子美術大学</strong><br><img src="design-md/joshibi/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>熊谷組</strong><br><img src="design-md/kumagaigumi/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>関西ペイント</strong><br><img src="design-md/kansaipaint/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1609,11 +1614,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [ドトールコーヒー (DOUTOR COFFEE)](https://www.doutor.co.jp/) | Food & Beverage / Corporate | [DESIGN.md](design-md/doutor/DESIGN.md) | [preview.html](design-md/doutor/preview.html) |
 | [福田美術館 (FUKUDA ART MUSEUM)](https://fukuda-art-museum.jp/) | Museum / Art | [DESIGN.md](design-md/fukuda-art/DESIGN.md) | [preview.html](design-md/fukuda-art/preview.html) |
 | [ハレクラニ沖縄 (HALEKULANI OKINAWA)](https://www.okinawa.halekulani.com/) | Hotel & Resort | [DESIGN.md](design-md/halekulani-okinawa/DESIGN.md) | [preview.html](design-md/halekulani-okinawa/preview.html) |
+| [女子美術大学 (Joshibi University of Art and Design)](https://www.joshibi.ac.jp/) | University / Art Education | [DESIGN.md](design-md/joshibi/DESIGN.md) | [preview.html](design-md/joshibi/preview.html) |
+| [熊谷組 (KUMAGAI GUMI)](https://www.kumagaigumi.co.jp/) | Construction / Corporate | [DESIGN.md](design-md/kumagaigumi/DESIGN.md) | [preview.html](design-md/kumagaigumi/preview.html) |
+| [関西ペイント (Kansai Paint)](https://www.kansai.co.jp/) | Chemical / Corporate | [DESIGN.md](design-md/kansaipaint/DESIGN.md) | [preview.html](design-md/kansaipaint/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (607 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (610 sites)</a>
 </p>
 
 <table>
@@ -2520,6 +2528,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>ハレクラニ沖縄</strong><br><img src="design-md/halekulani-okinawa/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>女子美術大学</strong><br><img src="design-md/joshibi/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>熊谷組</strong><br><img src="design-md/kumagaigumi/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>関西ペイント</strong><br><img src="design-md/kansaipaint/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

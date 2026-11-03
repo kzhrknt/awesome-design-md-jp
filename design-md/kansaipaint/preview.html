@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 関西ペイント（Kansai Paint）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;500;600;700&family=Barlow+Condensed:wght@600&display=swap" rel="stylesheet">
+<style>
+  /* ===========================================================
+     関西ペイント 実測プレビュー（2026-11-03）
+     対象: https://www.kansai.co.jp/ , /company/
+     ★実サイトの CSS Custom Properties は実質 0 個
+     （検出された 2 個は WordPress / Gutenberg の --wp--preset--font-size--*）。
+     以下は computed style の実測値を変数に整理したもの。
+     =========================================================== */
+  :root {
+    /* === Colors（実測） === */
+    --blue:      #0068B8;  /* ★可視 16 要素の文字色。カテゴリラベル・詳しく見る */
+    --blue-dark: #005BAC;  /* ★タグチップ専用（12 要素）。文字と 1px の枠で同じ値 */
+    --navy:      #27455C;  /* 面として 6 要素 */
+    --ink:       #19191A;  /* 見出し（21 要素）。下層ヒーローの地でもある */
+    --text:      #383838;  /* ★本文（42 要素）。html{color:#383838} */
+    --sublabel:  #5C6373;  /* ★グローバルナビの和文ラベル専用（6 要素） */
+    --date:      #626366;  /* ニュースの日付（10 要素） */
+    --inactive:  #98A6B3;  /* 言語切替の非選択 */
+    --lang-on:   #00143D;  /* 言語切替の選択中 */
+    --border:    #DBDBDB;
+    --surface:   #F2F1F1;
+    --surface-2: #F5F5F5;
+    --surface-tint: #F5F9FC;  /* わずかに青を帯びた面。KP STREAM / Recommend */
+    --white:     #ffffff;
+    --black:     #000000;
+    /* ★CMP（OneTrust）の青。ブランド色ではない。比較表示のためだけに持つ */
+    --cmp-blue:  #3860BE;
+
+    /* === Fonts ===
+       和文 Noto Sans JP（Google Fonts・400/500/700 が loaded）。
+       欧文 Inter（400/500/600/700 が loaded）。日付だけ Barlow Condensed 600。
+       ★Barlow（非コンデンス）の 400/500/700 は宣言のみで両ページとも unloaded。 */
+    --font-ja: "Noto Sans JP", sans-serif;
+    --font-en: Inter, sans-serif;
+    --font-date: "Barlow Condensed", sans-serif;
+
+    /* ★影は 1 種類だけ。黒ではなく青みのグレー、オフセットは右下 */
+    --shadow: rgba(49, 100, 152, 0.1) 5px 5px 30px 0;
+  }
+
+  /* ===========================================================
+     ★このサイトの核心：html が vw で、要素は全部 rem。
+     max-width を持つコンテナが 1 つも無い（実測の最大幅は 100% のみ）。
+
+       デスクトップ  1.1713030747vw （= 16 ÷ 1366・設計幅 1366px）
+                     ただし 1366px 以上では 16px で止まる
+       モバイル ≤750px  4.2666666667vw （= 16 ÷ 375・設計幅 375px）
+
+     ★751px → 750px で 8.79649px → 32px（3.64 倍）に跳ぶ。
+       最悪の幅は 751px で、本文が 8.8px になる。
+       規定の 4 幅（1440/1200/834/375px）では崖が見えない。
+     =========================================================== */
+  html { font-size: 16px; }
+  @media (min-width: 751px) { html { font-size: 1.1713030747vw; } }
+  @media (min-width: 1366px) { html { font-size: 16px; } }
+  @media (max-width: 750px) { html { font-size: 4.2666666667vw; } }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--text);
+    font-family: var(--font-ja);
+    font-size: 1rem;                 /* 1440px で 16px */
+    font-weight: 400;
+    line-height: 1.4;                /* ★実測 107 要素で最多。和文としては詰まっている */
+    letter-spacing: 0.03em;          /* ★body に1回だけ。0.48px が全子孫へ px で降りる */
+    -webkit-font-smoothing: antialiased;
+    /* ★font-feature-settings は書かない。実サイトは palt を 0 要素しか使っていない */
+  }
+  @media (max-width: 750px) { body { font-size: 0.9375rem; } }
+
+  /* ---------- 共通パーツ ---------- */
+  /* ★max-width を持たない。幅の制御は html の vw に委ねる */
+  .wrap { padding: 0 3rem; }
+
+  .header { border-bottom: 1px solid var(--border); background: var(--white); }
+  .header-top { display: flex; align-items: center; gap: 1.5rem; padding: 1.2rem 3rem .4rem; }
+  .logo { display: flex; align-items: center; gap: .7rem; text-decoration: none; color: var(--ink); }
+  .logo-mark { width: 2.4rem; height: 2.4rem;
+               background: linear-gradient(135deg, var(--blue) 0 50%, #D7000F 50% 100%); }
+  .logo-text { font-family: var(--font-en); font-size: 1.3rem; font-weight: 700;
+               letter-spacing: .04em; line-height: 1.1; }
+  .logo-text small { display: block; font-size: .72em; font-weight: 500; color: var(--sublabel); }
+  .util { margin-left: auto; display: flex; gap: 1.2rem; align-items: center; }
+  .util a { font-size: .75rem; color: var(--text); text-decoration: none; }
+  .lang { display: flex; gap: .3rem; font-family: var(--font-en); font-size: .75rem; }
+  .lang a { text-decoration: none; }
+  .lang .on { color: var(--lang-on); font-weight: 600; }
+  .lang .off { color: var(--inactive); }
+
+  /* ★ナビは「英字 Inter 16px/600 ＋ 和文 11px/500 #5C6373」の 2 段 */
+  .gnav { display: flex; gap: 2.4rem; padding: .4rem 3rem 1rem; }
+  .gnav a { text-decoration: none; text-align: center; }
+  .gnav .en { display: block; font-family: var(--font-en); font-size: 1rem; font-weight: 600;
+              letter-spacing: normal; line-height: 1.4; color: var(--black); }
+  .gnav .ja { display: block; font-size: .6875rem; font-weight: 500; line-height: 1.4;
+              color: var(--sublabel); }
+
+  /* ---------- Hero ---------- */
+  .hero { position: relative; min-height: 30rem; display: flex; align-items: center;
+          padding: 0 3rem; color: var(--white);
+          background-image: linear-gradient(90deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.05) 60%),
+                            linear-gradient(120deg, #7fa05c 0%, #4e7fa8 55%, #2b4a6b 100%); }
+  .hero h1 { font-family: var(--font-en); font-size: 3.5rem; font-weight: 700;
+             line-height: 1.4; letter-spacing: 0.1rem; }
+  .hero .sub { display: flex; align-items: center; gap: 1rem; margin-top: 1.2rem; }
+  .hero .circle { width: 2.6rem; height: 2.6rem; border-radius: 50%;
+                  border: 1px solid var(--white); display: flex; align-items: center;
+                  justify-content: center; font-family: var(--font-en); font-size: 1.1rem; }
+  .hero .sub span { font-size: 1rem; font-weight: 700; }
+  .hero .idx { position: absolute; right: 3rem; bottom: 2rem; display: flex; gap: 1.2rem;
+               font-family: var(--font-en); font-size: .6875rem; font-weight: 700; }
+  .hero .idx i { font-style: normal; opacity: .55; }
+  .hero .idx i.on { opacity: 1; width: 1.8rem; height: 1.8rem; border-radius: 50%;
+                    border: 1px solid var(--white); display: flex; align-items: center;
+                    justify-content: center; }
+  /* ★縦組みは実測 1 要素だけ。欧文の側面タブで、和文の組版ではない */
+  .scroll-down__txt { position: absolute; right: 1.2rem; top: 50%;
+                      writing-mode: vertical-rl; font-family: var(--font-en);
+                      font-size: .8125rem; font-weight: 600; letter-spacing: .03em; }
+
+  /* ---------- Section ---------- */
+  .section { padding: 4.5rem 0; }
+  .section-alt { background: var(--surface-tint); }
+  .section-gray { background: var(--surface); }
+  .section-label { font-family: var(--font-en); font-size: .75rem; letter-spacing: .12em;
+                   color: var(--date); margin-bottom: .4rem; }
+  /* ★このサイトの型：和文の小ラベル ＋ 欧文の大見出し */
+  .sec-head { margin-bottom: 1rem; }
+  .sec-head .ja { display: block; font-size: .75rem; font-weight: 700; line-height: 1.5;
+                  color: var(--ink); }
+  .sec-head .en { display: block; font-family: var(--font-en); font-size: 3rem;
+                  font-weight: 700; line-height: 1; letter-spacing: normal; color: var(--ink); }
+  .section-title { font-size: 1.375rem; font-weight: 700; line-height: 1.4; color: var(--ink);
+                   margin-bottom: .8rem; }
+  .section-lead { font-size: .9375rem; line-height: 1.87; max-width: 78ch; }
+  .note { margin-top: 1.8rem; padding: 1rem 1.2rem; background: var(--surface-tint);
+          border-left: 3px solid var(--blue); font-size: .8125rem; line-height: 1.9;
+          border-radius: 2px; }
+  .section-alt .note { background: var(--white); }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .92em;
+         background: rgba(25,25,26,.07); padding: .05rem .3rem; border-radius: 2px;
+         letter-spacing: normal; }
+  b { font-weight: 700; }
+
+  /* ---------- Cliff table ---------- */
+  .bp { width: 100%; border-collapse: collapse; margin-top: 1.6rem; font-size: .8125rem; }
+  .bp th, .bp td { border: 1px solid var(--border); padding: .6rem .8rem; text-align: left; }
+  .bp th { background: var(--surface); font-weight: 700; font-size: .75rem; color: var(--ink); }
+  .section-alt .bp th, .section-gray .bp th { background: var(--white); }
+  .bp .num { font-family: var(--font-en); letter-spacing: .02em; }
+  .bp tr.cliff td { background: rgba(0,104,184,.1); font-weight: 700; }
+
+  /* ---------- Colors ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+                gap: 1rem; margin-top: 1.8rem; }
+  .swatch { border: 1px solid var(--border); background: var(--white); border-radius: 2px;
+            overflow: hidden; }
+  .swatch-chip { height: 4.5rem; }
+  .swatch-body { padding: .7rem .8rem 1rem; }
+  .swatch-name { font-size: .8125rem; font-weight: 700; color: var(--ink); }
+  .swatch-hex { font-family: var(--font-en); font-size: .75rem; color: var(--date);
+                letter-spacing: .04em; margin: .1rem 0 .4rem; }
+  .swatch-use { font-size: .6875rem; line-height: 1.7; }
+  .swatch.is-cmp { border-color: #D7000F; }
+  .swatch.is-cmp .swatch-name { color: #D7000F; }
+
+  /* ---------- Typography ---------- */
+  .type-row { display: flex; gap: 1.8rem; padding: 1.1rem 0;
+              border-bottom: 1px solid var(--border); align-items: baseline; }
+  .type-meta { flex: none; width: 12rem; font-family: var(--font-en); font-size: .6875rem;
+               line-height: 1.7; color: var(--date); letter-spacing: .02em; }
+  .type-meta b { display: block; font-family: var(--font-ja); font-size: .75rem;
+                 font-weight: 700; color: var(--ink); }
+  .type-sample { flex: 1; min-width: 0; }
+  .t-hero  { font-family: var(--font-en); font-size: 3.5rem; font-weight: 700;
+             line-height: 1.4; letter-spacing: .1rem; color: var(--ink); }
+  .t-en-48 { font-family: var(--font-en); font-size: 3rem; font-weight: 700;
+             line-height: 1; letter-spacing: normal; color: var(--ink); }
+  .t-lead  { font-size: 2.5rem; font-weight: 700; line-height: 1.36; color: var(--ink); }
+  .t-h2    { font-size: 1.375rem; font-weight: 700; color: var(--ink); }
+  .t-prod  { font-size: 1.125rem; font-weight: 700; line-height: 1.87; color: var(--ink); }
+  .t-body  { font-size: 1rem; font-weight: 400; line-height: 1.4; }
+  .t-read  { font-size: 1rem; font-weight: 400; line-height: 1.87; }
+  .t-nav   { font-family: var(--font-en); font-size: 1rem; font-weight: 600;
+             letter-spacing: normal; color: var(--black); }
+  .t-art   { font-size: .9375rem; font-weight: 400; line-height: 1.73; }
+  .t-date  { font-family: var(--font-date); font-size: .875rem; line-height: 1.93;
+             letter-spacing: .04em; color: var(--date); }
+  .t-ui    { font-size: .8125rem; line-height: 1.4; }
+  .t-sub   { font-size: .6875rem; font-weight: 500; line-height: 1.4; color: var(--sublabel); }
+
+  /* ---------- Letter spacing ---------- */
+  .ls-table { width: 100%; border-collapse: collapse; margin-top: 1.6rem; font-size: .8125rem; }
+  .ls-table th, .ls-table td { border: 1px solid var(--border); padding: .6rem .8rem;
+                               text-align: left; }
+  .ls-table th { background: var(--surface); font-weight: 700; font-size: .75rem; color: var(--ink); }
+  .section-alt .ls-table th { background: var(--white); }
+  .ls-table .num { font-family: var(--font-en); letter-spacing: .02em; }
+
+  /* ---------- Weight ---------- */
+  .weight-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+                 gap: 1rem; margin-top: 1.6rem; }
+  .weight-card { border: 1px solid var(--border); background: var(--white); padding: 1.1rem;
+                 border-radius: 2px; }
+  .weight-card .sample { font-size: 1.375rem; line-height: 1.6; color: var(--ink); }
+  .weight-card .label { font-family: var(--font-en); font-size: .6875rem; letter-spacing: .03em;
+                        color: var(--date); margin-top: .7rem; line-height: 1.6; }
+  .w400 { font-weight: 400; } .w500 { font-weight: 500; }
+  .w600 { font-weight: 600; } .w700 { font-weight: 700; }
+  .weight-card.is-warn { border-color: var(--blue); }
+
+  /* ---------- Components ---------- */
+  .comp-row { display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; margin-top: 1.6rem; }
+  .chip { display: inline-block; padding: 0 .45rem; border-radius: 2px; background: var(--white);
+          border: 1px solid var(--blue-dark); color: var(--blue-dark);
+          font-size: .75rem; font-weight: 500; line-height: 1.67; text-decoration: none; }
+  .textlink { color: var(--blue); font-size: .9375rem; text-decoration: none; }
+  .header-btn { display: inline-flex; align-items: center; padding: .5rem 1rem;
+                background: var(--white); border: 1px solid var(--border); border-radius: 0;
+                color: var(--ink); font-size: 1.125rem; font-weight: 500; text-decoration: none; }
+  /* 比較用：CMP の塗りボタン（ブランドの CTA ではない） */
+  .cmp-btn { display: inline-flex; align-items: center; padding: .75rem 1.9rem;
+             background: var(--cmp-blue); border: 1px solid var(--cmp-blue); border-radius: 2px;
+             color: var(--white); font-size: .9rem; font-weight: 700; letter-spacing: .01em; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+           gap: 1.4rem; margin-top: 1.8rem; }
+  .card { display: block; background: var(--white); border-radius: 2px;
+          box-shadow: var(--shadow); text-decoration: none; color: var(--text); overflow: hidden; }
+  .card .img { height: 9rem;
+               background-image: linear-gradient(140deg, #9db5c7 0%, #5d7489 100%); }
+  .card .body { padding: .9rem 1rem 1.1rem; }
+  .card .ttl { font-size: .9375rem; line-height: 1.73; color: var(--ink); }
+  .card .meta { display: flex; gap: .6rem; align-items: baseline; margin-top: .5rem; }
+  .card .d { font-family: var(--font-date); font-size: .875rem; color: var(--date);
+             letter-spacing: .04em; }
+
+  .news { margin-top: 1.6rem; border-top: 1px solid var(--border); }
+  .news a { display: flex; gap: 1.2rem; align-items: baseline; padding: .9rem .2rem;
+            border-bottom: 1px solid var(--border); color: var(--text); text-decoration: none; }
+  .news .d { font-family: var(--font-date); font-size: .875rem; color: var(--date);
+             flex: none; width: 6rem; letter-spacing: .04em; }
+  .news .cat { font-size: .8125rem; color: var(--blue); flex: none; width: 5.5rem; }
+  .news .t { font-size: .9375rem; line-height: 1.63; }
+
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+               gap: 1rem; margin-top: 1.6rem; }
+  .elev { background: var(--white); border: 1px solid var(--border); border-radius: 2px;
+          padding: 1.2rem; }
+  .elev.e1 { box-shadow: var(--shadow); border-color: transparent; }
+  .elev-name { font-size: .8125rem; font-weight: 700; color: var(--ink); }
+  .elev-val { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .6875rem;
+              color: var(--date); margin-top: .4rem; letter-spacing: normal; }
+
+  /* ---------- Dark hero（下層） ---------- */
+  .dark-hero { background: var(--black); color: var(--white); padding: 3.5rem 3rem; }
+  .dark-hero .ja { font-size: .75rem; font-weight: 700; line-height: 1.5; letter-spacing: .09rem; }
+  .dark-hero .en { font-family: var(--font-en); font-size: 3.5rem; font-weight: 700;
+                   line-height: .86; letter-spacing: .09rem; }
+
+  /* ---------- Forms ---------- */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+               gap: 1.2rem; margin-top: 1.6rem; }
+  .field label { display: block; font-size: .8125rem; font-weight: 700; color: var(--ink);
+                 margin-bottom: .4rem; }
+  .field input { width: 100%; padding: .65rem .75rem; border: 1px solid var(--border);
+                 border-radius: 2px; background: var(--white); color: var(--text);
+                 font-family: var(--font-ja); font-size: .9375rem; letter-spacing: .03em; }
+  /* ★autofocus は使わない。フォーカス状態はクラスで見せる */
+  .field.is-focus input { border-color: var(--blue); outline: 2px solid rgba(0,104,184,.28);
+                          outline-offset: 1px; }
+  .field-msg { font-size: .75rem; color: var(--date); margin-top: .4rem; }
+
+  /* ---------- Footer ---------- */
+  .footer { background: var(--navy); color: var(--white); padding: 3rem 3rem 2rem; }
+  .footer-head { font-size: 1.125rem; font-weight: 700; line-height: 1.5; }
+  .footer-cols { display: flex; flex-wrap: wrap; gap: 3rem; margin-top: 1.6rem; }
+  .footer-col a { display: block; font-size: .75rem; line-height: 2; color: var(--white);
+                  text-decoration: none; opacity: .88; }
+  .footer-copy { font-family: var(--font-en); font-size: .625rem; letter-spacing: .05em;
+                 color: rgba(255,255,255,.72); margin-top: 2rem; }
+
+  @media (max-width: 750px) {
+    .type-row { flex-direction: column; gap: .6rem; }
+    .type-meta { width: auto; }
+    .gnav { flex-wrap: wrap; gap: 1.2rem; }
+    .hero h1 { font-size: 2.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <a class="logo" href="#"><span class="logo-mark"></span><span class="logo-text">KANSAI<small>PAINT</small></span></a>
+    <div class="util">
+      <a href="#">採用情報</a><a href="#">お問い合わせ</a>
+      <span class="lang"><a href="#" class="on">JA</a><span style="color:var(--inactive)">|</span><a href="#" class="off">EN</a></span>
+      <a href="#" class="header-btn">製品情報</a>
+    </div>
+  </div>
+  <nav class="gnav">
+    <a href="#"><span class="en">KP STREAM</span><span class="ja">取り組み</span></a>
+    <a href="#"><span class="en">COMPANY</span><span class="ja">会社情報</span></a>
+    <a href="#"><span class="en">NEWS</span><span class="ja">ニュース</span></a>
+    <a href="#"><span class="en">INVESTORS</span><span class="ja">株主・投資家</span></a>
+    <a href="#"><span class="en">SUSTAINABILITY</span><span class="ja">サステナビリティ</span></a>
+    <a href="#"><span class="en">R&amp;D</span><span class="ja">研究開発</span></a>
+  </nav>
+</header>
+
+<div class="hero">
+  <div>
+    <h1>SUSTAINABILITY</h1>
+    <div class="sub"><span class="circle">→</span><span>環境負荷低減への取り組み</span></div>
+  </div>
+  <div class="idx"><i class="on">01</i><i>02</i><i>03</i></div>
+  <p class="scroll-down__txt">Scroll</p>
+</div>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">01 / Fluid Root</div>
+    <div class="sec-head"><span class="ja">完全流体</span><span class="en">Fluid Root</span></div>
+    <h2 class="section-title">max-width を持つコンテナが1つも無い</h2>
+    <p class="section-lead">サイズ・字間・行間・余白がすべて <code>rem</code> で、<code>html</code> 自身が <code>vw</code> で動く。実測した最大幅は <code>100%</code> のみ。<b>751px → 750px でルートが 8.79649px → 32px（3.64 倍）に跳ぶ</b>のがこのサイト最大の落とし穴で、規定の 4 幅（1440 / 1200 / 834 / 375px）だけ測ると見えない。</p>
+
+    <table class="bp">
+      <tr><th>ビューポート幅</th><th>html</th><th>body</th><th>本文 letter-spacing</th><th>備考</th></tr>
+      <tr><td>1440px</td><td class="num">16px</td><td class="num">16px</td><td class="num">0.48px</td><td>1366px 以上は 16px で止まる</td></tr>
+      <tr><td>1366px（設計幅）</td><td class="num">16px</td><td class="num">16px</td><td class="num">0.48px</td><td>ここから下が流体</td></tr>
+      <tr><td>1200px</td><td class="num">14.0556px</td><td class="num">14.0556px</td><td class="num">0.421669px</td><td>—</td></tr>
+      <tr><td>1024px</td><td class="num">11.9941px</td><td class="num">11.9941px</td><td class="num">0.359824px</td><td>—</td></tr>
+      <tr><td>834px</td><td class="num">9.76867px</td><td class="num">9.76867px</td><td class="num">0.29306px</td><td>規定の 4 幅では「ただの流体」に見える</td></tr>
+      <tr class="cliff"><td>751px（最小・最悪）</td><td class="num">8.79649px</td><td class="num">8.79649px</td><td class="num">—</td><td><b>本文が 8.8px になる</b></td></tr>
+      <tr class="cliff"><td>750px（3.64 倍に跳ぶ）</td><td class="num">32px</td><td class="num">30px</td><td class="num">0.9px</td><td>モバイル用の 4.2666666667vw へ</td></tr>
+      <tr><td>375px（モバイル設計幅）</td><td class="num">16px</td><td class="num">15px</td><td class="num">0.45px</td><td>ちょうど 16px に着地</td></tr>
+    </table>
+
+    <div class="note"><b>設計幅はデスクトップ 1366px、モバイル 375px。</b><code>1.1713030747vw</code> が 16px になるのが 1366px、<code>4.2666666667vw</code> が 16px になるのが 375px。<b>モバイルは 375px 設計をそのまま 2 倍（750px で 32px）まで引き伸ばす構造。</b>px で幅や余白を固定すると、そこだけ取り残される。</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">02 / Colors</div>
+    <div class="sec-head"><span class="ja">配色</span><span class="en">Palette</span></div>
+    <h2 class="section-title">ブランドの青は2つ。CMP の青は別物</h2>
+    <p class="section-lead"><code>#0068B8</code> が文字・リンク用、<code>#005BAC</code> がタグチップ専用（文字と 1px の枠で同じ値）。<b>RGB で 13 しか違わないが、どちらも実装されている。</b>一方 <code>#3860BE</code> は OneTrust（CMP）の既定色で、<b>ブランド色ではない</b>。</p>
+
+    <div class="color-grid">
+      <div class="swatch"><div class="swatch-chip" style="background:#0068B8"></div><div class="swatch-body"><div class="swatch-name">Kansai Blue</div><div class="swatch-hex">#0068B8</div><div class="swatch-use">★可視 16 要素の文字色。カテゴリラベル、詳しく見る</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#005BAC"></div><div class="swatch-body"><div class="swatch-name">Kansai Blue Dark</div><div class="swatch-hex">#005BAC</div><div class="swatch-use">★可視 12 要素。タグチップの文字と枠（同じ値）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#27455C"></div><div class="swatch-body"><div class="swatch-name">Navy</div><div class="swatch-hex">#27455C</div><div class="swatch-use">面として 6 要素。フッターまわり</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#19191A"></div><div class="swatch-body"><div class="swatch-name">Near Black</div><div class="swatch-hex">#19191A</div><div class="swatch-use">見出し（21 要素）。★/company/ のヒーローの地</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#383838"></div><div class="swatch-body"><div class="swatch-name">Text</div><div class="swatch-hex">#383838</div><div class="swatch-use">★本文（42 要素）。html{color:#383838}</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#5C6373"></div><div class="swatch-body"><div class="swatch-name">Sub Label</div><div class="swatch-hex">#5C6373</div><div class="swatch-use">★グローバルナビの和文ラベル専用（6 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#626366"></div><div class="swatch-body"><div class="swatch-name">Date</div><div class="swatch-hex">#626366</div><div class="swatch-use">ニュースの日付（10 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#F5F9FC"></div><div class="swatch-body"><div class="swatch-name">Surface Tint</div><div class="swatch-hex">#F5F9FC</div><div class="swatch-use">わずかに青を帯びた面。KP STREAM / Recommend</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#F2F1F1"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#F2F1F1</div><div class="swatch-use">カード・セクションの面（5 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#DBDBDB"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#DBDBDB</div><div class="swatch-use">罫線</div></div></div>
+      <div class="swatch is-cmp"><div class="swatch-chip" style="background:#3860BE"></div><div class="swatch-body"><div class="swatch-name">CMP Blue（使わない）</div><div class="swatch-hex">#3860BE</div><div class="swatch-use">★OneTrust の既定色。可視 7 要素はすべて Cookie バナー</div></div></div>
+    </div>
+
+    <div class="note"><b>計測上の注意：<code>interactive</code> の上位は全部 OneTrust。</b><code>OK</code> <code>全てのクッキーを受け入れる</code> <code>Apply</code> <code>Clear</code> <code>Filter Icon</code> と、その青 <code>#3860BE</code> はこのサイトの設計ではない。</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">03 / Typography</div>
+    <div class="sec-head"><span class="ja">書体</span><span class="en">Typography</span></div>
+    <h2 class="section-title">和文は小ラベル、欧文が大見出しを張る</h2>
+    <p class="section-lead">セクション名は必ず「和文 11〜12px ＋ 欧文 48〜56px」の対で組まれる。和文 <b>Noto Sans JP</b>（400 / 500 / 700 が <code>loaded</code>）、欧文 <b>Inter</b>（400 / 500 / 600 / 700）、日付だけ <b>Barlow Condensed 600</b>。</p>
+
+    <div class="type-row"><div class="type-meta"><b>ヒーロー</b>Inter 3.5rem / 700<br>lh 1.40 / ls 0.1rem<br>白文字</div><div class="type-sample"><div class="t-hero">SUSTAINABILITY</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>★セクション見出し</b>Inter 3rem / 700<br>lh 1.00 / ls normal<br>和文 12px/700 と対</div><div class="type-sample"><div class="sec-head" style="margin:0"><span class="ja">ニュース</span><span class="en">News</span></div></div></div>
+    <div class="type-row"><div class="type-meta"><b>リード</b>2.5rem / 700<br>lh 1.36</div><div class="type-sample"><div class="t-lead">塗料で人を幸せにする</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>中見出し</b>1.375rem / 700<br>ls 0.48px</div><div class="type-sample"><div class="t-h2">会社概要／社長メッセージ／創業者の想い</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>製品名</b>1.125rem / 700<br>lh 1.87</div><div class="type-sample"><div class="t-prod">建築用塗料　防食用塗料　自動車補修用塗料</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>★ナビ（欧文）</b>Inter 1rem / 600<br>ls normal / #000000</div><div class="type-sample"><div class="t-nav">KP STREAM &nbsp; COMPANY &nbsp; NEWS</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>★ナビ（和文）</b>0.6875rem / 500<br>#5C6373 / 実測 6 要素</div><div class="type-sample"><div class="t-sub">取り組み　会社情報　ニュース</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>★本文</b>1rem / 400<br>lh 1.40（22.4px）<br>ls 0.48px / 実測 42 要素</div><div class="type-sample"><div class="t-body">関西ペイントグループは、塗料の開発・製造・販売を通じて、建築物の劣化を防ぎ美観を創る事業を世界で展開しています。</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>読み物</b>1rem / 400<br>lh 1.87<br>★本文と使い分ける</div><div class="type-sample"><div class="t-read">私たちは、「塗料で人を幸せにする」を実現するため、人に役立つ素晴らしい塗料を開発し、世界中の人々にお届けします。創業から 100 余年、その姿勢は変わりません。</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>記事見出し</b>0.9375rem / 400<br>lh 1.73</div><div class="type-sample"><div class="t-art">築城400年、福山の人々を見守る日本城郭の最高傑作を塗り替える</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>★日付</b>Barlow Condensed<br>0.875rem / lh 1.93<br>#626366 / 実測 10 要素</div><div class="type-sample"><div class="t-date">2026.10.01 &nbsp; 2026.09.25 &nbsp; 2026.09.16</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>UI / 一覧</b>0.8125rem / 400<br>lh 1.40</div><div class="type-sample"><div class="t-ui">お知らせ　企業情報　特集　製品・技術</div></div></div>
+
+    <div class="note"><b><code>Barlow</code>（非コンデンス）の 400 / 500 / 700 は宣言されているが、両ページとも <code>unloaded</code>・可視 0 要素。</b>使わない。<br><code>document.fonts</code> のエントリは 1236 件あるが、これは <b>Google Fonts の CJK サブセット分割</b>（<code>unicode-range</code> で百数十本に割られる）で、ウェイトが 1236 種あるわけではない。</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">04 / Letter Spacing</div>
+    <div class="sec-head"><span class="ja">字間</span><span class="en">Spacing</span></div>
+    <h2 class="section-title">0.03em を body に1回。ただし px 自体が画面幅で動く</h2>
+    <p class="section-lead"><code>body { letter-spacing: 0.03em }</code> は root 16px のとき <b>0.48px</b> という絶対値になり、そのまま子孫へ降りる（実測 145 要素）。サイズに比例しない。<b>さらに <code>html</code> が <code>vw</code> 流体なので、この px 値自体が画面幅で動く。</b></p>
+
+    <table class="ls-table">
+      <tr><th>画面幅</th><th>root</th><th>body の letter-spacing</th><th>56px 見出しの letter-spacing</th></tr>
+      <tr><td>1440px</td><td class="num">16px</td><td class="num">0.48px</td><td class="num">1.6px（= 0.1rem）</td></tr>
+      <tr><td>1200px</td><td class="num">14.0556px</td><td class="num">0.421669px</td><td class="num">1.40556px</td></tr>
+      <tr><td>1024px</td><td class="num">11.9941px</td><td class="num">0.359824px</td><td class="num">1.19941px</td></tr>
+      <tr><td>834px</td><td class="num">9.76867px</td><td class="num">0.29306px</td><td class="num">0.976867px</td></tr>
+      <tr><td>375px</td><td class="num">16px / body 15px</td><td class="num">0.45px</td><td class="num">—</td></tr>
+    </table>
+
+    <div class="note"><b>大見出しだけ <code>rem</code> で字間を持つ</b>（56px の <code>SUSTAINABILITY</code> は 1.6px ＝ 0.1rem）。これも root に比例して動く。一方 <b>英字ナビ（Inter 16px / 600）は <code>normal</code></b>——欧文には字間を足さない。<br><b><code>font-feature-settings</code> は両ページとも 0 要素。</b><code>palt</code> を足さず、<code>0.03em</code> をごく薄く掛けるだけで組んでいる。</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">05 / Font Weight</div>
+    <div class="sec-head"><span class="ja">ウェイト</span><span class="en">Weight</span></div>
+    <h2 class="section-title">600 は Inter だけ。和文は 400 / 500 / 700</h2>
+    <p class="section-lead">ウェイトは 400 / 500 / 600 / 700 の 4 段だが、<b>600 は Inter 専用</b>（実測 10 要素はすべて英字ナビ）。<b>Noto Sans JP 側は 400 / 500 / 700 の 3 段</b>で、600 のファイルは読み込んでいない。</p>
+
+    <div class="weight-grid">
+      <div class="weight-card"><div class="sample w400">塗料で人を幸せにする</div><div class="label">★weight 400 — 本文の既定。実測 62 要素</div></div>
+      <div class="weight-card"><div class="sample w500">塗料で人を幸せにする</div><div class="label">weight 500 — ナビの和文ラベル・タグ。実測 27 要素</div></div>
+      <div class="weight-card is-warn"><div class="sample w600">塗料で人を幸せにする</div><div class="label">weight 600 — <b>和文では読み込んでいない</b>（Inter にだけ存在）</div></div>
+      <div class="weight-card"><div class="sample w700">塗料で人を幸せにする</div><div class="label">★weight 700 — 見出し。実測 79 要素で最多</div></div>
+    </div>
+
+    <div class="note"><b>和文で「少し太く」を作りたいときは 500 を使う。</b>600 は Noto Sans JP に無いので、指定しても 700 のファイルに寄る。</div>
+  </div>
+</section>
+
+<section class="section section-gray">
+  <div class="wrap">
+    <div class="section-label">06 / Components</div>
+    <div class="sec-head"><span class="ja">部品</span><span class="en">Components</span></div>
+    <h2 class="section-title">面で塗ったブランド CTA が無い</h2>
+    <p class="section-lead">実測した塗りボタンは<b>全部 OneTrust（CMP）のもの</b>。ブランド側の導線は<b>枠線のチップ</b>と<b>下線なしのテキストリンク</b>で作られている。角丸は <code>2px</code> が基本（実測 14 要素）。</p>
+
+    <div class="comp-row">
+      <a href="#" class="chip">#外壁</a>
+      <a href="#" class="chip">#漆喰塗料</a>
+      <a href="#" class="chip">#福山城</a>
+      <a href="#" class="textlink">詳しく見る</a>
+      <a href="#" class="header-btn">お問い合わせ</a>
+      <span class="cmp-btn">全てのクッキーを受け入れる</span>
+    </div>
+    <div class="note" style="margin-top:1.2rem">右端の塗りボタンは<b>比較のために置いた OneTrust のもの</b>。<code>#3860BE</code> / radius 2px / padding 12px 30px / Noto Sans JP 14.4px 700。<b>これをブランドの CTA として採用しない。</b></div>
+
+    <div class="cards">
+      <a href="#" class="card"><div class="img"></div><div class="body"><div class="ttl">築城400年、福山の人々を見守る日本城郭の最高傑作</div><div class="meta"><span class="d">2026.10.01</span><span class="chip">#福山城</span></div></div></a>
+      <a href="#" class="card"><div class="img"></div><div class="body"><div class="ttl">北陸新幹線 芦原温泉駅西口賑わい施設 アフレアの外装</div><div class="meta"><span class="d">2026.09.25</span><span class="chip">#外壁</span></div></div></a>
+      <a href="#" class="card"><div class="img"></div><div class="body"><div class="ttl">関西ペイントブラーノ — 塗り替えのサービス設計</div><div class="meta"><span class="d">2026.09.16</span><span class="chip">#漆喰塗料</span></div></div></a>
+    </div>
+
+    <div class="news">
+      <a href="#"><span class="d">2026.10.01</span><span class="cat">お知らせ</span><span class="t">カスタマーハラスメントに対する基本方針策定のお知らせ</span></a>
+      <a href="#"><span class="d">2026.09.25</span><span class="cat">企業情報</span><span class="t">執行役員の異動について</span></a>
+      <a href="#"><span class="d">2026.09.16</span><span class="cat">お知らせ</span><span class="t">第9回塗料・塗装設備展 コーティングジャパンに出展します</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">07 / Dark Hero</div>
+    <div class="sec-head"><span class="ja">下層の地色</span><span class="en">Dark</span></div>
+    <h2 class="section-title">/company/ のヒーローは黒</h2>
+    <p class="section-lead"><code>pageBackground.resolved</code> は下層で <code>rgb(0,0,0)</code>（根拠 <code>viewportTopBySample (6/10)</code>）。<b>下層ページの地色を <code>#ffffff</code> と決め打ちしない。</b></p>
+  </div>
+  <div class="dark-hero" style="margin-top:1.8rem">
+    <span class="ja">会社情報</span>
+    <span class="en">COMPANY</span>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">08 / Elevation</div>
+    <div class="sec-head"><span class="ja">影</span><span class="en">Elevation</span></div>
+    <h2 class="section-title">影は1種類。黒ではなく青みのグレー</h2>
+    <p class="section-lead">実測した影は <code>rgba(49, 100, 152, 0.1) 5px 5px 30px 0</code> の <b>1 種類だけ</b>（記事カード 4 要素）。<code>rgb(49,100,152)</code> は<b>青みの強いグレー</b>で、ブランドの青を薄めた色。オフセットは <code>5px 5px</code>（右下）で、真下ではない。</p>
+
+    <div class="elev-grid">
+      <div class="elev"><div class="elev-name">影なし（既定）</div><div class="elev-val">box-shadow: none</div></div>
+      <div class="elev e1"><div class="elev-name">唯一の影</div><div class="elev-val">rgba(49,100,152,.1) 5px 5px 30px 0</div></div>
+    </div>
+
+    <div class="note"><b><code>rgba(0,0,0,.1)</code> に置き換えない。</b>青みが消えて沈んだ印象になる。<b>下層ページ（<code>/company/</code>）には影が1つも無い</b>（CMP のものを除く）。</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">09 / Forms &amp; Vertical</div>
+    <div class="sec-head"><span class="ja">入力と縦組み</span><span class="en">Forms</span></div>
+    <h2 class="section-title">縦組みは Scroll の1要素だけ</h2>
+    <p class="section-lead"><code>writing-mode: vertical-rl</code> は実測 <b>1 要素</b>のみで、ヒーロー右下の <code>Scroll</code>（Inter 13px / 600 の<b>欧文</b>、18×124px の側面タブ）。<b>和文の縦組みは使っていない</b>ので、縦組みを実装するときの参考にはしない。</p>
+
+    <div class="form-grid">
+      <div class="field"><label for="f1">お名前</label><input id="f1" type="text" placeholder="関西 太郎"><div class="field-msg">全角でご入力ください</div></div>
+      <div class="field is-focus"><label for="f2">メールアドレス（フォーカス状態）</label><input id="f2" type="text" value="info@example.co.jp"><div class="field-msg">確認のご連絡を差し上げます</div></div>
+    </div>
+
+    <div class="note"><b>ブレークポイントは実質 750px の 1 本。</b><code>(max-width: 750px)</code> が 384 件、<code>(min-width: 751px)</code> が 120 件。個別の見出しにブレークポイントごとのサイズ指定は無く、<code>html</code> の <code>vw</code> ですべてが連動する（<code>h2</code> の 56px は 1200px で 49.19px、1024px で 41.98px）。</div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p class="footer-head">塗料で人を幸せにする</p>
+  <div class="footer-cols">
+    <div class="footer-col"><a href="#">取り組み</a><a href="#">会社情報</a><a href="#">ニュース</a></div>
+    <div class="footer-col"><a href="#">株主・投資家情報</a><a href="#">サステナビリティ</a><a href="#">研究開発</a></div>
+    <div class="footer-col"><a href="#">製品情報</a><a href="#">採用情報</a><a href="#">お問い合わせ</a></div>
+  </div>
+  <p class="footer-copy">© Kansai Paint Co., Ltd. — Design tokens measured 2026-11-03</p>
+</footer>
+
+</body>
+</html>
