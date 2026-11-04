@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 武蔵野美術大学（Musashino Art University）</title>
+<!-- ★このプレビューは Web フォントを 1 本も読み込まない。
+     実サイトのフォント要求は全ページで 1 件（自ドメインのアイコン .woff）だけで、
+     和文 @font-face は 0 件。ここに Google Fonts を足すと別物になる。 -->
+<style>
+  /* ===========================================================
+     武蔵野美術大学 実測プレビュー（2026-11-04）
+     対象: https://www.musabi.ac.jp/ , /outline/
+
+     ★実サイトの :root に CSS Custom Properties は 0 個。
+       getComputedStyle で見える 73 個は Tailwind の --tw-* と
+       Zoho SalesIQ の --zsiqf-* の継承値で、自社トークンは 1 つもない。
+       以下の :root は実測値をこのプレビューで整理したもの。
+     =========================================================== */
+  :root {
+    /* === Color（実測） === */
+    --text:       #000000;  /* ★トップの本文・見出し。可視 162 要素。純黒を使う */
+    --link:       #262626;  /* リンク。トップ 13 要素／★下層では 89 要素で最多 */
+    --muted:      #7A7A7A;  /* 日付。Tailwind の arbitrary value tw-text-[#7a7a7a] */
+    --white:      #FFFFFF;
+    --surface:    #E0E0E0;  /* ★可視 12 要素。最も多い面 */
+    --surface-2:  #E2E2E2;  /* 検索パネル・ドロワー（4 要素） */
+    --surface-3:  #F0F0F0;  /* フッター上部（2 要素） */
+    --lang:       #707070;  /* 言語切替ボタンの面（5 要素） */
+    --hero-blue:  #3B58D6;  /* 「美術で未来を創造する。」の面（1 要素） */
+    --crumb-blue: #003894;  /* 下層パンくずの現在位置（1 要素）。機能色 */
+    --overlay:    rgba(0, 0, 0, .7);
+
+    /* === Font ===
+       ★Web フォントは 0 本。游ゴシック体の OS ローカルのみ。
+       実サイトのスタックには Medium が入っていないため Windows では Regular に
+       当たって細く出る。このプレビューは DESIGN.md 3.3 / 7 章の指示どおり
+       "游ゴシック Medium" / "Yu Gothic Medium" を Regular より前に足した
+       「正しい版」を使っている（実サイトのスタックは下の 03 章に併記）。 */
+    --font-ja: 游ゴシック体, YuGothic, "游ゴシック Medium", "Yu Gothic Medium",
+               游ゴシック, "Yu Gothic",
+               "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN",
+               メイリオ, Meiryo, sans-serif;
+    --font-en: "Helvetica Neue", Arial, Verdana, sans-serif;  /* コピーライト 1 要素のみ */
+
+    /* === Line height（実測・無単位） === */
+    --lh-body:  1.62;   /* ★body の 1.61538。130 / 89 要素で最多 */
+    --lh-date:  1.43;   /* 日付（48 要素） */
+    --lh-util:  1.85;   /* ユーティリティナビ（9 要素） */
+    --lh-tight: 1.20;   /* 節見出し（12 要素） */
+  }
+
+  /* ★html 10px / body 13px。1440/1200/1024/834/769/768/767/390/375px の
+     9 幅すべてで完全固定。流体も崖も無い。動くのは h1 だけ（17px / 12px）。 */
+  html { font-size: 10px; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--text);
+    font-family: var(--font-ja);
+    font-size: 13px;
+    font-weight: 700;          /* ★太字が既定。実測 700 が 127/211・99/122 要素 */
+    line-height: var(--lh-body);
+    /* ★letter-spacing は書かない。
+       実サイトは body に -0.001em を宣言しているが、13px では -0.013px という
+       絶対値になって全子孫へ px のまま降り、32px の見出しでも -0.013px
+       （= -0.0004em）のまま。normal と見分けがつかないので再現しない（05 章）。 */
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- 共通パーツ ---------- */
+  /* ★実サイトは max-width の宣言が 1 件も無い（containers が両ページとも空）。
+     幅はグリッドとパディングで決めている。ここでは読みやすさのため 1140px を置く。 */
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+
+  .header { border-bottom: 1px solid var(--surface); background: var(--white); }
+  .header-top { display: flex; align-items: center; gap: 24px;
+                max-width: 1140px; margin: 0 auto; padding: 20px 24px 10px; }
+  .logo { font-size: 20px; font-weight: 700; color: var(--text);
+          text-decoration: none; line-height: 1.30; }
+  .logo small { display: block; font-family: var(--font-en); font-size: 10px;
+                font-weight: 400; color: var(--muted); letter-spacing: 0.08em;
+                margin-top: 3px; }
+  .util { margin-left: auto; display: flex; gap: 18px; }
+  .util a { font-size: 12px; font-weight: 400; line-height: var(--lh-util);
+            color: var(--link); text-decoration: none; }
+  .gnav { display: flex; max-width: 1140px; margin: 0 auto; padding: 0 24px 2px; }
+  .gnav button { flex: 1; background: var(--text); color: var(--white);
+                 font-family: var(--font-ja); font-size: 18px; font-weight: 700;
+                 line-height: var(--lh-body); padding: 20px 12px;
+                 border: 0; border-radius: 0; cursor: pointer;
+                 border-right: 1px solid var(--white); }
+  .gnav button:last-child { border-right: 0; }
+
+  .section { padding: 68px 0; }
+  .section-alt { background: var(--surface-3); }
+  .section-label { font-family: var(--font-en); font-size: 11px; font-weight: 400;
+                   letter-spacing: 0.14em; color: var(--muted); margin-bottom: 8px; }
+  .eyebrow { font-size: 12px; font-weight: 700; color: var(--link); margin-bottom: 6px; }
+  .section-title { font-size: 24px; font-weight: 700; line-height: 1.50; margin-bottom: 14px; }
+  .section-lead { font-size: 13px; font-weight: 400; line-height: var(--lh-body);
+                  max-width: 76ch; }
+  .note { margin-top: 24px; padding: 14px 18px; background: var(--surface);
+          border-left: 3px solid var(--text); font-size: 13px; font-weight: 400;
+          line-height: 1.85; }
+  .section-alt .note { background: var(--white); }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .92em;
+         background: rgba(0,0,0,.07); padding: 1px 5px; }
+  b { font-weight: 700; }
+
+  /* ---------- 01 Weight ---------- */
+  .w-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px; }
+  .w-box { border: 1px solid var(--surface); background: var(--white); padding: 18px 20px; }
+  .w-label { font-family: var(--font-en); font-size: 11px; letter-spacing: .1em;
+             color: var(--muted); margin-bottom: 10px; }
+  .w-sample { font-size: 20px; line-height: 1.60; }
+  .w-100 { font-weight: 100; } .w-200 { font-weight: 200; } .w-300 { font-weight: 300; }
+  .w-400 { font-weight: 400; } .w-500 { font-weight: 500; } .w-600 { font-weight: 600; }
+  .w-700 { font-weight: 700; } .w-800 { font-weight: 800; } .w-900 { font-weight: 900; }
+
+  .w-table { width: 100%; border-collapse: collapse; margin-top: 26px; font-size: 13px; }
+  .w-table th, .w-table td { border: 1px solid var(--surface); padding: 9px 12px;
+                             text-align: left; font-weight: 400; }
+  .w-table th { background: var(--surface-3); font-weight: 700; font-size: 12px; }
+  .section-alt .w-table th { background: var(--white); }
+  .w-table .num { font-family: var(--font-en); }
+  .w-table tr.grp-reg td:first-child,
+  .w-table tr.grp-bold td:first-child { font-weight: 700; }
+  .w-table tr.grp-bold td { background: rgba(0,0,0,.035); }
+
+  /* ---------- 02 Colors ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(222px, 1fr));
+                gap: 16px; margin-top: 28px; }
+  .swatch { border: 1px solid var(--surface); background: var(--white); }
+  .swatch-chip { height: 70px; }
+  .swatch-body { padding: 10px 12px 14px; }
+  .swatch-name { font-size: 13px; font-weight: 700; }
+  .swatch-hex { font-family: var(--font-en); font-size: 12px; color: var(--muted);
+                margin: 3px 0 6px; letter-spacing: .04em; }
+  .swatch-use { font-size: 11px; font-weight: 400; line-height: 1.70; color: var(--muted); }
+
+  /* ---------- 03 Typography ---------- */
+  .type-row { display: flex; gap: 28px; padding: 17px 0;
+              border-bottom: 1px solid var(--surface); align-items: baseline; }
+  .type-meta { flex: none; width: 196px; font-family: var(--font-en); font-size: 11px;
+               font-weight: 400; line-height: 1.8; color: var(--muted); }
+  .type-meta b { display: block; font-family: var(--font-ja); font-size: 12px;
+                 font-weight: 700; color: var(--text); }
+  .type-sample { flex: 1; min-width: 0; }
+  .t-title { font-size: 32px; font-weight: 400; line-height: var(--lh-tight);
+             letter-spacing: 0.14em; }
+  .t-sec   { font-size: 24px; font-weight: 700; line-height: 1.50; }
+  .t-nav   { font-size: 18px; font-weight: 700; }
+  .t-h1    { font-size: 17px; font-weight: 400; }
+  .t-sub   { font-size: 16px; font-weight: 400; line-height: var(--lh-tight);
+             letter-spacing: 0.14em; }
+  .t-body  { font-size: 13px; font-weight: 400; line-height: var(--lh-body); }
+  .t-bodyb { font-size: 13px; font-weight: 700; line-height: var(--lh-body); }
+  .t-card  { font-size: 14px; font-weight: 700; line-height: var(--lh-date); }
+  .t-cap   { font-size: 12px; font-weight: 400; line-height: var(--lh-util); }
+  .t-date  { font-size: 8.75px; font-weight: 400; line-height: var(--lh-date);
+             color: var(--muted); }
+
+  .stack-box { margin-top: 24px; display: grid; gap: 14px; }
+  .stack-box div { border: 1px solid var(--surface); background: var(--white);
+                   padding: 14px 18px; font-size: 13px; font-weight: 400;
+                   line-height: 1.85; }
+  .section-alt .stack-box div { background: var(--white); }
+  .stack-box code { display: block; margin-top: 6px; background: rgba(0,0,0,.05);
+                    padding: 8px 10px; line-height: 1.7; }
+
+  /* ---------- 04 Letter spacing ---------- */
+  .ls-table { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 13px; }
+  .ls-table th, .ls-table td { border: 1px solid var(--surface); padding: 9px 12px;
+                               text-align: left; font-weight: 400; }
+  .ls-table th { background: var(--surface-3); font-weight: 700; font-size: 12px; }
+  .section-alt .ls-table th { background: var(--white); }
+  .ls-table .num { font-family: var(--font-en); }
+  .ls-demo { margin-top: 24px; display: grid; gap: 12px; }
+  .ls-demo div { border: 1px solid var(--surface); background: var(--white); padding: 14px 18px; }
+  .section-alt .ls-demo div { background: var(--white); }
+  .ls-inherit { font-size: 32px; font-weight: 400; letter-spacing: -0.013px; }
+  .ls-own     { font-size: 32px; font-weight: 400; letter-spacing: 0.14em; }
+
+  /* ---------- 05 Components ---------- */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 28px; }
+  .btn-black { display: inline-block; background: var(--text); color: var(--white);
+               font-size: 14px; font-weight: 700; line-height: var(--lh-body);
+               padding: 12px 36px; border: 0; border-radius: 0; text-decoration: none; }
+  .btn-black-sm { display: inline-block; background: var(--text); color: var(--white);
+                  font-size: 14px; font-weight: 700; padding: 8px 18px;
+                  border: 0; border-radius: 0; text-decoration: none; }
+  .btn-lang { display: inline-block; background: var(--lang); color: var(--white);
+              font-size: 16px; font-weight: 700; padding: 8px 20px;
+              border: 0; border-radius: 0; text-decoration: none; }
+
+  .card-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+              gap: 30px; margin-top: 30px; }
+  .card { background: var(--surface); border: 0; border-radius: 0;
+          box-shadow: none; padding: 20px; }
+  /* ★写真の代役は「面そのもの」の background-image に 2 枚重ねる。
+     絶対配置の兄弟要素にすると lint の effectiveBg が祖先しか遡れず誤検出になる。 */
+  .card-thumb { height: 128px; margin: -20px -20px 14px;
+                background-image:
+                  linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.26)),
+                  linear-gradient(118deg, #1F1B18 0%, #51423A 46%, #8E5B4A 100%); }
+  .card-ttl { font-size: 14px; font-weight: 700; line-height: var(--lh-date);
+              margin-bottom: 8px; }
+  .card-date { font-size: 8.75px; font-weight: 400; line-height: var(--lh-date);
+               color: var(--muted); }
+
+  .hero {
+    margin-top: 28px; display: grid; grid-template-columns: 250px 1fr;
+    gap: 40px; align-items: center;
+  }
+  .hero-text {
+    /* ★実サイトではこの欧文は carousel_text_02.png（250×132）という画像。
+       テキストで組むと別物になる。ここでは「画像だった」と示すための枠。 */
+    width: 250px; height: 132px; display: grid; place-items: center;
+    border: 1px dashed var(--muted); color: var(--muted);
+    font-family: var(--font-en); font-size: 12px; letter-spacing: .08em;
+    text-align: center; line-height: 1.7;
+  }
+  .hero-slide {
+    height: 260px; border-radius: 0;
+    background-image:
+      linear-gradient(rgba(0,0,0,.10), rgba(0,0,0,.34)),
+      linear-gradient(140deg, #141210 0%, #3E2F26 34%, #C4452F 68%, #E8C33C 100%);
+    display: grid; align-items: end; padding: 24px;
+  }
+  .hero-slide span { color: var(--white); font-size: 13px; font-weight: 700; }
+
+  /* ---------- 06 Forms ---------- */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 28px; }
+  .field label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .field input { width: 100%; height: 46px; padding: 0 14px; font-size: 13px;
+                 font-family: var(--font-ja); background: var(--surface-2);
+                 border: 0; border-radius: 2px; color: var(--text); }
+  /* ★autofocus は使わない */
+  .field.is-focus input { outline: 2px solid var(--text); outline-offset: -2px;
+                          background: var(--white); }
+  .field-msg { font-size: 12px; font-weight: 400; line-height: var(--lh-util);
+               color: var(--muted); margin-top: 6px; }
+
+  /* ---------- 07 Responsive ---------- */
+  .bp { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 13px; }
+  .bp th, .bp td { border: 1px solid var(--surface); padding: 9px 12px;
+                   text-align: left; font-weight: 400; }
+  .bp th { background: var(--surface-3); font-weight: 700; font-size: 12px; }
+  .section-alt .bp th { background: var(--white); }
+  .bp .num { font-family: var(--font-en); }
+  .bp tr.edge td { background: rgba(0,0,0,.04); }
+
+  .footer { background: var(--text); color: var(--white); padding: 52px 0 36px; }
+  .footer-head { font-size: 18px; font-weight: 700; line-height: var(--lh-body); }
+  .footer-cols { display: grid; grid-template-columns: repeat(4, 1fr);
+                 gap: 20px; margin-top: 26px; }
+  .footer-col a { display: block; font-size: 13px; font-weight: 400; line-height: 1.85;
+                  color: var(--white); text-decoration: none; opacity: .88; }
+  .footer-copy { font-family: var(--font-en); font-size: 8px; font-weight: 400;
+                 color: rgba(255,255,255,.72); margin-top: 30px; letter-spacing: .06em; }
+
+  @media (max-width: 1023px) {
+    .w-grid { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .type-row { flex-direction: column; gap: 10px; }
+    .type-meta { width: auto; }
+    .hero { grid-template-columns: 1fr; }
+    .footer-cols { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <a class="logo" href="#">武蔵野美術大学<small>MUSASHINO ART UNIVERSITY</small></a>
+    <nav class="util">
+      <a href="#">高校生・受験生の方へ</a><a href="#">在学生・保護者の方へ</a>
+      <a href="#">卒業生の方へ</a><a href="#">企業・一般の方へ</a><a href="#">美術館・図書館</a>
+    </nav>
+  </div>
+  <nav class="gnav">
+    <button type="button">大学概要</button><button type="button">学部学科・大学院</button>
+    <button type="button">学生生活</button><button type="button">進路・就職</button>
+    <button type="button">入試・入学案内</button>
+  </nav>
+</header>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">01 / Font Weight</div>
+    <div class="eyebrow">このサイトの骨格</div>
+    <h2 class="section-title">Web フォント 0 本。ウェイトは 400 と 700 の 2 択しかない</h2>
+    <p class="section-lead">和文 Web フォントが 1 本も無いことは 3 点で確認できる —— ①<code>@font-face</code> は <code>glyphicon-musabi</code>（アイコン）の <b>1 件だけ</b> ②フォントファイルのリクエストは全ページで <b>1 件</b>（自ドメインの <code>.woff</code>） ③可視要素は游ゴシックのスタックが <b>210 / 121 要素</b>。<b>親切のつもりで Noto Sans JP を足すと別物になる。</b></p>
+
+    <div class="w-grid">
+      <div class="w-box"><div class="w-label">font-weight: 300</div><p class="w-sample w-300">美術で未来を創造する。</p></div>
+      <div class="w-box"><div class="w-label">font-weight: 400（Regular）</div><p class="w-sample w-400">美術で未来を創造する。</p></div>
+      <div class="w-box"><div class="w-label">font-weight: 500 ← Regular で出る</div><p class="w-sample w-500">美術で未来を創造する。</p></div>
+      <div class="w-box"><div class="w-label">font-weight: 600 ← ここから Bold</div><p class="w-sample w-600">美術で未来を創造する。</p></div>
+      <div class="w-box"><div class="w-label">font-weight: 700（Bold・★既定）</div><p class="w-sample w-700">美術で未来を創造する。</p></div>
+      <div class="w-box"><div class="w-label">font-weight: 900 ← 700 と同じ</div><p class="w-sample w-900">美術で未来を創造する。</p></div>
+    </div>
+
+    <p class="section-lead" style="margin-top:28px">隠し <code>div</code> を作り <code>font-weight</code> だけ変えて <code>getBoundingClientRect().width</code> を比べた実測値（欧文文字列で測定）。游ゴシックは Regular と Bold の <b>2 本しかない</b>ので、きれいに 2 段へ割れる。</p>
+    <table class="w-table">
+      <tr><th>font-weight</th><th>実測幅</th><th>解決される書体</th></tr>
+      <tr class="grp-reg"><td class="num">100 / 200 / 300</td><td class="num">629.02px</td><td>游ゴシック体 Regular</td></tr>
+      <tr class="grp-reg"><td class="num">400</td><td class="num">629.02px</td><td>游ゴシック体 Regular</td></tr>
+      <tr class="grp-reg"><td class="num">500</td><td class="num">629.02px</td><td><b>Regular（500 は存在しない）</b></td></tr>
+      <tr class="grp-bold"><td class="num">600</td><td class="num">664.41px</td><td><b>Bold（ここから切り替わる）</b></td></tr>
+      <tr class="grp-bold"><td class="num">700</td><td class="num">664.41px</td><td>游ゴシック体 Bold</td></tr>
+      <tr class="grp-bold"><td class="num">800 / 900</td><td class="num">664.41px</td><td>Bold（700 と同じ）</td></tr>
+    </table>
+
+    <div class="note"><b>太字が既定で、細い方が例外。</b>実測は <b>700 が 127 / 211 要素</b>（下層は 99 / 122）、400 が 84 / 23。本文・ナビ・見出しの 6 割が weight 700 で組まれている。<b><code>font-weight: 500</code> や <code>600</code> を「中太」として使わないこと</b>——游ゴシックでは 500 は Regular、600 は Bold に丸まり、設計上は存在しない。</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">02 / Colors</div>
+    <div class="eyebrow">Color Palette</div>
+    <h2 class="section-title">ブランドカラーと呼べる色が無い</h2>
+    <p class="section-lead">面は黒とグレー、文字は黒と <code>#262626</code> だけ。<b>色はカルーセルの作品画像が持ち込む</b>設計になっている。新規実装でアクセントカラーを発明しないこと。</p>
+
+    <div class="color-grid">
+      <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Text / 面</div><div class="swatch-hex">#000000</div><div class="swatch-use">★可視 162 要素の文字色 ＋ CTA・ナビの塗り面。このサイトの主役</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#262626"></div><div class="swatch-body"><div class="swatch-name">Link</div><div class="swatch-hex">#262626</div><div class="swatch-use">リンク（&lt;a&gt;）。トップ 13 要素／★下層では 89 要素で最多になる</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#7A7A7A"></div><div class="swatch-body"><div class="swatch-name">Muted</div><div class="swatch-hex">#7A7A7A</div><div class="swatch-use">日付。Tailwind の arbitrary value（<code>tw-text-[#7a7a7a]</code>）で指定</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#E0E0E0"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#E0E0E0</div><div class="swatch-use">★可視 12 要素。最も多い面</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#E2E2E2"></div><div class="swatch-body"><div class="swatch-name">Surface 2</div><div class="swatch-hex">#E2E2E2</div><div class="swatch-use">検索パネル・ドロワーの面（4 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#F0F0F0"></div><div class="swatch-body"><div class="swatch-name">Surface 3</div><div class="swatch-hex">#F0F0F0</div><div class="swatch-use">フッター上部の面（2 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#707070"></div><div class="swatch-body"><div class="swatch-name">Lang Switch</div><div class="swatch-hex">#707070</div><div class="swatch-use">言語切替ボタンの面（5 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#3B58D6"></div><div class="swatch-body"><div class="swatch-name">Hero Blue</div><div class="swatch-hex">#3B58D6</div><div class="swatch-use">「美術で未来を創造する。」の面（1 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#003894"></div><div class="swatch-body"><div class="swatch-name">Breadcrumb</div><div class="swatch-hex">#003894</div><div class="swatch-use">下層パンくずの現在位置（1 要素）。ブランド色ではなく機能色</div></div></div>
+    </div>
+
+    <div class="note"><b>3 世代のフレームワークが同居している。</b>WordPress（テーマ <code>musabi-ac-jp</code>）＋ Bootstrap（<code>body { font-family: "Helvetica Neue"…; font-size: 14px; line-height: 1.42857; color: #222222 }</code> が残っている）＋ <b>Tailwind の prefix 付きクラスを arbitrary value ごと HTML に直書き</b>（<code>tw-text-[12px] tw-text-[#7a7a7a]</code>）。Bootstrap の <code>body</code> は自社の宣言が上書きしているので描画には出ないが、<b>CSS を読むときは <code>body</code> 宣言が 2 つあることを前提にする。</b></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">03 / Typography</div>
+    <div class="eyebrow">游ゴシック体 1 書体</div>
+    <h2 class="section-title">欧文も游ゴシックの欧文グリフで組む</h2>
+    <p class="section-lead">英数字（日付 <code>9/19 - 11/21</code>、<code>SPECIAL</code> <code>INFORMATION</code>）も専用の欧文フォントを持たず、游ゴシック体で組む。例外はフッターのコピーライト <b>1 要素</b>だけが <code>"Helvetica Neue", Arial, Verdana, sans-serif</code>（8px）。</p>
+
+    <div class="type-row"><div class="type-meta"><b>Page Title（下層）</b>32px / 400 / lh 1.20<br>ls 4.48px = 0.14em</div><div class="type-sample"><div class="t-title">大学概要</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>Section Heading</b>24px / 700 / lh 1.50</div><div class="type-sample"><div class="t-sec">SPECIAL ／ ムサビで学ぶ</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>Nav Button</b>18px / 700</div><div class="type-sample"><div class="t-nav">学部学科・大学院</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>Hero h1</b>17px（≥1024px）/ 12px（≤834px）<br>★固定の 2 段。流体ではない</div><div class="type-sample"><div class="t-h1">武蔵野美術大学</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>Sub Nav</b>16px / 400 / lh 1.20<br>ls 2.24px = 0.14em</div><div class="type-sample"><div class="t-sub">武蔵野美術大学について</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>Body（400）</b>13px / lh 1.62<br>★最多 44 / 110 要素</div><div class="type-sample"><div class="t-body">武蔵野美術大学は、1929年の創立当初から幅広い造形分野を擁し、社会と芸術をつなぐ教育を続けてきました。</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>Body（700・既定）</b>13px / lh 1.62</div><div class="type-sample"><div class="t-bodyb">武蔵野美術大学は、1929年の創立当初から幅広い造形分野を擁し、社会と芸術をつなぐ教育を続けてきました。</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>Card Text</b>14px / 700 / lh 1.43</div><div class="type-sample"><div class="t-card">αMプロジェクト2025–2026 立ち止まり振り返る</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>Caption</b>12px / 400 / lh 1.85</div><div class="type-sample"><div class="t-cap">受験生サイト ／ 通信教育課程サイト</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>Date</b>8.75px / 400 / lh 1.43<br>★48 要素。0.875rem（root 10px）</div><div class="type-sample"><div class="t-date">9/19 - 11/21 ／ 11/20 - 12/19</div></div></div>
+
+    <div class="stack-box">
+      <div><b>実サイトのスタック（Windows 対策なし）</b>
+        <code>font-family: 游ゴシック体, 游ゴシック, "Yu Gothic", YuGothic,
+             "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN",
+             メイリオ, Meiryo, sans-serif;</code>
+        Medium がどこにも入っていないため、Windows では <code>游ゴシック</code>（Regular）に当たって細く出る。</div>
+      <div><b>正しくは Medium を Regular より前に置く</b>
+        <code>font-family: 游ゴシック体, YuGothic, "游ゴシック Medium", "Yu Gothic Medium",
+             游ゴシック, "Yu Gothic",
+             "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN",
+             メイリオ, Meiryo, sans-serif;</code>
+        ただし<b>このサイトは weight 700 が主役</b>なので、Windows でも太字は正しく出る。差が出るのは weight 400 の 84 要素（日付・本文）だけ。</div>
+    </div>
+
+    <div class="note"><b>ヒーローの大きな欧文「Musashino Art University」は画像。</b><code>carousel_text_02.png</code>（250×132px）で、<code>distributions.fontFamily</code> には別書体が 1 要素も出ない。<b>ここを Web フォントで実装しないこと。</b></div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">04 / Letter Spacing</div>
+    <div class="eyebrow">宣言はあるが、事実上ゼロ</div>
+    <h2 class="section-title">body の -0.001em は再現しなくてよい</h2>
+    <p class="section-lead"><code>body { letter-spacing: -0.001em }</code> が 13px に対して <code>-0.013px</code> という<b>絶対値</b>になり、206 / 112 要素へ px のまま降りる。<b>32px の見出しでも <code>-0.013px</code> のまま</b>（= -0.0004em）なので、大きい文字ほど「何もしていない」。</p>
+
+    <table class="ls-table">
+      <tr><th>型</th><th>実測</th><th>仕組み</th></tr>
+      <tr><td><b>継承型（既定）</b></td><td class="num">-0.013px が 206 / 112 要素</td><td><code>body</code> の <code>-0.001em</code> が 13px で絶対値になり、全子孫へ px のまま降りる</td></tr>
+      <tr><td><b>要素が em を持つ型</b></td><td class="num">16px → 2.24px ／ 32px → 4.48px</td><td>下層の節見出し・ページタイトルだけ <b>0.14em</b> を自分で宣言している</td></tr>
+    </table>
+
+    <div class="ls-demo">
+      <div><div class="w-label" style="font-family:var(--font-en);font-size:11px;letter-spacing:.1em;color:var(--muted);margin-bottom:8px">継承型 ─ letter-spacing: -0.013px（実質ゼロ）</div><div class="ls-inherit">大学概要</div></div>
+      <div><div class="w-label" style="font-family:var(--font-en);font-size:11px;letter-spacing:.1em;color:var(--muted);margin-bottom:8px">要素が持つ型 ─ letter-spacing: 0.14em（本当に意味がある字間）</div><div class="ls-own">大学概要</div></div>
+    </div>
+
+    <div class="note"><b><code>body</code> に <code>em</code> の字間を書いて継承させないこと。</b>13px の <code>-0.001em</code> は <code>-0.013px</code> という絶対値で降り、見出しで効かなくなる。<b>本当に意味がある字間は下層見出しの <code>0.14em</code> だけ</b>なので、その要素に <code>em</code> で書く。<br><br><code>font-feature-settings</code> の宣言は CSS 全文に <b>0 件</b>、実測も 0 要素。<b><code>palt</code> を足さない。</b>YakuHanJP のような約物サブセットも使っていない。</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">05 / Components</div>
+    <div class="eyebrow">角丸ゼロ・影ゼロ</div>
+    <h2 class="section-title">黒い面と白い文字だけで導線を作る</h2>
+    <p class="section-lead"><code>border-radius</code> は実測で検索ボタンの 2px と閉じるボタン（<code>×</code>）の 4px だけ。<code>box-shadow</code> は<b>両ページとも 0 種</b>。階層は面の明度（白 → <code>#F0F0F0</code> → <code>#E0E0E0</code> → 黒）だけで作る。</p>
+
+    <div class="btn-row">
+      <a class="btn-black" href="#">資料請求</a>
+      <a class="btn-black-sm" href="#">在学生</a>
+      <a class="btn-black-sm" href="#">受験生</a>
+      <a class="btn-lang" href="#">日本語</a>
+      <a class="btn-lang" href="#">English</a>
+      <a class="btn-lang" href="#">中文 （简体）</a>
+    </div>
+
+    <div class="hero">
+      <div class="hero-text">carousel_text_02.png<br>250 × 132px<br>（実サイトはここが画像）</div>
+      <div class="hero-slide"><span>top_2026_pc.jpg ─ 912 × 513px のスライド</span></div>
+    </div>
+
+    <div class="card-row">
+      <div class="card">
+        <div class="card-thumb"></div>
+        <div class="card-ttl">武蔵野美術大学教授退任記念　間島秀徳展</div>
+        <div class="card-date">9/19 - 11/21</div>
+      </div>
+      <div class="card">
+        <div class="card-thumb"></div>
+        <div class="card-ttl">100周年事業特別講座 ムサビクロニクル vol.3</div>
+        <div class="card-date">11/9</div>
+      </div>
+      <div class="card">
+        <div class="card-thumb"></div>
+        <div class="card-ttl">αMプロジェクト2025–2026 立ち止まり振り返る</div>
+        <div class="card-date">11/20 - 12/19</div>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="field"><label for="f1">キーワード</label><input id="f1" type="text" placeholder="展覧会・学科名など"><div class="field-msg">サイト内を検索します</div></div>
+      <div class="field is-focus"><label for="f2">メールアドレス（フォーカス状態）</label><input id="f2" type="text" value="info@example.ac.jp"><div class="field-msg">資料の送付先にお使いします</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">06 / Responsive</div>
+    <div class="eyebrow">主分岐は 768px ではなく 1023 / 1024px</div>
+    <h2 class="section-title">html 10px / body 13px は 9 幅すべてで固定</h2>
+    <p class="section-lead">測った 9 幅すべてで <code>html</code> も <code>body</code> も同じ値。流体も崖も無い。<b>動くのは <code>h1</code> だけ</b>（17px → 12px、1024 / 834px の間で切替）。</p>
+
+    <table class="bp">
+      <tr><th>ビューポート幅</th><th>html</th><th>body</th><th>line-height</th><th>h1</th></tr>
+      <tr><td>1440px</td><td class="num">10px</td><td class="num">13px</td><td class="num">21px</td><td class="num">17px</td></tr>
+      <tr><td>1200px</td><td class="num">10px</td><td class="num">13px</td><td class="num">21px</td><td class="num">17px</td></tr>
+      <tr class="edge"><td>1024px（主分岐）</td><td class="num">10px</td><td class="num">13px</td><td class="num">21px</td><td class="num">17px</td></tr>
+      <tr class="edge"><td>834px</td><td class="num">10px</td><td class="num">13px</td><td class="num">21px</td><td class="num"><b>12px</b></td></tr>
+      <tr><td>769 / 768 / 767px</td><td class="num">10px</td><td class="num">13px</td><td class="num">21px</td><td class="num">12px</td></tr>
+      <tr><td>390px</td><td class="num">10px</td><td class="num">13px</td><td class="num">21px</td><td class="num">12px</td></tr>
+      <tr><td>375px</td><td class="num">10px</td><td class="num">13px</td><td class="num">21px</td><td class="num">12px</td></tr>
+    </table>
+
+    <div class="note"><b>ブレークポイントは 1023 / 1024px。</b><code>screen and (max-width: 1023px)</code> が CSS 全文で <b>272 回</b>と圧倒的に最多で、<code>screen and (min-width: 1024px)</code> が 6 回。<b>一般的な 768px ではないので、他サイトの感覚で組まないこと。</b><br><br>タッチターゲットは、ナビボタン（18px / padding <code>20px 12px</code>）が高さ 65px で 44px を満たす一方、<code>資料請求</code>（14px / padding <code>12px 0</code>）は 42px と<b>わずかに下回る</b>。<b>日付の 8.75px はモバイルでは小さすぎる。</b></div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <p class="footer-head">美術で未来を創造する。</p>
+    <div class="footer-cols">
+      <div class="footer-col"><a href="#">大学概要</a><a href="#">学部学科・大学院</a><a href="#">学生生活</a></div>
+      <div class="footer-col"><a href="#">進路・就職</a><a href="#">国際交流・留学</a><a href="#">研究・連携共創</a></div>
+      <div class="footer-col"><a href="#">入試・入学案内</a><a href="#">美術館・図書館</a><a href="#">市ヶ谷キャンパス</a></div>
+      <div class="footer-col"><a href="#">サイトについて</a><a href="#">個人情報保護方針</a><a href="#">事務組織一覧</a></div>
+    </div>
+    <p class="footer-copy">Copyright © Musashino Art University — Design tokens measured 2026-11-04</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (610 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (613 sites)</a>
 </p>
 
 <table>
@@ -946,6 +946,11 @@
 </tr>
 <tr>
 <td align="center"><strong>関西ペイント</strong><br><img src="design-md/kansaipaint/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>三井ホーム</strong><br><img src="design-md/mitsuihome/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>武蔵野美術大学</strong><br><img src="design-md/musabi/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>森永乳業</strong><br><img src="design-md/morinagamilk/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1617,11 +1622,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [女子美術大学 (Joshibi University of Art and Design)](https://www.joshibi.ac.jp/) | University / Art Education | [DESIGN.md](design-md/joshibi/DESIGN.md) | [preview.html](design-md/joshibi/preview.html) |
 | [熊谷組 (KUMAGAI GUMI)](https://www.kumagaigumi.co.jp/) | Construction / Corporate | [DESIGN.md](design-md/kumagaigumi/DESIGN.md) | [preview.html](design-md/kumagaigumi/preview.html) |
 | [関西ペイント (Kansai Paint)](https://www.kansai.co.jp/) | Chemical / Corporate | [DESIGN.md](design-md/kansaipaint/DESIGN.md) | [preview.html](design-md/kansaipaint/preview.html) |
+| [三井ホーム (MITSUI HOME)](https://www.mitsuihome.co.jp/) | Housing / Corporate | [DESIGN.md](design-md/mitsuihome/DESIGN.md) | [preview.html](design-md/mitsuihome/preview.html) |
+| [武蔵野美術大学 (Musashino Art University)](https://www.musabi.ac.jp/) | University / Art Education | [DESIGN.md](design-md/musabi/DESIGN.md) | [preview.html](design-md/musabi/preview.html) |
+| [森永乳業 (MORINAGA MILK)](https://www.morinagamilk.co.jp/) | Food / Corporate | [DESIGN.md](design-md/morinagamilk/DESIGN.md) | [preview.html](design-md/morinagamilk/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (610 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (613 sites)</a>
 </p>
 
 <table>
@@ -2533,6 +2541,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>関西ペイント</strong><br><img src="design-md/kansaipaint/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>三井ホーム</strong><br><img src="design-md/mitsuihome/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>武蔵野美術大学</strong><br><img src="design-md/musabi/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>森永乳業</strong><br><img src="design-md/morinagamilk/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

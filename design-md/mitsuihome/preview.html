@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 三井ホーム（MITSUI HOME）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- ★実サイトが実際に読み込んでいる Poppins は wght@700 の 1 本だけ。ここも 700 だけにする。
+     Asap も実サイトが宣言している（unloaded だが、Kievit の代役として近い）。 -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Asap:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Shippori+Mincho:wght@400&display=swap" rel="stylesheet">
+<style>
+  /* ===========================================================
+     三井ホーム 実測プレビュー（2026-11-04）
+     対象: https://www.mitsuihome.co.jp/ , /company/
+
+     ★実サイトに CSS Custom Properties は実質 0 個（トップの 2 個は Swiper 由来、
+       下層は 0 個）。以下の :root は「実測値をこのプレビューで整理したもの」で、
+       実サイトに同名の変数があるわけではない。値はすべて実測。
+     =========================================================== */
+  :root {
+    /* === Brand（実測） === */
+    --mitsui-red:  #A61918;  /* ★可視 17 / 12 要素。メガメニュー見出しリンク・ページャ現在位置 */
+    --news-red:    #A10D29;  /* 可視 7 要素。ニュースのカテゴリ・日付。上と RGB で 5/12/17 しか違わない */
+    --mocx-green:  #378A42;  /* 可視 6 要素。炭素固定量カウンタの面と数字 */
+    --wood-brown:  #663E2E;  /* 炭素固定量ブロックの面（1 要素） */
+
+    /* === Neutral（実測） === */
+    --text:        #000000;  /* ★トップの本文・見出し。可視 184 要素。純黒を使う */
+    --text-sub:    #333333;  /* ★下層の本文。可視 30 要素。body の宣言違いでページをまたぐと変わる */
+    --text-muted:  #646B76;  /* ニュースの日付（9 要素） */
+    --white:       #FFFFFF;
+    --beige:       #E8E6DF;  /* ★可視 10 要素。最も多い面色 */
+    --beige-2:     #E8E5DE;  /* フッター周り（3 要素）。上とほぼ同値だが別実装 */
+    --surface:     #F3F2EF;  /* ヘッダー追従カードの面（5 要素） */
+    --gray:        #EFEFEF;
+    --divider:     #BEBEBE;  /* 区切り罫（6 要素） */
+
+    /* === Fonts ===
+       実体は FontPlus 配信の 筑紫ゴシック Pro M / B。ドメインライセンスのため
+       手元では出ないので、字面がやや小さくやわらかい Zen Kaku Gothic New で代替。
+       ★重要なのは書体そのものより「M と B が別ファミリーである」という構造。
+       実サイトでは font-weight を 100〜900 まで振っても幅が 1px も動かない
+       （隠し div の実測で全ウェイト 633.03px）。下の 06 章で再現している。 */
+    --font-m: "TsukuGoPro-M", "Zen Kaku Gothic New", "Hiragino Sans", sans-serif;
+    --font-b: "TsukuGoPro-B", "Zen Kaku Gothic New", "Hiragino Sans", sans-serif;
+    --font-mincho: "FOT-TsukuMin Pro", "Shippori Mincho", serif;  /* お見舞い文の 1 要素だけ */
+    --font-num: Poppins, sans-serif;      /* カウンタの数字。wght@700 の 1 本きり */
+    --font-eyebrow: Kievit, Asap, sans-serif;  /* NEWS RELEASE 等の欧文小見出し */
+
+    /* === Line height（実測） === */
+    --lh-body: 1.75;   /* ★トップの body。91 要素で最多 */
+    --lh-sub:  1.60;   /* 下層の body。115 要素で最多 */
+    --lh-nav:  1.70;
+    --lh-link: 1.40;
+
+    --container: 1140px;  /* ★実測 7 要素で最多。両ページ共通 */
+  }
+
+  /* ★html は 62.5%（= 10px）。1440/1200/1024/834/769/768/767/390/375px の
+     9 幅すべてで完全固定。レスポンシブでルートは一切動かない。 */
+  html { font-size: 62.5%; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--text);
+    font-family: var(--font-m);
+    font-size: 16px;              /* ★トップの body。下層は 1rem（= 10px）が勝つ */
+    line-height: var(--lh-body);  /* 1.75 */
+    letter-spacing: normal;       /* ★既定は normal（186 / 156 要素） */
+    -webkit-font-smoothing: antialiased;
+    /* ★font-feature-settings は書かない。実測 5 要素だけで、大半は KARTE 由来 */
+  }
+
+  /* ---------- 共通パーツ ---------- */
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+
+  .header { border-bottom: 1px solid var(--divider); background: var(--white); }
+  .header-top { display: flex; align-items: center; gap: 24px;
+                max-width: var(--container); margin: 0 auto; padding: 18px 24px 10px; }
+  .logo { font-family: var(--font-b); font-size: 20px; letter-spacing: 0.06em;
+          color: var(--text); text-decoration: none; line-height: 1.4; }
+  .util { margin-left: auto; display: flex; gap: 18px; }
+  .util a { font-family: var(--font-b); font-size: 11px; letter-spacing: 0.06em;
+            line-height: 2.73; color: var(--text); text-decoration: none; }
+  .gnav { display: flex; gap: 26px; max-width: var(--container);
+          margin: 0 auto; padding: 0 24px 12px; }
+  .gnav a { font-size: 13px; letter-spacing: 0.06em; line-height: var(--lh-nav);
+            color: var(--text); text-decoration: none; }
+
+  .section { padding: 68px 0; }
+  .section-alt { background: var(--beige); }
+  .section-label { font-family: var(--font-eyebrow); font-size: 12px;
+                   letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 8px; }
+  .eyebrow { font-family: var(--font-b); font-size: 11px; letter-spacing: 0.06em;
+             color: var(--mitsui-red); margin-bottom: 6px; }
+  .section-title { font-family: var(--font-b); font-size: 24px; line-height: 1.40;
+                   letter-spacing: 0.06em; margin-bottom: 14px; }
+  .section-lead { font-size: 16px; line-height: var(--lh-body);
+                  letter-spacing: 0.02em; max-width: 74ch; }
+  .note { margin-top: 24px; padding: 14px 18px; background: var(--beige);
+          border-left: 3px solid var(--mitsui-red); font-size: 14px;
+          line-height: 1.80; letter-spacing: 0.06em; }
+  .section-alt .note { background: var(--white); }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .9em;
+         background: rgba(0,0,0,.065); padding: 1px 5px; }
+  b { font-family: var(--font-b); font-weight: 400; }   /* ★太字はファミリーで作る */
+
+  /* ---------- 01 Weight ---------- */
+  .w-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 28px; }
+  .w-box { border: 1px solid var(--divider); background: var(--white); padding: 20px 22px; }
+  .section-alt .w-box { background: var(--white); }
+  .w-label { font-family: var(--font-eyebrow); font-size: 11px; letter-spacing: .12em;
+             color: var(--text-muted); margin-bottom: 12px; }
+  .w-sample { font-size: 22px; line-height: 1.60; letter-spacing: 0.06em; }
+  .w-m { font-family: var(--font-m); font-weight: 400; }
+  .w-b { font-family: var(--font-b); font-weight: 400; }
+  /* ★「font-weight で太くしようとした」側。実サイトの CSS は TsukuGoPro-M に
+     font-weight: 700 を当てているが、@font-face が font-weight: bold を宣言した
+     1 ファイルしか無いため同じファイルが返り、合成太字も起きない（＝見た目は 400 と同じ）。
+     代替書体の Zen Kaku Gothic New には本物の 700 があって太くなってしまうので、
+     ここでは実サイトの結果に合わせて 400 で描画している。 */
+  .w-fail { font-family: var(--font-m); font-weight: 400; }
+
+  .w-table { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 14px; }
+  .w-table th, .w-table td { border: 1px solid var(--divider); padding: 9px 12px;
+                             text-align: left; letter-spacing: 0.06em; }
+  .w-table th { background: var(--beige); font-family: var(--font-b); font-size: 13px; }
+  .section-alt .w-table th { background: var(--white); }
+  .w-table .num { font-family: var(--font-num); letter-spacing: 0.04em; }
+  .w-table tr.flat td { color: var(--mitsui-red); }
+
+  /* ---------- 02 Colors ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(226px, 1fr));
+                gap: 16px; margin-top: 28px; }
+  .swatch { border: 1px solid var(--divider); background: var(--white); }
+  .swatch-chip { height: 70px; }
+  .swatch-body { padding: 10px 12px 14px; }
+  .swatch-name { font-family: var(--font-b); font-size: 13px; letter-spacing: 0.06em; }
+  .swatch-hex { font-family: var(--font-num); font-size: 12px; color: var(--text-muted);
+                letter-spacing: 0.04em; margin: 3px 0 6px; }
+  .swatch-use { font-size: 11px; line-height: 1.70; color: var(--text-muted);
+                letter-spacing: 0.06em; }
+
+  /* ---------- 03 Typography ---------- */
+  .type-row { display: flex; gap: 28px; padding: 18px 0;
+              border-bottom: 1px solid var(--divider); align-items: baseline; }
+  .type-meta { flex: none; width: 200px; font-family: var(--font-num); font-size: 11px;
+               line-height: 1.8; color: var(--text-muted); letter-spacing: 0.04em; }
+  .type-meta b { display: block; font-family: var(--font-b); font-size: 12px;
+                 color: var(--text); letter-spacing: 0.06em; }
+  .type-sample { flex: 1; min-width: 0; }
+  .t-counter { font-family: var(--font-num); font-size: 49px; font-weight: 700;
+               line-height: 1.37; color: var(--mocx-green); }
+  .t-mega  { font-family: var(--font-b); font-size: 18px; line-height: var(--lh-link);
+             letter-spacing: 0.06em; color: var(--mitsui-red); }
+  .t-body  { font-size: 16px; line-height: var(--lh-body); letter-spacing: 0.02em; }
+  .t-link  { font-size: 15px; line-height: var(--lh-link); letter-spacing: 0.06em; }
+  .t-ui    { font-size: 14px; line-height: var(--lh-nav); letter-spacing: 0.06em; }
+  .t-nav   { font-size: 13px; line-height: var(--lh-nav); letter-spacing: 0.06em; }
+  .t-cap   { font-size: 12px; line-height: var(--lh-sub); }
+  .t-eye   { font-family: var(--font-eyebrow); font-size: 12px; letter-spacing: 0.15em; }
+  .t-cat   { font-family: var(--font-b); font-size: 11px; line-height: 2.73;
+             letter-spacing: 0.06em; }
+  .t-mincho { font-family: var(--font-mincho); font-size: 16px; line-height: 1.58; }
+
+  /* ---------- 04 Letter spacing ---------- */
+  .ls-table { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 14px; }
+  .ls-table th, .ls-table td { border: 1px solid var(--divider); padding: 9px 12px;
+                               text-align: left; letter-spacing: 0.06em; }
+  .ls-table th { background: var(--beige); font-family: var(--font-b); font-size: 13px; }
+  .section-alt .ls-table th { background: var(--white); }
+  .ls-table .num { font-family: var(--font-num); letter-spacing: 0.04em; }
+  .ls-demo { margin-top: 24px; display: grid; gap: 12px; }
+  .ls-demo div { border: 1px solid var(--divider); background: var(--white); padding: 14px 18px; }
+  .ls-06 { font-size: 18px; letter-spacing: 0.06em; }
+  .ls-00 { font-size: 18px; letter-spacing: normal; }
+  .ls-15 { font-family: var(--font-eyebrow); font-size: 12px; letter-spacing: 0.15em; }
+
+  /* ---------- 05 Components ---------- */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 28px; }
+  .btn-primary { display: inline-block; background: var(--text); color: var(--white);
+                 font-family: var(--font-m); font-size: 13px; line-height: var(--lh-nav);
+                 padding: 18px 40px; border: 0; border-radius: 0; text-decoration: none; }
+  .btn-card { display: inline-block; background: var(--surface); color: var(--text);
+              font-size: 10px; line-height: 1.10; padding: 11px 18px 11px 11px;
+              border: 0; border-radius: 0; text-decoration: none; min-width: 150px; }
+  .btn-pill { display: inline-block; background: var(--mocx-green); color: var(--white);
+              font-size: 14px; line-height: 1.70; letter-spacing: 0.06em;
+              padding: 10px 24px; border-radius: 900px; text-decoration: none; }
+  .pager { display: flex; gap: 6px; margin-top: 22px; }
+  .pager span { width: 28px; height: 28px; display: grid; place-items: center;
+                font-family: var(--font-num); font-size: 10px; background: #D6D6D6;
+                color: var(--text); border-radius: 0; }
+  .pager span.is-current { background: var(--mitsui-red); color: var(--white); }
+
+  .card-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+              gap: 20px; margin-top: 28px; }
+  .card { background: var(--white); border: 1px solid var(--divider);
+          border-radius: 0; box-shadow: none; padding: 20px; }
+  .section-alt .card { background: var(--white); }
+  .card-eye { font-family: var(--font-eyebrow); font-size: 12px; letter-spacing: 0.15em;
+              color: var(--text-muted); margin-bottom: 8px; }
+  .card-ttl { font-family: var(--font-b); font-size: 15px; line-height: var(--lh-link);
+              letter-spacing: 0.06em; margin-bottom: 8px; }
+  .card-txt { font-size: 14px; line-height: var(--lh-nav); letter-spacing: 0.06em;
+              color: var(--text-sub); }
+
+  /* ★ヒーローの帯。写真の代役は「面そのもの」の background-image に 2 枚重ねる
+     （絶対配置の兄弟要素にすると lint の effectiveBg が祖先しか遡れず誤検出になる） */
+  .hero {
+    margin-top: 28px; padding: 56px 40px; border-radius: 0;
+    background-image:
+      linear-gradient(rgba(0,0,0,.30), rgba(0,0,0,.42)),
+      linear-gradient(135deg, #4C6B3A 0%, #6E8C4E 48%, #8B6F45 100%);
+    color: var(--white);
+  }
+  .hero-copy { font-family: var(--font-b); font-size: 26px; line-height: var(--lh-link);
+               letter-spacing: 0.06em; }
+  .hero-sub { font-family: var(--font-num); font-size: 34px; font-weight: 700;
+              line-height: 1.37; margin-top: 10px; }
+  .hero-note { font-size: 13px; line-height: var(--lh-nav); letter-spacing: 0.06em;
+               margin-top: 14px; opacity: .92; }
+
+  /* ---------- 06 Forms ---------- */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 28px; }
+  .field label { display: block; font-family: var(--font-b); font-size: 13px;
+                 letter-spacing: 0.06em; margin-bottom: 6px; }
+  .field input { width: 100%; height: 50px; padding: 0 14px; font-size: 16px;
+                 font-family: var(--font-m); background: var(--surface);
+                 border: 1px solid var(--divider); border-radius: 0; color: var(--text); }
+  /* ★autofocus は使わない。フォーカス状態はクラスで見せる */
+  .field.is-focus input { border-color: var(--mitsui-red); outline: 2px solid var(--mitsui-red);
+                          outline-offset: -2px; background: var(--white); }
+  .field-msg { font-size: 12px; line-height: var(--lh-sub); color: var(--text-muted);
+               margin-top: 6px; letter-spacing: 0.06em; }
+
+  /* ---------- 07 Responsive ---------- */
+  .bp { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 14px; }
+  .bp th, .bp td { border: 1px solid var(--divider); padding: 9px 12px;
+                   text-align: left; letter-spacing: 0.06em; }
+  .bp th { background: var(--beige); font-family: var(--font-b); font-size: 13px; }
+  .section-alt .bp th { background: var(--white); }
+  .bp .num { font-family: var(--font-num); letter-spacing: 0.04em; }
+
+  .footer { background: var(--beige-2); color: var(--text); padding: 54px 0 38px; margin-top: 8px; }
+  .footer-head { font-family: var(--font-b); font-size: 18px; letter-spacing: 0.06em;
+                 line-height: var(--lh-link); }
+  .footer-cols { display: grid; grid-template-columns: repeat(4, 1fr);
+                 gap: 20px; margin-top: 26px; }
+  .footer-col a { display: block; font-size: 13px; line-height: 2.14; letter-spacing: 0.06em;
+                  color: var(--text); text-decoration: none; }
+  .footer-copy { font-family: var(--font-num); font-size: 11px; letter-spacing: 0.06em;
+                 color: var(--text-muted); margin-top: 30px; }
+  .pagetop { display: inline-block; margin-top: 26px; background: var(--text);
+             color: var(--white); font-size: 13px; line-height: 1.70;
+             padding: 18px 44px; border-radius: 0; text-decoration: none; }
+
+  @media (max-width: 768px) {
+    .w-grid { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .type-row { flex-direction: column; gap: 10px; }
+    .type-meta { width: auto; }
+    .footer-cols { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <a class="logo" href="#">三井ホーム</a>
+    <nav class="util">
+      <a href="#">サステナビリティ</a><a href="#">企業情報</a><a href="#">採用情報</a><a href="#">オーナー様</a>
+    </nav>
+  </div>
+  <nav class="gnav">
+    <a href="#">注文・規格(セレクト)住宅</a><a href="#">宅地・分譲住宅</a><a href="#">賃貸住宅建築</a>
+    <a href="#">医院建築</a><a href="#">施設建築</a><a href="#">木材・建材</a><a href="#">リフォーム</a>
+  </nav>
+</header>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">01 / Font Weight</div>
+    <div class="eyebrow">このサイトの骨格</div>
+    <h2 class="section-title">太さは font-weight ではなく font-family で切り替える</h2>
+    <p class="section-lead">和文は FontPlus 配信の <b>筑紫ゴシック Pro M</b>（実測 150 / 127 要素）と <b>筑紫ゴシック Pro B</b>（62 / 55 要素）の<b>2 ファミリー</b>。どちらも <code>@font-face</code> 側が <code>font-weight: bold</code> を宣言しているため、CSS が 400 を当てても 700 を当てても<b>同じファイルが返る</b>。</p>
+
+    <div class="w-grid">
+      <div class="w-box">
+        <div class="w-label">font-family: TsukuGoPro-M（weight 400）</div>
+        <p class="w-sample w-m">木で建てれば、街は森になる。</p>
+      </div>
+      <div class="w-box">
+        <div class="w-label">TsukuGoPro-M に <b>font-weight: 700</b> を当てた場合 ← 変わらない</div>
+        <p class="w-sample w-fail">木で建てれば、街は森になる。</p>
+      </div>
+      <div class="w-box">
+        <div class="w-label">font-family: TsukuGoPro-B（weight 400）← 正しい太字</div>
+        <p class="w-sample w-b">木で建てれば、街は森になる。</p>
+      </div>
+      <div class="w-box">
+        <div class="w-label">同じ指定を欧文で</div>
+        <p class="w-sample w-b">MOCX Green Project</p>
+      </div>
+    </div>
+
+    <p class="section-lead" style="margin-top:28px">隠し <code>div</code> を作り <code>font-weight</code> だけ変えて <code>getBoundingClientRect().width</code> を比べた実測値。<b>9 段すべて同じ</b>で、合成太字すら起きない。</p>
+    <table class="w-table">
+      <tr><th>font-weight</th><th>TsukuGoPro-M の実測幅</th><th>判定</th></tr>
+      <tr class="flat"><td class="num">100 / 200 / 300</td><td class="num">633.03px</td><td>変化なし</td></tr>
+      <tr class="flat"><td class="num">400</td><td class="num">633.03px</td><td>変化なし</td></tr>
+      <tr class="flat"><td class="num">500 / 600</td><td class="num">633.03px</td><td>変化なし</td></tr>
+      <tr class="flat"><td class="num">700 / 800 / 900</td><td class="num">633.03px</td><td><b>変化なし（合成太字も起きない）</b></td></tr>
+    </table>
+
+    <div class="note"><b><code>TsukuGoPr5-M</code> は死んでいる。</b>接客ツール KARTE のポップアップに <code>font-family: TsukuGoPr5-M !important</code>（<b>受け皿を書かない 1 語スタック</b>）が当たっており、下層で 7 要素に解決されているが、<code>document.fonts</code> のステータスは <b><code>error</code></b>。幅実測でも <b>1125px＝<code>sans-serif</code> と同値</b>で 1 文字も当たっていない。ついでに同じ CSS のクラス名は <code>subtitile</code> / <code>titile</code> と 2 箇所ともタイプミスしている。</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">02 / Colors</div>
+    <div class="eyebrow">Color Palette</div>
+    <h2 class="section-title">赤が 2 つ。見分けはつかないが、役割は分かれている</h2>
+    <p class="section-lead"><code>#A61918</code>（R166 G25 B24）と <code>#A10D29</code>（R161 G13 B41）は RGB で 5 / 12 / 17 しか違わず、スクリーンショットでは見分けがつかない。<b>それでも両方が実装されていて、「ナビの見出しリンク」対「ニュースのカテゴリ」で使い分けられている。</b></p>
+
+    <div class="color-grid">
+      <div class="swatch"><div class="swatch-chip" style="background:#A61918"></div><div class="swatch-body"><div class="swatch-name">Mitsui Red</div><div class="swatch-hex">#A61918</div><div class="swatch-use">★可視 17 / 12 要素。メガメニューの見出しリンク、ページャの現在位置</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#A10D29"></div><div class="swatch-body"><div class="swatch-name">News Red</div><div class="swatch-hex">#A10D29</div><div class="swatch-use">可視 7 要素。ニュースリリースの日付・カテゴリ</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#378A42"></div><div class="swatch-body"><div class="swatch-name">MOCX Green</div><div class="swatch-hex">#378A42</div><div class="swatch-use">可視 6 要素。炭素固定量カウンタの面と数字</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#663E2E"></div><div class="swatch-body"><div class="swatch-name">Wood Brown</div><div class="swatch-hex">#663E2E</div><div class="swatch-use">炭素固定量ブロックの面（1 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Text（トップ）</div><div class="swatch-hex">#000000</div><div class="swatch-use">★可視 184 要素。トップは純黒を使う</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Text（下層）</div><div class="swatch-hex">#333333</div><div class="swatch-use">★可視 30 要素。body の宣言違いでページをまたぐと色が変わる</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#646B76"></div><div class="swatch-body"><div class="swatch-name">Muted</div><div class="swatch-hex">#646B76</div><div class="swatch-use">ニュースの日付（9 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#E8E6DF"></div><div class="swatch-body"><div class="swatch-name">Surface Beige</div><div class="swatch-hex">#E8E6DF</div><div class="swatch-use">★可視 10 要素。最も多い面色</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#F3F2EF"></div><div class="swatch-body"><div class="swatch-name">Surface Light</div><div class="swatch-hex">#F3F2EF</div><div class="swatch-use">ヘッダー追従カードの面（5 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#BEBEBE"></div><div class="swatch-body"><div class="swatch-name">Divider</div><div class="swatch-hex">#BEBEBE</div><div class="swatch-use">区切り罫（6 要素）</div></div></div>
+    </div>
+
+    <div class="note"><b>CSS Custom Properties は実質 0 個。</b>トップの 2 個は Swiper の既定値（<code>--swiper-theme-color</code> / <code>--swiper-navigation-size</code>）、下層は 0 個。色もサイズも CSS に直書きされているので、<b>変数を前提に組まないこと。</b></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">03 / Typography</div>
+    <div class="eyebrow">筑紫ゴシック Pro ＋ Poppins ＋ FF Kievit</div>
+    <h2 class="section-title">和文 1 書体、欧文は数字と小見出しで使い分ける</h2>
+    <p class="section-lead">フォント要求は <b>34 件</b>、ホストは <code>webfont.fontplus.jp</code> と <code>fonts.gstatic.com</code> の <b>2 つ</b>。Google Fonts 側は <b>Poppins <code>wght@700</code> の 1 本だけ</b>なので、カウンタに 400 を当てても 700 で描画される。</p>
+
+    <div class="type-row"><div class="type-meta"><b>Counter Number</b>Poppins / 49px / 700<br>lh 1.37 / #378A42</div><div class="type-sample"><div class="t-counter">20,134,567</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>Mega Menu Heading</b>TsukuGoPro-B / 18px<br>lh 1.40 / ls 0.06em</div><div class="type-sample"><div class="t-mega">戸建住宅トップ</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>Body</b>TsukuGoPro-M / 16px<br>lh 1.75 / ls 0.02em</div><div class="type-sample"><div class="t-body">あなたの理想の住まいをかたちに。構造・断熱・空調まで、暮らしの性能をひとつの設計として組み上げます。</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>Link Label</b>TsukuGoPro-M / 15px<br>lh 1.40 / ls 0.06em</div><div class="type-sample"><div class="t-link">注文住宅｜三井ホームオーダー</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>UI Label</b>TsukuGoPro-M / 14px<br>lh 1.70 / ls 0.06em<br>★最多 69 / 62 要素</div><div class="type-sample"><div class="t-ui">暮らし方／住宅タイプ／モデルハウス紹介</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>Nav Item</b>TsukuGoPro-M / 13px<br>lh 1.70 / ls 0.06em</div><div class="type-sample"><div class="t-nav">注文・規格(セレクト)住宅</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>Eyebrow（欧文）</b>Kievit / 12px<br>ls 0.15em</div><div class="type-sample"><div class="t-eye">NEWS RELEASE ／ IR INFORMATION ／ TOPICS</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>Category Label</b>TsukuGoPro-B / 11px<br>lh 2.73 / ls 0.06em</div><div class="type-sample"><div class="t-cat">サステナビリティ／企業情報／採用情報</div></div></div>
+    <div class="type-row"><div class="type-meta"><b>Condolence</b>FOT-TsukuMin Pro / 16px<br>lh 1.58 / ★可視 1 要素</div><div class="type-sample"><div class="t-mincho">このたびの災害により被害を受けられた皆さまに、心よりお見舞い申し上げます。</div></div></div>
+
+    <div class="note"><b>宣言だけで使われない書体が 5 本ある。</b><code>FFKievitWebBold</code> / <code>FFKievitWebMedium</code> / <code>FFKievitWebLight</code> / <code>Asap</code> / <code>Roboto Condensed</code> 300・400 は全ページで <code>unloaded</code>。<b>これらを前提に組まないこと。</b>実際に <code>loaded</code> するのは TsukuGoPro-M / TsukuGoPro-B / Kievit（下層のみ）/ Noto Sans JP 400・700 / Poppins 700 の 6 本。</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">04 / Letter Spacing</div>
+    <div class="eyebrow">既定は normal</div>
+    <h2 class="section-title">字間を足す要素は、自分で 0.06em を持っている</h2>
+    <p class="section-lead">実測の既定は <code>normal</code>（186 / 156 要素）。字間がある要素は<b>サイズに比例して px が変わる</b>ので、<code>body</code> からの継承ではなく<b>各要素が <code>em</code> を宣言している</b>と分かる。</p>
+
+    <table class="ls-table">
+      <tr><th>font-size</th><th>実測 letter-spacing</th><th>em 換算</th><th>用途</th></tr>
+      <tr><td class="num">18px</td><td class="num">1.08px</td><td class="num"><b>0.06em</b></td><td>メガメニュー見出し</td></tr>
+      <tr><td class="num">15px</td><td class="num">0.9px</td><td class="num"><b>0.06em</b></td><td>リンクラベル</td></tr>
+      <tr><td class="num">14px</td><td class="num">0.84px</td><td class="num"><b>0.06em</b></td><td>UI ラベル</td></tr>
+      <tr><td class="num">13px</td><td class="num">0.78px</td><td class="num"><b>0.06em</b></td><td>ナビ</td></tr>
+      <tr><td class="num">11px</td><td class="num">0.66px</td><td class="num"><b>0.06em</b></td><td>カテゴリラベル</td></tr>
+      <tr><td class="num">16px</td><td class="num">0.32px</td><td class="num">0.02em</td><td>本文</td></tr>
+      <tr><td class="num">12px（欧文）</td><td class="num">1.8px</td><td class="num"><b>0.15em</b></td><td>NEWS RELEASE 等</td></tr>
+    </table>
+
+    <div class="ls-demo">
+      <div class="ls-06">0.06em ─ 木で建てれば、街は森になる。</div>
+      <div class="ls-00">normal ─ 木で建てれば、街は森になる。</div>
+      <div class="ls-15">0.15EM ─ NEWS RELEASE / IR INFORMATION</div>
+    </div>
+
+    <div class="note"><b><code>font-feature-settings: "palt"</code> は足さない。</b>実測はトップ <b>5 要素</b>・下層 <b>0 要素</b>で、CSS 上の宣言も <code>.boxCommon02 .inner p</code>（本文の 1 コンポーネント）と<b>接客ツール KARTE のポップアップ</b>に限られる。<b>KARTE 由来の宣言を「サイトの設計」と読まないこと。</b></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">05 / Components</div>
+    <div class="eyebrow">角丸ゼロ・影ゼロ</div>
+    <h2 class="section-title">面と罫線だけで組む</h2>
+    <p class="section-lead"><code>border-radius</code> はトップに 4px（カウンタの桁）・900px（カウンタのピル）・50%（アイコン）が各 1〜6 要素あるだけで、<b>下層は 0 種</b>。<code>box-shadow</code> は<b>両ページとも 0 種</b>。</p>
+
+    <div class="btn-row">
+      <a class="btn-primary" href="#">PAGETOP</a>
+      <a class="btn-card" href="#">モデルハウス・見学可能実例</a>
+      <a class="btn-card" href="#">土地を探す</a>
+      <a class="btn-pill" href="#">三井ホームの木造建築による炭素固定量</a>
+    </div>
+
+    <div class="pager">
+      <span>1</span><span class="is-current">2</span><span>3</span><span>4</span>
+    </div>
+
+    <div class="hero">
+      <p class="hero-copy">木で建てれば、街は森になる。</p>
+      <p class="hero-sub">MOCX Green Project</p>
+      <p class="hero-note">★実サイトではこのコピーは<b>画像に焼き込まれている</b>。DOM を全走査しても該当のテキストノードが見つからない。ここをテキストで組むと実サイトと別物になる。</p>
+    </div>
+
+    <div class="card-row">
+      <div class="card">
+        <div class="card-eye">NEWS RELEASE</div>
+        <div class="card-ttl">三井ホームの 3 作品がウッドデザイン賞を受賞</div>
+        <p class="card-txt">木造・木質建築の価値を社会に広げる取り組みが評価されました。</p>
+      </div>
+      <div class="card">
+        <div class="card-eye">IR INFORMATION</div>
+        <div class="card-ttl">決算説明資料を公開しました</div>
+        <p class="card-txt">投資家向けの資料をダウンロードいただけます。</p>
+      </div>
+      <div class="card">
+        <div class="card-eye">TOPICS</div>
+        <div class="card-ttl">全館空調の仕組みを動画で紹介</div>
+        <p class="card-txt">設計から施工までの流れをご覧いただけます。</p>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="field"><label for="f1">お名前</label><input id="f1" type="text" placeholder="三井 太郎"><div class="field-msg">全角でご入力ください</div></div>
+      <div class="field is-focus"><label for="f2">メールアドレス（フォーカス状態）</label><input id="f2" type="text" value="info@example.co.jp"><div class="field-msg">カタログの送付先にお使いします</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">06 / Responsive</div>
+    <div class="eyebrow">ルートは一切動かない</div>
+    <h2 class="section-title">html 10px / body 16px は 9 幅すべてで固定</h2>
+    <p class="section-lead"><code>html { font-size: 62.5% }</code> も <code>body</code> も、測った <b>9 幅すべてで同じ値</b>。流体も崖も無い。代わりに<b>コンポーネント単位で <code>vw</code> を使う</b>（例: <code>.boxCommon02 .inner p</code> のモバイル指定が <code>font-size: 3.41937vw</code>）。</p>
+
+    <table class="bp">
+      <tr><th>ビューポート幅</th><th>html</th><th>body</th><th>line-height</th><th>備考</th></tr>
+      <tr><td>1440px</td><td class="num">10px</td><td class="num">16px</td><td class="num">28px</td><td>固定</td></tr>
+      <tr><td>1200px</td><td class="num">10px</td><td class="num">16px</td><td class="num">28px</td><td>固定</td></tr>
+      <tr><td>1024px</td><td class="num">10px</td><td class="num">16px</td><td class="num">28px</td><td>固定</td></tr>
+      <tr><td>834px</td><td class="num">10px</td><td class="num">16px</td><td class="num">28px</td><td>固定</td></tr>
+      <tr><td>769px</td><td class="num">10px</td><td class="num">16px</td><td class="num">28px</td><td>ブレークポイントの境目</td></tr>
+      <tr><td>768px</td><td class="num">10px</td><td class="num">16px</td><td class="num">28px</td><td>★1px またいでも動かない</td></tr>
+      <tr><td>767px</td><td class="num">10px</td><td class="num">16px</td><td class="num">28px</td><td>固定</td></tr>
+      <tr><td>390px</td><td class="num">10px</td><td class="num">16px</td><td class="num">28px</td><td>固定</td></tr>
+      <tr><td>375px</td><td class="num">10px</td><td class="num">16px</td><td class="num">28px</td><td>固定</td></tr>
+    </table>
+
+    <div class="note"><b>ブレークポイントは 768 / 769px。</b><code>screen and (max-width: 768px)</code> が CSS 全文で <b>785 回</b>、<code>screen and (min-width: 769px)</code> が 326 回と、この 2 つで大半を占める。<br><br><b><code>body</code> の宣言が 2 つ競合していて、ページで基準が変わる。</b>トップは <code>font-size: 16px; line-height: 1.75; color: #000000</code>、下層は <code>font-size: 1rem</code>（= <b>10px</b>）<code>; line-height: 1.6; color: #333333</code> が勝つ。行間比の最頻値も <b>トップ 1.75（91 要素）→ 下層 1.60（115 要素）</b>と入れ替わる。<b>新規実装では 1.75 に揃える。</b></div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <p class="footer-head">木で建てれば、街は森になる。</p>
+    <div class="footer-cols">
+      <div class="footer-col"><a href="#">注文・規格(セレクト)住宅</a><a href="#">宅地・分譲住宅</a><a href="#">賃貸住宅建築</a></div>
+      <div class="footer-col"><a href="#">医院建築</a><a href="#">施設建築</a><a href="#">木材・建材</a></div>
+      <div class="footer-col"><a href="#">リフォーム</a><a href="#">モデルハウス紹介</a><a href="#">カタログ請求</a></div>
+      <div class="footer-col"><a href="#">個人情報保護方針</a><a href="#">サイトのご利用について</a><a href="#">サイトマップ</a></div>
+    </div>
+    <a class="pagetop" href="#">PAGETOP</a>
+    <p class="footer-copy">© MITSUI HOME CO., LTD. — Design tokens measured 2026-11-04</p>
+  </div>
+</footer>
+
+</body>
+</html>
