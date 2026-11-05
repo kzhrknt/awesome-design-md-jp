@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 西松建設（NISHIMATSU CONSTRUCTION）</title>
+<!-- ★実サイトは Web フォントを 1 本も読み込まない。
+     typography.fontFaces は空配列、CSS 全文の @font-face は 0 件、
+     フォントファイルのリクエストも 0 件。
+     したがってこのプレビューも <link> を一切置かない（OS ローカルのみ）。 -->
+<style>
+  /* ===========================================================
+     西松建設 実測プレビュー（2026-11-05）
+     対象: https://www.nishimatsu.co.jp/ , /about/
+
+     ★CSS 変数は 23 個あるが、すべてアイコン種別の切り替え用
+       （--blank / --excel / --pdf / --word / --prev / --next / --menu …）で、
+       色でもサイズでもない。:root に書かれていないので
+       customPropertiesSummary は両ページとも 0 を返す。
+       以下の :root は「実測値をこのプレビューで整理したもの」。値はすべて実測。
+     =========================================================== */
+  :root {
+    /* === Brand（実測） === */
+    --nishimatsu-green: #009A53;  /* ★面 10 / 2 要素 ＋ 文字 11 / 7 要素。CTA とアクセント */
+    --link-blue:        #006BAA;  /* ★文字 279・罫線 279 要素。緑より圧倒的に多い */
+    --alert-orange:     #EA5421;  /* NEW バッジ（文字 5・罫線 5） */
+    --alert-orange-2:   #EA5422;  /* 重要なお知らせ（文字 2・罫線 2）。B が 1 違うだけ */
+
+    /* === Neutral（実測） === */
+    --text:         #333333;  /* ★本文・見出し。可視 56 / 13 要素 */
+    --white:        #FFFFFF;  /* 濃色面の上の文字（43 / 28 要素） */
+    --text-on-dark: #EEEEEE;  /* ★フッターのサイトマップリンク（可視 42 要素） */
+    --text-muted:   #666666;  /* パンくず */
+    --divider:      #CCCCCC;  /* メガメニューの区切り見出し */
+    --copyright:    #AAAAAA;
+    --overlay:      rgba(0, 0, 0, .8);  /* PICK UP カードの帯（面 11 要素）。かなり濃い */
+    --dot:          #888888;  /* カルーセル非選択ドット（面 5 要素） */
+    --surface:      #F5F5F5;  /* セクションの面（9 / 3 要素） */
+    --pdf-red:      #EE3D23;  /* PDF アイコンの面（4 要素） */
+
+    /* === Fonts ===
+       ★Web フォント 0 本。OS ローカルの游ゴシック系スタック 1 本で全ページを組む。
+         実サイトのスタックには 游ゴシック Medium / Yu Gothic Medium が
+         1 つも入っていない（Windows では weight 500 が Regular に当たる）。 */
+    --font-body: 游ゴシック体, YuGothic, 游ゴシック, "Yu Gothic",
+                 "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro",
+                 メイリオ, Meiryo, Osaka, Arial,
+                 "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+    /* ★実サイトは Arial, Helvetica, "sans-serif" とクォートしている＝誤り。
+         クォートすると generic family として扱われず受け皿が死ぬ。ここでは正しく書く。 */
+    --font-num:  Arial, Helvetica, sans-serif;
+
+    --container: 1260px;   /* 下層の実測。トップは 1660 / 1760px と広い */
+  }
+
+  /* ★html は 62.5%（= 10px）。1440/1200/1024/834/768/767/390/375px の
+     8 幅すべてで完全固定。流体ではない。
+     ★実サイトには html { font-family: "Hiragino Kaku Gothic ProN" } という
+       受け皿なしの 1 語スタックが残っているが、body に上書きされて可視 0 要素。
+       ここでは書かない。 */
+  html { font-size: 62.5%; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 500;            /* ★本文が 500 */
+    line-height: 1.6;            /* ★無単位。行間比 1.6 が 75 / 68 要素で最多 */
+    letter-spacing: normal;      /* ★161/161・99/99 要素が normal。例外は 1 つも無い */
+    word-break: break-word;      /* ★break-all ではない */
+    -webkit-font-smoothing: antialiased;
+    /* ★font-feature-settings は書かない。実測 0 件。palt も halt も使わない */
+  }
+
+  /* ---------- 共通パーツ ---------- */
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .9em;
+         background: rgba(0,0,0,.065); padding: 1px 5px; }
+
+  .header { border-bottom: 1px solid #E4E4E4; background: var(--white); }
+  .header-top { display: flex; align-items: center; gap: 22px;
+                max-width: 1660px; margin: 0 auto; padding: 12px 24px 6px; }
+  .header-top a { font-size: 14px; font-weight: 500; line-height: 1.0;
+                  color: var(--text); text-decoration: none; }
+  .header-main { display: flex; align-items: center; gap: 30px;
+                 max-width: 1660px; margin: 0 auto; padding: 12px 24px 16px; }
+  .logo { font-size: 20px; font-weight: 700; line-height: 1.4;
+          color: var(--nishimatsu-green); text-decoration: none; }
+  .gnav { margin-left: auto; display: flex; gap: 26px; }
+  .gnav a { font-size: 16px; font-weight: 700; color: var(--text); text-decoration: none; }
+  .search { display: flex; }
+  .search input { border: 1px solid var(--divider); border-right: 0;
+                  border-radius: 9999px 0 0 9999px; padding: 7px 16px;
+                  font-family: var(--font-body); font-size: 16px; font-weight: 400;
+                  line-height: 1.6; color: var(--text); background: var(--white); }
+  .search button { border: 0; border-radius: 0 9999px 9999px 0;
+                   background: var(--nishimatsu-green); color: var(--white);
+                   font-family: var(--font-body); font-size: 16px; font-weight: 700;
+                   line-height: 1.6; padding: 7px 18px; cursor: pointer; }
+  .search input.is-focus { outline: 2px solid var(--nishimatsu-green); outline-offset: 2px; }
+
+  .section { padding: 62px 0; }
+  .section-alt { background: var(--surface); }
+  .section-label { font-size: 13px; font-weight: 700; color: var(--text-muted);
+                   margin-bottom: 8px; }
+  .eyebrow { font-size: 14px; font-weight: 700; color: var(--nishimatsu-green);
+             margin-bottom: 6px; }
+  .section-title { font-size: 30px; font-weight: 700; line-height: 1.4;
+                   margin-bottom: 16px; }
+  .section-lead { font-size: 16px; font-weight: 500; line-height: 1.6; max-width: 76ch; }
+  .note { margin-top: 26px; padding: 16px 20px; background: var(--white);
+          border-left: 4px solid var(--nishimatsu-green); border-radius: 0;
+          font-size: 14px; line-height: 1.8; }
+  .section-alt .note { background: var(--white); }
+  b { font-weight: 700; }
+
+  .mtable { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 14px; }
+  .mtable th, .mtable td { border: 1px solid var(--divider); padding: 10px 12px;
+                           text-align: left; line-height: 1.6; }
+  .mtable th { background: var(--surface); font-weight: 700; font-size: 13px; }
+  .section-alt .mtable th { background: var(--white); }
+  .mtable .num { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+  .mtable tr.hit td { color: var(--alert-orange); font-weight: 700; }
+
+  /* ---------- 01 Web font ---------- */
+  .wf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 28px; }
+  .wf-box { background: var(--white); border: 1px solid var(--divider); padding: 20px 22px; }
+  .wf-label { font-size: 12px; font-weight: 700; color: var(--text-muted);
+              margin-bottom: 12px; }
+  .wf-sample { font-size: 24px; line-height: 1.6; }
+  .wf-500 { font-weight: 500; }   /* ★body の値。Windows では Regular に当たる */
+  .wf-700 { font-weight: 700; }   /* ★可視の 66% がこれ */
+
+  /* ---------- 02 Stacks ---------- */
+  .stack-list { margin-top: 24px; display: grid; gap: 14px; }
+  .stack-item { background: var(--white); border: 1px solid var(--divider);
+                padding: 16px 18px; }
+  .section-alt .stack-item { background: var(--white); }
+  .stack-name { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .stack-code { font-family: SFMono-Regular, Consolas, Menlo, monospace;
+                font-size: 12px; line-height: 1.8; color: var(--text-muted);
+                word-break: break-all; }
+  .stack-bad { border-left: 4px solid var(--alert-orange); }
+
+  /* ---------- 03 Typography ---------- */
+  .type-row { display: flex; gap: 28px; padding: 18px 0; border-bottom: 1px solid var(--divider);
+              align-items: baseline; }
+  .type-meta { flex: none; width: 210px; font-size: 11px; line-height: 1.8;
+               color: var(--text-muted); font-family: var(--font-num); }
+  .type-meta b { display: block; font-size: 12px; color: var(--text);
+                 font-family: var(--font-body); }
+  .type-sample { flex: 1; min-width: 0; }
+  .t-h30 { font-size: 30px; font-weight: 700; line-height: 1.4; }
+  .t-h32 { font-size: 32px; font-weight: 700; line-height: 1.6; }
+  .t-h24 { font-size: 24px; font-weight: 700; line-height: 1.4; }
+  .t-card { font-size: 20px; font-weight: 700; line-height: 1.6; color: var(--link-blue); }
+  .t-alert { font-size: 18px; font-weight: 700; line-height: 1.4; color: var(--alert-orange-2); }
+  .t-body { font-size: 16px; font-weight: 500; line-height: 1.6; }
+  .t-link { font-size: 16px; font-weight: 700; line-height: 1.6; }
+  .t-sub { font-size: 14px; font-weight: 500; line-height: 1.6; }
+
+  /* ---------- 04 Numbers ---------- */
+  .num-band { margin-top: 28px; padding: 44px 0;
+              /* ★写真の上に文字を置くときは、帯を要素自身の background-image に
+                   linear-gradient で持たせる（兄弟の絶対配置要素にしない） */
+              background-image:
+                linear-gradient(rgba(0,0,0,.8), rgba(0,0,0,.8)),
+                linear-gradient(135deg, #1d4a35 0%, #2a6b4a 45%, #3f8a5f 100%);
+              background-size: cover; }
+  .num-in { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+  .num-head { font-size: 30px; font-weight: 700; line-height: 1.4; color: var(--white);
+              margin-bottom: 28px; }
+  .num-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .num-cell { color: var(--white); }
+  .num-label { font-size: 22px; font-weight: 700; line-height: 1.1; color: var(--white); }
+  .num-value { font-family: var(--font-num); font-size: 100px; font-weight: 700;
+               line-height: 1.1; color: var(--white); }
+  .num-unit { font-size: 50px; font-weight: 700; line-height: 1.1; color: var(--white); }
+
+  /* ---------- 05 Components ---------- */
+  .btn { display: inline-flex; align-items: center; justify-content: center;
+         min-height: 46px; padding: 10px 30px; border: 1px solid var(--nishimatsu-green);
+         border-radius: 9999px;     /* ★ピル */
+         box-shadow: none;          /* ★影は実測 0 種 */
+         background: var(--white); color: var(--text);
+         font-family: var(--font-body); font-size: 16px; font-weight: 700;
+         line-height: 1.6; letter-spacing: normal; cursor: pointer; text-decoration: none; }
+  .btn-brand { background: var(--nishimatsu-green); color: var(--white); }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 26px; align-items: center; }
+  .to-top { width: 48px; height: 48px; border-radius: 50%; border: 0;
+            background: var(--nishimatsu-green); color: var(--white);
+            font-size: 16px; font-weight: 700; cursor: pointer; }
+
+  .badge { display: inline-block; padding: 4px 14px; border-radius: 9999px;
+           font-size: 13px; font-weight: 500; line-height: 1.1;
+           background: var(--nishimatsu-green); color: var(--white); }
+  .badge-dark { background: var(--overlay); }
+  .label-new { color: var(--alert-orange); font-weight: 700; font-size: 14px; }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; align-items: center; }
+
+  .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+               gap: 20px; margin-top: 28px; }
+  .card { background: var(--surface); border-radius: 0; box-shadow: none; padding: 22px 24px; }
+  .section-alt .card { background: var(--white); }
+  .card-title { font-size: 20px; font-weight: 700; line-height: 1.6;
+                color: var(--link-blue); margin-bottom: 8px; }
+  .card-date { font-size: 14px; font-weight: 500; line-height: 1.1; margin-bottom: 8px; }
+  .card-text { font-size: 16px; font-weight: 500; line-height: 1.6; }
+
+  /* 写真の上に文字を載せるカード（帯は要素自身の background-image に持たせる） */
+  .card-photo { padding: 26px 24px; color: var(--white);
+                background-image:
+                  linear-gradient(rgba(0,0,0,.8), rgba(0,0,0,.8)),
+                  linear-gradient(120deg, #2f4f3f 0%, #4a6b55 60%, #6d8a74 100%);
+                background-size: cover; }
+  .card-photo .card-title { color: var(--white); }
+  .card-photo .card-text { color: var(--white); }
+
+  .dots { display: flex; gap: 10px; margin-top: 26px; }
+  .dot { width: 14px; height: 14px; border: 0; border-radius: 50%; background: var(--dot);
+         cursor: pointer; }
+  .dot.on { background: var(--nishimatsu-green); }
+
+  /* ---------- 06 Colors ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(226px, 1fr));
+                gap: 16px; margin-top: 28px; }
+  .swatch { background: var(--white); border: 1px solid var(--divider); border-radius: 0; }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 12px 14px 16px; }
+  .swatch-name { font-size: 13px; font-weight: 700; line-height: 1.6; }
+  .swatch-hex { font-family: var(--font-num); font-size: 12px; color: var(--text-muted);
+                margin: 3px 0 6px; line-height: 1.6; }
+  .swatch-use { font-size: 11px; line-height: 1.7; color: var(--text-muted); }
+
+  /* ---------- 07 Break ---------- */
+  .break-demo { margin-top: 24px; display: grid; gap: 14px; }
+  .break-demo div { background: var(--white); border: 1px solid var(--divider);
+                    padding: 16px 18px; width: 230px; font-size: 16px; line-height: 1.6; }
+  .bw { word-break: break-word; }
+  .ba { word-break: break-all; }
+
+  /* ---------- Footer ---------- */
+  .footer { background: #2B2B2B; padding: 46px 0 34px; margin-top: 10px; }
+  .footer-head { font-size: 24px; font-weight: 700; line-height: 1.4;
+                 color: var(--white); margin-bottom: 22px; }
+  .footer-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .footer-col a { display: block; font-size: 14px; font-weight: 500; line-height: 2.2;
+                  color: var(--text-on-dark); text-decoration: none; }
+  .footer-copy { margin-top: 26px; font-size: 12px; line-height: 1.6; color: var(--copyright); }
+
+  /* ★実サイトのブレークポイントは 767.98px。body のサイズとウェイトが同時に変わる */
+  @media (max-width: 767.98px) {
+    body { font-size: 14px; font-weight: 400; }
+    .wf-grid { grid-template-columns: 1fr; }
+    .comp-grid { grid-template-columns: 1fr; }
+    .num-grid { grid-template-columns: 1fr; }
+    .num-value { font-size: 56px; }
+    .num-unit { font-size: 30px; }
+    .type-row { flex-direction: column; gap: 10px; }
+    .type-meta { width: auto; }
+    .footer-cols { grid-template-columns: 1fr 1fr; }
+    .section-title { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <a href="#">採用情報</a><a href="#">ニュース</a><a href="#">協力会社の皆様へ</a>
+    <a href="#">お問い合わせ</a><a href="#">グループ会社一覧</a>
+  </div>
+  <div class="header-main">
+    <a class="logo" href="#">NISHIMATSU</a>
+    <nav class="gnav">
+      <a href="#">実績</a><a href="#">技術&amp;ソリューション</a><a href="#">西松建設について</a>
+      <a href="#">サステナビリティ</a><a href="#">株主・投資家情報</a>
+    </nav>
+    <div class="search">
+      <input class="is-focus" type="text" value="BIM" aria-label="サイト内検索">
+      <button type="button">検索</button>
+    </div>
+  </div>
+</header>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">01 / Web Font</div>
+    <div class="eyebrow">このサイトの骨格</div>
+    <h2 class="section-title">Web フォントを 1 本も読み込まない</h2>
+    <p class="section-lead"><code>typography.fontFaces</code> は<b>空配列</b>、CSS 全文に <code>@font-face</code> が <b>0 件</b>、フォントファイルのリクエストも <b>0 件</b>。3 点すべてが揃って「OS ローカルのみ」と確定できる。<b>親切のつもりで Noto Sans JP を足すと別物になる。</b></p>
+
+    <div class="wf-grid">
+      <div class="wf-box">
+        <div class="wf-label">body の font-weight: 500（可視 33 / 24 要素）</div>
+        <p class="wf-sample wf-500">まかせられる人が、いる。全力西松</p>
+      </div>
+      <div class="wf-box">
+        <div class="wf-label">font-weight: 700 ← <b>可視の 66%（106 / 161 要素）がこれ</b></div>
+        <p class="wf-sample wf-700">まかせられる人が、いる。全力西松</p>
+      </div>
+    </div>
+
+    <table class="mtable">
+      <thead><tr><th>判定項目</th><th>実測値</th><th>意味</th></tr></thead>
+      <tbody>
+        <tr><td><code>typography.fontFaces</code></td><td class="num">[]（空配列）</td><td>@font-face の宣言が無い</td></tr>
+        <tr><td>CSS 全文の <code>@font-face</code></td><td class="num">0 件</td><td>コメントアウトされているわけでもない</td></tr>
+        <tr class="hit"><td>フォントファイルのリクエスト</td><td class="num">0 件</td><td>★ 1 バイトも読んでいない</td></tr>
+        <tr><td><code>distributions.fontFamily</code></td><td class="num">153 / 161 要素が OS ローカル</td><td>游ゴシック系スタック</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note"><b>ヒーローの大きなコピーは JPG に焼き込まれている。</b>ヒーロー領域の矩形を列挙すると <code>&lt;picture&gt;</code> に包まれた <code>index_slide01_08.jpg</code> / <code>index_slide01_09.jpg</code>（どちらも 1440×450px、<code>alt</code> は「まかせられる人が、いる。　全力西松」「進む。進む。進む。」）が出てくる。<b>Web フォントが無くても成立しているのはこのため。</b></div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">02 / Font stacks</div>
+    <div class="eyebrow">4 つのスタックと、2 つの事故</div>
+    <h2 class="section-title">スタックは 1 語ずつ読む</h2>
+
+    <div class="stack-list">
+      <div class="stack-item">
+        <div class="stack-name">① 本文（可視 153 / 93 要素）</div>
+        <div class="stack-code">游ゴシック体, YuGothic, 游ゴシック, "Yu Gothic", "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, Osaka, Arial, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif</div>
+      </div>
+      <div class="stack-item stack-bad">
+        <div class="stack-name">② 数字の強調（可視 8 / 6 要素） — <b>generic がクォートされている</b></div>
+        <div class="stack-code">実サイト: Arial, Helvetica, <b>"sans-serif"</b> ← 引用符を付けると「sans-serif という名前のフォント」を探す指定になり、generic family として扱われない。Arial も Helvetica も無い環境ではブラウザ既定に落ちる<br>正しくは: Arial, Helvetica, sans-serif</div>
+      </div>
+      <div class="stack-item stack-bad">
+        <div class="stack-name">③ html への宣言 — <b>受け皿なしの 1 語スタック</b></div>
+        <div class="stack-code">html { font-family: "Hiragino Kaku Gothic ProN" } ← 解決されるのは html / head / title / meta という不可視要素だけ。body のスタックに上書きされるため<b>可視 0 要素</b>。新規実装では要らない</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-name">④ IR ウィジェット（ssl4.eir-parts.net）— 外部ベンダー由来</div>
+        <div class="stack-code">メイリオ, Meiryo, "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "ＭＳ Ｐゴシック", arial, helvetica, clean, sans-serif ← メイリオ先頭のレガシースタック。サイト本体の設計ではないので真似しない</div>
+      </div>
+    </div>
+
+    <div class="note"><b>游ゴシックのスタックに Medium が 1 つも入っていない。</b><code>游ゴシック体 → YuGothic → 游ゴシック → "Yu Gothic"</code> の順で、<code>游ゴシック Medium</code> / <code>Yu Gothic Medium</code> がどこにも無い。<code>body { font-weight: 500 }</code> なので <b>Windows では 500 が游ゴシック Regular に解決されて細く出る</b>。太さを揃えるなら:<br>
+    ① <b>スタック順で解く</b>（東京オペラシティ AG 方式）— <code>"游ゴシック Medium", "Yu Gothic Medium"</code> を <code>YuGothic</code> より<b>前</b>に置く<br>
+    ② <b>別名方式</b>（SmartHR / 白鶴）— <code>@font-face { font-family: YuGothicM; src: local("Yu Gothic Medium") }</code> を作ってスタック先頭に置く<br>
+    ③ <b>上書き方式</b>（カリモク）— <code>@font-face</code> で <code>"Yu Gothic"</code> の <code>font-weight: 500</code> に Medium をマッピングする</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">03 / Typography</div>
+    <div class="eyebrow">太字が主役</div>
+    <h2 class="section-title">font-weight 700 が可視の 66%</h2>
+    <p class="section-lead">ウェイトは <b>400 / 500 / 700 の 3 段</b>（可視 22 / 33 / 106 要素）。600 も 900 も無い。ナビ項目もリンクも見出しも 700 で、<code>body</code> の 500 が出るのはヘッダー上段・日付・リスト項目など限られた場所だけ。<code>letter-spacing</code> は<b>全階層で normal、例外は 1 つも無い</b>。</p>
+
+    <div class="type-row">
+      <div class="type-meta"><b>数字の強調</b>100px / 700 / 1.1<br>Arial, Helvetica, sans-serif</div>
+      <div class="type-sample"><p style="font-family:var(--font-num); font-size:100px; font-weight:700; line-height:1.1;">1874</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>ページ見出し（下層 h1）</b>32px / 700 / 1.6</div>
+      <div class="type-sample"><p class="t-h32">西松建設について</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>セクション見出し</b>30px / 700 / 1.4</div>
+      <div class="type-sample"><p class="t-h30">西松建設の技術とソリューション</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>ブロック見出し</b>24px / 700 / 1.4</div>
+      <div class="type-sample"><p class="t-h24">株主・投資家情報</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>カードタイトル・ナビ見出し</b>20px / 700 / 1.6<br>#006BAA</div>
+      <div class="type-sample"><p class="t-card">技術&amp;ソリューション トップ</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>注意喚起見出し</b>18px / 700 / 1.4<br>#EA5422</div>
+      <div class="type-sample"><p class="t-alert">重要なお知らせ</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>リンク</b>16px / <b>700</b> / 1.6</div>
+      <div class="type-sample"><p class="t-link">西松建設の強み（現場力）</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>本文</b>16px / <b>500</b> / 1.6<br>#333333</div>
+      <div class="type-sample"><p class="t-body">西松建設、京都・東山区で『（仮称）西村屋 京都』を2029年開業。ESGやSDGsを意識した企業経営に取り組んでいます。</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>ナビ上段・日付</b>14px / 500 / 1.0〜1.6</div>
+      <div class="type-sample"><p class="t-sub">2026年10月30日　お知らせ</p></div>
+    </div>
+
+    <div class="note"><b>h3 にはスタイルが当たっていない。</b>トップの <code>h3</code> はニュース見出しで 16px / weight 400 / 1.6。<b>見出しレベルとサイズは対応していない</b>ので、スタイルはクラスで当てること。</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">04 / Numbers</div>
+    <div class="eyebrow">写真の上に文字を置く</div>
+    <h2 class="section-title">帯は要素自身の background-image に持たせる</h2>
+    <p class="section-lead">写真の上に白文字を載せるときは、<code>rgba(0, 0, 0, .8)</code> の帯を<b>兄弟の絶対配置要素ではなく要素自身の <code>background-image</code></b> に <code>linear-gradient</code> で重ねる。半透明がかなり濃いので、写真はほぼ黒く沈む。</p>
+
+    <div class="num-band">
+      <div class="num-in">
+        <p class="num-head">数字で見る西松建設</p>
+        <div class="num-grid">
+          <div class="num-cell">
+            <p class="num-label">創業</p>
+            <p class="num-value">1874<span class="num-unit">年</span></p>
+          </div>
+          <div class="num-cell">
+            <p class="num-label">東京証券取引所第1部に上場</p>
+            <p class="num-value">1963<span class="num-unit">年</span></p>
+          </div>
+          <div class="num-cell">
+            <p class="num-label">施工ダム数</p>
+            <p class="num-value">193<span class="num-unit">か所</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">数字は <b>100px / font-weight 700 / #FFFFFF</b>、単位は 50px、ラベルは 22px。どれも <code>line-height: 1.1</code>。書体は <code>Arial, Helvetica, sans-serif</code>（<b>実サイトは <code>"sans-serif"</code> とクォートしている＝誤り</b>）。</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">05 / Components</div>
+    <div class="eyebrow">ピルか、丸か、0</div>
+    <h2 class="section-title">角丸は 2 種だけ。影は 0 種</h2>
+    <p class="section-lead">角丸の実測は <code>9999px</code> / <code>999px</code>（ピル・可視 12 / 3 要素）と <code>50%</code>（丸・7 要素）。<b>中間の角丸は存在しない。</b><code>box-shadow</code> は<b>両ページとも 0 種</b>で、階層は面色と罫線だけで作る。</p>
+
+    <div class="btn-row">
+      <a class="btn" href="#">一覧</a>
+      <a class="btn btn-brand" href="#">動画を見る</a>
+      <button class="to-top" type="button">↑</button>
+    </div>
+
+    <div class="badge-row">
+      <span class="badge">お知らせ</span>
+      <span class="badge badge-dark">PICK UP</span>
+      <span class="label-new">NEW</span>
+    </div>
+
+    <div class="comp-grid">
+      <div class="card">
+        <p class="card-date">2026年10月30日</p>
+        <p class="card-title">西村屋 京都</p>
+        <p class="card-text">京都・東山区で『（仮称）西村屋 京都』を2029年開業。</p>
+      </div>
+      <div class="card">
+        <p class="card-date">2026年10月30日</p>
+        <p class="card-title">剰余金の配当</p>
+        <p class="card-text">中間配当に関するお知らせを適時開示しました。</p>
+      </div>
+      <div class="card card-photo">
+        <p class="card-date">PICK UP</p>
+        <p class="card-title">CM「西松くんの応援歌」篇</p>
+        <p class="card-text">写真の上の文字は rgba(0, 0, 0, .8) の帯で読ませる。</p>
+      </div>
+    </div>
+
+    <div class="dots">
+      <button class="dot" aria-label="1"></button>
+      <button class="dot on" aria-label="2"></button>
+      <button class="dot" aria-label="3"></button>
+    </div>
+
+    <div class="note"><b><code>gap</code> の実測は両ページとも 0 件。</b>余白は <code>margin</code> / <code>padding</code> で作っており、Flexbox / Grid の <code>gap</code> を使っていない。</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">06 / Colors</div>
+    <div class="eyebrow">ブランド色は緑。でも画面を支配しているのは青</div>
+    <h2 class="section-title">緑 42 要素に対して、リンクの青は 279 要素</h2>
+    <p class="section-lead">緑 <code>#009A53</code> は CTA と現在位置のアクセント、青 <code>#006BAA</code> はリンク、という分担。<b>オレンジは B が 1 違う 2 色が実装されている</b>（<code>#EA5421</code> = NEW バッジ、<code>#EA5422</code> = 重要なお知らせ）。</p>
+
+    <div class="color-grid">
+      <div class="swatch"><div class="swatch-chip" style="background:#009A53"></div>
+        <div class="swatch-body"><div class="swatch-name">Nishimatsu Green</div>
+        <div class="swatch-hex">#009A53</div>
+        <div class="swatch-use">面 10 / 2 要素 ＋ 文字 11 / 7 要素。CTA・現在位置</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#006BAA"></div>
+        <div class="swatch-body"><div class="swatch-name">Link Blue</div>
+        <div class="swatch-hex">#006BAA</div>
+        <div class="swatch-use">★文字 279・罫線 279 要素。緑より圧倒的に多い</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#EA5421"></div>
+        <div class="swatch-body"><div class="swatch-name">Alert Orange</div>
+        <div class="swatch-hex">#EA5421</div>
+        <div class="swatch-use">NEW バッジ（文字 5・罫線 5）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#EA5422"></div>
+        <div class="swatch-body"><div class="swatch-name">Alert Orange 2</div>
+        <div class="swatch-hex">#EA5422</div>
+        <div class="swatch-use">重要なお知らせ（文字 2・罫線 2）。B が 1 違い</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#333333"></div>
+        <div class="swatch-body"><div class="swatch-name">Text Primary</div>
+        <div class="swatch-hex">#333333</div>
+        <div class="swatch-use">本文・見出し（56 / 13 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#EEEEEE"></div>
+        <div class="swatch-body"><div class="swatch-name">Text on Dark Muted</div>
+        <div class="swatch-hex">#EEEEEE</div>
+        <div class="swatch-use">★フッターのサイトマップ（可視 42 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:rgba(0,0,0,.8)"></div>
+        <div class="swatch-body"><div class="swatch-name">Overlay</div>
+        <div class="swatch-hex">rgba(0, 0, 0, .8)</div>
+        <div class="swatch-use">PICK UP カードの帯（面 11 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#888888"></div>
+        <div class="swatch-body"><div class="swatch-name">Dot Inactive</div>
+        <div class="swatch-hex">#888888</div>
+        <div class="swatch-use">カルーセル非選択ドット（面 5 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#F5F5F5"></div>
+        <div class="swatch-body"><div class="swatch-name">Surface Gray</div>
+        <div class="swatch-hex">#F5F5F5</div>
+        <div class="swatch-use">セクションの面（9 / 3 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#CCCCCC"></div>
+        <div class="swatch-body"><div class="swatch-name">Divider Gray</div>
+        <div class="swatch-hex">#CCCCCC</div>
+        <div class="swatch-use">メガメニューの区切り見出し</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#EE3D23"></div>
+        <div class="swatch-body"><div class="swatch-name">PDF Red</div>
+        <div class="swatch-hex">#EE3D23</div>
+        <div class="swatch-use">PDF アイコンの面（4 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#AAAAAA"></div>
+        <div class="swatch-body"><div class="swatch-name">Copyright</div>
+        <div class="swatch-hex">#AAAAAA</div>
+        <div class="swatch-use">コピーライト行</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">07 / Responsive</div>
+    <div class="eyebrow">ルートは動かない。body が切り替わる</div>
+    <h2 class="section-title">768 / 767px で body のサイズとウェイトが同時に変わる</h2>
+
+    <table class="mtable">
+      <thead><tr><th>幅</th><th>html</th><th>body</th><th>body weight</th><th>h1</th><th>h2</th><th>h3</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1440px</td><td class="num">10px</td><td class="num">16px / 25.6px</td><td class="num">500</td><td class="num">32px / 51.2px</td><td class="num">18px / 25.2px</td><td class="num">16px / 25.6px</td></tr>
+        <tr><td class="num">1200px</td><td class="num">10px</td><td class="num">16px / 25.6px</td><td class="num">500</td><td class="num">32px / 51.2px</td><td class="num">18px / 25.2px</td><td class="num">16px / 25.6px</td></tr>
+        <tr><td class="num">1024px</td><td class="num">10px</td><td class="num">16px / 25.6px</td><td class="num">500</td><td class="num">32px / 51.2px</td><td class="num">18px / 25.2px</td><td class="num">16px / 25.6px</td></tr>
+        <tr><td class="num">834px</td><td class="num">10px</td><td class="num">16px / 25.6px</td><td class="num">500</td><td class="num">32px / 51.2px</td><td class="num">18px / 25.2px</td><td class="num">16px / 25.6px</td></tr>
+        <tr class="hit"><td class="num">768px</td><td class="num">10px</td><td class="num">16px / 25.6px</td><td class="num">500</td><td class="num">32px / 51.2px</td><td class="num">18px / 25.2px</td><td class="num">16px / 25.6px</td></tr>
+        <tr class="hit"><td class="num">767px</td><td class="num">10px</td><td class="num">14px / 22.4px</td><td class="num">400</td><td class="num">28px / 44.8px</td><td class="num">15px / 24px</td><td class="num">13px / 20.8px</td></tr>
+        <tr><td class="num">390px</td><td class="num">10px</td><td class="num">14px / 22.4px</td><td class="num">400</td><td class="num">28px / 44.8px</td><td class="num">15px / 24px</td><td class="num">13px / 20.8px</td></tr>
+        <tr><td class="num">375px</td><td class="num">10px</td><td class="num">14px / 22.4px</td><td class="num">400</td><td class="num">28px / 44.8px</td><td class="num">15px / 24px</td><td class="num">13px / 20.8px</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note"><b>767px で body のウェイトが 500 → 400 に落ちる。</b>サイズだけでなく太さも変わるので、モバイルは全体が一段軽く見える。<b>行間比 1.6 は両側で保たれる</b>（25.6/16 = 22.4/14 = 1.6）。<b>768px と 767px の 1px 以外に崖は無く、1440〜768px はまったく同じ値。</b><br><br>ブレークポイントは <code>767.98px</code> / <code>1259.98px</code> / <code>1365.98px</code> という 0.02px 刻みの境界で、<code>print</code> を常に併記する。</div>
+
+    <h3 style="margin-top:36px; font-size:24px; font-weight:700; line-height:1.4;">word-break は break-word（break-all ではない）</h3>
+    <div class="break-demo">
+      <div class="bw">新しい価値の創造 Life-changing な毎日へ<br><span style="font-size:12px;color:var(--text-muted)">↑ word-break: break-word ← <b>実装値</b></span></div>
+      <div class="ba">新しい価値の創造 Life-changing な毎日へ<br><span style="font-size:12px;color:var(--text-muted)">↑ word-break: break-all（比較用）</span></div>
+    </div>
+    <p style="margin-top:12px; font-size:13px; color:var(--text-muted);">★<code>break-word</code> は欧文を語の途中で折らず、入りきらない語だけ折る。<code>break-all</code> は <code>Life-changin / g</code> のように語中で切る。</p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <p class="footer-head">まかせられる人が、いる。</p>
+    <div class="footer-cols">
+      <div class="footer-col"><a href="#">実績</a><a href="#">土木技術</a><a href="#">建築技術</a></div>
+      <div class="footer-col"><a href="#">環境技術</a><a href="#">技術研究所</a><a href="#">BIM</a></div>
+      <div class="footer-col"><a href="#">会社情報</a><a href="#">社長挨拶</a><a href="#">企業理念</a></div>
+      <div class="footer-col"><a href="#">サステナビリティ</a><a href="#">株主・投資家情報</a><a href="#">採用情報</a></div>
+    </div>
+    <p class="footer-copy">© NISHIMATSU CONSTRUCTION CO., LTD. — Design tokens measured 2026-11-05</p>
+  </div>
+</footer>
+
+</body>
+</html>

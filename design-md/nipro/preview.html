@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ニプロ（NIPRO）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- ★実サイトが読み込んでいるのは Roboto 400/500/700/900、Noto Sans JP 400/500/700/900、
+     Noto Serif JP 500/700（400 と 600 は宣言だけで unloaded）。ここも同じ構成で読む。 -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  /* ===========================================================
+     ニプロ 実測プレビュー（2026-11-05）
+     対象: https://www.nipro.co.jp/ , /corporate/mission-vision-value/
+
+     ★実サイトに CSS Custom Properties は 0 個。CSS 全文（96KB）を走査しても
+       -- で始まる宣言が 1 つも無い。以下の :root は「実測値をこのプレビューで
+       整理したもの」で、実サイトに同名の変数があるわけではない。値はすべて実測。
+     =========================================================== */
+  :root {
+    /* === Brand（実測） === */
+    --nipro-blue:  #004386;  /* ★可視テキスト 11 要素 ＋ 面 2 / 3 要素 */
+    --tab-blue:    rgba(0, 94, 173, .9);  /* BRAND SITE タブの面（1 要素）。上とは別の青 */
+    --pale-blue:   #F2F5F9;  /* 下層のパンくず直下の面 */
+    --icon-blue:   #8BB6D8;  /* CMP の閉じる × */
+
+    /* === Neutral（グレーが 7 段ある。用途ごとに使い分ける） === */
+    --text-muted:  #6D6D6D;  /* ★可視 48 / 51 要素で最多。ナビ・リスト */
+    --text-head:   #323232;  /* 見出し・ロゴ（35 / 17 要素） */
+    --text-body:   #464646;  /* body の既定色（13 / 11 要素） */
+    --text-dark:   #1E1E1E;  /* ニュースのカテゴリ（9 要素）。English ボタンの面にも */
+    --text-gray:   #505050;  /* ニュース本文（11 要素） */
+    --text-gray2:  #6E6E6E;  /* ニュースの日付（6 要素）。#6D6D6D と RGB で 1 違い */
+    --text-gray3:  #4A4949;  /* メガメニューの見出し（5 / 4 要素） */
+    --white:       #FFFFFF;
+    --disabled:    #AAAAAA;  /* 「同意しない」の面 */
+    --surface:     #F1F1F1;  /* メガメニューの面 */
+    --surface-2:   #F2F2F2;  /* 下層のパンくず・サイドナビ */
+    --nav-label:   #DCDCDC;  /* English ボタンの文字 */
+    --black:       #000000;  /* 「一覧を見る」の面 */
+
+    /* === Fonts ===
+       ★欧文優先の和欧二層。Roboto をスタックの先頭に置く。 */
+    --font-body:  Roboto, "Noto Sans JP", sans-serif;
+    --font-serif: "Noto Serif JP", serif;   /* ★導入見出し 1 コンポーネントだけ・可視 2 要素 */
+
+    --container: 1300px;   /* ★実測 1 要素。両ページ共通 */
+  }
+
+  /* ★html の font-size 宣言が CSS に 1 つも無い。16px はブラウザ既定（UA）そのもの。
+     1440/1200/1024/834/768/767/390/375px の 8 幅すべてで完全固定。 */
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--text-body);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.1;              /* ★無単位の 1.1。実測で行間比 1.10 が 63 / 50 要素で最多 */
+    letter-spacing: normal;        /* ★body は normal。字間は見出しが各自で持つ */
+    word-break: normal;            /* ★break-all でも auto-phrase でもない */
+    font-feature-settings: "palt"; /* ★実測 67 / 64 要素。すべて horizontal-tb */
+    -webkit-font-smoothing: antialiased;
+    /* ★実サイトは body に text-align: center も当てている（レガシーな中央寄せハック）。
+       ここでは真似しない。 */
+  }
+
+  /* ---------- 共通パーツ ---------- */
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .9em;
+         background: rgba(0,0,0,.065); padding: 1px 5px; }
+
+  .header { border-bottom: 1px solid #E4E4E4; background: var(--white); }
+  .header-top { display: flex; align-items: center; gap: 20px;
+                max-width: var(--container); margin: 0 auto; padding: 14px 24px 8px; }
+  .logo { font-size: 16px; font-weight: 700; letter-spacing: 1.28px;   /* 0.08em */
+          color: var(--text-head); text-decoration: none; line-height: 1.1; }
+  .util { margin-left: auto; display: flex; gap: 14px; align-items: center; }
+  .util a { font-size: 14px; font-weight: 400; line-height: 15.4px;
+            color: var(--text-muted); text-decoration: none; }
+  .btn-lang { background: var(--text-dark); color: var(--nav-label); padding: 5px 14px;
+              border-radius: 0; }
+  .gnav { display: flex; gap: 28px; max-width: var(--container);
+          margin: 0 auto; padding: 0 24px 14px; }
+  .gnav a { font-size: 18px; font-weight: 400; color: var(--text-muted);
+            text-decoration: none; line-height: 1.1; }
+
+  .section { padding: 62px 0; }
+  .section-alt { background: var(--surface); }
+  .section-label { font-size: 12px; font-weight: 700; letter-spacing: .96px;
+                   color: var(--text-muted); margin-bottom: 8px; }
+  .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 1.04px;
+             color: var(--nipro-blue); margin-bottom: 6px; }
+  /* ★見出しは letter-spacing を各要素が持つ（body からの継承ではない） */
+  .section-title { font-size: 40px; font-weight: 700; line-height: 1.1;
+                   letter-spacing: 3.2px;    /* 0.08em */
+                   color: var(--text-head); margin-bottom: 16px; }
+  .section-lead { font-size: 16px; font-weight: 400; line-height: 1.6;  /* ★本文は取り直す */
+                  color: var(--text-body); max-width: 76ch; }
+  .note { margin-top: 26px; padding: 16px 20px; background: var(--pale-blue);
+          border-left: 4px solid var(--nipro-blue); border-radius: 0;
+          font-size: 14px; line-height: 1.8; color: var(--text-body); }
+  .section-alt .note { background: var(--white); }
+  b { font-weight: 700; }
+
+  /* ---------- 01 line-height ---------- */
+  .lh-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 28px; }
+  .lh-box { background: var(--white); border: 1px solid #E4E4E4; border-radius: 0;
+            padding: 20px 22px; }
+  .lh-label { font-size: 12px; font-weight: 700; color: var(--text-muted);
+              margin-bottom: 12px; letter-spacing: .96px; }
+  .lh-sample { font-size: 16px; color: var(--text-body); }
+  .lh-11 { line-height: 1.1; }   /* ★body の継承値。宣言し忘れるとこうなる */
+  .lh-16 { line-height: 1.6; }   /* 読ませるブロックは必ずこちらを書く */
+
+  .mtable { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 14px; }
+  .mtable th, .mtable td { border: 1px solid #DDDDDD; padding: 10px 12px; text-align: left;
+                           line-height: 1.6; }
+  .mtable th { background: var(--surface-2); font-weight: 700; font-size: 13px;
+               color: var(--text-head); }
+  .section-alt .mtable th { background: var(--white); }
+  .mtable .num { font-variant-numeric: tabular-nums; }
+  .mtable tr.hit td { color: var(--nipro-blue); font-weight: 700; }
+
+  /* ---------- 02 em nesting ---------- */
+  /* ★実サイトの #business div h3 をそのまま再現する */
+  .em-demo { margin-top: 28px; background: var(--white); border: 1px solid #E4E4E4;
+             padding: 28px 30px; font-size: 16px; }
+  .section-alt .em-demo { background: var(--white); }
+  .em-h3 { font-family: var(--font-serif); font-size: 2.312em;   /* = 36.992px */
+           font-weight: 500; line-height: 1.1; letter-spacing: .03em;  /* = 1.10976px */
+           color: var(--text-head); }
+  .em-h3 strong { font-size: 1.35em;   /* = 49.9392px。em なので掛け算される */
+                  font-weight: 700; color: var(--nipro-blue);
+                  letter-spacing: .03em; }   /* ★子にも書き直す。書かないと 0.0222em になる */
+  .em-note { margin-top: 16px; font-size: 13px; line-height: 1.8; color: var(--text-muted); }
+
+  /* ---------- 03 palt ---------- */
+  .palt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 28px; }
+  .palt-box { background: var(--white); border: 1px solid #E4E4E4; padding: 20px 22px; }
+  .palt-sample { font-size: 30px; font-weight: 400; line-height: 1.5;
+                 color: var(--text-head); }
+  .palt-on  { font-feature-settings: "palt"; }   /* ★実装値 */
+  .palt-off { font-feature-settings: normal; }
+
+  /* ---------- 04 Typography ---------- */
+  .type-row { display: flex; gap: 28px; padding: 18px 0; border-bottom: 1px solid #DDDDDD;
+              align-items: baseline; }
+  .type-meta { flex: none; width: 220px; font-size: 11px; line-height: 1.8;
+               color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .type-meta b { display: block; font-size: 12px; color: var(--text-head); }
+  .type-sample { flex: 1; min-width: 0; }
+  .t-en28 { font-size: 28px; font-weight: 900; line-height: 1.1; letter-spacing: 2.24px;
+            color: var(--text-head); }
+  .t-ja40 { font-size: 40px; font-weight: 700; line-height: 1.1; letter-spacing: 3.2px;
+            color: var(--text-head); }
+  .t-ja36 { font-size: 36px; font-weight: 700; line-height: 1.1; letter-spacing: 2.88px;
+            color: var(--text-head); }
+  .t-serif { font-family: var(--font-serif); font-size: 36.992px; font-weight: 500;
+             line-height: 1.1; letter-spacing: 1.10976px; color: var(--text-head); }
+  .t-nav32 { font-size: 32px; font-weight: 900; line-height: 1.1; color: var(--text-head); }
+  .t-ft26 { font-size: 26px; font-weight: 700; line-height: 1.6; letter-spacing: 1.3px;
+            color: var(--text-head); }
+  .t-mega22 { font-size: 22px; font-weight: 500; line-height: 1.1; color: var(--text-gray3); }
+  .t-lead20 { font-size: 20px; font-weight: 400; line-height: 1.8; color: var(--text-body); }
+  .t-nav18 { font-size: 18px; font-weight: 400; line-height: 1.6; color: var(--text-muted); }
+  .t-body16 { font-size: 16px; font-weight: 400; line-height: 1.6; color: var(--text-body); }
+  .t-sub14 { font-size: 14px; font-weight: 400; line-height: 1.6; color: var(--text-gray2); }
+
+  /* ---------- 05 Components ---------- */
+  .btn { display: inline-flex; align-items: center; justify-content: center;
+         min-height: 46px; padding: 8px 30px; border: 0;
+         border-radius: 0;        /* ★角丸なし。実測 1 種・1 要素のみ */
+         box-shadow: none;        /* ★影は実測 0 種 */
+         background: var(--nipro-blue); color: var(--white);
+         font-family: var(--font-body); font-size: 16px; font-weight: 500;
+         line-height: 1.1; letter-spacing: normal; cursor: pointer; text-decoration: none; }
+  .btn-secondary { background: var(--disabled); }
+  .btn-more { background: var(--black); font-weight: 400; line-height: 1.75; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 26px; align-items: center; }
+
+  .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+               gap: 20px; margin-top: 28px; }
+  .card { background: var(--surface); border-radius: 0; box-shadow: none; padding: 22px 24px; }
+  .section-alt .card { background: var(--white); }
+  .card-date { font-size: 14px; color: var(--text-gray2); line-height: 1.6; }
+  .card-cat { font-size: 14px; font-weight: 400; color: var(--text-dark); line-height: 1.6; }
+  .card-text { margin-top: 8px; font-size: 16px; line-height: 1.6; color: var(--text-gray); }
+
+  .field { margin-top: 24px; max-width: 420px; }
+  .field label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 7px;
+                 color: var(--text-head); line-height: 1.6; }
+  .field input { width: 100%; padding: 11px 14px; border: 1px solid #CCCCCC; border-radius: 0;
+                 font-family: var(--font-body); font-size: 14px; font-weight: 400;
+                 line-height: 1.6; color: var(--text-body); background: var(--white); }
+  .field input.is-focus { outline: 2px solid var(--nipro-blue); outline-offset: 2px; }
+
+  /* 右端の縦組みタブ（実サイト唯一の縦組み・1 要素） */
+  .brandtab { position: fixed; top: 44%; right: 0; z-index: 50;
+              writing-mode: vertical-rl; background: var(--tab-blue); color: var(--white);
+              font-size: 16px; font-weight: 500;
+              letter-spacing: 4.608px;   /* 0.12em */
+              padding: 22px 10px; text-decoration: none; line-height: 1.1; }
+
+  /* ---------- 06 Colors ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(226px, 1fr));
+                gap: 16px; margin-top: 28px; }
+  .swatch { background: var(--white); border: 1px solid #E4E4E4; border-radius: 0; }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 12px 14px 16px; }
+  .swatch-name { font-size: 13px; font-weight: 700; color: var(--text-head); line-height: 1.6; }
+  .swatch-hex { font-size: 12px; color: var(--text-muted); margin: 3px 0 6px;
+                font-variant-numeric: tabular-nums; line-height: 1.6; }
+  .swatch-use { font-size: 11px; line-height: 1.7; color: var(--text-muted); }
+
+  /* ---------- Footer ---------- */
+  .footer { background: var(--nipro-blue); padding: 46px 0 34px; margin-top: 10px; }
+  .footer-head { font-size: 26px; font-weight: 700; letter-spacing: 1.3px;
+                 line-height: 1.6; color: var(--white); margin-bottom: 22px; }
+  .footer-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .footer-col a { display: block; font-size: 14px; font-weight: 400; line-height: 2.2;
+                  color: var(--white); text-decoration: none; }
+  .footer-copy { margin-top: 26px; font-size: 12px; line-height: 1.6;
+                 color: rgba(255,255,255,.75); }
+
+  /* ★実サイトのブレークポイントはすべて max-width のデスクトップファースト */
+  @media (max-width: 1020px) { .section-title { font-size: 34px; letter-spacing: 2.72px; } }
+  @media (max-width: 700px) {
+    .lh-grid { grid-template-columns: 1fr; }
+    .palt-grid { grid-template-columns: 1fr; }
+    .comp-grid { grid-template-columns: 1fr; }
+    .type-row { flex-direction: column; gap: 10px; }
+    .type-meta { width: auto; }
+    .footer-cols { grid-template-columns: 1fr 1fr; }
+    .section-title { font-size: 22.75px; letter-spacing: 1.82px; }
+    .em-h3 { font-size: 1.422em; }
+    .brandtab { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<a class="brandtab" href="#">BRAND SITE</a>
+
+<header class="header">
+  <div class="header-top">
+    <a class="logo" href="#">NIPRO</a>
+    <nav class="util">
+      <a href="#">お問い合わせ・資料請求</a>
+      <a href="#">一般の皆さまへ</a>
+      <a href="#">医療関係者の皆さまへ</a>
+      <a class="util-lang btn-lang" href="#">English</a>
+    </nav>
+  </div>
+  <nav class="gnav">
+    <a href="#">事業のご紹介</a><a href="#">企業情報</a><a href="#">IR情報</a>
+    <a href="#">サステナビリティ</a><a href="#">採用情報</a>
+  </nav>
+</header>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">01 / Line height</div>
+    <div class="eyebrow">このサイトの骨格</div>
+    <h2 class="section-title">body の line-height が 1.1 で全要素に降りる</h2>
+    <p class="section-lead">CSS に <code>body { text-align: center; line-height: 1.1 }</code> と書かれており、実測でも<b>行間比 1.10 が 63 / 50 要素</b>と最多。無単位なので各要素が自分のサイズで再計算するが、<b>行間を宣言し忘れたブロックは行が潰れる</b>。</p>
+
+    <div class="lh-grid">
+      <div class="lh-box">
+        <div class="lh-label">line-height 宣言なし ← body の 1.1 が降りる</div>
+        <p class="lh-sample lh-11">ニプロは、医療現場のニーズに応えるため、さまざまな製品を自社で開発・製造しています。患者さん目線、ユーザー目線に立ち、「真にグローバルな企業」を目指します。</p>
+      </div>
+      <div class="lh-box">
+        <div class="lh-label">line-height: 1.6 を宣言 ← <b>本文ブロックには必ず書く</b></div>
+        <p class="lh-sample lh-16">ニプロは、医療現場のニーズに応えるため、さまざまな製品を自社で開発・製造しています。患者さん目線、ユーザー目線に立ち、「真にグローバルな企業」を目指します。</p>
+      </div>
+    </div>
+
+    <table class="mtable">
+      <thead><tr><th>行間比</th><th>可視要素（トップ / 下層）</th><th>どこで出るか</th></tr></thead>
+      <tbody>
+        <tr class="hit"><td class="num">1.10</td><td class="num">63 / 50</td><td>★ body の継承値。見出し・ナビ・ロゴ</td></tr>
+        <tr><td class="num">1.20</td><td class="num">44 / 44</td><td>メガメニューのリスト</td></tr>
+        <tr><td class="num">1.60</td><td class="num">29 / 12</td><td>本文・リード文</td></tr>
+        <tr><td class="num">1.75</td><td class="num">5 / 2</td><td>「一覧を見る」ボタン・理念のリード</td></tr>
+        <tr><td class="num">1.80</td><td class="num">3 / 0</td><td>事業紹介のリード文</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note"><b>1.1 は「見出し用の行間」が body に書かれている状態。</b>日本語の本文に 1.1 をそのまま降ろすと読めない密度になる。<b>読ませるブロックを作ったら必ず <code>line-height: 1.6</code> 以上を宣言すること。</b></div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">02 / em nesting</div>
+    <div class="eyebrow">サイズの単位</div>
+    <h2 class="section-title">サイズはすべて em。入れ子で掛け算になる</h2>
+    <p class="section-lead">CSS の <code>font-size</code> 宣言は <code>0.5em</code> / <code>0.55em</code> / <code>0.75em</code> / <code>0.875em</code> / <code>0.93em</code> / <code>1.08em</code> / <code>1.125em</code> / <code>1.25em</code> / <code>1.375em</code> / <code>1.75em</code> / <code>2em</code> / <code>2.25em</code> / <code>2.5em</code> … と <b>em ばかり</b>（<code>rem</code> は 0 件、<code>%</code> は <code>100%</code> の 2 件のみ）。</p>
+
+    <div class="em-demo">
+      <h3 class="em-h3">独自の製品・技術で 医療現場の<strong>声</strong>に応える。</h3>
+      <p class="em-note">
+        <code>h3 { font-size: 2.312em }</code> → 16 × 2.312 = <b>36.992px</b><br>
+        <code>strong { font-size: 1.35em }</code> → 36.992 × 1.35 = <b>49.9392px</b><br>
+        端数は流体でも <code>%</code> 入れ子でもなく、<b>em の掛け算</b>。8 幅すべてで動かない。
+      </p>
+    </div>
+
+    <div class="note"><b>em 宣言の字間は px で子へ降りる。</b><code>h3 { letter-spacing: .03em }</code> は 36.992px に対して <b>1.10976px</b> という絶対値になり、そのまま <code>strong</code>（49.9392px）へ降りる。結果、<b>同じ 1 行の中で親 0.03em・子 0.0222em と実効字間が違う</b>。このプレビューでは <code>strong</code> にも <code>letter-spacing: .03em</code> を書き直している。<br><br><b>サイズを rem に書き換えないこと。</b>親子関係（<code>h3</code> 2.312em → <code>strong</code> 1.35em）が壊れる。</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">03 / palt</div>
+    <div class="eyebrow">詰めてから、空け直す</div>
+    <h2 class="section-title">palt で詰めた上から 0.08em を足す二段構え</h2>
+    <p class="section-lead"><code>font-feature-settings: "palt"</code> が <b>67 / 64 要素</b>。すべて <code>horizontal-tb</code> で、縦横の軸の取り違えは無い。実ページに隠し div を作り <code>「ニプロ」、医療機器。（株）</code> を 40px の Noto Sans JP で測ると <b>normal 520.00px / "palt" 432.73px（−16.8%）</b>で、きちんと効いている。</p>
+
+    <div class="palt-grid">
+      <div class="palt-box">
+        <div class="lh-label">font-feature-settings: normal</div>
+        <p class="palt-sample palt-off">「ニプロ」、医療機器。（株）</p>
+      </div>
+      <div class="palt-box">
+        <div class="lh-label">font-feature-settings: "palt" ← <b>実装値</b></div>
+        <p class="palt-sample palt-on">「ニプロ」、医療機器。（株）</p>
+      </div>
+    </div>
+
+    <table class="mtable">
+      <thead><tr><th>要素</th><th>サイズ</th><th>letter-spacing（実測）</th><th>em 換算</th></tr></thead>
+      <tbody>
+        <tr><td>欧文セクション見出し</td><td class="num">28px</td><td class="num">2.24px</td><td class="num">0.08em</td></tr>
+        <tr><td>ページ見出し（下層）</td><td class="num">36px</td><td class="num">2.88px</td><td class="num">0.08em</td></tr>
+        <tr><td>和文セクション見出し</td><td class="num">40px</td><td class="num">3.2px</td><td class="num">0.08em</td></tr>
+        <tr><td>理念のリード文</td><td class="num">24px</td><td class="num">1.92px</td><td class="num">0.08em</td></tr>
+        <tr><td>ロゴ（h1）</td><td class="num">16px</td><td class="num">1.28px</td><td class="num">0.08em</td></tr>
+        <tr><td>フッター見出し</td><td class="num">26px</td><td class="num">1.3px</td><td class="num">0.05em</td></tr>
+        <tr><td>明朝の導入見出し</td><td class="num">36.992px</td><td class="num">1.10976px</td><td class="num">0.03em</td></tr>
+        <tr><td>BRAND SITE タブ（縦組み）</td><td class="num">38.4px</td><td class="num">4.608px</td><td class="num">0.12em</td></tr>
+        <tr class="hit"><td>body・本文</td><td class="num">16px</td><td class="num">normal</td><td>—</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note"><b>字間は見出しが各自 0.08em を持つ（継承ではない）。</b>サイズに比例して px が変わるのが根拠。<code>body</code> には書かない。<b>palt で詰めてから正の字間を足し直す二段構えなので、片方だけ再現すると別物になる。</b></div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">04 / Typography</div>
+    <div class="eyebrow">階層</div>
+    <h2 class="section-title">ウェイトは 400 / 500 / 700 / 900 の 4 段</h2>
+    <p class="section-lead">読み込んでいる Noto Sans JP / Roboto の 4 本と完全に一致する。<b>900 は欧文の見出しと対象者ナビにだけ</b>当て、和文の大見出しは 700 で止める。</p>
+
+    <div class="type-row">
+      <div class="type-meta"><b>欧文セクション見出し</b>28px / <b>900</b> / 1.1<br>letter-spacing 2.24px<br>Roboto</div>
+      <div class="type-sample"><p class="t-en28">News Release</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>和文セクション見出し</b>40px / 700 / 1.1<br>letter-spacing 3.2px</div>
+      <div class="type-sample"><p class="t-ja40">事業のご紹介</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>ページ見出し（下層）</b>36px / 700 / 1.1<br>letter-spacing 2.88px</div>
+      <div class="type-sample"><p class="t-ja36">Mission・Vision・Value</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>明朝の導入見出し</b>36.992px / 500 / 1.1<br>letter-spacing 1.10976px<br><b>Noto Serif JP</b>（可視 2 要素）</div>
+      <div class="type-sample"><p class="t-serif">独自の製品・技術で</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>対象者ナビ</b>32px / <b>900</b> / 1.1</div>
+      <div class="type-sample"><p class="t-nav32">一般の皆さまへ</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>フッター見出し</b>26px / 700 / 1.6<br>letter-spacing 1.3px</div>
+      <div class="type-sample"><p class="t-ft26">企業情報</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>メガメニュー見出し</b>22px / 500 / 1.1</div>
+      <div class="type-sample"><p class="t-mega22">サステナビリティ</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>リード文</b>20px / 400 / 1.8</div>
+      <div class="type-sample"><p class="t-lead20">ニプロは、医療現場のニーズに応えるため、さまざまな製品を自社で開発・製造しています。</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>ナビ・リスト</b>18px / 400 / 1.6</div>
+      <div class="type-sample"><p class="t-nav18">当社役員を名乗る不審な電話・電子メールにご注意ください</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>本文</b>16px / 400 / <b>1.1</b>（要取り直し）<br>#464646</div>
+      <div class="type-sample"><p class="t-body16">患者さん目線、ユーザー目線に立ち、「真にグローバルな企業」を目指します。</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>日付・小見出し</b>14px / 400 / 1.1</div>
+      <div class="type-sample"><p class="t-sub14">2026.10.28　医療機器</p></div>
+    </div>
+
+    <div class="note"><b>h1 はロゴだけで 16px。</b>ページ見出しは h2 以下に割り当てられており、<b>見出しレベルとサイズが対応していない</b>。スタイルはクラスで当てること。</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">05 / Components</div>
+    <div class="eyebrow">矩形だけで組む</div>
+    <h2 class="section-title">角丸ゼロ・影ゼロ</h2>
+    <p class="section-lead"><code>border-radius</code> の実測は <b>1 種・1 要素（1px）</b>だけ、<code>box-shadow</code> は<b>両ページとも 0 種</b>。階層は面の切り替えと罫線で作る。</p>
+
+    <div class="btn-row">
+      <a class="btn" href="#">同意する</a>
+      <a class="btn btn-secondary" href="#">同意しない</a>
+      <a class="btn btn-more" href="#">一覧を見る</a>
+    </div>
+
+    <div class="comp-grid">
+      <div class="card">
+        <p class="card-date">2026.11.04</p>
+        <p class="card-cat">機構改革・人事異動</p>
+        <p class="card-text">組織変更・人事異動のお知らせ</p>
+      </div>
+      <div class="card">
+        <p class="card-date">2026.10.28</p>
+        <p class="card-cat">医療機器</p>
+        <p class="card-text">「2026年度グッドデザイン賞」受賞のお知らせ</p>
+      </div>
+      <div class="card">
+        <p class="card-date">2026.10.28</p>
+        <p class="card-cat">その他</p>
+        <p class="card-text">固定資産の譲渡完了に関するお知らせ</p>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="q">サイト内検索（フォーカス状態）</label>
+      <input id="q" class="is-focus" type="text" value="透析装置">
+    </div>
+
+    <div class="note"><b>右端に貼り付く <code>BRAND SITE</code> タブが、このサイト唯一の縦組み。</b><code>writing-mode: vertical-rl</code>、面は <code>rgba(0, 94, 173, .9)</code>（ブランド青 <code>#004386</code> とは別の青）、<code>letter-spacing: 4.608px</code>（0.12em）。<b>縦組みを本文や見出しに広げないこと。</b></div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">06 / Colors</div>
+    <div class="eyebrow">青 1 色と、7 段のグレー</div>
+    <h2 class="section-title">グレーが 7 段ある</h2>
+    <p class="section-lead"><code>#6D6D6D</code> と <code>#6E6E6E</code> は RGB で 1 しか違わないが、どちらも実装されている。<b>ナビは #6D6D6D、日付は #6E6E6E</b> という使い分け。</p>
+
+    <div class="color-grid">
+      <div class="swatch"><div class="swatch-chip" style="background:#004386"></div>
+        <div class="swatch-body"><div class="swatch-name">NIPRO Blue</div>
+        <div class="swatch-hex">#004386</div>
+        <div class="swatch-use">可視テキスト 11 要素 ＋ 面 2 / 3 要素</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:rgba(0,94,173,.9)"></div>
+        <div class="swatch-body"><div class="swatch-name">Brand Site Tab</div>
+        <div class="swatch-hex">rgba(0, 94, 173, .9)</div>
+        <div class="swatch-use">縦組みタブの面（1 要素）。別の青</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#6D6D6D"></div>
+        <div class="swatch-body"><div class="swatch-name">Text Muted</div>
+        <div class="swatch-hex">#6D6D6D</div>
+        <div class="swatch-use">★可視 48 / 51 要素で最多。ナビ・リスト</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#6E6E6E"></div>
+        <div class="swatch-body"><div class="swatch-name">Text Gray 2</div>
+        <div class="swatch-hex">#6E6E6E</div>
+        <div class="swatch-use">ニュースの日付（6 要素）。上と RGB で 1 違い</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#323232"></div>
+        <div class="swatch-body"><div class="swatch-name">Text Primary</div>
+        <div class="swatch-hex">#323232</div>
+        <div class="swatch-use">見出し・ロゴ（35 / 17 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#464646"></div>
+        <div class="swatch-body"><div class="swatch-name">Text Body</div>
+        <div class="swatch-hex">#464646</div>
+        <div class="swatch-use">body の既定色（13 / 11 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#505050"></div>
+        <div class="swatch-body"><div class="swatch-name">Text Gray</div>
+        <div class="swatch-hex">#505050</div>
+        <div class="swatch-use">ニュース本文（11 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#4A4949"></div>
+        <div class="swatch-body"><div class="swatch-name">Text Gray 3</div>
+        <div class="swatch-hex">#4A4949</div>
+        <div class="swatch-use">メガメニュー見出し（5 / 4 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#1E1E1E"></div>
+        <div class="swatch-body"><div class="swatch-name">Text Dark</div>
+        <div class="swatch-hex">#1E1E1E</div>
+        <div class="swatch-use">カテゴリ（9 要素）・English ボタンの面</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#AAAAAA"></div>
+        <div class="swatch-body"><div class="swatch-name">Disabled</div>
+        <div class="swatch-hex">#AAAAAA</div>
+        <div class="swatch-use">「同意しない」の面</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#F1F1F1"></div>
+        <div class="swatch-body"><div class="swatch-name">Surface Gray</div>
+        <div class="swatch-hex">#F1F1F1</div>
+        <div class="swatch-use">メガメニューの面</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#F2F5F9"></div>
+        <div class="swatch-body"><div class="swatch-name">Pale Blue</div>
+        <div class="swatch-hex">#F2F5F9</div>
+        <div class="swatch-use">下層のパンくず直下の面</div></div></div>
+    </div>
+
+    <div class="note"><b>ブレークポイントはすべて max-width のデスクトップファースト。</b>400 / 420 / 500 / 600 / 700 / 900 / 1000 / 1020 / 1300px と <b>9 段以上</b>あり、700px が最頻（31 / 47 箇所）。<br><br><b><code>html</code> も <code>body</code> も 8 幅すべてで完全固定。</b><code>html { font-size }</code> の宣言が CSS に 1 つも無く、16px はブラウザ既定そのもの。<b>body は 375px でも 16px のまま</b>で、縮むのは見出しだけ（<code>h2</code> 28px → 17.5px、<code>h3</code> 36.992px → 22.75px）。</div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <p class="footer-head">すべてのいのちに、よろこびを。</p>
+    <div class="footer-cols">
+      <div class="footer-col"><a href="#">事業のご紹介</a><a href="#">医療機器事業</a><a href="#">医薬事業</a></div>
+      <div class="footer-col"><a href="#">企業情報</a><a href="#">会社概要</a><a href="#">社長メッセージ</a></div>
+      <div class="footer-col"><a href="#">IR情報</a><a href="#">業績ハイライト</a><a href="#">IR資料ライブラリー</a></div>
+      <div class="footer-col"><a href="#">サステナビリティ</a><a href="#">採用情報</a><a href="#">お問い合わせ</a></div>
+    </div>
+    <p class="footer-copy">© NIPRO — Design tokens measured 2026-11-05</p>
+  </div>
+</footer>
+
+</body>
+</html>

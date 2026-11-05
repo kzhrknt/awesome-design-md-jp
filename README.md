@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (613 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (616 sites)</a>
 </p>
 
 <table>
@@ -951,6 +951,11 @@
 </tr>
 <tr>
 <td align="center"><strong>森永乳業</strong><br><img src="design-md/morinagamilk/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>日本ハム</strong><br><img src="design-md/nipponham/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ニプロ</strong><br><img src="design-md/nipro/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>西松建設</strong><br><img src="design-md/nishimatsu/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1625,11 +1630,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [三井ホーム (MITSUI HOME)](https://www.mitsuihome.co.jp/) | Housing / Corporate | [DESIGN.md](design-md/mitsuihome/DESIGN.md) | [preview.html](design-md/mitsuihome/preview.html) |
 | [武蔵野美術大学 (Musashino Art University)](https://www.musabi.ac.jp/) | University / Art Education | [DESIGN.md](design-md/musabi/DESIGN.md) | [preview.html](design-md/musabi/preview.html) |
 | [森永乳業 (MORINAGA MILK)](https://www.morinagamilk.co.jp/) | Food / Corporate | [DESIGN.md](design-md/morinagamilk/DESIGN.md) | [preview.html](design-md/morinagamilk/preview.html) |
+| [日本ハム (Nipponham / NH Foods)](https://www.nipponham.co.jp/) | Food / Corporate | [DESIGN.md](design-md/nipponham/DESIGN.md) | [preview.html](design-md/nipponham/preview.html) |
+| [ニプロ (NIPRO)](https://www.nipro.co.jp/) | Medical Devices / Corporate | [DESIGN.md](design-md/nipro/DESIGN.md) | [preview.html](design-md/nipro/preview.html) |
+| [西松建設 (NISHIMATSU CONSTRUCTION)](https://www.nishimatsu.co.jp/) | Construction / Corporate | [DESIGN.md](design-md/nishimatsu/DESIGN.md) | [preview.html](design-md/nishimatsu/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (613 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (616 sites)</a>
 </p>
 
 <table>
@@ -2546,6 +2554,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>森永乳業</strong><br><img src="design-md/morinagamilk/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>日本ハム</strong><br><img src="design-md/nipponham/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ニプロ</strong><br><img src="design-md/nipro/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>西松建設</strong><br><img src="design-md/nishimatsu/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

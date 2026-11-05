@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 日本ハム（Nipponham / NH Foods）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- ★実サイトが読み込んでいるのは Zen Maru Gothic の wght@400;500;700。
+     ただし可視要素に 400 は 1 つも無く、実装は 500（ヒーロー）と 700（見出し）だけ。
+     ここも実サイトと同じ 3 本を読み、使うのは 500 / 700 に限る。 -->
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ===========================================================
+     日本ハム 実測プレビュー（2026-11-05）
+     対象: https://www.nipponham.co.jp/ , /food-allergy/
+
+     ★実サイトに CSS Custom Properties は実質 0 個
+       （CSS 全文で --toggle / --sp の 2 個のみ。どちらも :root ではない）。
+       以下の :root は「実測値をこのプレビューで整理したもの」で、
+       実サイトに同名の変数があるわけではない。値はすべて実測。
+     =========================================================== */
+  :root {
+    /* === Brand（実測） === */
+    --nh-red:      #E6002D;  /* ★可視テキスト 33 要素 ＋ 面 5 要素 */
+    --nh-grad:     linear-gradient(90deg, #E6002D, #F04B17 60%, #FA9600); /* ★ヒーローの面。停止位置 60% を丸めない */
+
+    /* === Semantic（カテゴリの淡色面・文字色は変えない） === */
+    --cat-product: #FFDAAF;  /* 商品・サービス（面 6 要素） */
+    --cat-sustain: #DFF28B;  /* サステナビリティ（3 要素） */
+    --cat-company: #D2F5F3;  /* 企業情報（3 要素） */
+    --cat-ir:      #FDF3F4;  /* IR情報（2 要素） */
+    --cat-recipe:  #FAE5CD;  /* レシピ（1 要素） */
+
+    /* === Neutral（実測） === */
+    --text:        #333333;  /* ★本文・見出し。可視 214 / 99 要素で圧倒的多数 */
+    --text-2:      #282828;  /* ニュースの日付（6 要素）。上とほぼ同値だが別実装 */
+    --text-muted:  #666666;  /* タブ非選択・コピーライト（3 / 2 要素） */
+    --white:       #FFFFFF;
+    --surface:     #F5F5F5;  /* ヘッダー上段（4 要素） */
+    --surface-2:   #F6F6F6;  /* カード面（2 / 1 要素） */
+    --switch:      #EDEDED;  /* 切替スイッチの面 */
+    --dot:         #DDDDDD;  /* カルーセル非選択ドット（面 17 / 2 要素） */
+    --hero-sub:    linear-gradient(#FFFFFF 5%, #FFEFD9 30%, #FFEFD9 100%); /* 下層の導入面 */
+
+    /* === Fonts ===
+       ★Web フォント（Zen Maru Gothic）は可視 3 要素だけ。
+         本文 262/265・103/104 要素は OS ローカルスタック。 */
+    --font-body: "Yu Gothic", "Hiragino Kaku Gothic Pro", "Hiragino Sans",
+                 Meiryo, Osaka, Arial, "MS PGothic", sans-serif;
+    --font-copy: "Zen Maru Gothic", YuGothic, "Yu Gothic", Arial, メイリオ, Meiryo,
+                 "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro",
+                 "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+
+    /* === Line height（実測） === */
+    --lh-body: 1.6;    /* ★行間比 1.6 が 208 / 78 要素で最多。無単位で body に 1 回 */
+    --lh-card: 1.4;    /* カードタイトル */
+    --lh-hero: 1.2;    /* ヒーローコピー（モバイルは 1.3429） */
+
+    --shadow: 0 1px 5px rgba(0, 0, 0, .2);  /* ★可視 66 要素。サイトの基本の影はこれ 1 種 */
+    --container: 1620px;                     /* ★実測 10 / 5 要素。収録サイト中でも広い */
+  }
+
+  /* ★html は 62.5%（= 10px）。1440/1200/1024/834/768/767/390/375px の
+     8 幅すべてで完全固定。流体ではない。 */
+  html { font-size: 62.5%; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 500;              /* ★本文が 500。400 ではない */
+    line-height: var(--lh-body);   /* 1.6（無単位） */
+    letter-spacing: normal;        /* ★264/265・103/104 要素が normal。例外なし */
+    word-break: break-word;        /* ★break-all ではない */
+    -webkit-font-smoothing: antialiased;
+    /* ★font-feature-settings は書かない。実測 0 件。palt も halt も使わない */
+  }
+
+  /* ---------- 共通パーツ ---------- */
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 28px; }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .9em;
+         background: rgba(0,0,0,.065); padding: 1px 5px; border-radius: 3px; }
+
+  .header { background: var(--white); box-shadow: 0 5px 5px -5px rgba(0,0,0,.2); }
+  .header-top { background: var(--surface); }
+  .header-top-in { display: flex; align-items: center; gap: 18px;
+                   max-width: var(--container); margin: 0 auto; padding: 7px 28px; }
+  .header-top-in a { font-size: 15px; font-weight: 500; line-height: 24px;
+                     color: var(--text); text-decoration: none; }
+  .header-main { display: flex; align-items: center; gap: 30px;
+                 max-width: var(--container); margin: 0 auto; padding: 16px 28px; }
+  .logo { font-family: var(--font-copy); font-weight: 700; font-size: 28px;
+          color: var(--nh-red); text-decoration: none; line-height: 1.2; }
+  .gnav { margin-left: auto; display: flex; gap: 26px; }
+  .gnav a { font-size: 18px; font-weight: 700; color: var(--text); text-decoration: none; }
+
+  .section { padding: 64px 0; }
+  .section-alt { background: var(--surface-2); }
+  .section-label { font-size: 12px; font-weight: 700; color: var(--text-muted);
+                   margin-bottom: 8px; }
+  .eyebrow { font-size: 13px; font-weight: 700; color: var(--nh-red); margin-bottom: 6px; }
+  .section-title { font-size: 30px; font-weight: 700; line-height: 1.6; margin-bottom: 14px; }
+  .section-title-copy { font-family: var(--font-copy); font-size: 40px; font-weight: 700;
+                        line-height: 1.6; margin-bottom: 14px; }
+  .section-lead { font-size: 16px; line-height: var(--lh-body); max-width: 78ch; }
+  .note { margin-top: 26px; padding: 16px 20px; background: var(--white);
+          border-left: 4px solid var(--nh-red); border-radius: 0 10px 10px 0;
+          font-size: 14px; line-height: 1.8; box-shadow: var(--shadow); }
+  .section-alt .note { background: var(--white); }
+  b { font-weight: 700; }
+
+  /* ---------- 01 Hero ---------- */
+  .hero { background: var(--nh-grad); padding: 54px 0 60px; }
+  .hero-in { max-width: var(--container); margin: 0 auto; padding: 0 28px; }
+  /* ★実サイトの 768〜1400px の既定は font-size: 60px。
+     1401px 以上は clamp(48px, 4.7619vw, 92.3809px)、767px 以下は 9.33333vw。
+     このプレビューも同じ 3 段で再現する。 */
+  .hero-catch {
+    margin: 0 0 0 -.1em;          /* ★光学的な左揃え。実サイトのワイド幅の宣言そのまま */
+    color: var(--white);
+    font-family: var(--font-copy);
+    font-weight: 500;             /* ★ヒーローは 500。700 ではない */
+    font-size: 60px;
+    line-height: var(--lh-hero);  /* 1.2 */
+    letter-spacing: normal;       /* ★足さない */
+    text-shadow: 0 1px 1px rgba(0, 15, 30, .2);
+  }
+  @media (min-width: 1401px) { .hero-catch { font-size: clamp(48px, 4.7619vw, 92.3809px); } }
+  @media (max-width: 767px)  { .hero-catch { font-size: 9.33333vw; line-height: 1.3429; } }
+  .hero-note { margin-top: 20px; color: var(--white); font-size: 14px; line-height: 1.8;
+               max-width: 60ch; }
+
+  /* ---------- 02 palt ---------- */
+  .palt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 28px; }
+  .palt-box { background: var(--white); border-radius: 10px; box-shadow: var(--shadow);
+              padding: 22px 24px; }
+  .palt-label { font-size: 12px; font-weight: 700; color: var(--text-muted);
+                margin-bottom: 14px; }
+  .palt-sample { font-family: var(--font-copy); font-size: 30px; font-weight: 500;
+                 line-height: 1.5; }
+  .palt-on  { font-feature-settings: "palt"; }   /* 参考表示。実サイトは使っていない */
+  .palt-off { font-feature-settings: normal; }   /* ★これが実装値 */
+
+  .mtable { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 14px; }
+  .mtable th, .mtable td { border: 1px solid #DDDDDD; padding: 10px 12px; text-align: left; }
+  .mtable th { background: var(--surface); font-weight: 700; font-size: 13px; }
+  .section-alt .mtable th { background: var(--white); }
+  .mtable .num { font-variant-numeric: tabular-nums; }
+  .mtable tr.hit td { color: var(--nh-red); font-weight: 700; }
+
+  /* ---------- 03 Typography ---------- */
+  .type-row { display: flex; gap: 28px; padding: 18px 0; border-bottom: 1px solid #DDDDDD;
+              align-items: baseline; }
+  .type-meta { flex: none; width: 210px; font-size: 11px; line-height: 1.8;
+               color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .type-meta b { display: block; font-size: 12px; color: var(--text); }
+  .type-sample { flex: 1; min-width: 0; }
+  .t-copy40 { font-family: var(--font-copy); font-size: 40px; font-weight: 700; line-height: 1.6; }
+  .t-h30 { font-size: 30px; font-weight: 700; line-height: 1.6; }
+  .t-h24 { font-size: 24px; font-weight: 700; line-height: 1.6; }
+  .t-card { font-size: 20px; font-weight: 700; line-height: var(--lh-card); }
+  .t-nav { font-size: 18px; font-weight: 700; line-height: 1.6; }
+  .t-body { font-size: 16px; font-weight: 500; line-height: var(--lh-body); }
+  .t-sub { font-size: 14px; font-weight: 500; line-height: 1.6; }
+  .t-tab { font-size: 13px; font-weight: 700; line-height: 1.2; }
+
+  /* ---------- 04 Components ---------- */
+  .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+               gap: 20px; margin-top: 28px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center;
+         min-height: 46px; padding: 10px 28px; border: 0;
+         border-radius: 50px;                 /* ★ピル */
+         box-shadow: var(--shadow);
+         background: var(--white); color: var(--text);
+         font-family: var(--font-body); font-size: 16px; font-weight: 700;
+         line-height: 1.6; letter-spacing: normal; cursor: pointer; text-decoration: none; }
+  .btn-brand { background: var(--nh-red); color: var(--white); }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 24px; align-items: center; }
+
+  .switch { display: inline-flex; border: 2px solid var(--switch); background: var(--switch);
+            border-radius: 30px; overflow: hidden; }
+  .switch span { padding: 9px 20px; font-size: 13px; font-weight: 700; line-height: 15.6px;
+                 color: var(--text-muted); }
+  .switch span.on { background: var(--nh-red); color: var(--white); border-radius: 30px; }
+
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 50px;
+           font-size: 12px; font-weight: 700; line-height: 19.2px;
+           color: var(--text);                 /* ★文字色は変えない */
+           background: var(--cat-product); }
+  .badge-sustain { background: var(--cat-sustain); }
+  .badge-company { background: var(--cat-company); }
+  .badge-ir { background: var(--cat-ir); }
+  .badge-recipe { background: var(--cat-recipe); }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+
+  .card { background: var(--white); border-radius: 10px; box-shadow: var(--shadow);
+          padding: 22px 24px; }
+  .card-title { font-size: 20px; font-weight: 700; line-height: var(--lh-card);
+                margin-bottom: 8px; }
+  .card-date { font-size: 14px; font-weight: 500; color: var(--text-2); margin-bottom: 8px; }
+  .card-text { font-size: 16px; font-weight: 500; line-height: var(--lh-body); }
+
+  .dots { display: flex; gap: 10px; margin-top: 26px; }
+  .dot { width: 14px; height: 14px; border: 0; border-radius: 50%; background: var(--dot);
+         cursor: pointer; }
+  .dot.on { background: var(--nh-red); }
+
+  .field { margin-top: 24px; max-width: 420px; }
+  .field label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 7px; }
+  .field input { width: 100%; padding: 11px 14px; border: 1px solid #CCCCCC;
+                 border-radius: 50px; font-family: var(--font-body); font-size: 16px;
+                 font-weight: 400; line-height: 1.6; color: var(--text);
+                 background: var(--white); }
+  .field input.is-focus { outline: 2px solid var(--nh-red); outline-offset: 2px; }
+
+  /* ---------- 05 Colors ---------- */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(226px, 1fr));
+                gap: 16px; margin-top: 28px; }
+  .swatch { background: var(--white); border-radius: 10px; box-shadow: var(--shadow);
+            overflow: hidden; }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 12px 14px 16px; }
+  .swatch-name { font-size: 13px; font-weight: 700; }
+  .swatch-hex { font-size: 12px; color: var(--text-muted); margin: 3px 0 6px;
+                font-variant-numeric: tabular-nums; }
+  .swatch-use { font-size: 11px; line-height: 1.7; color: var(--text-muted); }
+
+  /* ---------- 06 Break ---------- */
+  .break-demo { margin-top: 24px; display: grid; gap: 14px; }
+  .break-demo div { background: var(--white); border-radius: 10px; box-shadow: var(--shadow);
+                    padding: 16px 18px; width: 230px; font-size: 16px; line-height: 1.6; }
+  .section-alt .break-demo div { background: var(--white); }
+  .bw { word-break: break-word; }   /* ★実装値 */
+  .ba { word-break: break-all; }    /* 比較用。実サイトは使っていない */
+
+  /* ---------- Footer ---------- */
+  .footer { background: var(--surface); padding: 46px 0 34px; margin-top: 10px; }
+  .footer-head { font-family: var(--font-copy); font-size: 30px; font-weight: 700;
+                 line-height: 1.6; margin-bottom: 22px; }
+  .footer-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .footer-col a { display: block; font-size: 14px; font-weight: 500; line-height: 2.2;
+                  color: var(--text); text-decoration: none; }
+  .footer-copy { margin-top: 26px; font-size: 12px; color: var(--text-muted); }
+
+  /* ★実サイトのブレークポイントは 767.98px。body のサイズとウェイトが同時に変わる */
+  @media (max-width: 767.98px) {
+    body { font-size: 14px; font-weight: 400; }
+    .palt-grid { grid-template-columns: 1fr; }
+    .comp-grid { grid-template-columns: 1fr; }
+    .type-row { flex-direction: column; gap: 10px; }
+    .type-meta { width: auto; }
+    .footer-cols { grid-template-columns: 1fr 1fr; }
+    .section-title { font-size: 22px; }
+    .section-title-copy { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <div class="header-top-in">
+      <a href="#">ストーリー</a><a href="#">オンラインショップ</a><a href="#">お問い合わせ</a>
+    </div>
+  </div>
+  <div class="header-main">
+    <a class="logo" href="#">Nipponham</a>
+    <nav class="gnav">
+      <a href="#">商品情報</a><a href="#">レシピ</a><a href="#">食物アレルギーケア</a>
+      <a href="#">キャンペーン</a><a href="#">知る・楽しむ</a><a href="#">CM・動画</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-in">
+    <h1 class="hero-catch">たんぱく質を、<br>もっと自由に。</h1>
+    <p class="hero-note">ヒーローのコピーは実テキスト。画像ではない。面は <code>linear-gradient(90deg, #E6002D, #F04B17 60%, #FA9600)</code>。文字は Zen Maru Gothic の weight 500 に <code>text-shadow: 0 1px 1px rgba(0, 15, 30, .2)</code>。</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">01 / Web Font</div>
+    <div class="eyebrow">このサイトの骨格</div>
+    <h2 class="section-title">Web フォントは可視 3 要素にしか出ない</h2>
+    <p class="section-lead"><code>document.fonts</code> では Zen Maru Gothic の 500 / 700 が <code>loaded</code> だが、<b>実際に描画されているのはトップ 2 要素・下層 1 要素だけ</b>。残る <b>262 / 265 要素と 103 / 104 要素</b>は OS ローカルの游ゴシックスタック。<b>丸ゴシックは「コピーの書体」であって「サイトの書体」ではない。</b></p>
+
+    <div class="palt-grid">
+      <div class="palt-box">
+        <div class="palt-label">Zen Maru Gothic（可視 3 要素 — ヒーローと見出しだけ）</div>
+        <p class="palt-sample">食卓に「おいしさ」をお届け</p>
+      </div>
+      <div class="palt-box">
+        <div class="palt-label">OS ローカルスタック（可視 262 / 265 要素 — サイトのほぼ全部）</div>
+        <p class="palt-sample" style="font-family: var(--font-body); font-weight: 700;">食卓に「おいしさ」をお届け</p>
+      </div>
+    </div>
+
+    <table class="mtable">
+      <thead><tr><th>書体</th><th>宣言</th><th>document.fonts</th><th>可視要素（トップ / 下層）</th></tr></thead>
+      <tbody>
+        <tr><td>Zen Maru Gothic 500</td><td class="num">wght@500</td><td>loaded</td><td class="num">1 / 0</td></tr>
+        <tr><td>Zen Maru Gothic 700</td><td class="num">wght@700</td><td>loaded</td><td class="num">1 / 1</td></tr>
+        <tr class="hit"><td>Zen Maru Gothic 400</td><td class="num">wght@400</td><td>unloaded</td><td class="num">0 / 0 ← 宣言だけ</td></tr>
+        <tr><td>OS ローカル（游ゴシック〜）</td><td>—</td><td>—</td><td class="num">262 / 103</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note"><b>@font-face は 366 ブロック、フォント要求は 12 件。</b>Google Fonts の和文は unicode-range で百数十本に分割されるため、<code>unloaded</code> が大量に出るのは正常。判定は <b>可視要素の件数</b>で行う。</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">02 / palt</div>
+    <div class="eyebrow">できるのに、やらない</div>
+    <h2 class="section-title">約物を詰められるのに 1 要素も詰めていない</h2>
+    <p class="section-lead">実ページに隠し div を作り、<code>「日本ハム」、たんぱく質。（株）</code>を 40px の Zen Maru Gothic で測ると <b>normal 598.41px / "palt" 492.41px / "halt" 518.41px</b>。書体は <code>palt</code> テーブルを持っている。それでも <code>font-feature-settings</code> の実測は<b>両ページとも 0 件</b>、<code>letter-spacing</code> も <b>264 / 265 要素が normal</b>。</p>
+
+    <div class="palt-grid">
+      <div class="palt-box">
+        <div class="palt-label">font-feature-settings: normal ← <b>これが実装値</b></div>
+        <p class="palt-sample palt-off">「日本ハム」、たんぱく質。（株）</p>
+      </div>
+      <div class="palt-box">
+        <div class="palt-label">font-feature-settings: "palt"（参考 — 実サイトは使っていない）</div>
+        <p class="palt-sample palt-on">「日本ハム」、たんぱく質。（株）</p>
+      </div>
+    </div>
+
+    <table class="mtable">
+      <thead><tr><th>設定</th><th>実測幅（40px / Zen Maru Gothic）</th><th>normal 比</th><th>実装</th></tr></thead>
+      <tbody>
+        <tr class="hit"><td>normal</td><td class="num">598.41px</td><td class="num">100.0%</td><td>★ サイトの実装値</td></tr>
+        <tr><td>"palt"</td><td class="num">492.41px</td><td class="num">82.3%</td><td>使っていない</td></tr>
+        <tr><td>"halt"</td><td class="num">518.41px</td><td class="num">86.6%</td><td>使っていない</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note"><b>丸ゴシックの「、」「。」の後ろが空いて見えるのは素の状態。</b>新規実装で <code>palt</code> を足すと 17.7% 詰まり、既存ページと並べたときに別物になる。<b>既存に合わせるなら normal のまま。</b></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">03 / Typography</div>
+    <div class="eyebrow">階層</div>
+    <h2 class="section-title-copy">本文は weight 500、見出しは 700 の 2 段</h2>
+    <p class="section-lead">ウェイトは <b>400 / 500 / 700 の 3 段</b>（可視 30 / 102 / 133 要素）。600 も 900 も存在しない。<code>letter-spacing</code> は全階層で <code>normal</code>。</p>
+
+    <div class="type-row">
+      <div class="type-meta"><b>セクション見出し（コピー）</b>40px / 700 / 1.6<br>Zen Maru Gothic</div>
+      <div class="type-sample"><p class="t-copy40">食卓に「おいしさ」をお届け</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>セクション見出し</b>30px / 700 / 1.6<br>OS ローカル</div>
+      <div class="type-sample"><p class="t-h30">キャンペーン・新商品</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>ブロック見出し</b>24px / 700 / 1.6</div>
+      <div class="type-sample"><p class="t-h24">ニュース / 更新情報</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>カードタイトル</b>20px / 700 / 1.4</div>
+      <div class="type-sample"><p class="t-card">中華の名店 四川飯店監修 海老焼売</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>グローバルナビ</b>18px / 700 / 1.6</div>
+      <div class="type-sample"><p class="t-nav">商品情報　レシピ　食物アレルギーケア</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>本文</b>16px / <b>500</b> / 1.6<br>#333333</div>
+      <div class="type-sample"><p class="t-body">人気拡大中の「麻辣湯（マーラータン）」をレンジで手軽に楽しめる商品を、11月1日（日）から全国にて新発売します。食卓に新しいおいしさをお届けします。</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>ナビ上段・日付</b>14〜15px / 500</div>
+      <div class="type-sample"><p class="t-sub">2026年10月28日　商品・サービス</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>タブ・バッジ</b>12〜13px / 700</div>
+      <div class="type-sample"><p class="t-tab">商品・レシピ　企業・IR</p></div>
+    </div>
+
+    <div class="note"><b>行間は無単位の 1.6 を body に 1 回だけ。</b>実測で行間比 1.6 が <b>208 / 78 要素</b>と最多。子要素で px に書き直すと、767px で body が 16px → 14px に変わったときに行間比が崩れる。</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">04 / Components</div>
+    <div class="eyebrow">ピルと、1 種類の影</div>
+    <h2 class="section-title">角丸は 50px か 50%、影は 1 種類だけ</h2>
+    <p class="section-lead">角丸の実測は <code>50px</code>（ピル・17 要素）/ <code>50%</code>（丸ドット・20 要素）/ <code>30px</code>（スイッチ）/ <code>20px 20px 0 0</code>（タブ上角）。影は <code>0 1px 5px rgba(0, 0, 0, .2)</code> が<b>可視 66 要素</b>で、ボタンもカードもアイコンナビもすべてこれ。</p>
+
+    <div class="btn-row">
+      <a class="btn" href="#">一覧</a>
+      <a class="btn btn-brand" href="#">企業・IR情報</a>
+      <span class="switch"><span class="on">商品・レシピ</span><span>企業・IR</span></span>
+    </div>
+
+    <div class="badge-row">
+      <span class="badge">商品・サービス</span>
+      <span class="badge badge-sustain">サステナビリティ</span>
+      <span class="badge badge-company">企業情報</span>
+      <span class="badge badge-ir">IR情報</span>
+      <span class="badge badge-recipe">レシピ</span>
+    </div>
+    <p style="margin-top:12px; font-size:13px; color:var(--text-muted);">★カテゴリは<b>面色だけ</b>で分ける。文字色は <code>#333333</code> のまま変えない。</p>
+
+    <div class="comp-grid">
+      <div class="card">
+        <p class="card-date">2026年10月28日</p>
+        <p class="card-title">秋のビジュ鍋キャンペーン</p>
+        <p class="card-text">国産豚肉 麦小町でつくる、秋のあたたかい食卓。</p>
+      </div>
+      <div class="card">
+        <p class="card-date">2026年10月26日</p>
+        <p class="card-title">季節の特集レシピ</p>
+        <p class="card-text">「秋レシピ特集」を更新しました。</p>
+      </div>
+      <div class="card">
+        <p class="card-date">2026年10月5日</p>
+        <p class="card-title">食物アレルギーケア</p>
+        <p class="card-text">検査キットの開発・販売と、食の未来財団の活動。</p>
+      </div>
+    </div>
+
+    <div class="dots">
+      <button class="dot" aria-label="1"></button>
+      <button class="dot on" aria-label="2"></button>
+      <button class="dot" aria-label="3"></button>
+      <button class="dot" aria-label="4"></button>
+    </div>
+
+    <div class="field">
+      <label for="q">検索（フォーカス状態）</label>
+      <input id="q" class="is-focus" type="text" value="レシピを探す">
+    </div>
+    <p style="margin-top:10px; font-size:13px; color:var(--text-muted);">★<code>&lt;input&gt;</code> は UA 既定の weight 400 のまま。本文の 500 とウェイトが違う。</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">05 / Colors</div>
+    <div class="eyebrow">赤 1 色と、カテゴリの淡色面</div>
+    <h2 class="section-title">ブランド赤は 1 色。分類は淡い面でやる</h2>
+
+    <div class="color-grid">
+      <div class="swatch"><div class="swatch-chip" style="background:#E6002D"></div>
+        <div class="swatch-body"><div class="swatch-name">Nipponham Red</div>
+        <div class="swatch-hex">#E6002D</div>
+        <div class="swatch-use">可視テキスト 33 要素 ＋ 面 5 要素</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:linear-gradient(90deg,#E6002D,#F04B17 60%,#FA9600)"></div>
+        <div class="swatch-body"><div class="swatch-name">Hero Gradient</div>
+        <div class="swatch-hex">#E6002D → #F04B17 60% → #FA9600</div>
+        <div class="swatch-use">ヒーローの面。停止位置 60% を丸めない</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#333333"></div>
+        <div class="swatch-body"><div class="swatch-name">Text Primary</div>
+        <div class="swatch-hex">#333333</div>
+        <div class="swatch-use">可視 214 / 99 要素。圧倒的多数</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#282828"></div>
+        <div class="swatch-body"><div class="swatch-name">Text Secondary</div>
+        <div class="swatch-hex">#282828</div>
+        <div class="swatch-use">ニュースの日付（6 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#666666"></div>
+        <div class="swatch-body"><div class="swatch-name">Text Muted</div>
+        <div class="swatch-hex">#666666</div>
+        <div class="swatch-use">タブ非選択・コピーライト</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#FFDAAF"></div>
+        <div class="swatch-body"><div class="swatch-name">商品・サービス</div>
+        <div class="swatch-hex">#FFDAAF</div>
+        <div class="swatch-use">面 6 要素</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#DFF28B"></div>
+        <div class="swatch-body"><div class="swatch-name">サステナビリティ</div>
+        <div class="swatch-hex">#DFF28B</div>
+        <div class="swatch-use">面 3 要素</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#D2F5F3"></div>
+        <div class="swatch-body"><div class="swatch-name">企業情報</div>
+        <div class="swatch-hex">#D2F5F3</div>
+        <div class="swatch-use">面 3 要素</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#FAE5CD"></div>
+        <div class="swatch-body"><div class="swatch-name">レシピ</div>
+        <div class="swatch-hex">#FAE5CD</div>
+        <div class="swatch-use">面 1 要素</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#F5F5F5"></div>
+        <div class="swatch-body"><div class="swatch-name">Surface Gray</div>
+        <div class="swatch-hex">#F5F5F5</div>
+        <div class="swatch-use">ヘッダー上段（4 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#DDDDDD"></div>
+        <div class="swatch-body"><div class="swatch-name">Dot Inactive</div>
+        <div class="swatch-hex">#DDDDDD</div>
+        <div class="swatch-use">カルーセル非選択ドット（17 / 2 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:linear-gradient(#FFFFFF 5%,#FFEFD9 30%,#FFEFD9 100%)"></div>
+        <div class="swatch-body"><div class="swatch-name">下層ヒーロー面</div>
+        <div class="swatch-hex">#FFFFFF 5% → #FFEFD9 30%</div>
+        <div class="swatch-use">/food-allergy/ の導入部</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-label">06 / Responsive</div>
+    <div class="eyebrow">ルートは動かない。body が切り替わる</div>
+    <h2 class="section-title">768 / 767px で body のサイズとウェイトが同時に変わる</h2>
+    <p class="section-lead"><code>html { font-size: 62.5% }</code>（= 10px）は <b>8 幅すべてで完全固定</b>。流体ではない。切り替わるのは <code>body</code> と個別要素で、<b>サイズ（16px → 14px）だけでなくウェイト（500 → 400）も落ちる</b>。</p>
+
+    <table class="mtable">
+      <thead><tr><th>幅</th><th>html</th><th>body</th><th>body weight</th><th>h2（通常）</th><th>ヒーローコピー</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1940px</td><td class="num">10px</td><td class="num">16px / 25.6px</td><td class="num">500</td><td class="num">24px / 38.4px</td><td class="num">92.3809px ← clamp 上限</td></tr>
+        <tr><td class="num">1440px</td><td class="num">10px</td><td class="num">16px / 25.6px</td><td class="num">500</td><td class="num">24px / 38.4px</td><td class="num">68.5714px</td></tr>
+        <tr><td class="num">1400px</td><td class="num">10px</td><td class="num">16px / 25.6px</td><td class="num">500</td><td class="num">24px / 38.4px</td><td class="num">60px</td></tr>
+        <tr><td class="num">1200px</td><td class="num">10px</td><td class="num">16px / 25.6px</td><td class="num">500</td><td class="num">24px / 38.4px</td><td class="num">60px</td></tr>
+        <tr><td class="num">834px</td><td class="num">10px</td><td class="num">16px / 25.6px</td><td class="num">500</td><td class="num">24px / 38.4px</td><td class="num">60px</td></tr>
+        <tr class="hit"><td class="num">768px</td><td class="num">10px</td><td class="num">16px / 25.6px</td><td class="num">500</td><td class="num">24px / 38.4px</td><td class="num">60px</td></tr>
+        <tr class="hit"><td class="num">767px</td><td class="num">10px</td><td class="num">14px / 22.4px</td><td class="num">400</td><td class="num">18px / 40px</td><td class="num">71.5866px ← 跳ね上がる</td></tr>
+        <tr><td class="num">600px</td><td class="num">10px</td><td class="num">14px / 22.4px</td><td class="num">400</td><td class="num">18px / 40px</td><td class="num">56px</td></tr>
+        <tr><td class="num">375px</td><td class="num">10px</td><td class="num">14px / 22.4px</td><td class="num">400</td><td class="num">18px / 40px</td><td class="num">35px</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note"><b>768 → 767px でヒーローコピーが 60px → 71.59px と 19% 跳ね上がる。</b>モバイルの方がデスクトップより大きいという逆向きの崖で、規定の 4 幅（1440 / 1200 / 834 / 375）では見えない。モバイルの <code>9.33333vw</code> が 60px を下回るのは <b>642.9px 以下</b>なので、<b>643〜767px の帯だけコピーが大きく出る</b>。<br><br>3 段の宣言: <code>max-width: 767px</code> → <code>font-size: 9.33333vw; line-height: 1.3429</code> ／ 768〜1400px → <code>font-size: 60px; line-height: 1.2</code> ／ <code>min-width: 1401px</code> → <code>font-size: clamp(48px, 4.7619vw, 92.3809px); margin-left: -.1em</code>。<br><br><b><code>clamp(48px, 3.7619vw, 70px)</code> は英語版専用</b>（<code>html:lang(en)</code>）。日本語ページには当たらない。</div>
+
+    <h3 style="margin-top:36px; font-size:24px; font-weight:700; line-height:1.6;">word-break は break-word（break-all ではない）</h3>
+    <div class="break-demo">
+      <div class="bw">新しい価値の創造 Life-changing な毎日へ<br><span style="font-size:12px;color:var(--text-muted)">↑ word-break: break-word ← <b>実装値</b></span></div>
+      <div class="ba">新しい価値の創造 Life-changing な毎日へ<br><span style="font-size:12px;color:var(--text-muted)">↑ word-break: break-all（比較用）</span></div>
+    </div>
+    <p style="margin-top:12px; font-size:13px; color:var(--text-muted);">★<code>break-word</code> は欧文を語の途中で折らず、入りきらない語だけ折る。<code>break-all</code> は <code>Life-changin / g</code> のように語中で切る。</p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <p class="footer-head">たんぱく質を、もっと自由に。</p>
+    <div class="footer-cols">
+      <div class="footer-col"><a href="#">商品情報</a><a href="#">レシピ</a><a href="#">食物アレルギーケア</a></div>
+      <div class="footer-col"><a href="#">キャンペーン</a><a href="#">知る・楽しむ</a><a href="#">CM・動画</a></div>
+      <div class="footer-col"><a href="#">企業情報</a><a href="#">IR情報</a><a href="#">サステナビリティ</a></div>
+      <div class="footer-col"><a href="#">お問い合わせ</a><a href="#">サイトマップ</a><a href="#">個人情報保護方針</a></div>
+    </div>
+    <p class="footer-copy">© NH Foods Ltd. — Design tokens measured 2026-11-05</p>
+  </div>
+</footer>
+
+</body>
+</html>
