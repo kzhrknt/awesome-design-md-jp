@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (616 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (619 sites)</a>
 </p>
 
 <table>
@@ -956,6 +956,11 @@
 </tr>
 <tr>
 <td align="center"><strong>西松建設</strong><br><img src="design-md/nishimatsu/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>商船三井</strong><br><img src="design-md/mol/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>川崎汽船</strong><br><img src="design-md/kline/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>オリックス</strong><br><img src="design-md/orix/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1633,11 +1638,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [日本ハム (Nipponham / NH Foods)](https://www.nipponham.co.jp/) | Food / Corporate | [DESIGN.md](design-md/nipponham/DESIGN.md) | [preview.html](design-md/nipponham/preview.html) |
 | [ニプロ (NIPRO)](https://www.nipro.co.jp/) | Medical Devices / Corporate | [DESIGN.md](design-md/nipro/DESIGN.md) | [preview.html](design-md/nipro/preview.html) |
 | [西松建設 (NISHIMATSU CONSTRUCTION)](https://www.nishimatsu.co.jp/) | Construction / Corporate | [DESIGN.md](design-md/nishimatsu/DESIGN.md) | [preview.html](design-md/nishimatsu/preview.html) |
+| [商船三井 (MOL / Mitsui O.S.K. Lines)](https://www.mol.co.jp/) | Shipping / Corporate | [DESIGN.md](design-md/mol/DESIGN.md) | [preview.html](design-md/mol/preview.html) |
+| [川崎汽船 ("K" LINE / Kawasaki Kisen Kaisha)](https://www.kline.co.jp/ja/index.html) | Shipping / Corporate | [DESIGN.md](design-md/kline/DESIGN.md) | [preview.html](design-md/kline/preview.html) |
+| [オリックス (ORIX)](https://www.orix.co.jp/grp/) | Finance / Corporate | [DESIGN.md](design-md/orix/DESIGN.md) | [preview.html](design-md/orix/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (616 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (619 sites)</a>
 </p>
 
 <table>
@@ -2559,6 +2567,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>西松建設</strong><br><img src="design-md/nishimatsu/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>商船三井</strong><br><img src="design-md/mol/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>川崎汽船</strong><br><img src="design-md/kline/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>オリックス</strong><br><img src="design-md/orix/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

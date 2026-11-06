@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 商船三井（MOL / Mitsui O.S.K. Lines）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- ★実サイトは <link> ではなく CSS の @import で同じ 3 書体を読んでいる。
+     family=Montserrat:wght@400;500;600;700
+     &family=Noto+Sans:wght@700
+     &family=Zen+Kaku+Gothic+New:wght@400;500;700
+     Zen Kaku Gothic New は 400 / 500 / 700 の 3 本だけ。600 は無い。 -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Noto+Sans:wght@700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ===========================================================
+     商船三井 実測プレビュー（2026-11-06）
+     対象: https://www.mol.co.jp/ , /corporate/message/
+
+     ★実サイトに CSS Custom Properties は 1 個も無い
+       （total: 0 / 読めなかったシート 0 枚で確定）。
+       以下の :root は「実測値をこのプレビューで整理したもの」で、
+       実サイトに同名の変数があるわけではない。値はすべて実測。
+     =========================================================== */
+  :root {
+    /* === Brand（実測） === */
+    --mol-blue:  #005396;  /* ★濃。下層で可視 11 要素の塗り面。見出しの文字色にも */
+    --mol-cyan:  #00a0dc;  /* ★淡。NEW バッジの面。グラデーションの右端 */
+    --mol-grad:  linear-gradient(to right, #005396, #00a0dc);          /* ★可視 10 要素。VIEW MORE の円 */
+    --mol-veil:  linear-gradient(to top, rgba(0,83,150,.75), rgba(0,160,220,.75)); /* ★写真の上のヴェール。向きが逆 */
+
+    /* === Neutral（実測） === */
+    --text:        #000000;  /* ★本文は純黒。可視 27 / 39 要素 */
+    --white:       #ffffff;
+    --surface:     #f2f2ef;  /* ★パンくず・サイドナビ。わずかに黄みがかった灰（#f2f2f2 ではない） */
+    --surface-2:   #efefef;
+    --tint:        rgba(0, 83, 150, .05);  /* ブランド色を 5% で敷く面 */
+    --scrim:       rgba(255, 255, 255, .6); /* ヘッダー。背景が透ける */
+
+    /* === Fonts（実測） ===
+       ★実サイトは "Yu Gothic medium" と小文字で書いている。
+         照合は大文字小文字を無視するので実害は無いが、正しくは Medium。 */
+    --font-jp: 'Zen Kaku Gothic New', "Helvetica Neue", "Hiragino Kaku Gothic ProN",
+               "Yu Gothic Medium", "Hiragino Sans", Meiryo, sans-serif;
+    --font-en: Montserrat, 'Zen Kaku Gothic New', "Helvetica Neue",
+               "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", "Hiragino Sans", Meiryo, sans-serif;
+    --font-num: "Noto Sans", sans-serif;   /* ★通し番号専用 */
+
+    /* === Line height（実測） === */
+    --lh-base: 1;      /* ★body の既定。無単位 1 が全子孫に降りる（比率 1.00 が 27 要素・1 未満は 0 件） */
+    --lh-body: 1.7;    /* ★本文。下層で 34 要素 */
+    --lh-hero: 1.46;   /* ヒーローのコピー（43.8px / 30px） */
+    --lh-card: 1.4;    /* リンク・カード。トップ 22 / 下層 26 要素 */
+
+    --container: 1100px;  /* ★トップ 3 / 下層 5 要素で最多 */
+  }
+
+  /* ★html の font-size 宣言は CSS に 1 つも無い＝UA 既定の 16px。
+     1920/1440/1200/1024/834/768/767/375px の 8 幅すべてで 16px 固定。 */
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--text);
+    font-family: var(--font-jp);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: var(--lh-base);   /* ★無単位 1。本文ブロックは必ず上書きする */
+    letter-spacing: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;     /* ★break-all ではない */
+    overflow-x: hidden;
+    min-width: 320px;
+    -webkit-font-smoothing: antialiased;
+    /* ★font-feature-settings は書かない。実測 0 件。
+       Zen Kaku Gothic New は palt のテーブルを持たないので足しても効かない。 */
+  }
+
+  /* ---------- 共通パーツ ---------- */
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .9em;
+         background: rgba(0,0,0,.065); padding: 1px 5px; border-radius: 3px;
+         line-height: 1.6; }
+  b { font-weight: 700; }
+
+  .header { background: var(--scrim); border-bottom: 1px solid var(--surface-2); }
+  .header-in { display: flex; align-items: center; gap: 28px;
+               max-width: var(--container); margin: 0 auto; padding: 16px 24px; }
+  .logo { font-family: var(--font-en); font-weight: 700; font-size: 22px;
+          color: var(--mol-blue); text-decoration: none; line-height: 1.2;
+          letter-spacing: 1px; }
+  .gnav { margin-left: auto; display: flex; gap: 24px; }
+  .gnav a { font-size: 14px; font-weight: 500; line-height: 1.1;
+            color: var(--text); text-decoration: none; }
+
+  .section { padding: 60px 0; }
+  .section-alt { background: var(--surface); }
+  .eyebrow { font-family: var(--font-en); font-size: 13px; font-weight: 600;
+             color: var(--mol-blue); line-height: 1.4; letter-spacing: 1.3px;
+             margin-bottom: 8px; }
+  .section-title { font-size: 30px; font-weight: 500; line-height: var(--lh-hero);
+                   letter-spacing: 2.4px; margin-bottom: 16px; }
+  .section-lead { font-size: 16px; line-height: var(--lh-body); max-width: 72ch; }
+  .note { margin-top: 24px; padding: 16px 20px; background: var(--white);
+          border-left: 4px solid var(--mol-blue); font-size: 14px;
+          line-height: 1.8; }
+
+  /* ---------- 01 Hero ----------
+     ★面は要素自身の background-image に 2 枚重ねる（写真の代役 ＋ 暗いヴェール）。
+       絶対配置の兄弟で写真を敷くと、lint が地色を見つけられない。 */
+  .hero {
+    padding: 120px 0 130px;
+    background-image:
+      linear-gradient(rgba(0,20,40,.22), rgba(0,20,40,.22)),
+      radial-gradient(120% 90% at 65% 18%, #bfe3f4 0%, #4f9ac8 42%, #0d5285 78%, #073a60 100%);
+    background-size: cover;
+  }
+  .hero-in { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+  /* ★実測: 30px / weight 400 / letter-spacing 2.4px（= 0.08em）/ line-height 43.8px（= 1.46）
+          色 #ffffff、text-shadow は none。写真の明度だけで読ませている。 */
+  .hero-copy {
+    color: var(--white);
+    font-size: 30px;
+    font-weight: 400;
+    line-height: var(--lh-hero);
+    letter-spacing: 2.4px;
+    text-shadow: none;
+  }
+  .hero-copy span { display: block; }   /* ★実サイトも <span> で 2 行に手で割っている */
+  .hero-note { margin-top: 28px; color: var(--white); font-size: 14px;
+               line-height: 1.8; max-width: 56ch; }
+  @media (max-width: 834px) { .hero-copy { font-size: 16px; } }
+
+  /* ---------- 02 palt ---------- */
+  .palt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 26px; }
+  .palt-box { background: var(--white); padding: 22px 24px; border: 1px solid #dcdcdc; }
+  .section-alt .palt-box { background: var(--white); }
+  .palt-label { font-family: var(--font-en); font-size: 12px; font-weight: 600;
+                color: var(--mol-blue); line-height: 1.4; margin-bottom: 14px;
+                letter-spacing: 1.2px; }
+  .palt-sample { font-size: 28px; font-weight: 500; line-height: 1.5; }
+  .palt-zen-off { font-feature-settings: normal; }
+  .palt-zen-on  { font-feature-settings: "palt"; }   /* ★1px も変わらない */
+  .palt-hira-off { font-family: "Hiragino Kaku Gothic ProN", sans-serif; font-feature-settings: normal; }
+  .palt-hira-on  { font-family: "Hiragino Kaku Gothic ProN", sans-serif; font-feature-settings: "palt"; }
+
+  .mtable { width: 100%; border-collapse: collapse; margin-top: 22px; font-size: 14px; }
+  .mtable th, .mtable td { border: 1px solid #dcdcdc; padding: 10px 12px;
+                           text-align: left; line-height: 1.6; }
+  .mtable th { background: var(--surface); font-weight: 700; font-size: 13px; }
+  .section-alt .mtable th { background: var(--white); }
+  .mtable .num { font-variant-numeric: tabular-nums; }
+  .mtable tr.hit td { color: var(--mol-blue); font-weight: 700; }
+
+  /* ---------- 03 line-height ---------- */
+  .lh-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 26px; }
+  .lh-box { background: var(--white); padding: 20px 22px; border: 1px solid #dcdcdc; }
+  .lh-bad p { line-height: var(--lh-base); }   /* ★宣言し忘れるとこうなる */
+  .lh-good p { line-height: var(--lh-body); }
+  .lh-box p { font-size: 16px; }
+  .lh-tag { display: inline-block; font-family: var(--font-en); font-size: 11px;
+            font-weight: 600; line-height: 1.4; letter-spacing: 1.1px;
+            padding: 3px 9px; margin-bottom: 12px; color: var(--white); }
+  .lh-bad .lh-tag { background: #000000; }
+  .lh-good .lh-tag { background: var(--mol-blue); }
+
+  /* ---------- 04 Typography ---------- */
+  .type-row { display: flex; gap: 26px; padding: 18px 0; border-bottom: 1px solid #dcdcdc;
+              align-items: baseline; }
+  .type-meta { flex: none; width: 206px; font-size: 11px; line-height: 1.8;
+               color: #555555; font-variant-numeric: tabular-nums; }
+  .type-meta b { display: block; font-size: 12px; color: var(--text); }
+  .type-sample { flex: 1; min-width: 0; }
+  .t-num   { font-family: var(--font-num); font-size: 62px; font-weight: 700;
+             line-height: 1; letter-spacing: 3.1px; }
+  .t-h55   { font-size: 55px; font-weight: 400; line-height: 1.2; letter-spacing: 1.2px; }
+  .t-h45   { font-size: 45px; font-weight: 400; line-height: 1.3; letter-spacing: 1.2px; }
+  .t-hero  { font-size: 30px; font-weight: 500; line-height: var(--lh-hero); letter-spacing: 2.4px; }
+  .t-h20   { font-size: 20px; font-weight: 400; line-height: 1.5; }
+  .t-card  { font-size: 18px; font-weight: 700; line-height: 1.61; letter-spacing: 2.4px; }
+  .t-body  { font-size: 16px; font-weight: 400; line-height: var(--lh-body); }
+  .t-read  { font-size: 16px; font-weight: 400; line-height: var(--lh-body); letter-spacing: 2.24px; }
+  .t-nav   { font-size: 14px; font-weight: 500; line-height: 1.1; }
+  .t-note  { font-size: 12px; font-weight: 400; line-height: 1.6; }
+
+  /* ---------- 05 Components ---------- */
+  .comp-row { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 28px;
+              align-items: center; }
+  /* ★VIEW MORE: 100×100px の円にグラデーション。実測そのまま */
+  .btn-circle {
+    width: 100px; height: 100px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    background-image: var(--mol-grad);
+    color: var(--white);
+    font-family: var(--font-en);
+    font-size: 14px; font-weight: 400;
+    line-height: 18.2px;        /* 1.3 */
+    letter-spacing: 1.4px;      /* 0.1em */
+    text-align: center;
+    border: 0; padding: 0; box-shadow: none;
+    text-decoration: none; cursor: pointer;
+  }
+  /* ★副 CTA: 角丸ゼロのベタ塗り。line-height は body の無単位 1 がそのまま */
+  .btn-flat {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 48px; padding: 14px 28px;
+    background-color: var(--mol-blue); color: var(--white);
+    font-size: 16px; font-weight: 400; line-height: 16px;
+    letter-spacing: normal;
+    border: 0; border-radius: 0; box-shadow: none;
+    text-decoration: none; cursor: pointer;
+  }
+  .badge-new {
+    display: inline-block; padding: 5px 12px;
+    background-color: var(--mol-cyan); color: var(--white);
+    font-family: var(--font-en);
+    font-size: 15px; font-weight: 600; line-height: 15px;
+    border-radius: 0;
+  }
+  .grad-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 26px; }
+  .grad-box { height: 92px; display: flex; align-items: flex-end; padding: 12px 14px;
+              color: var(--white); font-family: var(--font-en); font-size: 12px;
+              font-weight: 600; line-height: 1.4; letter-spacing: 1.1px; }
+  .grad-right { background-image: var(--mol-grad); }
+  .grad-veil  { background-image: var(--mol-veil); }
+
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 28px; }
+  /* ★カードは枠線も影も無い。写真 ＋ テキストだけ */
+  .card { background: transparent; border: 0; box-shadow: none; border-radius: 0; }
+  .card-img { height: 140px;
+              background-image: linear-gradient(135deg, #7fb6d8 0%, #0d5285 100%); }
+  .card-num { font-family: var(--font-num); font-size: 62px; font-weight: 700;
+              line-height: 1; letter-spacing: 3.1px; color: var(--mol-blue);
+              margin-top: 12px; }
+  .card-title { font-size: 18px; font-weight: 700; line-height: 1.61;
+                letter-spacing: 2.4px; margin-top: 8px; }
+  .card-text { font-size: 16px; font-weight: 400; line-height: var(--lh-body);
+               letter-spacing: 2.24px; margin-top: 10px; }
+
+  /* ---------- 06 Color ---------- */
+  .sw-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 26px; }
+  .sw { border: 1px solid #dcdcdc; }
+  .sw-chip { height: 76px; }
+  .sw-meta { padding: 10px 12px; font-size: 12px; line-height: 1.7; background: var(--white); }
+  .sw-meta b { display: block; font-size: 13px; }
+  .sw-meta code { font-size: 11px; }
+
+  /* ---------- 07 Responsive ---------- */
+  .rs-list { margin-top: 24px; }
+  .rs-item { display: flex; gap: 20px; padding: 14px 0; border-bottom: 1px solid #dcdcdc;
+             font-size: 14px; line-height: 1.7; }
+  .rs-item b { flex: none; width: 150px; font-variant-numeric: tabular-nums; }
+
+  .footer { background: var(--surface-2); padding: 40px 0; }
+  .footer p { font-size: 12px; line-height: 1.6; color: #555555; }
+
+  @media (max-width: 840px) {
+    .palt-grid, .lh-grid, .grad-row { grid-template-columns: 1fr; }
+    .card-grid { grid-template-columns: 1fr; }
+    .sw-grid { grid-template-columns: repeat(2, 1fr); }
+    .type-row { flex-direction: column; gap: 10px; }
+    .type-meta { width: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-in">
+    <a class="logo" href="#">MOL</a>
+    <nav class="gnav">
+      <a href="#">企業情報</a>
+      <a href="#">事業紹介</a>
+      <a href="#">ニュースリリース</a>
+      <a href="#">サステナビリティ</a>
+      <a href="#">IR情報</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-in">
+    <h1 class="hero-copy"><span>青い海から人々の毎日を支え、</span><span>豊かな未来をひらきます</span></h1>
+    <p class="hero-note">実測 30px / weight 400 / letter-spacing 2.4px（= 0.08em）/ line-height 43.8px（= 1.46）/ 色 #ffffff。<b>text-shadow は none</b>。矩形 454×75px。834px 以下で 16px に落ちる。</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">01 — OPENTYPE</p>
+    <h2 class="section-title">詰めようとしても、書体が持っていない</h2>
+    <p class="section-lead">実サイトの <code>font-feature-settings</code> は 2 ページとも <b>0 要素</b>。ただし「使っていない」のと「足しても効かない」のは別の話で、このサイトは<b>後者</b>。同一ページ・同一文字列（40px・13 文字）で幅を実測すると、Zen Kaku Gothic New は 3 条件とも <b>560.00px で完全に同じ</b>だった。</p>
+
+    <div class="palt-grid">
+      <div class="palt-box">
+        <p class="palt-label">ZEN KAKU GOTHIC NEW — normal</p>
+        <p class="palt-sample palt-zen-off">日本、「海」をつなぐ。（株）</p>
+      </div>
+      <div class="palt-box">
+        <p class="palt-label">ZEN KAKU GOTHIC NEW — "palt"</p>
+        <p class="palt-sample palt-zen-on">日本、「海」をつなぐ。（株）</p>
+      </div>
+      <div class="palt-box">
+        <p class="palt-label">HIRAGINO KAKU GOTHIC PRON — normal</p>
+        <p class="palt-sample palt-hira-off">日本、「海」をつなぐ。（株）</p>
+      </div>
+      <div class="palt-box">
+        <p class="palt-label">HIRAGINO KAKU GOTHIC PRON — "palt"</p>
+        <p class="palt-sample palt-hira-on">日本、「海」をつなぐ。（株）</p>
+      </div>
+    </div>
+
+    <table class="mtable">
+      <tr><th>書体</th><th class="num">normal</th><th class="num">"palt"</th><th class="num">"halt"</th><th>判定</th></tr>
+      <tr class="hit"><td>Zen Kaku Gothic New</td><td class="num">560.00px</td><td class="num">560.00px</td><td class="num">560.00px</td><td>テーブルを持たない（±0%）</td></tr>
+      <tr><td>Hiragino Kaku Gothic ProN</td><td class="num">518.41px</td><td class="num">419.33px</td><td class="num">438.41px</td><td>効く（−19.1%）</td></tr>
+    </table>
+
+    <div class="note">同じページで比較しているので測り方の問題ではない。<b>Zen Kaku Gothic New を使う限り <code>palt</code> は無意味</b>で、詰めたければ <code>letter-spacing</code> に負値を当てるしかない。もっともこのサイトは逆に、<b>0.08〜0.14em の正の字間で空ける側</b>の設計になっている。</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <p class="eyebrow">02 — LINE HEIGHT</p>
+    <h2 class="section-title">body の無単位 1 が全子孫に降りる</h2>
+    <p class="section-lead"><code>body { line-height: 1 }</code> と書かれており、実測の行間比は <b>1.00 が 27 要素・1 未満は 1 件も無い</b>（絶対値 px や <code>em</code> ではなく無単位の 1）。各要素が宣言し直さないと、16px の文字が 16px の行で組まれる。</p>
+
+    <div class="lh-grid">
+      <div class="lh-box lh-bad">
+        <span class="lh-tag">宣言し忘れ — line-height: 1</span>
+        <p>商船三井は 1884 年の創業以来、海を舞台に人々の暮らしを支えてきました。ドライバルク船、タンカー、LNG 船、自動車船など多様な船隊を運航し、世界の物流を結んでいます。</p>
+      </div>
+      <div class="lh-box lh-good">
+        <span class="lh-tag">実装値 — line-height: 1.7</span>
+        <p>商船三井は 1884 年の創業以来、海を舞台に人々の暮らしを支えてきました。ドライバルク船、タンカー、LNG 船、自動車船など多様な船隊を運航し、世界の物流を結んでいます。</p>
+      </div>
+    </div>
+
+    <div class="note"><b>本文ブロックには必ず <code>line-height: 1.7</code> を書く。</b>実サイトの下層ページでは 1.7 が 34 要素を占める。リンク・カードは 1.4、ナビは 1.1。</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">03 — TYPOGRAPHY</p>
+    <h2 class="section-title">ウェイトは 400 / 500 / 700 の 3 段だけ</h2>
+    <p class="section-lead">Google Fonts で読んでいる Zen Kaku Gothic New は <code>wght@400;500;700</code> の 3 本。<b>600 を和文に当てると 500 か 700 に解決される</b>。実測の 600（10 要素）はすべて Montserrat スタックのラテン文字（<code>NEWS RELEASE</code> <code>STATEMENT</code> <code>NEW</code>）。</p>
+
+    <div class="type-row">
+      <div class="type-meta"><b>通し番号</b>Noto Sans / 62px / 700<br>ls 3.1px（0.05em）/ lh 1.0</div>
+      <div class="type-sample"><p class="t-num">013</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>下層の大見出し</b>55px / 400 / ls 1.2px<br>lh 1.2</div>
+      <div class="type-sample"><p class="t-h55">社長メッセージ</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>下層のリード</b>45px / 400 / ls 1.2px<br>可視 7 要素</div>
+      <div class="type-sample"><p class="t-h45">私の信念に基づき長期計画を着実に</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>ヒーロー／セクション</b>30px / 400〜500<br>ls 2.4px（0.08em）/ lh 1.46</div>
+      <div class="type-sample"><p class="t-hero">回収するのは、廃棄物ではなく未来へのヒント。</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>中見出し</b>20px / 400 / ls normal<br>lh 1.5</div>
+      <div class="type-sample"><p class="t-h20">持分法適用関連会社の業績について</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>カード見出し</b>18px / 700<br>ls 2.4px（0.13em）/ lh 1.61</div>
+      <div class="type-sample"><p class="t-card">マイクロプラスチック回収装置</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>本文</b>16px / 400 / ls normal<br>lh 1.7 — 最多</div>
+      <div class="type-sample"><p class="t-body">地球を舞台に、多彩な輸送ニーズへ応えていきます。</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>説明文（BAM）</b>16px / 400<br>ls 2.24px（0.14em）— 最も広い</div>
+      <div class="type-sample"><p class="t-read">航海中にマイクロプラスチックを回収し、海の実態を知る。</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>ナビ</b>14px / 500 / ls normal<br>lh 1.1</div>
+      <div class="type-sample"><p class="t-nav">企業情報　事業紹介　ニュースリリース</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>注記・フッター</b>12px / 400<br>lh 1.6</div>
+      <div class="type-sample"><p class="t-note">海の惑星とともに、次へ。</p></div>
+    </div>
+
+    <div class="note"><code>letter-spacing</code> は<b>各要素が <code>em</code> を持つ型</b>（継承ではない）。同じ <code>2.4px</code> が 30px では 0.08em、18px では 0.13em になる。<b>px をそのまま他のサイズへ移植しない。</b></div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <p class="eyebrow">04 — COMPONENTS</p>
+    <h2 class="section-title">角丸は円だけ。影は 1 つも無い</h2>
+    <p class="section-lead">実測の <code>border-radius</code> は <b><code>50%</code> の 22 要素のみ</b>（円形ボタンとカルーセルのドット）。四角い面には 1 つも角丸が無い。<code>box-shadow</code> は 2 ページとも <b>0 種</b>。</p>
+
+    <div class="comp-row">
+      <a class="btn-circle" href="#">VIEW MORE</a>
+      <a class="btn-flat" href="#">NEWS RELEASE 一覧へ</a>
+      <span class="badge-new">NEW</span>
+    </div>
+
+    <div class="grad-row">
+      <div class="grad-box grad-right">to right — #005396 → #00a0dc（ボタンの面）</div>
+      <div class="grad-box grad-veil">to top — rgba(0,83,150,.75) → rgba(0,160,220,.75)（写真のヴェール）</div>
+    </div>
+
+    <div class="note"><b>CTA は 2 種類しかない。</b>円形グラデーション（100×100px / 14px / ls 0.1em）と、角丸ゼロのベタ塗り（#005396 / 16px）。<b>この 2 つを混ぜない</b>——円にベタ塗り、四角にグラデーションを当てない。グラデーションの向きは面が <code>to right</code>、ヴェールが <code>to top</code> で逆になる。</div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-img"></div>
+        <p class="card-num">013</p>
+        <p class="card-title">マイクロプラスチック回収装置</p>
+        <p class="card-text">航海中にマイクロプラスチックを回収し、海の実態を知る。</p>
+      </div>
+      <div class="card">
+        <div class="card-img"></div>
+        <p class="card-num">012</p>
+        <p class="card-title">DarWINプロジェクト</p>
+        <p class="card-text">データと技術で効率運航を追求する。ひとつひとつは小さくても。</p>
+      </div>
+      <div class="card">
+        <div class="card-img"></div>
+        <p class="card-num">011</p>
+        <p class="card-title">大型アンモニア輸送船</p>
+        <p class="card-text">船の世界を「見て」「触れて」「遊んで」体験できる場をつくる。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">05 — COLOR</p>
+    <h2 class="section-title">青 2 色。濃い方が面、淡い方がアクセント</h2>
+    <p class="section-lead">CSS Custom Properties は <b>1 個も無い</b>（<code>total: 0</code> / 読めなかったシート 0 枚で確定）。色もサイズもすべてハードコードされている。</p>
+
+    <div class="sw-grid">
+      <div class="sw"><div class="sw-chip" style="background:#005396"></div>
+        <div class="sw-meta"><b>MOL Blue</b><code>#005396</code><br>面 11 要素 / 文字 4〜12 要素</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#00a0dc"></div>
+        <div class="sw-meta"><b>MOL Cyan</b><code>#00a0dc</code><br>NEW バッジ / グラデ右端</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#000000"></div>
+        <div class="sw-meta"><b>Text Primary</b><code>#000000</code><br>可視 27 / 39 要素（純黒）</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#f2f2ef;border-bottom:1px solid #dcdcdc"></div>
+        <div class="sw-meta"><b>Surface Warm</b><code>#f2f2ef</code><br>やや黄みがかった灰</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#efefef;border-bottom:1px solid #dcdcdc"></div>
+        <div class="sw-meta"><b>Surface Gray</b><code>#efefef</code><br>フッター近辺</div></div>
+      <div class="sw"><div class="sw-chip" style="background:rgba(0,83,150,.05);border-bottom:1px solid #dcdcdc"></div>
+        <div class="sw-meta"><b>Tint Blue</b><code>rgba(0,83,150,.05)</code><br>下層の図版ブロック</div></div>
+      <div class="sw"><div class="sw-chip" style="background:rgba(255,255,255,.6);border:1px solid #dcdcdc"></div>
+        <div class="sw-meta"><b>Scrim White</b><code>rgba(255,255,255,.6)</code><br>ヘッダー（背景が透ける）</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#ffffff;border:1px solid #dcdcdc"></div>
+        <div class="sw-meta"><b>Background</b><code>#ffffff</code><br>根拠 body</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <p class="eyebrow">06 — RESPONSIVE</p>
+    <h2 class="section-title">ルートは 8 幅すべてで 16px 固定</h2>
+
+    <div class="rs-list">
+      <div class="rs-item"><b>html</b><span><code>font-size</code> の宣言が CSS に 1 つも無い＝<b>UA 既定の 16px</b>。1920 / 1440 / 1200 / 1024 / 834 / 768 / 767 / 375px のすべてで 16px から動かない</span></div>
+      <div class="rs-item"><b>body</b><span>同じく 16px 固定。<code>line-height</code> は無単位 1、<code>letter-spacing</code> は normal</span></div>
+      <div class="rs-item"><b>≤ 840px</b><span><b>主たる境目</b>。CSS 全文でトップ 64 / 下層 142 件。ヒーローのコピーは 834px 以下で 30px → 16px</span></div>
+      <div class="rs-item"><b>≥ 840px</b><span>トップ 26 / 下層 68 件</span></div>
+      <div class="rs-item"><b>≤ 520px</b><span>トップ 22 / 下層 27 件</span></div>
+      <div class="rs-item"><b>≥ 1366px / ≥ 1910px</b><span>大画面の微調整</span></div>
+      <div class="rs-item"><b>一部の見出し</b><span><code>clamp(22px, 2.5vw, 28px)</code> / <code>clamp(18px, 2.18vw, 24px)</code> / <code>clamp(16px, 1.8vw, 20px)</code> を <code>!important</code> 付きで当てている</span></div>
+    </div>
+
+    <div class="note">コンテナは <b>1100px</b>（トップ 3 / 下層 5 要素で最多）。<code>gap</code> の宣言は 0 件で、余白は <code>margin</code> / <code>padding</code> で組む。<code>body { overflow-x: hidden; min-width: 320px }</code> で横スクロールを殺してから全面写真を敷いている。</div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <p>Design System Preview — 商船三井（MOL / Mitsui O.S.K. Lines）／ 実測日 2026-11-06 ／ 対象 www.mol.co.jp, /corporate/message/</p>
+  </div>
+</footer>
+
+</body>
+</html>

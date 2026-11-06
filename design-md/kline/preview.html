@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 川崎汽船（"K" LINE / Kawasaki Kisen Kaisha）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- ★実サイトが読み込む Web フォントは欧文の Raleway（wght@400;700;900）だけ。
+     和文は 1 本も読み込まない（フォントファイルの要求は全ページで 1 件）。
+     Heebo / Montserrat 800 / FontAwesome は宣言だけで可視 0 要素なので、ここでも読まない。 -->
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  /* ===========================================================
+     川崎汽船 実測プレビュー（2026-11-06）
+     対象: https://www.kline.co.jp/ja/index.html , /ja/corporate.html
+
+     ★実サイトの CSS 変数は :root ではなく body に宣言されている。
+       getComputedStyle(document.documentElement) では 0 個に見えるので、
+       「トークンが無い」と読まないこと（下の body の宣言が実装そのまま）。
+       色・サイズのトークンは無く、幅の 4 変数だけ。
+     =========================================================== */
+
+  /* ★実サイトは和文の Web フォントを読み込まず、OS 同梱の游ゴシック Medium を
+     別名で呼ぶ @font-face を 1 件だけ持つ:
+       @font-face { font-family: YuGothicM; src: local("Yu Gothic Medium") }
+     url() を持たないのでダウンロードは起きず、macOS では
+     document.fonts 上 status: error になる（Windows でだけ当たる＝これが正常）。
+     このプレビューでは macOS で error になる宣言は置かず、
+     スタックに YuGothicM の名前だけ残している。設計の説明は 02 の節を参照。 */
+
+  /* ★html { font-size: 17px }。16px でも 10px でも 62.5% でもない。
+     1920/1440/1200/1024/834/768/767/375px の 8 幅すべてで 17px 固定。
+     CSS には html { font-size: 14px } とコメントアウトされた 14px も残っており、
+     17px はあとから上書きされた値。 */
+  html { font-size: 17px; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    /* ★並び順が設計の本体。YuGothicM（別名）→ "游ゴシック Medium" →
+       YuGothic → "Yu Gothic" の順で、Medium を Regular より前に置く。
+       これで macOS は 3〜4 番目の Regular、Windows は 1〜2 番目の Medium に当たる。
+       別名を後ろに置くと Windows で Regular に当たって細く出る。 */
+    font-family: YuGothicM, "游ゴシック Medium", YuGothic, "Yu Gothic",
+                 -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+                 "Hiragino Kaku Gothic ProN", "Hiragino Kaku Gothic",
+                 "メイリオ", Meiryo, sans-serif;
+    font-size: inherit;          /* ★html の 17px がそのまま降りる */
+    font-weight: 400;
+    line-height: 1.75;           /* ★可視 211 / 133 要素。body に 1 回だけ書いて継承させる */
+    letter-spacing: normal;      /* ★見出しは normal。字間はメニューとフッターだけ */
+    color: #000000;              /* ★純黒。可視 112 / 80 要素 */
+    background: #ffffff;
+    word-break: normal;          /* ★break-all も auto-phrase も使わない */
+    -webkit-font-smoothing: antialiased;
+    /* ★font-feature-settings は書かない。実測 0 件。
+       ただし游ゴシック Medium は palt を「持っている」（−18.2%）ので、
+       足すと既存ページと別物になる。 */
+
+    /* ★CSS 変数は :root ではなく body に宣言されている（実装そのまま） */
+    --width-content-base:   1.00;     /* 幅の倍率 */
+    --width-content-area:   1180px;   /* コンテンツ幅 */
+    --width-content-margin: 10px;     /* カラム間の余白 */
+    --width-parts-margin:   10px;
+  }
+
+  /* ★ブレークポイントごとに倍率を下げ、コンテンツ幅を縮める */
+  @media (max-width: 1220px) {
+    body { --width-content-base: 0.95; --width-content-area: calc(1180px * 0.95); }
+  }
+  @media (max-width: 1024px) {
+    body { --width-content-base: 0.90; --width-content-area: calc(1180px * 0.9); }
+  }
+  @media (max-width: 767px) {
+    body { --width-content-base: 1.00; --width-content-area: 500px; --width-content-margin: 6px; }
+  }
+
+  /* ---------- 共通パーツ ---------- */
+  .wrap { max-width: calc(var(--width-content-area) + 40px);
+          margin: 0 auto; padding: 0 20px; }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .9em;
+         background: #f1f1f1; padding: 1px 5px; line-height: 1.6; }
+  b { font-weight: 700; }
+
+  .header { background: #ffffff; border-bottom: 1px solid #f1f1f1; }
+  .header-in { display: flex; align-items: center; gap: 0;
+               max-width: 1382px; margin: 0 auto; }
+  .logo { display: inline-flex; align-items: center; padding: 0 28px;
+          font-family: Raleway, sans-serif; font-weight: 900; font-size: 26px;
+          color: #de012d; text-decoration: none; line-height: 1.3;
+          letter-spacing: 1.3px; }
+  .gnav { margin-left: auto; display: flex; }
+  .gnav a { padding: 24px 18px; font-size: 15px; font-weight: 700;
+            line-height: 1.25; letter-spacing: 0.75px;   /* 0.05em */
+            color: #000000; text-decoration: none; }
+  .lang { display: flex; }
+  .lang a { display: inline-flex; align-items: flex-start; justify-content: center;
+            padding: 24px 14px 40px; background: #000000; color: #ffffff;
+            font-size: 10px; font-weight: 700; line-height: 17.5px;   /* 1.75 */
+            letter-spacing: 0.5px;                                     /* 0.05em */
+            text-decoration: none; }
+  .lang a.alt { background: #cccccc; color: #000000; }
+
+  .section { padding: 56px 0; }
+  .section-alt { background: #f1f1f1; }
+  .eyebrow { font-family: Raleway, sans-serif; font-size: 13px; font-weight: 700;
+             color: #de012d; line-height: 1.3; letter-spacing: 2.3px;
+             margin-bottom: 8px; }
+  .section-title { font-size: 26px; font-weight: 700; line-height: 1.3;
+                   letter-spacing: normal; margin-bottom: 14px; }
+  .section-lead { font-size: 17px; line-height: 1.75; max-width: 70ch; }
+  .note { margin-top: 24px; padding: 16px 20px; background: #ffffff;
+          border-left: 4px solid #de012d; font-size: 15px; line-height: 1.75; }
+  .section-alt .note { background: #ffffff; }
+
+  /* ---------- 01 Hero ----------
+     ★実サイトのヒーローは大見出しごと JPG（実寸 6000×2813px）に焼き込まれており、
+       DOM にその文字は 1 つも無い。しかも alt=""。
+       ここでは「本来テキストで組むとどうなるか」を実テキストで再現する。
+       面は要素自身の background-image に 2 枚重ねる（写真の代役 ＋ 暗いヴェール）。 */
+  .hero {
+    padding: 110px 0 120px;
+    background-image:
+      linear-gradient(rgba(0,25,45,.18), rgba(0,25,45,.28)),
+      radial-gradient(130% 100% at 50% 8%, #e3f1f6 0%, #a9ccd9 30%, #6b9bb2 60%, #35657e 100%);
+    background-size: cover;
+  }
+  .hero-in { max-width: calc(var(--width-content-area) + 40px); margin: 0 auto; padding: 0 20px; }
+  .hero-copy { color: #ffffff; font-size: 54px; font-weight: 400;
+               line-height: 1.4; letter-spacing: normal; }
+  .hero-sub { margin-top: 26px; color: #ffffff; font-size: 17px;
+              line-height: 1.75; max-width: 46ch; }
+  .hero-sub code { background: rgba(255, 255, 255, .92); color: #000000; }
+  .hero-warn { margin-top: 28px; display: inline-block; padding: 10px 18px;
+               background: #de012d; color: #ffffff; font-size: 14px;
+               font-weight: 700; line-height: 1.6; }
+  @media (max-width: 767px) { .hero-copy { font-size: 30px; } }
+
+  /* ---------- 02 Root 17px ---------- */
+  .rem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 26px; }
+  .rem-box { background: #ffffff; border: 1px solid #dddddd; padding: 20px 22px; }
+  .section-alt .rem-box { background: #ffffff; }
+  .rem-tag { display: inline-block; font-family: Raleway, sans-serif; font-size: 11px;
+             font-weight: 700; line-height: 1.4; letter-spacing: 1.1px;
+             padding: 3px 9px; margin-bottom: 12px; color: #ffffff; }
+  .rem-bad .rem-tag { background: #000000; }
+  .rem-good .rem-tag { background: #de012d; }
+  .rem-sample-bad { font-size: 2rem; line-height: 1.75; }
+  .rem-sample-good { font-size: 2rem; line-height: 1.75; }
+  .rem-bad { --dummy: 0; }
+  /* 「16px だと思って 2rem と書いた」場合の見え方を並べるため、片方だけ 16px に落とす */
+  .rem-bad .rem-sample-bad { font-size: 32px; }   /* 16px 前提の 2rem */
+  .rem-good .rem-sample-good { font-size: 2rem; } /* 実際は 17 × 2 = 34px */
+
+  .mtable { width: 100%; border-collapse: collapse; margin-top: 22px; font-size: 15px; }
+  .mtable th, .mtable td { border: 1px solid #dddddd; padding: 10px 12px;
+                           text-align: left; line-height: 1.75; }
+  .mtable th { background: #f1f1f1; font-weight: 700; font-size: 14px; }
+  .section-alt .mtable th { background: #f3f3f3; }
+  .mtable .num { font-variant-numeric: tabular-nums; }
+  .mtable tr.hit td { color: #de012d; font-weight: 700; }
+
+  /* ---------- 03 Font stack ---------- */
+  .stack-list { margin-top: 24px; counter-reset: s; }
+  .stack-item { display: flex; gap: 18px; padding: 13px 0; border-bottom: 1px solid #dddddd;
+                font-size: 15px; line-height: 1.75; align-items: baseline; }
+  .stack-item::before { counter-increment: s; content: counter(s);
+                        flex: none; width: 30px; height: 30px; display: inline-flex;
+                        align-items: center; justify-content: center;
+                        background: #f1f1f1; font-family: Raleway, sans-serif;
+                        font-size: 13px; font-weight: 700; line-height: 1; }
+  .stack-item.key::before { background: #de012d; color: #ffffff; }
+  .stack-name { flex: none; width: 230px; font-weight: 700; }
+
+  /* ---------- 04 Typography ---------- */
+  .type-row { display: flex; gap: 26px; padding: 17px 0; border-bottom: 1px solid #dddddd;
+              align-items: baseline; }
+  .type-meta { flex: none; width: 204px; font-size: 12px; line-height: 1.75;
+               color: #666666; font-variant-numeric: tabular-nums; }
+  .type-meta b { display: block; font-size: 13px; color: #000000; }
+  .type-sample { flex: 1; min-width: 0; }
+  .t-en46  { font-family: Raleway, sans-serif; font-size: 46px; font-weight: 700;
+             line-height: 1.3; letter-spacing: 2.3px; }
+  .t-h36   { font-size: 36px; font-weight: 700; line-height: 1.25; }
+  .t-en26  { font-family: Raleway, sans-serif; font-size: 26px; font-weight: 700;
+             line-height: 1.3; letter-spacing: 1.3px; }
+  .t-menu  { font-size: 20px; font-weight: 400; line-height: 1.75; }
+  .t-h18   { font-size: 18px; font-weight: 700; line-height: 1.25; letter-spacing: 0.5px; }
+  .t-body  { font-size: 17px; font-weight: 400; line-height: 1.75; }
+  .t-news  { font-size: 16px; font-weight: 700; line-height: 1.75; }
+  .t-m15   { font-size: 15px; font-weight: 400; line-height: 1.75; letter-spacing: 0.375px; }
+  .t-m14   { font-size: 14px; font-weight: 400; line-height: 1.75; letter-spacing: 0.35px; }
+  .t-m13   { font-size: 13px; font-weight: 400; line-height: 1.75; letter-spacing: 0.65px; }
+
+  /* ---------- 05 Components ---------- */
+  .comp-row { display: flex; flex-wrap: wrap; gap: 22px; margin-top: 26px; align-items: center; }
+  .btn-more {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 10px 30px;
+    background-color: #de012d; color: #ffffff;
+    font-family: Raleway, sans-serif;
+    font-size: 16px; font-weight: 700; line-height: 28px;   /* 1.75 */
+    letter-spacing: normal;
+    border: 0; border-radius: 0; box-shadow: none;
+    text-decoration: none; cursor: pointer;
+  }
+  .btn-sub {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 48px; padding: 12px 26px;
+    background-color: #eeeeee; color: #000000;
+    font-size: 15px; font-weight: 400; line-height: 1.75;
+    letter-spacing: 0.375px;
+    border: 0; border-radius: 0; box-shadow: none;
+    text-decoration: none; cursor: pointer;
+  }
+  .label-pickup {
+    display: inline-block; padding: 6px 16px;
+    background: #de012d; color: #ffffff;
+    font-family: Raleway, sans-serif;
+    font-size: 16px; font-weight: 700; line-height: 1.3; letter-spacing: 1.3px;
+    border-radius: 0;
+  }
+
+  .biz-grid { display: grid; grid-template-columns: repeat(3, 1fr);
+              gap: var(--width-content-margin); margin-top: 26px; }
+  /* ★事業メニューは写真の上に白を 40% で敷き、その上に 20px の文字（可視 26 要素） */
+  .biz {
+    display: flex; align-items: flex-end; min-height: 128px; padding: 16px 18px;
+    background-image:
+      linear-gradient(rgba(255,255,255,.4), rgba(255,255,255,.4)),
+      linear-gradient(135deg, #8fb3c4 0%, #35657e 100%);
+    color: #000000; font-size: 20px; font-weight: 400; line-height: 1.75;
+    text-decoration: none; border-radius: 0;
+  }
+  /* ★影は 1 種類だけ、しかも 2 要素。色は黒ではなく紺の 40% */
+  .biz-shadow { box-shadow: rgba(33, 59, 119, 0.4) 0 0 4px 0; }
+
+  .news-list { margin-top: 26px; }
+  .news-item { display: flex; gap: 22px; padding: 15px 0; border-bottom: 1px solid #dddddd;
+               align-items: baseline; }
+  .news-date { flex: none; width: 130px; font-size: 15px; color: #666666;
+               line-height: 1.75; font-variant-numeric: tabular-nums; }
+  .news-cat { flex: none; width: 108px; }
+  .news-cat span { display: inline-block; padding: 2px 10px; background: #de012d;
+                   color: #ffffff; font-size: 12px; font-weight: 700; line-height: 1.75; }
+  .news-title { flex: 1; min-width: 0; font-size: 16px; font-weight: 700; line-height: 1.75; }
+
+  /* ---------- 06 Color ---------- */
+  .sw-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 26px; }
+  .sw { border: 1px solid #dddddd; }
+  .sw-chip { height: 76px; }
+  .sw-meta { padding: 10px 12px; font-size: 13px; line-height: 1.75; background: #ffffff; }
+  .sw-meta b { display: block; font-size: 14px; }
+  .sw-meta code { font-size: 12px; }
+
+  /* ---------- 07 Responsive ---------- */
+  .rs-list { margin-top: 24px; }
+  .rs-item { display: flex; gap: 20px; padding: 14px 0; border-bottom: 1px solid #dddddd;
+             font-size: 15px; line-height: 1.75; }
+  .rs-item b { flex: none; width: 160px; font-variant-numeric: tabular-nums; }
+
+  .footer { background: #000000; padding: 38px 0; }
+  .footer p { font-size: 13px; line-height: 1.75; color: #cccccc; letter-spacing: 0.65px; }
+
+  @media (max-width: 767px) {
+    .rem-grid { grid-template-columns: 1fr; }
+    .biz-grid { grid-template-columns: 1fr; }
+    .sw-grid { grid-template-columns: repeat(2, 1fr); }
+    .type-row, .stack-item, .news-item { flex-direction: column; gap: 8px; }
+    .type-meta, .stack-name, .news-date, .news-cat { width: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-in">
+    <a class="logo" href="#">"K" LINE</a>
+    <nav class="gnav">
+      <a href="#">ニュースリリース</a>
+      <a href="#">事業紹介</a>
+      <a href="#">株主・投資家情報</a>
+      <a href="#">サステナビリティ</a>
+      <a href="#">企業情報</a>
+      <a href="#">採用情報</a>
+    </nav>
+    <div class="lang">
+      <a href="#">JAPANESE</a>
+      <a class="alt" href="#">ENGLISH</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-in">
+    <h1 class="hero-copy">海をつなぐ。信頼でつなぐ、ライフライン。</h1>
+    <p class="hero-sub">実サイトではこの一行が <code>mv_pc.jpg</code>（実寸 6000×2813px を 1440×675px で表示）に焼き込まれており、DOM にはテキストとして存在しない。</p>
+    <p class="hero-warn">しかも alt="" — 同じスライダーの他のカットには日本語の alt があるのに、1 枚目だけ抜けている</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">01 — ROOT</p>
+    <h2 class="section-title">1rem = 17px。16px で計算すると全部ずれる</h2>
+    <p class="section-lead"><code>html { font-size: 17px }</code>。1920 / 1440 / 1200 / 1024 / 834 / 768 / 767 / 375px の <b>8 幅すべてで 17px から 1px も動かない</b>。<code>body { font-size: inherit }</code> でそのまま降り、<code>body &gt; * { font-size: 1rem }</code> が受ける。16px でも 10px でも <code>62.5%</code> でもない。</p>
+
+    <div class="rem-grid">
+      <div class="rem-box rem-bad">
+        <span class="rem-tag">16px 前提で 2rem と書いた場合 — 32px</span>
+        <p class="rem-sample-bad">海をつなぐ</p>
+      </div>
+      <div class="rem-box rem-good">
+        <span class="rem-tag">実装値 — 2rem = 34px</span>
+        <p class="rem-sample-good">海をつなぐ</p>
+      </div>
+    </div>
+
+    <table class="mtable">
+      <tr><th>宣言</th><th class="num">17px ルート</th><th class="num">16px ルート（誤）</th><th>差</th></tr>
+      <tr class="hit"><td><code>1rem</code></td><td class="num">17px</td><td class="num">16px</td><td>+1px</td></tr>
+      <tr><td><code>calc(1rem - 2px)</code></td><td class="num">15px</td><td class="num">14px</td><td>+1px</td></tr>
+      <tr><td><code>2rem</code></td><td class="num">34px</td><td class="num">32px</td><td>+2px</td></tr>
+      <tr><td><code>3rem</code></td><td class="num">51px</td><td class="num">48px</td><td>+3px</td></tr>
+    </table>
+
+    <div class="note">CSS には <code>html { font-size: 14px }</code> と、<b>コメントアウトされた <code>font-size: 14px</code></b> も残っている。17px はあとから上書きされた値。サイズの可変は <code>calc(1rem - 2px)</code> のような差分指定だけで、流体も <code>clamp()</code> も使っていない。</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <p class="eyebrow">02 — FONT STACK</p>
+    <h2 class="section-title">和文の Web フォントを 1 本も読まない</h2>
+    <p class="section-lead"><code>@font-face</code> は <b>1 件だけ</b>で、中身は <code>src: local("Yu Gothic Medium")</code>。フォントファイルの要求は全ページで <b>1 件</b>（欧文の Raleway のみ）。macOS では <code>document.fonts</code> の status が <code>error</code> になるが、<b>これは壊れているのではなく、Windows でだけ当たる正常な状態</b>。</p>
+
+    <div class="stack-list">
+      <div class="stack-item key"><span class="stack-name">YuGothicM</span><span><code>@font-face</code> で作った別名。中身は <code>local("Yu Gothic Medium")</code>。<b>Windows はここで当たる</b></span></div>
+      <div class="stack-item key"><span class="stack-name">"游ゴシック Medium"</span><span>日本語環境名。<b>Medium を Regular より前に置くのがこの設計の要</b></span></div>
+      <div class="stack-item"><span class="stack-name">YuGothic</span><span>Regular。macOS はここで当たる</span></div>
+      <div class="stack-item"><span class="stack-name">"Yu Gothic"</span><span>英語環境名の Regular</span></div>
+      <div class="stack-item"><span class="stack-name">-apple-system<br>BlinkMacSystemFont</span><span>システム書体</span></div>
+      <div class="stack-item"><span class="stack-name">"Helvetica Neue"</span><span>欧文の受け皿</span></div>
+      <div class="stack-item"><span class="stack-name">"Hiragino Kaku Gothic ProN"<br>"Hiragino Kaku Gothic"</span><span>ヒラギノ</span></div>
+      <div class="stack-item"><span class="stack-name">"メイリオ" / Meiryo<br>sans-serif</span><span>最終の受け皿</span></div>
+    </div>
+
+    <div class="note"><b>別名を後ろに置くと一生使われない。</b><code>… 游ゴシック, YuGothic, YuGothicM, …</code> のように後ろに置くと、Windows で手前の <code>游ゴシック</code>（Regular）に当たって細く出る。<b>順番を入れ替えないこと。</b></div>
+
+    <table class="mtable">
+      <tr><th>書体</th><th class="num">normal</th><th class="num">"palt"</th><th class="num">"halt"</th><th>判定</th></tr>
+      <tr class="hit"><td>游ゴシック Medium（このサイト）</td><td class="num">516.41px</td><td class="num">422.48px</td><td class="num">436.41px</td><td><b>効く（−18.2%）のに実測 0 件</b></td></tr>
+    </table>
+
+    <div class="note">実測 <code>font-feature-settings</code> は 2 ページとも <b>0 要素</b>。だがこの書体は <code>palt</code> を<b>持っている</b>。つまり「足しても効かない」のではなく「<b>効くのに使っていない</b>」。後から足すと既存ページと並べたときに明らかに別物になる。</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">03 — TYPOGRAPHY</p>
+    <h2 class="section-title">ウェイトは 400 と 700 の 2 段だけ</h2>
+    <p class="section-lead">実測はトップが 131 : 128、下層が 67 : 81。<b>500 も 600 も 1 要素も無い</b>。游ゴシック Medium は実体が Medium 1 本なので、700 はブラウザの合成太字になる。</p>
+
+    <div class="type-row">
+      <div class="type-meta"><b>セクション見出し（英字）</b>Raleway / 46px / 700<br>ls 2.3px / lh 1.3</div>
+      <div class="type-sample"><p class="t-en46">NEWS</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>下層の大見出し</b>36px / 700 / ls normal<br>lh 1.25</div>
+      <div class="type-sample"><p class="t-h36">企業情報</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>セクション見出し（小）</b>Raleway / 26px / 700<br>ls 1.3px / lh 1.3</div>
+      <div class="type-sample"><p class="t-en26">PICKUP</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>事業メニュー</b>20px / 400 / ls normal<br>lh 1.75 — 31 要素</div>
+      <div class="type-sample"><p class="t-menu">燃料戦略事業　コンテナ船事業　物流事業</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>中見出し</b>18px / 700 / ls 0.5px<br>lh 1.25 — 下層 16 要素</div>
+      <div class="type-sample"><p class="t-h18">企業理念　社長ごあいさつ　会社概要</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>ルート／本文</b>17px / 400 / ls normal<br>lh 1.75（= 29.75px）</div>
+      <div class="type-sample"><p class="t-body">当社がこれまでに歩んできた歴史と、将来に向けた取り組みをご紹介します。</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>ニュース見出し</b>16px / 700 / ls normal<br>lh 1.75 — 34 要素</div>
+      <div class="type-sample"><p class="t-news">海運PRキャンペーン「“せかい”を、うんと身近に。」実施のお知らせ</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>メニュー（大）</b>15px / 400<br>ls 0.375px（0.025em）— 56 要素で最多</div>
+      <div class="type-sample"><p class="t-m15">ドライバルク船事業　自動車船事業　LNG船事業</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>メニュー（小）</b>14px / 400<br>ls 0.35px（0.025em）— 49〜51 要素</div>
+      <div class="type-sample"><p class="t-m14">ドライバルク船事業　自動車船事業　LNG船事業</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>フッター・パンくず</b>13px / 400<br>ls 0.65px（0.05em）</div>
+      <div class="type-sample"><p class="t-m13">お問い合わせ　個人情報保護について　ご利用にあたって</p></div>
+    </div>
+
+    <div class="note"><code>0.375px</code> と <code>0.35px</code> が同数（50 / 49 要素）並ぶのは、<b>同じ 0.025em が 15px と 14px に当たっている</b>から。<b>継承ではないので px をそのまま移植しない。</b>そして<b>見出し（h2 / h3）は <code>letter-spacing: normal</code></b>——字間を当てるのはメニューとフッターだけ。</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <p class="eyebrow">04 — COMPONENTS</p>
+    <h2 class="section-title">角丸ゼロ。影は 1 種類を 2 要素だけ</h2>
+    <p class="section-lead">実測の <code>border-radius</code> は下層の <code>JA/EN</code> トグル（<code>50px</code>）が <b>1 要素だけ</b>。それ以外は 0。影は <code>rgba(33, 59, 119, 0.4) 0 0 4px 0</code> が <b>2 要素だけ</b>で、<b>色は黒ではなく紺の 40%</b>。</p>
+
+    <div class="comp-row">
+      <a class="btn-more" href="#">MORE</a>
+      <a class="btn-sub" href="#">もっと見る</a>
+      <span class="label-pickup">PICKUP</span>
+    </div>
+
+    <div class="biz-grid">
+      <a class="biz biz-shadow" href="#">ドライバルク船事業</a>
+      <a class="biz biz-shadow" href="#">燃料戦略事業</a>
+      <a class="biz" href="#">コンテナ船事業</a>
+    </div>
+
+    <div class="note">事業メニューは<b>写真の上に <code>rgba(255,255,255,.4)</code> を敷き</b>、その上に 20px の文字を置く（可視 26 要素）。影が付いているのは左の 2 枚だけ——実サイトでもそうなっている。</div>
+
+    <div class="news-list">
+      <div class="news-item">
+        <span class="news-date">2026年11月05日</span>
+        <span class="news-cat"><span>お知らせ</span></span>
+        <span class="news-title">中期経営計画（2027－2031年度）を策定しました</span>
+      </div>
+      <div class="news-item">
+        <span class="news-date">2026年11月04日</span>
+        <span class="news-cat"><span>適時開示</span></span>
+        <span class="news-title">ファクトブックを更新しました</span>
+      </div>
+      <div class="news-item">
+        <span class="news-date">2026年11月04日</span>
+        <span class="news-cat"><span>お知らせ</span></span>
+        <span class="news-title">サステナビリティレポートを公開しました</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">05 — COLOR</p>
+    <h2 class="section-title">赤はブランド 1 色。面にも文字にも罫線にも同じ値</h2>
+    <p class="section-lead"><code>#de012d</code> が <b>可視 117 要素</b>（面・文字・罫線の合計）。<code>#dc012d</code> も実在するが <b>1 要素だけ</b>で、RGB にして 2 違いの取りこぼし。<b>新規実装では <code>#de012d</code> に統一してよい。</b></p>
+
+    <div class="sw-grid">
+      <div class="sw"><div class="sw-chip" style="background:#de012d"></div>
+        <div class="sw-meta"><b>"K" LINE Red</b><code>#de012d</code><br>可視 117 要素</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#000000"></div>
+        <div class="sw-meta"><b>Black</b><code>#000000</code><br>言語タブの面 / 文字 112 要素</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#666666"></div>
+        <div class="sw-meta"><b>Text Muted</b><code>#666666</code><br>ニュースの日付（15 要素）</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#cccccc"></div>
+        <div class="sw-meta"><b>Text Disabled</b><code>#cccccc</code><br>フッターの補助リンク</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#f1f1f1;border-bottom:1px solid #dddddd"></div>
+        <div class="sw-meta"><b>Surface Gray</b><code>#f1f1f1</code><br>最も多い面（25 要素）</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#eeeeee;border-bottom:1px solid #dddddd"></div>
+        <div class="sw-meta"><b>Surface Light</b><code>#eeeeee</code><br>もっと見るの面</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#f3f3f3;border-bottom:1px solid #dddddd"></div>
+        <div class="sw-meta"><b>Surface Lighter</b><code>#f3f3f3</code><br>下層のカード面</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#ffffff;border:1px solid #dddddd"></div>
+        <div class="sw-meta"><b>Background</b><code>#ffffff</code><br>根拠 body（html は透明）</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <p class="eyebrow">06 — LAYOUT &amp; RESPONSIVE</p>
+    <h2 class="section-title">幅の設計を 3 つの変数だけで回す</h2>
+    <p class="section-lead">CSS 変数は <b><code>:root</code> ではなく <code>body</code> に宣言</b>されている。<code>getComputedStyle(document.documentElement)</code> では 0 個に見えるので、「このサイトにはトークンが無い」と読まないこと。色やサイズのトークンは無く、<b>幅の 4 変数だけ</b>。</p>
+
+    <table class="mtable">
+      <tr><th>画面幅</th><th><code>--width-content-base</code></th><th><code>--width-content-area</code></th><th><code>--width-content-margin</code></th></tr>
+      <tr class="hit"><td>既定</td><td class="num">1.00</td><td class="num">1180px</td><td class="num">10px</td></tr>
+      <tr><td>やや狭い</td><td class="num">0.95</td><td class="num"><code>calc(1180px * 0.95)</code></td><td class="num">10px</td></tr>
+      <tr><td>さらに狭い</td><td class="num">0.90</td><td class="num"><code>calc(1180px * 0.9)</code></td><td class="num">10px</td></tr>
+      <tr><td>モバイル</td><td class="num">1.00</td><td class="num">500px</td><td class="num">6px</td></tr>
+      <tr><td>2 カラムの主側</td><td class="num">—</td><td class="num"><code>calc(1180px * 0.76)</code></td><td class="num">—</td></tr>
+    </table>
+
+    <div class="note">カラムは変数から計算する:<br>
+    <code>.multiColumn2 &gt; .column1 { width: calc((100% * var(--width-content-base) - 2 * var(--width-content-margin)) / 2) }</code><br>
+    なお <code>--accent-color</code> / <code>--highlight-color</code> / <code>--button-color</code> / <code>--button-hover-color</code> / <code>--input-border-style</code> は <b>marsflag（外部の検索ウィジェット）由来</b>で、自社のトークンではない。</div>
+
+    <div class="rs-list">
+      <div class="rs-item"><b>≤ 767px</b><span><b>主たる境目</b>。CSS 全文で 97 件</span></div>
+      <div class="rs-item"><b>≥ 768px</b><span><code>print, screen and (min-width: 768px)</code>（65〜66 件）。<b>印刷と同じ扱い</b>で書かれている</span></div>
+      <div class="rs-item"><b>≤ 576px</b><span>7 件</span></div>
+      <div class="rs-item"><b><code>print</code></b><span>7 件。印刷スタイルを別に持つ</span></div>
+      <div class="rs-item"><b>コンテナ</b><span>外枠 1220px / 本文 1180px / 中央寄せ <code>calc(50% + 590px)</code>（1180 ÷ 2 = 590）</span></div>
+      <div class="rs-item"><b><code>gap</code></b><span>15px（4 件）/ 12px（1 件）のみ。余白は主に <code>margin</code> で組む</span></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <p>Design System Preview — 川崎汽船（"K" LINE / Kawasaki Kisen Kaisha）／ 実測日 2026-11-06 ／ 対象 www.kline.co.jp/ja/index.html, /ja/corporate.html</p>
+  </div>
+</footer>
+
+</body>
+</html>

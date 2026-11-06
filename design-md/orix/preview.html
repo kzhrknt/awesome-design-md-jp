@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: オリックス（ORIX）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- ★実サイトは Noto Sans JP を 100〜900 の 9 ウェイト分宣言し、
+     実際に loaded するのはトップ 300/400/500/700/900、下層 400/500/700。
+     ここでは実装に出てくる 5 段だけを読む。
+     ラテン文字は Arial（OS）。専用の欧文 Web フォントは無い。 -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  /* ===========================================================
+     オリックス 実測プレビュー（2026-11-06）
+     対象: https://www.orix.co.jp/grp/ , /grp/company/
+
+     ★実サイトの CSS Custom Properties は 2 個だけ
+       （--ring-scale / --triangle-size。どちらもアニメーション用で
+         デザイントークンではない）。色もサイズもハードコード。
+       以下の :root は「実測値をこのプレビューで整理したもの」。
+     =========================================================== */
+  :root {
+    /* === Brand（実測） === */
+    --navy-deep: #00163a;   /* ★可視 5 要素の塗り面。ニュースカード */
+    --navy:      #00264d;   /* ★トップのメイン面（main.tp の背景） */
+    --navy-90:   rgba(0, 23, 60, .9);     /* タブ非選択 */
+    --tab-on:    rgba(30, 65, 145, .5);   /* タブ選択（#1e4191 を 50%） */
+    --grad-bar:  linear-gradient(90deg, #1e4191 0, #7d1e69 35%, #cd1432 100%);
+    --grad-face: linear-gradient(135deg, #1e4191 0%, #7d1e69 17.5%, #cd1432 50%, #7d1e69 82.5%, #1e4191 100%);
+    --link-blue: #1e3c91;   /* ★グラデの #1e4191 とは 2 違いの別色。どちらも実装されている */
+
+    /* === Neutral（実測） === */
+    --text:        #000000;  /* ★純黒。可視 22 / 79 要素 */
+    --white:       #ffffff;
+    --text-muted:  #777777;  /* 下層の言語切替（9 要素） */
+    --text-2:      #4a4a4a;  /* トップの日付・補助 */
+    --text-copy:   #727272;  /* コピーライト */
+    --scrim:       rgba(255, 255, 255, .5);  /* ハッシュタグ（5 要素） */
+    --surface:     #f5f5f5;  /* フッターナビのタブ面 */
+    --surface-b1:  #f4f7fa;  /* 下層グローバルナビ（10 要素） */
+    --surface-b2:  #e8eff4;  /* 下層ナビのアクティブ（5 要素） */
+
+    /* === Fonts（実測） === */
+    --font-jp: "Noto Sans JP", sans-serif;
+    --font-en: Arial, "Noto Sans JP", sans-serif;
+    /* ★実サイトは "Arial Black", "Archivo Black", "Noto Sans JP", sans-serif。
+       Archivo Black には @font-face が無く（CSS 全文で 0 件）必ず外れるので、
+       ここでは宣言から外して正しい形で書く。 */
+    --font-black: "Arial Black", "Noto Sans JP", sans-serif;
+
+    --container-top:  960px;   /* トップ */
+    --container-sub: 1024px;   /* 下層 */
+  }
+
+  /* ★html { font-size: 62.5% } = 10px。1920/1440/1200/1024/834/768/767/375px の
+     8 幅すべてで固定。ルートだけ測ると「完全固定のサイト」に見えるが、
+     トップは要素側の clamp() で全面が流体。 */
+  html { font-size: 62.5%; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--text);
+    font-family: var(--font-jp);
+    font-size: 1.6rem;          /* = 16px */
+    font-weight: 400;
+    line-height: 1.7;           /* ★無単位。各要素が自分のサイズで再計算する */
+    letter-spacing: normal;
+    -webkit-font-smoothing: antialiased;
+    /* ★font-feature-settings は書かない。実測 0 件。
+       Noto Sans JP は palt を「持っている」（−18.5%）ので、
+       足すと既存ページと別物になる。 */
+  }
+  /* ★375px でだけ body が 1.4rem（= 14px）に落ちる */
+  @media screen and (max-width: 640px) {
+    body { max-width: 640px; min-width: 320px; font-size: 1.4rem; }
+  }
+
+  /* ---------- 共通パーツ ---------- */
+  .wrap { max-width: var(--container-top); margin: 0 auto; padding: 0 24px; }
+  .wrap-sub { max-width: var(--container-sub); margin: 0 auto; padding: 0 24px; }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .9em;
+         background: rgba(0,0,0,.06); padding: 1px 5px; line-height: 1.6; }
+  b { font-weight: 700; }
+
+  .header { background: rgba(255,255,255,.9); border-bottom: 1px solid #e4e4e4; }
+  .header-in { display: flex; align-items: center; gap: 26px;
+               max-width: var(--container-sub); margin: 0 auto; padding: 14px 24px; }
+  .logo { font-family: var(--font-black); font-size: 22px; color: var(--navy);
+          text-decoration: none; line-height: 1; letter-spacing: 1px; }
+  .gnav { margin-left: auto; display: flex; gap: 22px; }
+  /* ★トップのナビは clamp(12px, 0.8333333333vw, 9999px)。1920px で 16px、1440px で 12px（下限） */
+  .gnav a { font-size: clamp(12px, 0.8333333333vw, 9999px);
+            font-weight: 700; line-height: 2.1875;
+            letter-spacing: 0.05em; color: var(--text); text-decoration: none; }
+
+  .section { padding: 60px 0; }
+  .section-alt { background: var(--surface-b1); }
+  .eyebrow { font-family: var(--font-en); font-size: 13px; font-weight: 700;
+             color: var(--link-blue); line-height: 1.4; letter-spacing: .08em;
+             margin-bottom: 8px; }
+  .section-title { font-size: 26px; font-weight: 700; line-height: 1.4;
+                   letter-spacing: normal; margin-bottom: 14px; }
+  .section-lead { font-size: 16px; line-height: 1.7; max-width: 70ch; }
+  .note { margin-top: 24px; padding: 16px 20px; background: var(--white);
+          border-left: 4px solid var(--navy); font-size: 14px; line-height: 1.8; }
+  .section-alt .note { background: var(--white); }
+
+  /* ---------- 01 Hero ----------
+     ★実サイトのヒーローは全画面 <video>（movie_day.mp4 / 1440×810px / poster なし）で、
+       「FINDING PATHS. MAKING IMPACT.」は動画に焼き込まれている。
+       DOM を全走査してもそのテキストは出てこない。
+       ここでは面を要素自身の background-image に持たせ、文字は実テキストで置く。 */
+  .hero {
+    padding: 96px 0 104px;
+    background-image:
+      linear-gradient(rgba(0,22,58,.42), rgba(0,22,58,.62)),
+      radial-gradient(120% 110% at 30% 20%, #6d7f92 0%, #3c536c 38%, #152c47 72%, #00163a 100%);
+    background-size: cover;
+  }
+  .hero-in { max-width: var(--container-sub); margin: 0 auto; padding: 0 24px; }
+  .hero-copy { font-family: var(--font-black); color: var(--white);
+               font-size: clamp(32px, 4.6875vw, 9999px);   /* 1920px で 90px */
+               line-height: 1.08; letter-spacing: normal; }
+  .hero-bar { width: 220px; height: 6px; margin-top: 30px;
+              background-image: var(--grad-bar); }
+  .hero-note { margin-top: 26px; color: var(--white); font-size: 15px;
+               line-height: 1.8; max-width: 52ch; }
+
+  /* ---------- 02 Fluid ---------- */
+  .mtable { width: 100%; border-collapse: collapse; margin-top: 22px; font-size: 14px; }
+  .mtable th, .mtable td { border: 1px solid #d8dde3; padding: 10px 12px;
+                           text-align: left; line-height: 1.6; }
+  .mtable th { background: var(--surface-b2); font-weight: 700; font-size: 13px; }
+  .mtable .num { font-variant-numeric: tabular-nums; }
+  .mtable tr.hit td { color: var(--link-blue); font-weight: 700; }
+
+  .fluid-demo { margin-top: 26px; padding: 24px; background: var(--white);
+                border: 1px solid #d8dde3; }
+  .section-alt .fluid-demo { background: var(--white); }
+  .fluid-line { font-size: clamp(12px, 1.5625vw, 9999px);   /* 1920px で 30px */
+                font-weight: 500; line-height: 1.4; }
+  .fluid-cap { margin-top: 12px; font-size: 13px; line-height: 1.7; color: var(--text-2); }
+
+  /* ---------- 03 KEY NUMBERS ---------- */
+  .kn-band { background: var(--navy); padding: 54px 0 60px; }
+  .kn-head { font-family: var(--font-black); color: var(--white);
+             font-size: clamp(28px, 3.125vw, 9999px);   /* 1920px で 60px */
+             line-height: 1; letter-spacing: normal; }
+  .kn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; }
+  .kn-cell { display: flex; flex-direction: column; align-items: center;
+             justify-content: center; aspect-ratio: 1 / 1;
+             border: 2px solid rgba(255,255,255,.3); border-radius: 50%; }
+  .kn-label { color: var(--scrim); font-size: clamp(12px, 0.9375vw, 9999px);
+              font-weight: 500; line-height: 2.22; letter-spacing: .05em; }
+  .kn-value { display: flex; align-items: baseline; gap: 6px; color: var(--white); }
+  /* ★数字 clamp(12px, 7.03125vw, 9999px) — 1920px で 135px / 1440px で 101.25px */
+  .kn-num { font-size: clamp(32px, 7.03125vw, 9999px); font-weight: 900;
+            line-height: 1; letter-spacing: normal; }
+  /* ★単位 clamp(12px, 1.8229167vw, 9999px) — 1920px で 35px / 1440px で 26.25px */
+  .kn-unit { font-size: clamp(14px, 1.8229167vw, 9999px); font-weight: 900;
+             line-height: 1.14; letter-spacing: .075em; }
+
+  /* ---------- 04 Typography ---------- */
+  .type-row { display: flex; gap: 26px; padding: 17px 0; border-bottom: 1px solid #d8dde3;
+              align-items: baseline; }
+  .type-meta { flex: none; width: 212px; font-size: 11px; line-height: 1.8;
+               color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .type-meta b { display: block; font-size: 12px; color: var(--text); }
+  .type-sample { flex: 1; min-width: 0; }
+  .t-h48 { font-size: 48px; font-weight: 700; line-height: 1.2; letter-spacing: normal; }
+  .t-h24 { font-size: 24px; font-weight: 700; line-height: 1.6; letter-spacing: normal; }
+  .t-h20 { font-size: 20px; font-weight: 700; line-height: 1.7; letter-spacing: normal; }
+  .t-body { font-size: 16px; font-weight: 400; line-height: 2.0; letter-spacing: normal; }
+  .t-nav { font-size: 14px; font-weight: 500; line-height: 1.2; letter-spacing: normal; }
+  .t-sub { font-size: 12px; font-weight: 400; line-height: 1.7; letter-spacing: normal; }
+  .t-top-nav { font-size: 12px; font-weight: 700; line-height: 2.1875; letter-spacing: .05em; }
+  .t-top-news { font-size: 15px; font-weight: 500; line-height: 1.75; letter-spacing: .065em; }
+  .t-top-date { font-size: 12px; font-weight: 500; line-height: 1.7; letter-spacing: .03em; }
+
+  /* ---------- 05 Components ---------- */
+  /* ★タブは紺の面（実サイトは main.tp の #00264d）の上に置かれる。
+     選択状態の rgba(30,65,145,.5) は半透明なので、地が白いと白文字が沈む。 */
+  .tab-row { display: flex; margin-top: 26px; background-color: var(--navy); padding: 18px; }
+  .tab { padding: 0 26px; background-color: var(--navy-90); color: var(--white);
+         font-size: 15px; font-weight: 700; line-height: 33px;
+         letter-spacing: .05em; border-radius: 0; text-decoration: none; }
+  .tab.on { background-color: var(--tab-on); }
+  .pill { display: inline-flex; align-items: center; justify-content: center;
+          margin-top: 24px; padding: 12px 34px;
+          border: 1px solid var(--navy); border-radius: 26.25px;   /* 1920px で 35px */
+          background: var(--white); color: var(--navy);
+          font-size: 14px; font-weight: 700; line-height: 1.4;
+          letter-spacing: .05em; text-decoration: none; cursor: pointer; }
+  /* ★片側だけ丸いピル（決算発表のバー）。実測 border-radius: 30px 0 0 30px */
+  .halfpill { display: inline-flex; align-items: center; gap: 18px; margin-top: 24px;
+              padding: 14px 26px; background: var(--navy); color: var(--white);
+              border-radius: 30px 0 0 30px; font-size: 14px; font-weight: 500;
+              line-height: 1.7; letter-spacing: .03em; text-decoration: none; }
+  .halfpill b { font-variant-numeric: tabular-nums; }
+
+  .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 28px; }
+  /* ★カードは枠線も影も無い。紺のベタ塗りに白文字 */
+  .news-card { background: var(--navy-deep); color: var(--white); padding: 22px 24px;
+               border: 0; box-shadow: none; border-radius: 0; text-decoration: none;
+               display: block; }
+  .news-tag { color: var(--scrim); font-size: 12px; font-weight: 500;
+              line-height: 1.7; letter-spacing: .03em; }
+  .news-title { margin-top: 10px; font-size: 15px; font-weight: 500;
+                line-height: 1.75; letter-spacing: .065em; }
+  .news-date { margin-top: 12px; color: var(--scrim); font-size: 12px;
+               line-height: 1.7; font-variant-numeric: tabular-nums; }
+
+  .grad-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 26px; }
+  .grad-box { height: 92px; display: flex; align-items: flex-end; padding: 12px 14px;
+              color: var(--white); font-family: var(--font-en); font-size: 12px;
+              font-weight: 700; line-height: 1.5; }
+  .grad-bar-box  { background-image: var(--grad-bar); }
+  .grad-face-box { background-image: var(--grad-face); }
+
+  /* ---------- 06 Color ---------- */
+  .sw-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 26px; }
+  .sw { border: 1px solid #d8dde3; }
+  .sw-chip { height: 76px; }
+  .sw-meta { padding: 10px 12px; font-size: 12px; line-height: 1.7; background: var(--white); }
+  .sw-meta b { display: block; font-size: 13px; }
+  .sw-meta code { font-size: 11px; }
+
+  /* ---------- 07 Responsive ---------- */
+  .rs-list { margin-top: 24px; }
+  .rs-item { display: flex; gap: 20px; padding: 14px 0; border-bottom: 1px solid #d8dde3;
+             font-size: 14px; line-height: 1.7; }
+  .rs-item b { flex: none; width: 206px; font-variant-numeric: tabular-nums; }
+
+  .footer { background: var(--surface); padding: 38px 0; }
+  .footer p { font-size: 12px; line-height: 2.15; color: var(--text-copy); }
+
+  @media screen and (max-width: 640px) {
+    .kn-grid, .news-grid, .grad-row { grid-template-columns: 1fr; }
+    .sw-grid { grid-template-columns: repeat(2, 1fr); }
+    .type-row { flex-direction: column; gap: 10px; }
+    .type-meta { width: auto; }
+    .kn-cell { aspect-ratio: auto; padding: 34px 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-in">
+    <a class="logo" href="#">ORIX</a>
+    <nav class="gnav">
+      <a href="#">企業情報</a>
+      <a href="#">事業・サービス</a>
+      <a href="#">投資家情報</a>
+      <a href="#">採用情報</a>
+      <a href="#">お問い合わせ・ご相談</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-in">
+    <h1 class="hero-copy">FINDING PATHS.<br>MAKING IMPACT.</h1>
+    <div class="hero-bar"></div>
+    <p class="hero-note">実サイトではこの 2 行が全画面の <code>&lt;video&gt;</code>（<code>movie_day.mp4</code> / 1440×810px / <code>poster</code> なし）に焼き込まれており、<b>DOM を全走査してもそのテキストは出てこない</b>。<code>document.images</code> にも出ない（<code>&lt;img&gt;</code> ではないため）。</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap-sub">
+    <p class="eyebrow">01 — FLUID</p>
+    <h2 class="section-title">ルートは固定。流体なのは要素側</h2>
+    <p class="section-lead"><code>html { font-size: 62.5% }</code> ＝ <b>10px は 8 幅すべてで固定</b>。にもかかわらずトップページは文字サイズ・字間・<code>gap</code>・角丸まで <code>vw</code> で動く。正体は <b><code>clamp(12px, N vw, 9999px)</code></b> ——上限は 9999px ＝事実上なし、下限は 12px。式の分母から<b>設計幅は 1920px</b>と分かる。</p>
+
+    <table class="mtable">
+      <tr><th>用途</th><th>式</th><th class="num">1920px（設計値）</th><th class="num">1440px（実測）</th></tr>
+      <tr class="hit"><td>本文・ナビ</td><td><code>0.8333333333vw</code></td><td class="num">16px</td><td class="num">12px（下限）</td></tr>
+      <tr><td>ラベル</td><td><code>0.9375vw</code></td><td class="num">18px</td><td class="num">13.5px</td></tr>
+      <tr><td>カード見出し</td><td><code>1.0416667vw</code></td><td class="num">20px</td><td class="num">15px</td></tr>
+      <tr><td>数字に添える語</td><td><code>1.4583333vw</code></td><td class="num">28px</td><td class="num">21px</td></tr>
+      <tr><td>中見出し</td><td><code>1.5625vw</code></td><td class="num">30px</td><td class="num">22.5px</td></tr>
+      <tr><td>数字の単位</td><td><code>1.8229167vw</code></td><td class="num">35px</td><td class="num">26.25px</td></tr>
+      <tr><td>セクション見出し</td><td><code>3.125vw</code></td><td class="num">60px</td><td class="num">45px</td></tr>
+      <tr class="hit"><td>KEY NUMBERS の数字</td><td><code>7.03125vw</code></td><td class="num">135px</td><td class="num">101.25px</td></tr>
+      <tr><td>数字（大）</td><td><code>9.375vw</code></td><td class="num">180px</td><td class="num">135px</td></tr>
+    </table>
+
+    <div class="fluid-demo">
+      <p class="fluid-line">ウィンドウ幅を変えると、この行だけが連続して伸び縮みする</p>
+      <p class="fluid-cap"><code>clamp(12px, 1.5625vw, 9999px)</code> — 1920px で 30px、1440px で 22.5px、下限 12px</p>
+    </div>
+
+    <div class="note"><b>1440px で測った px をそのまま固定値で書かない。</b>それは設計値の <b>0.75 倍</b>（<code>101.25px</code> の設計値は <code>135px</code>）。<code>letter-spacing</code> も <code>gap</code> も角丸も同じ比率で縮んでいる。</div>
+  </div>
+</section>
+
+<section class="kn-band">
+  <div class="wrap">
+    <p class="kn-head">KEY NUMBERS</p>
+    <div class="kn-grid">
+      <div class="kn-cell">
+        <p class="kn-label">設立</p>
+        <p class="kn-value"><span class="kn-num">1964</span><span class="kn-unit">年</span></p>
+      </div>
+      <div class="kn-cell">
+        <p class="kn-label">グローバルネットワーク</p>
+        <p class="kn-value"><span class="kn-unit">約</span><span class="kn-num">30</span><span class="kn-unit">ヵ国</span></p>
+      </div>
+      <div class="kn-cell">
+        <p class="kn-label">グループ社員</p>
+        <p class="kn-value"><span class="kn-unit">約</span><span class="kn-num">3,653</span><span class="kn-unit">名</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap-sub">
+    <p class="eyebrow">02 — TYPOGRAPHY</p>
+    <h2 class="section-title">トップと下層で設計系が別</h2>
+    <p class="section-lead">トップは <code>vw</code> 流体 ＋ 字間あり、下層は<b>固定 px ＋ <code>letter-spacing: normal</code> が 97/97 要素</b>。片方のページだけ見て「このサイトの設計」と書くと必ず外す。ウェイトもトップが 300 / 400 / 500 / 700 / 900 の 5 段、下層が 400 / 500 / 700 の 3 段。</p>
+
+    <div class="type-row">
+      <div class="type-meta"><b>下層・ページ見出し</b>48px / 700 / ls normal<br>lh 1.2 — 固定 px</div>
+      <div class="type-sample"><p class="t-h48">企業情報</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>下層・節見出し</b>24px / 700 / ls normal<br>lh 1.6 — 11 要素</div>
+      <div class="type-sample"><p class="t-h24">ORIX Group Purpose &amp; Culture</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>下層・グローバルナビ</b>20px / 700 / ls normal<br>lh 1.7</div>
+      <div class="type-sample"><p class="t-h20">企業情報　事業・サービス　投資家情報</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>下層・本文</b>16px / 400 / ls normal<br>lh 2.0</div>
+      <div class="type-sample"><p class="t-body">オリックスは 1964 年にリース会社として創業以降、事業を多角化してきました。</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>下層・ナビ</b>14px / 400〜500 / ls normal<br>lh 1.2 — 48 要素で最多</div>
+      <div class="type-sample"><p class="t-nav">企業情報トップ　ニュースルーム　オリックスについて</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>下層・補助</b>12px / 400 / ls normal<br>lh 1.7</div>
+      <div class="type-sample"><p class="t-sub">English　中文　お問い合わせ・ご相談</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>トップ・ナビ</b>0.8333vw（1920px で 16px）<br>700 / ls 0.05em / lh 2.1875</div>
+      <div class="type-sample"><p class="t-top-nav">ニュースルーム　オリックスについて　サステナビリティ</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>トップ・カード見出し</b>1.0417vw（1920px で 20px）<br>500 / ls 0.065em / lh 1.75</div>
+      <div class="type-sample"><p class="t-top-news">マツダのサプライチェーンの脱炭素化を支援</p></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><b>トップ・日付</b>0.625vw（1920px で 12px）<br>500 / ls 0.03em / lh 1.7</div>
+      <div class="type-sample"><p class="t-top-date">2026.05.11　2026年3月期通期 決算発表</p></div>
+    </div>
+
+    <div class="note"><b>下層には字間を当てない</b>（実測 97/97 要素が <code>normal</code>）。トップの字間も <code>vw</code> で動くので、1440px で見た <code>0.6px</code> は 1920px では <code>0.8px</code>。<b>px をそのまま固定で書き写さない。</b></div>
+
+    <table class="mtable">
+      <tr><th>書体</th><th class="num">normal</th><th class="num">"palt"</th><th class="num">"halt"</th><th>判定</th></tr>
+      <tr class="hit"><td>Noto Sans JP（このサイト）</td><td class="num">520.00px</td><td class="num">424.00px</td><td class="num">440.00px</td><td><b>効く（−18.5%）のに実測 0 件</b></td></tr>
+    </table>
+
+    <div class="note"><code>"Arial Black", "Archivo Black", "Noto Sans JP", sans-serif</code> の <b><code>Archivo Black</code> には <code>@font-face</code> が無い</b>（CSS 全文で 0 件）。読み込んでいないので必ず外れ、OS の Arial Black 頼みになる。名前が実在するぶん気づきにくい死んだ別名。</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap-sub">
+    <p class="eyebrow">03 — COMPONENTS</p>
+    <h2 class="section-title">角丸は 3 段しかない。影は 0 種</h2>
+    <p class="section-lead">実測の <code>border-radius</code> は <b><code>50%</code>（円・10 要素）/ <code>26.25px</code>（ピル・1920px では 35px）/ <code>30px 0 0 30px</code>（片側ピル・2 要素）</b> の 3 段だけ。<b>中間の角丸（4px / 8px / 12px）は 1 つも無い。</b><code>box-shadow</code> は 2 ページとも <b>0 種</b>。</p>
+
+    <div class="tab-row">
+      <a class="tab on" href="#">オリックス</a>
+      <a class="tab" href="#">オリックスグループ</a>
+    </div>
+
+    <div>
+      <a class="pill" href="#">VIEW ALL</a>
+    </div>
+
+    <div>
+      <a class="halfpill" href="#"><b>2026.05.11</b>2026年3月期通期 決算発表</a>
+    </div>
+
+    <div class="news-grid">
+      <a class="news-card" href="#">
+        <p class="news-tag">#NewsReleases</p>
+        <p class="news-title">マツダのサプライチェーンの脱炭素化を支援</p>
+        <p class="news-date">2026-10-30</p>
+      </a>
+      <a class="news-card" href="#">
+        <p class="news-tag">#fromORIXLeadership</p>
+        <p class="news-title">ORIX Investor Day 2026 のダイジェスト</p>
+        <p class="news-date">2026-10-24</p>
+      </a>
+      <a class="news-card" href="#">
+        <p class="news-tag">#時流を語る</p>
+        <p class="news-title">休むことも経営責任。精神科医に聞く、トップの判断力を守る休み方</p>
+        <p class="news-date">2026-10-17</p>
+      </a>
+    </div>
+
+    <div class="grad-row">
+      <div class="grad-box grad-bar-box">90deg — #1e4191 0 → #7d1e69 35% → #cd1432 100%（帯）</div>
+      <div class="grad-box grad-face-box">135deg — 青 → 紫 → 赤 → 紫 → 青（17.5% / 50% / 82.5% の 5 点止め・面）</div>
+    </div>
+
+    <div class="note"><b>グラデーションは 2 種類ある。</b>帯として流すときは <code>90deg</code> の 3 点、面として使うときは <code>135deg</code> の 5 点（中央を赤にして両端を青に戻す）。<b>停止位置 <code>17.5% / 50% / 82.5%</code> を丸めない。</b></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap-sub">
+    <p class="eyebrow">04 — COLOR</p>
+    <h2 class="section-title">紺の濃淡とグラデーション。トークンは 2 個だけ</h2>
+    <p class="section-lead">CSS Custom Properties は <code>--ring-scale</code> と <code>--triangle-size</code> の <b>2 個だけ</b>。どちらもアニメーション用（<code>--ring-scale</code> は JS が実数を書き込む）で、<b>デザイントークンではない</b>。色もサイズもハードコードされている。</p>
+
+    <div class="sw-grid">
+      <div class="sw"><div class="sw-chip" style="background:#00163a"></div>
+        <div class="sw-meta"><b>ORIX Navy（濃）</b><code>#00163a</code><br>可視 5 要素の塗り面</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#00264d"></div>
+        <div class="sw-meta"><b>ORIX Navy</b><code>#00264d</code><br>トップのメイン面</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#1e4191"></div>
+        <div class="sw-meta"><b>Gradient Blue</b><code>#1e4191</code><br>グラデーションの左端</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#1e3c91"></div>
+        <div class="sw-meta"><b>Link Blue</b><code>#1e3c91</code><br>下層のナビ文字（9 要素）<br>※上とは別色</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#7d1e69"></div>
+        <div class="sw-meta"><b>Gradient Purple</b><code>#7d1e69</code><br>停止位置 35%</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#cd1432"></div>
+        <div class="sw-meta"><b>Gradient Red</b><code>#cd1432</code><br>停止位置 100%</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#f4f7fa;border-bottom:1px solid #d8dde3"></div>
+        <div class="sw-meta"><b>Surface Blue Light</b><code>#f4f7fa</code><br>下層グローバルナビ（10 要素）</div></div>
+      <div class="sw"><div class="sw-chip" style="background:#e8eff4;border-bottom:1px solid #d8dde3"></div>
+        <div class="sw-meta"><b>Surface Blue</b><code>#e8eff4</code><br>下層ナビのアクティブ（5 要素）</div></div>
+    </div>
+
+    <div class="note"><code>#1e4191</code>（グラデーション）と <code>#1e3c91</code>（リンク文字）は<b>別の値で、どちらも実装されている</b>。片方に丸めない。</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap-sub">
+    <p class="eyebrow">05 — RESPONSIVE</p>
+    <h2 class="section-title">ルートだけ測ると「完全固定のサイト」に見える</h2>
+
+    <div class="rs-list">
+      <div class="rs-item"><b>html</b><span><code>font-size: 62.5%</code> ＝ <b>10px が 8 幅すべてで固定</b>（1920 / 1440 / 1200 / 1024 / 834 / 768 / 767 / 375px）</span></div>
+      <div class="rs-item"><b>body</b><span><code>1.6rem</code> ＝ 16px。<b>375px でだけ <code>1.4rem</code> ＝ 14px に落ちる</b>（<code>body { max-width: 640px; min-width: 320px }</code> と同じブロック）。<code>line-height</code> も 27.2px → 22.4px</span></div>
+      <div class="rs-item"><b>トップの文字</b><span>要素側の <code>clamp(12px, N vw, 9999px)</code> で<b>連続的に動く</b>。下限 12px に当たるのは 1440px 前後から下</span></div>
+      <div class="rs-item"><b>下層の文字</b><span><b>完全に固定 px</b>（48 / 24 / 20 / 16 / 14 / 12 / 11px）</span></div>
+      <div class="rs-item"><b>≤ 640px</b><span><b>主たる境目</b>。CSS 全文でトップ 79 / 下層 85 件</span></div>
+      <div class="rs-item"><b>≥ 641px</b><span>トップ 2 / 下層 3 件</span></div>
+      <div class="rs-item"><b>641〜1000px</b><span>1 件</span></div>
+      <div class="rs-item"><b>≤ 400px / ≤ 344px / ≤ 320px</b><span>最小幅の微調整</span></div>
+      <div class="rs-item"><b>コンテナ</b><span>トップ 960px / 下層 1024px</span></div>
+      <div class="rs-item"><b><code>word-break: auto-phrase</code></b><span><b>実測 2 要素のみ</b>（<code>.caution__title</code>）。残り 1139 要素は <code>normal</code>。<b>サイト全体の方針ではない</b></span></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap-sub">
+    <p>Design System Preview — オリックス（ORIX）／ 実測日 2026-11-06 ／ 対象 www.orix.co.jp/grp/, /grp/company/</p>
+  </div>
+</footer>
+
+</body>
+</html>
