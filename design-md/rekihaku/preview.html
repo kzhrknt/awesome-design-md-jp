@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 国立歴史民俗博物館（National Museum of Japanese History）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- ★実サイトと同じ 3 ウェイトだけ読む。600 を足すと別物になる -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Urbanist:ital,wght@0,800;1,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトの自社 CSS 変数は 39 個（うち 18 個は url(...) のアイコンパス）。
+       以下は実サイトの変数名と値をそのまま写したもの。2026-11-07 */
+    --primary-color: #000000;   /* ★実サイトの変数名と値。黒が主役 */
+    --text-color:    #000000;   /* ★文字 201 要素（最多） */
+    --white:         #ffffff;
+    --bg:            #ffefef;   /* ★ページの地。白ではない淡いピンク */
+    --module-sidebar-bg: #ffea5c;        /* ナビの帯 */
+    --module-color-aside: #95c4ff;
+    --module-color-hover: #d37d00;
+    --moudle-more-color:  #9b5100;       /* 変数名の綴りは実サイトのまま */
+    --module-text-color:  #32629f;
+    --module-qa-color:    #32629f;
+    --module-calendar-bg: #bdd5f4;
+    --module-table-bg:    #dae8fa;
+    --outline-color:      #9b5100;
+    --module-mark-bg:     linear-gradient(to top, rgba(50, 98, 159, .5) 30%, transparent 30%);
+    --module-mark-bg-sp:  linear-gradient(to top, rgba(50, 98, 159, .5) 25%, transparent 25%);
+    --fc-border-color:    #cfd5d8;
+    --fc-event-bg-color:  #157de9;
+    --fc-event-bg02-color:#db374d;
+    --fc-event-bg03-color:#027c86;
+    --fc-event-bg04-color:#907206;
+    --fc-holiday-bg:      #e8e8e8;
+
+    --accent-orange: #e68900;   /* 第5展示室の番号・見出し（可視 16 要素） */
+    --link-blue:     #006ad8;   /* 企画展示のリンク（可視 8 要素） */
+    --danger:        #ff0000;   /* 【重要なお知らせ】（可視 4 要素） */
+    --surface-gray:  #f0f0f0;   /* ピルボタンの面（9 要素） */
+    --badge-forum:   #907206;
+    --badge-plant:   #027c86;
+    --badge-exhibit: #063e86;
+    --tint-peach:    #fdb1a2;
+    --tint-orange:   #ffb779;
+    --tint-green:    #b1e2a8;
+    --tint-blue:     #b4d7ff;
+
+    /* === Fonts === */
+    --font-base: "Noto Sans JP", sans-serif;   /* ★実サイトの変数名と値 */
+    --font-en:   "Urbanist", sans-serif;       /* ★時刻・数字・Language にだけ使う */
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height ===
+       本文 2.00 ／ リスト 2.62 ／ 見出し 1.15-1.28。
+       1 未満の比率が 1 件も出ないので無単位と確定（98 要素が line-height: 1） */
+    --lh-body:  2;
+    --lh-list:  2.62;
+    --lh-head:  1.15;
+    --lh-sub:   1.28;
+    --lh-tight: 1;
+
+    /* === Letter spacing ===
+       body に 0.03em を 1 回書いて px で継承させ、リスト・見出しには個別に 0.1em を当てる */
+    --ls-body: .03em;
+    --ls-wide: .1em;
+    --ls-head: .06em;
+
+    /* === Radius === */
+    --r-card:  5px;      /* 39 要素で最多 */
+    --r-panel: 12px;     /* 27 要素 */
+    --r-date:  6px;      /* 14 要素 */
+    --r-pill:  9999px;   /* 8 要素 */
+    --r-badge: 12px 0;   /* ★左上と右下だけ（8 要素） */
+
+    /* === Shadow: ぼかし 0 のハードシャドウ === */
+    --shadow-btn:   rgba(0, 0, 0, .2) 6px 6px 0 0;    /* ピルボタン（6 要素） */
+    --shadow-tile:  rgba(0, 0, 0, .2) 10px 10px 0 0;  /* 大きなタイル（4 要素） */
+    --shadow-float: rgba(0, 0, 0, .3) 3px 3px 12px 0; /* 浮かせる要素（4 要素） */
+    --shadow-drop:  rgba(0, 0, 0, .16) 0 3px 12px 0;  /* 言語切替（1 要素） */
+
+    --container: 1130px;
+    --container-narrow: 1000px;
+    --gap: 45px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { font-size: 10px; }                                    /* ★全幅で固定 */
+  html[data-size="f_size_middle"] { font-size: 12px; }         /* 大   ×1.2 */
+  html[data-size="f_size_large"]  { font-size: 15px; }         /* 特大 ×1.5 */
+
+  body {
+    background: var(--bg);
+    color: var(--text-color);
+    font-family: var(--font-base);
+    font-size: 1.6rem;                 /* = 16px（≥1366px） */
+    font-weight: 400;
+    line-height: var(--lh-body);       /* = 2 */
+    letter-spacing: var(--ls-body);    /* = 0.03em → 0.48px で子へ降りる */
+    /* font-feature-settings は実サイトで 1 要素も使われていない（実測 0 件） */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .notice { background: var(--white); border: 2px solid var(--danger); border-radius: var(--r-card); margin: 16px auto; padding: 14px 20px; max-width: var(--container); display: flex; gap: 16px; align-items: flex-start; }
+  .notice .tag { color: var(--danger); font-size: 1.7rem; font-weight: 700; line-height: var(--lh-tight); flex-shrink: 0; }
+  .notice a { font-size: 1.7rem; line-height: 1.69; color: var(--text-color); }
+
+  .header { background: var(--white); }
+  .header-inner { max-width: var(--container); margin: 0 auto; padding: 18px 20px; display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
+  .logo { line-height: 1.3; }
+  .logo-sup { font-size: 1.1rem; font-weight: 400; }
+  .logo-ja { font-size: 2.4rem; font-weight: 900; letter-spacing: var(--ls-head); }
+  .logo-en { font-size: 1.1rem; font-weight: 400; }
+  .hours { background: var(--surface-gray); border-radius: var(--r-panel); padding: 10px 20px; font-size: 1.4rem; font-weight: 600; line-height: var(--lh-tight); }
+  .hours .num { font-family: var(--font-en); font-size: 1.8rem; font-weight: 800; }
+  .hours .open { color: var(--badge-plant); font-weight: 900; }
+  .header-util { margin-left: auto; display: flex; align-items: center; gap: 20px; }
+  .util-item { text-align: center; font-size: 1.1rem; font-weight: 700; line-height: var(--lh-tight); }
+
+  /* FONT SIZE SWITCH（実サイトの radio + label） */
+  .header-size { text-align: center; }
+  .header-size__label { font-size: 1.1rem; font-weight: 700; line-height: var(--lh-tight); display: block; margin-bottom: 6px; }
+  .header-size__list { display: flex; gap: 4px; }
+  .header-size__list label { display: block; }
+  .header-size__list input { position: absolute; opacity: 0; pointer-events: none; }
+  .header-size__list span { display: block; border: 1px solid var(--text-color); border-radius: var(--r-date); padding: 5px 10px; font-size: 1.2rem; font-weight: 700; line-height: var(--lh-tight); background: var(--white); cursor: pointer; }
+  .header-size__list input:checked + span { background: var(--text-color); color: var(--white); }
+  .header-size__list span:focus { outline: 2px solid var(--outline-color); outline-offset: 2px; }
+
+  /* GLOBAL NAV（黄色の帯） */
+  .gnav { background: var(--module-sidebar-bg); }
+  .gnav ul { max-width: var(--container); margin: 0 auto; display: flex; list-style: none; padding: 0 20px; flex-wrap: wrap; }
+  .gnav a { display: block; padding: 14px 22px; font-size: 1.4rem; font-weight: 600; line-height: var(--lh-tight); letter-spacing: var(--ls-wide); color: var(--text-color); text-decoration: none; }
+  .gnav li.is-current a { border-bottom: 4px solid var(--text-color); }
+
+  /* SECTIONS */
+  .section { max-width: var(--container); margin: 0 auto; padding: 56px 20px; }
+  .section-alt { background: var(--white); }
+  .section-alt .section-inner { max-width: var(--container); margin: 0 auto; padding: 56px 20px; }
+  .section-label { font-family: var(--font-mono); font-size: 1.2rem; color: #6a6a6a; margin-bottom: 8px; letter-spacing: normal; }
+  .section-title { font-size: 2.7rem; font-weight: 600; line-height: var(--lh-sub); letter-spacing: var(--ls-wide); margin-bottom: 14px; }
+  .section-lead { font-size: 1.6rem; line-height: var(--lh-body); margin-bottom: 30px; max-width: 880px; }
+  .note { font-size: 1.4rem; line-height: 1.9; color: #3a3a3a; margin-top: 18px; max-width: 900px; }
+  code { font-family: var(--font-mono); font-size: 1.2rem; background: var(--surface-gray); padding: 1px 5px; border-radius: 3px; letter-spacing: normal; }
+  mark { background-image: var(--module-mark-bg); background-color: transparent; color: var(--text-color); }
+
+  /* HERO（縦組みの見出し ＋ 写真） */
+  .hero { max-width: var(--container); margin: 0 auto; padding: 48px 20px; }
+  .hero-row { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 36px; align-items: flex-start; }
+  .hero-head { display: flex; flex-direction: row-reverse; gap: 10px; align-items: flex-start; }
+  .tt { writing-mode: vertical-rl; font-size: 3.3rem; font-weight: 900; line-height: var(--lh-head); letter-spacing: var(--ls-head); height: 420px; }
+  .tt-small { writing-mode: vertical-rl; font-family: var(--font-en); font-size: 1.2rem; font-weight: 800; letter-spacing: var(--ls-wide); height: 220px; }
+  .hero-media { flex: 1; min-height: 420px; border-radius: var(--r-panel);
+    background-image: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.18)),
+                      linear-gradient(140deg, #cdd9d6 0%, #9db3ae 40%, #c8b58f 100%);
+    display: flex; align-items: flex-end; padding: 28px; }
+  .hero-caption { background: var(--white); border-radius: var(--r-card); padding: 14px 18px; font-size: 1.5rem; font-weight: 600; line-height: 1.2; letter-spacing: var(--ls-wide); box-shadow: var(--shadow-tile); }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+  .swatch { border: 1px solid #ddd; border-radius: var(--r-card); overflow: hidden; background: var(--white); }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 12px 14px 14px; }
+  .swatch-name { font-size: 1.4rem; font-weight: 600; line-height: 1.5; letter-spacing: normal; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 1.1rem; color: #6a6a6a; margin-top: 3px; letter-spacing: normal; }
+  .swatch-use { font-size: 1.2rem; line-height: 1.6; color: #3a3a3a; margin-top: 6px; letter-spacing: normal; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 260px 1fr; gap: 24px; padding: 18px 0; border-bottom: 1px solid #ddd; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 1.1rem; color: #6a6a6a; line-height: 1.75; letter-spacing: normal; }
+  .type-meta b { display: block; font-family: var(--font-base); font-size: 1.3rem; font-weight: 700; color: var(--text-color); }
+
+  /* BADGES */
+  .badge { display: inline-block; color: var(--white); font-size: 1.2rem; font-weight: 600; line-height: 1.5; letter-spacing: var(--ls-wide); padding: 3px 9px; border-radius: var(--r-badge); }
+  .badge-forum   { background: var(--badge-forum); }
+  .badge-plant   { background: var(--badge-plant); }
+  .badge-exhibit { background: var(--badge-exhibit); }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; margin-bottom: 26px; }
+  .btn { font-family: var(--font-base); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; border: 0; }
+  .btn-primary { background: var(--primary-color); color: var(--white); font-size: 1.8rem; font-weight: 600; line-height: 1.28; letter-spacing: var(--ls-wide); padding: 14px 70px; border-radius: var(--r-pill); box-shadow: var(--shadow-btn); }
+  .btn-primary-sm { background: var(--primary-color); color: var(--white); font-size: 1.5rem; font-weight: 600; line-height: 1.28; letter-spacing: var(--ls-wide); padding: 12px 70px; border-radius: var(--r-pill); box-shadow: var(--shadow-btn); }
+  .btn-secondary { background: var(--surface-gray); color: var(--text-color); border: 1px solid var(--surface-gray); font-size: 1.4rem; font-weight: 600; line-height: 1.5; letter-spacing: var(--ls-wide); padding: 8px 35px 8px 24px; border-radius: 50px; }
+
+  /* TILES */
+  .tile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: var(--gap); }
+  .tile { background: var(--white); border-radius: var(--r-panel); padding: 26px 22px; box-shadow: var(--shadow-tile); text-decoration: none; color: var(--text-color); display: block; text-align: center; }
+  .tile-title { font-size: 1.2rem; font-weight: 600; line-height: 1.8; letter-spacing: var(--ls-wide); }
+
+  /* EXHIBITION LIST */
+  .ex-list { list-style: none; }
+  .ex-list li { font-size: 1.3rem; font-weight: 600; line-height: var(--lh-list); letter-spacing: var(--ls-wide); border-bottom: 1px solid #ddd; }
+  .ex-list a { color: var(--text-color); text-decoration: none; display: block; }
+  .ex-list .num { font-family: var(--font-en); font-weight: 800; color: var(--accent-orange); margin-right: 10px; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+  .card { background: var(--white); border-radius: var(--r-card); overflow: hidden; text-decoration: none; color: var(--text-color); display: block; }
+  .card-media { height: 150px; background-image: linear-gradient(160deg, #e7ddc6, #bfc9b2); }
+  .card-body { padding: 16px 18px 20px; }
+  .card-date { display: inline-block; background: var(--surface-gray); border-radius: var(--r-date); font-size: 1.2rem; font-weight: 600; line-height: 1.5; letter-spacing: normal; padding: 2px 8px; margin-bottom: 10px; }
+  .card-title { font-size: 1.5rem; font-weight: 600; line-height: 1.2; letter-spacing: var(--ls-wide); margin-top: 8px; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+  .field label { display: block; font-size: 1.4rem; font-weight: 600; line-height: 1.5; letter-spacing: var(--ls-wide); margin-bottom: 8px; }
+  .field input, .field select { width: 100%; background: var(--white); color: var(--text-color); border: 1px solid #999; border-radius: var(--r-date); padding: 5px 14px; height: 48px; font-family: var(--font-base); font-size: 1.6rem; line-height: 1.5; }
+  .field.is-focus input { outline: 2px solid var(--outline-color); outline-offset: 2px; }
+  .field.is-error input { border-color: var(--danger); }
+  .field-msg { font-size: 1.2rem; line-height: 1.6; color: #6a6a6a; margin-top: 6px; letter-spacing: normal; }
+  .field.is-error .field-msg { color: var(--danger); }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 34px; }
+  .elev { background: var(--white); border-radius: var(--r-panel); padding: 26px; text-align: center; }
+  .elev.e1 { box-shadow: var(--shadow-btn); }
+  .elev.e2 { box-shadow: var(--shadow-tile); }
+  .elev.e3 { box-shadow: var(--shadow-float); }
+  .elev.e4 { box-shadow: var(--shadow-drop); }
+  .elev-name { font-size: 1.5rem; font-weight: 600; line-height: 1.5; letter-spacing: normal; }
+  .elev-val { font-family: var(--font-mono); font-size: 1.1rem; color: #6a6a6a; margin-top: 8px; word-break: break-all; letter-spacing: normal; }
+
+  /* LAYOUT */
+  .layout-demo { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .layout-bar { background: var(--module-sidebar-bg); height: 36px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 1.1rem; color: var(--text-color); border-radius: var(--r-card); letter-spacing: normal; }
+  .radius-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 28px; justify-content: center; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 110px; height: 70px; background: var(--tint-blue); }
+  .radius-label { font-family: var(--font-mono); font-size: 1.1rem; color: #6a6a6a; margin-top: 7px; letter-spacing: normal; }
+
+  /* FLUID TABLE */
+  .fluid { width: 100%; border-collapse: collapse; margin-top: 10px; background: var(--white); border-radius: var(--r-card); overflow: hidden; }
+  .fluid th, .fluid td { font-size: 1.3rem; line-height: 1.8; letter-spacing: normal; padding: 7px 12px; border-bottom: 1px solid #ddd; text-align: left; }
+  .fluid th { background: var(--module-table-bg); font-weight: 700; }
+  .fluid td.hl { background: #ffeaea; font-weight: 700; }
+
+  /* FOOTER */
+  .footer { background: var(--primary-color); color: var(--white); padding: 44px 20px; margin-top: 56px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-cols { display: flex; gap: var(--gap); flex-wrap: wrap; }
+  .footer-col-title { font-size: 1.4rem; font-weight: 900; line-height: 1.8; letter-spacing: var(--ls-wide); }
+  .footer-col a { display: block; font-size: 1.3rem; line-height: 2; color: var(--white); text-decoration: none; opacity: .9; }
+  .footer-copy { font-size: 1.2rem; font-weight: 500; line-height: 1.5; margin-top: 30px; opacity: .8; }
+
+  /* ★実サイトの 3 帯。768 / 769px に 3.18 倍の崖がある */
+  @media (min-width: 769px) and (max-width: 1365px) {
+    body { font-size: 1.1713vw; line-height: var(--lh-body); letter-spacing: var(--ls-body); }
+  }
+  @media only screen and (max-width: 768px) {
+    body { font-size: 3.73333vw; line-height: var(--lh-body); letter-spacing: var(--ls-body); }
+    .section, .section-alt .section-inner { padding: 40px 16px; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .hero-row { flex-direction: column-reverse; }
+    .tt { height: 260px; }      /* ★縦組みはモバイルでも維持する */
+    mark { background-image: var(--module-mark-bg-sp); }
+    .header-util { gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="notice">
+  <span class="tag">【重要なお知らせ】</span>
+  <a href="#">第2展示室「王朝文化」「印刷文化」、第3展示室「村からみえる『近代』」の一部について、現在展示をご覧いただくことができません。</a>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-sup">大学共同利用機関法人 人間文化研究機構</span><br>
+      <span class="logo-ja">国立歴史民俗博物館</span><br>
+      <span class="logo-en">National Museum of Japanese History</span>
+    </div>
+    <div class="hours">本日は <span class="open">開館日</span> <span class="num">9:30</span> から <span class="num">16:30</span> まで</div>
+    <div class="header-util">
+      <span class="util-item">歴博とは</span>
+      <span class="util-item">お知らせ</span>
+      <span class="util-item">学びの場</span>
+      <div class="header-size">
+        <span class="header-size__label">文字サイズ</span>
+        <div class="header-size__list">
+          <label><input type="radio" name="size" value="f_size_standard" checked><span tabindex="0">標準</span></label>
+          <label><input type="radio" name="size" value="f_size_middle"><span tabindex="0">大</span></label>
+          <label><input type="radio" name="size" value="f_size_large"><span tabindex="0">特大</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="gnav">
+  <ul>
+    <li class="is-current"><a href="#">博物館 TOP</a></li>
+    <li><a href="#">展示・イベント</a></li>
+    <li><a href="#">総合展示</a></li>
+    <li><a href="#">くらしの植物苑</a></li>
+    <li><a href="#">利用案内</a></li>
+    <li><a href="#">歴博の楽しみ方</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-row">
+    <div class="hero-media">
+      <div class="hero-caption">「伝統の古典菊」（2026年度）</div>
+    </div>
+    <div class="hero-head">
+      <h1 class="tt">総合展示</h1>
+      <small class="tt-small">PERMANENT EXHIBITION</small>
+    </div>
+  </div>
+  <p class="note"><b>縦組みを横に並べるときは <code>flex-direction: row-reverse</code> にする。</b> 素の <code>display: flex</code> だと DOM 順に左→右へ置かれ、日本語の縦組みとして読む向き（右→左）と逆になる。<b>実サイトは 375px でも縦組みのまま 15 要素を保つ</b>（モバイルで横組みに戻さない）。</p>
+</section>
+
+<section class="section-alt"><div class="section-inner">
+  <p class="section-label">01 — Visual Theme</p>
+  <h2 class="section-title">黒が主役・ハードシャドウ・縦組みの見出し</h2>
+  <p class="section-lead">CSS 変数の <code>--primary-color</code> も <code>--text-color</code> も <mark>#000000</mark>。影はぼかし 0 の <code>6px 6px 0</code> / <code>10px 10px 0</code> で版ズレのような陰を作る。ナビの帯は <code>#ffea5c</code>、ページの地は <code>#ffefef</code>。</p>
+</div></section>
+
+<section class="section">
+  <p class="section-label">02 — Color Palette</p>
+  <h2 class="section-title">ブランド色を持たない。主役は黒</h2>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">--primary-color / --text-color</div><div class="swatch-hex">#000000</div><div class="swatch-use">文字 201 要素（最多）＋ CTA の面 8 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffea5c"></div><div class="swatch-body"><div class="swatch-name">--module-sidebar-bg</div><div class="swatch-hex">#ffea5c</div><div class="swatch-use">グローバルナビの帯</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffefef"></div><div class="swatch-body"><div class="swatch-name">Page Background</div><div class="swatch-hex">#ffefef</div><div class="swatch-use">ページの地。白ではない淡いピンク</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e68900"></div><div class="swatch-body"><div class="swatch-name">Accent Orange</div><div class="swatch-hex">#e68900</div><div class="swatch-use">第5展示室の番号・見出し（16 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#006ad8"></div><div class="swatch-body"><div class="swatch-name">Link Blue</div><div class="swatch-hex">#006ad8</div><div class="swatch-use">企画展示のリンク（8 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#32629f"></div><div class="swatch-body"><div class="swatch-name">--module-text-color</div><div class="swatch-hex">#32629f</div><div class="swatch-use">モジュール内の文字・マーカーの素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#9b5100"></div><div class="swatch-body"><div class="swatch-name">--outline-color</div><div class="swatch-hex">#9b5100</div><div class="swatch-use">フォーカスリング・もっと見る</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f0f0f0"></div><div class="swatch-body"><div class="swatch-name">Surface Gray</div><div class="swatch-hex">#f0f0f0</div><div class="swatch-use">ピルボタンの面（9 要素）</div></div></div>
+  </div>
+
+  <h3 class="section-title" style="font-size:2rem;margin-top:40px">展示種別バッジ（角丸は左上と右下だけ）</h3>
+  <div class="btn-grid" style="margin-top:14px">
+    <span class="badge badge-forum">歴博フォーラム</span>
+    <span class="badge badge-plant">植物苑特別企画</span>
+    <span class="badge badge-exhibit">企画展示</span>
+  </div>
+  <p class="note">3 種とも <code>border-radius: 12px 0</code> / <code>padding: 3px 9px</code> / <code>12px</code> / <code>weight 600</code>。</p>
+</section>
+
+<section class="section-alt"><div class="section-inner">
+  <p class="section-label">03 — Typography</p>
+  <h2 class="section-title">CSS の 600 は、実際には 700 で描画される</h2>
+
+  <div class="type-row">
+    <div class="type-meta"><b>Section Heading（縦組み）</b>33px / weight 900<br>lh 1.15 / ls 0.06em<br>h2.tt 130×604px</div>
+    <div style="font-size:3.3rem;font-weight:900;line-height:1.15;letter-spacing:.06em">くらしの植物苑</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Display</b>27px / weight 600 → <b>700 で出る</b><br>lh 1.26 / ls 0.1em（= 2.7px）</div>
+    <div style="font-size:2.7rem;font-weight:600;line-height:1.26;letter-spacing:.1em">第5展示室　近代</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Body</b>16px（1.6rem）/ weight 400<br>lh 2.00（32px）/ ls 0.03em（= 0.48px）</div>
+    <div style="font-size:1.6rem;font-weight:400;line-height:2;letter-spacing:.03em">日本の歴史や文化をいくつかの時代やテーマに分けて、実物資料と精巧な複製や模型を使いながらご紹介しています。</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>List</b>13px / weight 600 → <b>700 で出る</b><br>lh 2.62 / ls 0.1em（= 1.3px）<br>実測 26 要素</div>
+    <div style="font-size:1.3rem;font-weight:600;line-height:2.62;letter-spacing:.1em">第1展示室　第2展示室　第3展示室　第4展示室　第5展示室　第6展示室</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Time / Number</b>Urbanist 18px<br>weight 800 / ls normal</div>
+    <div style="font-family:var(--font-en);font-size:1.8rem;font-weight:800;letter-spacing:normal">9:30 — 16:30 / 1 2 3 4 5 6</div>
+  </div>
+
+  <h3 class="section-title" style="font-size:2rem;margin-top:44px">ウェイトは 400 / 700 / 900 の 3 面しかない</h3>
+  <div class="type-row">
+    <div class="type-meta"><b>weight 400</b>隠し div: 685.31px<br>100〜500 がここに落ちる</div>
+    <div style="font-size:2.4rem;font-weight:400;line-height:1.5;letter-spacing:.03em">歴史民俗博物館 Museum 展示</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>weight 600（CSS 最多 177 要素）</b>隠し div: 703.48px<br>= 700 と同じ面</div>
+    <div style="font-size:2.4rem;font-weight:600;line-height:1.5;letter-spacing:.03em">歴史民俗博物館 Museum 展示</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>weight 700</b>隠し div: 703.48px<br>600 と区別がつかない</div>
+    <div style="font-size:2.4rem;font-weight:700;line-height:1.5;letter-spacing:.03em">歴史民俗博物館 Museum 展示</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>weight 900</b>隠し div: 713.72px<br>800 もここに落ちる</div>
+    <div style="font-size:2.4rem;font-weight:900;line-height:1.5;letter-spacing:.03em">歴史民俗博物館 Museum 展示</div>
+  </div>
+  <p class="note">Google Fonts の URL は <code>Noto+Sans+JP:wght@400;700;900</code> の <b>3 本だけ</b>。CSS は 600 を 177 要素（最多）に当てているが、描画はすべて 700。<b>URL に 600 を足すと本当に SemiBold が降ってきて、既存より細く出る。</b></p>
+</div></section>
+
+<section class="section">
+  <p class="section-label">03.5 — Letter spacing</p>
+  <h2 class="section-title">字間は「継承」と「宣言」が混ざる</h2>
+  <table class="fluid">
+    <tr><th>要素</th><th>font-size</th><th>letter-spacing（実測）</th><th>em 換算</th><th>出どころ</th></tr>
+    <tr><td>body / 本文</td><td>16px</td><td class="hl">0.48px</td><td>0.03em</td><td><b>body からの px 継承</b></td></tr>
+    <tr><td>Lead</td><td>17px</td><td class="hl">0.51px</td><td>0.03em</td><td>同上（継承）</td></tr>
+    <tr><td>ナビ項目</td><td>14px</td><td class="hl">0.42px</td><td>0.03em</td><td>同上（継承）</td></tr>
+    <tr><td>展示室リスト</td><td>13px</td><td>1.3px</td><td><b>0.1em</b></td><td><b>要素が自分で宣言</b></td></tr>
+    <tr><td>Display</td><td>27px</td><td>2.7px</td><td><b>0.1em</b></td><td>同上（宣言）</td></tr>
+    <tr><td>キャプション</td><td>15px</td><td>1.5px</td><td><b>0.1em</b></td><td>同上（宣言）</td></tr>
+  </table>
+  <p class="note"><b>サイズが違うのに px が同じなら継承、サイズに比例して px が変わるなら em の宣言。</b> 本文は <code>body</code> に 1 回だけ <code>0.03em</code> を書き、リストと見出しには個別に <code>0.1em</code> を当てる。</p>
+</section>
+
+<section class="section-alt"><div class="section-inner">
+  <p class="section-label">03.9 — Accessibility</p>
+  <h2 class="section-title">文字サイズ切替は html[data-size] で rem を動かす</h2>
+  <div class="header-size" style="display:inline-block;text-align:left">
+    <span class="header-size__label">文字サイズ</span>
+    <div class="header-size__list">
+      <label><input type="radio" name="size2" value="f_size_standard" checked><span tabindex="0">標準</span></label>
+      <label><input type="radio" name="size2" value="f_size_middle"><span tabindex="0">大</span></label>
+      <label><input type="radio" name="size2" value="f_size_large"><span tabindex="0">特大</span></label>
+    </div>
+  </div>
+  <table class="fluid" style="margin-top:22px">
+    <tr><th></th><th>標準</th><th>大</th><th>特大</th></tr>
+    <tr><th>html</th><td class="hl">10px</td><td>12px</td><td>15px</td></tr>
+    <tr><th>body</th><td class="hl">16px</td><td>19.2px</td><td>24px</td></tr>
+    <tr><th>h1</th><td>32px</td><td>38.4px</td><td>48px</td></tr>
+    <tr><th>body の letter-spacing</th><td>0.48px</td><td>0.576px</td><td>0.72px</td></tr>
+    <tr><th>倍率</th><td>×1.0</td><td>×1.2</td><td>×1.5</td></tr>
+  </table>
+  <p class="note"><code>&lt;input type="radio" hidden&gt;</code> + <code>&lt;label&gt;</code> + <code>&lt;span tabindex="0"&gt;</code> の構成で、ラジオの意味論を保ったまま見た目を作る。選択は localStorage（<code>headerSize</code>）に永続化される。<b>サイズを px で直書きするとこの機能が丸ごと壊れる。</b></p>
+</div></section>
+
+<section class="section">
+  <p class="section-label">04 — Components</p>
+  <h2 class="section-title">Buttons / Tiles / Cards</h2>
+  <div class="btn-grid">
+    <a href="#" class="btn btn-primary">総合展示一覧へ</a>
+    <a href="#" class="btn btn-primary-sm">カレンダー</a>
+    <a href="#" class="btn btn-secondary">職員の採用情報</a>
+  </div>
+
+  <div class="tile-grid" style="margin-top:34px">
+    <a href="#" class="tile"><div class="tile-title">開館時間・入館料</div></a>
+    <a href="#" class="tile"><div class="tile-title">アクセス</div></a>
+    <a href="#" class="tile"><div class="tile-title">フロアマップ</div></a>
+  </div>
+
+  <h3 class="section-title" style="font-size:2rem;margin-top:44px">展示室リスト</h3>
+  <ul class="ex-list">
+    <li><a href="#"><span class="num">1</span>先史・古代　日本列島に人類が出現した約3万7千年前の旧石器時代から</a></li>
+    <li><a href="#"><span class="num">2</span>中世　国風文化からヨーロッパに出会う戦国時代まで</a></li>
+    <li><a href="#"><span class="num">3</span>近世　ひと・もの・地域が交流した活力ある江戸時代</a></li>
+    <li><a href="#"><span class="num">5</span>近代　近代という時代の光と陰　様々な人びとの経験から見つめる</a></li>
+  </ul>
+
+  <div class="card-grid" style="margin-top:34px">
+    <a href="#" class="card">
+      <div class="card-media"></div>
+      <div class="card-body">
+        <span class="card-date">開催期間 2026年10月6日(火)〜11月29日(日)</span>
+        <span class="badge badge-exhibit">企画展示</span>
+        <div class="card-title">アイヌ民族と博覧会 ―150年の経験―</div>
+      </div>
+    </a>
+    <a href="#" class="card">
+      <div class="card-media"></div>
+      <div class="card-body">
+        <span class="card-date">開催日 2026年12月12日(土)</span>
+        <span class="badge badge-forum">歴博フォーラム</span>
+        <div class="card-title">第125回 歴博フォーラム「災害ユートピアとしての村」</div>
+      </div>
+    </a>
+    <a href="#" class="card">
+      <div class="card-media"></div>
+      <div class="card-body">
+        <span class="card-date">開催期間 2026年11月1日(土)〜11月24日(月)</span>
+        <span class="badge badge-plant">植物苑特別企画</span>
+        <div class="card-title">「伝統の古典菊」（2026年度）</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section class="section-alt"><div class="section-inner">
+  <p class="section-label">04 — Forms</p>
+  <h2 class="section-title">Inputs</h2>
+  <div class="form-grid">
+    <div class="field">
+      <label for="h1f">お名前</label>
+      <input id="h1f" type="text" value="葛原 健太">
+      <p class="field-msg">全角でご入力ください</p>
+    </div>
+    <div class="field is-focus">
+      <label for="h2f">ご来館予定日（フォーカス）</label>
+      <input id="h2f" type="text" value="2026年11月24日">
+      <p class="field-msg">フォーカスリングは --outline-color（#9b5100）</p>
+    </div>
+    <div class="field is-error">
+      <label for="h3f">人数（エラー）</label>
+      <input id="h3f" type="text" value="二十名">
+      <p class="field-msg">半角数字でご入力ください</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="section">
+  <p class="section-label">06 — Depth &amp; Elevation</p>
+  <h2 class="section-title">ぼかし 0 のハードシャドウ</h2>
+  <div class="elev-grid">
+    <div class="elev e1"><div class="elev-name">Level 1 — ボタン</div><div class="elev-val">rgba(0,0,0,.2) 6px 6px 0 0</div></div>
+    <div class="elev e2"><div class="elev-name">Level 2 — タイル</div><div class="elev-val">rgba(0,0,0,.2) 10px 10px 0 0</div></div>
+    <div class="elev e3"><div class="elev-name">Level 3 — 浮き</div><div class="elev-val">rgba(0,0,0,.3) 3px 3px 12px 0</div></div>
+    <div class="elev e4"><div class="elev-name">Level 4 — ドロップダウン</div><div class="elev-val">rgba(0,0,0,.16) 0 3px 12px 0</div></div>
+  </div>
+  <p class="note">Level 1 / 2 は <code>blur: 0</code> / <code>spread: 0</code>。ぼかさず右下にベタの黒を 20% で置く、版ズレ・シルクスクリーンのような陰。<b>要素の大きさに応じて 6px → 10px とオフセットを変えているのも意図。</b></p>
+</section>
+
+<section class="section-alt"><div class="section-inner">
+  <p class="section-label">08 — Responsive</p>
+  <h2 class="section-title">768 / 769px に 3.18 倍の崖がある</h2>
+  <table class="fluid">
+    <tr><th>幅</th><th>html</th><th>body</th><th>line-height</th><th>letter-spacing</th></tr>
+    <tr><td>1366px（帯の境目・連続）</td><td>10px</td><td>16px</td><td>32px</td><td>0.48px</td></tr>
+    <tr><td>1365px</td><td>10px</td><td>15.9883px</td><td>31.9766px</td><td>0.4796px</td></tr>
+    <tr><td>1200px</td><td>10px</td><td>14.0556px</td><td>28.1113px</td><td>0.4217px</td></tr>
+    <tr><td>1024px</td><td>10px</td><td>11.9941px</td><td>23.9883px</td><td>0.3598px</td></tr>
+    <tr><td>834px</td><td>10px</td><td>9.7687px</td><td>19.5373px</td><td>0.2931px</td></tr>
+    <tr><td><b>769px</b></td><td>10px</td><td class="hl">9.0073px ← 最小</td><td>18.0146px</td><td>0.2702px</td></tr>
+    <tr><td><b>768px</b></td><td>10px</td><td class="hl">28.672px ← 3.18倍に跳ぶ</td><td>57.344px</td><td>0.8602px</td></tr>
+    <tr><td>428px</td><td>10px</td><td>15.9787px</td><td>31.9573px</td><td>0.4794px</td></tr>
+    <tr><td>375px（モバイル設計幅）</td><td>10px</td><td>14px</td><td>28px</td><td>0.42px</td></tr>
+  </table>
+  <p class="note">
+    <code>html { font-size: 10px }</code> は全幅で固定。動くのは <code>body</code> だけで、
+    <b>≥1366px は <code>1.6rem</code>、769〜1365px は <code>1.1713vw</code>、≤768px は <code>3.73333vw</code></b> の 3 帯。
+    <b>タブレット帯の本文は 10px を切る</b>（834px で 9.77px、769px で 9.01px が最小）。
+    <b>規定の 4 幅（1440 / 1200 / 834 / 375px）では崖が見えない。</b>
+    崖を確かめるには <code>only screen and (max-width: 768px)</code> の境界 ±1px を測る。
+  </p>
+</div></section>
+
+<section class="section">
+  <p class="section-label">05 — Layout</p>
+  <h2 class="section-title">コンテナは 1130px / 1000px</h2>
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:100%">viewport</div>
+    <div class="layout-bar" style="width:1130px;max-width:100%">container 1130px（4 箇所）</div>
+    <div class="layout-bar" style="width:1000px;max-width:100%">narrow 1000px（2 箇所）</div>
+    <div class="layout-bar" style="width:410px;max-width:100%">column 410px（1 箇所）</div>
+  </div>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:5px"></div><div class="radius-label">5px（カード / 39 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:6px"></div><div class="radius-label">6px（日付 / 14 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:12px"></div><div class="radius-label">12px（パネル / 27 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:12px 0"></div><div class="radius-label">12px 0（バッジ / 8 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:9999px"></div><div class="radius-label">9999px（ピル / 8 要素）</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-cols">
+      <div class="footer-col">
+        <div class="footer-col-title">展示・イベント</div>
+        <a href="#">総合展示</a><a href="#">企画展示</a><a href="#">くらしの植物苑</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">利用案内</div>
+        <a href="#">開館時間・入館料</a><a href="#">アクセス</a><a href="#">フロアマップ</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">研究・大学院</div>
+        <a href="#">科研費研究</a><a href="#">調達情報</a><a href="#">職員の採用情報</a>
+      </div>
+    </div>
+    <p class="footer-copy">Copyright (C) National Museum of Japanese History — このページは DESIGN.md の実測値から組んだプレビューです。</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: りそなホールディングス（Resona Holdings）</title>
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は実サイトに 0 個（blocked 0 / body 宣言 0 で確定）。
+       以下は computed style の実測値。2026-11-07 */
+    --green:        #008756;   /* ★りそなグリーン。文字 53 要素 ＋ 面 10 要素 */
+    --orange:       #fea230;   /* 検索ボタン専用（1 要素） */
+    --orange-acc:   #ee6d34;   /* アクセント（1 要素） */
+    --black:        #000000;   /* ★本文。可視 122 要素 */
+    --dark:         #333333;   /* 検索ボタンのラベルのみ */
+    --white:        #ffffff;
+    --danger:       #ff0000;   /* 「ご注意ください」の 1 要素のみ */
+    --tint-green:   #f0f9f1;   /* ナビのドロップダウン面・下層 h1 帯（可視 4 要素） */
+    --tint-green2:  #e2f3eb;   /* ナビの選択・ホバー面（可視 4 要素） */
+    --surface:      #f7f7f7;
+    --border:       #dbdbdb;
+    --border2:      #eaeaea;
+    --rule:         #dedede;   /* 区切り線（linear-gradient のハードストップ） */
+    --bg:           #ffffff;   /* pageBackground.resolved / 根拠 body */
+
+    /* カテゴリバッジ 4 色（面だけ変えて文字は黒のまま） */
+    --badge-news:   #ffc174;   /* お知らせ */
+    --badge-prod:   #a5dabe;   /* 商品・サービス */
+    --badge-ir:     #b0dbea;   /* IR */
+    --badge-upd:    #f9b0c3;   /* 更新情報 */
+
+    /* === Fonts ===
+       Web フォントは 1 本も読まない（@font-face 5 件はすべてアイコン）。
+       OS ローカルの游ゴシック体に完全に委ねる設計なので、
+       macOS では実サイトと同一表示になる。 */
+    --font: 游ゴシック体, YuGothic, 游ゴシック, "Yu Gothic",
+            "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro",
+            "ＭＳ Ｐゴシック", "MS PGothic", メイリオ, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height ===
+       本文 1.75（99 要素）／ リスト 1.86（27 要素）／ UI 1.29 ／ ラベル 1.00（37 要素） */
+    --lh-body:  1.75;
+    --lh-list:  1.86;
+    --lh-ui:    1.29;
+    --lh-tight: 1.00;
+
+    /* === Letter spacing: 2 ページとも全要素 normal（実測 185 / 111 要素） === */
+    --ls: normal;
+
+    /* === Radius: 4px（ボタン24） / 5px（バッジ10） / 3px（トグル・タブ9） === */
+    --r-btn:   4px;
+    --r-badge: 5px;
+    --r-sm:    3px;
+
+    /* === Shadow: サイト全体でこの 1 種類だけ（実測 8 要素） === */
+    --shadow: rgba(0, 0, 0, 0.098) 0 8px 2px -5px;
+
+    --container: 1200px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { font-size: 62.5%; }   /* = 10px。全幅で固定。流体は一切使わない */
+
+  body {
+    background: var(--bg);
+    color: var(--black);
+    font-family: var(--font);
+    /* 実サイトは body 18px / line-height 1.75（≥897px）。サイズは em で入れ子にする */
+    font-size: 18px;
+    font-weight: 500;
+    line-height: var(--lh-body);
+    letter-spacing: var(--ls);
+    /* ★実サイトの body に当たっている。日本語の禁則処理を無効にする */
+    word-break: break-all;
+    /* font-feature-settings は実サイトで 1 要素も使われていない（実測 0 件） */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid var(--border2); }
+  .header-top { max-width: var(--container); margin: 0 auto; padding: 14px 20px; display: flex; align-items: center; gap: 24px; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-mark { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--green); color: var(--green); display: flex; align-items: center; justify-content: center; font-size: 0.889em; font-weight: 700; line-height: 1; }
+  .logo-text { line-height: 1.2; }
+  .logo-en { font-size: 0.667em; color: var(--green); font-weight: 700; }
+  .logo-ja { font-size: 1.1em; font-weight: 700; }
+  .header-util { margin-left: auto; display: flex; align-items: center; gap: 20px; }
+  .header-util a { font-size: 14px; font-weight: 700; color: var(--black); text-decoration: none; line-height: var(--lh-ui); }
+
+  /* FONT SIZE TOGGLE（実サイトの 標準／拡大） */
+  .fs-switch { display: flex; align-items: center; gap: 10px; }
+  .fs-switch .label { font-size: 14px; font-weight: 500; line-height: var(--lh-tight); }
+  .fs-switch ul { display: flex; list-style: none; }
+  .fs-switch a { display: block; font-size: 14px; font-weight: 700; line-height: var(--lh-tight); padding: 5px 15px; text-decoration: none; border: 1px solid var(--green); color: var(--green); background: var(--white); }
+  .fs-switch li:first-child a { border-radius: var(--r-sm) 0 0 var(--r-sm); }
+  .fs-switch li:last-child  a { border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+  .fs-switch a.is-select { background: var(--green); color: var(--white); }
+
+  /* GLOBAL NAV */
+  .gnav { background: var(--green); }
+  .gnav ul { max-width: var(--container); margin: 0 auto; display: flex; list-style: none; }
+  .gnav a { display: block; padding: 18px 28px; color: var(--white); font-size: 0.889em; font-weight: 700; line-height: var(--lh-tight); text-decoration: none; }
+  .gnav li.is-current a { background: var(--tint-green); color: var(--green); }
+
+  /* SECTIONS */
+  .section { max-width: var(--container); margin: 0 auto; padding: 56px 20px; }
+  .section-alt { background: var(--surface); }
+  .section-alt .section-inner { max-width: var(--container); margin: 0 auto; padding: 56px 20px; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: #767676; margin-bottom: 8px; word-break: normal; }
+  .section-title { font-size: 26px; font-weight: 700; line-height: 1.05; margin-bottom: 8px; }
+  .section-title::before { content: ""; display: inline-block; width: 4px; height: 24px; background: var(--green); margin-right: 10px; vertical-align: -3px; }
+  .section-lead { font-size: 18px; line-height: var(--lh-body); margin-bottom: 32px; max-width: 860px; }
+  .note { font-size: 14px; line-height: 1.9; color: #555; margin-top: 18px; max-width: 880px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--border2); padding: 1px 5px; word-break: normal; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+  .swatch { border: 1px solid var(--border); border-radius: var(--r-btn); overflow: hidden; background: var(--white); }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 12px; }
+  .swatch-name { font-size: 14px; font-weight: 700; line-height: var(--lh-ui); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: #767676; margin-top: 3px; }
+  .swatch-use { font-size: 12px; line-height: 1.6; color: #555; margin-top: 6px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--border2); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: #767676; line-height: 1.75; word-break: normal; }
+  .type-meta b { display: block; font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--black); }
+  .em-scale { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; margin-bottom: 26px; }
+  .em-scale span { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 8px 14px; line-height: var(--lh-tight); }
+
+  /* NEWS LIST（区切り線は linear-gradient のハードストップ） */
+  .newslist { list-style: none; }
+  .newslist li { padding: 18px 0; background: linear-gradient(var(--white) 48%, var(--rule) 48%, var(--rule) 52%, var(--white) 52%, var(--white) 100%); background-size: 100% 1px; background-position: 0 100%; background-repeat: no-repeat; }
+  .newslist .row { display: flex; align-items: flex-start; gap: 16px; }
+  .newslist .date { font-size: 12px; font-weight: 700; line-height: 1.5; width: 120px; flex-shrink: 0; padding-top: 4px; word-break: normal; }
+  .newslist a { font-size: 18px; font-weight: 500; line-height: 1.5; color: var(--green); text-decoration: none; }
+  .newslist a:hover { text-decoration: underline; }
+  .rule-green { height: 12px; background: linear-gradient(var(--white) 48%, var(--green) 48%, var(--green) 52%, var(--white) 52%, var(--white) 100%); margin: 28px 0; }
+
+  .badge { display: inline-block; font-size: 12px; font-weight: 700; line-height: 1.5; color: var(--black); padding: 4px 3px; border-radius: var(--r-badge); min-width: 96px; text-align: center; flex-shrink: 0; word-break: normal; }
+  .badge-news { background: var(--badge-news); }
+  .badge-prod { background: var(--badge-prod); }
+  .badge-ir   { background: var(--badge-ir); }
+  .badge-upd  { background: var(--badge-upd); }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 24px; }
+  .btn { font-family: var(--font); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; border: 0; }
+  .btn-primary { background: var(--green); color: var(--white); font-size: 18px; font-weight: 700; line-height: 18px; padding: 13.5px 5px; border-radius: var(--r-btn); box-shadow: var(--shadow); min-width: 260px; }
+  .btn-link { background: var(--green); color: var(--white); font-size: 18px; font-weight: 700; line-height: var(--lh-body); padding: 10.5px 10px 10.5px 5px; border-radius: var(--r-btn); box-shadow: var(--shadow); min-width: 320px; }
+  .btn-outline { background: var(--white); color: var(--green); border: 1px solid var(--green); font-size: 15px; font-weight: 700; line-height: 1.44; padding: 10px 22px; border-radius: var(--r-btn); }
+
+  /* SEARCH BAR（緑の帯 ＋ オレンジのボタン） */
+  .searchbar { background: var(--green); border-radius: var(--r-btn); padding: 16px; display: flex; align-items: center; gap: 14px; }
+  .searchbar .icon { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--white); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .searchbar input { flex: 1; height: 44px; border: 0; border-radius: var(--r-sm) 0 0 var(--r-sm); padding: 5px 14px; font-family: var(--font); font-size: 15px; line-height: var(--lh-ui); color: var(--black); }
+  .searchbar input::placeholder { color: #8a8a8a; }
+  .searchbar .submit { height: 44px; min-width: 96px; border: 1px solid var(--white); border-radius: 0 var(--r-sm) var(--r-sm) 0; background: var(--orange); color: var(--dark); font-family: var(--font); font-size: 18px; font-weight: 700; line-height: 18px; cursor: pointer; box-shadow: var(--shadow); }
+  .searchbar.is-focus input { outline: 3px solid #ffe2b3; outline-offset: -1px; }
+
+  /* TABS */
+  .tabs { display: flex; list-style: none; gap: 4px; }
+  .tabs li { background: var(--tint-green); border-radius: var(--r-sm) var(--r-sm) 0 0; }
+  .tabs li.is-active { background: var(--green); }
+  .tabs a { display: block; padding: 12px 26px; font-size: 0.889em; font-weight: 700; line-height: var(--lh-tight); color: var(--green); text-decoration: none; }
+  .tabs li.is-active a { color: var(--white); }
+  .tab-panel { background: var(--white); border: 1px solid var(--border2); border-radius: 0 0 var(--r-sm) var(--r-sm); padding: 24px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+  .card { border: 1px solid var(--border2); border-radius: var(--r-btn); padding: 20px; background: var(--white); text-decoration: none; color: var(--black); display: block; }
+  .card-title { font-size: 0.889em; font-weight: 700; line-height: var(--lh-list); color: var(--green); }
+  .card-text { font-size: 0.778em; line-height: var(--lh-list); margin-top: 10px; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+  .field label { display: block; font-size: 14px; font-weight: 700; line-height: var(--lh-ui); margin-bottom: 8px; }
+  .field input, .field select { width: 100%; background: var(--white); color: var(--black); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 5px 12px; height: 48px; font-family: var(--font); font-size: 16px; line-height: var(--lh-ui); }
+  .field.is-focus input { outline: 2px solid var(--green); outline-offset: 1px; }
+  .field.is-error input { border-color: var(--danger); }
+  .field-msg { font-size: 12px; line-height: 1.6; color: #767676; margin-top: 6px; }
+  .field.is-error .field-msg { color: var(--danger); }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 26px; }
+  .elev { background: var(--white); border: 1px solid var(--border2); border-radius: var(--r-btn); padding: 26px; text-align: center; }
+  .elev.e1 { box-shadow: var(--shadow); border-color: transparent; }
+  .elev-name { font-size: 16px; font-weight: 700; line-height: var(--lh-ui); }
+  .elev-val { font-family: var(--font-mono); font-size: 11px; color: #767676; margin-top: 8px; word-break: break-all; }
+
+  /* LAYOUT */
+  .layout-demo { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .layout-bar { background: var(--tint-green); height: 36px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; color: #3a6b55; border-radius: var(--r-sm); }
+  .radius-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 28px; justify-content: center; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 108px; height: 68px; background: var(--tint-green2); border: 1px solid var(--border); }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; color: #767676; margin-top: 7px; }
+
+  /* WORD-BREAK DEMO */
+  .wb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+  .wb-col h4 { font-size: 14px; font-weight: 700; line-height: var(--lh-ui); margin-bottom: 8px; }
+  .wb-box { width: 230px; border: 1px solid var(--border); border-radius: var(--r-sm); padding: 12px; font-size: 15px; line-height: var(--lh-body); background: var(--white); }
+  .wb-box.normal { word-break: normal; }
+  .wb-box.breakall { word-break: break-all; }
+
+  /* FOOTER */
+  .footer { background: var(--green); color: var(--white); padding: 40px 20px; margin-top: 56px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-cols { display: flex; gap: 48px; flex-wrap: wrap; }
+  .footer-col-title { font-size: 0.833em; font-weight: 700; line-height: var(--lh-list); }
+  .footer-col a { display: block; font-size: 0.778em; line-height: var(--lh-list); color: var(--white); text-decoration: none; opacity: .9; }
+  .footer-copy { font-size: 12px; line-height: 1.5; margin-top: 28px; opacity: .85; }
+
+  @media screen and (max-width: 896px) {
+    /* 実サイトの切替点。body が 18px → 16px、行間が 1.75 → 1.5625 になる */
+    body { font-size: 16px; line-height: 1.5625; }
+    .section, .section-alt .section-inner { padding: 40px 16px; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .gnav ul { overflow-x: auto; }
+    .header-util { gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <div class="logo">
+      <span class="logo-mark">R</span>
+      <span class="logo-text">
+        <span class="logo-en">Resona Group</span><br>
+        <span class="logo-ja">りそなホールディングス</span>
+      </span>
+    </div>
+    <div class="header-util">
+      <a href="#">よくあるご質問</a>
+      <a href="#">サイトマップ</a>
+      <a href="#">English</a>
+      <div class="fs-switch">
+        <span class="label">文字サイズ</span>
+        <ul>
+          <li><a href="#" class="is-select">標準</a></li>
+          <li><a href="#">拡大</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="gnav">
+  <ul>
+    <li class="is-current"><a href="#">ホーム</a></li>
+    <li><a href="#">グループの概要</a></li>
+    <li><a href="#">株主・投資家の皆さまへ</a></li>
+    <li><a href="#">サステナビリティ</a></li>
+    <li><a href="#">ニュースルーム</a></li>
+    <li><a href="#">採用情報</a></li>
+  </ul>
+</nav>
+
+<section class="section">
+  <p class="section-label">01 — Visual Theme</p>
+  <h2 class="section-title">りそなグリーン1色で全部を仕切る</h2>
+  <p class="section-lead">面も文字もリンクも同じ <code>#008756</code>。和文 Web フォントは 1 本も読まず、OS ローカルの游ゴシック体に委ねる。サイズはほぼ全部 <code>em</code> で書き、<code>body</code> 18px から入れ子で導く。</p>
+  <div class="em-scale">
+    <span style="font-size:0.667em">0.667em = 12.006px</span>
+    <span style="font-size:0.778em">0.778em = 14.004px（最多 74 要素）</span>
+    <span style="font-size:0.889em">0.889em = 16.002px</span>
+    <span style="font-size:1.44em">1.44em = 25.92px</span>
+    <span style="font-size:2.056em">2.056em = 37.008px</span>
+  </div>
+  <p class="note"><b>端数は意図したものではなく <code>em</code> の計算結果。</b> <code>14.004px</code> を px で直書きしない。<code>body</code> が 16px に落ちるモバイルでは、同じ <code>0.778em</code> が <code>12.448px</code> になる。</p>
+</section>
+
+<section class="section-alt"><div class="section-inner">
+  <p class="section-label">02 — Color Palette</p>
+  <h2 class="section-title">緑はリンクの色と面の色を兼ねる</h2>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#008756"></div><div class="swatch-body"><div class="swatch-name">りそなグリーン</div><div class="swatch-hex">#008756</div><div class="swatch-use">文字 53 要素 ＋ 面 10 要素。ナビ帯・主要ボタン・本文リンク</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fea230"></div><div class="swatch-body"><div class="swatch-name">Search Orange</div><div class="swatch-hex">#fea230</div><div class="swatch-use">検索ボタン専用（1 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#000000</div><div class="swatch-use">本文。可視 122 要素。このサイトは純黒を使う</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f0f9f1"></div><div class="swatch-body"><div class="swatch-name">Surface Light Green</div><div class="swatch-hex">#f0f9f1</div><div class="swatch-use">ドロップダウン面・下層 h1 帯（可視 4 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e2f3eb"></div><div class="swatch-body"><div class="swatch-name">Surface Green Tint</div><div class="swatch-hex">#e2f3eb</div><div class="swatch-use">ナビの選択・ホバー面（可視 4 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#dbdbdb"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#dbdbdb</div><div class="swatch-use">枠・区切り</div></div></div>
+  </div>
+
+  <h3 class="section-title" style="font-size:20px;margin-top:40px">カテゴリバッジ：面だけ 4 色、文字は黒のまま</h3>
+  <div class="btn-grid" style="margin-top:16px">
+    <span class="badge badge-news">お知らせ</span>
+    <span class="badge badge-prod">商品・サービス</span>
+    <span class="badge badge-ir">IR</span>
+    <span class="badge badge-upd">更新情報</span>
+  </div>
+  <p class="note">4 色とも <code>border-radius: 5px</code> / <code>padding: 4px 3px</code> / <code>12px</code> / <code>weight 700</code> / 文字は <code>#000000</code> で揃う。</p>
+</div></section>
+
+<section class="section">
+  <p class="section-label">03 — Typography</p>
+  <h2 class="section-title">游ゴシック体 1 本・字間は normal</h2>
+
+  <div class="type-row">
+    <div class="type-meta"><b>Page Title（下層 h1）</b>37.008px（= 18px × 2.056em）<br>weight 400 / lh 1.14 / ls normal</div>
+    <div style="font-size:37.008px;font-weight:400;line-height:1.14">ブランド戦略</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Section Heading</b>26px / weight 700<br>lh 1.05 / ls normal</div>
+    <div style="font-size:26px;font-weight:700;line-height:1.05">株主・投資家の皆さまへ</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Sub Heading</b>25.92px（= 1.44em）/ weight 700<br>lh 1.44 / ls normal</div>
+    <div style="font-size:1.44em;font-weight:700;line-height:1.44">グループ経営戦略</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Body</b>18px / weight 500<br>lh 1.75（31.5px）/ ls normal</div>
+    <div style="font-size:18px;font-weight:500;line-height:1.75">りそなグループは、「お客さまの喜びがりそなの喜び」を実現するため、リテールに特化した金融サービスグループとして、お客さま一人ひとりに寄り添った提案を続けています。</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Nav / List</b>14.004px（= 0.778em）<br>weight 500 / lh 1.86 / ls normal<br>★最多の 74 要素</div>
+    <div style="font-size:0.778em;font-weight:500;line-height:1.86">トップメッセージ　グループ理念体系　りそなホールディングスの会社概要　ガバナンス</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Caption</b>12px / weight 700<br>lh 1.50 / ls normal</div>
+    <div style="font-size:12px;font-weight:700;line-height:1.5">（東証プライム市場 証券コード:8308）／ 情報提供：時事通信社</div>
+  </div>
+
+  <h3 class="section-title" style="font-size:20px;margin-top:44px">ウェイトは 500 と 700 の 2 段。ただし 500 は Regular として出る</h3>
+  <div class="type-row">
+    <div class="type-meta"><b>weight 500</b>実測 109 要素<br>隠し div の幅: 685.11px</div>
+    <div style="font-size:24px;font-weight:500;line-height:1.5">Resona りそなグループ 統合報告書</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>weight 700</b>実測 75 要素<br>隠し div の幅: 704.55px</div>
+    <div style="font-size:24px;font-weight:700;line-height:1.5">Resona りそなグループ 統合報告書</div>
+  </div>
+  <p class="note"><b>游ゴシックは Regular と Bold の 2 本しか持たない。</b> 隠し div で <code>font-weight</code> を 100〜900 に振ると <b>100〜500 が 685.11px / 600〜900 が 704.55px</b> の 2 面しか出ない。中太が要るなら <code>font-family</code> に <code>"游ゴシック Medium", "Yu Gothic Medium"</code> を足す必要がある（実サイトは入れていない）。</p>
+</section>
+
+<section class="section-alt"><div class="section-inner">
+  <p class="section-label">03.6 — word-break</p>
+  <h2 class="section-title">body に word-break: break-all が当たっている</h2>
+  <div class="wb-grid">
+    <div class="wb-col">
+      <h4>word-break: normal（ブラウザ既定）</h4>
+      <div class="wb-box normal">新しい価値の創造 Life-changing な毎日へ、りそなは寄り添います。</div>
+    </div>
+    <div class="wb-col">
+      <h4>word-break: break-all（★実サイト）</h4>
+      <div class="wb-box breakall">新しい価値の創造 Life-changing な毎日へ、りそなは寄り添います。</div>
+    </div>
+  </div>
+  <p class="note"><b>差が出るのは欧文の単語。</b> <code>normal</code> は <code>Life-</code> / <code>changing</code> で割るが、<code>break-all</code> は <code>Life-changin</code> / <code>g</code> と語の途中で切る。和文だけの例文では両者が同じ結果になるので判別できない。</p>
+</div></section>
+
+<section class="section">
+  <p class="section-label">03.9 — Accessibility</p>
+  <h2 class="section-title">文字サイズ拡大は html のクラス差し替え</h2>
+  <div class="btn-grid">
+    <div class="fs-switch">
+      <span class="label">文字サイズ</span>
+      <ul>
+        <li><a href="#" class="is-select">標準</a></li>
+        <li><a href="#">拡大</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">
+    <code>html</code> の class を <code>jsFontNormal</code> ⇄ <code>jsFontLarge</code> に差し替える。<b>ルート（10px）も <code>body</code>（18px）も動かない。</b>
+    CSS 側に <code>.jsFontLarge &lt;セレクタ&gt; { font-size: Npx }</code> を 1 つずつ手書きで並べる方式で、
+    実測すると <code>main</code> は 18 → 24px に増えるのに <b><code>p</code> は 12px のまま、<code>h2</code> は 26px のまま</b>置き去りになる。
+    <b>新規実装では <code>html</code> の <code>font-size</code> を変えて <code>rem</code> で連動させること。</b>
+  </p>
+</section>
+
+<section class="section-alt"><div class="section-inner">
+  <p class="section-label">04 — Components</p>
+  <h2 class="section-title">Buttons / Search / Tabs</h2>
+  <div class="btn-grid">
+    <a href="#" class="btn btn-primary">銀行の店舗・ATM検索</a>
+    <a href="#" class="btn btn-link">[最新]決算・IR関連資料 一括ダウンロード</a>
+    <a href="#" class="btn btn-outline">チャートを見る</a>
+  </div>
+
+  <div class="searchbar" style="margin-top:28px">
+    <span class="icon">⌕</span>
+    <input type="text" placeholder="キーワードから探す（例：決算説明会　株主優待制度）" aria-label="サイト内検索">
+    <button class="submit" type="button">検 索</button>
+  </div>
+  <div class="searchbar is-focus" style="margin-top:14px">
+    <span class="icon">⌕</span>
+    <input type="text" value="統合報告書" aria-label="サイト内検索（フォーカス状態）">
+    <button class="submit" type="button">検 索</button>
+  </div>
+  <p class="note">検索ボタンだけ <code>#fea230</code>。角丸は入力欄と合わせて <code>3px 0 0 3px</code> / <code>0 3px 3px 0</code> で 1 つのピルを割る。</p>
+
+  <ul class="tabs" style="margin-top:36px">
+    <li class="is-active"><a href="#">グループの概要</a></li>
+    <li><a href="#">サステナビリティ</a></li>
+    <li><a href="#">株主・投資家の皆さまへ</a></li>
+  </ul>
+  <div class="tab-panel">
+    <ul class="newslist">
+      <li><div class="row"><span class="date">2026年11月06日</span><span class="badge badge-ir">IR</span><a href="#">SMBCコンシューマーファイナンス株式会社への不動産担保ローン事業の一部譲渡について</a></div></li>
+      <li><div class="row"><span class="date">2026年11月05日</span><span class="badge badge-prod">商品・サービス</span><a href="#">個人向けサービス「りそなプラス」における地図検索機能の提供開始について</a></div></li>
+      <li><div class="row"><span class="date">2026年11月05日</span><span class="badge badge-news">お知らせ</span><a href="#">特殊詐欺等の被害拡大防止に向けた警察庁との「情報連携に関する協定」締結について</a></div></li>
+    </ul>
+    <div class="rule-green"></div>
+    <div class="card-grid">
+      <a href="#" class="card"><div class="card-title">りそなブランド</div><div class="card-text">りそなグループのブランドや広告について掲載しています。</div></a>
+      <a href="#" class="card"><div class="card-title">グループ広告・CM</div><div class="card-text">テレビCM・新聞広告のアーカイブをご覧いただけます。</div></a>
+      <a href="#" class="card"><div class="card-title">りそにゃ</div><div class="card-text">りそなグループの公式キャラクターを紹介します。</div></a>
+    </div>
+  </div>
+</div></section>
+
+<section class="section">
+  <p class="section-label">04 — Forms</p>
+  <h2 class="section-title">Inputs</h2>
+  <div class="form-grid">
+    <div class="field">
+      <label for="f1">お名前</label>
+      <input id="f1" type="text" value="葛原 健太">
+      <p class="field-msg">全角でご入力ください</p>
+    </div>
+    <div class="field is-focus">
+      <label for="f2">メールアドレス（フォーカス）</label>
+      <input id="f2" type="text" value="example@resona-gr.co.jp">
+      <p class="field-msg">確認のためもう一度ご入力いただきます</p>
+    </div>
+    <div class="field is-error">
+      <label for="f3">証券コード（エラー）</label>
+      <input id="f3" type="text" value="83O8">
+      <p class="field-msg">半角数字でご入力ください</p>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt"><div class="section-inner">
+  <p class="section-label">06 — Depth &amp; Elevation</p>
+  <h2 class="section-title">影はこの 1 種類しかない</h2>
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">Level 0</div><div class="elev-val">none</div></div>
+    <div class="elev e1"><div class="elev-name">Level 1</div><div class="elev-val">rgba(0,0,0,.098) 0 8px 2px -5px</div></div>
+  </div>
+  <p class="note"><code>spread: -5px</code> で広がりを打ち消した、浮きではなく接地感のある薄い影。実測 8 要素（すべてボタン）。<code>0 2px 4px rgba(0,0,0,.1)</code> のような一般的な値に置き換えないこと。</p>
+</div></section>
+
+<section class="section">
+  <p class="section-label">05 — Layout</p>
+  <h2 class="section-title">コンテナは 1200px</h2>
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:100%">viewport</div>
+    <div class="layout-bar" style="width:1200px;max-width:100%">container 1200px</div>
+  </div>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:3px"></div><div class="radius-label">3px（トグル・タブ / 9 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">4px（ボタン / 24 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:5px"></div><div class="radius-label">5px（バッジ / 10 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:3px 3px 0 0"></div><div class="radius-label">3px 3px 0 0（タブ / 6 要素）</div></div>
+  </div>
+  <p class="note"><b>ルートは全幅で 10px 固定。</b> 896 / 897px を境に <code>body</code> だけが 18px ⇄ 16px、行間が 1.75 ⇄ 1.5625 に切り替わる。<code>em</code> の入れ子なので全サイズが 8/9 に縮む。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-cols">
+      <div class="footer-col">
+        <div class="footer-col-title">グループの概要</div>
+        <a href="#">トップメッセージ</a>
+        <a href="#">グループ理念体系</a>
+        <a href="#">会社概要</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">株主・投資家の皆さまへ</div>
+        <a href="#">財務情報・IRライブラリー</a>
+        <a href="#">株式関連情報</a>
+        <a href="#">IRカレンダー</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">サステナビリティ</div>
+        <a href="#">マテリアリティ</a>
+        <a href="#">ESGデータ集</a>
+        <a href="#">外部評価・表彰</a>
+      </div>
+    </div>
+    <p class="footer-copy">© Resona Holdings, Inc. — このページは DESIGN.md の実測値から組んだプレビューです。</p>
+  </div>
+</footer>
+
+</body>
+</html>

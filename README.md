@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (619 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (622 sites)</a>
 </p>
 
 <table>
@@ -961,6 +961,11 @@
 </tr>
 <tr>
 <td align="center"><strong>オリックス</strong><br><img src="design-md/orix/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>りそなホールディングス</strong><br><img src="design-md/resona/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>三井住友銀行</strong><br><img src="design-md/smbc/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>国立歴史民俗博物館</strong><br><img src="design-md/rekihaku/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1641,11 +1646,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [商船三井 (MOL / Mitsui O.S.K. Lines)](https://www.mol.co.jp/) | Shipping / Corporate | [DESIGN.md](design-md/mol/DESIGN.md) | [preview.html](design-md/mol/preview.html) |
 | [川崎汽船 ("K" LINE / Kawasaki Kisen Kaisha)](https://www.kline.co.jp/ja/index.html) | Shipping / Corporate | [DESIGN.md](design-md/kline/DESIGN.md) | [preview.html](design-md/kline/preview.html) |
 | [オリックス (ORIX)](https://www.orix.co.jp/grp/) | Finance / Corporate | [DESIGN.md](design-md/orix/DESIGN.md) | [preview.html](design-md/orix/preview.html) |
+| [りそなホールディングス (Resona Holdings)](https://www.resona-gr.co.jp/) | Finance / Bank | [DESIGN.md](design-md/resona/DESIGN.md) | [preview.html](design-md/resona/preview.html) |
+| [三井住友銀行 (SMBC)](https://www.smbc.co.jp/) | Finance / Bank | [DESIGN.md](design-md/smbc/DESIGN.md) | [preview.html](design-md/smbc/preview.html) |
+| [国立歴史民俗博物館 (National Museum of Japanese History)](https://www.rekihaku.ac.jp/) | Museum / Culture | [DESIGN.md](design-md/rekihaku/DESIGN.md) | [preview.html](design-md/rekihaku/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (619 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (622 sites)</a>
 </p>
 
 <table>
@@ -2572,6 +2580,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>オリックス</strong><br><img src="design-md/orix/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>りそなホールディングス</strong><br><img src="design-md/resona/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>三井住友銀行</strong><br><img src="design-md/smbc/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>国立歴史民俗博物館</strong><br><img src="design-md/rekihaku/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
