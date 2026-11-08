@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 住友生命（Sumitomo Life）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400..900&family=Open+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトの CSS Custom Properties は 4 個だけで、全部 --embed-*（埋め込みウィジェット用）。
+       自社の設計トークンは存在しない。以下は computed style の実測値。2026-11-08 */
+    --red:        #e50012;   /* ★面の赤。帯・バナー・フッター（面 7 要素） */
+    --red-link:   #ff3502;   /* ★文字の赤。本文リンク・ニュースタイトル（文字 34 要素） */
+    --orange:     #ff9d00;   /* グラデーションの始点 */
+    --ink:        #1e1e1e;   /* ★本文。純黒ではない（可視 95 要素で最多） */
+    --muted:      #666666;   /* 日付・カテゴリ（可視 24 要素） */
+    --disabled:   #999999;   /* 下層の日付（可視 4 要素） */
+    --white:      #ffffff;
+    --surface:    #f8f8f8;   /* カードの地（面 5〜11 要素） */
+    --alert-bg:   #fdeeee;   /* 重要なお知らせ（面 2 要素） */
+    --embed-bg:   #fef8db;   /* --embed-sub-background-color */
+    --border:     #cccccc;   /* ピルの枠線 */
+    --bg:         #ffffff;   /* pageBackground はメガメニューを拾うので当てにしない。地色は白 */
+
+    /* === Gradients（2 本あり用途が違う） === */
+    --grad-btn:  linear-gradient(to right, #ff9d00 0, #ff9d00 50%, #e50012 100%);  /* 面 6 要素 */
+    --grad-text: linear-gradient(90deg, #ff9d00 0, #e50012 60%);                   /* background-clip: text / 3 要素 */
+
+    /* === Fonts ===
+       和文スタックは 2 語だけ。OS ローカル書体を 1 つも挟まない割り切り。
+       Noto Sans JP は可変フォント（wght@400..900）なので 400〜900 のどれも本当に出る。 */
+    --font:    "Noto Sans JP", sans-serif;
+    --font-en: "Open Sans", sans-serif;   /* 可視 5 要素だけ */
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: 本文 1.60（127 要素）／ 見出し・ボタン 1.40 ／ セクション見出し 1.20 === */
+    --lh-body: 1.6;
+    --lh-head: 1.4;
+    --lh-sect: 1.2;
+
+    /* === Letter spacing: palt で詰めた上から em で重ねる ===
+       サイズが違うと px が変わる（12px→-0.12px / 16px→-0.16px）ので
+       body からの px 継承ではなく、各要素が em を宣言している型 */
+    --ls-s:    -0.01em;    /* 日付・注記・本文リンク（12px→-0.12px が 56 要素） */
+    --ls-m:    -0.015em;   /* 見出し・ナビ・強調（16px→-0.24px が 25 要素） */
+    --ls-btn:  -0.03em;    /* ピルボタンのラベル（14px→-0.42px が 12 要素） */
+    --ls-hero: 0.03em;     /* ★ヒーロー見出しだけ正（36px→+1.08px） */
+
+    /* === Radius === */
+    --r-card:  6px;    /* カード・アラート（22 要素で最多） */
+    --r-pill:  900px;  /* ピルボタン（16 要素）。丸めない */
+    --r-pill-s: 21px;  /* 小さいピル */
+    --r-login: 4px;
+
+    --container: 1380px;   /* 下層の標準。トップは 1780px */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* 実サイトは html に font-size を 1 つも書いていない（UA 既定の 16px）。
+     切り替わるのは body だけ。ユーザーのブラウザ設定がそのまま効く */
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 1rem;                /* = 16px。767px 以下で 0.875rem */
+    font-weight: 400;
+    line-height: var(--lh-body);
+    word-break: normal;             /* 実サイトも normal */
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (max-width: 767px) { body { font-size: 0.875rem; } }
+
+  /* ★ palt はサイズのユーティリティクラスに同梱されている（実サイトの宣言位置）。
+       .t-base / .t-large / … を当てると詰めが自動で付いてくる。実測 116 要素 */
+  .t-xxsmall, .t-xsmall, .t-small, .t-base, .t-large, .t-xlarge { font-feature-settings: "palt"; }
+  .t-xxsmall { font-size: 10px; }
+  .t-xsmall  { font-size: 12px; letter-spacing: var(--ls-s); }
+  .t-small   { font-size: 14px; }
+  .t-base    { font-size: 16px; }
+  .t-large   { font-size: 20px; letter-spacing: var(--ls-m); }
+  .t-xlarge  { font-size: 28px; letter-spacing: var(--ls-m); }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid #eeeeee; background: var(--white); }
+  .header-inner { max-width: var(--container); margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; gap: 24px; }
+  .brand { display: flex; flex-direction: column; gap: 2px; }
+  .brand-slogan { font-size: 10px; font-weight: 400; line-height: 1.6; color: var(--muted); }
+  .brand-name { font-size: 24px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-m); color: var(--red); }
+  .header-util { margin-left: auto; display: flex; align-items: center; gap: 18px; }
+  .header-util a { font-size: 12px; font-weight: 400; line-height: var(--lh-head); letter-spacing: var(--ls-s); color: var(--ink); text-decoration: none; }
+  .btn-login { background: var(--grad-btn); color: var(--white); font-size: 12px; font-weight: 700; line-height: 1.4; padding: 8px 18px; border-radius: var(--r-login); text-decoration: none; }
+
+  .gnav { border-bottom: 1px solid #eeeeee; }
+  .gnav ul { max-width: var(--container); margin: 0 auto; display: flex; list-style: none; padding: 0 24px; gap: 32px; }
+  .gnav a { display: block; padding: 14px 0; font-size: 18px; font-weight: 600; line-height: var(--lh-head); letter-spacing: var(--ls-m); color: var(--ink); text-decoration: none; border-bottom: 3px solid transparent; }
+  .gnav a.is-current { border-bottom-color: var(--red); }
+
+  .alertbar { max-width: var(--container); margin: 20px auto 0; padding: 0 24px; }
+  .alertbar .box { background: var(--alert-bg); border-radius: var(--r-card); padding: 16px 20px; }
+  .alertbar .date { display: block; font-size: 12px; font-weight: 700; line-height: 1.4; letter-spacing: -0.18px; color: var(--red); }
+  .alertbar a { font-size: 16px; font-weight: 400; line-height: var(--lh-body); color: var(--ink); text-decoration: none; }
+
+  /* HERO
+     実サイトのヒーローは mv_00.png / mv_06.webp / mv_08.webp のスライドで、
+     コピーは画像に焼き込まれている。ここでは写真の代役を background-image に
+     2 枚重ねで持たせる（兄弟の絶対配置にすると lint が地色を見失う） */
+  .hero { max-width: 1780px; margin: 28px auto 0; padding: 0 24px; }
+  .hero-stage {
+    border-radius: var(--r-card); overflow: hidden; min-height: 420px;
+    display: flex; align-items: flex-end;
+    background-image: linear-gradient(to right, rgba(0,0,0,.42) 0%, rgba(0,0,0,.08) 60%),
+                      linear-gradient(135deg, #e50012 0%, #ff5a2b 48%, #ff9d00 100%);
+    padding: 48px 56px;
+  }
+  .hero-body { max-width: 640px; }
+  .hero-kicker { font-family: var(--font-en); font-size: 30px; font-weight: 700; line-height: var(--lh-sect); color: var(--white); }
+  .hero-title { font-size: 36px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-hero); color: var(--white); margin-top: 10px; }
+  .hero-note { font-size: 14px; font-weight: 400; line-height: var(--lh-body); letter-spacing: var(--ls-s); color: var(--white); margin-top: 14px; }
+  .hero-dots { display: flex; gap: 8px; margin-top: 22px; }
+  .hero-dots span { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.5); }
+  .hero-dots span.is-current { background: var(--white); }
+
+  /* SECTIONS */
+  .section { max-width: var(--container); margin: 0 auto; padding: 72px 24px; }
+  .section-alt { background: var(--surface); }
+  .section-inner { max-width: var(--container); margin: 0 auto; padding: 72px 24px; }
+  .section-label { font-family: var(--font-en); font-size: 14px; font-weight: 700; line-height: var(--lh-sect); color: var(--red-link); }
+  .section-title { font-size: 30px; font-weight: 700; line-height: var(--lh-sect); letter-spacing: var(--ls-m); margin-top: 10px; }
+  .section-title.is-grad {
+    background-image: var(--grad-text);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .section-lead { font-size: 16px; font-weight: 400; line-height: var(--lh-body); margin-top: 14px; max-width: 800px; }
+  .note { font-size: 14px; font-weight: 400; line-height: var(--lh-body); letter-spacing: var(--ls-s); color: var(--muted); margin-top: 20px; background: var(--white); border-left: 3px solid var(--red-link); padding: 14px 18px; border-radius: 0 var(--r-card) var(--r-card) 0; }
+  .section-alt .note { background: var(--white); }
+  .note code { font-family: var(--font-mono); font-size: 13px; background: var(--surface); padding: 1px 5px; border-radius: 3px; }
+  .section .note { background: var(--surface); }
+  .section .note code { background: var(--white); }
+
+  /* COLOR */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-top: 28px; }
+  .swatch { background: var(--white); border: 1px solid #eeeeee; border-radius: var(--r-card); overflow: hidden; }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 12px 14px; }
+  .swatch-name { font-size: 14px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-m); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .swatch-use { font-size: 12px; line-height: var(--lh-head); letter-spacing: var(--ls-s); color: var(--muted); margin-top: 6px; }
+
+  /* TYPE */
+  .type-row { display: grid; grid-template-columns: 240px 1fr; gap: 40px; padding: 22px 0; border-top: 1px solid #eeeeee; align-items: baseline; }
+  .type-meta { font-size: 12px; line-height: var(--lh-body); letter-spacing: var(--ls-s); color: var(--muted); }
+  .type-meta b { display: block; font-size: 14px; color: var(--ink); letter-spacing: var(--ls-m); }
+
+  .ls-demo { display: grid; grid-template-columns: 240px 1fr; gap: 40px; padding: 18px 0; border-top: 1px solid #eeeeee; align-items: baseline; }
+  .ls-demo .sample { font-size: 28px; font-weight: 700; line-height: var(--lh-head); }
+
+  /* COMPONENTS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 28px; align-items: center; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-family: var(--font); font-feature-settings: "palt"; }
+  .btn-primary { background: var(--grad-btn); color: var(--white); font-size: 16px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-m); padding: 16px 40px; border-radius: var(--r-pill); }
+  .btn-outline { background: var(--white); color: var(--ink); border: 1px solid var(--border); font-size: 14px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-m); padding: 13px 32px; border-radius: var(--r-pill); }
+  .btn-outline-s { background: var(--white); color: var(--ink); border: 1px solid var(--border); font-size: 12px; font-weight: 700; line-height: 1.6; letter-spacing: -0.18px; padding: 8px 20px; border-radius: var(--r-pill-s); }
+  .btn-label { background: var(--grad-btn); color: var(--white); font-size: 14px; font-weight: 600; line-height: var(--lh-head); letter-spacing: var(--ls-btn); padding: 14px 36px; border-radius: var(--r-pill); }
+  .link-red { color: var(--red-link); font-size: 14px; font-weight: 700; line-height: var(--lh-body); text-decoration: none; }
+  .link-red::after { content: " ›"; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; margin-top: 28px; }
+  .card { display: block; background: var(--white); border: 1px solid #eeeeee; border-radius: var(--r-card); padding: 26px 24px; text-decoration: none; color: var(--ink); }
+  .card-title { font-size: 20px; font-weight: 700; line-height: var(--lh-head); letter-spacing: -0.3px; font-feature-settings: "palt"; }
+  .card-text { font-size: 14px; font-weight: 400; line-height: var(--lh-body); color: var(--muted); margin-top: 10px; }
+
+  .newslist { list-style: none; margin-top: 28px; }
+  .newslist li { display: flex; gap: 24px; padding: 16px 0; border-bottom: 1px solid #eeeeee; align-items: baseline; }
+  .newslist .date { font-size: 12px; font-weight: 400; line-height: 1.4; letter-spacing: var(--ls-s); color: var(--muted); white-space: nowrap; }
+  .newslist a { font-size: 16px; font-weight: 400; line-height: var(--lh-body); color: var(--red-link); text-decoration: none; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; margin-top: 28px; }
+  .field label { display: block; font-size: 14px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-m); }
+  .field input { width: 100%; margin-top: 8px; font-family: var(--font); font-size: 16px; line-height: var(--lh-body); color: var(--ink); background: var(--white); border: 1px solid var(--border); border-radius: var(--r-card); padding: 12px 14px; }
+  .field.is-focus input { border-color: var(--red); box-shadow: 0 0 0 2px rgba(229,0,18,.18); }
+  .field.is-error input { border-color: var(--red-link); }
+  .field-msg { font-size: 12px; line-height: var(--lh-head); letter-spacing: var(--ls-s); color: var(--muted); margin-top: 6px; }
+  .field.is-error .field-msg { color: var(--red-link); }
+
+  /* LAYOUT DEMO */
+  .layout-demo { margin-top: 28px; display: flex; flex-direction: column; gap: 10px; }
+  .layout-bar { background: var(--embed-bg); border: 1px dashed var(--border); border-radius: var(--r-card); padding: 12px 16px; font-family: var(--font-mono); font-size: 13px; color: var(--ink); }
+  .radius-row { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 32px; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 120px; height: 72px; background: var(--grad-btn); }
+  .radius-label { font-size: 12px; line-height: var(--lh-head); letter-spacing: var(--ls-s); color: var(--muted); margin-top: 8px; }
+
+  .flat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-top: 28px; }
+  .flat { background: var(--white); border-radius: var(--r-card); padding: 22px; border: 1px solid #eeeeee; }
+  .flat.is-float { box-shadow: rgba(0,0,0,.2) 0 0 30px 10px; }
+  .flat-name { font-size: 14px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-m); }
+  .flat-val { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 8px; word-break: break-all; }
+
+  /* FOOTER */
+  .footer { background: var(--ink); color: var(--white); margin-top: 72px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; padding: 56px 24px 32px; }
+  .footer-cols { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 40px; }
+  .footer-col-title { font-size: 14px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-m); }
+  .footer-col a { display: block; font-size: 12px; font-weight: 400; line-height: 2; letter-spacing: var(--ls-s); color: rgba(255,255,255,.78); text-decoration: none; }
+  .footer-copy { margin-top: 40px; font-size: 10px; font-weight: 800; line-height: 1.6; color: rgba(255,255,255,.6); }
+
+  @media (max-width: 767px) {
+    .type-row, .ls-demo { grid-template-columns: 1fr; gap: 10px; }
+    .gnav ul { gap: 18px; overflow-x: auto; }
+    .hero-stage { padding: 32px 24px; min-height: 320px; }
+    .hero-title { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-slogan">あなたの未来を強くする</span>
+      <span class="brand-name">住友生命</span>
+    </div>
+    <div class="header-util">
+      <a href="#">ニュース</a>
+      <a href="#">お問合わせ</a>
+      <a href="#">よくあるご質問</a>
+      <a href="#" class="btn-login">ログイン</a>
+    </div>
+  </div>
+</header>
+
+<nav class="gnav">
+  <ul>
+    <li><a href="#" class="is-current">ご契約者さま</a></li>
+    <li><a href="#">保険をお考えのお客さま</a></li>
+    <li><a href="#">住友生命「Vitality」</a></li>
+    <li><a href="#">法人のお客さま</a></li>
+    <li><a href="#">住友生命について</a></li>
+  </ul>
+</nav>
+
+<div class="alertbar">
+  <div class="box">
+    <span class="date">2026年11月06日</span>
+    <a href="#">システムメンテナンスに伴う一部サービスのご利用停止について</a>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="hero-stage">
+    <div class="hero-body">
+      <p class="hero-kicker">for your well-being</p>
+      <h1 class="hero-title">住友生命は一人ひとりの<br>ウェルビーイングに<br>貢献します</h1>
+      <p class="hero-note">実サイトのこの領域は mv_00.png / mv_06.webp / mv_08.webp のスライドで、コピーは画像に焼き込まれている。ここでは写真の代役を地のグラデーションに置き換えている。</p>
+      <div class="hero-dots"><span class="is-current"></span><span></span><span></span><span></span><span></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <p class="section-label">01 — Visual Theme</p>
+  <h2 class="section-title">和文を二重に詰める</h2>
+  <p class="section-lead"><code>font-feature-settings: "palt"</code> をサイズのユーティリティクラスに同梱して配り（実測 116 要素）、<b>その上から負の <code>letter-spacing</code> を <code>em</code> で重ねる</b>。詰めてから空け直す設計の逆で、詰めた上にさらに詰める。影は 1 種も使わない。</p>
+  <p class="note"><b>宣言位置が特殊。</b> <code>body</code> でも <code>*</code> でも <code>html</code> でもなく、<code>.t-xxsmall</code> / <code>.t-xsmall</code> / <code>.t-small</code> / <code>.t-base</code> / <code>.t-large</code> / <code>.t-xlarge</code> の 6 クラスと <code>.mod-button</code> に書いてある。<b>サイズを当てると詰めが自動で付いてくる。</b></p>
+</section>
+
+<section class="section-alt"><div class="section-inner">
+  <p class="section-label">02 — Color Palette</p>
+  <h2 class="section-title is-grad">面の赤と文字の赤は別物</h2>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#e50012"></div><div class="swatch-body"><div class="swatch-name">住友生命レッド（面）</div><div class="swatch-hex">#e50012</div><div class="swatch-use">帯・バナー・フッター（面 7 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ff3502"></div><div class="swatch-body"><div class="swatch-name">リンクレッド（文字）</div><div class="swatch-hex">#ff3502</div><div class="swatch-use">本文リンク・ニュースタイトル（文字 34 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:linear-gradient(to right,#ff9d00 0,#ff9d00 50%,#e50012 100%)"></div><div class="swatch-body"><div class="swatch-name">CTA グラデーション</div><div class="swatch-hex">#ff9d00 0 → 50% → #e50012</div><div class="swatch-use">主要ボタンの面（6 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:linear-gradient(90deg,#ff9d00 0,#e50012 60%)"></div><div class="swatch-body"><div class="swatch-name">文字グラデーション</div><div class="swatch-hex">90deg / #ff9d00 → #e50012 60%</div><div class="swatch-use">background-clip: text（3 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#1e1e1e"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#1e1e1e</div><div class="swatch-use">本文（可視 95 要素で最多）。純黒ではない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#666666"></div><div class="swatch-body"><div class="swatch-name">Text Muted</div><div class="swatch-hex">#666666</div><div class="swatch-use">日付・カテゴリ（可視 24 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f8f8f8"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#f8f8f8</div><div class="swatch-use">カードの地</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fdeeee"></div><div class="swatch-body"><div class="swatch-name">Surface Alert</div><div class="swatch-hex">#fdeeee</div><div class="swatch-use">重要なお知らせ（面 2 要素）</div></div></div>
+  </div>
+  <p class="note"><b>グラデーションは 2 本あり、用途が違う。</b> 50% まで <code>#ff9d00</code> を平らに置いてから赤へ送る<b>ボタン用</b>と、60% で赤に着地する<b>文字用</b>（<code>background-clip: text</code>）。角度・停止位置をそのまま写す。</p>
+</div></section>
+
+<section class="section">
+  <p class="section-label">03 — Typography</p>
+  <h2 class="section-title">ウェイトは可変フォントの 5 段</h2>
+
+  <div class="type-row">
+    <div class="type-meta"><b>Hero Copy</b>36px / weight 700<br>lh 1.40 / ls <b>+0.03em</b><br>★ここだけ正の字間</div>
+    <div style="font-size:36px;font-weight:700;line-height:1.4;letter-spacing:.03em">住友生命は一人ひとりの</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Page Title（下層 h1）</b>46px / weight 700<br>lh 1.40 / ls -0.015em</div>
+    <div style="font-size:46px;font-weight:700;line-height:1.4;letter-spacing:-.015em">住友生命について</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Section Heading</b>30px / weight 500<br>lh 1.20 / ls normal</div>
+    <div style="font-size:30px;font-weight:500;line-height:1.2">保険をお考えのお客さま</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Lead</b>20px / weight 700<br>lh 1.40 / ls -0.015em（-0.3px）</div>
+    <div style="font-size:20px;font-weight:700;line-height:1.4;letter-spacing:-.015em">ニュースリリース</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Nav</b>18px / weight 600<br>lh 1.40 / ls -0.015em（-0.27px）</div>
+    <div style="font-size:18px;font-weight:600;line-height:1.4;letter-spacing:-.015em">住友生命「Vitality」</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Body</b>16px（1rem）/ weight 400<br>lh 1.60（25.6px）/ ls normal<br>可視 56 要素</div>
+    <div style="font-size:16px;font-weight:400;line-height:1.6">住友生命は、創業以来100年以上にわたり、社会と共に歩んでまいりました。病気やケガなどの「リスク」に備えることはもちろん、日々を健康に、前向きに過ごすことも大切にしたい。</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Caption / Date</b>12px / weight 400<br>lh 1.40 / ls -0.01em（-0.12px）<br>★可視 66 要素</div>
+    <div style="font-size:12px;font-weight:400;line-height:1.4;letter-spacing:-.01em">2026年11月06日　お客さまのご契約内容や当社からの大切なお知らせ等について、詳細は以下よりご確認ください。</div>
+  </div>
+
+  <h3 class="section-title" style="font-size:20px;margin-top:44px">字間は「各要素が em を宣言する」型</h3>
+  <div class="ls-demo">
+    <div class="type-meta"><b>letter-spacing: normal</b>実測 142 要素</div>
+    <div class="sample" style="letter-spacing:normal;font-feature-settings:normal">「ウェルビーイング」に、貢献します。（株）</div>
+  </div>
+  <div class="ls-demo">
+    <div class="type-meta"><b>+ font-feature-settings: "palt"</b>実測 116 要素<br>隠し div: 2037.00px → 1673.91px（−17.8%）</div>
+    <div class="sample" style="letter-spacing:normal;font-feature-settings:'palt'">「ウェルビーイング」に、貢献します。（株）</div>
+  </div>
+  <div class="ls-demo">
+    <div class="type-meta"><b>palt + -0.015em</b>見出し・ナビ・強調<br>28px → -0.42px</div>
+    <div class="sample" style="letter-spacing:-.015em;font-feature-settings:'palt'">「ウェルビーイング」に、貢献します。（株）</div>
+  </div>
+  <div class="ls-demo">
+    <div class="type-meta"><b>palt + -0.03em</b>ピルボタンのラベル<br>14px → -0.42px</div>
+    <div class="sample" style="letter-spacing:-.03em;font-feature-settings:'palt'">「ウェルビーイング」に、貢献します。（株）</div>
+  </div>
+  <p class="note"><b>サイズが違うと px が変わる</b>（12px→−0.12px、16px→−0.16px、20px→−0.3px）ので、<code>body</code> からの px 継承ではなく<b>各要素が <code>em</code> を持っている</b>と確定できる。再現するときも <code>em</code> で書く。</p>
+
+  <h3 class="section-title" style="font-size:20px;margin-top:44px">可変フォントなので 5 段すべて出る</h3>
+  <div class="type-row">
+    <div class="type-meta"><b>weight 400</b>可視 108 要素</div>
+    <div style="font-size:24px;font-weight:400;line-height:1.4">住友生命 Vitality ウェルビーイング</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>weight 500</b>可視 37 要素</div>
+    <div style="font-size:24px;font-weight:500;line-height:1.4">住友生命 Vitality ウェルビーイング</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>weight 600</b>可視 6 要素</div>
+    <div style="font-size:24px;font-weight:600;line-height:1.4">住友生命 Vitality ウェルビーイング</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>weight 700</b>可視 87 要素</div>
+    <div style="font-size:24px;font-weight:700;line-height:1.4">住友生命 Vitality ウェルビーイング</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>weight 800</b>可視 5 要素（10px のみ）</div>
+    <div style="font-size:24px;font-weight:800;line-height:1.4">住友生命 Vitality ウェルビーイング</div>
+  </div>
+  <p class="note"><b>幅の実測ではウェイトを判定できない。</b> 和文の文字列で <code>font-weight</code> を 100〜900 に振ると<b>9 段すべて 2037.00px に揃う</b>（CJK グリフは等幅）。判定は <code>document.fonts</code> の <code>weight: "400 900"</code> と Google Fonts の URL（<code>wght@400..900</code>）の 2 つで行う。</p>
+</section>
+
+<section class="section-alt"><div class="section-inner">
+  <p class="section-label">04 — Components</p>
+  <h2 class="section-title">CTA はグラデーションのピル</h2>
+  <div class="btn-grid">
+    <a href="#" class="btn btn-primary">ご契約者さまTOP</a>
+    <a href="#" class="btn btn-label">スミセイダイレクトサービスログイン</a>
+    <a href="#" class="btn btn-outline">商品一覧</a>
+    <a href="#" class="btn btn-outline-s">ライフイベント・目的から選ぶ</a>
+    <a href="#" class="link-red">生命保険料控除証明書（再）発行について</a>
+  </div>
+
+  <div class="card-grid">
+    <a href="#" class="card">
+      <div class="card-title">ご契約者さま</div>
+      <div class="card-text">ご契約後も安心サポート。各種お手続やご契約内容のご確認をご利用いただけます。</div>
+    </a>
+    <a href="#" class="card">
+      <div class="card-title">保険をお考えのお客さま</div>
+      <div class="card-text">あなたにピッタリな保険が見つかる。保険の基礎知識などをご覧いただけます。</div>
+    </a>
+    <a href="#" class="card">
+      <div class="card-title">法人のお客さま</div>
+      <div class="card-text">企業の福利厚生制度に関する情報や、サービスをご案内いたします。</div>
+    </a>
+  </div>
+
+  <h3 class="section-title" style="font-size:20px;margin-top:44px">ニュース</h3>
+  <ul class="newslist">
+    <li><span class="date">2026年11月04日</span><a href="#">「インフルエンザ実態調査レポート」2026 ～子どもが世帯内で感染～</a></li>
+    <li><span class="date">2026年11月02日</span><a href="#">Vitality会員500万名を見据え、人とAIで会員サポートを強化</a></li>
+    <li><span class="date">2026年10月29日</span><a href="#">東京都民の行動変容事業「東京グリーンビズウォーク」参加者募集</a></li>
+  </ul>
+</div></section>
+
+<section class="section">
+  <p class="section-label">04 — Forms</p>
+  <h2 class="section-title">Inputs</h2>
+  <div class="form-grid">
+    <div class="field">
+      <label for="g1">お名前</label>
+      <input id="g1" type="text" value="葛原 健太">
+      <p class="field-msg">全角でご入力ください</p>
+    </div>
+    <div class="field is-focus">
+      <label for="g2">証券番号（フォーカス）</label>
+      <input id="g2" type="text" value="12-3456789">
+      <p class="field-msg">保険証券に記載の番号</p>
+    </div>
+    <div class="field is-error">
+      <label for="g3">生年月日（エラー）</label>
+      <input id="g3" type="text" value="1989/13/01">
+      <p class="field-msg">正しい日付をご入力ください</p>
+    </div>
+  </div>
+  <p class="note"><code>autofocus</code> は使っていない。フォーカス状態は <code>.is-focus</code> クラスで見せている。</p>
+</section>
+
+<section class="section-alt"><div class="section-inner">
+  <p class="section-label">06 — Depth &amp; Elevation</p>
+  <h2 class="section-title">影は 0 種</h2>
+  <div class="flat-grid">
+    <div class="flat"><div class="flat-name">カード</div><div class="flat-val">box-shadow: none（分布 0 種）</div></div>
+    <div class="flat"><div class="flat-name">アラート</div><div class="flat-val">box-shadow: none</div></div>
+    <div class="flat is-float"><div class="flat-name">フローティング CTA（唯一の例外）</div><div class="flat-val">rgba(0,0,0,.2) 0 0 30px 10px</div></div>
+  </div>
+  <p class="note"><b>階層は面の色（<code>#ffffff</code> / <code>#f8f8f8</code>）と 6px の角丸だけで作る。</b> 影を持つのはページ下部のフローティング CTA ただ 1 つで、これは面を浮かせるためではなく、スクロール中のコンテンツから切り離すため。</p>
+</div></section>
+
+<section class="section">
+  <p class="section-label">05 — Layout</p>
+  <h2 class="section-title">トップ 1780px、下層 1380px</h2>
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:100%">viewport</div>
+    <div class="layout-bar" style="width:1780px;max-width:100%">container 1780px（トップ・10 箇所で最多）</div>
+    <div class="layout-bar" style="width:1380px;max-width:100%">container 1380px（下層・5 箇所で最多）</div>
+    <div class="layout-bar" style="width:680px;max-width:100%">680px（テキストブロック）</div>
+  </div>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:6px"></div><div class="radius-label">6px（カード / 22 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:900px"></div><div class="radius-label">900px（ピル / 16 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:21px"></div><div class="radius-label">21px（小ピル）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">4px（ログイン）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:6px 0 0 6px"></div><div class="radius-label">6px 0 0 6px（フォームの端）</div></div>
+  </div>
+  <p class="note"><b>ルートの崖は 768 / 767px の 1 箇所だけ。</b> <code>html</code> には <code>font-size</code> の宣言が 1 つも無く（UA 既定 16px）、<code>body</code> だけが <code>1rem</code> → <code>0.875rem</code> に落ちる。字間は <code>em</code> なので自動で追従する（−0.16px → −0.14px）。<code>vw</code> も <code>clamp()</code> も使っていない。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-cols">
+      <div class="footer-col">
+        <div class="footer-col-title">ご契約者さま</div>
+        <a href="#">お手続き一覧</a><a href="#">ご契約者さま向けのお知らせ</a><a href="#">スミセイダイレクトサービス</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">保険をお考えのお客さま</div>
+        <a href="#">商品一覧</a><a href="#">ライフイベント・目的から選ぶ</a><a href="#">ぴったり保険セレクター</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">住友生命について</div>
+        <a href="#">会社情報</a><a href="#">サステナビリティ</a><a href="#">採用情報</a>
+      </div>
+    </div>
+    <p class="footer-copy">Copyright 2026 住友生命保険相互会社 — このページは DESIGN.md の実測値から組んだプレビューです。</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (622 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (625 sites)</a>
 </p>
 
 <table>
@@ -966,6 +966,11 @@
 </tr>
 <tr>
 <td align="center"><strong>国立歴史民俗博物館</strong><br><img src="design-md/rekihaku/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>住友生命</strong><br><img src="design-md/sumitomolife/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>多摩美術大学</strong><br><img src="design-md/tamabi/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>太陽誘電</strong><br><img src="design-md/yuden/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1649,11 +1654,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [りそなホールディングス (Resona Holdings)](https://www.resona-gr.co.jp/) | Finance / Bank | [DESIGN.md](design-md/resona/DESIGN.md) | [preview.html](design-md/resona/preview.html) |
 | [三井住友銀行 (SMBC)](https://www.smbc.co.jp/) | Finance / Bank | [DESIGN.md](design-md/smbc/DESIGN.md) | [preview.html](design-md/smbc/preview.html) |
 | [国立歴史民俗博物館 (National Museum of Japanese History)](https://www.rekihaku.ac.jp/) | Museum / Culture | [DESIGN.md](design-md/rekihaku/DESIGN.md) | [preview.html](design-md/rekihaku/preview.html) |
+| [住友生命 (Sumitomo Life)](https://www.sumitomolife.co.jp/) | Insurance / Corporate | [DESIGN.md](design-md/sumitomolife/DESIGN.md) | [preview.html](design-md/sumitomolife/preview.html) |
+| [多摩美術大学 (Tama Art University)](https://www.tamabi.ac.jp/) | University / Art Education | [DESIGN.md](design-md/tamabi/DESIGN.md) | [preview.html](design-md/tamabi/preview.html) |
+| [太陽誘電 (TAIYO YUDEN)](https://www.yuden.co.jp/jp/) | Electronics / Corporate | [DESIGN.md](design-md/yuden/DESIGN.md) | [preview.html](design-md/yuden/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (622 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (625 sites)</a>
 </p>
 
 <table>
@@ -2585,6 +2593,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>国立歴史民俗博物館</strong><br><img src="design-md/rekihaku/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>住友生命</strong><br><img src="design-md/sumitomolife/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>多摩美術大学</strong><br><img src="design-md/tamabi/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>太陽誘電</strong><br><img src="design-md/yuden/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

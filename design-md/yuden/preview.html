@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 太陽誘電（TAIYO YUDEN）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Roboto:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトは --COLOR_* の大文字スネークケースで 38 個宣言しているが、
+       可視は 17 個。ROLE 系 8 個・TERTIARY・SECONDARY・LINER_GRADIENT は可視 0 要素。
+       2026-11-08 実測。 */
+    --COLOR_BRAND_PRIMARY:      #e60012;   /* ★面 10 / 9 要素 ＋ 文字 7 要素 */
+    --COLOR_BRAND_SECONDARY_3:  #e60012;   /* ↑と同じ値の重複宣言 */
+    --COLOR_BASE_DARK:          #222222;   /* ★本文（可視 134 / 95 要素で最多） */
+    --COLOR_BASE_DARK_GRAY:     #666666;   /* パンくず・補助（可視 5 要素） */
+    --COLOR_BASE_DARK_GRAY_2:   #979797;
+    --COLOR_BASE_GRAY:          #f4f4f4;   /* カード・検索欄の地 */
+    --COLOR_BACKGROUND_LIGHT05: #e2e2e2;   /* 「閉じる」の地（面 7 要素） */
+    --COLOR_BASE_LIGHT_GRAY_2:  #d9d9d9;   /* ★タブの非選択（面 25 要素で最多） */
+    --COLOR_BASE_LIGHT_GRAY:    #cccccc;   /* 枠線 */
+    --COLOR_BASE_WHITE:         #ffffff;
+
+    /* 以下は宣言されているが可視 0 要素。UI を組むのに使わない
+       --COLOR_BRAND_TERTIARY:    #008cd6;
+       --COLOR_BRAND_SECONDARY:   #ffeeea;
+       --COLOR_BRAND_SECONDARY_2: #4c4c5c;
+       --COLOR_ROLE_SUCCESS_DARK: #1c7560;  --COLOR_ROLE_SUCCESS_LIGHT: #e2f8f3;
+       --COLOR_ROLE_DANGER_DARK:  #cc0033;  --COLOR_ROLE_DANGER_LIGHT:  #ffe0e8;
+       --COLOR_ROLE_WARNING_DARK: #7a6800;  --COLOR_ROLE_WARNING_LIGHT: #fff9d8;
+       --COLOR_ROLE_INFO_DARK:    #003acc;  --COLOR_ROLE_INFO_LIGHT:    #e0e9ff;
+       --COLOR_FOREGROUND_DARK:   #333333;  ← 本文は #222222 が正
+       --LINER_GRADIENT: linear-gradient(90deg,#e60012,#e66000)  ← 綴りは実サイトのまま */
+
+    /* === Fonts ===
+       和文は Noto Sans JP（Google Fonts・400/700 の静的 2 本）。
+       英語のセクション見出しだけ Roboto 700（可視 6 要素）。 */
+    --font: "Noto Sans JP", "Helvetica Neue", Arial,
+            "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    --font-en: Roboto, Arial, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height === */
+    --LINE_HEIGHT: 1.5;   /* 実サイトのトークン名。本文（可視 104 / 86 要素で最多） */
+    --lh-card: 1.75;      /* カード内（34 / 10 要素） */
+    --lh-nav:  1.15;      /* 検索欄・ナビ */
+
+    /* === Spacing（実サイトのトークン） === */
+    --SIZE_MODULE_MARGIN: 64px;
+    --SIZE_NESTED_MODULE_MARGIN: 24px;
+
+    /* === Radius === */
+    --r-card: 4px;     /* カード・ボタン（13 要素で最多） */
+    --r-pill: 100px;   /* ピル CTA（2 要素） */
+
+    --container: 1200px;
+    --gutter: 80px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* 実サイトは html に font-size を 1 つも書いていない（UA 既定の 16px）。
+     切り替わるのは body だけ */
+  body {
+    background: var(--COLOR_BASE_WHITE);
+    color: var(--COLOR_BASE_DARK);
+    font-family: var(--font);
+    font-size: 1rem;                 /* = 16px。767px 以下で 0.875rem */
+    font-weight: 400;
+    line-height: var(--LINE_HEIGHT); /* 1.5（無単位） */
+    letter-spacing: normal;          /* 2 ページとも全要素 normal */
+    word-break: normal;              /* 実サイトも明示している */
+    /* font-feature-settings は書かない。palt は効くがサイトは使わない設計（実測 0 件） */
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (max-width: 767px) { body { font-size: 0.875rem; } }
+
+  .wrap { display: grid; grid-template-columns: var(--gutter) minmax(0, var(--container)) var(--gutter); gap: 0 40px; justify-content: center; }
+  .wrap > * { grid-column: 2; }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid var(--COLOR_BASE_GRAY); }
+  .header-inner { max-width: var(--container); margin: 0 auto; padding: 20px 24px; display: flex; align-items: center; gap: 40px; }
+  .brand { font-family: var(--font-en); font-size: 28px; font-weight: 700; line-height: var(--lh-nav); color: var(--COLOR_BRAND_PRIMARY); letter-spacing: normal; }
+  .header-util { margin-left: auto; display: flex; align-items: center; gap: 24px; }
+  .header-util a { font-size: 14px; font-weight: 400; line-height: var(--LINE_HEIGHT); color: var(--COLOR_BASE_DARK); text-decoration: none; }
+  .btn-contact { background: var(--COLOR_BRAND_PRIMARY); color: var(--COLOR_BASE_WHITE); font-size: 14px; font-weight: 700; line-height: var(--LINE_HEIGHT); padding: 10px 26px; border-radius: var(--r-pill); text-decoration: none; }
+
+  .gnav { border-bottom: 1px solid var(--COLOR_BASE_GRAY); }
+  .gnav ul { max-width: var(--container); margin: 0 auto; display: flex; list-style: none; padding: 0 24px; gap: 36px; }
+  .gnav a { display: block; padding: 16px 0; font-size: 16px; font-weight: 400; line-height: var(--LINE_HEIGHT); color: var(--COLOR_BASE_DARK); text-decoration: none; }
+
+  /* HERO
+     実サイトは左に写真（img_index_pc.webp 1100×520 のスライド 5 枚）、
+     右の白パネルの見出しは <b> タグの実テキスト（40px / CSS は weight 900）。
+     ここでは写真の代役を要素自身の background-image に持たせる */
+  .hero { max-width: var(--container); margin: 28px auto 0; padding: 0 24px; display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; }
+  .hero-photo {
+    min-height: 420px; border-radius: var(--r-card) 0 0 var(--r-card);
+    background-image: linear-gradient(rgba(0,0,0,.12), rgba(0,0,0,.28)),
+                      linear-gradient(160deg, #3f7ec4 0%, #7fb3e0 45%, #ffd9a8 100%);
+  }
+  .hero-panel { background: var(--COLOR_BASE_WHITE); border-top: 3px solid var(--COLOR_BRAND_PRIMARY); padding: 48px 44px; display: flex; flex-direction: column; justify-content: center; }
+  .hero-label { font-family: var(--font-en); font-size: 24px; font-weight: 700; line-height: var(--LINE_HEIGHT); color: var(--COLOR_BRAND_PRIMARY); }
+  .hero-title { font-size: 40px; font-weight: 700; line-height: var(--LINE_HEIGHT); margin-top: 14px; }
+  .hero-lead { font-size: 16px; font-weight: 400; line-height: var(--LINE_HEIGHT); margin-top: 18px; }
+  .hero-dots { display: flex; gap: 10px; margin-top: 24px; align-items: center; }
+  .hero-dots span { width: 10px; height: 10px; background: var(--COLOR_BASE_LIGHT_GRAY_2); }
+  .hero-dots span.is-current { background: var(--COLOR_BRAND_PRIMARY); }
+
+  /* SECTIONS */
+  .section { max-width: var(--container); margin: 0 auto; padding: var(--SIZE_MODULE_MARGIN) 24px; }
+  .section-alt { background: var(--COLOR_BASE_GRAY); }
+  .section-inner { max-width: var(--container); margin: 0 auto; padding: var(--SIZE_MODULE_MARGIN) 24px; }
+  .section-en { font-family: var(--font-en); font-size: 60px; font-weight: 700; line-height: var(--LINE_HEIGHT); }
+  .section-label { font-size: 24px; font-weight: 700; line-height: var(--LINE_HEIGHT); color: var(--COLOR_BRAND_PRIMARY); }
+  .section-title { font-size: 34px; font-weight: 700; line-height: var(--LINE_HEIGHT); margin-top: var(--SIZE_NESTED_MODULE_MARGIN); }
+  .section-lead { font-size: 16px; font-weight: 400; line-height: var(--LINE_HEIGHT); margin-top: 16px; max-width: 740px; }
+  .note { font-size: 14px; font-weight: 400; line-height: var(--lh-card); color: var(--COLOR_BASE_DARK); margin-top: var(--SIZE_NESTED_MODULE_MARGIN); background: var(--COLOR_BASE_GRAY); border-left: 4px solid var(--COLOR_BRAND_PRIMARY); padding: 16px 20px; border-radius: 0 var(--r-card) var(--r-card) 0; }
+  .section-alt .note { background: var(--COLOR_BASE_WHITE); }
+  .note code { font-family: var(--font-mono); font-size: 13px; background: var(--COLOR_BASE_WHITE); padding: 1px 5px; border-radius: 3px; }
+  .section-alt .note code { background: var(--COLOR_BASE_GRAY); }
+
+  /* COLOR */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: var(--SIZE_NESTED_MODULE_MARGIN); }
+  .swatch { background: var(--COLOR_BASE_WHITE); border: 1px solid var(--COLOR_BASE_LIGHT_GRAY); border-radius: var(--r-card); overflow: hidden; }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 14px 16px; }
+  .swatch-name { font-size: 16px; font-weight: 700; line-height: var(--LINE_HEIGHT); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 13px; color: var(--COLOR_BASE_DARK_GRAY); margin-top: 2px; }
+  .swatch-use { font-size: 12px; line-height: var(--lh-card); color: var(--COLOR_BASE_DARK_GRAY); margin-top: 6px; }
+  .swatch.is-unused .swatch-chip { position: relative; }
+  .swatch.is-unused .swatch-name::after { content: " — 可視 0"; color: var(--COLOR_BASE_DARK_GRAY); font-weight: 400; font-size: 12px; }
+
+  /* TYPE */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 40px; padding: 22px 0; border-top: 1px solid var(--COLOR_BASE_LIGHT_GRAY); align-items: baseline; }
+  .type-meta { font-size: 12px; line-height: var(--lh-card); color: var(--COLOR_BASE_DARK_GRAY); }
+  .type-meta b { display: block; font-size: 14px; color: var(--COLOR_BASE_DARK); }
+
+  /* COMPONENTS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 16px; margin-top: var(--SIZE_NESTED_MODULE_MARGIN); align-items: center; }
+  .btn { display: inline-flex; align-items: center; text-decoration: none; font-family: var(--font); line-height: var(--LINE_HEIGHT); }
+  .btn-primary { background: var(--COLOR_BRAND_PRIMARY); color: var(--COLOR_BASE_WHITE); font-size: 14px; font-weight: 700; padding: 12px 32px; border-radius: var(--r-pill); }
+  .btn-outline { background: var(--COLOR_BASE_WHITE); color: var(--COLOR_BASE_DARK); border: 1px solid var(--COLOR_BASE_LIGHT_GRAY); font-size: 12px; font-weight: 700; padding: 11px 24px; border-radius: var(--r-card); }
+  .btn-tab { background: var(--COLOR_BASE_LIGHT_GRAY_2); color: var(--COLOR_BASE_DARK); font-size: 12px; font-weight: 700; padding: 12px 28px; border-radius: 0; }
+  .btn-tab.is-current { background: var(--COLOR_BRAND_PRIMARY); color: var(--COLOR_BASE_WHITE); }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 40px 40px; margin-top: var(--SIZE_NESTED_MODULE_MARGIN); }
+  .card { display: block; background: var(--COLOR_BASE_WHITE); border: 1px solid var(--COLOR_BASE_LIGHT_GRAY); border-radius: var(--r-card); overflow: hidden; text-decoration: none; color: var(--COLOR_BASE_DARK); }
+  .card-ph { height: 150px; background: var(--COLOR_BASE_LIGHT_GRAY_2); }
+  .card-body { padding: 20px 22px; }
+  .card-title { font-size: 18px; font-weight: 700; line-height: var(--LINE_HEIGHT); }
+  .card-text { font-size: 14px; font-weight: 400; line-height: var(--lh-card); color: var(--COLOR_BASE_DARK_GRAY); margin-top: 10px; }
+
+  .newslist { list-style: none; margin-top: var(--SIZE_NESTED_MODULE_MARGIN); }
+  .newslist li { display: flex; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--COLOR_BASE_LIGHT_GRAY); align-items: baseline; }
+  .newslist .date { font-size: 14px; font-weight: 400; line-height: var(--LINE_HEIGHT); color: var(--COLOR_BASE_DARK_GRAY); white-space: nowrap; }
+  .newslist .tag { font-size: 12px; font-weight: 700; line-height: var(--LINE_HEIGHT); color: var(--COLOR_BASE_WHITE); background: var(--COLOR_BRAND_PRIMARY); padding: 3px 12px; border-radius: var(--r-card); white-space: nowrap; }
+  .newslist a { font-size: 16px; font-weight: 400; line-height: var(--LINE_HEIGHT); color: var(--COLOR_BASE_DARK); text-decoration: none; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 40px; margin-top: var(--SIZE_NESTED_MODULE_MARGIN); }
+  .field label { display: block; font-size: 14px; font-weight: 700; line-height: var(--LINE_HEIGHT); }
+  .field input { width: 100%; margin-top: 8px; font-family: var(--font); font-size: 16px; line-height: var(--LINE_HEIGHT); color: var(--COLOR_BASE_DARK); background: var(--COLOR_BASE_WHITE); border: 1px solid var(--COLOR_BASE_LIGHT_GRAY); border-radius: var(--r-card); padding: 11px 14px; }
+  .field.is-focus input { border-color: var(--COLOR_BRAND_PRIMARY); box-shadow: 0 0 0 2px rgba(230,0,18,.18); }
+  .field.is-error input { border-color: var(--COLOR_BRAND_PRIMARY); }
+  .field-msg { font-size: 12px; line-height: var(--lh-card); color: var(--COLOR_BASE_DARK_GRAY); margin-top: 6px; }
+  .field.is-error .field-msg { color: var(--COLOR_BRAND_PRIMARY); }
+
+  /* LAYOUT DEMO */
+  .layout-demo { margin-top: var(--SIZE_NESTED_MODULE_MARGIN); display: flex; flex-direction: column; gap: 10px; }
+  .layout-bar { background: var(--COLOR_BASE_GRAY); border: 1px dashed var(--COLOR_BASE_LIGHT_GRAY); border-radius: var(--r-card); padding: 12px 16px; font-family: var(--font-mono); font-size: 13px; }
+  .section-alt .layout-bar { background: var(--COLOR_BASE_WHITE); }
+  .grid-demo { display: grid; grid-template-columns: 80px 1fr 80px; gap: 0 40px; margin-top: var(--SIZE_NESTED_MODULE_MARGIN); }
+  .grid-demo > div { background: var(--COLOR_BASE_LIGHT_GRAY_2); border-radius: var(--r-card); padding: 18px 10px; text-align: center; font-family: var(--font-mono); font-size: 12px; }
+  .grid-demo > div.main { background: var(--COLOR_BRAND_PRIMARY); color: var(--COLOR_BASE_WHITE); }
+  .radius-row { display: flex; flex-wrap: wrap; gap: 30px; margin-top: 34px; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 120px; height: 76px; background: var(--COLOR_BRAND_PRIMARY); }
+  .radius-label { font-size: 12px; line-height: var(--lh-card); color: var(--COLOR_BASE_DARK_GRAY); margin-top: 8px; }
+
+  .flat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-top: var(--SIZE_NESTED_MODULE_MARGIN); }
+  .flat { background: var(--COLOR_BASE_WHITE); border: 1px solid var(--COLOR_BASE_LIGHT_GRAY); border-radius: var(--r-card); padding: 22px; }
+  .flat-name { font-size: 14px; font-weight: 700; line-height: var(--LINE_HEIGHT); }
+  .flat-val { font-family: var(--font-mono); font-size: 12px; color: var(--COLOR_BASE_DARK_GRAY); margin-top: 8px; word-break: break-all; }
+
+  /* FOOTER */
+  .footer { background: var(--COLOR_BASE_DARK); color: var(--COLOR_BASE_WHITE); margin-top: var(--SIZE_MODULE_MARGIN); }
+  .footer-inner { max-width: var(--container); margin: 0 auto; padding: 56px 24px 32px; }
+  .footer-cols { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0 40px; }
+  .footer-col-title { font-size: 16px; font-weight: 700; line-height: var(--LINE_HEIGHT); }
+  .footer-col a { display: block; font-size: 14px; font-weight: 400; line-height: 2; color: rgba(255,255,255,.8); text-decoration: none; }
+  .footer-copy { margin-top: 40px; font-size: 12px; line-height: var(--lh-card); color: rgba(255,255,255,.6); }
+
+  @media (max-width: 767px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-photo { min-height: 240px; border-radius: var(--r-card) var(--r-card) 0 0; }
+    .hero-title { font-size: 28px; }
+    .section-en { font-size: 40px; }
+    .type-row { grid-template-columns: 1fr; gap: 10px; }
+    .gnav ul { gap: 20px; overflow-x: auto; }
+    .grid-demo { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <span class="brand">TAIYO YUDEN</span>
+    <div class="header-util">
+      <a href="#">サイト内検索</a>
+      <a href="#">アクセス</a>
+      <a href="#">資料ダウンロード</a>
+      <a href="#" class="btn-contact">お問い合わせ</a>
+    </div>
+  </div>
+</header>
+
+<nav class="gnav">
+  <ul>
+    <li><a href="#">会社情報</a></li>
+    <li><a href="#">製品情報</a></li>
+    <li><a href="#">株主・投資家情報</a></li>
+    <li><a href="#">研究開発</a></li>
+    <li><a href="#">サステナビリティ</a></li>
+    <li><a href="#">ニュース</a></li>
+    <li><a href="#">採用情報</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-photo"></div>
+  <div class="hero-panel">
+    <p class="hero-label">Mission</p>
+    <h1 class="hero-title">おもしろ科学で<br>より大きく より社会的に</h1>
+    <p class="hero-lead">太陽誘電が生み出す電子部品は、さまざまな電子機器に組み込まれ、人びとの安全・安心で快適・便利な暮らしに欠かせないエレクトロニクス技術の進化を支えています。</p>
+    <div class="hero-dots"><span class="is-current"></span><span></span><span></span><span></span><span></span></div>
+  </div>
+</section>
+
+<section class="section">
+  <p class="section-label">01 — Visual Theme</p>
+  <h2 class="section-title">一切詰めない</h2>
+  <p class="section-lead"><code>letter-spacing</code> は 2 ページとも全要素 <code>normal</code>（154 / 103 要素）、<code>font-feature-settings</code> も 0 件。色は <code>--COLOR_*</code> で 38 個宣言し、そのうち<b>実際に出ているのは 17 個</b>。影はサイト本体に 1 件も無い。</p>
+  <p class="note"><b><code>palt</code> は効くのに使っていない。</b> 同一ページ・同一書体（Noto Sans JP）で隠し div を 2 つ作り、<code>「おもしろ科学」で、より大きく・より社会的に。（株）</code> を 100px で測ると <b><code>normal</code> 2542.00px → <code>"palt"</code> 2090.91px（−17.75%）</b>。<b>効果があるのに 0 件</b>なので、これは「できない」ではなく「やらない」設計。<b>後から足すと別物になる。</b></p>
+</section>
+
+<section class="section-alt"><div class="section-inner">
+  <p class="section-label">03 — Typography</p>
+  <h2 class="section-title">詰めの有無を並べる</h2>
+  <div class="type-row">
+    <div class="type-meta"><b>実サイト（font-feature-settings: normal）</b>実測 154 / 103 要素<br>隠し div: 2542.00px</div>
+    <div style="font-size:28px;font-weight:700;line-height:1.5;font-feature-settings:normal">「おもしろ科学」で、より大きく・より社会的に。（株）</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>もし "palt" を足したら</b>実測 0 要素（使っていない）<br>隠し div: 2090.91px（−17.75%）</div>
+    <div style="font-size:28px;font-weight:700;line-height:1.5;font-feature-settings:'palt'">「おもしろ科学」で、より大きく・より社会的に。（株）</div>
+  </div>
+  <p class="note">下の行が実サイトではない。<b>括弧と句読点が詰まる分だけ行が短くなる</b>のが見て取れるが、既存のレイアウトは詰めない前提で余白が決まっているので、<b>このサイトでは下の形にしない。</b></p>
+</div></section>
+
+<section class="section">
+  <p class="section-label">02 — Color Palette</p>
+  <h2 class="section-title">ブランド色は #e60012 の 1 色</h2>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#e60012"></div><div class="swatch-body"><div class="swatch-name">TAIYO YUDEN レッド</div><div class="swatch-hex">#e60012</div><div class="swatch-use">--COLOR_BRAND_PRIMARY（= --COLOR_BRAND_SECONDARY_3）/ 面 10 要素 ＋ 文字 7 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#222222"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#222222</div><div class="swatch-use">--COLOR_BASE_DARK / 可視 134 要素（最多）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#666666"></div><div class="swatch-body"><div class="swatch-name">Text Muted</div><div class="swatch-hex">#666666</div><div class="swatch-use">--COLOR_BASE_DARK_GRAY / パンくず・補助</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#d9d9d9"></div><div class="swatch-body"><div class="swatch-name">Surface 3</div><div class="swatch-hex">#d9d9d9</div><div class="swatch-use">--COLOR_BASE_LIGHT_GRAY_2 / タブの非選択（面 25 要素で最多）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e2e2e2"></div><div class="swatch-body"><div class="swatch-name">Surface 2</div><div class="swatch-hex">#e2e2e2</div><div class="swatch-use">--COLOR_BACKGROUND_LIGHT05 / 「閉じる」の地</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f4f4f4"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#f4f4f4</div><div class="swatch-use">--COLOR_BASE_GRAY / カード・検索欄の地</div></div></div>
+    <div class="swatch is-unused"><div class="swatch-chip" style="background:#008cd6"></div><div class="swatch-body"><div class="swatch-name">Brand Tertiary</div><div class="swatch-hex">#008cd6</div><div class="swatch-use">--COLOR_BRAND_TERTIARY / 宣言はあるが 1 要素も出ない</div></div></div>
+    <div class="swatch is-unused"><div class="swatch-chip" style="background:linear-gradient(90deg,#e60012,#e66000)"></div><div class="swatch-body"><div class="swatch-name">LINER_GRADIENT</div><div class="swatch-hex">linear-gradient(90deg,#e60012,#e66000)</div><div class="swatch-use">グラデーション背景を持つ要素が 1 つも無い（綴りは実サイトのまま）</div></div></div>
+  </div>
+  <p class="note"><b><code>--COLOR_ROLE_SUCCESS / DANGER / WARNING / INFO</code> の 8 個は全部可視 0 要素。</b> semantic カラーの枠だけ用意して使っていない。<b>これらを使って UI を組まない。</b> <code>--COLOR_FOREGROUND_DARK: #333333</code> も可視 0 で、本文は <code>#222222</code> が正。</p>
+</section>
+
+<section class="section-alt"><div class="section-inner">
+  <p class="section-label">03 — Typography</p>
+  <h2 class="section-title">900 を書いても 700 で出る</h2>
+
+  <div class="type-row">
+    <div class="type-meta"><b>English Heading</b>Roboto 60px / weight 700<br>lh 1.50（90px）/ ls normal<br>可視 6 要素</div>
+    <div style="font-family:var(--font-en);font-size:60px;font-weight:700;line-height:1.5">Spotlight</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Hero Copy</b>40px / <b>CSS は weight 900</b><br><b>実描画は 700</b> / lh 1.50 / ls normal</div>
+    <div style="font-size:40px;font-weight:900;line-height:1.5">おもしろ科学で</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Section Heading</b>34px / weight 700<br>lh 1.50 / ls normal</div>
+    <div style="font-size:34px;font-weight:700;line-height:1.5">会社紹介映像</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Sub Heading</b>24px / CSS は weight 900<br>lh 1.75 / ls normal</div>
+    <div style="font-size:24px;font-weight:900;line-height:1.75">世界最小のMLCCを生み出し続けるグローバル電子部品メーカー</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Card Title</b>18px / weight 700<br>lh 1.50 / ls normal</div>
+    <div style="font-size:18px;font-weight:700;line-height:1.5">太陽誘電の製品についてさらに詳しく</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Body</b>16px（1rem）/ weight 400<br>lh 1.50（24px）/ ls normal<br>★可視 104 要素で最多</div>
+    <div style="font-size:16px;font-weight:400;line-height:1.5">太陽誘電が生み出す電子部品は、さまざまな電子機器に組み込まれ、人びとの安全・安心で快適・便利な暮らしに欠かせないエレクトロニクス技術の進化を支えています。</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>Nav / Label</b>14px / weight 400<br>lh 1.50 / ls normal<br>可視 62 / 66 要素</div>
+    <div style="font-size:14px;font-weight:400;line-height:1.5">株主・投資家情報　サステナビリティ　採用情報</div>
+  </div>
+
+  <h3 class="section-title" style="font-size:20px;margin-top:44px">ウェイトは実質 2 段</h3>
+  <div class="type-row">
+    <div class="type-meta"><b>weight 400</b>可視 95 / 77 要素<br>隠し div の幅: 1780.41px</div>
+    <div style="font-size:24px;font-weight:400;line-height:1.5">太陽誘電 TAIYO YUDEN 2026</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>weight 700</b>可視 56 / 25 要素<br>隠し div の幅: 1842.30px</div>
+    <div style="font-size:24px;font-weight:700;line-height:1.5">太陽誘電 TAIYO YUDEN 2026</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>weight 900（CSS）</b>可視 11 要素<br>隠し div の幅: <b>1842.30px ＝ 700 と同じ</b></div>
+    <div style="font-size:24px;font-weight:900;line-height:1.5">太陽誘電 TAIYO YUDEN 2026</div>
+  </div>
+  <p class="note">隠し div で <code>font-weight</code> を 100〜900 に振って幅を比べると、<b>100〜500 → 1780.41px / 600〜900 → 1842.30px の 2 面だけ</b>。Google Fonts の URL が <code>wght@400;700</code> なのと一致する。<b>900 を書いても 700 のファイルで描画され、合成太字も起きない。</b> 意図は Black だが Bold で出るので、<b>再現するときは 700 と書く。</b></p>
+</div></section>
+
+<section class="section">
+  <p class="section-label">04 — Components</p>
+  <h2 class="section-title">角丸は 4px、CTA だけピル</h2>
+  <div class="btn-grid">
+    <a href="#" class="btn btn-primary">お問い合わせ</a>
+    <a href="#" class="btn btn-primary">会社案内PDFダウンロード</a>
+    <a href="#" class="btn btn-outline">全て見る</a>
+    <a href="#" class="btn btn-tab is-current">製品</a>
+    <a href="#" class="btn btn-tab">ソリューション</a>
+    <a href="#" class="btn btn-tab">技術情報</a>
+  </div>
+
+  <h3 class="section-title" style="font-size:20px;margin-top:44px">Cards</h3>
+  <div class="card-grid">
+    <a href="#" class="card"><div class="card-ph"></div><div class="card-body"><div class="card-title">CEATEC会場プレゼンを特別公開！</div><div class="card-text">最新の電子部品とソリューションの展示内容をダイジェストでご紹介します。</div></div></a>
+    <a href="#" class="card"><div class="card-ph"></div><div class="card-body"><div class="card-title">スペシャルコンテンツ</div><div class="card-text">世界最小のMLCCを生み出し続けるグローバル電子部品メーカーの技術を紹介。</div></div></a>
+    <a href="#" class="card"><div class="card-ph"></div><div class="card-body"><div class="card-title">ミッション、経営理念、ビジョン</div><div class="card-text">全てのステークホルダーから信頼され、感動を与えるエクセレントカンパニーへ。</div></div></a>
+  </div>
+
+  <h3 class="section-title" style="font-size:20px;margin-top:44px">最新ニュース</h3>
+  <ul class="newslist">
+    <li><span class="date">2026.10.29</span><span class="tag">IR</span><a href="#">2027年3月期 第2四半期決算発表 開示資料はこちら</a></li>
+    <li><span class="date">2026.10.21</span><span class="tag">製品</span><a href="#">車載向け積層セラミックコンデンサの品揃えを拡充</a></li>
+    <li><span class="date">2026.10.08</span><span class="tag">お知らせ</span><a href="#">サステナビリティレポート 2026 を公開しました</a></li>
+  </ul>
+</section>
+
+<section class="section-alt"><div class="section-inner">
+  <p class="section-label">04 — Forms</p>
+  <h2 class="section-title">Inputs</h2>
+  <div class="form-grid">
+    <div class="field">
+      <label for="g1">お名前</label>
+      <input id="g1" type="text" value="葛原 健太">
+      <p class="field-msg">全角でご入力ください</p>
+    </div>
+    <div class="field is-focus">
+      <label for="g2">会社名（フォーカス）</label>
+      <input id="g2" type="text" value="株式会社ムート">
+      <p class="field-msg">法人のお客さまはご入力ください</p>
+    </div>
+    <div class="field is-error">
+      <label for="g3">メールアドレス（エラー）</label>
+      <input id="g3" type="text" value="kuzuhara@">
+      <p class="field-msg">正しい形式でご入力ください</p>
+    </div>
+  </div>
+  <p class="note"><code>autofocus</code> は使っていない。フォーカス状態は <code>.is-focus</code> クラスで見せている。<b>エラーの色も <code>#e60012</code>。</b> <code>--COLOR_ROLE_DANGER_DARK: #cc0033</code> は宣言されているが実装では使われていない。</p>
+</div></section>
+
+<section class="section">
+  <p class="section-label">06 — Depth &amp; Elevation</p>
+  <h2 class="section-title">影はサイト本体に 1 件も無い</h2>
+  <div class="flat-grid">
+    <div class="flat"><div class="flat-name">カード</div><div class="flat-val">box-shadow: none</div></div>
+    <div class="flat"><div class="flat-name">ナビのドロップダウン</div><div class="flat-val">box-shadow: none</div></div>
+    <div class="flat"><div class="flat-name">（CMP の帯 — 設計ではない）</div><div class="flat-val">rgba(0,0,0,.2) 0 0 18px 0 ← OneTrust</div></div>
+  </div>
+  <p class="note"><code>box-shadow</code> の分布は 2 ページとも <b>1 種だけ</b>で、その 1 件は CMP（OneTrust）。<b>階層は面の色（<code>#ffffff</code> / <code>#f4f4f4</code> / <code>#d9d9d9</code>）と 4px の角丸、そして <code>0 40px</code> のガターだけで作る。</b></p>
+</section>
+
+<section class="section-alt"><div class="section-inner">
+  <p class="section-label">05 — Layout</p>
+  <h2 class="section-title">80px + 1200px + 80px</h2>
+  <div class="grid-demo">
+    <div>80px</div>
+    <div class="main">content 1200px</div>
+    <div>80px</div>
+  </div>
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:100%">viewport</div>
+    <div class="layout-bar" style="width:1200px;max-width:100%">container 1200px（両ページ）</div>
+    <div class="layout-bar" style="width:900px;max-width:100%">900px（下層の本文ブロック）</div>
+    <div class="layout-bar" style="width:740px;max-width:100%">740px（カード内・5 箇所）</div>
+  </div>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">4px（カード・ボタン / 13 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:100px"></div><div class="radius-label">100px（ピル CTA / 2 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:50%"></div><div class="radius-label">50%（アイコン）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:0"></div><div class="radius-label">0（タブ）</div></div>
+  </div>
+  <p class="note"><b>ルートの崖は 768 / 767px の 1 箇所だけ。</b> <code>html</code> には <code>font-size</code> の宣言が 1 つも無く（UA 既定 16px）、<code>body</code> だけが <code>1rem</code> → <code>0.875rem</code>、<code>h2</code> が 60px → 40px に落ちる。<code>vw</code> も <code>clamp()</code> も使っていない。<br>余白は <code>--SIZE_MODULE_MARGIN: 64px</code>（セクション間）と <code>--SIZE_NESTED_MODULE_MARGIN: 24px</code>（ブロック間）の 2 段。</p>
+</div></section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-cols">
+      <div class="footer-col">
+        <div class="footer-col-title">会社情報</div>
+        <a href="#">代表者挨拶</a><a href="#">会社概要</a><a href="#">コーポレートガバナンス</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">製品情報</div>
+        <a href="#">製品ラインナップ</a><a href="#">ソリューション</a><a href="#">技術情報</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">株主・投資家情報</div>
+        <a href="#">IRライブラリ</a><a href="#">業績ハイライト</a><a href="#">株式情報</a>
+      </div>
+    </div>
+    <p class="footer-copy">© TAIYO YUDEN CO., LTD. — このページは DESIGN.md の実測値から組んだプレビューです。</p>
+  </div>
+</footer>
+
+</body>
+</html>
