@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ダイセル（DAICEL）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトの :root にある 64 個の Custom Properties から、実装されているものを写した。
+       自社トークン 64 / プラットフォーム由来 0 / body 側の宣言 0。実測 2026-11-10
+
+       ★ --COLOR_BRAND_PRIMARY (#009be6) と --COLOR_BRAND_SECONDARY (#d71619) は
+         宣言はあるが 2 ページとも可視 0 要素。ロゴが SVG 画像なので DOM の色に出てこない。
+         「実装値」として使わないこと。 */
+    --COLOR_BASE_LIGHT:             #ffffff;
+    --COLOR_BASE_DARK:              #000000;
+    --COLOR_FOREGROUND_DARK:        #222222;   /* ★本文・見出し。可視 206 要素。純黒は使わない */
+    --COLOR_FOREGROUND_LIGHT:       #ffffff;
+    --COLOR_FOREGROUND_MEDIUM_DARK: #586063;   /* 補助テキスト・パンくず（下層 41 要素） */
+    --COLOR_FOREGROUND_DARK_CYAN:   #005d8a;   /* 言語切替（下層 11 要素） */
+    --COLOR_ROLE_LINK:              #006da1;   /* ★実際に使われる青 */
+    --COLOR_ROLE_DISABLED:          #888888;
+    --COLOR_ROLE_DISABLED_BACKGROUND:#dcdcdc;
+    --COLOR_ROLE_IMPORTANT:         #c21417;
+    --COLOR_ROLE_IMPORTANT_BACKGROUND:#fbe7e8;
+    --COLOR_BACKGROUND:             #f6f6f6;   /* ★面。可視 21 要素 */
+    --COLOR_BACKGROUND_2:           #e5f5fc;
+    --COLOR_OUTLINE:                #d2d2d2;
+    --COLOR_OUTLINE_2:              #f6f6f6;
+    --COLOR_BRAND_PRIMARY:          #009be6;   /* 宣言のみ・可視 0 */
+    --COLOR_BRAND_SECONDARY:        #d71619;   /* 宣言のみ・可視 0 */
+    /* 事業セグメント */
+    --COLOR_EX_PINK:       #df2b5e;
+    --COLOR_EX_BLUE:       #197e9a;
+    --COLOR_EX_GREEN:      #006437;
+    --COLOR_EX_DARK_GREEN: #00866b;
+    --COLOR_EX_DARK_CYAN:  #007cb8;
+    /* 綴りは実サイトのまま（OVERRAY / GURADATION） */
+    --COLOR_BACKGROUND_OVERRAY: color-mix(in srgb, #3a4145 60%, #0000);
+    --COLOR_GURADATION: linear-gradient(180deg, #79cdf5, #ffb9ba);
+
+    /* === Fonts ===
+       ★実サイトは CSS に @font-face を 1 行も書かない（CSS 全文 402,296 文字で 0 件）。
+         static/js/modules/LoadFonts.js が FontFace API で登録している:
+           new FontFace('BIZ UDPGothic', 'url(/static/fonts/BIZUDPGothic-Regular-Subset.woff2)', {...})
+         プレビューでは同じ書体を Google Fonts から読んで字形を合わせている。
+       ★--FONT_FAMILY_JA2（Cactus Classical Serif）は loaded だが両ページとも可視 0。
+       ★--FONT_FAMILY_EN（Open Sans）は日本語ページでリクエストすら発生しない。 */
+    --FONT_FAMILY_JA: "BIZ UDPGothic", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN",
+                      "メイリオ", Meiryo, sans-serif;
+    --FONT_FAMILY_JA2: "Cactus Classical Serif", sans-serif;   /* 宣言のみ・可視 0 */
+    --FONT_FAMILY_EN:  "Open Sans", Arial, Helvetica, sans-serif; /* 宣言のみ・可視 0 */
+    --FONT_FAMILY_CN:  "Noto Sans SC", "PingFang SC", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Size / Rhythm ===
+       html は 16px で完全固定（1940〜375px の 15 幅すべて）。
+       body だけが 768px を境に 16px → 14px へ落ちる。 */
+    --FONT_SIZE_ROOT: 16;
+    --FONT_SIZE:      calc(16 / 16 * 1rem);   /* モバイルでは 14/16 に差し替わる */
+    --FONT_SIZE_NOTE: calc(14 / 16 * 1rem);
+    --LINE_HEIGHT:    1.9;                     /* ★無単位。実測 204 要素 */
+
+    /* === Spacing（8px グリッド） === */
+    --SPACING: 8px;
+    --MODULE_MARGIN_XXS: calc(8px * 2);
+    --MODULE_MARGIN_XS:  calc(8px * 3);
+    --MODULE_MARGIN_SM:  calc(8px * 4);
+    --MODULE_MARGIN_MD:  calc(8px * 6);
+    --MODULE_MARGIN_L:   calc(8px * 7);
+    --MODULE_MARGIN_XL:  calc(8px * 8);
+    --MODULE_MARGIN_XXL: calc(8px * 10);
+
+    /* === Radius === */
+    --RADIUS_RADIUS_L:    60px;
+    --RADIUS_RADIUS_M:    30px;
+    --RADIUS_RADIUS_S:     8px;   /* 最も多い。実測 19 要素 */
+    --RADIUS_RADIUS_XS:    4px;
+    --RADIUS_RADIUS_PILL: 1000px;
+
+    /* === Layout === */
+    --MAJOR_BREAKPOINT: 768px;
+    --MINOR_BREAKPOINT: 1200px;
+    --CONTENT_WIDTH_PC: 1200px;
+    --CONTENT_WIDTH_SP: calc(375px - calc(8px * 2) * 2);  /* = 343px。モバイル設計幅 375px */
+    --OUTSIDE_GUTTER_PC: calc(8px * 4);
+    --OUTSIDE_GUTTER_SP: calc(8px * 2);
+    --HEADER_HEIGHT: 82px;
+    --HEADER_HEIGHT_TOP: 24px;
+
+    --TRANSITION: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    --SHADOW_NAV: rgba(88, 96, 99, 0.1) 0 0 16px 0;   /* ★全体で 1 要素のみ。黒ではない */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--COLOR_BASE_LIGHT);
+    color: var(--COLOR_FOREGROUND_DARK);
+    font-family: var(--FONT_FAMILY_JA);
+    font-size: var(--FONT_SIZE);
+    font-weight: 400;
+    line-height: var(--LINE_HEIGHT);      /* ★1.9 が全体に降りる */
+    letter-spacing: .05em;                /* ★宣言はここ 1 箇所だけ → 0.8px で継承 */
+    overflow-wrap: anywhere;              /* ★長い化学物質名が枠を突き抜けないように */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { height: var(--HEADER_HEIGHT); border-bottom: 1px solid var(--COLOR_OUTLINE); display: flex; align-items: center; }
+  .header-inner { display: flex; align-items: center; gap: var(--MODULE_MARGIN_SM); max-width: var(--CONTENT_WIDTH_PC); width: 100%; margin: 0 auto; padding: 0 var(--OUTSIDE_GUTTER_PC); }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--COLOR_FOREGROUND_DARK); }
+  .logo-mark { width: 26px; height: 26px; background: var(--COLOR_BRAND_PRIMARY); border-radius: var(--RADIUS_RADIUS_XS); }
+  .logo-text { font-size: 22px; font-weight: 700; letter-spacing: .08em; line-height: 1.4; }
+  .header-nav { display: flex; gap: var(--MODULE_MARGIN_XS); margin-left: auto; }
+  .header-nav a { font-size: 14px; font-weight: 400; line-height: var(--LINE_HEIGHT); color: var(--COLOR_FOREGROUND_DARK); text-decoration: none; }
+
+  /* SECTIONS */
+  .section { padding: var(--MODULE_MARGIN_XXL) var(--OUTSIDE_GUTTER_PC); max-width: var(--CONTENT_WIDTH_PC); margin: 0 auto; }
+  .section-alt { background: var(--COLOR_BACKGROUND); }
+  .section-alt .section-inner { padding: var(--MODULE_MARGIN_XXL) var(--OUTSIDE_GUTTER_PC); max-width: var(--CONTENT_WIDTH_PC); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 11px; color: var(--COLOR_FOREGROUND_MEDIUM_DARK); line-height: 1.7; margin-bottom: var(--SPACING); letter-spacing: normal; }
+  .eyebrow { font-size: 14px; font-weight: 700; line-height: 1.6; color: var(--COLOR_ROLE_LINK); }
+  .section-title { font-size: 32px; font-weight: 700; line-height: 1.5; margin: 10px 0 var(--MODULE_MARGIN_XXS); }
+  .section-lead { font-size: 16px; font-weight: 400; line-height: var(--LINE_HEIGHT); max-width: 880px; margin-bottom: var(--MODULE_MARGIN_SM); }
+  .note { font-size: 14px; font-weight: 400; line-height: var(--LINE_HEIGHT); color: var(--COLOR_FOREGROUND_MEDIUM_DARK); max-width: 880px; margin-top: var(--MODULE_MARGIN_XXS); }
+  .note b { color: var(--COLOR_FOREGROUND_DARK); font-weight: 700; }
+  code { font-family: var(--font-mono); font-size: 12px; letter-spacing: normal; background: var(--COLOR_BACKGROUND); padding: 1px 5px; border-radius: var(--RADIUS_RADIUS_XS); }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(216px, 1fr)); gap: var(--MODULE_MARGIN_XXS); }
+  .swatch { border: 1px solid var(--COLOR_OUTLINE); border-radius: var(--RADIUS_RADIUS_S); overflow: hidden; background: var(--COLOR_BASE_LIGHT); }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 12px 14px 14px; }
+  .swatch-name { font-family: var(--font-mono); font-size: 11px; letter-spacing: normal; line-height: 1.6; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 12px; color: var(--COLOR_FOREGROUND_MEDIUM_DARK); letter-spacing: normal; margin-top: 3px; }
+  .swatch-use { font-size: 12px; line-height: 1.6; color: var(--COLOR_FOREGROUND_MEDIUM_DARK); margin-top: 7px; }
+  .swatch.ghost .swatch-chip { position: relative; }
+  .swatch.ghost .swatch-body { background: var(--COLOR_ROLE_IMPORTANT_BACKGROUND); }
+
+  /* TYPOGRAPHY */
+  .scale-bar { display: flex; gap: var(--SPACING); flex-wrap: wrap; align-items: baseline; margin-bottom: var(--MODULE_MARGIN_XS); }
+  .scale-bar span { background: var(--COLOR_BACKGROUND); padding: 7px 12px; border-radius: var(--RADIUS_RADIUS_XS); line-height: 1.3; }
+  .type-row { display: grid; grid-template-columns: 240px 1fr; gap: var(--MODULE_MARGIN_XS); padding: var(--MODULE_MARGIN_XXS) 0; border-bottom: 1px solid var(--COLOR_OUTLINE); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--COLOR_FOREGROUND_MEDIUM_DARK); line-height: 1.8; letter-spacing: normal; }
+  .type-meta b { display: block; font-family: var(--FONT_FAMILY_JA); font-size: 13px; font-weight: 700; color: var(--COLOR_FOREGROUND_DARK); letter-spacing: .05em; }
+
+  /* TABLE */
+  .wtable { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.7; }
+  .wtable th, .wtable td { border-bottom: 1px solid var(--COLOR_OUTLINE); padding: 10px; text-align: left; }
+  .wtable th { font-weight: 700; font-size: 13px; color: var(--COLOR_FOREGROUND_MEDIUM_DARK); }
+  .wtable td.mono { font-family: var(--font-mono); font-size: 12px; letter-spacing: normal; }
+  .wtable tr.bad td { background: var(--COLOR_ROLE_IMPORTANT_BACKGROUND); }
+  .wtable tr.bad td:first-child { color: var(--COLOR_ROLE_IMPORTANT); font-weight: 700; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: var(--MODULE_MARGIN_XXS); flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--FONT_FAMILY_JA); letter-spacing: .05em; cursor: pointer; border: 0; }
+  .btn-round { width: 52px; height: 52px; background: var(--COLOR_FOREGROUND_DARK); color: var(--COLOR_BASE_LIGHT); border: 2px solid var(--COLOR_BASE_LIGHT); border-radius: 50%; font-size: 16px; line-height: 1; box-shadow: var(--SHADOW_NAV); }
+  .btn-round.thick { border-width: 3px; color: var(--COLOR_ROLE_LINK); }
+  .btn-pill { background: var(--COLOR_FOREGROUND_DARK); color: var(--COLOR_BASE_LIGHT); font-size: 16px; font-weight: 400; line-height: var(--LINE_HEIGHT); border-radius: var(--RADIUS_RADIUS_PILL) 0 0 var(--RADIUS_RADIUS_PILL); padding: 10px 32px 10px 36px; }
+  .btn-text { background: transparent; color: var(--COLOR_FOREGROUND_DARK); font-size: 16px; font-weight: 700; line-height: var(--LINE_HEIGHT); border-radius: 0; padding: 10px 0; border-bottom: 2px solid var(--COLOR_ROLE_LINK); }
+  .btn.is-focus { outline: 2px solid var(--COLOR_ROLE_LINK); outline-offset: 3px; }
+
+  /* BADGES */
+  .chip-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: var(--MODULE_MARGIN_XS); }
+  .chip { color: #fff; font-size: 22px; font-weight: 700; line-height: 1.5; letter-spacing: .05em; border-radius: var(--RADIUS_RADIUS_S); padding: 8px 20px; }
+
+  /* PETAL CARDS（事業カード）
+     ※面は --COLOR_BACKGROUND_2 を使う。地（白）と差のある色にしないと、
+       片側 150px という形そのものが縮小スクショで判別できなくなる。 */
+  .petal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--MODULE_MARGIN_SM); }
+  .petal { background: var(--COLOR_BACKGROUND_2); padding: var(--MODULE_MARGIN_XS) var(--MODULE_MARGIN_XXS) var(--MODULE_MARGIN_MD); text-align: center; }
+  .petal.down { border-radius: 8px 8px 150px 150px; }
+  .petal.up   { border-radius: 150px 150px 8px 8px; padding: var(--MODULE_MARGIN_MD) var(--MODULE_MARGIN_XXS) var(--MODULE_MARGIN_XS); }
+  .petal-title { font-size: 24px; font-weight: 700; line-height: 1.8; letter-spacing: .05em; }
+  .petal-desc { font-size: 14px; line-height: var(--LINE_HEIGHT); color: var(--COLOR_FOREGROUND_MEDIUM_DARK); margin-top: 6px; }
+  .petal-radius { font-family: var(--font-mono); font-size: 11px; letter-spacing: normal; color: var(--COLOR_FOREGROUND_MEDIUM_DARK); margin-top: 10px; }
+
+  /* DROPDOWN */
+  .dropdown { background: var(--COLOR_BASE_LIGHT); border-radius: 0 0 var(--RADIUS_RADIUS_S) var(--RADIUS_RADIUS_S); box-shadow: var(--SHADOW_NAV); padding: var(--MODULE_MARGIN_XS); max-width: 560px; }
+  .dropdown-title { font-size: 16px; font-weight: 700; line-height: var(--LINE_HEIGHT); }
+  .dropdown-links { display: flex; flex-wrap: wrap; gap: 0 32px; margin-top: 10px; }
+  .dropdown-links a { font-size: 14px; line-height: var(--LINE_HEIGHT); color: var(--COLOR_ROLE_LINK); text-decoration: none; }
+
+  /* SPACING SCALE */
+  .space-row { display: flex; flex-direction: column; gap: 10px; }
+  .space-bar { display: flex; align-items: center; gap: 14px; }
+  .space-bar .fill { height: 20px; background: var(--COLOR_ROLE_LINK); border-radius: var(--RADIUS_RADIUS_XS); }
+  .space-bar .lbl { font-family: var(--font-mono); font-size: 11px; letter-spacing: normal; color: var(--COLOR_FOREGROUND_MEDIUM_DARK); }
+
+  /* RADIUS DEMO — 地が白なので濃い面で見せる（低彩度どうしだと縮小で判別できない） */
+  .radius-row { display: flex; gap: var(--MODULE_MARGIN_XS); flex-wrap: wrap; margin-top: var(--MODULE_MARGIN_XS); }
+  .radius-item { text-align: center; }
+  .radius-box { width: 120px; height: 86px; background: var(--COLOR_FOREGROUND_DARK); }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: normal; color: var(--COLOR_FOREGROUND_MEDIUM_DARK); line-height: 1.7; margin-top: 8px; }
+
+  /* HERO NOTE — 面そのものに background-image を持たせる（兄弟の絶対配置にしない） */
+  .hero-demo { border-radius: var(--RADIUS_RADIUS_S); padding: 56px 40px 60px; display: flex; justify-content: space-between; align-items: flex-start; gap: 30px;
+               background-image: linear-gradient(rgba(0,0,0,.05), rgba(0,0,0,.22)),
+                                 linear-gradient(170deg, #9fd8f5 0%, #d8eef0 48%, #8cc06a 100%); }
+  .hero-demo .lead { color: #0a4d7a; font-size: 34px; font-weight: 700; line-height: 1.6; letter-spacing: .05em; }
+  .hero-demo .side { color: #fff; font-size: 17px; font-weight: 400; line-height: 1.9; letter-spacing: .1em;
+                     writing-mode: vertical-rl; max-height: 300px; }
+  .hero-demo .tag { font-family: var(--font-mono); font-size: 11px; letter-spacing: normal; color: #0a4d7a; line-height: 1.8; margin-top: 18px; }
+
+  /* FOOTER */
+  .footer { background: var(--COLOR_FOREGROUND_DARK); color: var(--COLOR_BASE_LIGHT); padding: var(--MODULE_MARGIN_XL) var(--OUTSIDE_GUTTER_PC); }
+  .footer-inner { max-width: var(--CONTENT_WIDTH_PC); margin: 0 auto; }
+  .footer-head { font-size: 24px; font-weight: 700; line-height: 1.8; letter-spacing: .05em; }
+  .footer-note { font-size: 14px; line-height: var(--LINE_HEIGHT); margin-top: 10px; opacity: .85; }
+  .footer-copy { font-family: var(--font-mono); font-size: 11px; letter-spacing: normal; line-height: 1.8; margin-top: var(--MODULE_MARGIN_XS); opacity: .7; }
+
+  /* ★メディアクエリはレンジ構文。print を必ず併記する（実サイトのまま） */
+  @media print, screen and (width < 768px) {
+    :root { --FONT_SIZE: calc(14 / 16 * 1rem); --FONT_SIZE_NOTE: calc(13 / 16 * 1rem); }
+    .section, .section-alt .section-inner { padding: var(--MODULE_MARGIN_MD) var(--OUTSIDE_GUTTER_SP); }
+    .section-title { font-size: 28px; }
+    .type-row { grid-template-columns: 1fr; gap: 6px; }
+    .header-nav { display: none; }
+    .hero-demo { flex-direction: column; }
+    .hero-demo .side { writing-mode: horizontal-tb; max-height: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo"><span class="logo-mark"></span><span class="logo-text">DAICEL</span></a>
+    <nav class="header-nav">
+      <a href="#">ニュース</a><a href="#">企業情報</a><a href="#">事業・製品</a><a href="#">研究・技術開発</a><a href="#">サステナビリティ</a><a href="#">IR情報</a>
+    </nav>
+  </div>
+</header>
+
+<section class="section" id="fonts">
+  <div class="section-label">01 / Fonts</div>
+  <div class="eyebrow">TYPEFACE</div>
+  <h2 class="section-title">UD フォント 1 本で全部を組む</h2>
+  <p class="section-lead">和文も欧文も数字も <b>BIZ UDPGothic</b>（モリサワの UD フォント）。<b>フォント要求は 3 件・すべて自社ホスト</b>（<code>/static/fonts/BIZUDPGothic-Regular-Subset.woff2</code> など）で、外部 CDN を使わない。</p>
+
+  <div class="note" style="background:var(--COLOR_BACKGROUND);border-radius:var(--RADIUS_RADIUS_S);padding:22px 24px;max-width:none;margin-top:0">
+    <b>★ CSS に <code>@font-face</code> が 1 行も無い。</b><br>
+    CSS 全文（4 枚・402,296 文字）を grep しても <code>@font-face</code> は <b>0 件</b>。それでも 3 本が <code>loaded</code> になる。
+    正体は <code>static/js/modules/LoadFonts.js</code> の <b>FontFace API</b>。<br>
+    <code style="display:inline-block;margin-top:8px">new FontFace('BIZ UDPGothic', 'url(/static/fonts/BIZUDPGothic-Regular-Subset.woff2)', {…})</code><br>
+    <span style="display:block;margin-top:8px">CSS を grep しても出てこないので、<b>「Web フォント未使用」と誤読しやすい</b>。判定は <code>document.fonts</code> とフォント要求の件数で行う。</span>
+  </div>
+
+  <div class="type-row" style="margin-top:30px"><div class="type-meta"><b>--FONT_FAMILY_JA ★</b>BIZ UDPGothic<br>可視 259/259 要素</div><div style="font-size:24px;font-weight:400;line-height:1.9">化学におけるコタエとは、つまり無限の可能性のことだ。ABC 0123</div></div>
+  <div class="type-row"><div class="type-meta"><b>--FONT_FAMILY_JA2</b>Cactus Classical Serif<br>loaded だが<b>可視 0 要素</b></div><div style="font-size:20px;line-height:1.9;color:var(--COLOR_FOREGROUND_MEDIUM_DARK)">宣言だけで、両ページとも 1 要素も使われていない</div></div>
+  <div class="type-row"><div class="type-meta"><b>--FONT_FAMILY_EN</b>"Open Sans", Arial, Helvetica<br>リクエストすら<b>発生しない</b></div><div style="font-size:20px;line-height:1.9;color:var(--COLOR_FOREGROUND_MEDIUM_DARK)">日本語ページでは欧文も BIZ UDPGothic で組まれる</div></div>
+
+  <h3 class="section-title" style="font-size:24px;margin-top:40px">ウェイトは Regular と Bold の 2 面だけ</h3>
+  <p class="section-lead" style="margin-bottom:18px">登録されているのは 400 と 700 の 2 本。隠し div の幅を測ると、実際に描画される面は 2 つしかなかった。</p>
+  <table class="wtable">
+    <tr><th>指定</th><th>実測幅</th><th>実際に出る面</th><th style="width:40%">見え方</th></tr>
+    <tr><td class="mono">100 / 200 / 300 / 400 / <b>500</b></td><td class="mono">918.80px</td><td>Regular（400）</td><td style="font-weight:400;font-size:18px">コタエを、ダセル。</td></tr>
+    <tr class="bad"><td class="mono">600 / 700 / 900</td><td class="mono">922.41px</td><td>Bold（700）</td><td style="font-weight:700;font-size:18px">コタエを、ダセル。</td></tr>
+  </table>
+  <p class="note"><b><code>font-weight: 500</code> を書いても Regular で描画される。</b>300 や 600 も同じ。中間ウェイトは設計に存在しないものとして扱う。</p>
+</section>
+
+<section class="section-alt" id="rhythm">
+<div class="section-inner">
+  <div class="section-label">02 / Rhythm</div>
+  <div class="eyebrow">LINE HEIGHT &amp; LETTER SPACING</div>
+  <h2 class="section-title">行間 1.9、字間は body に 1 回だけ</h2>
+  <p class="section-lead"><code>--LINE_HEIGHT: 1.9</code> は<b>無単位</b>なので各要素が自分のサイズで再計算する（16px → 30.4px / 24px → 43.2px）。<b>1 未満の比率は 1 件も無い</b>＝絶対値 px は降っていない。</p>
+
+  <div class="type-row"><div class="type-meta"><b>1.90 ★既定</b>実測 204 要素</div><div style="font-size:16px;line-height:1.9">ダイセルは、セルロース化学・有機合成化学・高分子化学・火薬学の 4 つのコア技術を軸に、暮らしを支える素材と部品をつくっています。</div></div>
+  <div class="type-row"><div class="type-meta"><b>1.80</b>補助テキスト（9 要素）</div><div style="font-size:14px;line-height:1.8;color:var(--COLOR_FOREGROUND_MEDIUM_DARK)">HISTORY OF CELLULOID ／ ダイセルグループの挑戦</div></div>
+  <div class="type-row"><div class="type-meta"><b>1.60</b>UI ラベル（39 要素）</div><div style="font-size:14px;line-height:1.6">閉じる</div></div>
+  <div class="type-row"><div class="type-meta"><b>1.00</b>1 行もの（7 要素）</div><div style="font-size:14px;line-height:1">サイト内検索</div></div>
+
+  <h3 class="section-title" style="font-size:24px;margin-top:40px">字間は <code style="font-size:18px">.05em</code> を body に 1 回</h3>
+  <p class="section-lead" style="margin-bottom:18px"><b>em 宣言 → px で継承。</b>実測 <code>0.8px</code> が可視 259 要素中 <b>251 要素</b>。body の font-size が 768px で 16px → 14px に変わるので、<b>モバイルでは 0.7px に再計算される</b>。</p>
+  <table class="wtable" style="max-width:720px">
+    <tr><th>幅</th><th>body</th><th>letter-spacing</th><th>line-height</th></tr>
+    <tr><td class="mono">1940 〜 768px</td><td class="mono">16px</td><td class="mono">0.8px</td><td class="mono">30.4px</td></tr>
+    <tr><td class="mono">767px 〜 375px</td><td class="mono">14px</td><td class="mono">0.7px</td><td class="mono">26.6px</td></tr>
+  </table>
+  <p class="note"><b><code>letter-spacing: 0.8px</code> と px で書かない。</b>モバイルで 0.7px にならなくなる。<b>子要素で em を宣言し直さない</b>（継承で配るのがこのサイトの設計）。24px の見出しだけは要素側で <code>.05em</code> を書き直して <code>1.2px</code> にしている。</p>
+
+  <h3 class="section-title" style="font-size:24px;margin-top:40px">禁則は既定のまま、はみ出しだけ止める</h3>
+  <p class="section-lead" style="margin-bottom:0"><code>word-break</code> は全幅で <code>normal</code>。そのうえで <code>body { overflow-wrap: anywhere }</code> を当て、長い英数字が枠を突き抜けないようにしている。<b><code>word-break: break-all</code> と違って和文の禁則は壊さない。</b></p>
+  <div style="background:var(--COLOR_BASE_LIGHT);border-radius:var(--RADIUS_RADIUS_S);padding:20px;max-width:360px;margin-top:16px;font-size:14px;line-height:1.9">
+    酢酸セルロース（cellulose&#8203;acetate&#8203;propionate&#8203;butyrate）を用いた生分解性素材
+  </div>
+</div>
+</section>
+
+<section class="section" id="colors">
+  <div class="section-label">03 / Colors</div>
+  <div class="eyebrow">COLOR PALETTE</div>
+  <h2 class="section-title">宣言 64 個、ブランド色は可視 0</h2>
+  <p class="section-lead">CSS Custom Properties は <b>64 個（自社トークン 64 / プラットフォーム由来 0）</b>。<b>ただし <code>--COLOR_BRAND_PRIMARY</code> と <code>--COLOR_BRAND_SECONDARY</code> は 2 ページとも可視 0 要素</b>。ロゴが SVG 画像なので DOM の色としては出てこない。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#222222"></div><div class="swatch-body"><div class="swatch-name">--COLOR_FOREGROUND_DARK</div><div class="swatch-hex">#222222</div><div class="swatch-use">★本文・見出し。可視 206 要素。純黒は使わない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#586063"></div><div class="swatch-body"><div class="swatch-name">--COLOR_FOREGROUND_MEDIUM_DARK</div><div class="swatch-hex">#586063</div><div class="swatch-use">補助テキスト・パンくず（下層 41 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#006da1"></div><div class="swatch-body"><div class="swatch-name">--COLOR_ROLE_LINK</div><div class="swatch-hex">#006da1</div><div class="swatch-use">★実際に使われる青。リンク・戻るボタン</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#005d8a"></div><div class="swatch-body"><div class="swatch-name">--COLOR_FOREGROUND_DARK_CYAN</div><div class="swatch-hex">#005d8a</div><div class="swatch-use">言語切替（下層 11 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f6f6f6"></div><div class="swatch-body"><div class="swatch-name">--COLOR_BACKGROUND</div><div class="swatch-hex">#f6f6f6</div><div class="swatch-use">★面。可視 21 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e5f5fc"></div><div class="swatch-body"><div class="swatch-name">--COLOR_BACKGROUND_2</div><div class="swatch-hex">#e5f5fc</div><div class="swatch-use">下層のパンくず帯（1 要素）</div></div></div>
+    <div class="swatch ghost"><div class="swatch-chip" style="background:#009be6"></div><div class="swatch-body"><div class="swatch-name">--COLOR_BRAND_PRIMARY</div><div class="swatch-hex">#009be6</div><div class="swatch-use"><b>宣言のみ・可視 0 要素。</b>実装色として使わない</div></div></div>
+    <div class="swatch ghost"><div class="swatch-chip" style="background:#d71619"></div><div class="swatch-body"><div class="swatch-name">--COLOR_BRAND_SECONDARY</div><div class="swatch-hex">#d71619</div><div class="swatch-use"><b>宣言のみ・可視 0 要素</b></div></div></div>
+  </div>
+
+  <h3 class="section-title" style="font-size:24px;margin-top:40px">事業セグメントの 5 色</h3>
+  <div class="chip-row">
+    <span class="chip" style="background:#df2b5e">モビリティ</span>
+    <span class="chip" style="background:#197e9a">エレクトロニクス</span>
+    <span class="chip" style="background:#006437">メディカル</span>
+    <span class="chip" style="background:#00866b">コスメ</span>
+    <span class="chip" style="background:#007cb8">マテリアル</span>
+  </div>
+  <p class="note">バッジは <code>22px / 700 / letter-spacing 1.2px（= .05em）/ radius 8px</code>。</p>
+</section>
+
+<section class="section" id="components">
+<div class="section-inner" style="padding:0;max-width:none">
+  <div class="section-label">04 / Components</div>
+  <div class="eyebrow">COMPONENTS</div>
+  <h2 class="section-title">トークンに無い「片側 150px」の角丸</h2>
+  <p class="section-lead">角丸のトークンは 5 段（60 / 30 / 8 / 4 / 1000px）。<b>ただし事業カードだけは <code>8px 8px 150px 150px</code> というハードコードの非対称角丸</b>で、花びらのような形をつくる。<b>8px に丸めると別物になる。</b></p>
+
+  <div class="petal-grid">
+    <div class="petal down"><div class="petal-title">自律型生産システム</div><div class="petal-desc">独自 AI で化学プラントを自律運転する</div><div class="petal-radius">8px 8px 150px 150px</div></div>
+    <div class="petal up"><div class="petal-title">ダイセル式生産革新</div><div class="petal-desc">全体最適の視点で世の中の工場を変える</div><div class="petal-radius">150px 150px 8px 8px</div></div>
+    <div class="petal down"><div class="petal-title">ナノダイヤソリューション</div><div class="petal-desc">例えば「太陽光超吸収」という新しい機能</div><div class="petal-radius">8px 8px 150px 150px</div></div>
+  </div>
+
+  <div class="btn-row" style="margin-top:34px">
+    <button class="btn btn-round">‹</button>
+    <button class="btn btn-round thick">❙❙</button>
+    <button class="btn btn-round">›</button>
+    <button class="btn btn-pill">CM特設サイト →</button>
+    <button class="btn btn-text">もっと見る</button>
+    <button class="btn btn-text is-focus">フォーカス時</button>
+  </div>
+
+  <h3 class="section-title" style="font-size:24px;margin-top:40px">影はナビのドロップダウン 1 箇所だけ</h3>
+  <div class="dropdown">
+    <div class="dropdown-title">企業情報</div>
+    <div class="dropdown-links">
+      <a href="#">トップメッセージ</a><a href="#">会社概要</a><a href="#">沿革</a><a href="#">役員紹介</a><a href="#">組織図</a><a href="#">基本理念・理念体系</a>
+    </div>
+  </div>
+  <p class="note"><code>box-shadow: rgba(88, 96, 99, 0.1) 0 0 16px 0</code> — <b>色は黒ではなく <code>#586063</code> の 10%</b>。黒に丸めない。オフセット 0 / ぼかし 16px / 広がり 0。<b>カードには影を使わない</b>（面の分離は <code>#f6f6f6</code> と角丸で行う）。</p>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:60px"></div><div class="radius-label">--RADIUS_RADIUS_L<br>60px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:30px"></div><div class="radius-label">--RADIUS_RADIUS_M<br>30px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">--RADIUS_RADIUS_S<br>8px ★最多</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">--RADIUS_RADIUS_XS<br>4px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:1000px 0 0 1000px"></div><div class="radius-label">--RADIUS_RADIUS_PILL<br>1000px 0 0 1000px</div></div>
+  </div>
+</div>
+</section>
+
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">05 / Layout</div>
+  <div class="eyebrow">SPACING</div>
+  <h2 class="section-title">余白はすべて 8px の倍数</h2>
+  <p class="section-lead"><code>--SPACING: 8px</code> を基準に <code>calc(8px * N)</code> で刻む。実測の <code>gap</code> も <code>0 32px</code>（14 要素）/ <code>24px</code>（13 要素）/ <code>32px</code> / <code>48px</code> / <code>80px</code> と 8 の倍数に揃っている。</p>
+
+  <div class="space-row">
+    <div class="space-bar"><div class="fill" style="width:16px"></div><div class="lbl">--MODULE_MARGIN_XXS&nbsp;&nbsp;calc(8px * 2) = 16px</div></div>
+    <div class="space-bar"><div class="fill" style="width:24px"></div><div class="lbl">--MODULE_MARGIN_XS&nbsp;&nbsp;&nbsp;calc(8px * 3) = 24px</div></div>
+    <div class="space-bar"><div class="fill" style="width:32px"></div><div class="lbl">--MODULE_MARGIN_SM&nbsp;&nbsp;&nbsp;calc(8px * 4) = 32px</div></div>
+    <div class="space-bar"><div class="fill" style="width:48px"></div><div class="lbl">--MODULE_MARGIN_MD&nbsp;&nbsp;&nbsp;calc(8px * 6) = 48px</div></div>
+    <div class="space-bar"><div class="fill" style="width:56px"></div><div class="lbl">--MODULE_MARGIN_L&nbsp;&nbsp;&nbsp;&nbsp;calc(8px * 7) = 56px</div></div>
+    <div class="space-bar"><div class="fill" style="width:64px"></div><div class="lbl">--MODULE_MARGIN_XL&nbsp;&nbsp;&nbsp;calc(8px * 8) = 64px</div></div>
+    <div class="space-bar"><div class="fill" style="width:80px"></div><div class="lbl">--MODULE_MARGIN_XXL&nbsp;&nbsp;calc(8px * 10) = 80px</div></div>
+  </div>
+
+  <h3 class="section-title" style="font-size:24px;margin-top:40px">メディアクエリはレンジ構文</h3>
+  <div style="background:var(--COLOR_BACKGROUND);border-radius:var(--RADIUS_RADIUS_S);padding:22px 24px;font-family:var(--font-mono);font-size:12.5px;line-height:2;letter-spacing:normal">
+    @media print, screen and (width &gt;= 768px) { }<br>
+    @media print, screen and (width &gt;= 1200px) { }<br>
+    @media print, screen and (width &gt;= 1360px) { }<br>
+    @media print, screen and (768px &lt; width &lt; 1200px) { }<br>
+    @media only screen and (any-hover: hover) { }
+  </div>
+  <p class="note"><b><code>min-width</code> ではなく <code>width &gt;= 768px</code> のレンジ構文</b>で書かれている。<code>print</code> を必ず併記し、ホバーは <code>(any-hover: hover)</code> でガードする。<br><b>モバイルの設計幅は 375px</b>（<code>--CONTENT_WIDTH_SP: calc(375px - calc(8px*2)*2)</code> = 343px から読める）。1200px / 1360px はレイアウトだけを変え、<b>文字サイズは動かさない</b>。</p>
+</div>
+</section>
+
+<section class="section-alt" id="hero">
+<div class="section-inner">
+  <div class="section-label">06 / Don't</div>
+  <div class="eyebrow">CAUTION</div>
+  <h2 class="section-title">ヒーローの文字は 1 文字も実テキストではない</h2>
+  <p class="section-lead"><code>&lt;picture class="u-top-carouselMv__media"&gt;</code> の 1440×800 webp を 4 枚めくるカルーセルで、<b>横組みのコピーも右端の縦組みコピーも画像</b>。<code>writing-mode: vertical-rl</code> は両ページとも <b>0 要素</b>。下は「こう見える」という再現で、<b>この縦組みを CSS で実装してはいけない</b>。</p>
+  <div class="hero-demo">
+    <div>
+      <div class="lead">コタエを、ダセル。</div>
+      <div class="tag">↑ 実サイトではこれも &lt;picture&gt; の webp に焼き込まれた画像</div>
+    </div>
+    <div class="side">化学におけるコタエとは、つまり無限の可能性のことだ</div>
+  </div>
+  <p class="note"><b>縦組みを再現しようとしない。</b><code>font-feature-settings: "palt"</code> も書かない — 配信されているのがサブセット版の BIZ UDPGothic で、実測は <code>normal</code> 918.80px / <code>"palt"</code> 918.80px / <code>"halt"</code> 918.80px と <b>1px も動かない</b>。</p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-head">価値共創によって人々を幸せにする会社</div>
+    <div class="footer-note">BIZ UDPGothic 一本・行間 1.9・字間 .05em・余白は 8px の倍数。</div>
+    <div class="footer-copy">© DAICEL CORPORATION — Design tokens measured 2026-11-10</div>
+  </div>
+</footer>
+
+</body>
+</html>

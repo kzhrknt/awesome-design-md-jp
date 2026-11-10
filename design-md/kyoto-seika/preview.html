@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 京都精華大学（KYOTO SEIKA UNIVERSITY）</title>
+<style>
+  /* ★Web フォントは 1 本も読み込まない（実サイトのフォント要求は 0 件）。
+     この preview も <link> を置かず、OS のローカル書体スタックだけで組む。 */
+  :root {
+    /* === Colors ===
+       実サイトの CSS Custom Properties は Swiper の既定値 2 個だけ（自社トークン 0）。
+       色はすべて CSS に直書きされている。以下は computed style の実測値。2026-11-10
+
+       ★水色が 3 つあり、用途が違う。まとめてはいけない。 */
+    --cyan-copy:   #1dc5ff;   /* ヒーローのコピー「話そう、セイカと。」と CLICK（可視 2 要素） */
+    --cyan-under:  #00c1f9;   /* ★リンクの下線（36 要素）。linear-gradient のハードストップ */
+    --cyan-crumb:  #01a6db;   /* パンくず（2 要素） */
+
+    --black:    #000000;   /* ★本文。可視 104 要素（下層 87 要素）。このサイトは純黒を使う */
+    --surface:  #545454;   /* 施設カードの面・CTA の面（8 要素） */
+    --muted:    #999999;   /* MORE（3 要素） */
+    --sub:      #666666;   /* 「受賞・出版等」「その他」（3 要素） */
+    --white:    #ffffff;
+    --bg:       #ffffff;   /* pageBackground.resolved = rgb(255,255,255) */
+    --rule:     #dddddd;   /* 罫線（プレビュー用の補助。実サイトも淡い罫線で区切る） */
+
+    /* === Fonts ===
+       実サイトのスタックをそのまま写した。Web フォントは使わない。
+       ★欧文の 'Barlow' は 30 要素に指定されているが 1 本も宣言されていない（3. の節を参照）。
+         ここでも Barlow は読み込まず、実サイトと同じく sans-serif に落ちる状態を再現する。 */
+    --font-body: "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", "ヒラギノ角ゴ W3",
+                 游ゴシック体, "Yu Gothic", YuGothic, メイリオ, sans-serif;
+    --font-en:   'Barlow', sans-serif;   /* 実サイトのまま。Barlow は届いていない */
+    --font-en-fixed: 'Barlow', "Hiragino Kaku Gothic Pro", 游ゴシック体, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height（無単位。1 未満の比率は 1 件も無い） === */
+    --lh-base:  2.00;   /* ★既定。トップ 46 / 下層 41 要素で最多 */
+    --lh-list:  1.65;   /* コース名のリスト（20 要素） */
+    --lh-dept:  1.80;   /* 学部名（12〜15 要素） */
+    --lh-card:  1.60;   /* カード見出し（16 要素） */
+    --lh-news:  1.70;   /* ニュース見出し（6 要素） */
+    --lh-one:   1.00;   /* 1 行もの（4〜5 要素） */
+
+    /* === Letter spacing ===
+       body に .05em（ルートが 10px なので継承値は 0.5px）。
+       大きい見出しほど em を上げる。 */
+    --ls-base:  .05em;   /* 16px → 0.8px / 13px → 0.65px。継承値は 0.5px */
+    --ls-mid:   .07em;   /* セクション見出し 26px → 1.82px / ヒーロー 45px → 3.15px */
+    --ls-head:  .078em;  /* ページ見出し 32px → 2.5px */
+    --ls-dept:  .08em;   /* 学部カードの見出し 22px → 1.76px */
+    --ls-en:    .10em;   /* 欧文の併記 16px → 1.60004px */
+
+    --r: 0;   /* ★角丸は 0。下層ページの border-radius は 0 種 */
+  }
+
+  /* ★html に 62.5% を当てて 1rem = 10px にする（15 幅すべてで固定。流体も崖も無い） */
+  html { font-size: 62.5%; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--black);
+    font-family: var(--font-body);
+    font-size: 1.6rem;              /* = 16px */
+    font-weight: 400;
+    line-height: var(--lh-base);    /* ★2.0 */
+    letter-spacing: var(--ls-base); /* ★10px × .05em = 0.5px が継承される */
+    -webkit-font-smoothing: antialiased;
+    /* font-feature-settings は書かない。書体は palt に対応しているが（実測 −6.0%）、
+       このサイトは意図的に使っていない。足すと見出しの字幅が変わる。 */
+  }
+
+  /* ★下線は text-decoration ではなく背景のハードストップで引く */
+  .u-link      { background-image: linear-gradient(rgba(0,0,0,0) 95%, var(--cyan-under) 95%); text-decoration: none; color: var(--black); }
+  .u-link-blk  { background-image: linear-gradient(rgba(0,0,0,0) 95%, var(--black) 95%); text-decoration: none; color: var(--black); }
+  .u-link-thick{ background-image: linear-gradient(rgba(0,0,0,0) 94%, var(--black) 94%); text-decoration: none; color: var(--black); }
+
+  /* HEADER */
+  .header { display: flex; align-items: center; padding: 2.4rem 3rem; border-bottom: 1px solid var(--rule); gap: 3rem; }
+  .logo { line-height: 1.3; text-decoration: none; color: var(--black); }
+  .logo-jp { font-size: 2.4rem; font-weight: 700; letter-spacing: .36em; display: block; }
+  .logo-en { font-family: var(--font-en); font-size: 1.1rem; font-weight: 600; letter-spacing: .22em; color: var(--cyan-under); display: block; margin-top: .4rem; }
+  .header-nav { display: flex; gap: 2.8rem; margin-left: auto; }
+  .header-nav a { font-family: var(--font-en); font-size: 1.1rem; font-weight: 600; letter-spacing: .1em; line-height: var(--lh-one); color: var(--black); text-decoration: none; }
+
+  /* SECTIONS */
+  .section { padding: 6rem 3rem; max-width: 116rem; margin: 0 auto; }
+  .section-alt { background: #f4f7f8; }
+  .section-alt .section-inner { padding: 6rem 3rem; max-width: 116rem; margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 1.1rem; letter-spacing: normal; line-height: 1.7; color: var(--muted); margin-bottom: .8rem; }
+  .section-title { font-size: 2.6rem; font-weight: 700; line-height: var(--lh-card); letter-spacing: var(--ls-mid); margin-bottom: 1.4rem; }
+  .section-title .en { font-family: var(--font-en); font-size: 1.6rem; font-weight: 600; letter-spacing: var(--ls-en); margin-left: 1.2rem; color: var(--cyan-crumb); }
+  .section-lead { font-size: 1.6rem; line-height: var(--lh-base); max-width: 90rem; margin-bottom: 3.2rem; }
+  .note { font-size: 1.4rem; line-height: var(--lh-base); color: var(--sub); max-width: 90rem; margin-top: 2.4rem; }
+  .note b { color: var(--black); font-weight: 700; }
+  code { font-family: var(--font-mono); font-size: 1.2rem; letter-spacing: normal; background: #eef3f5; padding: .1rem .5rem; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(21rem, 1fr)); gap: 1.4rem; }
+  .swatch { border: 1px solid var(--rule); background: var(--white); }
+  .swatch-chip { height: 7.2rem; }
+  .swatch-body { padding: 1.2rem 1.4rem 1.4rem; }
+  .swatch-name { font-size: 1.4rem; font-weight: 700; line-height: var(--lh-card); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 1.1rem; letter-spacing: normal; color: var(--sub); margin-top: .3rem; }
+  .swatch-use { font-size: 1.2rem; line-height: var(--lh-card); color: var(--sub); margin-top: .7rem; }
+
+  /* TYPOGRAPHY */
+  .scale-bar { display: flex; gap: .8rem; flex-wrap: wrap; align-items: baseline; margin-bottom: 3rem; }
+  .scale-bar span { background: #eef3f5; padding: .7rem 1.2rem; line-height: 1.3; }
+  .type-row { display: grid; grid-template-columns: 24rem 1fr; gap: 2.4rem; padding: 2rem 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 1.1rem; letter-spacing: normal; color: var(--sub); line-height: 1.8; }
+  .type-meta b { display: block; font-family: var(--font-body); font-size: 1.3rem; font-weight: 700; letter-spacing: var(--ls-base); color: var(--black); }
+
+  /* TABLE */
+  .wtable { width: 100%; border-collapse: collapse; font-size: 1.4rem; line-height: 1.8; }
+  .wtable th, .wtable td { border-bottom: 1px solid var(--rule); padding: 1rem; text-align: left; }
+  .wtable th { font-weight: 700; font-size: 1.3rem; color: var(--sub); }
+  .wtable td.mono { font-family: var(--font-mono); font-size: 1.2rem; letter-spacing: normal; }
+  .wtable tr.bad td { background: #fdf2f2; }
+  .wtable tr.bad td:first-child { font-weight: 700; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 1.6rem; flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--font-body); letter-spacing: var(--ls-base); cursor: pointer; border: 0; border-radius: var(--r); }
+  .btn-primary { background: var(--surface); color: var(--white); font-size: 1.8rem; font-weight: 700; line-height: var(--lh-card); padding: 1.4rem 3.2rem; }
+  .btn-text { background: transparent; color: var(--black); font-size: 1.8rem; font-weight: 700; line-height: var(--lh-dept); padding: 1.4rem 0;
+              background-image: linear-gradient(rgba(0,0,0,0) 95%, var(--cyan-under) 95%); }
+  .btn-more { background: transparent; color: var(--muted); font-family: var(--font-en); font-size: 1.4rem; font-weight: 600; letter-spacing: .1em; line-height: var(--lh-one); padding: 1.2rem 0; }
+  .btn.is-focus { outline: 2px solid var(--cyan-under); outline-offset: .3rem; }
+
+  /* FACILITY CARDS */
+  .fac-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(26rem, 1fr)); gap: 3rem; }
+  .fac { background: var(--surface); color: var(--white); padding: 3.2rem 2.4rem 3.6rem; border-radius: var(--r); }
+  .fac-title { font-size: 1.8rem; font-weight: 700; line-height: var(--lh-card); letter-spacing: var(--ls-base); }
+  .fac-desc { font-size: 1.3rem; line-height: var(--lh-list); margin-top: 1rem; opacity: .9; }
+
+  /* DEPARTMENT LIST */
+  .dept-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr)); gap: 3rem normal; column-gap: 3rem; }
+  .dept-name { font-size: 2.2rem; font-weight: 700; line-height: var(--lh-dept); letter-spacing: var(--ls-dept); }
+  .dept-list { list-style: none; margin-top: 1.2rem; }
+  .dept-list li { font-size: 1.3rem; line-height: var(--lh-list); margin-bottom: .4rem; }
+  .dept-list a { display: inline; }
+
+  /* UNDERLINE DEMO */
+  .ul-demo { display: grid; gap: 0; }
+  .ul-row { display: grid; grid-template-columns: 30rem 1fr; gap: 2rem; padding: 1.8rem 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  .ul-meta { font-family: var(--font-mono); font-size: 1.1rem; letter-spacing: normal; color: var(--sub); line-height: 1.8; }
+
+  /* HERO — 面そのものに background-image を持たせる（兄弟の絶対配置にしない） */
+  .hero-demo { padding: 7rem 3rem; text-align: center; border-radius: var(--r);
+               background-image: linear-gradient(rgba(255,255,255,.55), rgba(255,255,255,.72)),
+                                 linear-gradient(135deg, #8fa6ad 0%, #cfd9db 40%, #9fb3b8 70%, #c3ced0 100%); }
+  .hero-demo .ghost { font-family: var(--font-en); font-size: 9rem; font-weight: 700; letter-spacing: .3em; line-height: 1.1; color: rgba(60,80,90,.30); }
+  .hero-demo .copy { font-size: 4.5rem; font-weight: 700; line-height: var(--lh-card); letter-spacing: var(--ls-mid); color: var(--cyan-copy); margin-top: 1.6rem;
+                     text-shadow: 0 1px 10px rgba(255,255,255,.9); }
+  .hero-demo .click { font-family: var(--font-en); font-size: 1.4rem; font-weight: 600; letter-spacing: .1em; color: var(--cyan-copy); margin-top: 1rem; }
+  .hero-demo .tag { font-family: var(--font-mono); font-size: 1.1rem; letter-spacing: normal; line-height: 1.9; color: #30424a; margin-top: 2.4rem; }
+
+  /* NO DEPTH */
+  .flat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr)); gap: 3rem; }
+  .flat { border: 1px solid var(--rule); padding: 2.8rem; text-align: center; border-radius: var(--r); }
+  .flat-name { font-size: 1.6rem; font-weight: 700; line-height: var(--lh-card); }
+  .flat-val { font-family: var(--font-mono); font-size: 1.1rem; letter-spacing: normal; color: var(--sub); line-height: 1.8; margin-top: .8rem; }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--rule); padding: 4rem 3rem; }
+  .footer-inner { max-width: 116rem; margin: 0 auto; }
+  .footer-links { display: flex; gap: 2.8rem; flex-wrap: wrap; }
+  .footer-links a { font-size: 1.4rem; line-height: var(--lh-base); letter-spacing: var(--ls-base); }
+  .footer-copy { font-family: var(--font-mono); font-size: 1.1rem; letter-spacing: normal; line-height: 1.9; color: var(--muted); margin-top: 2.4rem; }
+
+  @media screen and (max-width: 767px) {
+    .section, .section-alt .section-inner { padding: 4.4rem 2rem; }
+    .section-title { font-size: 2.2rem; }
+    .type-row, .ul-row { grid-template-columns: 1fr; gap: .8rem; }
+    .header-nav { display: none; }
+    .hero-demo .ghost { font-size: 4.4rem; }
+    .hero-demo .copy { font-size: 2.8rem; }
+    body { font-size: 1.8rem; }   /* 実サイトも 767px で p が 20px → 18px に落ちる */
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a href="#" class="logo">
+    <span class="logo-jp">京都精華大学</span>
+    <span class="logo-en">KYOTO SEIKA UNIVERSITY</span>
+  </a>
+  <nav class="header-nav">
+    <a href="#">LANGUAGE</a><a href="#">ACCESS</a><a href="#">REQUEST</a><a href="#">MENU</a>
+  </nav>
+</header>
+
+<section class="section" id="fonts">
+  <div class="section-label">01 / Fonts</div>
+  <h2 class="section-title">Web フォントを 1 本も読み込まない<span class="en">TYPEFACE</span></h2>
+  <p class="section-lead">フォントファイルのリクエストは <b>0 件</b>。<code>document.fonts</code> に載るのは <code>Anton</code>（×3・<code>unloaded</code>）と <code>swiper-icons</code> だけで、<b>本文はすべて OS のローカル書体</b>。この preview も <code>&lt;link&gt;</code> を置かず、実サイトと同じ状態を再現している。</p>
+
+  <div class="note" style="background:#fdf2f2;padding:2.2rem 2.4rem;max-width:none;margin-top:0">
+    <b>★ 欧文の Barlow は 30 要素に指定されているのに、1 本も宣言されていない。</b><br>
+    原因は Google Fonts の URL の書き方。<br>
+    <code style="display:inline-block;margin-top:.8rem">@import url("https://fonts.googleapis.com/css<b>?</b>family=Anton<b>&amp;family=</b>Barlow:400,600,700&amp;display=swap");</code><br>
+    <span style="display:block;margin-top:.8rem"><code>/css?</code>（v1 エンドポイント）に <code>&amp;family=</code> を重ねる v2 の書き方を混ぜているため、<b>返ってくるのは Anton の <code>@font-face</code> 3 件だけで Barlow は 1 件も含まれない</b>。ステータスは 200 なのでエラーにならず、<b>黙って <code>sans-serif</code> に落ちる</b>。</span>
+    <span style="display:block;margin-top:1.2rem">正しくは <code>css2?family=Anton&amp;family=Barlow:wght@400;600;700</code>（v2）か、<code>css?family=Anton<b>|</b>Barlow:400,600,700</code>（v1 の <code>|</code> 区切り）。</span>
+  </div>
+
+  <div class="type-row" style="margin-top:3rem">
+    <div class="type-meta"><b>本文スタック ★</b>Hiragino Kaku Gothic Pro →<br>游ゴシック体 → メイリオ<br>可視 90 / 85 要素</div>
+    <div style="font-size:2rem;line-height:2">話そう、セイカと。ABC 0123 — OS のローカル書体だけで組む</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><b>欧文（実サイトのまま）</b>'Barlow', sans-serif<br>30 要素・<b>Barlow は届いていない</b></div>
+    <div style="font-family:var(--font-en);font-size:2rem;font-weight:600;letter-spacing:.1em">INFORMATION / TOPICS / EVENT</div>
+  </div>
+
+  <h3 class="section-title" style="font-size:2rem;margin-top:4rem">游ゴシックのスタックに Medium が無い</h3>
+  <p class="section-lead" style="margin-bottom:1.6rem">実サイトのスタックは <code>游ゴシック体, "Yu Gothic", YuGothic</code> で、<b>Medium が 1 つも入っていない</b>。<b>Windows では <code>游ゴシック</code>（Regular）に当たって細く出る</b>。</p>
+  <div style="background:#eef3f5;padding:2rem 2.2rem;font-family:var(--font-mono);font-size:1.25rem;letter-spacing:normal;line-height:2.1">
+    /* 実サイト — Medium がスタックに 1 つも無い */<br>
+    … 游ゴシック体, "Yu Gothic", YuGothic, メイリオ, sans-serif;<br><br>
+    /* 正しくは Medium を Regular より前に置く */<br>
+    … "游ゴシック Medium", "Yu Gothic Medium", 游ゴシック体, "Yu Gothic", YuGothic, メイリオ, sans-serif;
+  </div>
+
+  <h3 class="section-title" style="font-size:2rem;margin-top:4rem">ウェイトは実質 2 面（600 と 700 は同じ）</h3>
+  <p class="section-lead" style="margin-bottom:1.6rem"><code>Hiragino Kaku Gothic Pro</code> は <b>W3 の 1 本</b>しか持たない。隠し div の幅を測ると 2 面に割れた。</p>
+  <table class="wtable">
+    <tr><th>指定</th><th>実測幅</th><th>実際の描画</th><th style="width:38%">見え方</th></tr>
+    <tr><td class="mono">100 / 200 / 300 / 400 / 500</td><td class="mono">937.97px</td><td>W3（Regular）</td><td style="font-weight:400;font-size:1.8rem">話そう、セイカと。</td></tr>
+    <tr class="bad"><td class="mono"><b>600</b> / <b>700</b> / 900</td><td class="mono">947.25px</td><td><b>合成太字</b></td><td style="font-weight:700;font-size:1.8rem">話そう、セイカと。</td></tr>
+  </table>
+  <p class="note"><b><code>font-weight: 600</code> と <code>700</code> を書き分けない。</b>どちらも同じ合成太字になる。</p>
+</section>
+
+<section class="section-alt" id="colors">
+<div class="section-inner">
+  <div class="section-label">02 / Colors</div>
+  <h2 class="section-title">純黒と、用途の違う水色 3 つ<span class="en">COLOR PALETTE</span></h2>
+  <p class="section-lead"><b>CSS Custom Properties は実質 0 個</b>（<code>:root</code> にあるのは Swiper の既定値 2 個だけ）。色はすべて CSS に直書き。<b>水色が 3 つあり、用途が違う。まとめてはいけない。</b></p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#000000</div><div class="swatch-use">★本文。可視 104 要素（下層 87 要素）。<b>純黒が既定</b></div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#1dc5ff"></div><div class="swatch-body"><div class="swatch-name">Cyan / Copy</div><div class="swatch-hex">#1dc5ff</div><div class="swatch-use">ヒーローのコピーと CLICK（可視 2 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#00c1f9"></div><div class="swatch-body"><div class="swatch-name">Cyan / Underline</div><div class="swatch-hex">#00c1f9</div><div class="swatch-use">★リンクの下線（36 要素）。グラデーションで引く</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#01a6db"></div><div class="swatch-body"><div class="swatch-name">Cyan / Breadcrumb</div><div class="swatch-hex">#01a6db</div><div class="swatch-use">パンくず（2 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#545454"></div><div class="swatch-body"><div class="swatch-name">Surface Dark</div><div class="swatch-hex">#545454</div><div class="swatch-use">施設カードの面・CTA の面（8 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#666666"></div><div class="swatch-body"><div class="swatch-name">Text Secondary</div><div class="swatch-hex">#666666</div><div class="swatch-use">「受賞・出版等」「その他」（3 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#999999"></div><div class="swatch-body"><div class="swatch-name">Text Muted</div><div class="swatch-hex">#999999</div><div class="swatch-use">MORE（3 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffffff;border-bottom:1px solid #dddddd"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-use">ページ背景</div></div></div>
+  </div>
+
+  <p class="note"><b>本文に <code>#333333</code> を使わない。</b>純黒 <code>#000000</code> が既定で、それがこのサイトの硬さを作っている。</p>
+</div>
+</section>
+
+<section class="section" id="underline">
+  <div class="section-label">03 / Underline</div>
+  <h2 class="section-title">下線を <code style="font-size:2.2rem">text-decoration</code> で引かない<span class="en">HARD STOP</span></h2>
+  <p class="section-lead">背景の <b>ハードストップのグラデーション</b>で引く。<b>停止位置を 95% と 94% で打ち分けて太さを変えている</b>ので、丸めない。利点は、下線の位置と太さを行の高さに対して決められること。</p>
+
+  <div class="ul-demo">
+    <div class="ul-row">
+      <div class="ul-meta"><b style="font-family:var(--font-body);font-size:1.3rem;color:var(--black);display:block;letter-spacing:.05em">水色の下線 ★36 要素</b>linear-gradient(<br>&nbsp;&nbsp;rgba(0,0,0,0) 95%, #00c1f9 95%)</div>
+      <div style="font-size:1.8rem;line-height:1.8"><a href="#" class="u-link">マンガ研究科修了生による翻訳絵本が刊行されました</a></div>
+    </div>
+    <div class="ul-row">
+      <div class="ul-meta"><b style="font-family:var(--font-body);font-size:1.3rem;color:var(--black);display:block;letter-spacing:.05em">黒の下線 7〜8 要素</b>linear-gradient(<br>&nbsp;&nbsp;rgba(0,0,0,0) 95%, #000000 95%)</div>
+      <div style="font-size:1.8rem;line-height:1.8"><a href="#" class="u-link-blk">アクセス</a>　<a href="#" class="u-link-blk">お問い合わせ</a>　<a href="#" class="u-link-blk">サイトポリシー</a></div>
+    </div>
+    <div class="ul-row">
+      <div class="ul-meta"><b style="font-family:var(--font-body);font-size:1.3rem;color:var(--black);display:block;letter-spacing:.05em">太めの黒下線 6 要素</b>linear-gradient(<br>&nbsp;&nbsp;rgba(0,0,0,0) <b>94%</b>, #000000 <b>94%</b>)</div>
+      <div style="font-size:1.8rem;line-height:1.8"><a href="#" class="u-link-thick">人文学部</a>　<a href="#" class="u-link-thick">メディア表現学部</a>　<a href="#" class="u-link-thick">芸術学部</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt" id="rhythm">
+<div class="section-inner">
+  <div class="section-label">04 / Rhythm</div>
+  <h2 class="section-title">1rem = 10px、行間 2.0<span class="en">SCALE</span></h2>
+  <p class="section-lead"><code>html { font-size: 62.5% }</code> で <b>1rem = 10px</b>。<b>15 幅すべてで固定</b>（流体も崖も無い）。<b>16px 前提で <code>rem</code> を書くと全部 1.6 倍ずれる。</b></p>
+
+  <div class="scale-bar">
+    <span style="font-size:1.1rem">1.1</span><span style="font-size:1.2rem">1.2</span><span style="font-size:1.3rem">1.3</span>
+    <span style="font-size:1.4rem">1.4</span><span style="font-size:1.6rem">1.6</span><span style="font-size:1.8rem">1.8</span>
+    <span style="font-size:2rem">2.0</span><span style="font-size:2.2rem">2.2</span><span style="font-size:2.6rem">2.6</span>
+    <span style="font-size:3.2rem">3.2</span><span style="font-size:4.5rem;font-weight:700">4.5</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Hero Copy ★</b>4.5rem（45px）/ 700<br>lh 1.60 / ls .07em / #1dc5ff</div><div style="font-size:4.5rem;font-weight:700;line-height:1.6;letter-spacing:.07em;color:var(--cyan-copy)">話そう、セイカと。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Page Heading</b>3.2rem（32px）/ 700<br>lh 1.81 / ls .078em</div><div style="font-size:3.2rem;font-weight:700;line-height:1.81;letter-spacing:.078em">教育の基本方針に関する覚書</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Heading（和欧併記）</b>2.6rem ＋ 1.6rem<br>lh 1.60 / ls .07em ＋ .10em</div><div style="font-size:2.6rem;font-weight:700;line-height:1.6;letter-spacing:.07em">大学からのお知らせ<span style="font-family:var(--font-en);font-size:1.6rem;font-weight:600;letter-spacing:.1em;margin-left:1rem;color:var(--cyan-crumb)">INFORMATION</span></div></div>
+  <div class="type-row"><div class="type-meta"><b>Department</b>2.2rem（22px）/ 700<br>lh 1.80 / ls .08em</div><div style="font-size:2.2rem;font-weight:700;line-height:1.8;letter-spacing:.08em">メディア表現学部</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body `p`</b>2rem（20px）/ 400<br>lh 2.00 ★既定</div><div style="font-size:2rem;line-height:2">京都精華大学は、人間尊重と芸術尊重を建学の理念とし、表現を通して社会と関わり続ける人を育てています。</div></div>
+  <div class="type-row"><div class="type-meta"><b>List / Nav</b>1.6rem（16px）/ 400<br>lh 2.00 / ls .05em</div><div style="font-size:1.6rem;line-height:2">共通教育　教員一覧　国際文化学部</div></div>
+  <div class="type-row"><div class="type-meta"><b>Course</b>1.3rem（13px）/ 400<br>lh 1.65</div><div style="font-size:1.3rem;line-height:1.65">歴史コース　文学コース　現代社会コース</div></div>
+  <div class="type-row"><div class="type-meta"><b>Label（EN）</b>1.4rem（14px）/ 600<br>lh 1.00 / ls .10em</div><div style="font-family:var(--font-en);font-size:1.4rem;font-weight:600;line-height:1;letter-spacing:.1em">CLICK　MORE　DIALOGUE</div></div>
+
+  <h3 class="section-title" style="font-size:2rem;margin-top:4rem">字間は 2 方式の混在</h3>
+  <p class="section-lead" style="margin-bottom:1.6rem"><code>body</code> に <code>.05em</code>（10px × .05 = <b>0.5px が継承値</b>・56 要素）。<b>大きい見出しには要素側で em を当て直す</b>ので、2 つの方式が混ざる。</p>
+  <table class="wtable">
+    <tr><th>要素</th><th>font-size</th><th>letter-spacing</th><th>由来</th></tr>
+    <tr><td>本文・ナビ</td><td class="mono">16px / 13px</td><td class="mono">0.5px</td><td><b>body から継承</b>（56 要素）</td></tr>
+    <tr><td>学部名・リスト</td><td class="mono">16px</td><td class="mono">0.8px</td><td>要素側 <code>.05em</code></td></tr>
+    <tr><td>フッターリンク</td><td class="mono">14px</td><td class="mono">0.7px</td><td>要素側 <code>.05em</code></td></tr>
+    <tr><td>学部カードの見出し</td><td class="mono">22px</td><td class="mono">1.76px</td><td>要素側 <b><code>.08em</code></b></td></tr>
+    <tr><td>セクション見出し（和）</td><td class="mono">26px</td><td class="mono">1.82px</td><td>要素側 <b><code>.07em</code></b></td></tr>
+    <tr><td>セクション見出し（欧）</td><td class="mono">16px</td><td class="mono">1.60004px</td><td>要素側 <b><code>.1em</code></b></td></tr>
+    <tr><td>ページ見出し</td><td class="mono">32px</td><td class="mono">2.5px</td><td>要素側 <b><code>.078em</code></b></td></tr>
+    <tr><td>ヒーローのコピー</td><td class="mono">45px</td><td class="mono">3.15px</td><td>要素側 <b><code>.07em</code></b></td></tr>
+  </table>
+  <p class="note"><b><code>0.5px</code> は「10px × .05em」の結果</b>であって設計値ではない。<b>px で書かない。</b>大きい見出しほど em を上げる（.05 → .07 → .08 → .1em）のがこのサイトの字間設計。</p>
+</div>
+</section>
+
+<section class="section" id="components">
+  <div class="section-label">05 / Components</div>
+  <h2 class="section-title">角丸 0・影 0 を貫く<span class="en">COMPONENTS</span></h2>
+  <p class="section-lead"><code>box-shadow</code> は両ページとも <b>0 種</b>。下層ページの <code>border-radius</code> も <b>0 種</b>。面の分離は <code>#545454</code> の塗りと罫線だけで行う。</p>
+
+  <div class="btn-row">
+    <button class="btn btn-primary">資料を請求する</button>
+    <button class="btn btn-text">入試情報を見る</button>
+    <button class="btn btn-more">MORE —</button>
+    <button class="btn btn-primary is-focus">フォーカス時</button>
+  </div>
+
+  <div class="fac-grid" style="margin-top:3.4rem">
+    <div class="fac"><div class="fac-title">情報館</div><div class="fac-desc">蔵書・視聴覚資料を公開しています</div></div>
+    <div class="fac"><div class="fac-title">京都精華大学ギャラリー Terra-S</div><div class="fac-desc">学生・教員・修了生の作品を展示</div></div>
+    <div class="fac"><div class="fac-title">京都国際マンガミュージアム</div><div class="fac-desc">京都市との共同事業として運営</div></div>
+  </div>
+
+  <div class="dept-grid" style="margin-top:4rem">
+    <div>
+      <div class="dept-name">人文学部</div>
+      <ul class="dept-list">
+        <li><a href="#" class="u-link">歴史コース</a></li>
+        <li><a href="#" class="u-link">文学コース</a></li>
+        <li><a href="#" class="u-link">現代社会コース</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="dept-name">メディア表現学部</div>
+      <ul class="dept-list">
+        <li><a href="#" class="u-link">メディア表現学科</a></li>
+        <li><a href="#" class="u-link">共通教育</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="dept-name">芸術学部</div>
+      <ul class="dept-list">
+        <li><a href="#" class="u-link">造形学科</a></li>
+        <li><a href="#" class="u-link">教員一覧</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="flat-grid" style="margin-top:4rem">
+    <div class="flat"><div class="flat-name">影</div><div class="flat-val">box-shadow: なし<br>★両ページとも 0 種</div></div>
+    <div class="flat"><div class="flat-name">角丸</div><div class="flat-val">border-radius: 0<br>★下層ページで 0 種</div></div>
+    <div class="flat"><div class="flat-name">グラデーション</div><div class="flat-val">下線にしか使わない<br>（ハードストップ 3 種）</div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="hero">
+<div class="section-inner">
+  <div class="section-label">06 / Don't</div>
+  <h2 class="section-title">巨大な「写真で塗られた文字」は &lt;canvas&gt;<span class="en">CAUTION</span></h2>
+  <p class="section-lead"><code>.mainVisual</code> の中に <b>2732×1372 の <code>&lt;canvas&gt;</code></b> があり、字形はそこに描かれている。<b><code>document.images</code> にも <code>writing-mode</code> にも出てこない。</b>下は「こう見える」という再現で、<b>この文字を CSS で実装してはいけない</b>。一方で「話そう、セイカと。」は<b>実テキスト</b>（45px / 700 / <code>.07em</code> / <code>#1dc5ff</code>）。</p>
+  <div class="hero-demo">
+    <div class="ghost">OEKS</div>
+    <div class="copy">話そう、セイカと。</div>
+    <div class="click">CLICK ⊞</div>
+    <div class="tag">↑ 薄い巨大文字は実サイトでは &lt;canvas&gt; 描画（写真で塗られた字形）。水色のコピーだけが実テキスト</div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="responsive">
+  <div class="section-label">07 / Responsive</div>
+  <h2 class="section-title">ルートは完全固定、767px で 1 段だけ<span class="en">RESPONSIVE</span></h2>
+  <table class="wtable" style="max-width:72rem">
+    <tr><th>幅</th><th>html</th><th>body</th><th>h2</th><th>p</th></tr>
+    <tr><td class="mono">1940 〜 768px</td><td class="mono">10px</td><td class="mono">10px</td><td class="mono">10px（継承）</td><td class="mono">20px</td></tr>
+    <tr><td class="mono">767px 〜 375px</td><td class="mono">10px</td><td class="mono">10px</td><td class="mono">12px</td><td class="mono">18px</td></tr>
+  </table>
+  <p class="note"><b>崖も流体も無い。</b><code>vw</code> が使われるのは <code>html</code> の <code>padding</code>（<code>6.4vw</code>）だけ。ブレークポイントは <code>767px / 768px</code> が主で、<code>1160px</code>、そして <code>screen and (max-width: 767px) and (max-width: 359px)</code> という<b>入れ子</b>で最小端末（359px / 350px）まで面倒を見る。<code>print</code> 用の指定も 7 件ある。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="#" class="u-link-blk">アクセス</a>
+      <a href="#" class="u-link-blk">お問い合わせ</a>
+      <a href="#" class="u-link-blk">サイトポリシー</a>
+      <a href="#" class="u-link-blk">個人情報の取り扱い</a>
+    </div>
+    <div class="footer-copy">© KYOTO SEIKA UNIVERSITY — Design tokens measured 2026-11-10 / Web フォント 0 本・1rem = 10px・角丸 0・影 0</div>
+  </div>
+</footer>
+
+</body>
+</html>

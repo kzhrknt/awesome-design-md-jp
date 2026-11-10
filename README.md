@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (625 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (628 sites)</a>
 </p>
 
 <table>
@@ -971,6 +971,11 @@
 </tr>
 <tr>
 <td align="center"><strong>太陽誘電</strong><br><img src="design-md/yuden/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>クリナップ</strong><br><img src="design-md/cleanup/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ダイセル</strong><br><img src="design-md/daicel/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>京都精華大学</strong><br><img src="design-md/kyoto-seika/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1657,11 +1662,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [住友生命 (Sumitomo Life)](https://www.sumitomolife.co.jp/) | Insurance / Corporate | [DESIGN.md](design-md/sumitomolife/DESIGN.md) | [preview.html](design-md/sumitomolife/preview.html) |
 | [多摩美術大学 (Tama Art University)](https://www.tamabi.ac.jp/) | University / Art Education | [DESIGN.md](design-md/tamabi/DESIGN.md) | [preview.html](design-md/tamabi/preview.html) |
 | [太陽誘電 (TAIYO YUDEN)](https://www.yuden.co.jp/jp/) | Electronics / Corporate | [DESIGN.md](design-md/yuden/DESIGN.md) | [preview.html](design-md/yuden/preview.html) |
+| [クリナップ (CLEANUP)](https://cleanup.jp/) | Housing Equipment / Corporate | [DESIGN.md](design-md/cleanup/DESIGN.md) | [preview.html](design-md/cleanup/preview.html) |
+| [ダイセル (DAICEL)](https://www.daicel.com/) | Chemicals / Corporate | [DESIGN.md](design-md/daicel/DESIGN.md) | [preview.html](design-md/daicel/preview.html) |
+| [京都精華大学 (KYOTO SEIKA UNIVERSITY)](https://www.kyoto-seika.ac.jp/) | University / Art &amp; Design | [DESIGN.md](design-md/kyoto-seika/DESIGN.md) | [preview.html](design-md/kyoto-seika/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (625 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (628 sites)</a>
 </p>
 
 <table>
@@ -2598,6 +2606,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>太陽誘電</strong><br><img src="design-md/yuden/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>クリナップ</strong><br><img src="design-md/cleanup/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ダイセル</strong><br><img src="design-md/daicel/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>京都精華大学</strong><br><img src="design-md/kyoto-seika/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
