@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 京都芸術大学（Kyoto University of the Arts）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     ルートは 4 段階の流体。1rem = 100px になるように作ってある。
+     デスクトップ設計幅 1536px（6.51042vw = 100vw / 15.36）
+     モバイル設計幅   414px（24.1546vw = 100vw / 4.14）
+     → CSS は font-size: 0.18rem（= 18px）のように「px ÷ 100」で書く。
+     実測 2026-11-11: 1536px→100px / 1440px→93.75px / 1200〜768px→78.125px /
+                      767px→185.266px（768px から 2.37 倍に跳ぶ）/ 414px→100px
+     ============================================================ */
+  html { font-size: 625%; }                                        /* ≥1536px → 100px */
+  @media (max-width: 1535px) { html { font-size: 6.51042vw; } }    /* = 100vw / 15.36 */
+  @media (max-width: 1200px) { html { font-size: 488.281%; } }     /* → 78.125px で固定 */
+  @media (max-width:  767px) { html { font-size: 24.1546vw; } }    /* = 100vw / 4.14 */
+
+  :root {
+    /* === Colors ===
+       実サイトの CSS Custom Properties は実質ゼロ（4 個のうち 2 個は Swiper、
+       残りは --winWidth と --pickupSliderFuration）。以下は computed style の実測値。2026-11-11 */
+    --black:    #000000;   /* ★本文。可視 130〜137 要素 */
+    --charcoal: #2c2c2c;   /* ★面として最多（25〜29 要素）。フッター・学科一覧 */
+    --teal:     #00a2b5;   /* 通信教育部のラベル（面 9 要素）。サイト唯一のアクセント */
+    --white:    #ffffff;   /* 暗い面の上の文字（可視 26〜27 要素） */
+    --bg:       #f4f4f4;   /* ★ページの地。白ではない（body に宣言） */
+    --warm:     #b0b0ad;   /* NEWS セクションの地。わずかに緑に寄った灰 */
+    --gray:     #dddddd;   /* 瓜生山学園セクションの地 */
+    --offwhite: #fcfcfc;   /* 検索モーダルの面 */
+    --muted:    #b3b3b3;   /* 日付 */
+    --note:     #6e6e6e;   /* 注記・※ */
+
+    /* === Fonts ===
+       和文・欧文とも Google Fonts なのでローカルでも実サイトと同じ書体が出る。
+       loaded は Noto Sans JP 300/400/500/700 と Lato 400/700。
+       900 と Graduate は宣言だけで未使用なのでここでも読み込まない。 */
+    --font: "Noto Sans JP", sans-serif;
+    --font-num: Lato, sans-serif;     /* 日付・数値専用。palt を initial で解除する */
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: body に 1.75 を 1 回だけ（可視 111〜122 要素で最多） === */
+    --lh:       1.75;
+    --lh-mid:   1.5;    /* リード文・キャプション（18〜31 要素） */
+    --lh-tight: 1.0;    /* 2 行のナビラベル（6〜17 要素） */
+
+    /* === Letter spacing: body は 0px。空けるのはナビと大見出しだけ === */
+    --ls:     0px;
+    --ls-nav: 0.1em;    /* グローバルナビ・下層の大見出し */
+    --ls-num: 0.05em;   /* Lato の数値 */
+
+    /* === Radius も rem。影は 0 種 === */
+    --r-s: 0.04rem;     /*  4px @設計幅 / 3.75px @1440px（実測 42〜47 要素で最多） */
+    --r-m: 0.12rem;     /* 12px @設計幅 / 11.25px @1440px（学部ラベルのピル） */
+    --r-l: 0.32rem;     /* 32px @設計幅 / 30px @1440px（一覧への導線） */
+
+    --container: 1440px;
+    --column:    1185px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--black);
+    font-family: var(--font);
+    font-size: 0.18rem;                      /* 18px @設計幅 / 16.875px @1440px */
+    font-weight: 500;                        /* ★本文のウェイトは 500（実測 112〜136 要素で最多） */
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+    font-feature-settings: "palt";           /* ★body に 1 行だけ。実測 1303 要素へ継承 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { background: var(--bg); border-bottom: 1px solid var(--gray); }
+  .header-top { display: flex; align-items: center; gap: 0.3rem; max-width: var(--container); margin: 0 auto; padding: 0.18rem 0.3rem 0.1rem; }
+  .logo { display: flex; align-items: center; gap: 0.1rem; text-decoration: none; color: var(--black); }
+  .logo-mark { width: 0.44rem; height: 0.44rem; border-radius: 50%; background: #1d4ed8; }
+  .logo-text { font-size: 0.26rem; font-weight: 700; letter-spacing: var(--ls-nav); }
+  .header-sub { display: flex; gap: 0.22rem; margin-left: auto; }
+  .header-sub a { font-size: 0.14rem; font-weight: 500; color: var(--black); text-decoration: none; }
+  .header-nav { display: flex; gap: 0.36rem; max-width: var(--container); margin: 0 auto; padding: 0 0.3rem 0.16rem; }
+  .header-nav a { font-size: 0.16rem; font-weight: 500; letter-spacing: var(--ls-nav); color: var(--black); text-decoration: none; }
+
+  /* SECTIONS */
+  .section { padding: 0.6rem 0.3rem; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--gray); }
+  .section-warm { background: var(--warm); }
+  .section-inner { padding: 0.6rem 0.3rem; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 0.12rem; color: var(--note); margin-bottom: 0.08rem; letter-spacing: var(--ls-num); }
+  .eyebrow { display: inline-block; font-size: 0.12rem; font-weight: 700; line-height: 1; padding: 0.03rem 0.12rem; border: 1px solid var(--black); border-radius: var(--r-l); }
+  .section-title { font-size: 0.43rem; font-weight: 700; line-height: 1.3; letter-spacing: var(--ls-nav); margin: 0.14rem 0 0.14rem; }
+  .section-lead { font-size: 0.18rem; font-weight: 500; line-height: var(--lh); margin-bottom: 0.34rem; max-width: 9.4rem; }
+  .note { font-size: 0.14rem; line-height: var(--lh); color: #3a3a3a; margin-top: 0.2rem; max-width: 9.4rem; }
+  code { font-family: var(--font-mono); font-size: 0.12rem; background: var(--offwhite); border: 1px solid var(--gray); padding: 0.01rem 0.05rem; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(2.1rem, 1fr)); gap: 0.12rem; }
+  .swatch { border: 1px solid var(--gray); background: var(--white); border-radius: var(--r-s); overflow: hidden; }
+  .swatch-chip { height: 0.76rem; }
+  .swatch-body { padding: 0.12rem; }
+  .swatch-name { font-size: 0.14rem; font-weight: 700; line-height: var(--lh-mid); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 0.11rem; color: var(--note); margin-top: 0.03rem; }
+  .swatch-use { font-size: 0.12rem; line-height: 1.6; color: #3a3a3a; margin-top: 0.06rem; }
+
+  /* TYPOGRAPHY */
+  .scale-bar { display: flex; gap: 0.08rem; flex-wrap: wrap; margin-bottom: 0.3rem; align-items: baseline; }
+  .scale-bar span { background: var(--white); border: 1px solid var(--gray); padding: 0.08rem 0.14rem; line-height: 1.4; border-radius: var(--r-s); }
+  .type-row { display: grid; grid-template-columns: 2.6rem 1fr; gap: 0.24rem; padding: 0.2rem 0; border-bottom: 1px solid var(--gray); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 0.11rem; color: var(--note); line-height: 1.75; letter-spacing: 0; }
+  .type-meta b { display: block; font-family: var(--font); font-size: 0.13rem; font-weight: 700; color: var(--black); letter-spacing: 0; }
+  .num { font-family: var(--font-num); font-weight: 700; letter-spacing: var(--ls-num); font-feature-settings: initial; }  /* ★palt を解除 */
+
+  /* BUTTONS / LABELS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 0.16rem; align-items: center; margin-bottom: 0.26rem; }
+  .btn { font-family: var(--font); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; box-shadow: none; }
+  .btn-pill { background: transparent; color: var(--black); border: 1px solid var(--black); border-radius: var(--r-l); font-size: 0.14rem; font-weight: 500; padding: 0.09rem 0.3rem; }
+  .btn-solid { background: var(--black); color: var(--white); border: 1px solid var(--black); border-radius: var(--r-s); font-size: 0.14rem; font-weight: 500; padding: 0.11rem 0.3rem; }
+  .btn-teal { background: var(--teal); color: var(--white); border: 1px solid var(--teal); border-radius: var(--r-s); font-size: 0.14rem; font-weight: 500; padding: 0.11rem 0.3rem; }
+  .label { display: inline-block; color: var(--white); background: var(--black); font-size: 0.12rem; font-weight: 500; line-height: 0.21rem; border-radius: var(--r-m); padding: 0.01rem 0.115rem 0.02rem; }
+  .label.-tsushin { background: var(--teal); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(2.6rem, 1fr)); gap: 0.4rem 0.3rem; }
+  .card { text-decoration: none; color: var(--black); display: block; }
+  .card-thumb { width: 100%; aspect-ratio: 16 / 10; border-radius: var(--r-s); background:
+      linear-gradient(135deg, #cfd6d9 0%, #9fa9ad 55%, #7d888c 100%); }
+  .card-date { font-family: var(--font-num); font-size: 0.13rem; font-weight: 400; color: var(--muted); letter-spacing: var(--ls-num); font-feature-settings: initial; margin-top: 0.12rem; }
+  .card-title { font-size: 0.16rem; font-weight: 500; line-height: var(--lh-mid); margin-top: 0.05rem; }
+
+  /* STATS（Lato の数値） */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(2.2rem, 1fr)); gap: 0.3rem; }
+  .stat { border-top: 1px solid var(--black); padding-top: 0.14rem; }
+  .stat-label { font-size: 0.14rem; font-weight: 500; }
+  .stat-value { font-family: var(--font-num); font-size: 0.3rem; font-weight: 700; letter-spacing: var(--ls-num); font-feature-settings: initial; margin-top: 0.06rem; }
+  .stat-value small { font-family: var(--font); font-size: 0.16rem; font-weight: 500; letter-spacing: 0; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(3rem, 1fr)); gap: 0.26rem; }
+  .field label { display: block; font-size: 0.14rem; font-weight: 700; margin-bottom: 0.08rem; }
+  .field input, .field select {
+    width: 100%; background: var(--white); color: var(--black);
+    border: 1px solid #cccccc; border-radius: 0;
+    padding: 0.1rem 0.12rem; font-size: 0.16rem; font-family: var(--font); font-weight: 500;
+  }
+  .field.is-focus input { outline: 2px solid var(--teal); outline-offset: 1px; }
+  .field-msg { font-size: 0.12rem; line-height: 1.6; color: var(--note); margin-top: 0.07rem; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(2.4rem, 1fr)); gap: 0.3rem; }
+  .elev { background: var(--white); border: 1px solid var(--gray); padding: 0.28rem; text-align: center; border-radius: var(--r-s); }
+  .elev-name { font-size: 0.16rem; font-weight: 700; }
+  .elev-val { font-family: var(--font-mono); font-size: 0.11rem; color: var(--note); margin-top: 0.08rem; line-height: 1.7; }
+  .tone-row { display: flex; flex-wrap: wrap; gap: 0; margin-top: 0.3rem; border: 1px solid var(--gray); border-radius: var(--r-s); overflow: hidden; }
+  .tone { flex: 1 1 1.4rem; height: 0.8rem; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 0.08rem; font-family: var(--font-mono); font-size: 0.1rem; }
+
+  /* LAYOUT */
+  .layout-demo { display: flex; flex-direction: column; gap: 0.1rem; align-items: center; }
+  .layout-bar { background: var(--white); border: 1px solid var(--gray); height: 0.36rem; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.11rem; color: #3a3a3a; border-radius: var(--r-s); }
+  .radius-row { display: flex; gap: 0.2rem; flex-wrap: wrap; margin-top: 0.3rem; justify-content: center; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 1.08rem; height: 0.68rem; background: var(--charcoal); }
+  .radius-label { font-family: var(--font-mono); font-size: 0.11rem; color: var(--note); margin-top: 0.07rem; line-height: 1.6; }
+
+  /* ROOT TABLE */
+  .root-table { width: 100%; border-collapse: collapse; margin-top: 0.2rem; }
+  .root-table th, .root-table td { border-bottom: 1px solid var(--gray); padding: 0.09rem 0.12rem; font-size: 0.13rem; text-align: left; line-height: 1.6; }
+  .root-table th { font-weight: 700; background: var(--white); }
+  .root-table td.n { font-family: var(--font-mono); letter-spacing: 0; }
+  .root-table tr.is-cliff td { background: var(--teal); color: var(--white); font-weight: 700; }
+
+  /* FOOTER */
+  .footer { background: var(--charcoal); color: var(--white); padding: 0.5rem 0.3rem; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-head { font-size: 0.26rem; font-weight: 700; letter-spacing: var(--ls-nav); }
+  .footer-cols { display: flex; gap: 0.48rem; margin-top: 0.24rem; flex-wrap: wrap; }
+  .footer-col-title { font-size: 0.16rem; font-weight: 700; }
+  .footer-col a { display: block; font-size: 0.14rem; line-height: 2; color: var(--white); text-decoration: none; opacity: .82; }
+  .footer-copy { font-size: 0.12rem; line-height: 1.8; margin-top: 0.3rem; opacity: .75; }
+
+  @media (max-width: 767px) {
+    .header-sub, .header-nav { display: none; }
+    .type-row { grid-template-columns: 1fr; gap: 0.08rem; }
+    .section, .section-inner { padding: 0.44rem 0.16rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <a href="#" class="logo"><span class="logo-mark"></span><span class="logo-text">京都芸術大学</span></a>
+    <nav class="header-sub">
+      <a href="#">高校生・受験生の方</a><a href="#">在学生の方</a><a href="#">卒業生の方</a><a href="#">企業の方</a><a href="#">高校教員の方</a>
+    </nav>
+  </div>
+  <nav class="header-nav">
+    <a href="#">大学概要</a><a href="#">学部学科</a><a href="#">大学院</a><a href="#">教育・社会連携</a><a href="#">学生生活・就職</a><a href="#">入試情報</a>
+  </nav>
+</header>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="eyebrow">Color Palette</div>
+  <h2 class="section-title">黒と炭色、差し色はティール1色</h2>
+  <p class="section-lead">ページの地は白ではなく <b>#f4f4f4</b>。面として最も多いのは <b>#2c2c2c</b>（25〜29 要素）で、黒（#000000）は文字と小さなラベルの塗りに使う。色が付くのは<b>通信教育部のラベル #00a2b5 だけ</b>で、通学部は黒。これがこのサイト唯一の色による区別。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#00a2b5"></div><div class="swatch-body"><div class="swatch-name">Teal</div><div class="swatch-hex">#00a2b5</div><div class="swatch-use">★通信教育部のラベル（面 9 要素）。唯一のアクセント</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#2c2c2c"></div><div class="swatch-body"><div class="swatch-name">Charcoal</div><div class="swatch-hex">#2c2c2c</div><div class="swatch-use">★面として最多（25〜29 要素）。フッター・学科一覧</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Black</div><div class="swatch-hex">#000000</div><div class="swatch-use">★本文（可視 130〜137 要素）と小さなラベルの塗り</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f4f4f4"></div><div class="swatch-body"><div class="swatch-name">Page Background</div><div class="swatch-hex">#f4f4f4</div><div class="swatch-use">★ページの地（body）。白ではない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#b0b0ad"></div><div class="swatch-body"><div class="swatch-name">Warm Gray</div><div class="swatch-hex">#b0b0ad</div><div class="swatch-use">NEWS セクションの地。わずかに緑に寄る</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#dddddd"></div><div class="swatch-body"><div class="swatch-name">Gray</div><div class="swatch-hex">#dddddd</div><div class="swatch-use">瓜生山学園セクションの地・罫線</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#b3b3b3"></div><div class="swatch-body"><div class="swatch-name">Muted</div><div class="swatch-hex">#b3b3b3</div><div class="swatch-use">日付（可視 5 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#6e6e6e"></div><div class="swatch-body"><div class="swatch-name">Note</div><div class="swatch-hex">#6e6e6e</div><div class="swatch-use">注記・※（可視 2 要素）</div></div></div>
+  </div>
+
+  <p class="note"><b>success / warning / error の色は存在しない。</b>状態は面の明度差（<code>#f4f4f4</code> → <code>#dddddd</code> → <code>#b0b0ad</code> → <code>#2c2c2c</code>）だけで表す。</p>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <div class="eyebrow">Typography</div>
+  <h2 class="section-title">Noto Sans JP 一本、本文は500</h2>
+  <p class="section-lead">和文も欧文も <b>Noto Sans JP</b>（可視 159 要素）。<b>日付と数値だけ Lato</b> に差し替え、同時に <code>font-feature-settings: initial</code> で <code>palt</code> を解除する。実測で最多のウェイトは <b>500</b>（112〜136 要素）で、400 ではない。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:0.1rem">0.1rem<br>10px</span><span style="font-size:0.12rem">0.12rem<br>12px</span><span style="font-size:0.13rem">0.13rem<br>13px</span>
+    <span style="font-size:0.14rem">0.14rem<br>14px</span><span style="font-size:0.16rem">0.16rem<br>16px</span><span style="font-size:0.18rem">0.18rem<br>18px</span>
+    <span style="font-size:0.21rem">0.21rem<br>21px</span><span style="font-size:0.3rem;font-weight:700">0.3rem<br>30px</span><span style="font-size:0.43rem;font-weight:700">0.43rem<br>43px</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Page Heading ★</b>0.43rem / 700<br>lh 1.30 / ls 0.1em</div><div style="font-size:0.43rem;font-weight:700;line-height:1.3;letter-spacing:0.1em">大学概要</div></div>
+  <div class="type-row"><div class="type-meta"><b>Number（Lato）</b>0.3rem / 700<br>ls 0.05em / palt 解除</div><div><span class="num" style="font-size:0.3rem">23,720</span><span style="font-size:0.16rem">名</span></div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Heading</b>0.21rem / 500<br>lh 1.75</div><div style="font-size:0.21rem;font-weight:500">芸術の力で社会を動かしていく人材を育む。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>0.18rem / 500<br>lh 1.75 / ls 0px</div><div style="font-size:0.18rem;font-weight:500;line-height:1.75">京都芸術大学は、18歳から90歳代まで、日本や世界のさまざまな地域から集まった学生が学ぶ、通学部と通信教育部をあわせ持つ総合芸術大学です。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Global Navi</b>0.16rem / 500<br>ls 0.1em</div><div style="font-size:0.16rem;font-weight:500;letter-spacing:0.1em">学部学科　大学院　入試情報</div></div>
+  <div class="type-row"><div class="type-meta"><b>Link / Caption</b>0.14rem / 500<br>最多（92〜100 要素）</div><div style="font-size:0.14rem;font-weight:500">創設者の想い／建学の理念・使命・目的／大学基本情報</div></div>
+  <div class="type-row"><div class="type-meta"><b>Date（Lato）</b>0.13rem / 400<br>#b3b3b3 / palt 解除</div><div class="num" style="font-size:0.13rem;font-weight:400;color:#b3b3b3">2026.11.08</div></div>
+
+  <p class="note"><b><code>palt</code> は body に 1 行だけ書いて 1303 要素へ継承させる。</b>字間（<code>letter-spacing</code>）は body で <code>0px</code> と明示され、可視 176 要素中 155 要素が字間ゼロ。<b>詰めるのは palt だけ、空けるのはナビと大見出しの 0.1em だけ</b>という二択で、中間の値を持たない。</p>
+  <p class="note"><b><code>font-weight: 300</code> と <code>900</code> は書かないこと。</b>300 は読み込まれているが可視 0 要素、900 は <code>unloaded</code> で合成太字になる。<b>Graduate も宣言だけで 1 要素も使っていない。</b></p>
+</div>
+</section>
+
+<section class="section" id="root">
+  <div class="section-label">03 / Root font-size</div>
+  <div class="eyebrow">Fluid Root</div>
+  <h2 class="section-title">1rem = 100px になるように作る</h2>
+  <p class="section-lead">CSS には <code>font-size: 0.18rem</code>（= 18px）のように<b>「px の値を 1/100 にした rem」</b>が並ぶ。サイズ・余白・角丸がすべて rem なので、画面幅が変わると全部が同じ比率で動く。<b>このプレビューも実サイトと同じ 4 段のルートで組んである。</b></p>
+
+  <table class="root-table">
+    <tr><th>画面幅</th><th>html</th><th>body（0.18rem）</th><th>本文リンク（0.14rem）</th></tr>
+    <tr><td class="n">1920px</td><td class="n">100px</td><td class="n">18px</td><td class="n">14px</td></tr>
+    <tr><td class="n">1536px（PC 設計幅）</td><td class="n">100px</td><td class="n">18px</td><td class="n">14px</td></tr>
+    <tr><td class="n">1440px</td><td class="n">93.75px</td><td class="n">16.875px</td><td class="n">13.125px</td></tr>
+    <tr><td class="n">1280px</td><td class="n">83.3333px</td><td class="n">15px</td><td class="n">11.67px</td></tr>
+    <tr><td class="n">1200〜768px</td><td class="n">78.125px（下限で固定）</td><td class="n">14.0625px</td><td class="n">10.94px</td></tr>
+    <tr class="is-cliff"><td class="n">767px</td><td class="n">185.266px（2.37 倍に跳ぶ）</td><td class="n">29.6425px</td><td class="n">25.94px</td></tr>
+    <tr><td class="n">414px（SP 設計幅）</td><td class="n">100px</td><td class="n">16px</td><td class="n">14px</td></tr>
+    <tr><td class="n">375px</td><td class="n">90.5797px</td><td class="n">14.4928px</td><td class="n">12.68px</td></tr>
+  </table>
+
+  <p class="note"><b>1200px から 768px まではルートが 78.125px で固定される。</b>この帯だけ本文が 10.94px まで縮んだまま動かない。<b>768px → 767px でモバイル側の式に切り替わり、ルートが 2.37 倍に跳ぶ</b>（デスクトップの最小とモバイルの最大が隣り合う）。</p>
+</section>
+
+<section class="section" id="components">
+  <div class="section-label">04 / Components</div>
+  <div class="eyebrow">Components</div>
+  <h2 class="section-title">面を持つのは学部ラベルだけ</h2>
+  <p class="section-lead"><b>角丸は 0.04rem / 0.12rem / 0.32rem の 3 段。</b>ピル型（0.32rem）は一覧への導線、0.12rem は学部ラベル、0.04rem はカードとボタン。<b>影は 1 つも無い。</b></p>
+
+  <div class="btn-grid">
+    <span class="label">通学部TOP</span>
+    <span class="label -tsushin">通信教育部TOP</span>
+    <a href="#" class="btn btn-pill">お知らせ一覧</a>
+    <a href="#" class="btn btn-pill">展示・イベント一覧</a>
+    <a href="#" class="btn btn-solid">資料請求</a>
+    <a href="#" class="btn btn-teal">通信教育部 入試情報はこちら</a>
+  </div>
+
+  <div class="card-grid">
+    <a href="#" class="card"><div class="card-thumb"></div><div class="card-date">2026.11.08</div><div class="card-title">「芸術は役に立たなくていい」――それでも芸大で学ぶ理由</div></a>
+    <a href="#" class="card"><div class="card-thumb"></div><div class="card-date">2026.11.05</div><div class="card-title">詩の声が証言するサナトリウムの青春</div></a>
+    <a href="#" class="card"><div class="card-thumb"></div><div class="card-date">2026.11.02</div><div class="card-title">白い経験は、不変。「瓜生山ねぶた2026」点灯式</div></a>
+    <a href="#" class="card"><div class="card-thumb"></div><div class="card-date">2026.10.28</div><div class="card-title">文化財保存修復・歴史遺産コースの実習が始まりました</div></a>
+  </div>
+
+  <p class="note">カードは<b>面を持たず、サムネイルとテキストだけ</b>で構成する。日付は Lato で、その要素だけ <code>font-feature-settings: initial</code> を当てて palt を解除する。</p>
+</section>
+
+<section class="section-warm" id="stats">
+<div class="section-inner">
+  <div class="section-label">05 / Numbers</div>
+  <div class="eyebrow">Numbers</div>
+  <h2 class="section-title">数値だけ Lato、paltは解除</h2>
+  <p class="section-lead">Lato は <b>400 と 700 のみ</b> が <code>loaded</code>。900 は宣言されているが使われていない。数値を組む要素では <code>palt</code> を <code>initial</code> に戻して、欧文のプロポーショナルを壊さないようにする（実測 195 要素）。</p>
+
+  <div class="stat-grid">
+    <div class="stat"><div class="stat-label">学生数</div><div class="stat-value">23,720<small>名</small></div></div>
+    <div class="stat"><div class="stat-label">学科</div><div class="stat-value">10<small>学科</small></div></div>
+    <div class="stat"><div class="stat-label">コース</div><div class="stat-value">24<small>コース</small></div></div>
+    <div class="stat"><div class="stat-label">交流協定校</div><div class="stat-value">38<small>校</small></div></div>
+  </div>
+</div>
+</section>
+
+<section class="section-alt" id="forms">
+<div class="section-inner">
+  <div class="section-label">06 / Forms</div>
+  <div class="eyebrow">Forms</div>
+  <h2 class="section-title">入力欄は角丸ゼロ</h2>
+  <p class="section-lead"><code>input</code> は <code>padding: 0; border: none; border-radius: 0</code> でリセットしてから個別に当てる。フォーカスリングの独自指定は無い（UA 既定）ので、ここでは <code>.is-focus</code> で見せている。</p>
+
+  <div class="form-grid">
+    <div class="field">
+      <label for="f1">お名前</label>
+      <input id="f1" type="text" placeholder="瓜生山 太郎">
+      <div class="field-msg">全角でご入力ください</div>
+    </div>
+    <div class="field is-focus">
+      <label for="f2">メールアドレス（フォーカス時）</label>
+      <input id="f2" type="text" value="taro@example.ac.jp">
+      <div class="field-msg">確認メールをお送りします</div>
+    </div>
+    <div class="field">
+      <label for="f3">ご希望のコース</label>
+      <select id="f3"><option>ビジュアルデザインコース</option><option>イラストレーションコース</option><option>空間デザインコース</option><option>文化財保存修復・歴史遺産コース</option></select>
+      <div class="field-msg">あとから変更できます</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="elevation">
+  <div class="section-label">07 / Elevation</div>
+  <div class="eyebrow">Elevation</div>
+  <h2 class="section-title">影は0種。明度だけで階層を作る</h2>
+  <p class="section-lead"><code>box-shadow</code> は両ページとも <b>0 種</b>、<code>filter: drop-shadow()</code> も使っていない。階層は面の明度差だけで表す。</p>
+
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">Level 0</div><div class="elev-val">none — カード・ボタン・ラベルすべて影なし（実測 0 種）</div></div>
+    <div class="elev"><div class="elev-name">境界は罫線で</div><div class="elev-val">1px solid #dddddd</div></div>
+    <div class="elev"><div class="elev-name">強調は面で</div><div class="elev-val">#f4f4f4 → #ffffff / #2c2c2c</div></div>
+  </div>
+
+  <div class="tone-row">
+    <div class="tone" style="background:#f4f4f4;color:#000000">#f4f4f4</div>
+    <div class="tone" style="background:#ffffff;color:#000000">#ffffff</div>
+    <div class="tone" style="background:#dddddd;color:#000000">#dddddd</div>
+    <div class="tone" style="background:#b0b0ad;color:#000000">#b0b0ad</div>
+    <div class="tone" style="background:#2c2c2c;color:#ffffff">#2c2c2c</div>
+    <div class="tone" style="background:#000000;color:#ffffff">#000000</div>
+  </div>
+</section>
+
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">08 / Layout</div>
+  <div class="eyebrow">Layout</div>
+  <h2 class="section-title">コンテナ 1440px、余白も rem</h2>
+  <p class="section-lead">実測の <code>gap</code> は <b>縦 0.4rem（40px）／ 横 0.3rem（30px）</b>が基本。角丸も余白もすべて rem なので、ルートが動けば全部が追従する。</p>
+
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:100%;max-width:1440px">--container: 1440px（実測 7〜10 要素で最多）</div>
+    <div class="layout-bar" style="width:1185px;max-width:100%">--column: 1185px（記事本文）</div>
+  </div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:0.04rem"></div><div class="radius-label">カード・ボタン<br>0.04rem（3.75px @1440）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:0.12rem"></div><div class="radius-label">学部ラベル<br>0.12rem（11.25px @1440）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:0.32rem"></div><div class="radius-label">一覧への導線<br>0.32rem（30px @1440）</div></div>
+  </div>
+
+  <p class="note">ブレークポイントは <b>768 / 767px の 1 本</b>が主役（実測 1836 件と 1568 件）。ほかに 1200px と 1536px でルートの式が切り替わる。</p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-head">京都芸術大学</div>
+    <div class="footer-cols">
+      <div class="footer-col"><div class="footer-col-title">大学概要</div><a href="#">創設者の想い</a><a href="#">建学の理念</a><a href="#">沿革</a></div>
+      <div class="footer-col"><div class="footer-col-title">学部学科</div><a href="#">通学部</a><a href="#">通信教育部</a><a href="#">大学院</a></div>
+      <div class="footer-col"><div class="footer-col-title">入試情報</div><a href="#">入試区分</a><a href="#">オープンキャンパス</a><a href="#">資料請求</a></div>
+      <div class="footer-col"><div class="footer-col-title">Language</div><a href="#">English</a><a href="#">한국어</a><a href="#">简体字</a><a href="#">繁体字</a></div>
+    </div>
+    <p class="footer-copy">言語切替の 3 ラベル（한국어 / 简体字 / 繁体字）のためだけに Noto Sans KR / SC / TC の 500 を読み込んでいる（各 1 要素）。</p>
+    <p class="footer-copy">これは DESIGN.md の再現用サンプルです。京都芸術大学の実サイトではありません。ヒーローの大見出し「Actually, 実は、」は実サイトでは SVG 画像（title_mv.svg）で、テキストでは再現できません。</p>
+  </div>
+</footer>
+
+</body>
+</html>

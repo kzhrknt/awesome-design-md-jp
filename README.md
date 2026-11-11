@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (628 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (631 sites)</a>
 </p>
 
 <table>
@@ -976,6 +976,11 @@
 </tr>
 <tr>
 <td align="center"><strong>京都精華大学</strong><br><img src="design-md/kyoto-seika/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>京都芸術大学</strong><br><img src="design-md/kyoto-art/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>三菱自動車</strong><br><img src="design-md/mitsubishi-motors/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>三菱ケミカル</strong><br><img src="design-md/mitsubishi-chem/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1665,11 +1670,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [クリナップ (CLEANUP)](https://cleanup.jp/) | Housing Equipment / Corporate | [DESIGN.md](design-md/cleanup/DESIGN.md) | [preview.html](design-md/cleanup/preview.html) |
 | [ダイセル (DAICEL)](https://www.daicel.com/) | Chemicals / Corporate | [DESIGN.md](design-md/daicel/DESIGN.md) | [preview.html](design-md/daicel/preview.html) |
 | [京都精華大学 (KYOTO SEIKA UNIVERSITY)](https://www.kyoto-seika.ac.jp/) | University / Art &amp; Design | [DESIGN.md](design-md/kyoto-seika/DESIGN.md) | [preview.html](design-md/kyoto-seika/preview.html) |
+| [京都芸術大学 (Kyoto University of the Arts)](https://www.kyoto-art.ac.jp/) | University / Art &amp; Design | [DESIGN.md](design-md/kyoto-art/DESIGN.md) | [preview.html](design-md/kyoto-art/preview.html) |
+| [三菱自動車工業 (MITSUBISHI MOTORS)](https://www.mitsubishi-motors.co.jp/) | Automotive / Corporate | [DESIGN.md](design-md/mitsubishi-motors/DESIGN.md) | [preview.html](design-md/mitsubishi-motors/preview.html) |
+| [三菱ケミカル (Mitsubishi Chemical)](https://www.m-chemical.co.jp/) | Chemicals / Corporate | [DESIGN.md](design-md/mitsubishi-chem/DESIGN.md) | [preview.html](design-md/mitsubishi-chem/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (628 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (631 sites)</a>
 </p>
 
 <table>
@@ -2611,6 +2619,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>京都精華大学</strong><br><img src="design-md/kyoto-seika/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>京都芸術大学</strong><br><img src="design-md/kyoto-art/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>三菱自動車</strong><br><img src="design-md/mitsubishi-motors/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>三菱ケミカル</strong><br><img src="design-md/mitsubishi-chem/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

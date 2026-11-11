@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 三菱自動車工業（MITSUBISHI MOTORS）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトのトークン名をそのまま使う（綴り Defalt も実サイトのまま）。
+       実測 2026-11-11 */
+    --color_primaryRed:    #ed0000;   /* ★差し色。面 9 要素 / 文字 7 要素 */
+    --color_primaryBlack:  #000000;   /* ブランドページの html 背景 */
+    --color_primaryWhite:  #ffffff;   /* 黒地の文字。ブランドページで可視 236 要素 */
+    --color_primaryOrange: #ff6e03;   /* ⚠宣言のみ・可視 0 要素。使わない */
+    --color_secondary01:   #686d71;   /* 日付・補助（可視 38 要素） */
+    --color_secondary02:   #bfc2c4;   /* 非選択のドット */
+    --color_secondary03:   #e3e5e6;   /* = --color_headerBg。ヘッダーの地・面（22 要素） */
+    --color_textDefalt:    #111111;   /* ★トップの本文（可視 125 要素） */
+    --color_textDefalt2:   #333333;   /* ブランドページの本文 */
+    --surface-dark:        #2c2c2c;   /* ★トップのページ背景（main.l_main） */
+    --surface-darker:      #212121;   /* カーラインアップの面（6 要素） */
+    --text-gray:           #747474;   /* メガメニュー（37 要素） */
+    --line:                #d3d3d3;   /* 入力欄の枠 */
+    --theme-navy:          #27455c;   /* ブランド記事のテーマ色（8 要素） */
+    --theme-green:         #468254;   /* 同（3 要素） */
+
+    /* === Fonts ===
+       実サイトは自社ホストから MMC（欧文・woff2）と Noto Sans CJK JP（和文・woff/ttf）を配信する。
+       MMC は配布されていないので、ここでは字幅と重心の近い Oswald で代替する。
+       和文は Google Fonts の Noto Sans JP（実サイトの Noto Sans CJK JP と同系統）。 */
+    --font: "Noto Sans JP", sans-serif;                        /* 実サイト: "Noto Sans Japanese", sans-serif */
+    --font_MMC: Oswald, "Noto Sans JP", sans-serif;            /* 実サイト: MMC, "Noto Sans Japanese", sans-serif */
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Sizes（実サイトのトークンをそのまま） === */
+    --fontSS: 13px;  --fontS: 14px;  --fontM: 16px;  --fontL: 18px;
+    --fontSS_sp: 12px; --fontS_sp: 13px; --fontM_sp: 15px; --fontL_sp: 17px;
+
+    /* === Line height / letter spacing === */
+    --lh:      1.6875;   /* = 27 ÷ 16。body に無単位で（実測 114 要素） */
+    --lh-read: 2.5;      /* ★黒地の読み物本文（実測 113 要素） */
+    --ls:      0.04em;   /* ★設計の軸。body では 0.64px として px で継承される */
+    --ls-cta:  2px;      /* CTA のみ（20px に対して 0.1em） */
+
+    /* === Layout === */
+    --wideW: 1320px;  --contentsW: 1200px;  --innerW: 800px;
+    --gap: 24px;  --gap_sp: 12px;
+    --pcSec: 120px;  --spSec: 60px;
+    --pcInnerPadding: 40px;  --spInnerPadding: 20px;
+    --mt_M: 24px;
+    --m_btn__paddingY: 8px;  --m_btn__paddingX: 20px;
+    --l_header_height_pc: 128px;  --l_header_height_borderW_pc: 4px;
+    --alpha: 0.7;  --transition-time: 0.3s;
+    --pcDesignWidth: 1920;  --spDesignWidth: 375;
+
+    --r: 0px;        /* ★サイト本体の角丸は 0 */
+    --shadow: none;  /* ★影は 0 種 */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-width: 320px;
+    background: var(--color_primaryWhite);
+    color: var(--color_textDefalt);
+    font-family: var(--font);
+    font-size: var(--fontM);                /* 16px */
+    font-weight: 400;
+    line-height: var(--lh);                 /* 1.6875 */
+    letter-spacing: var(--ls);              /* → 0.64px として全要素へ継承 */
+    /* font-feature-settings は実サイトで 0 件。palt を足すと別物になる */
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (max-width: 767px) { body { font-size: var(--fontM_sp); } }   /* 15px → 字間 0.6px */
+
+  /* HEADER */
+  .header { background: var(--color_headerBg, var(--color_secondary03)); border-bottom: var(--l_header_height_borderW_pc) solid var(--color_primaryRed); }
+  .header-inner { display: flex; align-items: center; gap: 32px; max-width: var(--wideW); margin: 0 auto; padding: 18px var(--spInnerPadding); }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--color_textDefalt); }
+  .logo-mark { width: 34px; height: 34px; background: var(--color_primaryRed); clip-path: polygon(50% 0, 100% 86%, 0 86%); }
+  .logo-text { font-family: var(--font_MMC); font-size: var(--fontL); font-weight: 700; letter-spacing: 1px; }
+  .header-nav { display: flex; gap: 26px; margin-left: auto; }
+  .header-nav a { font-size: var(--fontL); font-weight: 500; letter-spacing: 0.4px; color: #333333; text-decoration: none; }
+  .header-nav a.is-current { color: var(--color_primaryRed); font-weight: 700; }
+
+  /* SECTIONS */
+  .section { padding: 72px var(--pcInnerPadding); max-width: var(--wideW); margin: 0 auto; }
+  .section-alt { background: var(--color_secondary03); }
+  .section-dark { background: var(--surface-dark); color: var(--color_primaryWhite); }
+  .section-black { background: var(--color_primaryBlack); color: var(--color_primaryWhite); }
+  .section-inner { padding: 72px var(--pcInnerPadding); max-width: var(--wideW); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--color_secondary01); margin-bottom: 8px; letter-spacing: 0; }
+  .section-dark .section-label, .section-black .section-label { color: var(--color_secondary02); }
+  .eyebrow { display: inline-block; font-family: var(--font_MMC); font-size: 13px; font-weight: 700; line-height: 1; letter-spacing: var(--ls-cta); padding: 6px 10px; background: var(--color_primaryRed); color: var(--color_primaryWhite); }
+  .section-title { font-family: var(--font_MMC); font-size: 60px; font-weight: 700; line-height: 1.2; letter-spacing: 0.64px; margin: 16px 0 14px; }
+  .section-lead { font-size: var(--fontM); line-height: var(--lh); margin-bottom: 34px; max-width: 920px; }
+  .note { font-size: var(--fontS); line-height: 1.9; color: #444444; margin-top: 20px; max-width: 920px; }
+  .section-dark .note, .section-black .note { color: #d8dadb; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--color_secondary03); color: var(--color_textDefalt); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+  .swatch { border: 1px solid var(--line); background: var(--color_primaryWhite); }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 12px; }
+  .swatch-name { font-size: var(--fontS); font-weight: 700; line-height: 1.5; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--color_secondary01); margin-top: 3px; letter-spacing: 0; }
+  .swatch-use { font-size: 12px; line-height: 1.6; color: #444444; margin-top: 6px; }
+
+  /* TYPOGRAPHY */
+  .scale-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 30px; align-items: baseline; }
+  .scale-bar span { background: var(--color_secondary03); padding: 8px 14px; line-height: 1.4; }
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color_secondary01); line-height: 1.75; letter-spacing: 0; }
+  .type-meta b { display: block; font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--color_textDefalt); letter-spacing: 0; }
+  .mmc { font-family: var(--font_MMC); }
+
+  /* READ（黒地の読み物） */
+  .read { max-width: var(--innerW); margin: 0 auto; }
+  .read-title { font-family: var(--font_MMC); font-size: 42px; font-weight: 700; line-height: 1.3; letter-spacing: 1.68px; margin-bottom: 28px; }
+  .read-sub { font-size: 34px; font-weight: 500; line-height: 1.45; letter-spacing: 1.36px; margin-bottom: 32px; }
+  .read p { font-size: var(--fontM); font-weight: 500; line-height: var(--lh-read); }
+  .read-meta { font-size: var(--fontSS); color: var(--color_secondary02); margin-top: 28px; letter-spacing: 0.52px; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 26px; }
+  .btn { font-family: var(--font); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--r); box-shadow: var(--shadow); }
+  .btnA { background: var(--color_textDefalt); color: var(--color_primaryWhite); border: 1px solid var(--color_primaryWhite); font-size: 20px; font-weight: 700; line-height: 1.5; letter-spacing: var(--ls-cta); padding: var(--m_btn__paddingY) 16px; }
+  .btnB { background: var(--color_primaryRed); color: var(--color_primaryWhite); border: 1px solid var(--color_primaryRed); font-size: 20px; font-weight: 700; line-height: 1.5; letter-spacing: var(--ls-cta); padding: var(--m_btn__paddingY) 16px; }
+  .btnC { background: transparent; color: var(--color_textDefalt); border: 1px solid var(--color_textDefalt); font-size: var(--fontM); font-weight: 500; padding: var(--m_btn__paddingY) var(--m_btn__paddingX); }
+  .btnD { background: transparent; color: var(--color_primaryWhite); border: 1px solid var(--color_primaryWhite); font-size: var(--fontM); font-weight: 500; padding: var(--m_btn__paddingY) var(--m_btn__paddingX); }
+  .tag { display: inline-block; font-family: var(--font_MMC); font-size: var(--fontSS); font-weight: 700; letter-spacing: 1.3px; color: var(--color_primaryRed); border: 1px solid var(--color_primaryRed); padding: 3px 10px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 40px var(--gap); }
+  .card { text-decoration: none; color: inherit; display: block; background: var(--surface-darker); border-radius: var(--r); box-shadow: var(--shadow); }
+  .card-visual { width: 100%; aspect-ratio: 16 / 9; background: linear-gradient(160deg, #4a5257 0%, #272c2f 60%, #16191b 100%); }
+  .card-body { padding: 20px; }
+  .card-cat { font-family: var(--font_MMC); font-size: var(--fontSS); font-weight: 700; letter-spacing: 1.3px; color: var(--color_primaryRed); }
+  .card-title { font-size: 21px; font-weight: 700; line-height: 1.5; letter-spacing: 1.05px; color: var(--color_primaryWhite); margin-top: 8px; }
+  .card-note { font-size: var(--fontS); color: var(--color_secondary02); margin-top: 10px; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 26px; }
+  .field label { display: block; font-size: var(--fontS); font-weight: 700; margin-bottom: 8px; }
+  .field input, .field select {
+    width: 100%; background: var(--color_primaryWhite); color: var(--color_textDefalt);
+    border: 1px solid var(--line); border-radius: var(--r);
+    height: 50px; padding: 0 14px; font-size: var(--fontM); font-family: var(--font); letter-spacing: var(--ls);
+  }
+  .field.is-focus input { outline: 2px solid var(--color_primaryRed); outline-offset: 1px; }
+  .field-msg { font-size: 12px; line-height: 1.6; color: var(--color_secondary01); margin-top: 7px; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+  .elev { background: var(--color_primaryWhite); border: 1px solid var(--line); padding: 28px; text-align: center; border-radius: var(--r); }
+  .elev-name { font-size: var(--fontM); font-weight: 700; }
+  .elev-val { font-family: var(--font-mono); font-size: 11px; color: var(--color_secondary01); margin-top: 8px; line-height: 1.7; letter-spacing: 0; }
+  .tone-row { display: flex; flex-wrap: wrap; margin-top: 30px; border: 1px solid var(--line); }
+  .tone { flex: 1 1 140px; height: 80px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0; }
+
+  /* LAYOUT */
+  .layout-demo { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .layout-bar { background: var(--color_primaryWhite); border: 1px solid var(--line); height: 36px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; color: #444444; letter-spacing: 0; }
+
+  /* TABLE */
+  .tbl { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  .tbl th, .tbl td { border-bottom: 1px solid var(--line); padding: 9px 12px; font-size: var(--fontSS); text-align: left; line-height: 1.6; }
+  .tbl th { font-weight: 700; background: var(--color_secondary03); }
+  .tbl td.n { font-family: var(--font-mono); letter-spacing: 0; }
+  .tbl tr.is-cliff td { background: var(--color_primaryRed); color: var(--color_primaryWhite); font-weight: 700; }
+  .tbl tr.is-min td { background: #ffe8e8; font-weight: 700; }
+
+  /* FOOTER */
+  .footer { background: var(--color_primaryBlack); color: var(--color_primaryWhite); padding: 48px var(--pcInnerPadding); }
+  .footer-inner { max-width: var(--wideW); margin: 0 auto; }
+  .footer-head { font-family: var(--font_MMC); font-size: 24px; font-weight: 700; letter-spacing: 1px; }
+  .footer-cols { display: flex; gap: 48px; margin-top: 22px; flex-wrap: wrap; }
+  .footer-col-title { font-size: var(--fontM); font-weight: 700; }
+  .footer-col a { display: block; font-size: var(--fontS); line-height: 2; color: var(--color_primaryWhite); text-decoration: none; opacity: .8; }
+  .footer-copy { font-size: 12px; line-height: 1.8; margin-top: 30px; opacity: .72; }
+
+  @media (max-width: 767px) {
+    .header-nav { display: none; }
+    .section, .section-inner { padding: var(--spSec) var(--spInnerPadding); }
+    .section-title { font-size: 34px; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .read-title { font-size: 28px; }
+    .read-sub { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo"><span class="logo-mark"></span><span class="logo-text">MITSUBISHI MOTORS</span></a>
+    <nav class="header-nav">
+      <a href="#" class="is-current">ブランド</a><a href="#">企業情報</a><a href="#">ニュースルーム</a><a href="#">サステナビリティ</a><a href="#">投資家情報</a>
+    </nav>
+  </div>
+</header>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="eyebrow">COLOR PALETTE</div>
+  <h2 class="section-title mmc">Red, and nothing else</h2>
+  <p class="section-lead">差し色は <b>#ed0000</b> の 1 色だけ。ヘッダー下の 4px の帯、<code>MENU</code>、<code>【お知らせ】</code>、ナビの現在地に使う。ほかは黒・白・灰の明度差で組む。<b><code>--color_primaryOrange: #ff6e03</code> はトークンに並んでいるが可視 0 要素</b>で、実装には存在しない。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#ed0000"></div><div class="swatch-body"><div class="swatch-name">Primary Red</div><div class="swatch-hex">#ed0000 / --color_primaryRed</div><div class="swatch-use">★面 9 要素 / 文字 7 要素。唯一の差し色</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#111111"></div><div class="swatch-body"><div class="swatch-name">Text Defalt</div><div class="swatch-hex">#111111 / --color_textDefalt</div><div class="swatch-use">★トップの本文（可視 125 要素）。綴りは実サイトのまま</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#2c2c2c"></div><div class="swatch-body"><div class="swatch-name">Surface Dark</div><div class="swatch-hex">#2c2c2c</div><div class="swatch-use">★トップのページ背景（main.l_main）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#212121"></div><div class="swatch-body"><div class="swatch-name">Surface Darker</div><div class="swatch-hex">#212121</div><div class="swatch-use">カーラインアップの面（6 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#686d71"></div><div class="swatch-body"><div class="swatch-name">Secondary 01</div><div class="swatch-hex">#686d71 / --color_secondary01</div><div class="swatch-use">日付・補助テキスト（可視 38 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#bfc2c4"></div><div class="swatch-body"><div class="swatch-name">Secondary 02</div><div class="swatch-hex">#bfc2c4 / --color_secondary02</div><div class="swatch-use">スライダーの非選択ドット</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e3e5e6"></div><div class="swatch-body"><div class="swatch-name">Secondary 03 / Header</div><div class="swatch-hex">#e3e5e6 / --color_headerBg</div><div class="swatch-use">ヘッダーの地・面（22 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ff6e03"></div><div class="swatch-body"><div class="swatch-name">Primary Orange ⚠</div><div class="swatch-hex">#ff6e03 / --color_primaryOrange</div><div class="swatch-use">宣言のみ・両ページとも可視 0 要素。使わない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#27455c"></div><div class="swatch-body"><div class="swatch-name">Theme Navy</div><div class="swatch-hex">#27455c</div><div class="swatch-use">ブランド記事のテーマ色（8 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#468254"></div><div class="swatch-body"><div class="swatch-name">Theme Green</div><div class="swatch-hex">#468254</div><div class="swatch-use">ブランド記事のテーマ色（3 要素）</div></div></div>
+  </div>
+
+  <p class="note"><b>画像アイコンの色替えは <code>filter</code> のトークンで行う。</b><code>--filter_primaryRed: invert(12%) sepia(58%) saturate(7130%) hue-rotate(357deg) brightness(102%) contrast(126%)</code> のように、<code>fill</code> を持たない画像を同じ色にそろえるための文字列を 6 本持っている。</p>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <div class="eyebrow">TYPOGRAPHY</div>
+  <h2 class="section-title mmc">MMC + Noto Sans</h2>
+  <p class="section-lead">自社の欧文書体 <b>MMC</b> と <b>Noto Sans CJK JP</b> を自社ホストから配信し、<code>MMC, "Noto Sans Japanese", sans-serif</code> の二層スタックで使う。<b>MMC は欧文しか持たないので、同じ 1 行の中で英数字は MMC、和文は Noto Sans に自動で分かれる。</b>Google Fonts は 1 件も読まない（フォント要求は全 6 件・すべて自社ドメイン）。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:12px">12</span><span style="font-size:13px">13</span><span style="font-size:14px">14</span>
+    <span style="font-size:16px">16</span><span style="font-size:18px">18</span><span style="font-size:20px">20</span>
+    <span style="font-size:21px">21</span><span style="font-size:34px;font-weight:500">34</span><span style="font-size:42px;font-family:Oswald,sans-serif;font-weight:700">42</span><span style="font-size:60px;font-family:Oswald,sans-serif;font-weight:700">60</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Section Heading（MMC）</b>60px / 700<br>ls 0.64px（body 継承）</div><div class="mmc" style="font-size:60px;font-weight:700;line-height:1.2">Brand&amp;Technology</div></div>
+  <div class="type-row"><div class="type-meta"><b>二層スタックの実例</b>MMC → 和文は Noto Sans<br>同じ 1 行で書体が分かれる</div><div class="mmc" style="font-size:34px;font-weight:500;line-height:1.45">OUTLANDER PHEV の冒険</div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Title</b>21px / 700<br>ls 1.05px（0.05em）</div><div style="font-size:21px;font-weight:700;line-height:1.5;letter-spacing:1.05px">ブランド・メッセージ</div></div>
+  <div class="type-row"><div class="type-meta"><b>CTA</b>20px / 700<br>ls 2px（0.1em）</div><div style="font-size:20px;font-weight:700;line-height:1.5;letter-spacing:2px">この車種について詳しくはこちら</div></div>
+  <div class="type-row"><div class="type-meta"><b>Category Nav</b>18px / 500<br>ls 1.08px（0.06em）</div><div style="font-size:18px;font-weight:500;letter-spacing:1.08px">EV/PHEV　SUV　ミニバン　コンパクト　軽自動車</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>16px / 400<br>lh 1.6875 / ls 0.64px</div><div style="font-size:16px;font-weight:400;line-height:1.6875">三菱自動車は、走る歓びと確かな安心を、100年先の子どもたちへ。四輪駆動と電動化の技術で、どんな道のりも、たしかな一歩に変えていきます。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Date / Caption</b>14px / 400<br>#686d71</div><div style="font-size:14px;color:#686d71">2026年10月29日</div></div>
+  <div class="type-row"><div class="type-meta"><b>Mega Menu</b>13px / 500<br>#747474</div><div style="font-size:13px;font-weight:500;color:#747474">商品情報　スペシャル　イベント/キャンペーン</div></div>
+
+  <p class="note"><b>ウェイトは 400 / 500 / 700 の 3 段だけ。</b><code>@font-face</code> も 3 本しかないので、<b>600 や 900 を当てると合成太字になる</b>。実測で 600 が出るのは CMP（Cookie 同意）の 2 要素だけで、サイト本体には存在しない。</p>
+  <p class="note"><b>字間 <code>0.04em</code> の継承のしかたがページで正反対。</b>トップは <code>body</code> に 1 行書いて <b>0.64px として px で降る</b>（215 要素）ので、60px の見出しでも字間は 0.64px のまま＝実質 0.011em。ブランドページは各要素が <code>0.04em</code> を持ち直すので、<b>サイズに比例して px が変わる</b>（33.7335px → 1.34934px、14.7584px → 0.590337px）。<b>片方だけ見て設計を決めないこと。</b></p>
+  <p class="note">このプレビューでは MMC が配布されていないため <b>Oswald</b> で代替している。<code>font-feature-settings</code> は実サイトで 0 件なので、ここでも書いていない。</p>
+</div>
+</section>
+
+<section class="section-black" id="read">
+<div class="section-inner">
+  <div class="section-label">03 / Reading</div>
+  <div class="eyebrow">READING</div>
+  <h2 class="section-title mmc" style="color:#ffffff">line-height 2.5</h2>
+  <p class="section-lead" style="color:#d8dadb">ブランドページの読み物は <b>黒地（#000000）に白文字、行送り 2.5</b>（実測 113 要素）。本文の横幅は <code>--innerW: 800px</code> に絞る。<b>実サイトで最も目立つ組版の判断がこれ。</b></p>
+
+  <div class="read">
+    <div class="read-title mmc">TRITON</div>
+    <div class="read-sub">クルマはときどき、タイムマシンになる。</div>
+    <p>トレイルランをやってみようと思う。そう切り出すと、妻からはごもっともなリアクションが返ってきた。「なんでそんなことやるの？」</p>
+    <p>私にとってラリーは憧れの舞台というより、縁のない世界だった。モータースポーツ未経験のエンジニア。工具にすら、まともに触ったことがない。それでも、走り出してしまえば道は続いていく。思い出すのは、失敗をしたことばかりだ。ゴールはまだ、ずっと先にある。</p>
+    <div class="read-meta">挑戦 篇 ／ 未来 篇 ／ 継承 篇</div>
+  </div>
+</div>
+</section>
+
+<section class="section-dark" id="components">
+<div class="section-inner">
+  <div class="section-label">04 / Components</div>
+  <div class="eyebrow">COMPONENTS</div>
+  <h2 class="section-title mmc" style="color:#ffffff">Zero radius</h2>
+  <p class="section-lead" style="color:#d8dadb"><b><code>border-radius</code> はサイト本体で 0。</b>実測で角丸が付くのは CMP のボタン（2px・3 件）だけ。<b><code>box-shadow</code> もトップで 0 種</b>。面と 1px の罫線で組み、反応は <code>--alpha: 0.7</code> の不透明度変化で返す。</p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btnA">この車種について詳しくはこちら</a>
+    <a href="#" class="btn btnB">カーラインアップから探す</a>
+    <a href="#" class="btn btnD">ブランド＆テクノロジー</a>
+    <span class="tag">NEW</span>
+  </div>
+
+  <div class="card-grid">
+    <a href="#" class="card"><div class="card-visual"></div><div class="card-body"><div class="card-cat mmc">SUV</div><div class="card-title">アウトランダー PHEV</div><div class="card-note">EV/PHEV ／ SUV</div></div></a>
+    <a href="#" class="card"><div class="card-visual"></div><div class="card-body"><div class="card-cat mmc">MINIVAN</div><div class="card-title">デリカ D:5</div><div class="card-note">ミニバン</div></div></a>
+    <a href="#" class="card"><div class="card-visual"></div><div class="card-body"><div class="card-cat mmc">KEI</div><div class="card-title">デリカミニ</div><div class="card-note">軽自動車</div></div></a>
+  </div>
+
+  <p class="note">カードは <code>#212121</code> の面に車両画像を載せるだけ。見出しは 21px / 700 / <code>letter-spacing: 1.05px</code>。<b>角丸も影も付けない。</b></p>
+</div>
+</section>
+
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div>
+  <div class="eyebrow">FORMS</div>
+  <h2 class="section-title mmc">Tall inputs</h2>
+  <p class="section-lead">入力欄の高さは <b>検索で 70px、日付選択で 50px</b> と大きい。枠は <code>1px solid #d3d3d3</code>、角丸は 0。フォーカスリングの独自指定は無い（UA 既定）ので、ここでは <code>.is-focus</code> で見せている。</p>
+
+  <div class="form-grid">
+    <div class="field">
+      <label for="f1">お名前</label>
+      <input id="f1" type="text" placeholder="三菱 太郎">
+      <div class="field-msg">全角でご入力ください</div>
+    </div>
+    <div class="field is-focus">
+      <label for="f2">お住まいの地域（フォーカス時）</label>
+      <input id="f2" type="text" value="東京都">
+      <div class="field-msg">最寄りの販売会社をご案内します</div>
+    </div>
+    <div class="field">
+      <label for="f3">ご希望の車種</label>
+      <select id="f3"><option>アウトランダー PHEV</option><option>デリカ D:5</option><option>デリカミニ</option><option>eK クロス EV</option></select>
+      <div class="field-msg">あとから変更できます</div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt" id="elevation">
+<div class="section-inner">
+  <div class="section-label">06 / Elevation</div>
+  <div class="eyebrow">ELEVATION</div>
+  <h2 class="section-title mmc">Flat</h2>
+  <p class="section-lead">影はトップで 0 種、ブランドページで 1 種（CMP の <code>rgba(0,0,0,0.2) 0 0 18px</code>）。<b>サイト本体は影を使わない。</b>階層は明度だけで表す。</p>
+
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">Level 0</div><div class="elev-val">none — カード・ボタン・タグすべて影なし（実測 0 種）</div></div>
+    <div class="elev"><div class="elev-name">境界は罫線で</div><div class="elev-val">1px solid #d3d3d3 / #ffffff</div></div>
+    <div class="elev"><div class="elev-name">反応は不透明度で</div><div class="elev-val">--alpha: 0.7 / --transition-time: 0.3s</div></div>
+  </div>
+
+  <div class="tone-row">
+    <div class="tone" style="background:#000000;color:#ffffff">#000000</div>
+    <div class="tone" style="background:#212121;color:#ffffff">#212121</div>
+    <div class="tone" style="background:#2c2c2c;color:#ffffff">#2c2c2c</div>
+    <div class="tone" style="background:#333333;color:#ffffff">#333333</div>
+    <div class="tone" style="background:#686d71;color:#ffffff">#686d71</div>
+    <div class="tone" style="background:#bfc2c4;color:#111111">#bfc2c4</div>
+    <div class="tone" style="background:#e3e5e6;color:#111111">#e3e5e6</div>
+    <div class="tone" style="background:#ffffff;color:#111111">#ffffff</div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="layout">
+  <div class="section-label">07 / Layout &amp; Responsive</div>
+  <div class="eyebrow">LAYOUT</div>
+  <h2 class="section-title mmc">1320 / 1200 / 800</h2>
+  <p class="section-lead">コンテナはトークンで持つ。<code>--wideW: 1320px</code>（実測 9 要素で最多）、<code>--contentsW: 1200px</code>、読み物は <code>--innerW: 800px</code>。ヘッダーの高さと赤帯の太さもトークン（PC 128px / 4px、タブレット 80px / 4px、SP 56px / 3px）。</p>
+
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:100%;max-width:1320px">--wideW: 1320px</div>
+    <div class="layout-bar" style="width:1200px;max-width:100%">--contentsW: 1200px</div>
+    <div class="layout-bar" style="width:800px;max-width:100%">--innerW: 800px（読み物）</div>
+    <div class="layout-bar" style="width:282px;max-width:100%">--l_2colLayout_localNav_width: 282px</div>
+  </div>
+
+  <h3 style="font-size:21px;font-weight:700;margin:40px 0 0">ルートは 16px 固定、動くのは body だけ</h3>
+  <p class="note"><code>html</code> に <code>font-size</code> の宣言が 1 つも無いので、<b>1920px から 360px まで UA 既定の 16px で固定</b>。動くのは <code>body</code> の 2 段（16px ／ 767px 以下 15px）だけで、継承される字間も 0.64px → 0.6px に下がる。</p>
+
+  <h3 style="font-size:21px;font-weight:700;margin:40px 0 0">ブランドページの <code>vw</code> 直書きには下限が無い</h3>
+  <p class="note"><code>clamp(min, calc(N / var(--pcDesignWidth) * 100vw), Npx)</code> を使う宣言群と、<code>font-size: 1.02489vw</code> のような<b>素の vw 直書き</b>が同じページに同居している。後者には下限が無く、768px で 8px を切る。</p>
+
+  <table class="tbl">
+    <tr><th>画面幅</th><th>.anchor-itm__txt（146 要素）</th><th>宣言</th></tr>
+    <tr><td class="n">1920px</td><td class="n">19.6779px</td><td class="n">font-size: 1.02489vw</td></tr>
+    <tr><td class="n">1440px</td><td class="n">14.7584px</td><td class="n">同上</td></tr>
+    <tr><td class="n">1200px</td><td class="n">12.2987px</td><td class="n">同上</td></tr>
+    <tr><td class="n">1024px</td><td class="n">10.4949px</td><td class="n">同上</td></tr>
+    <tr class="is-min"><td class="n">768px</td><td class="n">7.87116px（最小）</td><td class="n">同上</td></tr>
+    <tr class="is-cliff"><td class="n">767px</td><td class="n">28.6347px（3.64 倍に跳ぶ）</td><td class="n">font-size: 3.73333vw</td></tr>
+    <tr><td class="n">414px</td><td class="n">15.456px</td><td class="n">同上</td></tr>
+    <tr><td class="n">375px（SP 設計幅）</td><td class="n">14px ちょうど</td><td class="n">同上</td></tr>
+  </table>
+
+  <p class="note"><b>規定の 4 幅（1440 / 1200 / 834 / 375px）では崖が見えない。</b>834px でも「ただの流体」に見えるので、<code>max-width</code> の値 ±1px を必ず測ること。<b>新規実装では <code>clamp()</code> 側に揃え、下限を付ける。</b></p>
+  <p class="note">文字サイズのトークンは PC と SP の 2 組を持つ（<code>--fontM: 16px</code> / <code>--fontM_sp: 15px</code> ほか）。<b>メディアクエリで変数を差し替えるのではなく、<code>_sp</code> 付きの別トークンを参照する</b>のがこのサイトの流儀。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-head">MITSUBISHI MOTORS</div>
+    <div class="footer-cols">
+      <div class="footer-col"><div class="footer-col-title">商品情報</div><a href="#">カーラインアップ</a><a href="#">EV/PHEV</a><a href="#">SUV</a></div>
+      <div class="footer-col"><div class="footer-col-title">ブランド</div><a href="#">ブランド・メッセージ</a><a href="#">三菱の4WD</a><a href="#">モータースポーツへの挑戦</a></div>
+      <div class="footer-col"><div class="footer-col-title">購入サポート</div><a href="#">見積りシミュレーション</a><a href="#">カタログ請求</a><a href="#">販売会社検索</a></div>
+      <div class="footer-col"><div class="footer-col-title">企業情報</div><a href="#">会社概要</a><a href="#">ニュースルーム</a><a href="#">採用情報</a></div>
+    </div>
+    <p class="footer-copy">実サイトは <code>&lt;h1&gt;</code> が両ページとも 0 件ですが、これは真似するところではありません。このプレビューでは各セクションに見出しを置いています。</p>
+    <p class="footer-copy">これは DESIGN.md の再現用サンプルです。三菱自動車工業株式会社の実サイトではありません。自社書体 MMC は配布されていないため Oswald で、和文は Noto Sans JP で代替しています。ヒーローの大きな明朝コピーは実サイトでは写真に焼き込まれており、テキストでは再現できません。</p>
+  </div>
+</footer>
+
+</body>
+</html>
