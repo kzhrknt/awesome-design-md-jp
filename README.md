@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (631 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (634 sites)</a>
 </p>
 
 <table>
@@ -981,6 +981,11 @@
 </tr>
 <tr>
 <td align="center"><strong>三菱ケミカル</strong><br><img src="design-md/mitsubishi-chem/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Pasco／敷島製パン</strong><br><img src="design-md/pasconet/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>王子ホールディングス</strong><br><img src="design-md/ojiholdings/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>日本触媒</strong><br><img src="design-md/nippon-shokubai/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1673,11 +1678,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [京都芸術大学 (Kyoto University of the Arts)](https://www.kyoto-art.ac.jp/) | University / Art &amp; Design | [DESIGN.md](design-md/kyoto-art/DESIGN.md) | [preview.html](design-md/kyoto-art/preview.html) |
 | [三菱自動車工業 (MITSUBISHI MOTORS)](https://www.mitsubishi-motors.co.jp/) | Automotive / Corporate | [DESIGN.md](design-md/mitsubishi-motors/DESIGN.md) | [preview.html](design-md/mitsubishi-motors/preview.html) |
 | [三菱ケミカル (Mitsubishi Chemical)](https://www.m-chemical.co.jp/) | Chemicals / Corporate | [DESIGN.md](design-md/mitsubishi-chem/DESIGN.md) | [preview.html](design-md/mitsubishi-chem/preview.html) |
+| [Pasco／敷島製パン (Pasco Shikishima)](https://www.pasconet.co.jp/) | Food / Bakery | [DESIGN.md](design-md/pasconet/DESIGN.md) | [preview.html](design-md/pasconet/preview.html) |
+| [王子ホールディングス (Oji Holdings)](https://www.ojiholdings.co.jp/) | Manufacturing / Paper &amp; Pulp | [DESIGN.md](design-md/ojiholdings/DESIGN.md) | [preview.html](design-md/ojiholdings/preview.html) |
+| [日本触媒 (NIPPON SHOKUBAI)](https://www.shokubai.co.jp/ja/) | Chemicals | [DESIGN.md](design-md/nippon-shokubai/DESIGN.md) | [preview.html](design-md/nippon-shokubai/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (631 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (634 sites)</a>
 </p>
 
 <table>
@@ -2624,6 +2632,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>三菱ケミカル</strong><br><img src="design-md/mitsubishi-chem/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>Pasco／敷島製パン</strong><br><img src="design-md/pasconet/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>王子ホールディングス</strong><br><img src="design-md/ojiholdings/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>日本触媒</strong><br><img src="design-md/nippon-shokubai/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

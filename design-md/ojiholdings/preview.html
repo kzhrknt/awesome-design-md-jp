@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 王子ホールディングス（Oji Holdings）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は自社トークン 0 個（2 個あるのは Swiper）。
+       以下は computed style と CSS 全文の実測値。2026-11-12 */
+    --blue:     #005bac;   /* ★王子ブルー。可視 62 要素の塗り面 / 文字 12 要素 */
+    --blue-d:   #004c91;   /* 森のグラデーションの起点 */
+    --teal:     #00849c;
+    --green:    #00ac8d;
+    --lime:     #bed58c;   /* 森のグラデーションの終点 */
+    --red:      #d6082e;   /* スポーツ・文化活動（可視 7 要素） */
+    --text:     #222222;   /* ★本文。可視 68 要素。body { color } */
+    --muted:    #787878;   /* 日付・ファイルサイズ・パンくず（可視 66 要素） */
+    --white:    #ffffff;
+    --surface:  #f3f7fa;   /* ヒーロー直下のセクション面（可視 2 要素） */
+    --surface-g:#f4f4f4;   /* 表の縞 */
+    --border:   #d6d6d6;   /* 区切り線（可視 16 要素） */
+    --bg:       #ffffff;   /* body { background-color: #fff } */
+
+    /* === Fonts ===
+       実サイトは font-family のフォールバックが serif（"Noto Sans JP", serif）。
+       サンセリフを意図した誤りなので、ここでは正しく sans-serif に直している。 */
+    --font-body: "Noto Sans JP", sans-serif;   /* 実サイト: "Noto Sans JP", serif ← 誤り */
+    --font-en:   "Poppins", sans-serif;        /* 実サイト: "Poppins", serif ← 誤り。loaded は 500 のみ */
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: em 宣言。各要素が自分で書き直す ===
+       body は Normalize 由来の 1.15（= 18.4px）が絶対値で降りるため、
+       宣言し忘れた要素は行が潰れる。 */
+    --lh-body:   1.6em;   /* 実測 129 要素で最多 */
+    --lh-head:   1.3em;   /* 見出し（56 要素） */
+    --lh-loose:  2em;     /* ゆったり組む本文（14 要素） */
+    --lh-en:     1em;     /* 欧文見出し（12 要素） */
+
+    /* === Letter spacing: 配らない。可視 216 要素中 208 要素が normal === */
+    --ls:        normal;
+    --ls-title:  0.04em;  /* 下層ページの h1（40px → 1.6px）だけ */
+
+    --r:        4px;      /* ボタン・入力欄（可視 50 要素で最多） */
+    --r-card:   32px;     /* 大きなカード */
+    --r-tag:    12px;     /* カテゴリタグ */
+    --shadow:   0 0 8px rgba(0, 0, 0, 0.08);   /* サイト本体で 1 種類だけ */
+
+    --container: 1152px;  /* トップの最頻 */
+    --container-sub: 1280px;  /* 下層の最頻 */
+    --narrow:    800px;   /* 本文カラム */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* html / body とも 16px で全幅固定（1920〜374px の 10 幅で 1 度も動かない） */
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 400;
+    /* ★改行を縛る 3 点セット。全要素へ継承される */
+    overflow-wrap: anywhere;
+    word-break: normal;
+    line-break: strict;
+    letter-spacing: var(--ls);
+    line-height: 1.15;   /* ← Normalize 由来。各要素が書き直す前提 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid var(--border); background: var(--white); }
+  .header-inner { max-width: 1440px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; gap: 32px; }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-mark { width: 48px; height: 32px; background: var(--blue); border-radius: var(--r); }
+  .logo-text { font-size: 16px; font-weight: 700; line-height: var(--lh-head); }
+  .gnav { margin-left: auto; display: flex; align-items: center; gap: 24px; }
+  .gnav a { color: var(--text); font-size: 14px; font-weight: 500; line-height: var(--lh-body); text-decoration: none; word-break: keep-all; overflow-wrap: break-word; }
+  .gnav a:hover { color: var(--blue); }
+  .lang { font-family: var(--font-en); font-size: 12px; font-weight: 600; color: var(--text); border: 1px solid var(--border); border-radius: var(--r); padding: 4px 14px; line-height: var(--lh-body); }
+
+  /* HERO */
+  .hero { position: relative; min-height: 460px; display: flex; align-items: center;
+          background-image: linear-gradient(rgba(10,30,20,.34), rgba(10,30,20,.40)),
+                            linear-gradient(160deg, #2f5f3a 0%, #4b7d44 34%, #6b9a52 62%, #88ad63 100%); }
+  .hero-inner { max-width: var(--container); margin: 0 auto; padding: 0 24px; width: 100%; }
+  .hero h2 { color: var(--white); font-size: 60px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls); }
+  .hero .btn { margin-top: 36px; }
+
+  /* SECTION */
+  .section { max-width: var(--container); margin: 0 auto; padding: 88px 24px; }
+  .section-alt { background: var(--surface); }
+  .section-inner { max-width: var(--container); margin: 0 auto; padding: 88px 24px; }
+  .section-label { font-family: var(--font-en); font-size: 48px; font-weight: 600; line-height: var(--lh-en); color: var(--text); }
+  .section-title { font-size: 36px; font-weight: 700; line-height: var(--lh-body); margin: 16px 0 20px; letter-spacing: var(--ls); }
+  .section-lead { font-size: 16px; font-weight: 400; line-height: var(--lh-body); max-width: var(--narrow); }
+  .h3 { font-size: 24px; font-weight: 700; line-height: var(--lh-body); margin: 56px 0 14px; }
+  code { font-family: var(--font-mono); font-size: .88em; background: var(--surface-g); padding: 2px 6px; border-radius: var(--r); }
+  b { font-weight: 700; }
+
+  /* SWATCHES */
+  .swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 36px; }
+  .sw { border: 1px solid var(--border); border-radius: var(--r-tag); overflow: hidden; background: var(--white); }
+  .sw-chip { height: 88px; }
+  .sw-body { padding: 14px 16px 18px; }
+  .sw-name { font-size: 15px; font-weight: 700; line-height: var(--lh-body); }
+  .sw-hex { font-family: var(--font-mono); font-size: 13px; color: var(--muted); line-height: var(--lh-body); }
+  .sw-use { font-size: 12px; color: var(--muted); line-height: var(--lh-body); }
+
+  /* GRADIENT */
+  .grad { margin-top: 32px; border-radius: var(--r-card); overflow: hidden; border: 1px solid var(--border); }
+  .grad-bar { height: 120px; background: linear-gradient(45deg, #004c91 2%, #005bac 46%, #00849c 76%, #00ac8d 93%, #bed58c 100%); }
+  .grad-stops { display: grid; grid-template-columns: repeat(5, 1fr); background: var(--white); }
+  .grad-stop { padding: 16px 14px 20px; border-right: 1px solid var(--border); }
+  .grad-stop:last-child { border-right: none; }
+  .grad-stop .hex { font-family: var(--font-mono); font-size: 13px; font-weight: 700; line-height: var(--lh-body); }
+  .grad-stop .pos { font-family: var(--font-mono); font-size: 12px; color: var(--muted); line-height: var(--lh-body); }
+
+  /* LINE BREAK DEMO */
+  .lb { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 30px; }
+  .lb-box { border: 1px solid var(--border); border-radius: var(--r-tag); padding: 22px 24px 26px; background: var(--white); }
+  .lb-tag { font-family: var(--font-mono); font-size: 12px; color: var(--muted); line-height: var(--lh-body); }
+  /* box-sizing: content-box で、テキスト領域をちょうど 236px / 150px にする
+     （border-box のままだと padding と border の分だけ幅が縮み、差が消える） */
+  .lb-text { box-sizing: content-box; width: 236px; font-size: 16px; line-height: var(--lh-body); margin-top: 10px; border-left: 3px solid var(--blue); padding-left: 12px; }
+  .lb-url  { box-sizing: content-box; width: 150px; font-size: 16px; line-height: var(--lh-body); margin-top: 10px; border-left: 3px solid var(--blue); padding-left: 12px; }
+  .lb-a .lb-text, .lb-a .lb-url { line-break: auto; overflow-wrap: normal; word-break: normal; }
+  .lb-b .lb-text, .lb-b .lb-url { line-break: strict; overflow-wrap: anywhere; word-break: normal; }
+
+  /* LINE HEIGHT LADDER */
+  .lh { margin-top: 32px; border-top: 1px solid var(--border); }
+  .lh-row { display: grid; grid-template-columns: 220px 1fr; gap: 28px; align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--border); }
+  .lh-meta { font-family: var(--font-mono); font-size: 12px; color: var(--muted); line-height: var(--lh-body); }
+  .lh-warn { background: #fff7e6; border: 1px solid #f0d9a8; border-radius: var(--r-tag); padding: 20px 24px 24px; margin-top: 26px; }
+  .lh-warn h4 { font-size: 16px; font-weight: 700; line-height: var(--lh-body); }
+  .lh-warn p { font-size: 15px; line-height: var(--lh-body); margin-top: 6px; }
+  .lh-warn .demo { font-size: 16px; line-height: 1.15; margin-top: 12px; max-width: 420px; background: var(--white); border: 1px solid var(--border); border-radius: var(--r); padding: 10px 14px; }
+
+  /* TYPE SCALE */
+  .scale { margin-top: 32px; border-top: 1px solid var(--border); }
+  .scale-row { display: grid; grid-template-columns: 230px 1fr; gap: 28px; align-items: baseline; padding: 18px 0; border-bottom: 1px solid var(--border); }
+  .scale-meta { font-family: var(--font-mono); font-size: 12px; color: var(--muted); line-height: var(--lh-body); }
+
+  /* BUTTONS */
+  .btns { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; margin-top: 32px; }
+  .btn { position: relative; display: inline-block; background: var(--blue); color: var(--white); font-family: inherit; font-size: 15px; font-weight: 700; line-height: var(--lh-body); padding: 8px 72px 8px 22px; border-radius: var(--r); border: none; letter-spacing: var(--ls); text-decoration: none; cursor: pointer; }
+  .btn::after { content: "→"; position: absolute; right: 22px; top: 50%; transform: translateY(-50%); font-weight: 400; }
+  .btn-sec { background: var(--white); color: var(--text); border: 1px solid var(--border); padding: 8px 62px 8px 22px; }
+  .btn-sec::after { content: "→"; }
+  .btn.is-focus { outline: 2px solid var(--blue); outline-offset: 3px; }
+  .tag { background: var(--blue); color: var(--white); font-size: 12px; font-weight: 500; line-height: var(--lh-body); padding: 0 16px 2px; border-radius: var(--r-tag); }
+  .round { width: 44px; height: 44px; border-radius: 50%; background: var(--blue); color: var(--white); display: inline-flex; align-items: center; justify-content: center; font-size: 16px; }
+
+  /* FIGURES */
+  .figs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 48px; margin-top: 36px; }
+  .fig { border-top: 2px solid var(--blue); padding-top: 20px; }
+  .fig .label { font-size: 20px; font-weight: 700; line-height: var(--lh-body); }
+  .fig .num { font-family: var(--font-en); font-size: 64px; font-weight: 600; line-height: var(--lh-en); color: var(--blue); margin-top: 8px; }
+  .fig .unit { font-size: 24px; font-weight: 700; line-height: var(--lh-body); }
+  .fig .note { font-size: 14px; color: var(--muted); line-height: var(--lh-body); margin-top: 8px; }
+
+  /* CARDS */
+  .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 48px; margin-top: 36px; }
+  .card { background: var(--white); border-radius: var(--r-card); box-shadow: var(--shadow); overflow: hidden; }
+  .card-top { height: 140px; background: linear-gradient(45deg, #004c91 2%, #005bac 46%, #00849c 76%, #00ac8d 93%, #bed58c 100%); }
+  .card-body { padding: 24px 28px 30px; }
+  .card h4 { font-size: 20px; font-weight: 700; line-height: var(--lh-body); }
+  .card p { font-size: 15px; font-weight: 400; line-height: var(--lh-loose); margin-top: 8px; }
+  .card .meta { font-size: 14px; color: var(--muted); line-height: var(--lh-body); margin-top: 12px; }
+
+  /* NEWS LIST */
+  .news { max-width: var(--narrow); margin-top: 36px; border-top: 1px solid var(--border); }
+  .news-row { display: grid; grid-template-columns: 130px 110px 1fr; gap: 20px; align-items: baseline; padding: 20px 0; border-bottom: 1px solid var(--border); }
+  .news .date { font-size: 14px; color: var(--muted); line-height: var(--lh-body); }
+  .news a { color: var(--text); font-size: 15px; font-weight: 500; line-height: var(--lh-body); text-decoration: none; }
+  .news a:hover { color: var(--blue); }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; margin-top: 30px; font-size: 15px; }
+  th, td { text-align: left; padding: 13px 14px; border-bottom: 1px solid var(--border); line-height: var(--lh-body); }
+  th { font-weight: 700; background: var(--surface-g); }
+  td.num { font-family: var(--font-mono); }
+
+  /* FOOTER */
+  .footer { background: var(--text); color: var(--white); }
+  .footer-inner { max-width: var(--container); margin: 0 auto; padding: 56px 24px; }
+  .footer .en { font-family: var(--font-en); font-size: 12px; font-weight: 600; line-height: var(--lh-body); color: rgba(255,255,255,.8); }
+  .footer h4 { font-size: 16px; font-weight: 700; line-height: var(--lh-body); margin-top: 6px; }
+  .footer p { font-size: 12px; color: rgba(255,255,255,.72); line-height: var(--lh-body); margin-top: 8px; }
+  .footer code { background: rgba(255,255,255,.14); color: var(--white); }
+
+  @media screen and (max-width: 1023px) {
+    .swatches { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media screen and (max-width: 767px) {
+    /* ルートのサイズは変えない（html / body とも 16px 固定が実サイトの設計） */
+    .section, .section-inner { padding: 56px 20px; }
+    .hero h2 { font-size: 34px; }
+    .section-label { font-size: 32px; }
+    .section-title { font-size: 26px; }
+    .swatches, .cards, .figs, .lb { grid-template-columns: 1fr; gap: 20px; }
+    .grad-stops { grid-template-columns: repeat(2, 1fr); }
+    .lh-row, .scale-row { grid-template-columns: 1fr; gap: 6px; }
+    .news-row { grid-template-columns: 1fr; gap: 4px; }
+    .gnav { gap: 14px; flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo"><span class="logo-mark"></span><span class="logo-text">王子ホールディングス</span></div>
+    <nav class="gnav">
+      <a href="#">会社情報</a>
+      <a href="#">サステナビリティ</a>
+      <a href="#">製品情報</a>
+      <a href="#">イノベーション</a>
+      <a href="#">投資家情報</a>
+      <a href="#">採用情報</a>
+      <span class="lang">Language</span>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h2>森を育て、森を活かす。</h2>
+    <a class="btn" href="#">会社情報</a>
+  </div>
+</section>
+
+<section class="section" id="colors">
+  <div class="section-label">Colors</div>
+  <h2 class="section-title">王子ブルーと、森のグラデーション</h2>
+  <p class="section-lead">塗り面は <b>王子ブルー <code>#005bac</code></b> ひとつ（可視 62 要素）。IR のカードだけ、<b>青から黄緑へ抜ける 5 ストップのグラデーション</b>を使う。本文は <code>#222222</code>、補助は <code>#787878</code> で、どちらも可視要素数がほぼ同じ。</p>
+  <div class="swatches">
+    <div class="sw"><div class="sw-chip" style="background:#005bac"></div><div class="sw-body"><div class="sw-name">王子ブルー</div><div class="sw-hex">#005bac</div><div class="sw-use">可視 62 要素の塗り面 / 文字 12 要素</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#d6082e"></div><div class="sw-body"><div class="sw-name">レッド</div><div class="sw-hex">#d6082e</div><div class="sw-use">スポーツ・文化活動（可視 7 要素）</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#222222"></div><div class="sw-body"><div class="sw-name">Text Primary</div><div class="sw-hex">#222222</div><div class="sw-use">可視 68 要素。純黒は使わない</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#787878"></div><div class="sw-body"><div class="sw-name">Text Muted</div><div class="sw-hex">#787878</div><div class="sw-use">日付・ファイルサイズ（可視 66 要素）</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#f3f7fa;border-bottom:1px solid #d6d6d6"></div><div class="sw-body"><div class="sw-name">Surface</div><div class="sw-hex">#f3f7fa</div><div class="sw-use">ヒーロー直下のセクション面</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#d6d6d6"></div><div class="sw-body"><div class="sw-name">Border</div><div class="sw-hex">#d6d6d6</div><div class="sw-use">区切り線（可視 16 要素）</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#f4f4f4;border-bottom:1px solid #d6d6d6"></div><div class="sw-body"><div class="sw-name">Surface Gray</div><div class="sw-hex">#f4f4f4</div><div class="sw-use">表の縞</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#ffffff;border-bottom:1px solid #d6d6d6"></div><div class="sw-body"><div class="sw-name">Background</div><div class="sw-hex">#ffffff</div><div class="sw-use">body { background-color: #fff }</div></div></div>
+  </div>
+
+  <h3 class="h3">森のグラデーション</h3>
+  <p class="section-lead">角度 <code>45deg</code>、停止位置 <b>2% / 46% / 76% / 93% / 100%</b>。紙とパルプの事業を 1 本のグラデで表している。<b>停止位置を丸めない。</b></p>
+  <div class="grad">
+    <div class="grad-bar"></div>
+    <div class="grad-stops">
+      <div class="grad-stop"><div class="hex">#004c91</div><div class="pos">2%</div></div>
+      <div class="grad-stop"><div class="hex">#005bac</div><div class="pos">46%</div></div>
+      <div class="grad-stop"><div class="hex">#00849c</div><div class="pos">76%</div></div>
+      <div class="grad-stop"><div class="hex">#00ac8d</div><div class="pos">93%</div></div>
+      <div class="grad-stop"><div class="hex">#bed58c</div><div class="pos">100%</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt" id="linebreak">
+<div class="section-inner">
+  <div class="section-label">Line break</div>
+  <h2 class="section-title">字間ではなく、改行で読ませる</h2>
+  <p class="section-lead">可視 216 要素のうち <b>208 要素が <code>letter-spacing: normal</code></b>。詰めも開きもしない代わりに、<code>body</code> に <b>3 点セット</b>を書いて全要素へ継承させている。</p>
+
+<pre style="font-family:var(--font-mono);font-size:13px;line-height:1.9;background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-top:26px;overflow-x:auto">body {
+  overflow-wrap: anywhere;   /* 長い英単語・URL はどこでも折る */
+  word-break: normal;        /* 日本語の分かち書きは既定のまま */
+  line-break: strict;        /* 小書き仮名「ゃゅょっ」長音符「ー」も行頭禁止 */
+}</pre>
+
+  <p class="section-lead" style="margin-top:22px"><code>line-break: strict</code> は既定の <code>auto</code> より禁則が厳しく、<code>overflow-wrap: anywhere</code> は <code>word-break: break-all</code> と違って<b>日本語の禁則を保ったまま欧文だけ折る</b>。この 2 つは<b>セットで書く</b>。</p>
+
+  <div class="lb">
+    <div class="lb-box lb-a">
+      <div class="lb-tag">line-break: auto（既定）/ 幅 236px</div>
+      <div class="lb-text">持続可能なサプライチェーンとRegenerationをテーマに、ちょっとずつ進める。</div>
+    </div>
+    <div class="lb-box lb-b">
+      <div class="lb-tag">line-break: strict　← 実サイト / 幅 236px</div>
+      <div class="lb-text">持続可能なサプライチェーンとRegenerationをテーマに、ちょっとずつ進める。</div>
+    </div>
+  </div>
+  <p class="section-lead" style="margin-top:16px;font-size:14px;color:var(--muted)">左は 3 行目が <b>「っとずつ進める。」</b>で始まり、<b>小書き仮名の「っ」が行頭</b>に来てしまう。右は「ちょっとずつ」をまとめて次行へ送る。<b>和文だけの例文では差が出ない</b>（既定でもどこでも折れるため）ので、欧文語を挟んで折り返し位置をずらしている。</p>
+
+  <div class="lb" style="margin-top:26px">
+    <div class="lb-box lb-a">
+      <div class="lb-tag">overflow-wrap: normal（既定）/ 幅 150px</div>
+      <div class="lb-url">詳しくは https://www.ojiholdings.co.jp/sustainability/ をご覧ください。</div>
+    </div>
+    <div class="lb-box lb-b">
+      <div class="lb-tag">overflow-wrap: anywhere　← 実サイト / 幅 150px</div>
+      <div class="lb-url">詳しくは https://www.ojiholdings.co.jp/sustainability/ をご覧ください。</div>
+    </div>
+  </div>
+  <p class="section-lead" style="margin-top:16px;font-size:14px;color:var(--muted)">左は URL が折れず、<b>指定した 150px の幅を無視して右へ伸びる</b>（横スクロールやレイアウト崩れの原因になる）。右はどこでも折る。<code>word-break: break-all</code> でも同じように折れるが、そちらは<b>日本語の禁則まで無効にする</b>ので、<code>overflow-wrap: anywhere</code> を使う。</p>
+</div>
+</section>
+
+<section class="section" id="typography">
+  <div class="section-label">Typography</div>
+  <h2 class="section-title">行間は em で書く</h2>
+  <p class="section-lead"><code>line-height</code> はすべて <code>em</code> 宣言（<code>1.6em</code> / <code>1.3em</code> / <code>2em</code> / <code>1em</code>）。<b><code>body</code> には Normalize 由来の <code>1.15</code> ＝ 18.4px が絶対値で降りている</b>ので、宣言し忘れた要素は行が潰れる。</p>
+
+  <div class="lh">
+    <div class="lh-row"><div class="lh-meta">1.6em / 実測 129 要素<br>本文・一覧・ナビ</div><div style="line-height:1.6em;font-size:16px">紙とパルプの事業は、森を育てることから始まる。植えて、育てて、使って、また植える。その循環そのものが設備であり、技術であり、仕事になる。</div></div>
+    <div class="lh-row"><div class="lh-meta">1.3em / 実測 56 要素<br>見出し</div><div style="line-height:1.3em;font-size:24px;font-weight:700">森を育て、<br>森を活かす。</div></div>
+    <div class="lh-row"><div class="lh-meta">2em / 実測 14 要素<br>ゆったり組む本文</div><div style="line-height:2em;font-size:15px">王子グループは150年以上にわたり、森林資源を循環させてきた。</div></div>
+    <div class="lh-row"><div class="lh-meta">1em / 実測 12 要素<br>欧文見出し（Poppins）</div><div style="font-family:var(--font-en);line-height:1em;font-size:40px;font-weight:600">Core Value</div></div>
+  </div>
+
+  <div class="lh-warn">
+    <h4>宣言しないとこうなる（body の 1.15 ＝ 18.4px がそのまま降りる）</h4>
+    <p>実測で比率 1.15 だったのは 3 要素。どれも <code>line-height</code> を書き直していない箇所だった。</p>
+    <div class="demo">紙とパルプの事業は、森を育てることから始まる。植えて、育てて、使って、また植える。</div>
+  </div>
+
+  <h3 class="h3">サイズとウェイト</h3>
+  <p class="section-lead">ウェイトは <b>400 / 500 / 600 / 700 の 4 段</b>。<b>600 は Poppins（欧文）専用</b>で、和文の見出しは 700、ナビは 500。Noto Sans JP は可変フォント（<code>wght@100..900</code>）なので 9 段すべてが別の字幅で実在するが、設計としては 4 段で止める。</p>
+  <div class="scale">
+    <div class="scale-row"><div class="scale-meta">Hero / 60px / 700<br>lh 1.3em / ls normal</div><div style="font-size:40px;font-weight:700;line-height:1.3em">森を育て、森を活かす。</div></div>
+    <div class="scale-row"><div class="scale-meta">En Display / Poppins 48px / 600<br>lh 1em</div><div style="font-family:var(--font-en);font-size:48px;font-weight:600;line-height:1em">OJI TODAY</div></div>
+    <div class="scale-row"><div class="scale-meta">Heading 1 / 36px / 700<br>lh 1.6em</div><div style="font-size:36px;font-weight:700;line-height:1.6em">王子グループを知る</div></div>
+    <div class="scale-row"><div class="scale-meta">Page Title / 40px / 500<br>ls 0.04em ← ここだけ字間がある</div><div style="font-size:32px;font-weight:500;line-height:1.3em;letter-spacing:.04em">会社概要</div></div>
+    <div class="scale-row"><div class="scale-meta">Heading 3 / 20px / 700<br>lh 1.6em</div><div style="font-size:20px;font-weight:700;line-height:1.6em">サステナブルパッケージ</div></div>
+    <div class="scale-row"><div class="scale-meta">Body / 16px / 400<br>lh 1.6em</div><div style="font-size:16px;line-height:1.6em">リジェネレーションをテーマとした国際カンファレンスに登壇しました。</div></div>
+    <div class="scale-row"><div class="scale-meta">List / 15px / 500<br>lh 1.6em / 可視 69 要素で最多</div><div style="font-size:15px;font-weight:500;line-height:1.6em">決算短信・決算関連説明会資料</div></div>
+    <div class="scale-row"><div class="scale-meta">Nav Small / 13px / 500<br>lh 1.3em / 39 要素</div><div style="font-size:13px;font-weight:500;line-height:1.3em">森のチカラ 王子のチカラ</div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="buttons">
+<div class="section-inner">
+  <div class="section-label">Buttons</div>
+  <h2 class="section-title">角丸 4px、右の余白を大きく取る</h2>
+  <p class="section-lead">CTA の <code>padding</code> は <b><code>8px 72px 8px 22px</code></b>。右に矢印アイコンの居場所を作るため、左右が非対称になっている。可視 <code>border-radius</code> 50 要素が <code>4px</code> で最多。</p>
+  <div class="btns">
+    <a class="btn" href="#">会社情報</a>
+    <a class="btn btn-sec" href="#">統合報告書</a>
+    <a class="btn is-focus" href="#">投資家情報</a>
+    <span class="tag">経営・財務</span>
+    <span class="round">↑</span>
+  </div>
+  <p class="section-lead" style="margin-top:22px;font-size:14px;color:var(--muted)">フォーカスは王子ブルーの 2px リング（<code>outline-offset: 3px</code>）。実サイトのボタンは高さ 40px 弱で WCAG の 44px に届かないので、新規実装では縦 padding を 12px にする。</p>
+
+  <h3 class="h3">数値の見せ方</h3>
+  <p class="section-lead">数字は Poppins 64px / 600 / <code>line-height: 1em</code>、単位だけ和文 24px / 700。ラベルは 20px / 700。</p>
+  <div class="figs">
+    <div class="fig"><div class="label">紙・パルプ関連売上高</div><div class="num">6<span class="unit"> 位</span></div><div class="note">世界順位（2025年度実績）</div></div>
+    <div class="fig"><div class="label">海外売上高比率</div><div class="num">41.9<span class="unit"> %</span></div><div class="note">2025年度実績</div></div>
+    <div class="fig"><div class="label">王子の森（社有林面積）</div><div class="num">63.7<span class="unit"> 万ha</span></div><div class="note">国内外合計</div></div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="cards">
+  <div class="section-label">Cards</div>
+  <h2 class="section-title">カードは 32px の角丸、影はほぼ無い</h2>
+  <p class="section-lead">サイト本体の <code>box-shadow</code> は <b>1 種類だけ</b>（<code>rgba(0,0,0,0.08) 0 0 8px 0</code>）。ぼかし 8px・不透明度 0.08・オフセット 0 と極めて浅く、面の区別は<b>色と罫線</b>でつけるのが基本。</p>
+  <div class="cards">
+    <div class="card"><div class="card-top"></div><div class="card-body"><h4>決算短信・決算関連説明会資料</h4><p>2027年３月期 第２四半期（中間期）の決算情報を掲載しています。</p><div class="meta">PDF [3.1 MB]</div></div></div>
+    <div class="card"><div class="card-top"></div><div class="card-body"><h4>統合報告書</h4><p>王子グループの価値創造プロセスと中期経営計画をまとめています。</p><div class="meta">PDF [579 KB]</div></div></div>
+  </div>
+
+  <h3 class="h3">ニュース一覧（800px カラム）</h3>
+  <div class="news">
+    <div class="news-row"><span class="date">2026年11月09日</span><span class="tag">経営・財務</span><a href="#">リジェネレーションをテーマとした国際カンファレンスに登壇しました</a></div>
+    <div class="news-row"><span class="date">2026年11月06日</span><span class="tag">経営・財務</span><a href="#">2027年３月期 第２四半期決算説明会資料を掲載しました</a></div>
+    <div class="news-row"><span class="date">2026年10月28日</span><span class="tag">経営・財務</span><a href="#">サステナブルパッケージの新ラインを稼働しました</a></div>
+  </div>
+</section>
+
+<section class="section-alt" id="responsive">
+<div class="section-inner">
+  <div class="section-label">Responsive</div>
+  <h2 class="section-title">ルートは 16px で完全固定</h2>
+  <p class="section-lead"><code>html</code> も <code>body</code> も <b>1920 / 1440 / 1200 / 1024 / 834 / 768 / 767 / 414 / 375 / 374px の 10 幅すべてで 16px</b>。流体も段階切り替えも無いので、<code>rem</code> は常に 16px 基準で計算してよい。サイズの調整は<b>要素ごとのメディアクエリ</b>で行う。</p>
+  <table>
+    <thead><tr><th>Name</th><th>Width</th><th>@media の件数</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>Mobile</td><td class="num">≤ 767px</td><td class="num">433</td><td>最も手の入っている帯</td></tr>
+      <tr><td>Small</td><td class="num">≤ 640px</td><td class="num">16</td><td>追加の微調整</td></tr>
+      <tr><td>Tablet</td><td class="num">768〜1023px</td><td class="num">62</td><td>専用の調整</td></tr>
+      <tr><td>Desktop</td><td class="num">≥ 1024px</td><td class="num">17</td><td>既定</td></tr>
+      <tr><td>Hover</td><td class="num">(any-hover: hover)</td><td class="num">66</td><td>ホバー演出の分岐</td></tr>
+    </tbody>
+  </table>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="en">Oji Holdings Corporation</div>
+    <h4>王子ホールディングス株式会社</h4>
+    <p>本プレビューは DESIGN.md の実測値（2026-11-12）を再現したものです。実サイトのコンテンツではありません。<br>実サイトの <code>font-family</code> は <code>"Noto Sans JP", serif</code>（受け皿が明朝）ですが、ここでは正しく <code>sans-serif</code> に直しています。</p>
+  </div>
+</footer>
+
+</body>
+</html>

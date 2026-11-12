@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 日本触媒（NIPPON SHOKUBAI）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は 59 個あるが、49 個が WordPress / Gutenberg の preset、
+       10 個が Arkhe Blocks（--arkb-*）プラグイン。自社の設計トークンは 0 個。
+       以下は computed style と CSS 全文の実測値。2026-11-12 */
+    --green-fill: #009961;   /* ★面の緑。可視 11 要素（CTA・ピル） */
+    --green-text: #008756;   /* ★文字と線の緑。ロゴ SVG・リンク・枠線 */
+    --blue:       #27455c;   /* ディープブルー。製品カテゴリーの面（可視 6 要素） */
+    --marker:     #ffdc40;   /* --arkb-marker-color。下半分だけ塗るマーカー線 */
+    --text:       #222926;   /* ★本文。可視 63 要素。緑みを帯びた黒 */
+    --muted:      #6c7872;   /* 補助テキスト。可視 19 要素。こちらも緑み */
+    --light:      #b1bab7;   /* パンくずの現在地。やはり緑み */
+    --white:      #ffffff;
+    --surface:    #f0f2f2;   /* 検索フォームの面 */
+    --surface-2:  #f4f4f4;   /* 表の縞 */
+    --border:     #dfe4e2;   /* 罫線（緑みのグレー） */
+    --bg:         #ffffff;   /* body */
+
+    /* === Shadow: 色が黒ではない。rgb(42,87,71) は緑みの濃いグレー === */
+    --shadow-1: rgba(42, 87, 71, 0.13) 2px 2px 15px 0;   /* 小さなカード（可視 4 要素） */
+    --shadow-2: rgba(42, 87, 71, 0.1)  4px 4px 25px 0;   /* 大きなカード（可視 2 要素） */
+
+    /* === Fonts ===
+       Inter と Noto Sans JP を 1 本のスタックに重ねる。Inter は和文グリフを
+       持たないので、日本語は自動的に 2 番目へ落ちる。両方 400/500/700 が loaded。 */
+    --font-body: Inter, "Noto Sans JP", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: 無単位。各要素が自分のサイズで再計算する === */
+    --lh:        1.5;    /* ★既定。可視 77 要素 */
+    --lh-loose:  2;      /* リード文（6 要素） */
+    --lh-cap:    1.75;   /* キャプション */
+    --lh-tight:  1.4;    /* 大きめの見出し */
+
+    /* === Letter spacing: body の 0.03em は 0.48px という絶対値で降りる === */
+    --ls:        0.03em;   /* ★可視 117 要素中 110 要素が 0.48px */
+
+    --r-pill:    100px;  /* トップの CTA */
+    --r-btn:     2px;    /* 下層のボタン */
+    --r-card:    5px;    /* カード・入力欄 */
+
+    --container: 1100px;
+    --narrow:    800px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* html は 16px 固定（html { font-size } の宣言自体が無く UA 既定）。
+     body だけが 767px 以下で 15px に落ちる。 */
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: var(--ls);   /* ★0.48px が全子孫へ降りる */
+    line-height: var(--lh);      /* 無単位 1.5。各要素で再計算 */
+    /* font-feature-settings は CSS 全文に 1 件も無い（実測 0 要素）。足さない。 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid var(--border); background: var(--white); }
+  .header-inner { max-width: 1340px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; gap: 30px; }
+  .logo { display: flex; align-items: center; gap: 10px; color: var(--green-text); font-size: 20px; font-weight: 700; line-height: var(--lh); }
+  .logo-mark { width: 26px; height: 26px; border-radius: 4px; background: var(--green-text); flex: none; }
+  .gnav { margin-left: auto; display: flex; align-items: center; gap: 26px; }
+  .gnav a { color: var(--text); font-size: 15px; font-weight: 500; line-height: var(--lh); text-decoration: none; }
+  .gnav a:hover { color: var(--green-text); }
+  .util { font-size: 16px; color: var(--muted); line-height: 1; }
+
+  /* HERO */
+  .hero { position: relative; overflow: hidden; background: var(--surface-2); padding: 72px 0 84px;
+          background-image: radial-gradient(circle at 12% 28%, rgba(0,153,97,.16) 0 14%, transparent 15%),
+                            radial-gradient(circle at 86% 22%, rgba(39,69,92,.14) 0 12%, transparent 13%),
+                            radial-gradient(circle at 70% 82%, rgba(255,220,64,.22) 0 16%, transparent 17%),
+                            linear-gradient(180deg, #f4f6f5 0%, #eef1f0 100%); }
+  .hero-inner { max-width: var(--container); margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  .hero-card { background: var(--white); border-radius: 28px; padding: 52px 44px 56px; box-shadow: var(--shadow-2); }
+  .hero-card h2 { font-size: 46px; font-weight: 500; line-height: var(--lh-tight); letter-spacing: var(--ls); }
+  .hero-note { font-size: 12px; color: var(--muted); line-height: var(--lh-cap); margin-top: 16px; }
+  .hero-side p { font-size: 16px; line-height: var(--lh-loose); }
+  .hero-side .link { display: inline-flex; align-items: center; gap: 14px; margin-top: 20px; color: var(--text); font-size: 16px; font-weight: 700; line-height: var(--lh-loose); text-decoration: none; }
+  .hero-side .link .ic { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--green-text); color: var(--green-text); display: inline-flex; align-items: center; justify-content: center; font-size: 14px; }
+
+  /* SECTION */
+  .section { max-width: var(--container); margin: 0 auto; padding: 86px 24px; }
+  .section-alt { background: var(--surface-2); }
+  .section-inner { max-width: var(--container); margin: 0 auto; padding: 86px 24px; }
+  .section-label { font-family: var(--font-body); font-size: 12px; font-weight: 700; color: var(--green-text); line-height: var(--lh-cap); letter-spacing: .08em; }
+  .section-title { font-size: 24px; font-weight: 700; line-height: var(--lh-tight); margin: 8px 0 18px; }
+  .section-lead { font-size: 16px; line-height: var(--lh); max-width: var(--narrow); }
+  .h3 { font-size: 20px; font-weight: 700; line-height: var(--lh); margin: 54px 0 14px; }
+  code { font-family: var(--font-mono); font-size: .88em; background: var(--surface); padding: 2px 6px; border-radius: var(--r-card); letter-spacing: 0; }
+  b { font-weight: 700; }
+
+  /* SWATCHES */
+  .swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 32px; }
+  .sw { border: 1px solid var(--border); border-radius: var(--r-card); overflow: hidden; background: var(--white); }
+  .sw-chip { height: 84px; }
+  .sw-body { padding: 14px 16px 18px; }
+  .sw-name { font-size: 15px; font-weight: 700; line-height: var(--lh); }
+  .sw-hex { font-family: var(--font-mono); font-size: 13px; color: var(--muted); line-height: var(--lh); letter-spacing: 0; }
+  .sw-use { font-size: 12px; color: var(--muted); line-height: var(--lh-cap); }
+
+  /* NEUTRAL COMPARE */
+  .neutral { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 28px; }
+  .n-box { border-radius: var(--r-card); padding: 24px 26px 28px; background: var(--white); border: 1px solid var(--border); }
+  .n-tag { font-family: var(--font-mono); font-size: 12px; color: var(--muted); line-height: var(--lh-cap); letter-spacing: 0; }
+  .n-text { font-size: 18px; font-weight: 500; line-height: var(--lh); margin-top: 8px; }
+  .n-a .n-text { color: #333333; }
+  .n-b .n-text { color: #222926; }
+  .n-a { box-shadow: rgba(0,0,0,.1) 4px 4px 25px 0; }
+  .n-b { box-shadow: var(--shadow-2); }
+
+  /* LETTER SPACING TABLE */
+  .ls-table { width: 100%; border-collapse: collapse; margin-top: 30px; font-size: 15px; }
+  .ls-table th, .ls-table td { text-align: left; padding: 13px 14px; border-bottom: 1px solid var(--border); line-height: var(--lh); }
+  .ls-table th { font-weight: 700; background: var(--surface); }
+  .ls-table td.num { font-family: var(--font-mono); letter-spacing: 0; }
+  .ls-sample-9  { font-size: 9px;  letter-spacing: .48px; }
+  .ls-sample-12 { font-size: 12px; letter-spacing: .48px; }
+  .ls-sample-16 { font-size: 16px; letter-spacing: .48px; }
+  .ls-sample-24 { font-size: 24px; letter-spacing: .48px; font-weight: 700; }
+  .ls-sample-46 { font-size: 46px; letter-spacing: .48px; font-weight: 500; }
+
+  /* PALT COMPARE */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 28px; }
+  .cmp { border: 1px solid var(--border); border-radius: var(--r-card); padding: 24px 26px 26px; background: var(--white); }
+  .cmp-tag { font-family: var(--font-mono); font-size: 12px; color: var(--muted); line-height: var(--lh-cap); letter-spacing: 0; }
+  .cmp-text { font-size: 24px; font-weight: 500; line-height: var(--lh-tight); margin-top: 6px; }
+  .cmp-off .cmp-text { font-feature-settings: normal; }
+  .cmp-on  .cmp-text { font-feature-settings: "palt"; }
+
+  /* TYPE SCALE */
+  .scale { margin-top: 30px; border-top: 1px solid var(--border); }
+  .scale-row { display: grid; grid-template-columns: 240px 1fr; gap: 26px; align-items: baseline; padding: 18px 0; border-bottom: 1px solid var(--border); }
+  .scale-meta { font-family: var(--font-mono); font-size: 12px; color: var(--muted); line-height: var(--lh-cap); letter-spacing: 0; }
+
+  /* GRADIENT UNDERLINE NAV */
+  .uline-demo { background: var(--blue); border-radius: var(--r-card); padding: 30px 32px 34px; margin-top: 28px; }
+  .uline-demo .row { display: flex; flex-wrap: wrap; gap: 30px; }
+  .uline { color: var(--white); font-size: 15px; font-weight: 500; line-height: var(--lh); text-decoration: none; padding-bottom: 3px;
+           background-image: linear-gradient(rgba(255,255,255,0) 0%, rgba(255,255,255,0) calc(100% - 1.1px), rgb(255,255,255) calc(100% - 1px), rgb(255,255,255) 100%);
+           background-size: 0 100%; background-repeat: no-repeat; transition: background-size .3s; }
+  .uline:hover, .uline.is-on { background-size: 100% 100%; }
+  .uline-demo p { color: rgba(255,255,255,.8); font-size: 12px; line-height: var(--lh-cap); margin-top: 18px; }
+  .uline-demo code { background: rgba(255,255,255,.16); color: var(--white); }
+
+  /* BUTTONS */
+  .btns { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin-top: 30px; }
+  .btn-pill { background: var(--green-fill); color: var(--white); font-family: inherit; font-size: 16px; font-weight: 700; line-height: var(--lh); letter-spacing: var(--ls); padding: 16px 36px 14px; border-radius: var(--r-pill); border: none; text-decoration: none; cursor: pointer; }
+  .btn-sq { background: var(--green-fill); color: var(--white); font-family: inherit; font-size: 14.4px; font-weight: 700; line-height: var(--lh); letter-spacing: var(--ls); padding: 12px 30px; border-radius: var(--r-btn); border: 1px solid var(--green-fill); cursor: pointer; }
+  .btn-out { background: var(--white); color: var(--green-text); font-family: inherit; font-size: 14.4px; font-weight: 700; line-height: var(--lh); letter-spacing: var(--ls); padding: 12px 30px; border-radius: var(--r-btn); border: 1px solid var(--green-text); cursor: pointer; }
+  .btn-pill.is-focus { outline: 2px solid var(--green-text); outline-offset: 3px; }
+
+  /* MARKER */
+  .marker { background-image: linear-gradient(transparent 1em, #ffdc40 0); font-weight: 700; }
+
+  /* CARDS */
+  .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px 40px; margin-top: 32px; }
+  .card { background: var(--white); border-radius: var(--r-card); box-shadow: var(--shadow-1); padding: 26px 28px 30px; }
+  .card h4 { font-size: 18px; font-weight: 700; line-height: var(--lh); }
+  .card p { font-size: 15px; color: var(--muted); line-height: var(--lh); margin-top: 8px; }
+  .card.is-large { box-shadow: var(--shadow-2); }
+
+  /* CATEGORY PANELS */
+  .panels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px; }
+  .panel { background: var(--blue); color: var(--white); border-radius: var(--r-card); padding: 30px 26px 34px; }
+  .panel h4 { font-size: 20px; font-weight: 500; line-height: var(--lh); letter-spacing: var(--ls); }
+  .panel p { font-size: 14px; color: rgba(255,255,255,.8); line-height: var(--lh-cap); margin-top: 8px; }
+
+  /* NEWS */
+  .news { max-width: var(--narrow); margin-top: 30px; border-top: 1px solid var(--border); }
+  .news-row { display: grid; grid-template-columns: 110px 1fr; gap: 20px; align-items: baseline; padding: 18px 0; border-bottom: 1px solid var(--border); }
+  .news .date { font-size: 13px; color: var(--muted); line-height: 1.15; }
+  .news a { color: var(--text); font-size: 15px; font-weight: 500; line-height: var(--lh); text-decoration: none; }
+  .news a:hover { color: var(--green-text); }
+
+  /* SEARCH */
+  .search { display: flex; gap: 0; max-width: 520px; margin-top: 26px; }
+  .search input { flex: 1; background: var(--surface); border: none; border-radius: var(--r-card) 0 0 var(--r-card); padding: 14px 18px; font-family: inherit; font-size: 15px; color: var(--text); letter-spacing: var(--ls); }
+  .search input::placeholder { color: var(--muted); }
+  .search button { background: var(--green-fill); color: var(--white); border: none; border-radius: 0 var(--r-card) var(--r-card) 0; padding: 14px 28px; font-family: inherit; font-size: 15px; font-weight: 700; letter-spacing: var(--ls); cursor: pointer; }
+
+  /* TABLE */
+  table.plain { width: 100%; border-collapse: collapse; margin-top: 28px; font-size: 15px; }
+  table.plain th, table.plain td { text-align: left; padding: 13px 14px; border-bottom: 1px solid var(--border); line-height: var(--lh); }
+  table.plain th { font-weight: 700; background: var(--surface); }
+  table.plain td.num { font-family: var(--font-mono); letter-spacing: 0; }
+
+  /* FOOTER */
+  .footer { background: var(--text); color: var(--white); }
+  .footer-inner { max-width: var(--container); margin: 0 auto; padding: 56px 24px; }
+  .footer .links { display: flex; flex-wrap: wrap; gap: 26px; }
+  .footer .links a { color: rgba(255,255,255,.8); font-size: 15px; font-weight: 500; line-height: var(--lh); text-decoration: none; }
+  .footer h4 { font-size: 16px; font-weight: 700; line-height: var(--lh); margin-top: 22px; }
+  .footer p { font-size: 11px; color: rgba(255,255,255,.6); line-height: 1.27; margin-top: 10px; }
+  .footer code { background: rgba(255,255,255,.14); color: var(--white); }
+
+  @media screen and (max-width: 767px) {
+    /* 実サイトの崖。body が 16px → 15px に落ち、line-height と letter-spacing が追従する */
+    body { font-size: 15px; }
+    .section, .section-inner { padding: 56px 20px; }
+    .hero { padding: 48px 0 56px; }
+    .hero-inner { grid-template-columns: 1fr; gap: 28px; }
+    .hero-card { padding: 34px 26px 38px; }
+    .hero-card h2 { font-size: 30px; }
+    .swatches, .neutral, .compare, .cards, .panels { grid-template-columns: 1fr; gap: 18px; }
+    .scale-row { grid-template-columns: 1fr; gap: 6px; }
+    .news-row { grid-template-columns: 1fr; gap: 4px; }
+    .gnav { gap: 14px; flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo"><span class="logo-mark"></span>日本触媒</div>
+    <nav class="gnav">
+      <a href="#">企業情報</a>
+      <a href="#">製品情報</a>
+      <a href="#">研究開発</a>
+      <a href="#">投資家情報</a>
+      <a href="#">サステナビリティ</a>
+      <a href="#">採用情報</a>
+      <span class="util">⌕</span>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-card">
+      <h2>提案する化学。</h2>
+      <p class="hero-note">※実サイトではこの大見出しが 557×89px の WebP 画像。<code>alt</code> は「提案する科学」と誤記されている</p>
+    </div>
+    <div class="hero-side">
+      <p>化学の可能性は常に無限。<br>私たちは化学の力で不可能の壁を越え、<br>かつてないソリューションをお届けします。</p>
+      <a class="link" href="#">日本触媒のイノベーション<span class="ic">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / COLORS</div>
+  <h2 class="section-title">黒も灰色も、緑に寄せる</h2>
+  <p class="section-lead">本文は <code>#222926</code>、補助は <code>#6c7872</code>、カードの影は <code>rgba(42,87,71,α)</code>。<b>純黒・純灰を一つも使わず、ニュートラル全体にブランドの緑を混ぜている。</b>緑そのものも<b>面と文字で別の値</b>を使う。</p>
+  <div class="swatches">
+    <div class="sw"><div class="sw-chip" style="background:#009961"></div><div class="sw-body"><div class="sw-name">緑（面）</div><div class="sw-hex">#009961</div><div class="sw-use">CTA・ピル。可視 11 要素の塗り面</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#008756"></div><div class="sw-body"><div class="sw-name">緑（文字・線）</div><div class="sw-hex">#008756</div><div class="sw-use">ロゴ SVG・リンク・枠線</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#27455c"></div><div class="sw-body"><div class="sw-name">ディープブルー</div><div class="sw-hex">#27455c</div><div class="sw-use">製品カテゴリーの面（可視 6 要素）</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#ffdc40"></div><div class="sw-body"><div class="sw-name">マーカー</div><div class="sw-hex">#ffdc40</div><div class="sw-use">--arkb-marker-color（下半分だけ塗る）</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#222926"></div><div class="sw-body"><div class="sw-name">Text Primary</div><div class="sw-hex">#222926</div><div class="sw-use">可視 63 要素。緑みの黒</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#6c7872"></div><div class="sw-body"><div class="sw-name">Text Muted</div><div class="sw-hex">#6c7872</div><div class="sw-use">可視 19 要素。緑みの灰</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#b1bab7"></div><div class="sw-body"><div class="sw-name">Text Light</div><div class="sw-hex">#b1bab7</div><div class="sw-use">パンくずの現在地</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#f0f2f2;border-bottom:1px solid #dfe4e2"></div><div class="sw-body"><div class="sw-name">Surface</div><div class="sw-hex">#f0f2f2</div><div class="sw-use">検索フォームの面</div></div></div>
+  </div>
+
+  <h3 class="h3">置き換えると温度が変わる</h3>
+  <p class="section-lead">左は一般的な <code>#333333</code> と <code>rgba(0,0,0,.1)</code> の影、右が実装値。<b>同じレイアウトでも、ニュートラルの緑みが抜けると別のブランドになる。</b></p>
+  <div class="neutral">
+    <div class="n-box n-a">
+      <div class="n-tag">color: #333333 / shadow: rgba(0,0,0,.1)</div>
+      <div class="n-text">人と社会に豊かさと快適さを</div>
+    </div>
+    <div class="n-box n-b">
+      <div class="n-tag">color: #222926 / shadow: rgba(42,87,71,.1)　← 実サイト</div>
+      <div class="n-text">人と社会に豊かさと快適さを</div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / LETTER SPACING</div>
+  <h2 class="section-title">0.03em を 1 行だけ。大きい文字ほど薄まる</h2>
+  <p class="section-lead"><code>body</code> に <code>letter-spacing: 0.03em</code> を 1 回書くと、<b><code>0.48px</code> という絶対値が全子孫へ降りる</b>（可視 117 要素中 110 要素）。font-size が違っても px は同じなので、<b>em 換算するとサイズごとにばらつく</b>。それでいいという設計。</p>
+  <table class="ls-table">
+    <thead><tr><th>サイズ</th><th>実測の字間</th><th>em 換算</th><th>見え方</th></tr></thead>
+    <tbody>
+      <tr><td class="num">9px</td><td class="num">0.48px</td><td class="num">0.053em</td><td><span class="ls-sample-9">PAGE TOP</span></td></tr>
+      <tr><td class="num">12px</td><td class="num">0.48px</td><td class="num">0.040em</td><td><span class="ls-sample-12">プライバシーポリシー</span></td></tr>
+      <tr><td class="num">16px</td><td class="num">0.48px</td><td class="num">0.030em</td><td><span class="ls-sample-16">人と社会に豊かさと快適さを</span></td></tr>
+      <tr><td class="num">24px</td><td class="num">0.48px</td><td class="num">0.020em</td><td><span class="ls-sample-24">企業情報</span></td></tr>
+      <tr><td class="num">46px</td><td class="num">0.48px</td><td class="num">0.010em</td><td><span class="ls-sample-46">豊かさを</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="h3">palt は効く。それでも使っていない</h3>
+  <p class="section-lead">CSS 全文に <code>font-feature-settings</code> が <b>1 件も無い</b>（実測も 0 要素）。だが同一ページ・同一書体（Noto Sans JP）での実測は <code>normal</code> 868.75px → <code>"palt"</code> 773.80px の <b>−10.9%</b>。<b>書体が持っていないのではなく、使っていない。</b>足すと <code>0.03em</code> で作った字送りが別物になる。</p>
+  <div class="compare">
+    <div class="cmp cmp-off">
+      <div class="cmp-tag">font-feature-settings なし　← 実サイト</div>
+      <div class="cmp-text">「触媒」、化学の可能性は無限。</div>
+    </div>
+    <div class="cmp cmp-on">
+      <div class="cmp-tag">font-feature-settings: "palt"（参考）</div>
+      <div class="cmp-text">「触媒」、化学の可能性は無限。</div>
+    </div>
+  </div>
+
+  <h3 class="h3">行間は無単位</h3>
+  <p class="section-lead">既定は <code>1.5</code>、リード文だけ <code>2.0</code>、キャプションは <code>1.75</code>。<b>宣言値に <code>1.5333333333</code> <code>1.6428571429</code> のような割り切れない小数が並ぶ</b>のは、デザインツールの px 値を font-size で割った値（23 ÷ 15、23 ÷ 14）。<b>無単位のまま写す。</b></p>
+  <div class="scale">
+    <div class="scale-row"><div class="scale-meta">Display / 46px / 500<br>ls 0.48px (0.010em)</div><div style="font-size:36px;font-weight:500;line-height:1.4;letter-spacing:.48px">人と社会に豊かさと快適さを</div></div>
+    <div class="scale-row"><div class="scale-meta">Heading 1 / 24px / 700<br>lh 33.6px (1.4)</div><div style="font-size:24px;font-weight:700;line-height:1.4;letter-spacing:.48px">企業情報</div></div>
+    <div class="scale-row"><div class="scale-meta">Heading 2 / 20px / 500<br>lh 30px (1.5)</div><div style="font-size:20px;font-weight:500;line-height:1.5;letter-spacing:.48px">生活関連材／建築・建材／環境・水処理</div></div>
+    <div class="scale-row"><div class="scale-meta">Lead / 16px / 400<br>lh 32px (2.0)</div><div style="font-size:16px;line-height:2;letter-spacing:.48px">化学の可能性は常に無限。私たちは化学の力で不可能の壁を越え、かつてないソリューションをお届けします。</div></div>
+    <div class="scale-row"><div class="scale-meta">Body / 16px / 400<br>lh 24px (1.5)</div><div style="font-size:16px;line-height:1.5;letter-spacing:.48px">人と社会から必要とされる素材・ソリューションを提供し続けます。</div></div>
+    <div class="scale-row"><div class="scale-meta">List / 15px / 500<br>lh 22.5px (1.5) / 可視 46 要素で最多</div><div style="font-size:15px;font-weight:500;line-height:1.5;letter-spacing:.48px">初めての人もよくわかる日本触媒</div></div>
+    <div class="scale-row"><div class="scale-meta">Date / Inter 13px / 400<br>lh 14.95px (1.15)</div><div style="font-size:13px;line-height:1.15;letter-spacing:.48px;color:#6c7872">2026.11.11</div></div>
+    <div class="scale-row"><div class="scale-meta">Caption / 12px / 400<br>lh 21px (1.75)</div><div style="font-size:12px;line-height:1.75;letter-spacing:.48px;color:#6c7872">※掲載内容は発表時点のものです</div></div>
+  </div>
+
+  <p class="section-lead" style="margin-top:26px">プラグイン由来のマーカー線は <code>linear-gradient(transparent 1em, #ffdc40 0)</code> で<b>下半分だけ塗る</b>: <span class="marker">化学の可能性は常に無限</span>。</p>
+</div>
+</section>
+
+<section class="section" id="links">
+  <div class="section-label">03 / LINKS</div>
+  <h2 class="section-title">下線はグラデーションで引く</h2>
+  <p class="section-lead">グローバルナビのリンクは <code>text-decoration: none</code> のまま、<b>背景のグラデーションで 1px の下線を引いている</b>（可視 14 要素）。<code>background-size</code> を <code>0 100%</code> → <code>100% 100%</code> に伸ばすことで、<b>下線が左から伸びるホバー</b>になる。</p>
+  <div class="uline-demo">
+    <div class="row">
+      <a class="uline is-on" href="#">企業情報</a>
+      <a class="uline" href="#">製品情報</a>
+      <a class="uline" href="#">研究開発</a>
+      <a class="uline" href="#">投資家情報</a>
+      <a class="uline" href="#">サステナビリティ</a>
+    </div>
+    <p>1 つ目は <code>background-size: 100% 100%</code> の状態。他はホバーすると下線が伸びる。</p>
+  </div>
+<pre style="font-family:var(--font-mono);font-size:13px;line-height:1.9;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:20px 24px;margin-top:24px;overflow-x:auto;letter-spacing:0">background-image: linear-gradient(
+  rgba(255,255,255,0) 0%,
+  rgba(255,255,255,0) calc(100% - 1.1px),
+  rgb(255,255,255)    calc(100% - 1px),
+  rgb(255,255,255)    100%);
+background-size: 0 100%;      /* hover で 100% 100% */
+background-repeat: no-repeat;</pre>
+</section>
+
+<section class="section-alt" id="buttons">
+<div class="section-inner">
+  <div class="section-label">04 / BUTTONS</div>
+  <h2 class="section-title">トップはピル、下層は 2px の角</h2>
+  <p class="section-lead">同じサイトで CTA の形が違う。トップは <code>border-radius: 100px</code> ＋ <code>padding: 16px 36px 14px</code>（<b>下だけ 2px 浅い</b>）、下層は <code>2px</code> ＋ <code>12px 30px</code>。<b>ページの階層に合わせて選ぶ。</b></p>
+  <div class="btns">
+    <a class="btn-pill" href="#">製品情報を探す</a>
+    <a class="btn-pill is-focus" href="#">課題解決事例を見る</a>
+    <button class="btn-sq">投資家情報 TOP</button>
+    <button class="btn-out">会社案内 PDF</button>
+  </div>
+  <p class="section-lead" style="margin-top:20px;font-size:14px;color:var(--muted)">白抜きボタンは文字も枠も <code>#008756</code>（文字・線の緑）、塗りは <code>#009961</code>（面の緑）。フォーカスは <code>#008756</code> の 2px リング。</p>
+
+  <h3 class="h3">入力欄</h3>
+  <p class="section-lead">面は <code>#f0f2f2</code>、角丸は <code>5px</code>。入力欄とボタンで左右に割る。</p>
+  <div class="search">
+    <input type="text" placeholder="サイト内検索">
+    <button type="button">検索</button>
+  </div>
+</div>
+</section>
+
+<section class="section" id="cards">
+  <div class="section-label">05 / CARDS &amp; ELEVATION</div>
+  <h2 class="section-title">影の色は黒ではない</h2>
+  <p class="section-lead">影は <code>rgb(42,87,71)</code> ＝ <b>緑みの濃いグレー</b>で、本文色 <code>#222926</code> と同じ系統。<b>オフセットは X/Y とも正の同値</b>（<code>2px 2px</code> / <code>4px 4px</code>）で右下に均等に落とす。浅い方が不透明度 0.13、深い方が 0.1 という<b>逆転</b>がある。</p>
+  <div class="cards">
+    <div class="card"><h4>初めての人もよくわかる日本触媒</h4><p>rgba(42,87,71,0.13) 2px 2px 15px 0 — 小さなカード（可視 4 要素）</p></div>
+    <div class="card is-large"><h4>動画で知る日本触媒</h4><p>rgba(42,87,71,0.1) 4px 4px 25px 0 — 大きなカード（可視 2 要素）</p></div>
+  </div>
+
+  <h3 class="h3">製品カテゴリー</h3>
+  <div class="panels">
+    <div class="panel"><h4>生活関連材</h4><p>紙おむつ用高吸水性樹脂、洗剤原料</p></div>
+    <div class="panel"><h4>建築・建材</h4><p>塗料用樹脂、コンクリート混和剤</p></div>
+    <div class="panel"><h4>環境・水処理</h4><p>排ガス処理触媒、水処理薬剤</p></div>
+  </div>
+
+  <h3 class="h3">ニュース</h3>
+  <div class="news">
+    <div class="news-row"><span class="date">2026.11.11</span><a href="#">サステナビリティレポート2026を公開しました</a></div>
+    <div class="news-row"><span class="date">2026.11.09</span><a href="#">高吸水性樹脂の新プラントが稼働しました</a></div>
+    <div class="news-row"><span class="date">2026.11.09</span><a href="#">研究開発拠点を再編しました</a></div>
+  </div>
+</section>
+
+<section class="section-alt" id="responsive">
+<div class="section-inner">
+  <div class="section-label">06 / RESPONSIVE</div>
+  <h2 class="section-title">html は 16px 固定、body だけ落ちる</h2>
+  <p class="section-lead"><code>html { font-size }</code> の宣言自体が無く <b>UA 既定の 16px</b>。切り替わるのは <code>body</code> だけで、境目は <b>768 / 767px の 1px</b>。<b>834px も 375px も測るだけでは段差が見えない。</b></p>
+  <table class="plain">
+    <thead><tr><th>幅</th><th>html</th><th>body font-size</th><th>line-height</th><th>letter-spacing</th></tr></thead>
+    <tbody>
+      <tr><td>1920 / 1440 / 1200 / 1024 / 834 / <b>768</b>px</td><td class="num">16px</td><td class="num">16px</td><td class="num">24px</td><td class="num">0.48px</td></tr>
+      <tr><td><b>767</b> / 414 / 375 / 374px</td><td class="num">16px</td><td class="num">15px</td><td class="num">22.5px</td><td class="num">0.45px</td></tr>
+    </tbody>
+  </table>
+  <p class="section-lead" style="margin-top:22px"><code>line-height: 1.5</code>（無単位）も <code>letter-spacing: 0.03em</code> も<b>どちらも追従する</b>。<b><code>letter-spacing</code> を px に読み替えて書くとモバイルで字間が合わなくなる。</b></p>
+  <p class="section-lead" style="margin-top:16px;font-size:14px;color:var(--muted)">メディアクエリの最頻は <code>screen and (min-width: 768px), print</code>（237 回）。<b><code>print</code> を抱き合わせている</b>ので、印刷時はデスクトップ版のレイアウトになる。</p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="links">
+      <a href="#">プライバシーポリシー</a>
+      <a href="#">ソーシャルメディアポリシー</a>
+      <a href="#">Cookieポリシー</a>
+    </div>
+    <h4>株式会社日本触媒</h4>
+    <p>本プレビューは DESIGN.md の実測値（2026-11-12）を再現したものです。実サイトのコンテンツではありません。<br>CSS Custom Properties は 59 個ありますが、49 個が WordPress / Gutenberg の preset、10 個が Arkhe Blocks の <code>--arkb-*</code> で、自社の設計トークンは 0 個です。</p>
+  </div>
+</footer>
+
+</body>
+</html>

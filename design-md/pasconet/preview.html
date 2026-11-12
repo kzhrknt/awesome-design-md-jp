@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Pasco／敷島製パン</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Ubuntu:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は実サイトに 0 個（3 個あるのは Swiper 2 / Bootstrap 1）。
+       以下は computed style と CSS 全文の実測値。2026-11-12 */
+    --green:       #008f43;   /* ★Pasco グリーン。可視 14 要素の塗り面 / 文字 11 要素 */
+    --orange:      #d28c40;   /* 「商品検索」の面・本文リンク（可視 2 要素） */
+    --salmon:      #ed7a70;   /* 「レシピ検索」の面（可視 1 要素） */
+    --pink:        #e97891;   /* 数字・日付の文字色（可視 6 要素。Ubuntu で組む） */
+    --text:        #323232;   /* ★本文。可視 83 要素。body { color } */
+    --muted:       #848484;   /* ユーティリティナビ・注記（可視 28 要素） */
+    --white:       #ffffff;
+    --beige:       #f5f1ec;   /* ★下層ページのページ背景（可視 5 要素） */
+    --beige-deep:  #e5dacd;   /* 選択中のタブ面（可視 2 要素） */
+    --border:      #e0e0e0;   /* 罫線（可視 7 要素） */
+    --border-dark: #c1c1c1;   /* 濃い罫線（可視 8 要素） */
+    --surface:     #f5f5f5;   /* 「お知らせ」の面 */
+    --surface-2:   #f4f4f4;   /* 検索フォームの面 */
+    --bg:          #ffffff;   /* トップの地色。html/body とも塗り指定なし＝UA 既定 */
+
+    /* === Fonts ===
+       和文は Noto Sans JP 1 本（可変フォント・loaded）。実測 128 要素。
+       欧文ラベル・数値だけ Ubuntu（loaded は 400 と 500 の 2 本だけ）。 */
+    --font-body: "Noto Sans JP", sans-serif;
+    --font-en:   "Ubuntu", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: 無単位。各要素が自分のサイズで再計算する === */
+    --lh-body:   2;      /* ★body に 1 回。16px → 32px / 15px → 30px */
+    --lh-mid:    1.5;    /* h2.headStyle02（28px → 42px） */
+    --lh-tight:  1.3;    /* セクションタイトル（34px → 44.2px） */
+
+    /* === Letter spacing: body の .04em は 0.64px という絶対値で降りる ===
+       開き直すのは要素ごとに em を宣言した 4 段だけ。 */
+    --ls-body:   .04em;  /* ★可視 147 要素中 114 要素が 0.64px */
+    --ls-h2:     .05em;  /* h2.headStyle02（28px → 1.4px） */
+    --ls-oncolor:.10em;  /* 色面の上の見出し（28px → 2.8px） */
+    --ls-title:  .18em;  /* ★セクションタイトル（34px → 6.12px） */
+
+    /* === Radius: ピルが主役。可視 8 種のうち 5 種が半径 50px 以上 === */
+    --r-pill:    160px;
+    --r-pill-s:  120px;
+    --r-tag:     150px;
+    --r-chip:    20px;
+    --r-card:    10px;
+
+    /* === Shadow: サイト本体では 1 つも使わない === */
+
+    --container: 1000px;   /* 最頻・5 回 */
+    --narrow:    800px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* 実サイトは html { font-size: 62.5% } = 10px で、CSS は rem で書く（1.6rem = 16px）。
+     このプレビューでは読みやすさのため px で書き、値は実測値のまま。 */
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 400;
+    font-feature-settings: "palt";     /* ★body に 1 行。実測 648 要素へ継承 */
+    letter-spacing: var(--ls-body);    /* ★0.64px が全子孫へ降りる */
+    line-height: var(--lh-body);       /* 無単位 2。各要素で再計算 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid var(--border); background: var(--white); }
+  .header-inner { max-width: 1340px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; gap: 28px; }
+  .logo { width: 78px; height: 48px; background: var(--green); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--white); font-family: var(--font-en); font-weight: 500; font-size: 20px; letter-spacing: .02em; flex: none; }
+  .util { margin-left: auto; display: flex; align-items: center; gap: 22px; }
+  .util a { color: var(--muted); font-size: 12px; line-height: 1.5; text-decoration: none; }
+  .util a:hover { color: var(--green); }
+  .util a.pill-sm { background: var(--green); color: var(--white); font-size: 12px; font-weight: 400; padding: 7px 18px; border-radius: var(--r-pill-s); text-decoration: none; }
+  .util a.pill-sm:hover { color: var(--white); }
+  .gnav { max-width: 1340px; margin: 0 auto; padding: 0 24px 12px; display: flex; gap: 34px; }
+  .gnav a { color: var(--text); font-size: 16px; font-weight: 500; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .gnav a:hover { color: var(--green); }
+  .gnav .dot { width: 22px; height: 22px; border-radius: 50%; background: var(--beige-deep); flex: none; }
+
+  /* HERO */
+  .hero { position: relative; min-height: 420px; display: flex; align-items: center; justify-content: center; text-align: center;
+          background-image: linear-gradient(rgba(60,40,20,.28), rgba(60,40,20,.34)),
+                            linear-gradient(135deg, #c9a97e 0%, #e3cdab 38%, #b98f5e 72%, #d8c3a0 100%); }
+  .hero-note { position: absolute; left: 20px; bottom: 16px; color: rgba(255,255,255,.92); font-size: 12px; letter-spacing: .04em; }
+  .hero-copy { color: var(--white); font-size: 40px; font-weight: 400; letter-spacing: .28em; line-height: 1.6; text-shadow: 0 2px 18px rgba(80,55,25,.6); }
+  .hero-cta { margin-top: 28px; display: inline-flex; align-items: center; gap: 16px; background: var(--white); color: var(--text); font-size: 16px; font-weight: 500; padding: 17px 50px; border-radius: var(--r-pill); text-decoration: none; }
+  .hero-cta .ic { width: 28px; height: 28px; border-radius: 50%; background: var(--orange); }
+
+  /* SECTION */
+  .section { max-width: var(--container); margin: 0 auto; padding: 86px 24px; }
+  .section-alt { background: var(--beige); }
+  .section-inner { max-width: var(--container); margin: 0 auto; padding: 86px 24px; }
+  .section-label { font-family: var(--font-en); font-size: 13px; font-weight: 500; color: var(--green); letter-spacing: .04em; line-height: 2; }
+  .section-title { font-size: 34px; font-weight: 700; letter-spacing: var(--ls-title); line-height: var(--lh-tight); margin: 10px 0 18px; }
+  .section-lead { font-size: 16px; line-height: var(--lh-body); max-width: var(--narrow); }
+  .h2 { font-size: 28px; font-weight: 700; letter-spacing: var(--ls-h2); line-height: var(--lh-mid); margin: 54px 0 16px; }
+  code { font-family: var(--font-mono); font-size: .88em; background: var(--surface-2); padding: 2px 6px; border-radius: 4px; letter-spacing: 0; }
+  b { font-weight: 700; }
+
+  /* SWATCHES */
+  .swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 34px; }
+  .sw { border: 1px solid var(--border); border-radius: var(--r-card); overflow: hidden; background: var(--white); }
+  .sw-chip { height: 86px; }
+  .sw-body { padding: 14px 16px 18px; }
+  .sw-name { font-size: 15px; font-weight: 700; line-height: 1.5; }
+  .sw-hex { font-family: var(--font-mono); font-size: 13px; color: var(--muted); letter-spacing: 0; line-height: 1.8; }
+  .sw-use { font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+  /* LETTER SPACING LADDER */
+  .ladder { margin-top: 34px; border-top: 1px solid var(--border); }
+  .ladder-row { display: grid; grid-template-columns: 180px 1fr; gap: 24px; align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--border); }
+  .ladder-meta { font-family: var(--font-mono); font-size: 13px; color: var(--muted); letter-spacing: 0; line-height: 1.7; }
+  .ls-04 { font-size: 16px; letter-spacing: .04em; }
+  .ls-05 { font-size: 28px; font-weight: 700; letter-spacing: .05em; line-height: var(--lh-mid); }
+  .ls-10 { font-size: 28px; font-weight: 700; letter-spacing: .10em; line-height: var(--lh-mid); }
+  .ls-18 { font-size: 34px; font-weight: 700; letter-spacing: .18em; line-height: var(--lh-tight); }
+
+  /* PALT COMPARE */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 30px; }
+  .cmp { border: 1px solid var(--border); border-radius: var(--r-card); padding: 24px 26px 26px; background: var(--white); }
+  .cmp-tag { font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: 0; line-height: 1.8; }
+  .cmp-text { font-size: 26px; font-weight: 700; line-height: 1.6; margin-top: 6px; }
+  .cmp-off .cmp-text { font-feature-settings: normal; }
+  .cmp-on  .cmp-text { font-feature-settings: "palt"; }
+
+  /* TYPE SCALE */
+  .scale { margin-top: 30px; border-top: 1px solid var(--border); }
+  .scale-row { display: grid; grid-template-columns: 210px 1fr; gap: 24px; align-items: baseline; padding: 18px 0; border-bottom: 1px solid var(--border); }
+  .scale-meta { font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: 0; line-height: 1.8; }
+
+  /* BUTTONS */
+  .btns { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin-top: 30px; }
+  .btn-primary { background: var(--green); color: var(--white); font-size: 16px; font-weight: 400; padding: 15px 48px; border-radius: var(--r-pill); border: none; font-family: inherit; letter-spacing: var(--ls-body); cursor: pointer; }
+  .btn-secondary { background: var(--white); color: var(--text); font-size: 16px; font-weight: 500; padding: 17px 50px; border-radius: var(--r-pill); border: 1px solid var(--border-dark); font-family: inherit; letter-spacing: var(--ls-body); cursor: pointer; }
+  .btn-tag { background: var(--green); color: var(--white); font-size: 15px; font-weight: 500; padding: 2px 18px; border-radius: var(--r-tag); border: none; font-family: inherit; letter-spacing: var(--ls-body); }
+  .btn-sm { background: var(--green); color: var(--white); font-size: 12px; font-weight: 400; padding: 7px 18px; border-radius: var(--r-pill-s); border: none; font-family: inherit; letter-spacing: var(--ls-body); }
+
+  /* CHIPS */
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .chip { background: var(--white); color: var(--text); border: 1px solid var(--border); border-radius: var(--r-chip); font-size: 14px; font-weight: 500; padding: 10px 20px; line-height: 1.1; }
+  .chip.is-on { background: var(--beige-deep); border-color: var(--beige-deep); }
+  .chip.is-focus { outline: 2px solid var(--green); outline-offset: 2px; }
+
+  /* SEARCH BLOCK */
+  .search { display: flex; margin-top: 26px; max-width: 560px; }
+  .search input { flex: 1; background: var(--surface-2); border: none; border-radius: 10px 0 0 10px; padding: 14px 18px; font-family: inherit; font-size: 14px; color: var(--text); letter-spacing: var(--ls-body); }
+  .search input::placeholder { color: var(--muted); }
+  .search button { background: var(--green); color: var(--white); border: none; border-radius: 0 10px 10px 0; padding: 14px 30px; font-family: inherit; font-size: 14px; font-weight: 500; letter-spacing: var(--ls-body); cursor: pointer; }
+
+  /* CATEGORY PANELS */
+  .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-top: 34px; }
+  .panel { border-radius: var(--r-card); padding: 44px 36px 48px; color: var(--white); }
+  .panel-a { background: var(--orange); }
+  .panel-b { background: var(--salmon); }
+  .panel h3 { font-size: 28px; font-weight: 700; letter-spacing: var(--ls-oncolor); line-height: var(--lh-mid); }
+  .panel p { font-size: 15px; line-height: var(--lh-body); margin-top: 8px; }
+
+  /* CARDS */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 50px; margin-top: 34px; }
+  .card { background: var(--white); border-radius: var(--r-card); border: 1px solid var(--border); overflow: hidden; }
+  .card-img { height: 150px; background: linear-gradient(135deg, #e8d9c2 0%, #d7bf9d 100%); }
+  .card-body { padding: 18px 20px 24px; }
+  .card h4 { font-size: 15px; font-weight: 700; line-height: var(--lh-body); }
+  .card .date { font-family: var(--font-en); font-size: 14px; font-weight: 500; color: var(--pink); letter-spacing: var(--ls-body); line-height: 2; }
+  .card p { font-size: 14px; color: var(--muted); line-height: 1.7; margin-top: 4px; }
+
+  /* FLAT NOTE */
+  .flat { margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .flat-box { border-radius: var(--r-card); padding: 26px 28px 30px; }
+  .flat-1 { background: var(--white); border: 1px solid var(--border); }
+  .flat-2 { background: var(--beige-deep); }
+  .flat-box h4 { font-size: 16px; font-weight: 700; line-height: 1.6; }
+  .flat-box p { font-size: 14px; line-height: 1.9; margin-top: 6px; }
+
+  /* RESPONSIVE TABLE */
+  table { width: 100%; border-collapse: collapse; margin-top: 30px; font-size: 15px; }
+  th, td { text-align: left; padding: 13px 14px; border-bottom: 1px solid var(--border); line-height: 1.6; }
+  th { font-weight: 700; background: var(--beige); }
+  td.num { font-family: var(--font-mono); letter-spacing: 0; }
+
+  /* FOOTER */
+  .footer { background: var(--text); color: var(--white); margin-top: 0; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; padding: 56px 24px; }
+  .footer h4 { font-size: 15px; font-weight: 700; line-height: 2; }
+  .footer p { font-size: 12px; color: rgba(255,255,255,.72); line-height: 2; }
+  .footer .en { font-family: var(--font-en); font-size: 13px; font-weight: 500; letter-spacing: .04em; }
+
+  @media (max-width: 959px) {
+    /* 実サイトの崖。body が 16px → 15px に落ち、line-height と letter-spacing が追従する */
+    body { font-size: 15px; }
+    .section, .section-inner { padding: 56px 20px; }
+    .section-title { font-size: 26px; }
+    .hero-copy { font-size: 26px; letter-spacing: .2em; }
+    .swatches, .cards, .panels, .compare, .flat { grid-template-columns: 1fr; gap: 20px; }
+    .ladder-row, .scale-row { grid-template-columns: 1fr; gap: 6px; }
+    .gnav { flex-wrap: wrap; gap: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">Pasco</div>
+    <nav class="util">
+      <a href="#">企業情報</a>
+      <a href="#">CSR・サステナビリティ</a>
+      <a href="#">採用情報</a>
+      <a class="pill-sm" href="#">お客さま相談室</a>
+      <a class="pill-sm" href="#">オンラインショップ</a>
+    </nav>
+  </div>
+  <nav class="gnav">
+    <a href="#"><span class="dot"></span>商品紹介</a>
+    <a href="#"><span class="dot"></span>おすすめレシピ</a>
+    <a href="#"><span class="dot"></span>パンを知る・楽しむ</a>
+    <a href="#"><span class="dot"></span>キャンペーン</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div>
+    <div class="hero-copy">にほんの小麦と生きてゆく。</div>
+    <a class="hero-cta" href="#">和小麦サイトへ<span class="ic"></span></a>
+  </div>
+  <p class="hero-note">※実サイトではこのコピーと丸ボタンが 560×166px の透過 PNG。ここでは Web フォントで再現している</p>
+</section>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">緑ひとつと、コーナーの色</h2>
+  <p class="section-lead">ブランド色は <b>Pasco グリーン <code>#008f43</code></b> ひとつ。CTA はすべてこの色で、<b>オレンジ・サーモン・ピンクはコーナーの識別色</b>であってブランド色ではない。本文は <code>#323232</code>、下層ページの地は <code>#f5f1ec</code> のベージュ。</p>
+  <div class="swatches">
+    <div class="sw"><div class="sw-chip" style="background:#008f43"></div><div class="sw-body"><div class="sw-name">Pasco グリーン</div><div class="sw-hex">#008f43</div><div class="sw-use">可視 14 要素の塗り面 / 文字 11 要素</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#d28c40"></div><div class="sw-body"><div class="sw-name">オレンジ</div><div class="sw-hex">#d28c40</div><div class="sw-use">「商品検索」の面・本文リンク</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#ed7a70"></div><div class="sw-body"><div class="sw-name">サーモン</div><div class="sw-hex">#ed7a70</div><div class="sw-use">「レシピ検索」の面</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#e97891"></div><div class="sw-body"><div class="sw-name">ピンク</div><div class="sw-hex">#e97891</div><div class="sw-use">数字・日付（Ubuntu で組む）</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#323232"></div><div class="sw-body"><div class="sw-name">Text Primary</div><div class="sw-hex">#323232</div><div class="sw-use">可視 83 要素。純黒は使わない</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#848484"></div><div class="sw-body"><div class="sw-name">Text Muted</div><div class="sw-hex">#848484</div><div class="sw-use">ユーティリティナビ・注記（28 要素）</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#f5f1ec;border-bottom:1px solid #e0e0e0"></div><div class="sw-body"><div class="sw-name">Surface Beige</div><div class="sw-hex">#f5f1ec</div><div class="sw-use">下層ページの地色</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#e5dacd"></div><div class="sw-body"><div class="sw-name">Beige Deep</div><div class="sw-hex">#e5dacd</div><div class="sw-use">選択中のタブ面</div></div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Letter spacing</div>
+  <h2 class="section-title">詰めて、サイズごとに開き直す</h2>
+  <p class="section-lead"><code>body</code> に <code>font-feature-settings: "palt"</code> を 1 行書いて <b>648 要素</b>へ継承させたうえで、<code>letter-spacing</code> を <b>サイズに比例して開く</b>。本文 <code>.04em</code> → 小見出し <code>.05em</code> → 色面の上 <code>.10em</code> → セクションタイトル <b><code>.18em</code></b> の 4 段。</p>
+
+  <div class="ladder">
+    <div class="ladder-row">
+      <div class="ladder-meta">16px / 400<br>.04em = 0.64px<br>可視 114 要素</div>
+      <div class="ls-04">毎日の食卓に、焼きたての香りを。</div>
+    </div>
+    <div class="ladder-row">
+      <div class="ladder-meta">28px / 700<br>.05em = 1.4px<br>h2.headStyle02</div>
+      <div class="ls-05">お知らせ</div>
+    </div>
+    <div class="ladder-row">
+      <div class="ladder-meta">28px / 700<br>.10em = 2.8px<br>色面の上</div>
+      <div class="ls-10">商品検索</div>
+    </div>
+    <div class="ladder-row">
+      <div class="ladder-meta">34px / 700<br><b>.18em = 6.12px</b><br>span.title</div>
+      <div class="ls-18">パンを知る・楽しむ</div>
+    </div>
+  </div>
+
+  <h3 class="h2">palt は効いている</h3>
+  <p class="section-lead">同一ページ・同一書体（Noto Sans JP）での実測は <code>normal</code> 862.63px → <code>"palt"</code> 767.66px の <b>−11.0%</b>。約物と仮名のアキが詰まる。</p>
+  <div class="compare">
+    <div class="cmp cmp-off">
+      <div class="cmp-tag">font-feature-settings: normal</div>
+      <div class="cmp-text">「超熟」、やさしい味わい。</div>
+    </div>
+    <div class="cmp cmp-on">
+      <div class="cmp-tag">font-feature-settings: "palt"　← 実サイト</div>
+      <div class="cmp-text">「超熟」、やさしい味わい。</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="scale">
+  <div class="section-label">03 / Type scale</div>
+  <h2 class="section-title">行間は無単位の 2</h2>
+  <p class="section-lead"><code>line-height: 2</code> は無単位なので <b>各要素が自分のサイズで再計算</b>する（16px → 32px、15px → 30px）。<code>letter-spacing</code> と継承のしかたが逆なので、<b>行間を px で書かない・字間を em で配らない</b>。</p>
+  <div class="scale">
+    <div class="scale-row"><div class="scale-meta">Section Title / 34px / 700<br>lh 44.2px (1.3) / ls .18em</div><div style="font-size:34px;font-weight:700;letter-spacing:.18em;line-height:1.3">商品紹介</div></div>
+    <div class="scale-row"><div class="scale-meta">Heading 2 / 28px / 700<br>lh 42px (1.5) / ls .05em</div><div style="font-size:28px;font-weight:700;letter-spacing:.05em;line-height:1.5">PICK UP</div></div>
+    <div class="scale-row"><div class="scale-meta">Lead / 18px / 400<br>lh 36px (2.0)</div><div style="font-size:18px;line-height:2">小麦の味をいちばん近くで。</div></div>
+    <div class="scale-row"><div class="scale-meta">Body / 16px / 400<br>lh 32px (2.0) / 可視 40 要素</div><div style="font-size:16px;line-height:2">パンは、食卓のまんなかにある。毎日食べるものだから、素材のことも、つくりかたのことも、きちんと伝えたい。</div></div>
+    <div class="scale-row"><div class="scale-meta">List / 15px / 500<br>lh 30px (2.0) / 可視 37 要素</div><div style="font-size:15px;font-weight:500;line-height:2">超熟 山型 6枚スライス</div></div>
+    <div class="scale-row"><div class="scale-meta">Caption / 14px / 500<br>lh 28px</div><div style="font-size:14px;font-weight:500;line-height:2;color:#848484">※販売エリアが限られる商品があります</div></div>
+    <div class="scale-row"><div class="scale-meta">En Label / Ubuntu 13px / 500<br>lh 26px</div><div style="font-family:'Ubuntu',sans-serif;font-size:13px;font-weight:500;line-height:2;color:#008f43">CONTENTS</div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="buttons">
+<div class="section-inner">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title">ボタンはピル、チップは 20px</h2>
+  <p class="section-lead">可視 <code>border-radius</code> 8 種のうち <b>5 種が 50px 以上</b>。主要 CTA は <code>160px</code>、ヘッダーの小ボタンは <code>120px</code>、タグは <code>150px</code>。<b>中途半端な角丸を新しく作らない。</b></p>
+  <div class="btns">
+    <button class="btn-primary">商品を探す</button>
+    <button class="btn-secondary">一覧を見る</button>
+    <button class="btn-tag">和小麦</button>
+    <button class="btn-sm">お客さま相談室</button>
+  </div>
+
+  <h3 class="h2">チップ（絞り込み）</h3>
+  <p class="section-lead">角丸 <code>20px</code>、<code>padding: 10px</code>、14px / 500。選択中はベージュ <code>#e5dacd</code> の面になる。<b>フォーカスリングは緑の 2px。</b></p>
+  <div class="chips">
+    <span class="chip is-on">ALL</span>
+    <span class="chip">食パン</span>
+    <span class="chip">ロールパン</span>
+    <span class="chip is-focus">イングリッシュマフィン</span>
+    <span class="chip">ベーグル</span>
+    <span class="chip">菓子パン</span>
+    <span class="chip">惣菜パン</span>
+  </div>
+
+  <h3 class="h2">入力欄は左右に割る</h3>
+  <p class="section-lead">入力欄が <code>10px 0 0 10px</code>、ボタンが <code>0 10px 10px 0</code>。面は <code>#f4f4f4</code> で枠線を持たない。</p>
+  <div class="search">
+    <input type="text" placeholder="フリーワードで探す">
+    <button type="button">検索</button>
+  </div>
+</div>
+</section>
+
+<section class="section" id="panels">
+  <div class="section-label">05 / Color panels</div>
+  <h2 class="section-title">コーナーの色面</h2>
+  <p class="section-lead">色面の上の見出しだけ <code>letter-spacing: .10em</code>。白文字で <code>#d28c40</code> / <code>#ed7a70</code> の面に載せる。</p>
+  <div class="panels">
+    <div class="panel panel-a">
+      <h3>商品検索</h3>
+      <p>種類・エリア・アレルゲンから探す</p>
+    </div>
+    <div class="panel panel-b">
+      <h3>レシピ検索</h3>
+      <p>パンを使ったレシピを探す</p>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt" id="cards">
+<div class="section-inner">
+  <div class="section-label">06 / Cards &amp; Elevation</div>
+  <h2 class="section-title">影はひとつも使わない</h2>
+  <p class="section-lead">サイト本体の <code>box-shadow</code> は <b>0 種類</b>（可視 1 種は Cookie バナー）。面の区別は<b>色と罫線</b>でつける。カードは白地 ＋ <code>#e0e0e0</code> の 1px、角丸 <code>10px</code>。日付は Ubuntu のピンク。</p>
+  <div class="cards">
+    <div class="card"><div class="card-img"></div><div class="card-body"><div class="date">2026.11.02</div><h4>和小麦のあたらしい食パンが発売になりました</h4><p>東日本エリア限定</p></div></div>
+    <div class="card"><div class="card-img"></div><div class="card-body"><div class="date">2026.10.28</div><h4>冬のキャンペーンがはじまります</h4><p>応募締切 2026年12月31日</p></div></div>
+    <div class="card"><div class="card-img"></div><div class="card-body"><div class="date">2026.10.15</div><h4>工場見学の受付を再開しました</h4><p>要予約・無料</p></div></div>
+  </div>
+
+  <div class="flat">
+    <div class="flat-box flat-1">
+      <h4>白い面（既定）</h4>
+      <p>罫線 <code>#e0e0e0</code> で輪郭をつくる。影は足さない。</p>
+    </div>
+    <div class="flat-box flat-2">
+      <h4>ベージュの面（選択・強調）</h4>
+      <p><code>#e5dacd</code>。輪郭は塗りそのもので示し、罫線を重ねない。</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="responsive">
+  <div class="section-label">07 / Responsive</div>
+  <h2 class="section-title">html は 10px 固定、body だけ落ちる</h2>
+  <p class="section-lead"><code>html { font-size: 62.5% }</code> ＝ <b>10px が 1920〜374px の 10 幅すべてで動かない</b>。切り替わるのは <code>body</code> だけで、境目は <code>max-width: 959px</code>。<b>規定の 4 幅（1440 / 1200 / 834 / 375）では 1024 と 834 の間の崖を見落とす。</b></p>
+  <table>
+    <thead><tr><th>幅</th><th>html</th><th>body font-size</th><th>line-height</th><th>letter-spacing</th></tr></thead>
+    <tbody>
+      <tr><td>1920 / 1440 / 1200 / 1024px</td><td class="num">10px</td><td class="num">16px</td><td class="num">32px</td><td class="num">0.64px</td></tr>
+      <tr><td>834 / 768 / 767 / 414 / 375px</td><td class="num">10px</td><td class="num">15px</td><td class="num">30px</td><td class="num">0.6px</td></tr>
+    </tbody>
+  </table>
+  <p class="section-lead" style="margin-top:22px"><code>line-height: 2</code> は無単位なので比率のまま追従し、<code>letter-spacing: .04em</code> は <b>0.64 → 0.6px と再計算される</b>（宣言は em、継承は px）。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="en">Pasco Shikishima Corporation</div>
+    <h4>敷島製パン株式会社</h4>
+    <p>本プレビューは DESIGN.md の実測値（2026-11-12）を再現したものです。実サイトのコンテンツではありません。</p>
+  </div>
+</footer>
+
+</body>
+</html>
