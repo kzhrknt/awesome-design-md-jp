@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 清水建設（SHIMIZU CORPORATION）</title>
+<style>
+  :root {
+    /* === Colors ===
+       実サイトの CSS Custom Properties は 0 個（:root にも body にも宣言が無い）。
+       ここでの変数はプレビューのための再構成。 */
+    --blue:      #356cb6;  /* Shimizu Blue。面5/10要素・文字39/33要素 */
+    --warn:      #ffff00;  /* ★純黄。注意喚起帯 1 要素。文字は黒 */
+
+    /* ニュース種別のバッジ 4 色 = Material Design の 800 番台をそのまま使っている。
+       ★ブランド青 #356cb6 とは別系統。ニュースリリースの青は #1565c0 */
+    --cat-release: #1565c0;  /* Material Blue 800 */
+    --cat-ir:      #6a1b9a;  /* Material Purple 800 */
+    --cat-event:   #2e7d32;  /* Material Green 800 */
+    --cat-esg:     #00838f;  /* Material Cyan 800 */
+
+    /* 事業セクションの 3 色。こちらは Material ではない独自のくすんだ暖色 */
+    --sec-build:   #bf543a;  /* 建設事業 */
+    --sec-civil:   #7b7b1e;  /* 土木事業 */
+    --sec-global:  #be416f;  /* 海外建設事業 */
+
+    --ink:       #333333;  /* body で宣言。本文・日付。可視35/6要素 */
+    --ink-black: #000000;  /* 下層の大見出し・注意喚起帯の文字 */
+    --on-dark:   #ffffff;  /* 可視49/40要素 */
+    --surface:   #f2f2f2;  /* 下層のカード面。可視7要素 */
+    --surface-b: #eff3f9;  /* パンくず・新着情報の面 */
+    --surface-c: #d7e2f0;  /* 技術研究所などのリンクカード */
+    --divider:   #d8d8d8;
+    --bg:        #ffffff;  /* ★下層の地色。トップは動画のため黒 */
+
+    /* === Fonts ===
+       ★和文の Web フォントを 1 本も読み込まない。OS ローカルの書体だけ。
+       メイリオ先頭 = Windows 優先。ヒラギノは Pro が ProN より前。
+       游ゴシックに Medium が 1 つも入っていない。 */
+    --font: "メイリオ", Meiryo, "Hiragino Kaku Gothic Pro", "Hiragino Kaku Gothic ProN",
+            "游ゴシック", "Yu Gothic", YuGothic, "ＭＳ ゴシック", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { font-size: 62.5%; }   /* = 10px。9 幅すべてで固定 */
+
+  /* ★実サイトの body には font-size も line-height も宣言が無く、
+     html の 10px がそのまま残っている（line-height は UA 既定の normal = 11.5px）。
+     ここでは「正しい書き方」を示すため 1.6rem / 1.6 を明示する。
+     実サイトの事故の見本は下の .legacy-body で再現する。 */
+  body {
+    margin: 0;
+    font-size: 1.6rem;          /* = 16px ← 実サイトには無い宣言 */
+    line-height: 1.6;           /*       ← 実サイトには無い宣言 */
+    font-family: var(--font);
+    font-weight: 400;
+    color: var(--ink);
+    background: var(--bg);
+    min-width: 318px;
+    /* ★ letter-spacing の宣言は無い（実測 105/119 要素が normal） */
+    /* ★ font-feature-settings は CSS 全文に 0 件 */
+  }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* ---- 注意喚起帯（純黄に黒文字） ---- */
+  .alert {
+    background: var(--warn); color: var(--ink-black);
+    font-size: 14px; font-weight: 700; line-height: 1.4;
+    padding: 10px 24px; text-align: center;
+  }
+  /* ---- お知らせ帯（ブランド青） ---- */
+  .notice {
+    background: var(--blue); color: var(--on-dark);
+    font-size: 14px; line-height: 1.6; padding: 12px 24px;
+  }
+
+  /* ---- header ---- */
+  .hd { display: flex; align-items: center; gap: 26px; flex-wrap: wrap; padding: 16px 24px; border-bottom: 1px solid var(--divider); }
+  .logo { font-size: 26px; font-weight: 700; color: var(--blue); line-height: 1.2; }
+  .logo small { display: block; font-size: 11px; font-weight: 400; color: var(--ink); }
+  .nav { display: flex; gap: 20px; flex-wrap: wrap; flex: 1; }
+  /* ★グローバルナビ 11px / weight 700 / ls 1.65px（= 0.15em）— このサイトで唯一の字空け */
+  .nav a { font-size: 11px; font-weight: 700; line-height: 1.4; letter-spacing: 1.65px; color: var(--blue); text-decoration: none; }
+  .nav a.is-active { background: var(--blue); color: var(--on-dark); padding: 5px 10px; border-radius: 3px; }
+  .lang { display: flex; }
+  .lang span { font-size: 11px; font-weight: 700; letter-spacing: 1.65px; padding: 5px 11px; }
+  .lang .on  { background: var(--blue); color: var(--on-dark); border-radius: 3px 0 0 3px; }
+  .lang .off { background: var(--surface); color: var(--ink); border-radius: 0 3px 3px 0; }
+
+  /* ---- hero ----
+     実サイトは <video src="/movie/main_movie.mp4"> 1440x485 に大コピーが焼き込まれている。
+     面は要素自身の background-image に持たせる。 */
+  .hero {
+    height: 330px; display: flex; align-items: center; justify-content: center;
+    background-image:
+      linear-gradient(rgba(0,0,0,0.30), rgba(0,0,0,0.45)),
+      linear-gradient(120deg, #3a3730 0%, #6b5f4d 45%, #2c2a26 100%);
+    background-size: cover;
+    position: relative;
+  }
+  .hero p { font-size: 48px; font-weight: 400; letter-spacing: 0.06em; color: var(--on-dark); margin: 0; line-height: 1.4; text-align: center; padding: 0 24px; }
+  .hero .tag {
+    position: absolute; left: 0; bottom: 26px; background: var(--bg); color: var(--ink);
+    font-size: 12px; line-height: 1.6; padding: 10px 20px;
+  }
+
+  /* ---- sections ---- */
+  .sec { padding-top: 54px; }
+  .secttl { font-size: 36px; font-weight: 400; line-height: 1.4; color: var(--ink-black); margin: 0 0 8px; }
+  .secsub { font-size: 24px; font-weight: 700; line-height: 1.4; color: var(--ink); margin: 0 0 20px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.6; }
+  th, td { border-bottom: 1px solid var(--divider); padding: 12px 10px; text-align: left; vertical-align: top; }
+  th { width: 240px; font-weight: 700; color: var(--blue); white-space: nowrap; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; background: var(--surface); padding: 1px 5px; border-radius: 3px; }
+
+  /* ---- type scale ---- */
+  .scale > div { border-bottom: 1px solid var(--divider); padding: 14px 0; display: flex; gap: 20px; align-items: baseline; flex-wrap: wrap; }
+  .scale .lbl { width: 210px; flex: none; font-size: 12px; color: #666; }
+  .t40 { font-size: 40px; font-weight: 400; line-height: 1.8; }
+  .t36 { font-size: 36px; font-weight: 400; line-height: 1.4; }
+  .t24b{ font-size: 24px; font-weight: 700; line-height: 1.4; }
+  .t20 { font-size: 20px; font-weight: 400; line-height: 1.8; }
+  .t16 { font-size: 16px; font-weight: 400; line-height: 1.6; }
+  .t11 { font-size: 11px; font-weight: 700; line-height: 1.4; letter-spacing: 1.65px; }
+
+  /* ★実サイトの事故の再現。body が 10px のまま残るとこうなる */
+  .legacy-body {
+    font-size: 1rem;      /* = 10px */
+    line-height: normal;  /* 10px に対して 11.5px */
+    background: var(--surface); padding: 14px 16px; border-left: 4px solid var(--warn);
+    color: var(--ink);
+  }
+
+  /* ---- swatches ---- */
+  .sw { display: flex; gap: 14px; flex-wrap: wrap; }
+  .sw figure { margin: 0; width: 155px; }
+  .sw .chip { height: 60px; border-radius: 5px; border: 1px solid rgba(0,0,0,0.08); }
+  .sw figcaption { font-size: 12px; margin-top: 7px; line-height: 1.6; }
+  .sw b { display: block; font-weight: 700; }
+
+  /* ---- badges ---- */
+  .badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .badge {
+    color: var(--on-dark); font-size: 11px; font-weight: 700; line-height: 20px;
+    padding: 2px 14px; border-radius: 10px;
+  }
+  .b-release { background: var(--cat-release); }
+  .b-ir      { background: var(--cat-ir); }
+  .b-event   { background: var(--cat-event); }
+  .b-esg     { background: var(--cat-esg); }
+
+  .seclabels { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+  .seclabel { color: var(--on-dark); font-size: 15px; font-weight: 400; line-height: 24px; padding: 8px 20px; }
+  .l-build  { background: var(--sec-build); }
+  .l-civil  { background: var(--sec-civil); }
+  .l-global { background: var(--sec-global); }
+
+  /* ---- buttons ---- */
+  .btnrow { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    display: inline-block; font-family: inherit; font-size: 16px; font-weight: 700;
+    line-height: 25.6px; letter-spacing: normal; padding: 12px 30px;
+    border-radius: 30px; border: 1px solid var(--blue); cursor: pointer;
+    box-shadow: none;                   /* ★影は使わない */
+  }
+  .btn-primary   { background: var(--blue); color: var(--on-dark); }
+  .btn-secondary { background: var(--bg);   color: var(--blue); }
+  .btn.is-focus  { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+  /* ---- tabs（4 分割・部分角丸 0 4px 0 0） ---- */
+  .tabs { display: flex; }
+  .tab { flex: 1; text-align: center; font-size: 16px; font-weight: 700; line-height: 1.6; padding: 14px 8px; border-radius: 0 4px 0 0; background: var(--bg); color: var(--ink); border: 1px solid var(--divider); border-bottom: 0; }
+  .tab.is-active { background: var(--blue); color: var(--on-dark); border-color: var(--blue); }
+
+  /* ---- news ---- */
+  .news { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--divider); }
+  .news li { display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; padding: 15px 0; border-bottom: 1px solid var(--divider); }
+  .news time { font-size: 12px; color: var(--ink); width: 110px; flex: none; }
+  .news .ttl { font-size: 16px; line-height: 1.6; flex: 1; min-width: 220px; color: var(--ink); }
+
+  /* ---- cards ---- */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .card { background: var(--surface); border-radius: 5px; padding: 20px; }
+  .card h3 { font-size: 24px; font-weight: 400; line-height: 1.0; margin: 0 0 12px; color: var(--ink-black); }
+  .card p { font-size: 16px; line-height: 1.6; margin: 0; }
+  .card.tint { background: var(--surface-c); }
+
+  .note { font-size: 14px; line-height: 1.8; background: var(--surface-b); border-left: 4px solid var(--blue); padding: 16px 18px; }
+  .note p { margin: 0 0 10px; }
+  .note p:last-child { margin: 0; }
+
+  .ft { background: var(--surface); color: var(--ink); font-size: 12px; line-height: 1.6; padding: 24px; text-align: center; letter-spacing: 1.1px; }
+
+  @media (max-width: 767px) {
+    .cards { grid-template-columns: 1fr; }
+    .scale .lbl { width: 100%; }
+    th { width: auto; white-space: normal; }
+    .hero p { font-size: 26px; }
+    .tabs { flex-wrap: wrap; }
+    .tab { flex: 1 1 50%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="alert">弊社を装った不審な訪問や電話にご注意ください</div>
+<div class="notice">このたびの令和８年熊本地震により亡くなられた方々へ謹んでお悔やみを申し上げますとともに、被災されました方々へ心よりお見舞い申し上げます。</div>
+
+<header class="hd">
+  <div class="logo">清水建設<small>子どもたちに誇れるしごとを。</small></div>
+  <nav class="nav">
+    <a href="#" class="is-active">企業情報</a><a href="#">株主・投資家情報</a><a href="#">サステナビリティ</a>
+    <a href="#">施工実績</a><a href="#">技術・ソリューション</a><a href="#">採用情報</a>
+  </nav>
+  <div class="lang"><span class="on">JP</span><span class="off">EN</span></div>
+</header>
+
+<section class="hero">
+  <p>子どもたちに誇れるしごとを。</p>
+  <span class="tag">★実サイトではこの行は <code>main_movie.mp4</code>（1440×485）に焼き込まれた文字。ヒーロー帯の実テキストは最大 18px</span>
+</section>
+
+<div class="wrap">
+
+  <section class="sec">
+    <h2 class="secttl">タイポグラフィ階層</h2>
+    <p class="secsub">ウェイトは 400 と 700 の 2 段だけ</p>
+    <div class="scale">
+      <div><span class="lbl">タイトル帯 40 / 400 / 1.8</span><span class="t40">企業情報</span></div>
+      <div><span class="lbl">大見出し 36 / <b>400</b> / 1.4</span><span class="t36">清水建設について</span></div>
+      <div><span class="lbl">セクション 24 / <b>700</b> / 1.4</span><span class="t24b">新着情報</span></div>
+      <div><span class="lbl">リード 20 / 400 / 1.8</span><span class="t20">新たな価値を創造するスマートイノベーションカンパニーへ</span></div>
+      <div><span class="lbl">本文 16 / 400 / 1.6</span><span class="t16">1804（文化元）年の創業から、「誠心誠意、心を込めてよい仕事を」という思いを受け継いでいます。</span></div>
+      <div><span class="lbl">ナビ 11 / 700 / ls 1.65px</span><span class="t11">お問い合わせ　FAQ　お知らせ</span></div>
+    </div>
+    <p class="note" style="margin-top:20px">
+      <strong>太る位置が直感と逆。</strong> 36px の大見出しは weight <strong>400</strong>、
+      24px のセクション見出しと 11px のナビが weight <strong>700</strong>。
+      メイリオもヒラギノ角ゴ Pro も Regular と Bold の 2 本なので、この 2 段は書体の実体と一致している。
+      <strong>500 / 600 を指定すると Regular として出る。</strong>
+    </p>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl">ルートの宣言漏れ</h2>
+    <p class="secsub"><code>62.5%</code> を書いて <code>body</code> で戻していない</p>
+    <table>
+      <tr><th>実サイトの宣言</th><td><code>html { font-size: 62.5% }</code> のみ。<code>body</code> に <code>font-size</code> も <code>line-height</code> も無い</td></tr>
+      <tr><th>結果</th><td><strong><code>body</code> の実寸が 10px のまま</strong>（9 幅すべてで <code>html 10px / body 10px</code>）。<code>line-height</code> は UA 既定の <code>normal</code> = 11.5px</td></tr>
+      <tr><th>被害</th><td>各要素が px を直書きしているので大半は実害が出ていないが、<strong>宣言を書き忘れた要素はすべて 10px / 行間 11.5px で描画される</strong>（実測: <code>a</code> と <code>li</code> の一部）</td></tr>
+      <tr><th>正しい書き方</th><td><code>html { font-size: 62.5% }</code> の直後に <code>body { font-size: 1.6rem; line-height: 1.6 }</code> を必ず添える</td></tr>
+    </table>
+    <p class="legacy-body" style="margin-top:18px">
+      ← これが実サイトの <code>body</code> の実寸（10px / 行間 11.5px）。宣言を書き忘れた要素はこの大きさで出る。
+      行が詰まっているのは <code>line-height</code> も宣言されていないため。
+    </p>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl">字送り</h2>
+    <p class="secsub">詰めも空けもしない</p>
+    <table>
+      <tr><th>字詰め</th><td><strong><code>font-feature-settings</code> が CSS 全文に 0 件。</strong><code>palt</code> も <code>halt</code> も書かれていない</td></tr>
+      <tr><th>字間</th><td><code>normal</code> が既定（実測 105/119 要素）。空けるのは<strong>グローバルナビの 11px だけ</strong>で <code>1.65px</code>（= 0.15em）。ほかはメニュー第 2 階層の <code>0.75px</code> / <code>0.7px</code> とコピーライトの <code>1.1px</code></td></tr>
+      <tr><th>行間</th><td><strong>各要素が宣言する。</strong><code>1.4</code> が既定（h2 24→33.6 / h3 32→44.8 / p 16→22.4 / li 11→15.4）、本文のまとまりが <code>1.6</code>、リード文が <code>1.8</code></td></tr>
+      <tr><th>折り返し</th><td><code>word-break: normal</code>。9 幅すべてで実測</td></tr>
+    </table>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl">和文の Web フォントは 0 本</h2>
+    <p class="secsub">OS ローカルの書体だけで組む</p>
+    <table>
+      <tr><th>フォント要求</th><td><strong>6 件すべて自社の <code>glyphs.woff</code></strong>（アイコンフォント）。和文のフォントファイルは 1 件も読まない</td></tr>
+      <tr><th>スタック</th><td><code>"メイリオ", Meiryo, "Hiragino Kaku Gothic Pro", "Hiragino Kaku Gothic ProN", "游ゴシック", "Yu Gothic", YuGothic, "ＭＳ ゴシック", sans-serif</code>。実測 124/125 要素・91/91 要素がこの 1 本</td></tr>
+      <tr><th>読み方</th><td>メイリオ先頭＝<strong>Windows 優先</strong>。macOS では 3 番目の <code>Hiragino Kaku Gothic Pro</code> に落ちる。ヒラギノは <strong>Pro が ProN より前</strong>（字形が違う）。游ゴシックに <strong>Medium が 1 つも入っていない</strong></td></tr>
+      <tr><th>Oswald</th><td>CSS に <strong>19 箇所</strong> <code>font-family: "Oswald"</code> があり Google Fonts も読み込んでいるが、<strong>フォントファイルの要求 0 件・可視 0 要素・<code>document.fonts</code> は 5 件すべて <code>unloaded</code></strong>。指定先（<code>span.new</code> / <code>.button-more</code>）が計測した 2 ページに出てこない</td></tr>
+      <tr><th>CSS 変数</th><td><strong>0 個。</strong><code>:root</code> にも <code>body</code> にも宣言が無い</td></tr>
+    </table>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl">色</h2>
+    <p class="secsub">ブランド青とカテゴリ色は別系統</p>
+    <div class="sw">
+      <figure><div class="chip" style="background:#356cb6"></div><figcaption><b>#356cb6</b>Shimizu Blue / 文字39要素</figcaption></figure>
+      <figure><div class="chip" style="background:#ffff00"></div><figcaption><b>#ffff00</b>純黄・注意喚起帯 / 文字は黒</figcaption></figure>
+      <figure><div class="chip" style="background:#333333"></div><figcaption><b>#333333</b>本文 / body で宣言</figcaption></figure>
+      <figure><div class="chip" style="background:#f2f2f2"></div><figcaption><b>#f2f2f2</b>カード面</figcaption></figure>
+      <figure><div class="chip" style="background:#eff3f9"></div><figcaption><b>#eff3f9</b>パンくず・新着情報</figcaption></figure>
+      <figure><div class="chip" style="background:#d7e2f0"></div><figcaption><b>#d7e2f0</b>リンクカード</figcaption></figure>
+    </div>
+
+    <p style="font-size:14px;line-height:1.6;margin:26px 0 12px"><strong>ニュース種別のバッジ 4 色 — Material Design の 800 番台をそのまま使っている</strong></p>
+    <div class="badges">
+      <span class="badge b-release">ニュースリリース #1565c0</span>
+      <span class="badge b-ir">IRニュース #6a1b9a</span>
+      <span class="badge b-event">イベント #2e7d32</span>
+      <span class="badge b-esg">サステナビリティ #00838f</span>
+    </div>
+
+    <p style="font-size:14px;line-height:1.6;margin:26px 0 0"><strong>事業セクションの 3 色 — こちらは Material ではない独自のくすんだ暖色</strong></p>
+    <div class="seclabels">
+      <span class="seclabel l-build">建設事業 #bf543a</span>
+      <span class="seclabel l-civil">土木事業 #7b7b1e</span>
+      <span class="seclabel l-global">海外建設事業 #be416f</span>
+    </div>
+
+    <p class="note" style="margin-top:22px">
+      <strong>ブランド青 <code>#356cb6</code> とニュースリリースの青 <code>#1565c0</code> は別の色。</strong>
+      同じページに 2 つの青が並ぶのが実装の実態で、統合すると種別の見分けがつかなくなる。
+      <strong>トップの地色は黒</strong>（ヒーローの動画のため）、<strong>下層は白</strong>。
+    </p>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl">コンポーネント</h2>
+    <p class="secsub">影を使わず、面と罫線で区切る</p>
+    <div class="btnrow">
+      <button class="btn btn-primary">新着情報一覧</button>
+      <button class="btn btn-secondary">詳しく見る</button>
+      <button class="btn btn-primary is-focus">フォーカス状態</button>
+    </div>
+
+    <div class="tabs" style="margin-top:30px">
+      <div class="tab is-active">新着情報</div>
+      <div class="tab">ニュースリリース</div>
+      <div class="tab">IRニュース</div>
+      <div class="tab">サステナビリティニュース</div>
+    </div>
+    <ul class="news">
+      <li><time>2026年11月12日</time><span class="badge b-release">ニュースリリース</span><span class="ttl">フィリピン最大級の公共事業「マニラ首都圏地下鉄」を推進</span></li>
+      <li><time>2026年11月10日</time><span class="badge b-ir">IRニュース</span><span class="ttl">半期報告書 — 第125期（2026/04/01 − 2027/03/31）</span></li>
+      <li><time>2026年11月09日</time><span class="badge b-esg">サステナビリティ</span><span class="ttl">シミズグループの環境ビジョンを更新しました</span></li>
+    </ul>
+
+    <div class="cards" style="margin-top:30px">
+      <div class="card"><h3>技術研究所</h3><p>構造・材料・環境の研究拠点。</p></div>
+      <div class="card tint"><h3>東京木工場</h3><p>1884 年創業の木工の技を継ぐ。</p></div>
+      <div class="card"><h3>テクノアイ</h3><p>生産技術の開発と実証を担う。</p></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl">再現するときの注意</h2>
+    <div class="note">
+      <p><strong>1. <code>html { font-size: 62.5% }</code> を書いたら <code>body { font-size: 1.6rem; line-height: 1.6 }</code> を必ず添える。</strong> 実サイトはこれを書き忘れており、body が 10px のまま残っている。<strong>そこは真似しない。</strong></p>
+      <p><strong>2. <code>font-feature-settings: "palt"</code> を足さない。</strong> 実サイトは CSS 全文に 0 件。メイリオもヒラギノも <code>palt</code> を持つので、足すと既存の見出しと字送りが揃わなくなる。</p>
+      <p><strong>3. <code>font-weight</code> に 500 / 600 を指定しない。</strong> 書体が Regular と Bold の 2 本で、500 は Regular として出る。</p>
+      <p><strong>4. <code>Oswald</code> を当てにしない。</strong> CSS に 19 箇所あり Google Fonts も読み込んでいるが、フォントファイルの要求は 0 件・可視 0 要素。</p>
+      <p><strong>5. ヒーローの大コピーを Web フォントで実装しない。</strong> 「子どもたちに誇れるしごとを。」は <code>main_movie.mp4</code> に焼き込まれた文字。</p>
+      <p><strong>6. <code>box-shadow: rgba(0,0,0,.16) 0 0 0 0</code> をそのまま写さない。</strong> 実測 12 要素がこの値だが、<strong>オフセットもぼかしも広がりも 0 なので何も描画されない</strong>（ホバーで値が入る前提の初期値）。下層ページは影 0 種。</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl">レスポンシブ</h2>
+    <p class="secsub">ルートは全幅で完全固定</p>
+    <table>
+      <tr><th>1440〜375px</th><td><code>html 10px</code> / <code>body 10px</code> / <code>line-height 11.5px</code> / <code>letter-spacing normal</code>。<strong>崖も流体の式も 1 つも無い</strong></td></tr>
+      <tr><th>主ブレークポイント</th><td><code>(max-width: 767px)</code> / <code>(min-width: 768px)</code>。タブレットは <code>(min-width: 768px) and (max-width: 991px)</code></td></tr>
+      <tr><th>コンテナ</th><td>トップ 1200px（26 要素）／ 下層 1280px（11 要素）・1272px（10 要素）／ 全幅寄り 1520px。<strong>揃っていない</strong>ので、新規は 1280px に寄せる</td></tr>
+      <tr><th>最小幅</th><td><code>body { min-width: 318px }</code>。これ以下では横スクロールになる</td></tr>
+    </table>
+  </section>
+
+</div>
+
+<footer class="ft">Copyright © 1996−2026 SHIMIZU CORPORATION All Rights Reserved.</footer>
+
+</body>
+</html>

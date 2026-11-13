@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 大鵬薬品工業（TAIHO PHARMACEUTICAL）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+Antique:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトの自社 CSS Custom Properties は 5 個だけ（トップ）。下層は 0 個。
+       --color--primary01 と --color--bg01 は宣言値と実装値が一致している。 */
+    --brown:    #8a532c;  /* ブランド茶。面25/17要素・文字8要素。実サイトの --color--primary01 */
+    --navy:     #27455c;  /* 可視8要素。小面積のみ */
+    --green:    #468254;  /* 可視3要素。小面積のみ */
+
+    /* ★ベージュが 3 段ある。RGB の差は 5〜13 しかないが 3 つとも実装されていて役割が違う */
+    --beige-01: #f0eeea;  /* 地帯。実サイトの --color--bg01。可視4/2要素 */
+    --beige-02: #f7f5f2;  /* セクション面。可視11/8要素 */
+    --beige-03: #ebe8e1;  /* チップ・タブ。可視40要素でトップ最多の面色 */
+
+    --ink:      #000000;  /* ★本文。可視67/87要素。このサイトは純黒を使う */
+    --ink-gray: #363636;  /* パンくず・フッターのコピーライト帯 */
+    --on-dark:  #ffffff;  /* 可視6/3要素 */
+    --bg:       #ffffff;  /* html/body に background の宣言が無く UA 既定の白 */
+
+    --radius:   5px;      /* 可視37要素。円形は 50% */
+
+    /* === Fonts ===
+       Roboto 先頭の和欧二層。和文は Zen Kaku Gothic Antique。
+       どちらも @font-face は 400/500/700 の 3 本ずつ。 */
+    --font: "Roboto", "Zen Kaku Gothic Antique", "メイリオ", Meiryo,
+            "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3",
+            "游ゴシック", YuGothic, "ＭＳ Ｐゴシック", Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  /* ★このサイトの核心。html に 3 つまとめて書く。9 幅すべてで 10px 固定 */
+  html {
+    font-size: 62.5%;                    /* = 10px */
+    font-family: var(--font);
+    font-feature-settings: "palt" 1;     /* ★実測391/390要素＝可視要素のほぼ全部 */
+    overflow-y: scroll;
+  }
+
+  /* ★モバイルファースト。既定が 14px で、768px 以上で 16px に上がる */
+  body {
+    margin: 0;
+    font-size: 1.4rem;                   /* = 14px */
+    line-height: 1.785;                  /* 無単位 */
+    letter-spacing: 0.05em;              /* → 14px のとき 0.7px の絶対値として継承 */
+    color: var(--ink);
+    background: var(--bg);
+  }
+  @media (min-width: 768px) {
+    body {
+      min-width: 960px;
+      font-size: 1.6rem;                 /* = 16px */
+      line-height: 2.125;                /* ★本文の行間。製薬サイトとしては相当ゆったり */
+                                         /* letter-spacing は 0.8px になる */
+    }
+  }
+
+  .wrap { max-width: 1220px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* ---- header ---- */
+  .hd {
+    background: var(--bg); border-bottom: 1px solid var(--beige-03);
+    padding: 18px 24px; display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
+  }
+  .logo { font-size: 22px; font-weight: 700; letter-spacing: 0.8px; color: var(--brown); }
+  .logo small { display: block; font-size: 10px; font-weight: 400; letter-spacing: 0.5px; color: var(--ink-gray); }
+  .nav { display: flex; gap: 22px; flex-wrap: wrap; flex: 1; }
+  /* グローバルナビ 15px / weight 500 / lh 1.4 / ls 0.75px */
+  .nav a { font-size: 15px; font-weight: 500; line-height: 1.4; letter-spacing: 0.75px; color: var(--ink); text-decoration: none; }
+  .nav a:hover { color: var(--brown); }
+  /* ユーティリティ 13px / weight 500 / ls 0.65px */
+  .util { display: flex; gap: 16px; }
+  .util a { font-size: 13px; font-weight: 500; letter-spacing: 0.65px; color: var(--ink); text-decoration: none; }
+
+  /* ---- hero ----
+     ★実サイトのヒーローの大コピーは写真(webp 1440x823)に焼き込まれた画像で、
+     サブコピーは別の SVG(752x136)。ここでは「画像である」ことを示すための代役。
+     面は要素自身の background-image に持たせる（lint が祖先しか遡らないため）。 */
+  .hero {
+    height: 360px; display: flex; align-items: flex-end; padding: 0 24px 56px;
+    background-image:
+      linear-gradient(rgba(0,0,0,0.05), rgba(0,0,0,0.22)),
+      linear-gradient(118deg, #ded6c7 0%, #e9e2d6 38%, #cfc3ad 100%);
+    background-size: cover;
+  }
+  .hero-inner { max-width: 1220px; margin: 0 auto; width: 100%; }
+  .hero-copy {
+    font-size: 46px; font-weight: 400; line-height: 1.5; letter-spacing: 0.14em;
+    color: var(--on-dark); margin: 0 0 14px;
+  }
+  .hero-sub { font-size: 15px; letter-spacing: 0.8px; color: var(--on-dark); margin: 0; }
+  .hero-note {
+    display: inline-block; margin-top: 18px; padding: 5px 12px;
+    background: rgba(0,0,0,0.5); color: #fff; font-size: 11px; letter-spacing: 0.5px; border-radius: var(--radius);
+  }
+
+  /* ---- sections ---- */
+  .sec { padding-top: 56px; }
+  .secttl { display: flex; align-items: baseline; gap: 16px; margin: 0 0 22px; }
+  /* 英字ラベル 12px / weight 700 / ls 2.28px（= 0.19em） */
+  .secttl .en { font-size: 12px; font-weight: 700; letter-spacing: 2.28px; color: var(--brown); line-height: 1; }
+  .secttl .ja { font-size: 28px; font-weight: 700; line-height: 1.5; letter-spacing: 0.8px; color: var(--ink); }
+
+  .lede { font-size: 16px; line-height: 2.125; letter-spacing: 0.8px; margin: 0 0 20px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.643; letter-spacing: 0.7px; }
+  th, td { border-bottom: 1px solid var(--beige-03); padding: 12px 10px; text-align: left; vertical-align: top; }
+  th { width: 220px; font-weight: 500; white-space: nowrap; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; background: var(--beige-02); padding: 1px 5px; border-radius: 3px; letter-spacing: 0; }
+
+  /* ---- type scale ---- */
+  .scale > div { border-bottom: 1px solid var(--beige-03); padding: 14px 0; display: flex; gap: 20px; align-items: baseline; flex-wrap: wrap; }
+  .scale .lbl { width: 190px; flex: none; font-size: 12px; letter-spacing: 0.8px; color: var(--ink-gray); }
+  .t40 { font-size: 40px; font-weight: 700; line-height: 1.5; letter-spacing: 0.8px; }
+  .t30 { font-size: 30px; font-weight: 700; line-height: 1.5; letter-spacing: 0.8px; }
+  .t25 { font-size: 25px; font-weight: 700; line-height: 1.5; letter-spacing: 0.8px; }
+  .t20 { font-size: 20px; font-weight: 700; line-height: 1.5; letter-spacing: 0.8px; }
+  .t16 { font-size: 16px; font-weight: 400; line-height: 2.125; letter-spacing: 0.8px; }
+  .t14 { font-size: 14px; font-weight: 400; line-height: 1.643; letter-spacing: 0.7px; }
+
+  /* ---- 面 3 段 ---- */
+  .surfaces { display: flex; gap: 0; border-radius: var(--radius); overflow: hidden; }
+  .surfaces div { flex: 1; padding: 30px 18px; font-size: 13px; letter-spacing: 0.65px; color: var(--ink); }
+  .s01 { background: var(--beige-01); }
+  .s02 { background: var(--beige-02); }
+  .s03 { background: var(--beige-03); }
+
+  /* ---- swatches ---- */
+  .sw { display: flex; gap: 14px; flex-wrap: wrap; }
+  .sw figure { margin: 0; width: 150px; }
+  .sw .chip { height: 62px; border-radius: var(--radius); border: 1px solid rgba(0,0,0,0.08); }
+  .sw figcaption { font-size: 12px; letter-spacing: 0.6px; margin-top: 7px; line-height: 1.6; }
+  .sw b { display: block; font-weight: 500; }
+
+  /* ---- buttons ---- */
+  .btnrow { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    display: inline-block; font-size: 16px; font-weight: 500; line-height: 16px; letter-spacing: 0.8px;
+    padding: 17px 34px; border-radius: var(--radius); border: 0; cursor: pointer;
+    box-shadow: none;                 /* ★サイト本体は影ゼロ */
+    font-family: inherit;
+  }
+  .btn-primary   { background: var(--brown);    color: var(--on-dark); }
+  .btn-secondary { background: var(--beige-02); color: var(--ink); }
+  .btn-chip      { background: var(--beige-03); color: var(--ink); font-size: 12px; font-weight: 400; line-height: 19.68px; padding: 7px 18px; }
+  .btn.is-focus  { outline: 2px solid var(--brown); outline-offset: 3px; }
+
+  /* ---- tabs（上辺だけ角丸。実測 border-radius: 0 5px 0 0 が 3 要素） ---- */
+  .tabs { display: flex; gap: 2px; }
+  .tab {
+    font-size: 23px; font-weight: 700; letter-spacing: 1.15px; padding: 14px 26px;
+    background: var(--beige-03); color: var(--ink); border-radius: 0 5px 0 0;
+  }
+  .tab.is-active { background: var(--brown); color: var(--on-dark); }
+
+  /* ---- news ---- */
+  .news { list-style: none; margin: 0; padding: 0; }
+  .news li { display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; padding: 15px 0; border-bottom: 1px solid var(--beige-03); }
+  .news time { font-size: 12px; letter-spacing: 0.8px; color: var(--ink-gray); width: 110px; flex: none; }
+  .news .cat { font-size: 12px; letter-spacing: 0.8px; background: var(--beige-03); padding: 4px 12px; border-radius: var(--radius); }
+  .news .ttl { font-size: 16px; line-height: 1.75; letter-spacing: 0.8px; flex: 1; min-width: 220px; }
+
+  /* ---- 字間の見本（em で配り直すとどうなるか） ---- */
+  .ls-demo > div { padding: 12px 0; border-bottom: 1px solid var(--beige-03); }
+  .ls-demo .ok  { font-size: 40px; font-weight: 700; line-height: 1.5; letter-spacing: 0.8px; }   /* 継承値そのまま = 0.02em */
+  .ls-demo .ng  { font-size: 40px; font-weight: 700; line-height: 1.5; letter-spacing: 0.05em; }  /* 2px になる */
+  .ls-demo .cap { font-size: 12px; letter-spacing: 0.6px; color: var(--ink-gray); }
+
+  /* ---- 角丸の見本（低彩度どうしにしない） ---- */
+  .radii { display: flex; gap: 16px; flex-wrap: wrap; }
+  .radii div { width: 108px; height: 72px; background: var(--brown); color: var(--on-dark); font-size: 12px; letter-spacing: 0.6px; display: flex; align-items: center; justify-content: center; }
+  .r5  { border-radius: 5px; }
+  .r50 { border-radius: 50%; width: 72px; }
+  .rtab{ border-radius: 0 5px 0 0; }
+
+  .note { font-size: 13px; line-height: 1.85; letter-spacing: 0.65px; background: var(--beige-02); border-left: 4px solid var(--brown); padding: 16px 18px; border-radius: 0 var(--radius) var(--radius) 0; }
+  .note p { margin: 0 0 8px; }
+  .note p:last-child { margin: 0; }
+
+  .ft { background: var(--ink-gray); color: var(--on-dark); font-size: 12px; letter-spacing: 0.8px; padding: 22px 24px; text-align: center; }
+
+  @media (max-width: 767px) {
+    .scale .lbl { width: 100%; }
+    th { width: auto; white-space: normal; }
+    .hero-copy { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hd">
+  <div class="logo">大鵬薬品<small>いつもを、いつまでも。</small></div>
+  <nav class="nav">
+    <a href="#">企業情報</a><a href="#">サステナビリティ</a><a href="#">研究開発活動</a>
+    <a href="#">患者さま・ご家族の皆さま</a><a href="#">採用情報</a>
+  </nav>
+  <div class="util"><a href="#">検索</a><a href="#">お問い合わせ</a></div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-copy">“いつも”を支える力になりたい。</p>
+    <p class="hero-sub">大鵬薬品で働く一人一人の願いであり、目指すもの。</p>
+    <span class="hero-note">★実サイトではこの 2 行とも画像（写真に焼き込み ＋ SVG）。テキストではない</span>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <section class="sec">
+    <h2 class="secttl"><span class="en">TYPOGRAPHY</span><span class="ja">文字サイズとウェイトの階層</span></h2>
+    <div class="scale">
+      <div><span class="lbl">h1 40 / 700 / 1.5</span><span class="t40">大鵬薬品ストーリー</span></div>
+      <div><span class="lbl">h2 30 / 700 / 1.5</span><span class="t30">いつもを、いつまでも。</span></div>
+      <div><span class="lbl">h3 25 / 700 / 1.5</span><span class="t25">大鵬薬品で働く一人一人の想いを込めて</span></div>
+      <div><span class="lbl">h4 20 / 700 / 1.5</span><span class="t20">私たちのストーリー</span></div>
+      <div><span class="lbl">本文 16 / 400 / 2.125</span><span class="t16">あたり前のように享受していた「いつも」の風景や「いつも」の暮らしを、これからも支えていきたい。</span></div>
+      <div><span class="lbl">補足 14 / 400 / 1.643</span><span class="t14">国内の医療関係者を対象に、医療用医薬品を適正にご使用いただくための情報を掲載しています。</span></div>
+    </div>
+    <p class="note" style="margin-top:20px">
+      <strong>ウェイトは 400 / 500 / 700 の 3 段だけ。</strong>
+      隠し div の幅実測で <code>100/300/400 → 同じ面</code>、<code>600/700/900 → 同じ面</code> と確認済み。
+      <code>600</code> や <code>900</code> を指定しても <code>700</code> で出る。
+    </p>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl"><span class="en">SPACING</span><span class="ja">詰めてから、わずかに空け直す</span></h2>
+    <table>
+      <tr><th>字詰め</th><td><code>html { font-feature-settings: "palt" 1 }</code> を <strong>1 行</strong>。実測 391 / 390 要素＝可視要素のほぼ全部。宣言位置は <code>body</code> でも <code>*</code> でもなく <strong><code>html</code></strong></td></tr>
+      <tr><th>字間</th><td><code>body { letter-spacing: 0.05em }</code>。16px に対して解決された <strong><code>0.8px</code> という絶対値</strong>が全子孫に降りる（実測 47/83・77/100 要素）</td></tr>
+      <tr><th>行間</th><td><code>body { line-height: 2.125 }</code> の<strong>無単位</strong>。見出しは全部 <code>1.5</code> を宣言し直す</td></tr>
+      <tr><th>英字ラベル</th><td>12px に <code>letter-spacing: 2.28px</code>（= 0.19em）。<code>ABOUT US</code> <code>MEDICAL</code> <code>INDEX</code> など</td></tr>
+      <tr><th>折り返し</th><td><code>word-break: normal</code>。9 幅すべてで実測。禁則はブラウザ既定に任せる</td></tr>
+    </table>
+
+    <div class="ls-demo" style="margin-top:24px">
+      <div>
+        <span class="cap">正：継承の 0.8px をそのまま使う（40px に対して 0.02em）</span>
+        <div class="ok">いつもを、いつまでも。</div>
+      </div>
+      <div>
+        <span class="cap">誤：見出しに <code>letter-spacing: 0.05em</code> を宣言し直す（2px になる）</span>
+        <div class="ng">いつもを、いつまでも。</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl"><span class="en">COLOR</span><span class="ja">ベージュが 3 段ある</span></h2>
+    <div class="surfaces">
+      <div class="s01"><b>#f0eeea</b> — Beige 01 / 地帯。実サイトの <code>--color--bg01</code></div>
+      <div class="s02"><b>#f7f5f2</b> — Beige 02 / セクション面。可視 11 要素</div>
+      <div class="s03"><b>#ebe8e1</b> — Beige 03 / チップ・タブ。可視 40 要素</div>
+    </div>
+    <div class="sw" style="margin-top:22px">
+      <figure><div class="chip" style="background:#8a532c"></div><figcaption><b>#8a532c</b>Taiho Brown / 面25・文字8要素</figcaption></figure>
+      <figure><div class="chip" style="background:#27455c"></div><figcaption><b>#27455c</b>Navy / 可視8要素</figcaption></figure>
+      <figure><div class="chip" style="background:#468254"></div><figcaption><b>#468254</b>Green / 可視3要素</figcaption></figure>
+      <figure><div class="chip" style="background:#000000"></div><figcaption><b>#000000</b>本文。純黒 / 可視67要素</figcaption></figure>
+      <figure><div class="chip" style="background:#363636"></div><figcaption><b>#363636</b>パンくず・フッター帯</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl"><span class="en">COMPONENTS</span><span class="ja">角丸 5px・影ゼロ</span></h2>
+    <div class="btnrow">
+      <button class="btn btn-primary">詳細を見る</button>
+      <button class="btn btn-secondary">フルバージョンを見る</button>
+      <button class="btn btn-chip">ニュースリリース</button>
+      <button class="btn btn-primary is-focus">フォーカス状態</button>
+    </div>
+
+    <div class="tabs" style="margin-top:30px">
+      <div class="tab is-active">すべて</div>
+      <div class="tab">ニュースリリース</div>
+      <div class="tab">お知らせ</div>
+    </div>
+
+    <div class="radii" style="margin-top:30px">
+      <div class="r5">5px</div>
+      <div class="rtab">0 5px 0 0</div>
+      <div class="r50">50%</div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl"><span class="en">NEWS</span><span class="ja">ニュース</span></h2>
+    <ul class="news">
+      <li><time>2026年11月06日</time><span class="cat">お知らせ</span><span class="ttl">食べ過ぎ・飲み過ぎによる二日酔・胃のむかつきに関する製品情報を更新しました</span></li>
+      <li><time>2026年11月05日</time><span class="cat">ニュースリリース</span><span class="ttl">コンシューマーヘルスケア事業本部の体制変更についてお知らせいたします</span></li>
+      <li><time>2026年10月28日</time><span class="cat">お知らせ</span><span class="ttl">大鵬薬品ストーリーに新しい記事を追加しました</span></li>
+    </ul>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl"><span class="en">CAUTION</span><span class="ja">再現するときの注意</span></h2>
+    <div class="note">
+      <p><strong>1. ヒーローの大コピーを Web フォントで実装しない。</strong> 実サイトは写真（<code>p_top_keyvisual_01_pc.webp</code> 1440×823）に焼き込んだ文字と、別の SVG（752×136）の 2 層。ヒーロー帯で実テキストの最大は 16px。</p>
+      <p><strong>2. <code>Zen Kaku Gothic Antique</code> を抜いたスタックに和文を入れない。</strong> 実サイトには <code>Roboto, メイリオ, Meiryo, …</code> という 2 本目の宣言が 9 要素あるが、当たっているのは <code>JP</code> <code>EN</code> <code>ABOUT US</code> <code>MEDICAL</code> <code>USER</code> とすべて欧文。和文を入れるとそこだけメイリオになる。</p>
+      <p><strong>3. 影を足さない。</strong> 実測 <code>box-shadow</code> はサイト本体 0 種。浮きはベージュ 3 段の面の差で作る。</p>
+      <p><strong>4. 下層ページには CSS 変数が 1 個も無い。</strong> トップに 5 個（うち実質 3 個）、下層に 0 個。2 世代のテンプレートが同居している。</p>
+      <p><strong>5. OneTrust の値を採用しない。</strong> <code>13.008px</code> / <code>weight 600</code> / <code>letter-spacing 0.13008px</code> / <code>border-radius 2px</code> / <code>#3860be</code> / <code>#696969</code> はすべて Cookie 同意バナー由来。</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl"><span class="en">RESPONSIVE</span><span class="ja">崖は 768 / 767px の 1 箇所だけ</span></h2>
+    <table>
+      <tr><th>1920〜768px</th><td><code>html 10px</code> / <code>body 16px</code> / <code>line-height 34px (2.125)</code> / <code>letter-spacing 0.8px</code></td></tr>
+      <tr><th>767〜375px</th><td><code>html 10px</code> / <code>body 14px</code> / <code>line-height 24.99px (1.785)</code> / <code>letter-spacing 0.7px</code></td></tr>
+      <tr><th>ルート</th><td><code>html { font-size: 62.5% }</code> は <strong>9 幅すべてで 10px 固定</strong>。流体の式は 1 つも無い</td></tr>
+      <tr><th>コンテナ</th><td>1220px（最頻）/ 1156px / 860px。<code>body { min-width: 960px }</code> は 768px 以上のときだけ</td></tr>
+    </table>
+  </section>
+
+</div>
+
+<footer class="ft">Copyright © TAIHO PHARMACEUTICAL CO., LTD. All Rights Reserved.</footer>
+
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 太陽工業（TAIYO KOGYO / MakMax）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトの CSS Custom Properties は 63 個あるが、自社トークンは 3 個だけ。
+       残り 60 個は WordPress / Gutenberg と WordPress admin の既定値で実装に使われていない。
+       実際に使われている色は下の 5 つだけ。 */
+    --blue:      #004bb4;  /* MakMax Blue。面39要素・文字38/19要素。このサイトの色はほぼこれ1つ */
+    --blue-tint: #d2ddec;  /* カテゴリチップの面。可視4要素 */
+    --ink:       #000000;  /* ★本文。可視56/35要素。このサイトは純黒を使う */
+    --on-dark:   #ffffff;  /* 可視39/4要素 */
+    --surface:   #f7f7f7;  /* セクション面。下層のページ背景もこれ */
+    --bg:        #ffffff;  /* トップのページ背景 */
+
+    /* === Radius ===
+       ボタンはすべてピル。カテゴリチップだけ角丸なしで「押せないラベル」を示す */
+    --r-pill:  30px;
+    --r-pill-l:70px;   /* 24px の大ボタン */
+    --r-card:  20px;
+    --r-chip:  0;
+
+    /* === Shadow ===
+       ★1種類だけ。実測30/9要素がすべて同じ値。段階を作らない */
+    --shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.16);
+
+    /* === Fonts ===
+       Noto Sans JP 400/500/600/700 の 4 本が loaded。
+       受け皿の途中に generic family が入っていないので、最後まで到達する */
+    --font: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  /* ★ 62.5% でも 10px でもなく 0.625rem。ブラウザ既定 16px に対する rem で 10px を作る */
+  html { font-size: 0.625rem; }
+
+  body {
+    margin: 0;
+    line-height: 1.5;                 /* 無単位。各要素が自分のサイズで再計算する */
+    font-family: var(--font);
+    font-size: 1.3rem;                /* = 13px */
+    color: var(--ink);
+    background: var(--bg);
+    /* ★ letter-spacing の宣言は無い。実測 133/133 要素が normal */
+    /* ★ font-feature-settings の宣言も無い。デスクトップでは palt 0 件 */
+  }
+
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* ---- header ---- */
+  .hd {
+    display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
+    padding: 16px 30px; background: var(--bg); border-bottom: 1px solid #e6e6e6;
+  }
+  .logo { font-size: 24px; font-weight: 700; color: var(--blue); line-height: 1.2; }
+  .logo small { display: block; font-size: 11px; font-weight: 400; color: var(--ink); }
+  .nav { display: flex; gap: 22px; flex-wrap: wrap; flex: 1; }
+  /* グローバルナビ 14px / weight 500 / lh 1.5 / ls normal */
+  .nav a { font-size: 14px; font-weight: 500; line-height: 1.5; color: var(--ink); text-decoration: none; }
+  .nav a:hover { color: var(--blue); }
+
+  /* ---- hero ----
+     実サイトは左に写真(1140x560 の背景画像)、右に白い箱という非対称の 2 分割。
+     大コピーは SVG(366x151) で「膜」の 2 文字だけ青。ここではテキストで代役を立てる。
+     面は要素自身の background-image に持たせる。 */
+  .hero { display: grid; grid-template-columns: 1.35fr 1fr; min-height: 340px; }
+  .hero-photo {
+    background-image:
+      linear-gradient(rgba(0,0,0,0.04), rgba(0,0,0,0.16)),
+      linear-gradient(150deg, #cfd8e4 0%, #eef2f7 45%, #b9c6d6 100%);
+    background-size: cover;
+  }
+  .hero-box { background: var(--bg); padding: 46px 40px; display: flex; flex-direction: column; justify-content: center; }
+  /* ★「膜」の 2 文字だけ青にする 2 色組み */
+  .hero-copy { font-size: 44px; font-weight: 400; line-height: 1.35; margin: 0 0 18px; color: var(--ink); }
+  .hero-copy em { font-style: normal; color: var(--blue); }
+  .hero-lede { font-size: 18px; line-height: 1.6; margin: 0 0 26px; }
+  .hero-note { font-size: 11px; color: #555; margin: 18px 0 0; line-height: 1.6; }
+
+  /* ---- sections ---- */
+  .sec { padding-top: 56px; }
+  .secttl { display: flex; align-items: baseline; gap: 16px; margin: 0 0 22px; flex-wrap: wrap; }
+  .secttl .en { font-size: 14px; font-weight: 700; color: var(--blue); line-height: 1.5; }
+  .secttl .ja { font-size: 34px; font-weight: 600; line-height: 1.5; color: var(--ink); }
+
+  .lede { font-size: 18px; line-height: 1.6; margin: 0 0 20px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.5; }
+  th, td { border-bottom: 1px solid #e2e2e2; padding: 12px 10px; text-align: left; vertical-align: top; }
+  th { width: 230px; font-weight: 600; color: var(--blue); white-space: nowrap; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; background: var(--surface); padding: 1px 5px; border-radius: 3px; }
+
+  /* ---- type scale ---- */
+  .scale > div { border-bottom: 1px solid #e2e2e2; padding: 14px 0; display: flex; gap: 20px; align-items: baseline; flex-wrap: wrap; }
+  .scale .lbl { width: 200px; flex: none; font-size: 12px; color: #555; }
+  .t40 { font-size: 40px; font-weight: 700; line-height: 1.5; }
+  .t34 { font-size: 34px; font-weight: 600; line-height: 1.5; }
+  .t30 { font-size: 30px; font-weight: 700; line-height: 1.5; }
+  .t20 { font-size: 20px; font-weight: 600; line-height: 1.3; color: var(--blue); }
+  .t18 { font-size: 18px; font-weight: 400; line-height: 1.6; }
+  .t16 { font-size: 16px; font-weight: 400; line-height: 1.5; }
+  .t13 { font-size: 13px; font-weight: 400; line-height: 1.5; }
+
+  /* ---- palt の実効性 ---- */
+  .palt-demo > div { padding: 12px 0; border-bottom: 1px solid #e2e2e2; }
+  .palt-demo .cap { font-size: 12px; color: #555; display: block; margin-bottom: 4px; }
+  .palt-off { font-size: 34px; font-weight: 600; line-height: 1.3; font-feature-settings: normal; }
+  .palt-on  { font-size: 34px; font-weight: 600; line-height: 1.3; font-feature-settings: "palt"; }
+
+  /* ---- swatches ---- */
+  .sw { display: flex; gap: 14px; flex-wrap: wrap; }
+  .sw figure { margin: 0; width: 160px; }
+  .sw .chip { height: 62px; border-radius: var(--r-card); border: 1px solid rgba(0,0,0,0.08); }
+  .sw figcaption { font-size: 12px; margin-top: 7px; line-height: 1.6; }
+  .sw b { display: block; font-weight: 600; }
+
+  /* ---- buttons（すべてピル・文字は weight 400） ---- */
+  .btnrow { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    display: inline-block; font-family: inherit; font-size: 16px; font-weight: 400; line-height: 24px;
+    letter-spacing: normal; padding: 14px 32px; border-radius: var(--r-pill);
+    border: 1px solid var(--blue); cursor: pointer; box-shadow: var(--shadow);
+  }
+  .btn-primary   { background: var(--blue); color: var(--on-dark); }
+  .btn-secondary { background: var(--bg);   color: var(--blue); }
+  .btn-lg        { background: var(--blue); color: var(--on-dark); font-size: 24px; line-height: 36px; padding: 18px 44px; border-radius: var(--r-pill-l); }
+  .btn.is-focus  { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+  /* ★チップだけ角丸なし。角のある矩形が「押せないラベル」の合図 */
+  .chip-cat {
+    display: inline-block; background: var(--blue-tint); color: var(--blue);
+    font-size: 14px; font-weight: 700; line-height: 18.2px;
+    padding: 6px 16px; border-radius: var(--r-chip);
+  }
+
+  /* ---- cards ---- */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 35px 30px; }
+  .card { background: var(--surface); border-radius: var(--r-card); overflow: hidden; box-shadow: var(--shadow); }
+  .card .ph {
+    height: 132px;
+    background-image: linear-gradient(135deg, #c9d4e3 0%, #e8edf3 60%, #b6c4d7 100%);
+  }
+  .card .bd { padding: 18px 20px 24px; }
+  .card h3 { font-size: 20px; font-weight: 600; line-height: 1.3; color: var(--blue); margin: 0 0 10px; }
+  .card p { font-size: 16px; line-height: 1.5; margin: 0; }
+
+  /* ---- radius 見本（青ベタなので低彩度どうしにならない） ---- */
+  .radii { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .radii div { background: var(--blue); color: var(--on-dark); font-size: 13px; display: flex; align-items: center; justify-content: center; }
+  .rp  { width: 140px; height: 56px; border-radius: 30px; }
+  .rpl { width: 170px; height: 76px; border-radius: 70px; }
+  .rc  { width: 110px; height: 76px; border-radius: 20px; }
+  .rch { width: 110px; height: 56px; border-radius: 0; }
+  .r50 { width: 56px;  height: 56px; border-radius: 50%; }
+
+  .note { font-size: 14px; line-height: 1.8; background: var(--surface); border-left: 4px solid var(--blue); padding: 16px 18px; }
+  .note p { margin: 0 0 10px; }
+  .note p:last-child { margin: 0; }
+
+  .ft { background: var(--blue); color: var(--on-dark); font-size: 14px; line-height: 1.5; padding: 24px; text-align: center; }
+
+  @media (max-width: 991px) {
+    /* ★実サイトはこのブレークポイントで見出しが 2.8rem に落ち、そこで初めて palt が効く */
+    .secttl .ja { font-size: 28px; font-feature-settings: "palt"; }
+    .cards { grid-template-columns: 1fr 1fr; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-photo { min-height: 200px; }
+    .scale .lbl { width: 100%; }
+    th { width: auto; white-space: normal; }
+    .hero-copy { font-size: 32px; }
+  }
+  @media (max-width: 640px) { .cards { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="hd">
+  <div class="logo">MakMax<small>太陽工業株式会社</small></div>
+  <nav class="nav">
+    <a href="#">企業情報</a><a href="#">ニュース</a><a href="#">事業紹介</a>
+    <a href="#">製品・サービス</a><a href="#">実績</a><a href="#">コラム</a><a href="#">採用情報</a>
+  </nav>
+  <button class="btn btn-primary" style="font-size:14px;line-height:21px;padding:10px 24px">お問い合わせ</button>
+</header>
+
+<section class="hero">
+  <div class="hero-photo"></div>
+  <div class="hero-box">
+    <p class="hero-copy"><em>膜</em>にこだわり、<br><em>膜</em>を超える。</p>
+    <p class="hero-lede">膜の無限の可能性を引き出し、<br>お客様に感動と快適な環境をお届けします。</p>
+    <div><button class="btn btn-primary">太陽工業のビジョン</button></div>
+    <p class="hero-note">★実サイトではこの大コピーは SVG（<code>kv-catch.svg</code> 366×151）。テキストではない。<br>
+      しかも <code>alt</code> は「膜を<strong>越</strong>える。」で、画像の文字「膜を<strong>超</strong>える。」と食い違っている</p>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <section class="sec">
+    <h2 class="secttl"><span class="en">TYPOGRAPHY</span><span class="ja">4 ウェイトで組む</span></h2>
+    <div class="scale">
+      <div><span class="lbl">ページタイトル 40 / 700 / 1.5</span><span class="t40">太陽工業の事業</span></div>
+      <div><span class="lbl">大見出し h2 34 / 600 / 1.5</span><span class="t34">太陽工業について</span></div>
+      <div><span class="lbl">セクション 30 / 700 / 1.5</span><span class="t30">We Are One Taiyo</span></div>
+      <div><span class="lbl">中見出し h3 20 / 600 / 1.3</span><span class="t20">代表挨拶</span></div>
+      <div><span class="lbl">リード 18 / 400 / 1.6</span><span class="t18">世界 7 大陸で事業を展開。スタジアムや国際空港、博覧会のパビリオンまで。</span></div>
+      <div><span class="lbl">本文 16 / 400 / 1.5</span><span class="t16">建築に自由としなやかさを、産業に機能的で快適な空間を提供します。</span></div>
+      <div><span class="lbl">body 既定 13 / 400 / 1.5</span><span class="t13">メインコンテンツにスキップ</span></div>
+    </div>
+    <p class="note" style="margin-top:20px">
+      <strong>ウェイトは 400 / 500 / 600 / 700 の 4 段。</strong>
+      Google Fonts の URL（<code>css2?family=Noto+Sans+JP:wght@400;500;600;700</code>）と
+      <code>document.fonts</code> の 4 本が一致している。
+      <strong>大見出しは 600、最大見出しとカード見出しは 700</strong> と使い分ける。
+    </p>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl"><span class="en">SPACING</span><span class="ja">字送りを一切触らない</span></h2>
+    <table>
+      <tr><th>字間</th><td><strong><code>letter-spacing</code> の宣言が 1 つも無い。</strong>実測 <code>normal</code> が 133/133 要素（トップ）・58/58 要素（下層）</td></tr>
+      <tr><th>字詰め</th><td><code>font-feature-settings: "palt"</code> は CSS に 4 箇所あるが、うち 2 箇所が <code>@media (max-width: 991px)</code> の中。<strong>1440px では実測 0 件、375px で 3 件</strong></td></tr>
+      <tr><th>行間</th><td><code>body { line-height: 1.5 }</code> の<strong>無単位</strong>。見出しは 1.3、リード文は 1.6</td></tr>
+      <tr><th>折り返し</th><td><code>word-break: normal</code>。9 幅すべてで実測</td></tr>
+      <tr><th>ルート</th><td><code>html { font-size: 0.625rem }</code>。<code>62.5%</code> でも <code>10px</code> でもない書き方</td></tr>
+    </table>
+
+    <div class="palt-demo" style="margin-top:24px">
+      <div>
+        <span class="cap">実サイトのデスクトップ（<code>font-feature-settings: normal</code>）</span>
+        <div class="palt-off">「膜」を、すべての建築へ。</div>
+      </div>
+      <div>
+        <span class="cap">991px 以下でだけ効く（<code>"palt"</code>）— 同じ書体で実測 <strong>−12.4%</strong> 詰まる</span>
+        <div class="palt-on">「膜」を、すべての建築へ。</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl"><span class="en">COLOR</span><span class="ja">青 1 色と白</span></h2>
+    <div class="sw">
+      <figure><div class="chip" style="background:#004bb4"></div><figcaption><b>#004bb4</b>MakMax Blue / 面39・文字38要素</figcaption></figure>
+      <figure><div class="chip" style="background:#d2ddec"></div><figcaption><b>#d2ddec</b>Blue Tint / カテゴリチップ</figcaption></figure>
+      <figure><div class="chip" style="background:#000000"></div><figcaption><b>#000000</b>本文。純黒 / 可視56要素</figcaption></figure>
+      <figure><div class="chip" style="background:#f7f7f7"></div><figcaption><b>#f7f7f7</b>Surface / 下層の地色</figcaption></figure>
+      <figure><div class="chip" style="background:#ffffff"></div><figcaption><b>#ffffff</b>トップの地色</figcaption></figure>
+    </div>
+    <p class="note" style="margin-top:20px">
+      セマンティックカラー（Danger / Warning / Success）は <strong>1 つも実装されていない</strong>。
+      製造業のコーポレートサイトとしては極端に色が少ない。
+    </p>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl"><span class="en">COMPONENTS</span><span class="ja">ボタンはすべてピル</span></h2>
+    <div class="btnrow">
+      <button class="btn btn-primary">お問い合わせ</button>
+      <button class="btn btn-secondary">Webカタログ</button>
+      <button class="btn btn-lg">太陽工業のビジョン</button>
+      <button class="btn btn-primary is-focus">フォーカス状態</button>
+    </div>
+    <p style="margin:26px 0 10px"><span class="chip-cat">プレスリリース</span> <span class="chip-cat">お知らせ</span></p>
+    <p style="font-size:14px;line-height:1.6;margin:0">
+      ★カテゴリチップだけ <code>border-radius: 0</code>。ボタンがすべてピルなので、
+      <strong>角のある矩形が「押せないラベル」の合図</strong>になっている。
+    </p>
+
+    <div class="radii" style="margin-top:30px">
+      <div class="rp">30px</div><div class="rpl">70px</div><div class="rc">20px</div><div class="rch">0（チップ）</div><div class="r50">50%</div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl"><span class="en">CARDS</span><span class="ja">影は 1 種類だけ</span></h2>
+    <div class="cards">
+      <div class="card"><div class="ph"></div><div class="bd"><h3>公共建築</h3><p>スポーツ施設、交通施設、文化施設。膜構造の大空間をつくる。</p></div></div>
+      <div class="card"><div class="ph"></div><div class="bd"><h3>民間建築</h3><p>国内外の商業施設・工場。自由な形と軽さを両立する。</p></div></div>
+      <div class="card"><div class="ph"></div><div class="bd"><h3>産業施設</h3><p>物流倉庫から災害復旧まで。機能的で快適な空間を届ける。</p></div></div>
+    </div>
+    <p class="note" style="margin-top:22px">
+      <code>box-shadow: rgba(0,0,0,.16) 0 3px 3px 0</code> の <strong>1 種類だけ</strong>を、
+      ボタン・カード・固定バーで共用する（実測 30 要素がすべて同じ値）。<strong>段階を作らない。</strong>
+    </p>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl"><span class="en">CAUTION</span><span class="ja">再現するときの注意</span></h2>
+    <div class="note">
+      <p><strong>1. <code>letter-spacing</code> を書かない。</strong> 実測 100% が <code>normal</code>。<code>0.05em</code> を足すと別のサイトになる。</p>
+      <p><strong>2. <code>palt</code> をデスクトップに足さない。</strong> 実サイトは 1440px で 0 件。<strong>効かないのではなく、使っていない</strong>（Noto Sans JP の実測で <code>normal 1291px</code> → <code>"palt" 1131.4px</code>）。足すと既存の見出しと字送りが揃わなくなる。</p>
+      <p><strong>3. ヒーローの大コピーを Web フォントで実装しない。</strong> SVG にアウトライン化されていて、「膜」の 2 文字だけ <code>#004bb4</code> に塗り分けられている。</p>
+      <p><strong>4. <code>alt</code> を画像の文字と食い違わせない。</strong> 実サイトは <code>alt="膜にこだわり、膜を越える。"</code>／画像は「膜を<strong>超</strong>える。」。</p>
+      <p><strong>5. <code>--wp--preset--*</code> / <code>--wp-admin-*</code> を採用しない。</strong> CSS 変数 63 個のうち 60 個が WordPress の既定値で、実装には使われていない。</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2 class="secttl"><span class="en">RESPONSIVE</span><span class="ja">ルートは 9 幅で完全固定</span></h2>
+    <table>
+      <tr><th>1920〜375px</th><td><code>html 10px</code> / <code>body 13px</code> / <code>line-height 19.5px (1.5)</code> / <code>letter-spacing normal</code>。<strong>崖も流体の式も 1 つも無い</strong></td></tr>
+      <tr><th>主ブレークポイント</th><td><code>screen and (max-width: 991px)</code> が <strong>704 件</strong>、<code>(min-width: 992px)</code> が 178 件</td></tr>
+      <tr><th>991px 以下</th><td>セクション見出しが 40px → 28px に落ち、<strong>このときだけ <code>palt</code> が効く</strong></td></tr>
+      <tr><th>コンテナ</th><td>1320px（唯一の幅）／ サイドの小カラムは 450px</td></tr>
+    </table>
+  </section>
+
+</div>
+
+<footer class="ft">Copyright © TAIYO KOGYO CORPORATION. All Rights Reserved.</footer>
+
+</body>
+</html>
