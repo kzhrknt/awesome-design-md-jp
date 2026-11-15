@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ファミリーマート（FamilyMart）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Old+Mincho:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ★ root。実サイトと同じ二重宣言。後勝ちの 0.94rem が採用され 15.04px になる。
+     rem 宣言なのでユーザーのブラウザ文字サイズ設定に追従する（px に直すと壊れる）。 */
+  html {
+    font-size: 15px;
+    font-size: 0.94rem;   /* = 16px × 0.94 = 15.04px。11 幅すべてで固定 */
+  }
+
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は実サイトに 0 個（total: 0）。
+       読めなかったシートは Google Fonts の 1 枚だけで、そこに変数は無い。
+       以下は computed style の実測値。2026-11-15 */
+    --link:        #0171a6;   /* ★最多の色。可視 50 / 52 要素。リンクと CTA の文字 */
+    --card-blue:   #007db8;   /* 下層のカテゴリーカードの枠と文字（2 要素） */
+    --head-blue:   #0076ae;   /* 商品カード見出し（可視 10 要素） */
+    --green:       #008132;   /* FamilyMart グリーン。ファミペイ帯の面（1 要素） */
+    --green-link:  #00ab50;   /* 加盟店募集・物件募集の文字（下層 2 要素） */
+    --ink:         #313131;   /* ★本文。可視 54 / 44 要素 */
+    --ink-nav:     #333333;   /* グローバルナビ（11 要素）。--ink とは別の値 */
+    --ink-muted:   #555555;   /* フッターの小さなリンク（下層 7 要素） */
+    --ink-gray:    #444444;
+    --border:      #dddddd;   /* ★CTA の枠（2px solid）。標準の罫線色 */
+    --divider:     #d3d3d3;
+    --surface:     #f9f9f9;   /* 検索フォーム（可視 4 要素） */
+    --surface-2:   #efefef;   /* Language ボタン */
+    --surface-ft:  #f2f2f2;   /* フッター */
+    --surface-gr:  #edf5ed;   /* ファミペイ紹介ブロック */
+    --surface-se:  #eeeeee;   /* 下層の検索ブロック */
+    --white:       #ffffff;
+    --bg:          #ffffff;   /* pageBackground.resolved / 根拠 body */
+    --grad-msg: linear-gradient(276deg, #d3edfa 10%, rgba(0, 0, 0, 0) 90%);
+
+    /* === Fonts ===
+       Google Fonts の Noto Sans JP を 6 ウェイト（100/300/400/500/700/900）読む。
+       明朝（Zen Old Mincho）はトップに 1 要素だけ。 */
+    --font-body:   "Noto Sans JP", sans-serif;
+    --font-mincho: "Zen Old Mincho", serif;
+    --font-mono:   SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Spacing / size === すべて rem。1rem = 15.04px === */
+    --s-xs: 0.5rem;    /*  7.52px */
+    --s-sm: 0.6rem;    /*  9.024px */
+    --s-md: 0.8rem;    /* 12.032px */
+    --s-1:  1rem;      /* 15.04px ★本文 */
+    --s-lg: 1.5rem;    /* 22.56px */
+
+    --fs-sm:   0.8rem;    /* 12.032px */
+    --fs-body: 1rem;      /* 15.04px ★最多 88 / 77 要素 */
+    --fs-card: 1.1875rem; /* 17.86px */
+    --fs-btn:  1.133rem;  /* 17.0453px */
+    --fs-nav:  1.2rem;    /* 18.048px */
+    --fs-h3:   1.4rem;    /* 21.056px */
+    --fs-h2:   1.733rem;  /* 26.0688px */
+
+    /* === Line height === 無単位。1 未満は 0 件なので em でも px でもない === */
+    --lh-body:  1.5;    /* ★body の既定。実測 116 / 78 要素 */
+    --lh-card:  1.4;
+    --lh-btn:   1.2;
+    --lh-cat:   1.15;   /* 下層のカテゴリーボタン 34 要素 */
+
+    /* === Letter spacing === ★既定は normal。足すのは例外で、しかも em === */
+    --ls:      normal;    /* 可視 147 / 104 要素 */
+    --ls-msg:  0.05em;    /* ブランドメッセージ（実測 0.752px・10 要素） */
+    --ls-nav:  0.04em;    /* グローバルナビ（実測 0.72192px・6 要素） */
+
+    --r-card: 8px;    /* ★一覧カード。下層 70 要素 */
+    --r-pill: 25px;   /* 導線ボタン。トップ 12 要素 */
+    --r-chip: 4px;
+    --r-sm:   3px;
+    /* ★box-shadow はサイト全体で 0 種。影を足さない */
+
+    --container: 1200px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: var(--fs-body);
+    font-weight: 400;
+    line-height: var(--lh-body);
+    letter-spacing: var(--ls);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ★崖は 736 / 737px の 1 箇所。body だけが 1 段下がる */
+  @media only screen and (max-width: 736px) {
+    body { font-size: 0.93333rem; }   /* = 15.04 × 0.93333 = 14.0373px */
+  }
+
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 var(--s-lg); }
+  .section { padding: 2.6rem 0; border-top: 1px solid var(--divider); }
+  .section:first-of-type { border-top: 0; }
+
+  h1 { font-size: var(--fs-h2); font-weight: 700; line-height: var(--lh-btn); }
+  h2 { font-size: var(--fs-h2); font-weight: 700; line-height: var(--lh-btn); }
+  h3 { font-size: var(--fs-h3); font-weight: 700; line-height: var(--lh-card); }
+  p  { font-size: var(--fs-body); line-height: var(--lh-body); }
+  .small { font-size: var(--fs-sm); color: var(--ink-muted); }
+
+  /* ---- header ---- */
+  .util { border-bottom: 1px solid var(--divider); padding: var(--s-xs) 0; }
+  .util .wrap { display: flex; justify-content: flex-end; gap: var(--s-1); flex-wrap: wrap; }
+  .util a { color: var(--ink-muted); font-size: var(--fs-sm); text-decoration: none; }
+  .util a.green { color: var(--green-link); }
+  .lang {
+    background: var(--surface-2); color: var(--ink);
+    border: 1px solid var(--border);   /* 実サイトは border-style 未指定で UA の outset が出ている（真似しない） */
+    border-radius: var(--r-sm); padding: 1px 6px; font-size: var(--fs-sm);
+  }
+  .gnav { padding: var(--s-1) 0; border-bottom: 1px solid var(--divider); }
+  .gnav .wrap { display: flex; align-items: center; gap: var(--s-lg); flex-wrap: wrap; }
+  .gnav a {
+    color: var(--ink-nav); text-decoration: none;
+    font-size: var(--fs-nav); font-weight: 500; letter-spacing: var(--ls-nav);
+  }
+  .logo { color: var(--link); font-size: var(--fs-h3); font-weight: 700; margin-right: auto; }
+
+  /* ---- brand message: 唯一のグラデーション ---- */
+  .msg {
+    background: var(--grad-msg); color: var(--ink);
+    border-radius: var(--r-card); padding: var(--s-lg);
+    letter-spacing: var(--ls-msg); margin-top: var(--s-lg);
+  }
+  .msg b { color: var(--link); font-size: var(--fs-card); font-weight: 700; display: block; margin-bottom: var(--s-xs); }
+
+  /* ---- buttons: 白地 + 2px の灰枠 + ピル。塗りはほぼ無い ---- */
+  .btn {
+    display: inline-block; background: var(--white); color: var(--link);
+    border: 2px solid var(--border);     /* ★1px ではなく 2px */
+    border-radius: var(--r-pill);
+    padding: 14px 40px;
+    font-size: var(--fs-btn); line-height: var(--lh-btn);
+    text-decoration: none; cursor: pointer;
+  }
+  .btn:hover { background: var(--surface); }
+  .btn.is-focus { outline: 2px solid var(--link); outline-offset: 2px; }
+  .btn--solid { background: var(--link); color: var(--white); border-color: var(--link); }
+
+  .cat-card {
+    display: block; background: var(--white); color: var(--card-blue);
+    border: 2px solid var(--card-blue); border-radius: var(--r-card);
+    padding: var(--s-md) var(--s-1); text-decoration: none;
+    line-height: var(--lh-cat); font-weight: 500;
+  }
+  .chip {
+    display: inline-block; background: var(--surface-gr); color: var(--ink);
+    border-radius: var(--r-chip); padding: var(--s-md) var(--s-1); font-size: var(--fs-sm);
+  }
+
+  /* ---- cards: 影ゼロ。2px の枠と淡い面で区切る ---- */
+  .card {
+    background: var(--white); border: 2px solid var(--border);
+    border-radius: var(--r-card); overflow: hidden;
+    box-shadow: none;   /* ★サイト全体で 0 種 */
+  }
+  .card__img { height: 120px; background: linear-gradient(135deg, #e7f1f7 0%, #cfe4f0 100%); }
+  .card__body { padding: var(--s-1); }
+  .card__ttl { color: var(--head-blue); font-size: var(--fs-card); font-weight: 700; line-height: var(--lh-card); }
+  .card__meta { color: var(--ink-muted); font-size: var(--fs-sm); margin-top: var(--s-xs); }
+
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-1); }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-1); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-lg); }
+  .row { display: flex; gap: var(--s-1); flex-wrap: wrap; align-items: center; }
+
+  .famipay { background: var(--surface-gr); border-radius: var(--r-card); padding: var(--s-lg); }
+  .famipay__band {
+    background: var(--green); color: var(--white);
+    border-radius: var(--r-chip); padding: var(--s-md) var(--s-1);
+    font-size: var(--fs-sm); margin-top: var(--s-md);
+  }
+
+  .search {
+    background: var(--surface); border-radius: var(--r-sm);
+    padding: var(--s-md); display: flex; gap: var(--s-xs); align-items: center;
+  }
+  .search input {
+    flex: 1; border: 1px solid var(--border); border-radius: var(--r-sm);
+    padding: var(--s-xs) var(--s-md); font-family: inherit; font-size: var(--fs-body);
+    background: var(--white); color: var(--ink);
+  }
+  .search button {
+    background: var(--link); color: var(--white); border: 0;
+    border-radius: var(--r-sm); padding: var(--s-xs) var(--s-1);
+    font-family: inherit; font-size: var(--fs-body); cursor: pointer;
+  }
+
+  .cmp { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+  .cmp th, .cmp td { border: 1px solid var(--divider); padding: var(--s-xs) var(--s-md); text-align: left; }
+  .cmp th { background: var(--surface); font-weight: 500; }
+  .cmp code { font-family: var(--font-mono); font-size: 11px; }
+
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--s-md); }
+  .sw { border: 1px solid var(--divider); border-radius: var(--r-sm); overflow: hidden; }
+  .sw__chip { height: 54px; }
+  .sw__meta { padding: var(--s-xs) var(--s-md); font-size: 12px; }
+  .sw__meta code { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); }
+
+  .demo { background: var(--surface); border-radius: var(--r-card); padding: var(--s-md) var(--s-1); font-size: var(--fs-nav); }
+  .demo--ls0 { letter-spacing: normal; }
+  .demo--ls1 { letter-spacing: 0.04em; }
+  .demo--palt-off { font-feature-settings: normal; }
+  .demo--palt-on  { font-feature-settings: "palt", "tnum"; }
+
+  .mincho { font-family: var(--font-mincho); font-size: var(--fs-h3); font-weight: 500; line-height: var(--lh-card); }
+
+  /* ★mod() で 34px のグリッドにスナップ。@supports でガードする */
+  .snap { border: 2px dashed var(--border); border-radius: var(--r-card); padding: var(--s-1); margin: 0 auto; }
+  @supports (max-width: mod(100%, 34px)) {
+    .snap { max-width: calc(100% - 136px - mod(100%, 34px)); }
+  }
+
+  .note { font-size: var(--fs-sm); color: var(--ink-muted); line-height: 1.7; }
+
+  footer { background: var(--surface-ft); padding: 2.2rem 0; margin-top: 2.6rem; }
+  footer a { color: var(--ink-muted); font-size: var(--fs-sm); text-decoration: none; margin-right: var(--s-1); }
+
+  @media (max-width: 900px) { .grid4 { grid-template-columns: 1fr 1fr; } .grid3 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px) { .grid4, .grid3, .grid2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="util">
+  <div class="wrap">
+    <a class="green" href="#">加盟店募集</a><a class="green" href="#">物件募集</a>
+    <a href="#">採用情報</a><a href="#">お問い合わせ</a><a href="#">店舗検索</a>
+    <span class="lang">Language</span>
+  </div>
+</div>
+
+<div class="gnav">
+  <div class="wrap">
+    <span class="logo">FamilyMart</span>
+    <a href="#">商品情報</a><a href="#">キャンペーン</a><a href="#">サービス</a>
+    <a href="#">ファミペイ・ポイント</a><a href="#">企業情報</a><a href="#">サステナビリティ</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="msg">
+    <b>あなたと、コンビに、FamilyMart</b>
+    地域のお客さま一人ひとりの暮らしに寄り添う店舗を目指しています。
+  </div>
+
+  <section class="section">
+    <h2>今週のおすすめ商品</h2>
+    <p class="note" style="margin-top:var(--s-xs)">見出しは <code>1.733rem</code>（実測 26.0688px）/ <code>font-weight: 700</code>。</p>
+    <div class="grid4" style="margin-top:var(--s-lg)">
+      <div class="card"><div class="card__img"></div><div class="card__body">
+        <div class="card__ttl">人気シリーズ初のハーブティー！</div><div class="card__meta">2026年11月10日</div></div></div>
+      <div class="card"><div class="card__img"></div><div class="card__body">
+        <div class="card__ttl">クーポンでおトク！天然銀だら</div><div class="card__meta">2026年11月10日</div></div></div>
+      <div class="card"><div class="card__img"></div><div class="card__body">
+        <div class="card__ttl">金曜20円引き！ファミマの焼きいも</div><div class="card__meta">2026年11月07日</div></div></div>
+      <div class="card"><div class="card__img"></div><div class="card__body">
+        <div class="card__ttl">サクッと三角チーズケーキ</div><div class="card__meta">2026年11月04日</div></div></div>
+    </div>
+    <div class="row" style="margin-top:var(--s-lg)">
+      <a class="btn" href="#">今週の新商品一覧</a>
+      <a class="btn is-focus" href="#">商品情報TOP</a>
+      <a class="btn btn--solid" href="#">キャンペーン一覧</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>rem で積む</h2>
+    <p style="margin-top:var(--s-md);max-width:46em"><code>html { font-size: 15px; font-size: 0.94rem }</code> の二重宣言で、後勝ちの <code>0.94rem</code>（＝ブラウザ既定 16px の 94%）が採用され <b>15.04px</b> になる。文字も余白もギャップもすべてこの 1rem から積む。</p>
+    <table class="cmp" style="margin-top:var(--s-1)">
+      <tr><th style="width:22%">宣言</th><th style="width:22%">実測（1440px）</th><th>用途</th></tr>
+      <tr><td><code>0.8rem</code></td><td><code>12.032px</code></td><td>注記・フッター小</td></tr>
+      <tr><td><code>0.9rem</code></td><td><code>13.536px</code></td><td>商品名の補足</td></tr>
+      <tr><td><b><code>1rem</code></b></td><td><b><code>15.04px</code></b></td><td><b>本文・リンク（最多 88 / 77 要素）</b></td></tr>
+      <tr><td><code>1.1rem</code></td><td><code>16.544px</code></td><td>セクション見出し（小）</td></tr>
+      <tr><td><code>1.133rem</code></td><td><code>17.0453px</code></td><td>ボタン内のラベル</td></tr>
+      <tr><td><code>1.1875rem</code></td><td><code>17.86px</code></td><td>商品カード見出し</td></tr>
+      <tr><td><code>1.2rem</code></td><td><code>18.048px</code></td><td>グローバルナビ</td></tr>
+      <tr><td><code>1.733rem</code></td><td><code>26.0688px</code></td><td>ページ見出し h2</td></tr>
+    </table>
+    <p class="note" style="margin-top:var(--s-md)">実測の px に半端が出たら <b>15.04 で割ると設計値が出る</b>。<code>gap</code> も <code>9.024px</code>(0.6rem) / <code>12.032px</code>(0.8rem) / <code>22.56px</code>(1.5rem)、CTA の <code>padding</code> も <code>12.032px 15.04px</code>(0.8rem 1rem)。</p>
+  </section>
+
+  <section class="section">
+    <h2>字間を足さない</h2>
+    <p style="margin-top:var(--s-md);max-width:46em">可視 122 要素に対して <code>letter-spacing: normal</code> の宣言が <b>147 件</b>。値が付くのはナビ（<code>0.04em</code>）とブランドメッセージ（<code>0.05em</code>）だけで、しかも <b><code>em</code> 宣言</b>なのでサイズに比例して px が変わる。</p>
+    <div style="margin-top:var(--s-1);display:grid;gap:var(--s-xs)">
+      <div class="demo demo--ls0">既定 — ファミリーマートの商品情報（letter-spacing: normal）</div>
+      <div class="demo demo--ls1">ナビだけ — ファミリーマートの商品情報（letter-spacing: 0.04em）</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>palt は一覧の見出しと数字だけ</h2>
+    <p style="margin-top:var(--s-md);max-width:46em"><code>font-feature-settings</code> の宣言は CSS 全文に <b>2 箇所だけ</b>。トップは実測 0 要素、下層 <code>/goods.html</code> でだけ <code>"palt", "tnum"</code> が <b>32 要素</b>に当たる。書体は対応していて、Noto Sans JP の見出しで <b>−2.9%</b>、Zen Old Mincho で <b>−7.5%</b> 詰まる。</p>
+    <div style="margin-top:var(--s-1);display:grid;gap:var(--s-xs)">
+      <div class="demo demo--palt-off">トップの姿 — 「今週の新商品（鹿児島・宮崎）」1,280円（税込）<code>normal</code></div>
+      <div class="demo demo--palt-on">一覧の姿 — 「今週の新商品（鹿児島・宮崎）」1,280円（税込）<code>"palt","tnum"</code></div>
+    </div>
+    <p class="note" style="margin-top:var(--s-md)"><code>tnum</code>（等幅数字）が <code>palt</code> とセットなのが特徴。価格・日付を縦に揃えるため。</p>
+  </section>
+
+  <section class="section">
+    <h2>ウェイトは 400 / 500 / 700</h2>
+    <table class="cmp" style="margin-top:var(--s-1)">
+      <tr><th style="width:16%">指定</th><th style="width:22%">@font-face</th><th style="width:20%">実際に出る太さ</th><th>見本</th></tr>
+      <tr><td><code>400</code></td><td>あり</td><td>400</td><td style="font-weight:400">ファミリーマートの商品情報</td></tr>
+      <tr><td><code>500</code></td><td>あり</td><td>500</td><td style="font-weight:500">ファミリーマートの商品情報</td></tr>
+      <tr><td><b><code>600</code></b></td><td><b>なし</b></td><td><b>700</b></td><td style="font-weight:600">ファミリーマートの商品情報</td></tr>
+      <tr><td><code>700</code></td><td>あり</td><td>700</td><td style="font-weight:700">ファミリーマートの商品情報</td></tr>
+    </table>
+    <p class="note" style="margin-top:var(--s-md)">読み込んでいるのは 100 / 300 / 400 / 500 / 700 / 900 の 6 本。<b><code>600</code> を指定した 16 要素は 700 に解決される</b>ので、はじめから <code>700</code> と書く。</p>
+  </section>
+
+  <section class="section">
+    <h2>明朝はここだけ</h2>
+    <div class="card" style="margin-top:var(--s-1)"><div class="card__body">
+      <div class="mincho">カスタマーハラスメントに対する方針策定について</div>
+      <p class="note" style="margin-top:var(--s-xs)"><code>'Zen Old Mincho', serif</code> — <b>サイト全体でこの 1 要素だけ</b>（<code>div#atenbnr .btn h3</code>）。</p>
+    </div></div>
+  </section>
+
+  <section class="section">
+    <h2>カテゴリー（下層は角丸 8px）</h2>
+    <div class="grid3" style="margin-top:var(--s-1)">
+      <a class="cat-card" href="#">今週の新商品</a>
+      <a class="cat-card" href="#">今週の新商品（鹿児島・宮崎）</a>
+      <a class="cat-card" href="#">今週の新商品（沖縄のみ）</a>
+      <a class="cat-card" href="#">ファミマル</a>
+      <a class="cat-card" href="#">FAMIMA</a>
+      <a class="cat-card" href="#">Convenience Wear</a>
+    </div>
+    <p class="note" style="margin-top:var(--s-md)">下層は <code>border-radius: 8px</code> が <b>70 要素</b>と支配的。ピルの <code>25px</code> は導線のボタンだけ。</p>
+    <div class="row" style="margin-top:var(--s-1)">
+      <span class="chip">キャンペーン</span><span class="chip">社会・環境</span><span class="chip">商品</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>検索・ファミペイ</h2>
+    <div class="grid2" style="margin-top:var(--s-1)">
+      <div class="search">
+        <input type="text" placeholder="キーワードから探す" aria-label="キーワードから探す">
+        <button type="button">検索実行</button>
+      </div>
+      <div class="famipay">
+        <b style="color:var(--link);font-size:var(--fs-card)">ファミマのアプリ「ファミペイ」</b>
+        <p class="note" style="margin-top:var(--s-xs)">出すだけでお得なクーポンとポイント。</p>
+        <div class="famipay__band">今なら初回ダウンロードで無料クーポン必ずもらえる！</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>mod() で 34px のグリッドにスナップ</h2>
+    <div class="snap" style="margin-top:var(--s-1)">
+      <p class="note"><code>@supports (max-width: mod(100%, 34px))</code> でガードし、<code>max-width: calc(100% - 136px - mod(100%, 34px))</code> を当てる。「左右 136px を引いた幅を、さらに 34px の倍数まで切り下げる」。未対応ブラウザでは素の <code>1200px</code> にフォールバックする。<b>この構えごと真似する。</b></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Palette</h2>
+    <div class="swatches" style="margin-top:var(--s-1)">
+      <div class="sw"><div class="sw__chip" style="background:var(--link)"></div><div class="sw__meta">リンク青（最多）<br><code>#0171A6</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--card-blue)"></div><div class="sw__meta">カード青<br><code>#007DB8</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--head-blue)"></div><div class="sw__meta">見出し青<br><code>#0076AE</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--green)"></div><div class="sw__meta">ブランド緑（面）<br><code>#008132</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--green-link)"></div><div class="sw__meta">募集導線（文字）<br><code>#00AB50</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--ink)"></div><div class="sw__meta">本文<br><code>#313131</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--border)"></div><div class="sw__meta">CTA の枠<br><code>#DDDDDD</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--surface-gr)"></div><div class="sw__meta">ファミペイ面<br><code>#EDF5ED</code></div></div>
+    </div>
+    <p class="note" style="margin-top:var(--s-md)"><b>青が 2 つ、緑が 2 つある。</b> <code>#0171A6</code>（リンク・CTA）と <code>#007DB8</code>（カードの枠）、<code>#008132</code>（ファミペイ面）と <code>#00AB50</code>（募集導線の文字）。</p>
+  </section>
+
+  <section class="section">
+    <h2>影は 0 種</h2>
+    <p style="margin-top:var(--s-md);max-width:46em">両ページとも <code>boxShadow</code> は <b>0 種</b>。奥行きは <code>2px</code> の枠線と淡い面色で表す。カードを浮かせたくなっても影を足さない。</p>
+    <div class="grid3" style="margin-top:var(--s-1)">
+      <div class="card"><div class="card__body"><b>border 2px solid #DDDDDD</b><p class="note" style="margin-top:var(--s-xs)">これが区切りの既定</p></div></div>
+      <div class="card" style="border-color:var(--card-blue)"><div class="card__body"><b style="color:var(--card-blue)">border 2px solid #007DB8</b><p class="note" style="margin-top:var(--s-xs)">枠と文字を同色にする</p></div></div>
+      <div style="background:var(--surface);border-radius:var(--r-card);padding:var(--s-1)"><b>面 #F9F9F9</b><p class="note" style="margin-top:var(--s-xs)">枠を使わないときは淡い面で</p></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <a href="#">ファミリーマート 個人情報保護方針</a><a href="#">ソーシャルメディアポリシー</a><a href="#">サイトマップ</a>
+    <p class="note" style="margin-top:var(--s-md)">株式会社ファミリーマート</p>
+  </div>
+</footer>
+
+</body>
+</html>

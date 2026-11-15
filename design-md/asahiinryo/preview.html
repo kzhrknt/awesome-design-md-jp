@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: アサヒ飲料（Asahi Soft Drinks）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       自社 CSS Custom Properties は 0 個（total: 2 はどちらも Swiper の既定値）。
+       CORS で読めなかったシートも 0 枚なので、見落としではない。
+       以下は computed style の実測値。2026-11-15 */
+    --navy:        #052d85;   /* ★CTA の面・フォーカスリング。可視 7 / 9 要素 */
+    --light-blue:  #48c7ef;   /* 「新商品」バッジ（可視 5 要素） */
+    --deep-navy:   #27455c;   /* セクションの帯（可視 8 要素・両ページ同数） */
+    --blue-sub:    #074194;   /* カードの面（可視 4 要素） */
+    --pale-blue:   #cddcf2;
+    --chip-border: #8ab0d4;   /* 絞り込みチップの枠（box-shadow で描く） */
+    --black:       #000000;   /* ★文字色。純黒。可視 90 / 43 要素 */
+    --ink-2:       #333333;   /* ヘッダーの補助リンク */
+    --muted:       #696969;
+    --divider:     #cfcfcf;   /* 罫線（可視 21 要素） */
+    --input-br:    #bbbbbb;
+    --surface:     #f4f4f4;   /* ニュース・ドロップダウンの面 */
+    --white:       #ffffff;
+    --bg:          #ffffff;   /* html も body も rgba(0,0,0,0)。白は下の要素が描く → 明示する */
+
+    /* 商品カテゴリーの色（下層・どれも可視 1 要素） */
+    --cat-1: #004097;  --cat-2: #009740;  --cat-3: #294798;  --cat-4: #b41503;
+    --cat-5: #f6e4c9;  --cat-6: #b4ecff;  --cat-7: #ffc03f;
+
+    /* === Fonts ===
+       実サイトは自社ホスト配信の Open Sans + Noto Sans CJK JP（@font-face の family 名は
+       'Noto Sans JP' だが実体は NotoSansCJKjp_*.woff2）。
+       ★この書体は palt テーブルを持たない（下の OpenType 節を参照）。
+       ローカルでは同名の Google Fonts 版で代替しているため、palt のデモだけは
+       実サイトより詰まって見える。実サイトでは 1px も動かない。 */
+    --font-body: 'Open Sans', 'Noto Sans JP',
+                 "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3",
+                 "メイリオ", "游ゴシック", "Yu Gothic", Meiryo, sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* === Line height === 無単位 === */
+    --lh-body: 1.66;   /* ★body の既定。実測 26.56px / 95 要素 */
+    --lh-one:  1;      /* 見出し・ボタン・バッジ（59 要素）。padding で高さを作る */
+    --lh-mid:  1.5;
+
+    /* === Letter spacing === ★rem 宣言＝ルート基準の絶対値が降りる === */
+    --ls:      0.1rem;    /* = 1.6px。可視 123 / 37 要素で最多 */
+    --ls-util: 0.06rem;   /* = 0.96px。ヘッダーの補助リンク（39 / 10 要素） */
+    --ls-sub:  0.05rem;   /* = 0.8px。ナビの子項目（17 要素） */
+    --ls-h2:   5px;       /* ★32px の大見出しだけ別に指定し直す（8 / 4 要素） */
+
+    --r-pill: 30px;   /* ★CTA のピル。可視 45 / 26 要素 */
+    --r-badge: 12px;
+    --r-head: 20px 20px 0 0;
+    --r-sm:   2px;
+
+    /* === Shadow === ★2px 2px（右下にずれる）が既定。6 種 === */
+    --sh-1: rgba(0, 0, 0, 0.1) 2px 2px 5px 1px;    /* 最多 65 要素 */
+    --sh-2: rgba(0, 0, 0, 0.25) 0 0 8px 1px;       /* 9 要素 */
+    --sh-3: rgba(0, 0, 0, 0.2) 0 2px 4px 0;        /* カルーセルの前後ボタン 8 要素 */
+    --sh-chip: rgb(138, 176, 212) 0 0 0 1px;       /* 枠を影で描く 6 要素 */
+    --sh-focus: rgb(5, 45, 133) 0 0 0 2px;         /* フォーカスリング 6 要素 */
+
+    --container: 1200px;   /* カード一覧 */
+    --narrow:    950px;    /* 本文 */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);          /* ★明示する */
+    color: var(--black);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: var(--lh-body);
+    letter-spacing: var(--ls);      /* ★rem。root 16px に対する 1.6px の絶対値 */
+    font-feature-settings: "palt";  /* ★実サイトは 1331 要素に配っているが、配信書体が非対応で効かない */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ★本文だけが 767px 以下で 3.3vw の流体になる（html / body は 11 幅とも 16px 固定） */
+  @media screen and (max-width: 767px) {
+    p { font-size: 3.3vw; }
+  }
+
+  .wrap   { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+  .narrow { max-width: var(--narrow);   margin: 0 auto; padding: 0 24px; }
+  .section { padding: 48px 0; border-top: 1px solid var(--divider); }
+  .section:first-of-type { border-top: 0; }
+
+  h1 { font-size: 32px; font-weight: 700; line-height: var(--lh-one); letter-spacing: var(--ls-h2); }
+  h2 { font-size: 32px; font-weight: 400; line-height: var(--lh-one); letter-spacing: var(--ls-h2); }
+  h3 { font-size: 19.2px; font-weight: 700; line-height: var(--lh-mid); letter-spacing: var(--ls); }
+  p  { font-size: 14px; line-height: var(--lh-body); letter-spacing: var(--ls); }
+  .small { font-size: 12px; letter-spacing: var(--ls-util); }
+
+  /* ---- header ---- */
+  .util { border-bottom: 1px solid var(--divider); padding: 8px 0; }
+  .util .wrap { display: flex; justify-content: flex-end; gap: 20px; flex-wrap: wrap; }
+  .util a { color: var(--ink-2); font-size: 12px; letter-spacing: var(--ls-util); text-decoration: none; }
+  .gnav { background: var(--white); padding: 14px 0; border-bottom: 1px solid var(--divider); }
+  .gnav .wrap { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
+  .gnav a { color: var(--black); font-size: 14px; font-weight: 700; letter-spacing: var(--ls); text-decoration: none; }
+  .logo { color: var(--navy); font-size: 24px; font-weight: 700; letter-spacing: var(--ls); margin-right: auto; }
+
+  /* ---- hero: 実サイトは <canvas> で円形コラージュを描画している（DOM に要素が無い） ---- */
+  .hero {
+    margin-top: 24px; border-radius: 16px; min-height: 240px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center; position: relative;
+    background-image:
+      radial-gradient(circle at 18% 32%, #bfe3f5 0 88px, rgba(0,0,0,0) 89px),
+      radial-gradient(circle at 42% 64%, #a8d8ea 0 70px, rgba(0,0,0,0) 71px),
+      radial-gradient(circle at 66% 28%, #d8ecc4 0 76px, rgba(0,0,0,0) 77px),
+      radial-gradient(circle at 86% 62%, #ffd9a8 0 64px, rgba(0,0,0,0) 65px),
+      linear-gradient(140deg, #eef6fb 0%, #e3f0f7 100%);
+  }
+  .hero__note {
+    background: rgba(5, 45, 133, 0.82); color: var(--white);
+    padding: 12px 22px; border-radius: var(--r-pill);
+    font-size: 14px; font-weight: 700; letter-spacing: var(--ls); line-height: var(--lh-one);
+  }
+
+  /* ---- buttons: 紺の塗り + ピル + 斜めの影 ---- */
+  .btn {
+    display: inline-block; background: var(--navy); color: var(--white);
+    border: 0; border-radius: var(--r-pill);
+    padding: 10px 20px;
+    font-family: inherit; font-size: 14px; font-weight: 700;
+    line-height: var(--lh-one); letter-spacing: var(--ls);
+    box-shadow: var(--sh-1);     /* ★2px 2px（右下） */
+    text-decoration: none; cursor: pointer;
+  }
+  .btn:hover { background: var(--blue-sub); }
+  .btn.is-focus { box-shadow: var(--sh-focus); }
+  .btn--wide { padding: 10px 0; width: 220px; text-align: center; }
+
+  .badge {
+    display: inline-block; background: var(--light-blue); color: var(--white);
+    border-radius: var(--r-badge); padding: 3px 12px;
+    font-size: 11.6667px; font-weight: 700; line-height: var(--lh-one); letter-spacing: var(--ls);
+  }
+  .chip {
+    display: inline-block; background: var(--white); color: var(--black);
+    border-radius: var(--r-pill); padding: 8px 18px;
+    box-shadow: var(--sh-chip);   /* ★枠を border ではなく影で描く */
+    font-size: 13px; letter-spacing: var(--ls-sub); text-decoration: none;
+  }
+
+  .band {
+    background: var(--deep-navy); color: var(--white);
+    padding: 16px 24px; border-radius: 8px;
+    font-size: 19.2px; font-weight: 700; line-height: var(--lh-one); letter-spacing: var(--ls);
+  }
+
+  .card {
+    background: var(--white); border-radius: 10px; overflow: hidden;
+    box-shadow: var(--sh-1);
+  }
+  .card--raised { box-shadow: var(--sh-2); }
+  .card__head { background: var(--blue-sub); color: var(--white); padding: 14px 18px; border-radius: var(--r-head); font-weight: 700; line-height: var(--lh-one); }
+  .card__img  { height: 110px; background: linear-gradient(135deg, #e9f3fa 0%, #cfe4f2 100%); }
+  .card__body { padding: 16px 18px; }
+
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+
+  .search { display: flex; gap: 8px; align-items: center; }
+  .search input {
+    flex: 1; border: 1px solid var(--input-br); border-radius: var(--r-sm);
+    padding: 9px 12px; font-family: inherit; font-size: 14px;
+    background: var(--white); color: var(--black); letter-spacing: var(--ls);
+  }
+
+  .cmp { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .cmp th, .cmp td { border: 1px solid var(--divider); padding: 10px 12px; text-align: left; letter-spacing: var(--ls-sub); }
+  .cmp th { background: var(--surface); font-weight: 700; }
+  .cmp code { font-family: var(--font-mono); font-size: 12px; }
+
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .sw { border: 1px solid var(--divider); border-radius: 6px; overflow: hidden; }
+  .sw__chip { height: 54px; }
+  .sw__meta { padding: 8px 10px; font-size: 12px; letter-spacing: var(--ls-sub); }
+  .sw__meta code { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+
+  .demo { background: var(--surface); border-radius: 8px; padding: 12px 16px; font-size: 18px; }
+  .demo--ls-rem { letter-spacing: 0.1rem; }
+  .demo--ls-em  { letter-spacing: 0.1em; }
+  .demo--palt-off { font-feature-settings: normal; }
+  .demo--palt-on  { font-feature-settings: "palt"; }
+  .demo--big { font-size: 32px; line-height: var(--lh-one); }
+
+  .shadow-demo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .shadow-demo > div { background: var(--white); border-radius: 10px; padding: 18px; font-size: 13px; letter-spacing: var(--ls-sub); }
+
+  .note { font-size: 13px; color: var(--muted); letter-spacing: var(--ls-sub); line-height: 1.8; }
+
+  footer { background: var(--deep-navy); color: var(--white); padding: 36px 0; margin-top: 48px; }
+  footer a { color: var(--white); font-size: 13px; letter-spacing: var(--ls-sub); text-decoration: none; margin-right: 22px; }
+
+  @media (max-width: 900px) { .grid4 { grid-template-columns: 1fr 1fr; } .grid3, .shadow-demo { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px) { .grid4, .grid3, .shadow-demo { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="util">
+  <div class="wrap">
+    <a href="#">お客様相談室</a><a href="#">GLOBAL</a><a href="#">アサヒグループホールディングス</a>
+  </div>
+</div>
+
+<div class="gnav">
+  <div class="wrap">
+    <span class="logo">Asahi</span>
+    <a href="#">商品情報</a><a href="#">キャンペーン</a><a href="#">知る・学ぶ</a>
+    <a href="#">安全・安心の取り組み</a><a href="#">社会との約束</a><a href="#">企業情報</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <span class="hero__note">実サイトのヒーローは &lt;canvas&gt; で描く円形コラージュ</span>
+  </div>
+
+  <section class="section">
+    <h2>おすすめ情報</h2>
+    <p style="margin-top:16px;max-width:46em">100年先の未来へ、ワクワクと笑顔のギフトを。本文は 14px / <code>line-height: 1.66</code> / <code>letter-spacing: 0.1rem</code>（= 1.6px の絶対値）。大見出しだけ <code>letter-spacing: 5px</code> を別に指定し直しています。</p>
+    <div class="row" style="margin-top:20px">
+      <span class="badge">新商品</span>
+      <a class="chip" href="#">特定保健用食品（トクホ）</a>
+      <a class="chip" href="#">機能性表示食品</a>
+      <a class="chip" href="#">カフェインゼロ</a>
+    </div>
+    <div class="grid4" style="margin-top:24px">
+      <div class="card"><div class="card__img"></div><div class="card__body">
+        <span class="badge">新商品</span>
+        <h3 style="margin-top:8px;font-size:15px">『アサヒ おいしい水 天然水 白湯レモン』</h3>
+        <p class="note" style="margin-top:6px">11/10 発売</p></div></div>
+      <div class="card"><div class="card__img"></div><div class="card__body">
+        <span class="badge">新商品</span>
+        <h3 style="margin-top:8px;font-size:15px">「カルピス(R)甘熟いちご」</h3>
+        <p class="note" style="margin-top:6px">11/10 発売</p></div></div>
+      <div class="card card--raised"><div class="card__img"></div><div class="card__body">
+        <h3 style="font-size:15px">CO2を食べる自販機</h3>
+        <p class="note" style="margin-top:6px">社会との約束</p></div></div>
+      <div class="card"><div class="card__img"></div><div class="card__body">
+        <h3 style="font-size:15px">Fruits Presso</h3>
+        <p class="note" style="margin-top:6px">ブランドサイト</p></div></div>
+    </div>
+    <div class="row" style="margin-top:24px">
+      <a class="btn" href="#">新商品一覧</a>
+      <a class="btn is-focus" href="#">商品一覧</a>
+      <a class="btn btn--wide" href="#">CM一覧</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>palt が効かない</h2>
+    <p style="margin-top:16px;max-width:48em"><code>font-feature-settings: "palt"</code> は <code>.RN-2022 body</code> / <code>header</code> / <code>footer</code> の 3 箇所に宣言され、実測 <b>1331 要素</b>に降りています。ところが <b>1px も詰まっていません</b>。</p>
+    <table class="cmp" style="margin-top:16px">
+      <tr><th style="width:38%">測定対象</th><th style="width:18%">normal</th><th style="width:18%">"palt"</th><th>差</th></tr>
+      <tr><td>実ページの要素（12px）</td><td><code>180px</code></td><td><code>180px</code></td><td><b>0.0%</b></td></tr>
+      <tr><td><code>'Noto Sans JP'</code>（実体は Noto Sans CJK JP）</td><td><code>915.203125px</code></td><td><code>915.203125px</code></td><td><b>0.0%</b></td></tr>
+      <tr><td><code>'Open Sans'</code>（和文はヒラギノに落ちる）</td><td><code>835.203125px</code></td><td><code>730px</code></td><td>−12.6%</td></tr>
+      <tr><td><code>sans-serif</code>（ヒラギノ）</td><td><code>835.203125px</code></td><td><code>730px</code></td><td>−12.6%</td></tr>
+    </table>
+    <p class="note" style="margin-top:14px">原因は配信書体。<code>@font-face</code> の family 名は <code>'Noto Sans JP'</code> ですが、実体は自社ホストの <code>NotoSansCJKjp_{regular,medium,bold}.woff2</code>（＝Noto Sans CJK JP）で、<b>この書体は palt テーブルを持ちません</b>。エラーも警告も出ず、黙って無視されます。<b>Web フォントを入れたことで字詰めが死んでいる</b>構図です。</p>
+    <div style="margin-top:16px;display:grid;gap:10px">
+      <div class="demo demo--palt-off">「アサヒ飲料（株）」、商品情報。<code>normal</code></div>
+      <div class="demo demo--palt-on">「アサヒ飲料（株）」、商品情報。<code>"palt"</code></div>
+    </div>
+    <p class="note" style="margin-top:10px">※ このプレビューはローカルで Google Fonts 版の Noto Sans JP に代替しているため、上の 2 行には差が出ます。<b>実サイトでは差が出ません。</b></p>
+  </section>
+
+  <section class="section">
+    <h2>字間は rem</h2>
+    <p style="margin-top:16px;max-width:48em"><code>body</code> の <code>letter-spacing: 0.1rem</code> は root 16px に対する <b>1.6px という絶対値</b>で、そのまま全子孫へ降ります。<code>em</code> でも px 直書きでもない第 3 の型です。</p>
+    <table class="cmp" style="margin-top:16px">
+      <tr><th style="width:28%">宣言</th><th style="width:20%">実測</th><th>用途</th></tr>
+      <tr><td><b><code>0.1rem</code></b></td><td><b><code>1.6px</code></b></td><td><b>body の既定（123 / 37 要素）</b></td></tr>
+      <tr><td><code>0.06rem</code></td><td><code>0.96px</code></td><td>ヘッダーの補助リンク（39 / 10 要素）</td></tr>
+      <tr><td><code>0.05rem</code></td><td><code>0.8px</code></td><td>ナビの子項目（17 要素）</td></tr>
+      <tr><td><code>5px</code></td><td><code>5px</code></td><td><b>32px の大見出しだけ別指定</b>（8 / 4 要素）</td></tr>
+    </table>
+    <div style="margin-top:16px;display:grid;gap:10px">
+      <div class="demo demo--ls-rem">14px の本文 — アサヒ飲料の商品情報（0.1rem = 1.6px）</div>
+      <div class="demo demo--ls-rem demo--big">32px でも 1.6px のまま（詰まって見える）</div>
+      <div class="demo demo--big" style="letter-spacing:var(--ls-h2)">32px に 5px を指定し直した姿（実サイト）</div>
+    </div>
+    <p class="note" style="margin-top:12px"><code>rem</code> の絶対値なので、<b>文字サイズが変わっても字間は 1.6px のまま</b>。14px では 0.114em 相当、32px では 0.05em 相当と、大きい文字ほど詰まって見えます。だから大見出しは別に指定し直しています。</p>
+  </section>
+
+  <section class="section">
+    <h2>ウェイトは 400 と 700</h2>
+    <table class="cmp" style="margin-top:16px">
+      <tr><th style="width:16%">指定</th><th style="width:22%">@font-face</th><th style="width:20%">実際に出る太さ</th><th>見本</th></tr>
+      <tr><td><code>400</code></td><td>あり（regular）</td><td>400</td><td style="font-weight:400">アサヒ飲料の商品情報</td></tr>
+      <tr><td><code>500</code></td><td>あり（medium）</td><td>500</td><td style="font-weight:500">アサヒ飲料の商品情報（可視 1 要素だけ）</td></tr>
+      <tr><td><b><code>600</code></b></td><td><b>なし</b></td><td><b>700</b></td><td style="font-weight:600">アサヒ飲料の商品情報</td></tr>
+      <tr><td><code>700</code></td><td>あり（bold）</td><td>700</td><td style="font-weight:700">アサヒ飲料の商品情報</td></tr>
+    </table>
+    <p class="note" style="margin-top:12px">配信は 400 / 500 / 700 の 3 本。<b><code>600</code> を指定した 52 要素は 700 に解決されます</b>。逆に <code>500</code> はファイルを読み込んでいるのに 1 要素しか使っていません。</p>
+  </section>
+
+  <section class="section">
+    <h2>影は 2px 2px（右下）</h2>
+    <div class="shadow-demo" style="margin-top:20px">
+      <div style="box-shadow:var(--sh-1)"><b>既定（65 要素）</b><br><code>rgba(0,0,0,.1) 2px 2px 5px 1px</code></div>
+      <div style="box-shadow:var(--sh-2)"><b>浮かせたカード（9 要素）</b><br><code>rgba(0,0,0,.25) 0 0 8px 1px</code></div>
+      <div style="box-shadow:var(--sh-3)"><b>前後ボタン（8 要素）</b><br><code>rgba(0,0,0,.2) 0 2px 4px 0</code></div>
+      <div style="box-shadow:var(--sh-chip)"><b>枠代わり（6 要素）</b><br><code>#8AB0D4 0 0 0 1px</code></div>
+      <div style="box-shadow:var(--sh-focus)"><b>フォーカス（6 要素）</b><br><code>#052D85 0 0 0 2px</code></div>
+      <div style="box-shadow:rgba(0,0,0,.2) 2px 2px 5px 1px"><b>下層のカード（4 要素）</b><br>同じ形で alpha だけ濃く</div>
+    </div>
+    <p class="note" style="margin-top:14px"><b>x と y を同じ値にする</b>のがこのサイトの既定。<code>0 2px</code> のような真下の影ではありません。</p>
+  </section>
+
+  <section class="section">
+    <h2>商品カテゴリー</h2>
+    <div class="grid3" style="margin-top:20px">
+      <div class="card"><div class="card__head" style="background:var(--cat-1)">商品ブランドから探す</div><div class="card__body"><p class="note">炭酸飲料 / コーヒー / お茶飲料</p></div></div>
+      <div class="card"><div class="card__head" style="background:var(--cat-2)">商品カテゴリーから探す</div><div class="card__body"><p class="note">乳性・乳酸菌飲料 / 水 / 果実・野菜飲料</p></div></div>
+      <div class="card"><div class="card__head" style="background:var(--cat-4)">条件から探す</div><div class="card__body"><p class="note">スポーツ・健康飲料 / ギフト</p></div></div>
+    </div>
+    <div class="band" style="margin-top:24px">ニュースリリース</div>
+    <div style="margin-top:16px;background:var(--surface);border-radius:8px;padding:18px 20px">
+      <p>「令和8年8月千葉豪雨」被害に対する支援について</p>
+      <p style="margin-top:8px">「令和8年熊本地震」被害に対する支援について</p>
+    </div>
+    <div class="search" style="margin-top:24px;max-width:520px">
+      <input type="text" placeholder="検索キーワード入力" aria-label="検索キーワード入力">
+      <a class="btn" href="#">検索</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Palette</h2>
+    <div class="swatches" style="margin-top:18px">
+      <div class="sw"><div class="sw__chip" style="background:var(--navy)"></div><div class="sw__meta">ブランド紺（CTA・フォーカス）<br><code>#052D85</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--light-blue)"></div><div class="sw__meta">新商品バッジ<br><code>#48C7EF</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--deep-navy)"></div><div class="sw__meta">セクションの帯<br><code>#27455C</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--blue-sub)"></div><div class="sw__meta">カードの面<br><code>#074194</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--black)"></div><div class="sw__meta">文字（純黒）<br><code>#000000</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--divider)"></div><div class="sw__meta">罫線<br><code>#CFCFCF</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--surface)"></div><div class="sw__meta">面<br><code>#F4F4F4</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--chip-border)"></div><div class="sw__meta">チップの枠（影で描く）<br><code>#8AB0D4</code></div></div>
+    </div>
+    <p class="note" style="margin-top:14px">CMP（OneTrust）の <code>#0033FF</code> はこのサイトの色ではないので、パレットに入れません。</p>
+  </section>
+
+  <section class="section">
+    <h2>本文だけが流体</h2>
+    <p style="margin-top:16px;max-width:48em"><code>html</code> も <code>body</code> も 11 幅（1920〜374px）すべてで <b>16px から動きません</b>。動くのは <code>&lt;p&gt;</code> だけで、767px 以下で <code>3.3vw</code> になります。</p>
+    <table class="cmp" style="margin-top:16px">
+      <tr><th style="width:30%">幅</th><th>&lt;p&gt; の実測</th></tr>
+      <tr><td>768px 以上</td><td><code>14px</code>（固定）</td></tr>
+      <tr><td><b>767px</b></td><td><b><code>25.311px</code></b></td></tr>
+      <tr><td>414px</td><td><code>13.662px</code></td></tr>
+      <tr><td>390px</td><td><code>12.87px</code></td></tr>
+      <tr><td>375px</td><td><code>12.375px</code></td></tr>
+      <tr><td>374px</td><td><code>12.342px</code></td></tr>
+    </table>
+    <p class="note" style="margin-top:12px"><b>768 → 767px で 14px から 25.3px に跳ね上がります（1.8 倍）。</b> タブレット〜大きめのスマホの帯で本文が極端に大きくなり、そこから 375px に向けて滑らかに縮みます。設計幅は 375px 前後（375 × 0.033 = 12.375px）。<b>ルートだけ測ると「完全固定のサイト」に見える</b>ので、要素側を幅を振って測ること。</p>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <a href="#">お客様相談室</a><a href="#">サイトのご利用について</a><a href="#">個人情報保護方針</a><a href="#">サイトマップ</a>
+    <p style="margin-top:16px;font-size:13px;letter-spacing:var(--ls-sub)">アサヒ飲料株式会社</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 国際教養大学（Akita International University）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;500;700&family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       自社 CSS 変数は 95 個あるが、すべて WordPress テーマの雛形の既定値で
+       実装には 1 つも使われていない（--_color-text:#333 も --_global--border-radius:3px も可視 0 要素）。
+       以下は computed style の実測値。2026-11-15 */
+    --green:        #0c8729;   /* ★AIU グリーン。写真の上では 70% 不透明（可視 5 要素） */
+    --green-a70:    rgba(12, 135, 41, 0.7);
+    --brown-fill:   #8c7258;   /* バッジの面（可視 1〜3 要素） */
+    --brown-text:   #876f4e;   /* ラベル・節見出しの文字（可視 11 / 9 要素）。面とは別の値 */
+    --ink:          #1d1d1d;   /* ★文字色かつ暗い面。可視 232 要素 */
+    --black:        #000000;   /* 写真上のキャプション（可視 11 要素） */
+    --white:        #ffffff;
+    --surface:      #f5f5f5;   /* FEATURE / EVENTS の面（可視 3 / 6 要素） */
+    --divider:      #d9d9d9;   /* カレンダーの罫（可視 4 要素） */
+    --muted:        #7b7b7b;
+    --bg:           #ffffff;   /* pageBackground.resolved / 根拠 body */
+
+    /* 5つの特長 — 下層ページで特長 1〜5 に 1 色ずつ。面には使わない */
+    --f1: #cd485d;  --f2: #235e75;  --f3: #4e9f47;  --f4: #a35f1a;  --f5: #d26898;
+    --f1-num: #d14558;   /* 下層の数値だけ近い別の赤（可視 7 要素） */
+    --sun: #913131;      /* カレンダーの日曜（可視 6 要素） */
+    --sat: #1f519c;      /* 同・土曜（可視 5 要素） */
+    --grad-brochure: linear-gradient(96.34deg, #bb4137 0%, #ec685d 52%, #bb4137 100%);
+    --grad-title:    linear-gradient(-45deg, #003415 0%, #00d053 100%);
+
+    /* === Fonts === 3 書体の役割分担。すべて Google Fonts（@import 1 行・v2 形式） */
+    --font-body:   "Noto Sans JP", sans-serif;      /* 本文・ナビ。可視 284 要素 */
+    --font-serif:  "Noto Serif JP", serif;          /* 和文の見出し。17 / 48 要素 */
+    --font-latin:  "Playfair Display", serif;       /* 欧文の大見出し。10 / 1 要素 */
+
+    /* === Line height === 無単位。各要素が自分のサイズで再計算する */
+    --lh-body:  1.34;   /* body の既定（768px 以上）。実測 95 要素 */
+    --lh-nav:   2.00;   /* メガメニュー。実測 88 要素 */
+    --lh-tight: 1.20;   /* more ボタン・カード見出し。30 要素 */
+
+    /* === Letter spacing === ★px の絶対値。em ではない */
+    --ls-body:  1px;    /* body の宣言値 */
+    --ls:       0.8px;  /* ★コンポーネントの既定。可視 146 要素で最多 */
+    --ls-head:  1.5px;  /* 節見出し。20 要素 */
+
+    --r-pill: 30px;   /* ピル。可視 44 要素 */
+    --r-card: 20px;   /* カード・バッジ。下層 13 要素 */
+    --r-news: 4px;
+    --shadow: rgba(0, 0, 0, 0.16) 0 0 6px 0;   /* ★サイト全体で 1 要素だけ */
+
+    --container: 1084px;
+    --gutter: 60px;   /* width: calc(100% - 60px) */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: var(--lh-body);
+    letter-spacing: var(--ls-body);   /* ★px のまま全子孫へ降りる */
+    -webkit-font-smoothing: antialiased;
+    /* font-feature-settings は CSS 全文に 1 行も無い（実測 0 要素）。
+       書体は palt に対応していて −7.7% 効くが、このサイトは使わない。 */
+  }
+
+  /* ★767px 以下では字間をゼロに戻し、行間を詰める（実サイトと同じ崖） */
+  @media screen and (max-width: 767px) {
+    body { letter-spacing: normal; line-height: 1.15; }
+  }
+
+  .wrap { max-width: var(--container); width: calc(100% - var(--gutter)); margin: 0 auto; }
+  .section { padding: 56px 0; border-top: 1px solid var(--divider); }
+  .section:first-of-type { border-top: 0; }
+
+  .label {
+    font-family: var(--font-latin);
+    font-size: 12px; font-weight: 500; letter-spacing: var(--ls-head);
+    color: var(--brown-text); text-transform: uppercase; margin-bottom: 8px;
+  }
+  h1 { font-family: var(--font-serif); font-size: 30px; font-weight: 500; line-height: 1.4; letter-spacing: var(--ls-head); }
+  h2 { font-family: var(--font-latin); font-size: 34px; font-weight: 400; line-height: var(--lh-tight); letter-spacing: var(--ls); }
+  h3 { font-family: var(--font-serif); font-size: 20px; font-weight: 500; line-height: 1.5; letter-spacing: var(--ls); }
+  p  { font-size: 16px; line-height: var(--lh-body); letter-spacing: var(--ls); }
+  .small { font-size: 13px; letter-spacing: var(--ls); }
+
+  /* ---- header: 暗い面（#1d1d1d）。文字色と同じ値を面にも使う ---- */
+  .topbar { background: var(--ink); color: var(--white); padding: 14px 0; }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .topbar a { color: var(--white); text-decoration: none; font-size: 14px; font-weight: 500; letter-spacing: var(--ls); }
+  .topnav { display: flex; gap: 28px; flex-wrap: wrap; }
+  .brand { font-family: var(--font-serif); font-size: 18px; font-weight: 700; letter-spacing: var(--ls-head); }
+
+  /* ---- hero: 写真の上に 70% 不透明のグリーンを敷く（影ではなくベタ面） ---- */
+  .hero {
+    position: relative; min-height: 260px; border-radius: var(--r-card); overflow: hidden;
+    display: flex; align-items: flex-end; margin-top: 32px;
+    background-image:
+      linear-gradient(0deg, rgba(0,0,0,.08), rgba(0,0,0,.08)),
+      linear-gradient(118deg, #cfd9c6 0%, #a9bd9c 46%, #7e9a76 100%);
+  }
+  .hero__veil {
+    background: var(--green-a70); color: var(--white);
+    padding: 18px 28px; width: 100%;
+    font-size: 16px; font-weight: 500; letter-spacing: var(--ls);
+  }
+
+  /* ---- buttons: 塗りのボタンが無い。白地＋1px の黒枠＋ピル ---- */
+  .btn {
+    display: inline-block; background: var(--white); color: var(--ink);
+    border: 1px solid var(--ink); border-radius: var(--r-pill);
+    padding: 8px 40.5px;                       /* ★左右が上下の 5 倍 */
+    font-family: var(--font-latin); font-size: 18px; font-weight: 400;
+    line-height: var(--lh-tight); letter-spacing: var(--ls);
+    text-decoration: none; cursor: pointer;
+  }
+  .btn:hover { background: var(--ink); color: var(--white); }
+  .btn.is-focus { outline: 2px solid var(--green); outline-offset: 3px; }
+  .tag {
+    display: inline-block; background: var(--white); color: var(--ink);
+    border: 1px solid var(--ink); border-radius: var(--r-pill);
+    padding: 9.6px 14.5px; font-size: 13px; letter-spacing: var(--ls);
+    text-decoration: none;
+  }
+  .btn-grad {
+    display: inline-block; background: var(--grad-brochure); color: var(--white);
+    border: 0; border-radius: var(--r-pill); padding: 8px 40.5px;
+    font-size: 15px; font-weight: 500; letter-spacing: var(--ls); text-decoration: none;
+  }
+
+  .badge {
+    display: inline-block; background: var(--brown-fill); color: var(--white);
+    border-radius: var(--r-card); padding: 4px 10px;
+    font-size: 12px; font-weight: 500; letter-spacing: var(--ls);
+  }
+  .badge--event { padding: 6px 8px; background: var(--green); }
+  .cat { color: var(--brown-text); font-size: 12px; font-weight: 500; letter-spacing: var(--ls-head); }
+
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px 32px; }
+  .grid5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+
+  .card { background: var(--surface); border-radius: var(--r-card); padding: 24px; }
+  .card--news { background: var(--white); border-radius: var(--r-news); box-shadow: var(--shadow); padding: 16px 20px; }
+
+  /* 下層の統計: 数値だけ weight 900 */
+  .stat { background: var(--surface); border-radius: var(--r-card); padding: 20px; text-align: center; }
+  .stat__num { font-size: 40px; font-weight: 900; line-height: 1.11; letter-spacing: 0.5px; }
+  .stat__unit { font-size: 24px; font-weight: 900; }
+  .stat__label { font-size: 13px; letter-spacing: var(--ls); margin-top: 6px; }
+
+  .feat { border-left: 4px solid currentColor; padding-left: 14px; }
+  .feat b { font-family: var(--font-latin); font-size: 13px; letter-spacing: var(--ls-head); display: block; }
+  .feat span { color: var(--ink); font-family: var(--font-serif); font-size: 16px; font-weight: 500; }
+
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .sw { border: 1px solid var(--divider); border-radius: var(--r-news); overflow: hidden; }
+  .sw__chip { height: 54px; }
+  .sw__meta { padding: 8px 10px; font-size: 12px; letter-spacing: normal; }
+  .sw__meta code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 11px; color: var(--muted); }
+
+  .cmp { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .cmp th, .cmp td { border: 1px solid var(--divider); padding: 10px 12px; text-align: left; letter-spacing: normal; }
+  .cmp th { background: var(--surface); font-weight: 500; }
+  .cmp code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: 12px; }
+
+  .demo-ls-a { letter-spacing: 1px; }     /* body の継承値 */
+  .demo-ls-b { letter-spacing: normal; }  /* 767px 以下の姿 */
+  .demo-palt-a { font-feature-settings: normal; }
+  .demo-palt-b { font-feature-settings: "palt"; }
+  .demo-box { background: var(--surface); border-radius: var(--r-news); padding: 12px 16px; font-size: 18px; }
+
+  .cal { width: 100%; border-collapse: collapse; font-size: 13px; text-align: center; }
+  .cal th, .cal td { border: 1px solid var(--divider); padding: 8px 4px; letter-spacing: normal; }
+  .cal th { background: var(--surface); font-weight: 500; }
+  .cal .sun { color: var(--sun); }
+  .cal .sat { color: var(--sat); }
+
+  .note { font-size: 13px; color: var(--muted); letter-spacing: normal; line-height: 1.7; }
+  .title-grad {
+    background: var(--grad-title); color: var(--white);
+    border-radius: var(--r-card); padding: 22px 26px;
+    font-family: var(--font-serif); font-size: 26px; font-weight: 500; letter-spacing: var(--ls-head);
+  }
+  footer { background: var(--ink); color: var(--white); padding: 40px 0; margin-top: 56px; }
+  footer a { color: var(--white); text-decoration: none; font-size: 13px; letter-spacing: 1px; }
+  footer .ftnav { display: flex; gap: 28px; flex-wrap: wrap; line-height: var(--lh-nav); }
+
+  @media (max-width: 900px) { .grid3 { grid-template-columns: 1fr 1fr; } .grid5 { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .grid3 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <span class="brand">国際教養大学</span>
+    <nav class="topnav">
+      <a href="#">訪問者別</a><a href="#">入試情報</a><a href="#">寄付</a><a href="#">お問い合わせ</a><a href="#">English</a>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero__veil">動画で見る国際教養大学 — Twenty Years of AIU</div>
+  </div>
+
+  <section class="section">
+    <div class="label">AIU Topics</div>
+    <h2>AIU TOPICS</h2>
+    <p style="margin-top:14px;max-width:46em">AIU SPIRIT を育む国際教養大学の5つの特長を、学びの流れと数字で紹介します。欧文の大見出しは Playfair Display、和文の見出しは Noto Serif JP、本文は Noto Sans JP の三層構造。</p>
+    <div class="row" style="margin-top:20px">
+      <span class="badge">すべて</span>
+      <span class="badge" style="background:var(--green)">国際教養学部</span>
+      <span class="badge--event badge">開催中</span>
+      <span class="cat">New</span><span class="cat">Pickup</span><span class="cat">Instagram</span>
+    </div>
+    <div class="grid3" style="margin-top:24px">
+      <div class="card">
+        <div class="cat">Media Report</div>
+        <h3 style="margin-top:8px">すべて英語の少人数授業</h3>
+        <p class="small" style="margin-top:10px">英語での授業や留学必須を掲げる大学は他にもあります。AIU が違うのは、その全部を 4 年間つなげて設計していることです。</p>
+      </div>
+      <div class="card">
+        <div class="cat">学生活動</div>
+        <h3 style="margin-top:8px">1年間の留学義務</h3>
+        <p class="small" style="margin-top:10px">世界のどこで何を学び取るかは、あなた次第。52 カ国・地域の提携校から選びます。</p>
+      </div>
+      <div class="card--news card">
+        <div class="cat">2026 11/15</div>
+        <h3 style="margin-top:8px">開学20周年記念ドキュメンタリー</h3>
+        <p class="small" style="margin-top:10px">サイト全体で唯一、影を持つカード。<code>rgba(0,0,0,.16) 0 0 6px 0</code></p>
+      </div>
+    </div>
+    <div class="row" style="margin-top:24px">
+      <a class="btn" href="#">more</a>
+      <a class="btn is-focus" href="#">more</a>
+      <a class="btn-grad" href="#">パンフレット</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="label">Typography</div>
+    <h2>三書体の役割分担</h2>
+    <table class="cmp" style="margin-top:18px">
+      <tr><th style="width:24%">役割</th><th style="width:30%">font-family</th><th>実測</th></tr>
+      <tr><td>本文・ナビ</td><td><code>"Noto Sans JP", sans-serif</code></td><td>可視 284 要素（トップ）/ 206 要素（下層）</td></tr>
+      <tr><td>和文の見出し</td><td><code>"Noto Serif JP", serif</code></td><td>17 / 48 要素（<code>.site_common_ttl2/3/5</code>）</td></tr>
+      <tr><td>欧文の大見出し</td><td><code>"Playfair Display", serif</code></td><td>10 / 1 要素（<code>.site_common_ttl1</code>）</td></tr>
+    </table>
+    <div style="margin-top:22px">
+      <h3 style="font-family:var(--font-latin);font-weight:400">Playfair Display — AIU TOPICS / FEATURE</h3>
+      <h3 style="margin-top:10px">Noto Serif JP — 国際教養大学の5つの特長</h3>
+      <p style="margin-top:10px;font-family:var(--font-body)">Noto Sans JP — 英語で学び、自身を語り、他者と協働する力を。</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="label">Letter Spacing</div>
+    <h2>字間は px で配る</h2>
+    <p style="margin-top:12px;max-width:46em"><code>body</code> に <code>letter-spacing: 1px</code> を書いて <b>px の絶対値のまま</b>継承させる。コンポーネント側は <code>0.8px</code> で上書きし、可視 311 要素のうち 146 要素が <code>0.8px</code>。</p>
+    <table class="cmp" style="margin-top:16px">
+      <tr><th style="width:30%">幅</th><th style="width:26%">letter-spacing</th><th>line-height</th></tr>
+      <tr><td>768px 以上</td><td><code>1px</code></td><td><code>1.34</code>（実測 21.44px）</td></tr>
+      <tr><td><b>767px 以下</b></td><td><b><code>normal</code></b></td><td><b><code>1.15</code>（実測 18.4px）</b></td></tr>
+    </table>
+    <div style="margin-top:16px;display:grid;gap:10px">
+      <div class="demo-box demo-ls-a">768px 以上 — 国際教養大学の5つの特長（letter-spacing: 1px）</div>
+      <div class="demo-box demo-ls-b">767px 以下 — 国際教養大学の5つの特長（letter-spacing: normal）</div>
+    </div>
+    <p class="note" style="margin-top:12px">px の絶対値なので、16px の本文では 0.0625em 相当でも、30px の見出しでは 0.033em 相当にしかならない。<b>大きい文字ほど字間が詰まる</b>のがこのサイトの見え方。<code>em</code> に読み替えないこと。</p>
+  </section>
+
+  <section class="section">
+    <div class="label">OpenType</div>
+    <h2>palt は使わない</h2>
+    <p style="margin-top:12px;max-width:46em"><code>font-feature-settings</code> の宣言は CSS 全文に <b>1 行も無い</b>（実測 0 要素）。ただし書体は対応していて、実ページの Noto Sans JP 要素で <b>−7.7%</b> 詰まる。<b>「効かない」のではなく「効くのに使っていない」。</b></p>
+    <div style="margin-top:16px;display:grid;gap:10px">
+      <div class="demo-box demo-palt-a">実サイトの姿 — 「国際教養大学（AIU）」、秋田県。<code>normal</code></div>
+      <div class="demo-box demo-palt-b">足した場合 — 「国際教養大学（AIU）」、秋田県。<code>"palt"</code>（真似しない）</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="label">Features</div>
+    <div class="title-grad">国際教養大学の5つの特長</div>
+    <div class="grid5" style="margin-top:22px">
+      <div class="feat" style="color:var(--f1)"><b>Feature 1</b><span>すべて英語の少人数授業</span></div>
+      <div class="feat" style="color:var(--f2)"><b>Feature 2</b><span>1年間の留学義務</span></div>
+      <div class="feat" style="color:var(--f3)"><b>Feature 3</b><span>多文化共生のキャンパス</span></div>
+      <div class="feat" style="color:var(--f4)"><b>Feature 4</b><span>進路選択支援</span></div>
+      <div class="feat" style="color:var(--f5)"><b>Feature 5</b><span>多様な入試制度</span></div>
+    </div>
+    <div class="grid3" style="margin-top:24px">
+      <div class="stat"><span class="stat__num" style="color:var(--f1-num)">100</span><span class="stat__unit" style="color:var(--f1-num)">%</span><div class="stat__label">英語による授業科目</div></div>
+      <div class="stat"><span class="stat__num" style="color:var(--f2)">200</span><div class="stat__label">海外の提携大学数（52カ国・地域）</div></div>
+      <div class="stat"><span class="stat__num" style="color:var(--f3)">4</span><span class="stat__unit" style="color:var(--f3)">人に1人</span><div class="stat__label">キャンパス内留学生の割合</div></div>
+    </div>
+    <p class="note" style="margin-top:12px">統計の数字だけ <code>font-weight: 900</code>（下層で 35 要素）。見出しは 400〜700 に留める。</p>
+    <div class="row" style="margin-top:20px">
+      <a class="tag" href="#">すべて英語の少人数授業</a>
+      <a class="tag" href="#">1年間の留学義務</a>
+      <a class="tag" href="#">多文化共生のキャンパスライフ</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="label">Colors</div>
+    <h2>Palette</h2>
+    <div class="swatches" style="margin-top:18px">
+      <div class="sw"><div class="sw__chip" style="background:var(--green)"></div><div class="sw__meta">AIU グリーン<br><code>#0C8729</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--brown-fill)"></div><div class="sw__meta">バッジの面<br><code>#8C7258</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--brown-text)"></div><div class="sw__meta">ラベルの文字<br><code>#876F4E</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--ink)"></div><div class="sw__meta">文字 / 暗い面<br><code>#1D1D1D</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--surface)"></div><div class="sw__meta">セクションの面<br><code>#F5F5F5</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--divider)"></div><div class="sw__meta">罫線<br><code>#D9D9D9</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--grad-brochure)"></div><div class="sw__meta">パンフレット<br><code>96.34deg</code></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--grad-title)"></div><div class="sw__meta">下層の見出し<br><code>-45deg</code></div></div>
+    </div>
+    <p class="note" style="margin-top:14px"><b>茶色が 2 つある。</b>面は <code>#8C7258</code>、文字は <code>#876F4E</code>。どちらも実在する。</p>
+  </section>
+
+  <section class="section">
+    <div class="label">Events</div>
+    <h2>Calendar</h2>
+    <table class="cal" style="margin-top:16px">
+      <tr><th class="sun">SUN</th><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th class="sat">SAT</th></tr>
+      <tr><td class="sun">1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td class="sat">7</td></tr>
+      <tr><td class="sun">8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td class="sat">14</td></tr>
+    </table>
+    <p class="note" style="margin-top:12px">日曜 <code>#913131</code> / 土曜 <code>#1F519C</code>。罫は <code>#D9D9D9</code>。</p>
+  </section>
+
+  <section class="section">
+    <div class="label">Tokens</div>
+    <h2>宣言 ≠ 実装</h2>
+    <table class="cmp" style="margin-top:16px">
+      <tr><th style="width:34%">CSS 変数（テーマ雛形）</th><th style="width:30%">宣言値</th><th>実装（実測）</th></tr>
+      <tr><td><code>--_base-font-family</code></td><td><code>"Helvetica Neue",…</code></td><td><b>Noto Sans JP</b>（可視 284 要素）</td></tr>
+      <tr><td><code>--_color-text</code></td><td><code>#333333</code></td><td><b><code>#1D1D1D</code></b>（可視 232 要素）／ <code>#333333</code> は 2 ページとも可視 0</td></tr>
+      <tr><td><code>--_global--border-radius</code></td><td><code>3px</code></td><td><b><code>30px</code></b>（44 要素）／ <code>3px</code> は可視 0</td></tr>
+      <tr><td><code>--_global--container-max-width</code></td><td><code>1280px</code></td><td><b><code>1084px</code></b>（17 要素）</td></tr>
+    </table>
+    <p class="note" style="margin-top:12px">自社 CSS 変数 95 個（<code>--_</code> 接頭辞）はすべて WordPress テーマの雛形の既定値。フィボナッチ数列に基づく余白スケール <code>--_ms-2</code>〜<code>--_ms7</code> も実装では使われていない。<b>変数の値を読んで実装すると別のサイトになる。</b></p>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <nav class="ftnav">
+      <a href="#">開学理念・メッセージ</a><a href="#">応用国際教養教育（AILA）</a><a href="#">中嶋記念図書館</a><a href="#">アクセス</a>
+    </nav>
+    <p style="margin-top:18px;font-size:13px;letter-spacing:0.8px">公立大学法人 国際教養大学 — Akita International University</p>
+  </div>
+</footer>
+
+</body>
+</html>

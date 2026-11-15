@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (637 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (640 sites)</a>
 </p>
 
 <table>
@@ -991,6 +991,11 @@
 </tr>
 <tr>
 <td align="center"><strong>清水建設</strong><br><img src="design-md/shimizu-corp/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>国際教養大学</strong><br><img src="design-md/aiu/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ファミリーマート</strong><br><img src="design-md/family/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>アサヒ飲料</strong><br><img src="design-md/asahiinryo/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1689,11 +1694,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [大鵬薬品工業 (TAIHO PHARMACEUTICAL)](https://www.taiho.co.jp/) | Pharmaceutical / Corporate | [DESIGN.md](design-md/taiho/DESIGN.md) | [preview.html](design-md/taiho/preview.html) |
 | [太陽工業 (TAIYO KOGYO / MakMax)](https://www.taiyokogyo.co.jp/) | Membrane Structures / Corporate | [DESIGN.md](design-md/taiyokogyo/DESIGN.md) | [preview.html](design-md/taiyokogyo/preview.html) |
 | [清水建設 (SHIMIZU CORPORATION)](https://www.shimz.co.jp/) | Construction / Corporate | [DESIGN.md](design-md/shimizu-corp/DESIGN.md) | [preview.html](design-md/shimizu-corp/preview.html) |
+| [国際教養大学 (Akita International University)](https://web.aiu.ac.jp/) | University / Liberal Arts | [DESIGN.md](design-md/aiu/DESIGN.md) | [preview.html](design-md/aiu/preview.html) |
+| [ファミリーマート (FamilyMart)](https://www.family.co.jp/) | Convenience Store / Corporate | [DESIGN.md](design-md/family/DESIGN.md) | [preview.html](design-md/family/preview.html) |
+| [アサヒ飲料 (Asahi Soft Drinks)](https://www.asahiinryo.co.jp/index.psp.html) | Beverage / Corporate | [DESIGN.md](design-md/asahiinryo/DESIGN.md) | [preview.html](design-md/asahiinryo/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (637 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (640 sites)</a>
 </p>
 
 <table>
@@ -2650,6 +2658,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>清水建設</strong><br><img src="design-md/shimizu-corp/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>国際教養大学</strong><br><img src="design-md/aiu/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ファミリーマート</strong><br><img src="design-md/family/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>アサヒ飲料</strong><br><img src="design-md/asahiinryo/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
