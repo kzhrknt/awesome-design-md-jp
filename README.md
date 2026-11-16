@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (640 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (643 sites)</a>
 </p>
 
 <table>
@@ -996,6 +996,11 @@
 </tr>
 <tr>
 <td align="center"><strong>アサヒ飲料</strong><br><img src="design-md/asahiinryo/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>桑沢デザイン研究所</strong><br><img src="design-md/kds/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>光文社</strong><br><img src="design-md/kobunsha/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>三菱ガス化学</strong><br><img src="design-md/mgc/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1697,11 +1702,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [国際教養大学 (Akita International University)](https://web.aiu.ac.jp/) | University / Liberal Arts | [DESIGN.md](design-md/aiu/DESIGN.md) | [preview.html](design-md/aiu/preview.html) |
 | [ファミリーマート (FamilyMart)](https://www.family.co.jp/) | Convenience Store / Corporate | [DESIGN.md](design-md/family/DESIGN.md) | [preview.html](design-md/family/preview.html) |
 | [アサヒ飲料 (Asahi Soft Drinks)](https://www.asahiinryo.co.jp/index.psp.html) | Beverage / Corporate | [DESIGN.md](design-md/asahiinryo/DESIGN.md) | [preview.html](design-md/asahiinryo/preview.html) |
+| [専門学校桑沢デザイン研究所 (KUWASAWA DESIGN SCHOOL)](https://www.kds.ac.jp/) | Design School / Education | [DESIGN.md](design-md/kds/DESIGN.md) | [preview.html](design-md/kds/preview.html) |
+| [光文社 (KOBUNSHA)](https://www.kobunsha.com/) | Publishing / Magazines | [DESIGN.md](design-md/kobunsha/DESIGN.md) | [preview.html](design-md/kobunsha/preview.html) |
+| [三菱ガス化学 (Mitsubishi Gas Chemical)](https://www.mgc.co.jp/) | Chemicals / Corporate | [DESIGN.md](design-md/mgc/DESIGN.md) | [preview.html](design-md/mgc/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (640 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (643 sites)</a>
 </p>
 
 <table>
@@ -2663,6 +2671,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>アサヒ飲料</strong><br><img src="design-md/asahiinryo/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>桑沢デザイン研究所</strong><br><img src="design-md/kds/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>光文社</strong><br><img src="design-md/kobunsha/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>三菱ガス化学</strong><br><img src="design-md/mgc/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

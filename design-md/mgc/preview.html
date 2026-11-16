@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 三菱ガス化学（Mitsubishi Gas Chemical）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === 自社トークン 16 個（プラットフォーム由来 0）===
+       実サイトの :root にこの名前で宣言されている。綴りもそのまま写している。 2026-11-16 */
+    --keyColor:          #D42522;   /* ★宣言はあるが可視 0 要素。赤系の面も文字も 1 つも無い */
+    --linkColor:         #0072bf;   /* ★実質のブランド色。面はトップ 52 / 下層 178 要素 */
+    --linkHoverColor:    #0053d5;
+    --linkColorvisited:  #990099;
+    --bdrColor:          #ADB4B9;
+    --bgColorLightBlue:  #EFF5F7;   /* IR カード・絞り込みパネルの面 */
+    --bgBdrLightBlue:    #D3E0E5;   /* 上の面の枠、スライダーのドット */
+    --contensWidth:      1300px;    /* ★綴りは contents ではなく contens。直すと参照が切れる */
+    --bothSides:         4.8%;
+    --spaceSS:  10px;
+    --spaceS:   20px;
+    --spaceM:   30px;
+    --spaceTtl: 48px;   /* 見出し直下。スケールから外れた用途名 */
+    --spaceL:   60px;
+    --spaceLL:  80px;
+    --spaceXL:  120px;
+
+    /* === 実測で拾った色（トークンになっていないもの）=== */
+    --deep-blue: #0064b6;   /* セクション見出し帯・事業部門ラベル（トップ 11 / 下層 5 要素） */
+    --navy:      #204579;   /* 下層のページタイトル帯（489,600px² の大面積） */
+    --ink:       #222222;   /* ★本文・見出し。可視 94 要素。純黒は使わない */
+    --ink-2:     #333333;   /* グローバルナビ（可視 9 要素） */
+    --muted:     #666666;   /* 日付・カテゴリ・EN（可視 13 要素） */
+    --divider:   #cccccc;   /* ★メガメニューの区切り。可視 54 要素（両ページとも同数） */
+    --surface-2: #edf3f5;   /* 検索パネル */
+    --surface-3: #e2fbff;   /* 製品情報 */
+    --white:     #ffffff;
+    --bg:        #ffffff;   /* pageBackground.resolved / 根拠 body */
+
+    /* === Fonts ===
+       Noto Sans JP は Google Fonts で 400 / 500 / 700 が loaded（100 は unloaded）。
+       受け皿にヒラギノ角ゴ ProN を明示。Pro ではなく ProN。
+       Roboto は @font-face があるが unloaded・可視 0 要素なので再現しない。 */
+    --font: "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height === */
+    --lh:      1.4;    /* ★既定。トップ 115 / 下層 86 要素 */
+    --lh-read: 1.85;   /* 読ませる段落 */
+    --lh-head: 1.3;    /* ヒーローの見出し */
+    --lh-mid:  1.5;
+    --lh-1:    1;      /* バッジ */
+
+    /* === Letter spacing ===
+       body に 0.05em を 1 回だけ書いて 0.8px の絶対値で継承させる。
+       子要素では再宣言しない（実測 136 / 110 要素がすべて 0.8px）。 */
+    --ls:      0.05em;
+    --ls-hero: -0.1em;   /* ヒーローの .lead（26px）に当たり、-2.6px が 46px の子へ降りる */
+
+    /* === Shape === */
+    --r:      10px;   /* ★既定の角丸。トップ 10 / 下層 15 要素 */
+    --r-tag:  18px;
+    --r-hero: 40px;
+    --r-s:    5px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* ★html は 10px（1rem = 10px）、body が 16px を宣言し直す。
+     19 幅（1920〜320px）すべてで両方とも固定。流体は無い。 */
+  html { font-size: 10px; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);   /* → 0.8px が絶対値で全子孫に降りる */
+    word-break: normal;
+    /* 実サイトは body { font-feature-settings: "pwid" } を 1 行書いて 1172 要素へ継承しているが、
+       実測で本文に 0.0%（595.45px → 595.45px）。詰めたいなら palt（−6.7%）。
+       ここでは「効いていない」という事実に合わせて何も書かない。 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid var(--divider); }
+  .header-inner { display: flex; align-items: center; gap: var(--spaceM); max-width: 1700px; margin: 0 auto; padding: 16px var(--bothSides); }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-mark { width: 26px; height: 26px; background: var(--keyColor); clip-path: polygon(50% 0%, 100% 86%, 0% 86%); }
+  .logo-text { font-size: 22px; font-weight: 700; letter-spacing: var(--ls); line-height: var(--lh-1); color: var(--ink); }
+  .header-nav { display: flex; gap: 22px; margin-left: auto; }
+  .header-nav a { font-size: 16px; font-weight: 500; line-height: var(--lh); letter-spacing: var(--ls); color: var(--ink-2); text-decoration: none; }
+  .lang { display: flex; gap: 4px; align-items: center; font-size: 14px; }
+  .lang .on { font-weight: 700; color: var(--ink); }
+  .lang .off { color: var(--muted); }
+
+  /* HERO */
+  .hero { max-width: 1700px; margin: 0 auto; padding: var(--spaceL) var(--bothSides) var(--spaceM); display: grid; grid-template-columns: 1fr 1fr; gap: var(--spaceL); align-items: center; }
+  .hero-lead { font-size: 26px; font-weight: 400; line-height: var(--lh-head); letter-spacing: var(--ls-hero); }
+  .hero-ttl { font-size: 46px; font-weight: 400; line-height: var(--lh-head); color: var(--ink); }
+  .hero-sub { font-size: 22px; font-weight: 400; line-height: var(--lh-mid); letter-spacing: var(--ls); margin-top: 14px; color: var(--ink); }
+  .hero-cta { display: inline-block; margin-top: var(--spaceM); background: var(--white); color: var(--ink); border: 1px solid var(--linkColor); border-radius: var(--r-hero); padding: 16px 32px; font-size: 16px; font-weight: 500; letter-spacing: var(--ls); line-height: var(--lh-1); text-decoration: none; box-shadow: none; }
+  .hero-art { height: 340px; border-radius: var(--r); background-image: linear-gradient(rgba(0,181,157,.25) 0%, rgba(254,194,49,.25) 100%), linear-gradient(140deg, #cfe3f2 0%, #9fc4e4 55%, #6ea4d4 100%); }
+  .dots { display: flex; gap: 8px; margin-top: var(--spaceS); align-items: center; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--bgBdrLightBlue); border: 2px solid var(--bgBdrLightBlue); }
+  .dot.on { background: var(--deep-blue); border-color: var(--deep-blue); }
+
+  /* SECTIONS */
+  .section { max-width: var(--contensWidth); margin: 0 auto; padding: var(--spaceL) var(--bothSides); }
+  .section-wide { max-width: 1700px; margin: 0 auto; padding: var(--spaceL) var(--bothSides); }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: .08em; margin-bottom: var(--spaceSS); }
+  .section-title { font-size: 24px; font-weight: 700; line-height: var(--lh); letter-spacing: var(--ls); margin-bottom: var(--spaceSS); }
+  .section-lead { font-size: 16px; font-weight: 400; line-height: var(--lh-read); letter-spacing: var(--ls); margin-bottom: var(--spaceTtl); max-width: 920px; }
+  .section-lead b { font-weight: 700; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--bgColorLightBlue); padding: 1px 5px; }
+
+  .pagettl { background: var(--navy); color: var(--white); }
+  .pagettl-inner { max-width: 1700px; margin: 0 auto; padding: var(--spaceM) var(--bothSides); font-size: 24px; font-weight: 700; letter-spacing: var(--ls); line-height: var(--lh); }
+
+  /* 01 COLORS */
+  .swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spaceS); }
+  .sw { border: 1px solid var(--bgBdrLightBlue); border-radius: var(--r); overflow: hidden; }
+  .sw-chip { height: 80px; }
+  .sw-body { padding: 12px 14px 16px; }
+  .sw-name { font-size: 14px; font-weight: 700; line-height: var(--lh); letter-spacing: var(--ls); }
+  .sw-hex { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .sw-note { font-size: 12px; font-weight: 400; line-height: var(--lh); letter-spacing: var(--ls); color: var(--muted); margin-top: 6px; }
+  .sw-dead { border-color: var(--keyColor); }
+  .sw-dead .sw-name::after { content: " — 可視 0 要素"; color: var(--keyColor); font-weight: 400; font-size: 12px; }
+
+  /* 02 pwid table */
+  .panel { background: var(--bgColorLightBlue); border: 1px solid var(--bgBdrLightBlue); border-radius: var(--r); padding: var(--spaceM) var(--spaceM) var(--spaceM); }
+  .ff-table { width: 100%; border-collapse: collapse; font-size: 14px; font-weight: 400; letter-spacing: var(--ls); }
+  .ff-table th, .ff-table td { border-bottom: 1px solid var(--bgBdrLightBlue); padding: 10px; text-align: left; line-height: var(--lh); }
+  .ff-table th { font-weight: 700; color: var(--muted); font-size: 12px; }
+  .ff-table td.n { font-family: var(--font-mono); font-size: 13px; }
+  .ff-table tr.key td { background: var(--white); font-weight: 700; }
+  .ff-zero { color: var(--keyColor); font-weight: 700; }
+  .ff-good { color: var(--linkColor); font-weight: 700; }
+
+  /* 03 TYPE */
+  .type-row { border-bottom: 1px solid var(--bgBdrLightBlue); padding: var(--spaceS) 0; display: grid; grid-template-columns: 200px 1fr; gap: var(--spaceM); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; color: var(--muted); line-height: var(--lh); }
+  .t-hero { font-size: 46px; font-weight: 400; line-height: var(--lh-head); letter-spacing: -2.6px; }
+  .t-lead { font-size: 26px; font-weight: 400; line-height: var(--lh-head); letter-spacing: -2.6px; }
+  .t-h1   { font-size: 24px; font-weight: 700; line-height: var(--lh); letter-spacing: var(--ls); }
+  .t-h2   { font-size: 20px; font-weight: 500; line-height: var(--lh); letter-spacing: var(--ls); }
+  .t-body { font-size: 16px; font-weight: 500; line-height: var(--lh); letter-spacing: var(--ls); }
+  .t-alt  { font-size: 14px; font-weight: 400; line-height: var(--lh); letter-spacing: var(--ls); }
+  .t-read { font-size: 16px; font-weight: 400; line-height: var(--lh-read); letter-spacing: var(--ls); max-width: 760px; }
+
+  /* 04 BUTTONS / TAGS */
+  .btn-row { display: flex; gap: var(--spaceS); flex-wrap: wrap; align-items: center; }
+  .tag { display: inline-block; background: var(--linkColor); color: var(--white); border: 1px solid var(--linkColor); border-radius: var(--r-tag); padding: 9px 20px; font-size: 14px; font-weight: 700; letter-spacing: var(--ls); line-height: var(--lh-1); text-decoration: none; box-shadow: none; }
+  .card-link { display: inline-block; background: var(--bgColorLightBlue); color: var(--linkColor); border: 1px solid var(--linkColor); border-radius: var(--r); padding: 14px 26px; font-size: 16px; font-weight: 500; letter-spacing: var(--ls); text-decoration: none; }
+  .banner { display: inline-block; background: var(--deep-blue); color: var(--white); border-radius: var(--r); padding: 14px 26px; font-size: 16px; font-weight: 500; letter-spacing: var(--ls); text-decoration: none; }
+  .is-focus { outline: 2px solid var(--linkHoverColor); outline-offset: 3px; }
+  .linkline { margin-top: var(--spaceS); font-size: 16px; line-height: var(--lh-read); }
+  .linkline a { color: var(--linkColor); }
+  .linkline a.visited { color: var(--linkColorvisited); }
+
+  /* 05 SEARCH PANEL */
+  .search { border-radius: var(--r); padding: var(--spaceM); background-image: linear-gradient(360deg, #0e6ec8 0%, #004893 100%); }
+  .search-ttl { font-size: 24px; font-weight: 700; line-height: var(--lh); letter-spacing: var(--ls); color: var(--white); }
+  .search-form { display: flex; margin-top: var(--spaceS); }
+  .search-form input { flex: 1; border: none; border-radius: var(--r-s) 0 0 var(--r-s); padding: 14px 16px; font-family: var(--font); font-size: 16px; letter-spacing: var(--ls); color: var(--ink); background: var(--white); }
+  .search-form button { border: none; border-radius: 0 var(--r-s) var(--r-s) 0; background: var(--ink); color: var(--white); padding: 14px 24px; font-family: var(--font); font-size: 14px; font-weight: 700; letter-spacing: var(--ls); cursor: pointer; }
+  .search-tabs { display: flex; gap: 2px; margin-top: var(--spaceS); }
+  .search-tab { background: var(--bgBdrLightBlue); color: var(--ink); border-radius: var(--r) var(--r) 0 0; padding: 12px 20px; font-size: 16px; font-weight: 500; letter-spacing: var(--ls); line-height: var(--lh); }
+  .search-tab.on { background: var(--white); font-weight: 700; }
+
+  /* 06 CARDS */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spaceM); }
+  .card { background: var(--bgColorLightBlue); border: 1px solid var(--bgBdrLightBlue); border-radius: var(--r); padding: var(--spaceS) 22px 26px; box-shadow: none; }
+  .card-ttl { font-size: 20px; font-weight: 500; line-height: var(--lh); letter-spacing: var(--ls); color: var(--ink); }
+  .card-txt { font-size: 16px; font-weight: 400; line-height: var(--lh-read); letter-spacing: var(--ls); color: var(--ink); margin-top: var(--spaceSS); }
+
+  /* 07 SPACING */
+  .space-row { display: flex; align-items: center; gap: var(--spaceS); padding: 7px 0; }
+  .space-bar { height: 14px; background: var(--linkColor); border-radius: 2px; }
+  .space-name { font-family: var(--font-mono); font-size: 12px; color: var(--muted); width: 120px; }
+  .space-val { font-family: var(--font-mono); font-size: 12px; color: var(--ink); width: 60px; }
+
+  /* NEWS */
+  .news-row { display: grid; grid-template-columns: 130px 100px 1fr; gap: var(--spaceS); align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--divider); }
+  .news-date { font-size: 14px; font-weight: 400; color: var(--muted); line-height: var(--lh); }
+  .news-cat { font-size: 14px; font-weight: 700; color: var(--white); background: var(--linkColor); border-radius: var(--r-tag); padding: 4px 12px; text-align: center; line-height: var(--lh); }
+  .news-ttl { font-size: 16px; font-weight: 500; line-height: var(--lh); color: var(--ink); text-decoration: none; }
+  .news-ttl:hover { color: var(--linkHoverColor); }
+
+  /* FOOTER */
+  .footer { background: var(--ink); color: var(--white); padding: var(--spaceL) 0; margin-top: var(--spaceL); }
+  .footer-inner { max-width: 1700px; margin: 0 auto; padding: 0 var(--bothSides); display: flex; gap: var(--spaceM); align-items: flex-start; flex-wrap: wrap; }
+  .footer-name { font-size: 18px; font-weight: 700; letter-spacing: var(--ls); line-height: var(--lh); }
+  .footer-addr { font-size: 14px; font-weight: 400; letter-spacing: var(--ls); line-height: var(--lh-read); margin-top: 6px; opacity: .85; }
+  .footer-copy { font-size: 12px; letter-spacing: var(--ls); margin-left: auto; opacity: .7; }
+
+  @media screen and (max-width: 1023px) {
+    .section-title, .t-h2 { font-size: 18px; }
+    .hero { grid-template-columns: 1fr; }
+    .cards { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media screen and (max-width: 767px) {
+    .swatches { grid-template-columns: repeat(2, 1fr); }
+    .cards { grid-template-columns: 1fr; }
+    .header-nav { display: none; }
+    .hero-ttl { font-size: 28px; }
+    .t-hero { font-size: 28px; }
+    .news-row, .type-row { grid-template-columns: 1fr; gap: 6px; }
+    .section, .section-wide { padding: var(--spaceM) var(--bothSides); }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo"><span class="logo-mark"></span><span class="logo-text">三菱ガス化学</span></div>
+    <nav class="header-nav">
+      <a href="#colors">当社について</a>
+      <a href="#pwid">事業・製品</a>
+      <a href="#type">研究開発</a>
+      <a href="#buttons">投資家情報</a>
+      <a href="#cards">サステナビリティ</a>
+    </nav>
+    <div class="lang"><span class="on">JP</span><span class="off">/</span><span class="off">EN</span></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <div class="hero-lead">中期経営計画「Grow UP 2026」</div>
+    <div class="hero-ttl">3分でわかる！三菱ガス化学</div>
+    <div class="hero-sub">～「伸びる」「勝てる」「サステナブル」～</div>
+    <a class="hero-cta" href="#pwid">中期経営計画を見る →</a>
+    <div class="dots"><span class="dot"></span><span class="dot on"></span><span class="dot"></span></div>
+  </div>
+  <div class="hero-art"></div>
+</section>
+
+<section class="section-wide" id="pwid">
+  <div class="section-label">01 / OpenType</div>
+  <h2 class="section-title">書いてある <code>pwid</code> は、効いていない</h2>
+  <p class="section-lead">実サイトは <code>body { font-feature-settings: "pwid" }</code> を 1 行書いて <b>1172 要素</b>へ継承している（<code>html</code> は <code>normal</code>）。しかし実スタック・40px で測ると、<b>実際のページ文面では 1px も変わらない</b>。唯一動くのは約物が連続したときで、しかも<b>詰まるのではなく 27.9% 広がる</b>。<b>詰めたいなら <code>palt</code>。</b></p>
+  <div class="panel">
+    <table class="ff-table">
+      <thead><tr><th>文字列</th><th><code>normal</code></th><th><code>"pwid"</code></th><th>差</th><th><code>"palt"</code></th><th>差</th></tr></thead>
+      <tbody>
+        <tr class="key"><td>中期経営計画「Grow UP 2026」<br><span style="font-weight:400;color:#666666;font-size:12px;">（実際の見出し）</span></td><td class="n">595.45px</td><td class="n">595.45px</td><td class="ff-zero">±0.00（0.0%）</td><td class="n">555.45px</td><td class="ff-good">−6.7%</td></tr>
+        <tr><td>三菱ガス化学株式会社（漢字かな）</td><td class="n">408.00px</td><td class="n">408.00px</td><td class="ff-zero">±0.00</td><td class="n">402.17px</td><td>−1.4%</td></tr>
+        <tr><td>MGC Grow UP 2026（半角英数）</td><td class="n">366.73px</td><td class="n">366.73px</td><td class="ff-zero">±0.00</td><td class="n">366.73px</td><td>±0.00</td></tr>
+        <tr><td>ＭＧＣ　２０２６（全角英数）</td><td class="n">326.41px</td><td class="n">326.41px</td><td class="ff-zero">±0.00</td><td class="n">273.25px</td><td class="ff-good">−16.3%</td></tr>
+        <tr><td>、。「」（）・：；（約物の連続）</td><td class="n">287.20px</td><td class="n">367.20px</td><td class="ff-zero">+27.9%（広がる）</td><td class="n">187.20px</td><td class="ff-good">−34.8%</td></tr>
+      </tbody>
+    </table>
+    <p class="section-lead" style="margin:var(--spaceS) 0 0;"><b><code>font-feature-settings</code> が宣言されていることと、効いていることは別。</b>このサイトは「<code>palt</code> が効かない」のではなく、<b><code>palt</code> ではなく <code>pwid</code> を書いてしまっている</b>。既存ページと見た目を揃えるなら <code>pwid</code> のままにし、詰めたいときだけ <code>palt</code> に差し替える（その瞬間に全ページの折り返しが変わる）。</p>
+  </div>
+</section>
+
+<section class="section-wide" id="colors">
+  <div class="section-label">02 / Colors</div>
+  <h2 class="section-title">青が 3 段。赤は宣言だけ</h2>
+  <p class="section-lead">トークン名が <code>--keyColor</code> なのに、<b><code>#D42522</code> は可視 0 要素</b>——文字色・背景・ボーダーのいずれにも出ず、赤系の背景色自体が 1 つも無い。<b>実質のブランド色は <code>--linkColor: #0072bf</code></b>。青は役割で 3 段に分かれており、1 色に丸めない。</p>
+  <div class="swatches">
+    <div class="sw"><div class="sw-chip" style="background:var(--linkColor)"></div><div class="sw-body"><div class="sw-name">Primary（--linkColor）</div><div class="sw-hex">#0072bf</div><div class="sw-note">面 トップ 52 / 下層 178 要素。タグ・CTA</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--deep-blue)"></div><div class="sw-body"><div class="sw-name">Deep Blue</div><div class="sw-hex">#0064b6</div><div class="sw-note">セクション見出し帯（11 / 5 要素）</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--navy)"></div><div class="sw-body"><div class="sw-name">Navy</div><div class="sw-hex">#204579</div><div class="sw-note">下層のページタイトル帯</div></div></div>
+    <div class="sw sw-dead"><div class="sw-chip" style="background:var(--keyColor)"></div><div class="sw-body"><div class="sw-name">--keyColor</div><div class="sw-hex">#D42522</div><div class="sw-note">★宣言のみ。描画されない</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--ink)"></div><div class="sw-body"><div class="sw-name">Ink（本文・フッター）</div><div class="sw-hex">#222222</div><div class="sw-note">可視 94 要素。純黒は使わない</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--muted)"></div><div class="sw-body"><div class="sw-name">Muted</div><div class="sw-hex">#666666</div><div class="sw-note">日付・カテゴリ・EN</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--bgColorLightBlue)"></div><div class="sw-body"><div class="sw-name">Surface（--bgColorLightBlue）</div><div class="sw-hex">#EFF5F7</div><div class="sw-note">カード・絞り込みパネルの面</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--divider)"></div><div class="sw-body"><div class="sw-name">Divider</div><div class="sw-hex">#cccccc</div><div class="sw-note">可視 54 要素（両ページとも同数）</div></div></div>
+  </div>
+</section>
+
+<section class="section" id="type">
+  <div class="section-label">03 / Typography</div>
+  <h2 class="section-title">字間は body に 1 回だけ</h2>
+  <p class="section-lead"><code>body { letter-spacing: 0.05em }</code> が 16px × 0.05 = <b>0.8px の絶対値</b>で全子孫に降りる（可視 136 / 110 要素）。<b>サイズが変わっても 0.8px のまま</b>なので、24px の見出しでは 0.033em、12px のキャプションでは 0.067em。<b>大きい文字ほど字間が相対的に消える。</b>ヒーローだけ負の <code>-2.6px</code> で、これも 26px の親から 46px の子へ px のまま降りる。</p>
+
+  <div class="type-row"><div class="type-meta">Hero Headline<br>46px / 400 / 1.3<br>ls <b>-2.6px</b>（= -0.057em）</div><div class="t-hero">3分でわかる！三菱ガス化学</div></div>
+  <div class="type-row"><div class="type-meta">Hero Lead<br>26px / 400 / 1.3<br>ls <b>-2.6px</b>（= -0.10em）</div><div class="t-lead">中期経営計画「Grow UP 2026」</div></div>
+  <div class="type-row"><div class="type-meta">Section Heading<br>24px / <b>700</b> / 1.4<br>ls 0.8px</div><div class="t-h1">製品を探す</div></div>
+  <div class="type-row"><div class="type-meta">Card Heading<br>20px / 500 / 1.4<br>→ 1023px 以下で 18px</div><div class="t-h2">C1ケミカル事業部</div></div>
+  <div class="type-row"><div class="type-meta">Body / Nav<br>16px / <b>500</b> / 1.4<br>最多（57 / 41 要素）</div><div class="t-body">「天然ガス」をベースに社会に不可欠な製品を安定供給する。</div></div>
+  <div class="type-row"><div class="type-meta">Body Alt<br>14px / 400 / 1.4<br>下層 42 要素</div><div class="t-alt">ホーム ／ 事業・製品 ／ トップメッセージ</div></div>
+  <div class="type-row"><div class="type-meta">読ませる段落<br>16px / 400 / <b>1.85</b></div><div class="t-read">市場のニーズにこたえる先端製品を開発し、グリーン・エネルギー＆ケミカル事業部門と機能化学品事業部門の二つの軸で社会に不可欠な素材を届けています。</div></div>
+
+  <p class="section-lead" style="margin:var(--spaceM) 0 0;"><b>weight は 400 / 500 / 700 の 3 段。</b><code>@font-face</code> もこの 3 本が <code>loaded</code> なので<b>合成太字は起きない</b>。600 は読み込んでいないので使わない。フォールバックは <b>ProN</b>（Pro ではない）。</p>
+</section>
+
+<section class="section-wide" id="buttons">
+  <div class="section-label">04 / Buttons &amp; Tags</div>
+  <h2 class="section-title">角丸 10px が既定。影は無い</h2>
+  <p class="section-lead">カードと CTA は <code>border-radius: 10px</code>（トップ 10 / 下層 15 要素）。タグは 18px、ヒーローの CTA だけ 40px、ドットは 50%。<b><code>box-shadow</code> はサイト本体で実測 0 種</b>（唯一の影は Cookie 同意バナーで、外部ウィジェット）。</p>
+  <div class="btn-row">
+    <a class="tag" href="#buttons">すべて</a>
+    <a class="tag" href="#buttons">製品情報</a>
+    <a class="tag" href="#buttons">IR</a>
+    <a class="card-link" href="#buttons">主要製品生産能力一覧</a>
+    <a class="banner" href="#buttons">グリーン・エネルギー &amp; ケミカル事業部門</a>
+    <a class="card-link is-focus" href="#buttons">フォーカス状態</a>
+  </div>
+  <div class="linkline">本文中のリンクは <a href="#buttons">#0072bf</a>、ホバーで <span style="color:var(--linkHoverColor);font-weight:700;">#0053d5</span>、訪問済みは <a class="visited" href="#buttons">#990099</a>。</div>
+</section>
+
+<section class="section-wide" id="search">
+  <div class="section-label">05 / Product Search</div>
+  <h2 class="section-title">絞り込みは 4 軸</h2>
+  <p class="section-lead">検索パネルの地は <code>linear-gradient(360deg, #0e6ec8 0%, #004893 100%)</code>。角度 <code>360deg</code> と停止位置はそのまま写す。タブの角丸は <code>10px 10px 0 0</code>、検索ボタンは <code>0 5px 5px 0</code> と<b>右側だけ丸める</b>。</p>
+  <div class="search">
+    <div class="search-ttl">製品を探す</div>
+    <div class="search-form"><input type="text" placeholder="製品名、キーワードを入力してください"><button>Search</button></div>
+    <div class="search-tabs">
+      <div class="search-tab on">製品群から</div>
+      <div class="search-tab">用途・機能から</div>
+      <div class="search-tab">事業部から</div>
+      <div class="search-tab">50音から</div>
+    </div>
+  </div>
+</section>
+
+<section class="section-wide" id="cards">
+  <div class="section-label">06 / Cards &amp; News</div>
+  <h2 class="section-title">淡い面で整理する</h2>
+  <p class="section-lead">カードは <code>--bgColorLightBlue</code> <code>#EFF5F7</code> の面に <code>--bgBdrLightBlue</code> <code>#D3E0E5</code> の枠。影を足さずに、<b>角丸 10px と淡い面だけ</b>で奥行きを作る。</p>
+  <div class="cards">
+    <div class="card"><div class="card-ttl">C1ケミカル事業部</div><div class="card-txt">世界唯一のメタノール総合メーカーとして、基礎化学品を安定供給する。</div></div>
+    <div class="card"><div class="card-ttl">ハイパフォーマンスプロダクツ事業部</div><div class="card-txt">独自技術から生まれた高機能材料で、電子・光学の最先端を支える。</div></div>
+    <div class="card"><div class="card-ttl">環境貢献製品</div><div class="card-txt">今注目されている、地球環境にやさしい製品群をご紹介します。</div></div>
+  </div>
+  <div style="margin-top:var(--spaceL);">
+    <div class="news-row"><span class="news-date">2026年11月13日</span><span class="news-cat">製品情報</span><a class="news-ttl" href="#cards">特殊芳香族製品の新グレードを発売</a></div>
+    <div class="news-row"><span class="news-date">2026年11月05日</span><span class="news-cat">IR</span><a class="news-ttl" href="#cards">2026年度 第2四半期 決算短信を公表</a></div>
+    <div class="news-row"><span class="news-date">2026年10月28日</span><span class="news-cat">その他</span><a class="news-ttl" href="#cards">エージレス特設サイトを公開しました</a></div>
+  </div>
+</section>
+
+<section class="section" id="space">
+  <div class="section-label">07 / Spacing &amp; Container</div>
+  <h2 class="section-title"><code>--spaceSS</code> から <code>--spaceXL</code> まで 7 段</h2>
+  <p class="section-lead">自社トークン 16 個のうち 7 個が余白。<b><code>--spaceTtl: 48px</code> だけスケールから外れた用途名</b>なので、見出し直下の余白はこれを使う。コンテナは最外 <code>1700px</code>／本文 <code>--contensWidth: 1300px</code>／左右 <code>--bothSides: 4.8%</code>。<b><code>contens</code> という綴りは直さない</b>（参照が切れる）。</p>
+  <div class="panel">
+    <div class="space-row"><span class="space-name">--spaceSS</span><span class="space-val">10px</span><span class="space-bar" style="width:10px"></span></div>
+    <div class="space-row"><span class="space-name">--spaceS</span><span class="space-val">20px</span><span class="space-bar" style="width:20px"></span></div>
+    <div class="space-row"><span class="space-name">--spaceM</span><span class="space-val">30px</span><span class="space-bar" style="width:30px"></span></div>
+    <div class="space-row"><span class="space-name">--spaceTtl</span><span class="space-val">48px</span><span class="space-bar" style="width:48px;background:var(--deep-blue)"></span></div>
+    <div class="space-row"><span class="space-name">--spaceL</span><span class="space-val">60px</span><span class="space-bar" style="width:60px"></span></div>
+    <div class="space-row"><span class="space-name">--spaceLL</span><span class="space-val">80px</span><span class="space-bar" style="width:80px"></span></div>
+    <div class="space-row"><span class="space-name">--spaceXL</span><span class="space-val">120px</span><span class="space-bar" style="width:120px"></span></div>
+  </div>
+  <p class="section-lead" style="margin:var(--spaceM) 0 0;"><b>ルートは <code>10px</code>（1rem = 10px）、本文は <code>16px</code>。</b>19 幅（1920〜320px）すべてで両方とも固定で、<code>letter-spacing</code> も <code>0.8px</code>、<code>word-break</code> も <code>normal</code> のまま。<b>流体はルートにも body にも無い。</b></p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-name">三菱ガス化学株式会社</div>
+      <div class="footer-addr">〒100-8324 東京都千代田区丸の内 2-5-2 三菱ビル</div>
+    </div>
+    <div class="footer-copy">Copyright © MITSUBISHI GAS CHEMICAL COMPANY, INC.</div>
+  </div>
+</footer>
+
+</body>
+</html>

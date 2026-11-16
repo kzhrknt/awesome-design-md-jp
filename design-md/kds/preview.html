@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 専門学校桑沢デザイン研究所（KUWASAWA DESIGN SCHOOL）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties による自社トークンは存在しない（own: 0）。
+       検出された 2 個は WordPress / Gutenberg の --wp--preset--font-size--*。
+       以下はすべて computed style の実測値。2026-11-16 */
+    --ink:        #222222;   /* ★本文・見出し・ナビ。可視 217 要素。body に宣言。純黒は使わない */
+    --white:      #ffffff;   /* 黒面・写真の上。可視 276 要素 */
+    --muted:      #707070;   /* 日付（可視 2 要素） */
+    --muted-2:    #8f8c8c;   /* /about/ のパンくず */
+    --link:       #0043c9;   /* ★リンク。可視 99 要素。4 専攻の色とは別系統 */
+    --veil:       rgba(34, 34, 34, 0.7);   /* ★学生作品の幕。可視 80 要素。黒ではなく #222222 の 70% */
+    --surface:    #ececec;   /* 画像プレースホルダ */
+    --surface-2:  #f5f5f5;
+    --surface-3:  #ededec;   /* フッター上の面 */
+    --surface-4:  #d9d8d8;   /* /about/ のページ見出し帯 */
+    --bg:         #ffffff;   /* pageBackground.resolved / 根拠 body */
+
+    /* /about/ だけに出る 3 ポリシーの塗り分け */
+    --policy-d:   #ebf6f7;   /* ディプロマ・ポリシー */
+    --policy-c:   #f3f3f3;   /* カリキュラム・ポリシー */
+    --policy-a:   #fef4f4;   /* アドミッション・ポリシー */
+    --accent-red: #ff0000;   /* /about/ の引用強調 1 要素のみ */
+
+    /* === 4 専攻カラー。このサイトのブランドカラーで、4 色は対等 === */
+    --vd: #b1172f;   /* ビジュアルデザイン（可視 5 要素） */
+    --pd: #149056;   /* プロダクトデザイン（可視 4 要素） */
+    --fd: #ecb230;   /* ファッションデザイン（可視 4 要素） */
+    --sd: #2989c6;   /* スペースデザイン（可視 3 要素） */
+
+    /* === Fonts ===
+       Noto Serif JP / Noto Sans JP は Google Fonts。実サイトと同一。
+       400 と 700 の 2 本だけ読み込んでいるので、中間ウェイトは使わない。
+       body のレガシースタック（ヒラギノ角ゴ Pro W3…）は下層ページで使われる。
+       実サイトの font-family: lato は @font-face もフォント要求も無い死んだ別名なので
+       ここでは再現せず、generic sans-serif に相当する扱いにしている。 */
+    --font-serif: "Noto Serif JP", serif;                /* ★トップの主役。369 要素 */
+    --font-sans:  "Noto Sans JP", sans-serif;            /* お知らせ本文・専攻名。106 要素 */
+    --font-legacy: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, sans-serif;
+    --font-mono:  SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height ===
+       実サイトは html { line-height: 1 }（無単位）。1.00 が 194 要素。
+       子で必ず宣言し直す設計なので、ここでも各所で上書きしている。 */
+    --lh-1:     1;      /* html の既定がそのまま降りている要素（194 要素） */
+    --lh-body:  1.7;    /* ★本文。241 要素で最多 */
+    --lh-read:  1.8;    /* /about/ の読み物 */
+    --lh-head:  1.4;    /* 見出し・ニュース */
+    --lh-mid:   1.5;    /* 見出し（20px） */
+    --lh-quote: 1.45;   /* 学生インタビューの引用 */
+
+    /* === Letter spacing ===
+       0.05em が設計値。body に書いて 13px × 0.05 = 0.65px の絶対値で継承させ、
+       さらに各コンポーネントが 0.05em を持ち直す「二重配り」。 */
+    --ls:       0.05em;
+    --ls-badge: 0.1em;    /* 専攻バッジ（12px → 1.2px） */
+    --ls-title: 2px;      /* /about/ のページタイトルだけ別格 */
+
+    /* === Shape: 角丸・影とも実測 0 種（2 ページとも） === */
+    --r: 0px;
+
+    --container: 1500px;
+    --gap: 10px;        /* グリッドの唯一の gap 実測値 */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* ★ルートは 13px 固定。19 幅（1920〜320px）すべてで 1px も動かない。
+     流体も clamp() も % の入れ子も無い。1rem = 13px。 */
+  html { font-size: 13px; line-height: var(--lh-1); }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    /* 実サイトの body はこのレガシースタック。トップの実体は Noto Serif JP */
+    font-family: var(--font-legacy);
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: var(--ls);   /* → 0.65px が絶対値で全子孫に降りる */
+    /* font-feature-settings は実サイトで 1 要素も使われていない（実測 0 件）。
+       Noto Serif JP は palt を持っており 13px で −11.8%（261.75 → 230.98px）効くが、
+       足すと手組みの改行位置がずれるため、この設計では使わない。 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid var(--surface); }
+  .header-inner { display: flex; align-items: center; gap: 26px; max-width: var(--container); margin: 0 auto; padding: 14px 20px; }
+  .logo { display: flex; flex-direction: column; gap: 3px; }
+  .logo-en { font-family: var(--font-serif); font-size: 18px; font-weight: 700; letter-spacing: 0.12em; line-height: var(--lh-1); }
+  .logo-ja { font-family: var(--font-serif); font-size: 20px; font-weight: 700; letter-spacing: var(--ls); line-height: var(--lh-1); }
+  .header-nav { display: flex; gap: 20px; margin-left: auto; }
+  .header-nav a { font-family: var(--font-serif); font-size: 13px; font-weight: 700; letter-spacing: var(--ls); line-height: var(--lh-1); color: var(--ink); text-decoration: none; }
+  .menu-btn { background: var(--ink); color: var(--white); border: none; border-radius: var(--r); padding: 12px 16px; font-size: 12px; font-weight: 700; letter-spacing: var(--ls-badge); cursor: pointer; font-family: var(--font-sans); }
+
+  /* SECTIONS */
+  .section { padding: 60px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--surface-3); }
+  .section-alt .section-inner { padding: 60px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-bottom: 10px; letter-spacing: 0.08em; }
+  .section-title { font-family: var(--font-serif); font-size: 23px; font-weight: 700; line-height: var(--lh-mid); letter-spacing: var(--ls); margin: 12px 0 14px; }
+  .section-lead { font-family: var(--font-serif); font-size: 14px; font-weight: 400; line-height: var(--lh-body); letter-spacing: var(--ls); margin-bottom: 32px; max-width: 840px; }
+  .section-lead b { font-weight: 700; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--surface-2); padding: 1px 5px; }
+
+  /* 01 COLORS */
+  .swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .sw { border: 1px solid var(--surface); }
+  .sw-chip { height: 86px; }
+  .sw-body { padding: 10px 12px 14px; }
+  .sw-name { font-family: var(--font-serif); font-size: 14px; font-weight: 700; letter-spacing: var(--ls); line-height: var(--lh-head); }
+  .sw-hex { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .sw-note { font-size: 12px; line-height: var(--lh-head); letter-spacing: var(--ls); color: var(--ink); margin-top: 6px; font-family: var(--font-sans); }
+
+  /* 02 TYPOGRAPHY */
+  .type-row { border-top: 1px solid var(--surface); padding: 20px 0; display: grid; grid-template-columns: 170px 1fr; gap: 24px; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; color: var(--muted); line-height: var(--lh-head); }
+  .t-lead    { font-family: var(--font-serif); font-size: 22px; font-weight: 700; line-height: var(--lh-quote); letter-spacing: var(--ls); }
+  .t-h2      { font-family: var(--font-serif); font-size: 20px; font-weight: 700; line-height: var(--lh-mid); letter-spacing: var(--ls); }
+  .t-body    { font-family: var(--font-serif); font-size: 14px; font-weight: 700; line-height: var(--lh-body); letter-spacing: var(--ls); }
+  .t-base    { font-family: var(--font-serif); font-size: 13px; font-weight: 700; line-height: var(--lh-1); letter-spacing: var(--ls); }
+  .t-caption { font-family: var(--font-sans); font-size: 12px; font-weight: 400; line-height: var(--lh-head); letter-spacing: var(--ls); }
+  .t-read    { font-family: var(--font-serif); font-size: 14px; font-weight: 400; line-height: var(--lh-read); letter-spacing: var(--ls); max-width: 640px; }
+
+  /* 03 MAJORS */
+  .majors { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .major { border: 1px solid var(--surface); }
+  .major-badge { display: inline-block; border-radius: var(--r); padding: 9px 13px; color: var(--white); font-family: var(--font-sans); font-size: 12px; font-weight: 700; letter-spacing: var(--ls-badge); line-height: var(--lh-1); }
+  .major-body { padding: 14px 14px 18px; }
+  .major-name { font-family: var(--font-serif); font-size: 14px; font-weight: 700; letter-spacing: var(--ls); line-height: var(--lh-head); margin-top: 12px; }
+  .major-note { font-family: var(--font-sans); font-size: 12px; line-height: var(--lh-head); letter-spacing: var(--ls); color: var(--muted); margin-top: 6px; }
+
+  /* 04 WORKS（幕） */
+  .works { display: grid; grid-template-columns: 34px repeat(3, 1fr); gap: 20px; align-items: start; }
+  /* 縦組みは「縦に積む」構成なので flex-direction は触らない（実サイトも左カラムに縦積み） */
+  .works-rail { writing-mode: vertical-rl; font-family: var(--font-serif); font-size: 20px; font-weight: 700; letter-spacing: var(--ls); line-height: var(--lh-1); color: var(--ink); height: 214px; }
+  .work-card { position: relative; border-radius: var(--r); overflow: hidden; }
+  /* 面そのものに background-image を持たせる（兄弟の絶対配置にしない）。
+     実サイトは写真の上に rgba(34,34,34,.7) の幕を敷く */
+  .work-thumb {
+    height: 190px;
+    background-image: linear-gradient(var(--veil), var(--veil)),
+                      linear-gradient(135deg, #cfd3d6 0%, #9aa2a8 55%, #6f7579 100%);
+    display: flex; flex-direction: column; justify-content: flex-end; padding: 16px;
+  }
+  .work-major { font-family: var(--font-sans); font-size: 12px; font-weight: 700; letter-spacing: var(--ls-badge); color: var(--white); line-height: var(--lh-1); }
+  .work-title { font-family: var(--font-serif); font-size: 14px; font-weight: 700; letter-spacing: var(--ls); line-height: var(--lh-head); color: var(--white); margin-top: 8px; }
+  .work-year { font-family: var(--font-sans); font-size: 12px; letter-spacing: var(--ls); color: var(--white); margin-top: 4px; opacity: .85; }
+
+  /* 05 NEWS */
+  .news-head { display: flex; align-items: stretch; }
+  .news-label { background: var(--ink); color: var(--white); font-family: var(--font-serif); font-size: 20px; font-weight: 700; letter-spacing: var(--ls); line-height: var(--lh-mid); padding: 24px 28px; border-radius: var(--r); display: flex; align-items: center; }
+  .news-list { flex: 1; border: 1px solid var(--surface); border-left: none; padding: 18px 24px; }
+  .news-row { display: flex; gap: 20px; align-items: baseline; padding: 7px 0; }
+  .news-date { font-family: var(--font-sans); font-size: 16px; letter-spacing: var(--ls); color: var(--muted); line-height: var(--lh-head); white-space: nowrap; }
+  .news-link { font-family: var(--font-sans); font-size: 16px; letter-spacing: var(--ls); color: var(--link); line-height: var(--lh-head); text-decoration: none; }
+  .news-link:hover { text-decoration: underline; }
+  .news-more { font-family: var(--font-sans); font-size: 14px; letter-spacing: var(--ls); color: var(--link); text-decoration: none; margin-left: auto; }
+
+  /* 06 BUTTONS */
+  .btn-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .btn { display: inline-block; border-radius: var(--r); border: none; cursor: pointer; text-decoration: none; font-family: var(--font-serif); font-weight: 700; letter-spacing: var(--ls); line-height: var(--lh-1); box-shadow: none; }
+  .btn-primary { background: var(--ink); color: var(--white); font-size: 11px; padding: 14px 22px; }
+  .btn-white   { background: var(--white); color: var(--ink); font-size: 15px; padding: 15px 26px; }
+  .btn-outline { background: transparent; color: var(--ink); border: 1px solid var(--ink); font-size: 14px; font-weight: 400; padding: 14px 24px; }
+  /* 写真の上の白罫線ボタン。面そのものに background-image を持たせる */
+  .onphoto {
+    margin-top: 18px; padding: 30px;
+    background-image: linear-gradient(rgba(34,34,34,.45), rgba(34,34,34,.6)),
+                      linear-gradient(120deg, #8e969c 0%, #5d6467 100%);
+  }
+  .btn-on-photo { background: transparent; color: var(--white); border: 1px solid var(--white); font-size: 14px; font-weight: 400; padding: 14px 24px; }
+  .is-focus { outline: 2px solid var(--link); outline-offset: 2px; }
+
+  /* 07 POLICIES（/about/） */
+  .policies { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .policy { padding: 20px 22px 24px; border-radius: var(--r); }
+  .policy-ttl { font-family: var(--font-sans); font-size: 20px; font-weight: 400; line-height: var(--lh-mid); letter-spacing: var(--ls); }
+  .policy-txt { font-family: var(--font-serif); font-size: 14px; font-weight: 400; line-height: var(--lh-read); letter-spacing: var(--ls); margin-top: 10px; }
+
+  /* 08 SCALE */
+  .scale-table { width: 100%; border-collapse: collapse; font-family: var(--font-sans); font-size: 12px; letter-spacing: var(--ls); }
+  .scale-table th, .scale-table td { border-bottom: 1px solid var(--surface); padding: 9px 10px; text-align: left; line-height: var(--lh-head); }
+  .scale-table th { font-weight: 700; color: var(--muted); font-size: 12px; }
+  .scale-table td b { font-weight: 700; }
+  .flat-note { margin-top: 18px; padding: 16px 18px; background: var(--surface-2); font-family: var(--font-serif); font-size: 14px; line-height: var(--lh-body); letter-spacing: var(--ls); border-radius: var(--r); }
+
+  /* FOOTER */
+  .footer { background: var(--ink); color: var(--white); padding: 40px 20px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap; }
+  .footer-name { font-family: var(--font-serif); font-size: 15px; font-weight: 700; letter-spacing: var(--ls); line-height: var(--lh-head); }
+  .footer-addr { font-family: var(--font-sans); font-size: 12px; letter-spacing: var(--ls); line-height: var(--lh-head); margin-top: 8px; opacity: .85; }
+  .footer-copy { font-family: var(--font-sans); font-size: 10px; letter-spacing: var(--ls); margin-left: auto; opacity: .7; }
+
+  @media screen and (max-width: 768px) {
+    /* 実サイトのブレークポイントは 768px の 1 本。h2 だけ 20px → 16px に縮む。
+       本文（14px）とベース（13px）は据え置き。 */
+    .section, .section-alt .section-inner { padding: 40px 16px; }
+    .section-title { font-size: 16px; }
+    .t-h2 { font-size: 16px; }
+    .swatches, .majors, .policies { grid-template-columns: repeat(2, 1fr); }
+    .works { grid-template-columns: 34px 1fr; }
+    .header-nav { display: none; }
+    .news-head { flex-direction: column; }
+    .news-list { border-left: 1px solid var(--surface); }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-en">KUWASAWA DESIGN SCHOOL</div>
+      <div class="logo-ja">専門学校 桑沢デザイン研究所</div>
+    </div>
+    <nav class="header-nav">
+      <a href="#colors">桑沢デザイン研究所とは</a>
+      <a href="#type">学科紹介</a>
+      <a href="#majors">入学案内</a>
+      <a href="#works">学生作品展</a>
+      <a href="#news">就職・キャリア</a>
+    </nav>
+    <button class="menu-btn">MENU</button>
+  </div>
+</header>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">ブランドカラーは「4 専攻の色」</h2>
+  <p class="section-lead">単色のプライマリが存在しない。<b>VD 赤・PD 緑・SD 青・FD 黄の 4 色は対等</b>で、どれか 1 色をサイト全体のキーカラーに昇格させない。彩度のある色でこれ以外に出るのは<b>リンクの <code>#0043c9</code> だけ</b>（可視 99 要素）。文字は純黒ではなく <code>#222222</code>。</p>
+  <div class="swatches">
+    <div class="sw"><div class="sw-chip" style="background:var(--vd)"></div><div class="sw-body"><div class="sw-name">VD / ビジュアルデザイン</div><div class="sw-hex">#b1172f</div><div class="sw-note">可視 5 要素</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--pd)"></div><div class="sw-body"><div class="sw-name">PD / プロダクトデザイン</div><div class="sw-hex">#149056</div><div class="sw-note">可視 4 要素</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--sd)"></div><div class="sw-body"><div class="sw-name">SD / スペースデザイン</div><div class="sw-hex">#2989c6</div><div class="sw-note">可視 3 要素</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--fd)"></div><div class="sw-body"><div class="sw-name">FD / ファッションデザイン</div><div class="sw-hex">#ecb230</div><div class="sw-note">可視 4 要素</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--ink)"></div><div class="sw-body"><div class="sw-name">Ink（本文・面）</div><div class="sw-hex">#222222</div><div class="sw-note">可視 217 要素。body に宣言</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--link)"></div><div class="sw-body"><div class="sw-name">Link</div><div class="sw-hex">#0043c9</div><div class="sw-note">可視 99 要素</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--veil)"></div><div class="sw-body"><div class="sw-name">Veil（作品の幕）</div><div class="sw-hex">rgba(34,34,34,.7)</div><div class="sw-note">可視 80 要素。黒ではない</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--muted)"></div><div class="sw-body"><div class="sw-name">Muted（日付）</div><div class="sw-hex">#707070</div><div class="sw-note">可視 2 要素</div></div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="type">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">明朝を、ゴシックのように太く使う</h2>
+  <p class="section-lead">トップの可視 598 要素のうち <b>Noto Serif JP が 369 要素</b>、そのうち <b>weight 700 が 413 要素</b>。見出しだけでなくナビもラベルもボタンも明朝 700。Noto Serif JP は 400/700 の 2 本しか読み込んでいないので、<b>この 700 は合成ではなく実体</b>。ルートは <code>13px</code> 固定で、<code>html { line-height: 1 }</code> が全子孫に降りる。</p>
+
+  <div class="type-row"><div class="type-meta">Lead<br>22px / 700 / 1.45<br>ls 1.1px（0.05em）</div><div class="t-lead">目指すはスポーツ系プロダクト。授業を通して決まった。</div></div>
+  <div class="type-row"><div class="type-meta">Heading 2<br>20px / 700 / 1.5<br>→ 768px 以下は 16px</div><div class="t-h2">学科紹介</div></div>
+  <div class="type-row"><div class="type-meta">Body<br>14px / 700 / 1.7<br>ls 0.7px。最多 300 要素</div><div class="t-body">第一線で活躍する先輩たちのことばから探る、デザインという仕事のかたち。</div></div>
+  <div class="type-row"><div class="type-meta">Base / Nav<br>13px / 700 / 1.0<br>ls 0.65px（body 継承）</div><div class="t-base">受験生の方へ　在学生・保護者の方へ　卒業生の方へ</div></div>
+  <div class="type-row"><div class="type-meta">Caption<br>Noto Sans JP<br>12px / 400 / 1.4</div><div class="t-caption">総合デザイン科 昼間部 3年制／専攻デザイン科 夜間部 2年制</div></div>
+  <div class="type-row"><div class="type-meta">読み物（下層）<br>14px / 400 / 1.8</div><div class="t-read">1954年にデザイン・ジャーナリスト桑澤洋子によって創立された、日本で最初のデザイン専門学校。小手先の技ではなく、独創や応用力の源となる「デザインの基礎」を学ぶ。</div></div>
+
+  <div class="flat-note"><b>字間は二重に配られている。</b><code>body { letter-spacing: 0.05em }</code> が 13px × 0.05 = <b>0.65px の絶対値</b>で継承され（170 要素）、さらに各コンポーネントが <code>0.05em</code> を自分で持ち直す（14px なら 0.7px が 285 要素、22px なら 1.1px）。<b>片方だけ再現すると、サイズを変えたときの字間が合わなくなる。</b></div>
+</div>
+</section>
+
+<section class="section" id="majors">
+  <div class="section-label">03 / Major Badges</div>
+  <h2 class="section-title">バッジは角丸ゼロ・影ゼロ</h2>
+  <p class="section-lead">略号は <b>Noto Sans JP 12px / weight 700 / <code>letter-spacing: 0.1em</code></b>。面は専攻色、文字は白。<code>border-radius</code> も <code>box-shadow</code> も実測 0 種なので、<b>角を丸めた時点で別のサイトになる</b>。</p>
+  <div class="majors">
+    <div class="major"><div class="major-body"><span class="major-badge" style="background:var(--vd)">VD</span><div class="major-name">ビジュアルデザイン専攻</div><div class="major-note">グラフィック／広告／映像</div></div></div>
+    <div class="major"><div class="major-body"><span class="major-badge" style="background:var(--pd)">PD</span><div class="major-name">プロダクトデザイン専攻</div><div class="major-note">工業製品／家具／道具</div></div></div>
+    <div class="major"><div class="major-body"><span class="major-badge" style="background:var(--sd)">SD</span><div class="major-name">スペースデザイン専攻</div><div class="major-note">空間／建築／展示</div></div></div>
+    <div class="major"><div class="major-body"><span class="major-badge" style="background:var(--fd)">FD</span><div class="major-name">ファッションデザイン専攻</div><div class="major-note">服飾／テキスタイル</div></div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="works">
+<div class="section-inner">
+  <div class="section-label">04 / Student Works</div>
+  <h2 class="section-title">縦組みは「幅 20px の細いタブ」だけ</h2>
+  <p class="section-lead">実サイトで <code>writing-mode: vertical-rl</code> を持つのは <b>6 要素</b>。すべて<b>幅 20px / 40px の細いタブ</b>で、見出し（20px・左 150px）と 4 専攻のラベル（14px・右端）。<b>ファーストビューの大きな縦組みコピーは <code>.webp</code> 画像</b>（1440×606px）なので、Web フォントで実装しない。サムネイルに文字を重ねるときは <code>rgba(34,34,34,.7)</code> の幕を敷く。</p>
+  <div class="works">
+    <div class="works-rail">学生作品</div>
+    <div class="work-card"><div class="work-thumb"><div class="work-major" style="color:var(--white)">VD</div><div class="work-title">『ひろいもの』なんとなく気になっていたもの</div><div class="work-year">2025年度 卒業制作</div></div></div>
+    <div class="work-card"><div class="work-thumb"><div class="work-major">PD</div><div class="work-title">「記憶の形」</div><div class="work-year">2025年度 卒業制作</div></div></div>
+    <div class="work-card"><div class="work-thumb"><div class="work-major">SD</div><div class="work-title">「いきものマトペ」</div><div class="work-year">2025年度 卒業制作</div></div></div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="news">
+  <div class="section-label">05 / News</div>
+  <h2 class="section-title">黒い見出し面 ＋ 青いリンク</h2>
+  <p class="section-lead">見出しは <code>#222222</code> の長方形に白の明朝 700。日付は <code>#707070</code>、リンクは <code>#0043c9</code>。<b>角丸も影も無い。</b></p>
+  <div class="news-head">
+    <div class="news-label">重要なお知らせ</div>
+    <div class="news-list">
+      <div class="news-row"><span class="news-date">2026.11.08</span><a class="news-link" href="#news">夜間附帯教育　説明会 11/14開催</a></div>
+      <div class="news-row"><span class="news-date">2026.03.03</span><a class="news-link" href="#news">学費の改定について</a></div>
+      <div class="news-row"><span class="news-date">2026.02.17</span><a class="news-link" href="#news">卒業生4名が「2026年度グッドデザイン・ニューホープ賞」を受賞</a><a class="news-more" href="#news">お知らせの一覧を見る ›</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt" id="buttons">
+<div class="section-inner">
+  <div class="section-label">06 / Buttons</div>
+  <h2 class="section-title">長方形しかない</h2>
+  <p class="section-lead">CTA は <b>黒面に白の明朝 700</b>、白面に黒、または <b>1px の罫線だけ</b>の 3 種。<code>border-radius: 0</code> / <code>box-shadow: none</code> は例外なし。フォーカスリングはリンクの青 <code>#0043c9</code>。</p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="#buttons">資料請求</a>
+    <a class="btn btn-white" href="#buttons">オープンキャンパスに申し込む</a>
+    <a class="btn btn-outline" href="#buttons">入学案内を見る</a>
+    <a class="btn btn-outline is-focus" href="#buttons">フォーカス状態</a>
+  </div>
+  <div class="onphoto">
+    <div class="t-h2" style="color:var(--white)">写真の上に重ねるとき</div>
+    <p style="font-family:var(--font-serif);font-size:14px;font-weight:400;line-height:1.7;letter-spacing:.05em;color:#ffffff;margin-top:8px;max-width:620px;">面そのものに <code style="background:rgba(255,255,255,.18);color:#ffffff;">background-image</code> を持たせ、暗い幕を 1 枚重ねてから白文字を置く。</p>
+    <a class="btn btn-on-photo" href="#buttons" style="margin-top:14px;">学生作品展について</a>
+  </div>
+</div>
+</section>
+
+<section class="section" id="policies">
+  <div class="section-label">07 / Policies（下層ページ）</div>
+  <h2 class="section-title">3 ポリシーだけ淡い色で塗り分ける</h2>
+  <p class="section-lead">下層ページは <b>weight 400 が主役</b>（93 要素）になり、トップの 700 主体とは調子が変わる。クラス接頭辞も <code>kds_newtop_</code> と <code>kds_page_</code> で分かれている<b>2 世代同居</b>。新規実装はトップ側に寄せる。</p>
+  <div class="policies">
+    <div class="policy" style="background:var(--policy-d)"><div class="policy-ttl">ディプロマ・ポリシー</div><div class="policy-txt">卒業認定の方針。デザインの基礎を土台に、独創と応用力をもって社会の課題に向き合えること。</div></div>
+    <div class="policy" style="background:var(--policy-c)"><div class="policy-ttl">カリキュラム・ポリシー</div><div class="policy-txt">教育課程編成・実施の方針。基礎造形・基礎デザインを全員が学んだうえで、4 専攻へ進む。</div></div>
+    <div class="policy" style="background:var(--policy-a)"><div class="policy-ttl">アドミッション・ポリシー</div><div class="policy-txt">入学者受入れの方針。デザインを「個の問題ではなく衆の問題」として考えようとする人を迎える。</div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="scale">
+<div class="section-inner">
+  <div class="section-label">08 / Scale &amp; Responsive</div>
+  <h2 class="section-title">ルートは 13px。19 幅すべてで動かない</h2>
+  <p class="section-lead">流体（<code>vw</code> / <code>clamp()</code> / <code>%</code> の入れ子）は 1 つも無い。メディアクエリは <code>screen and (max-width: 768px)</code> が <b>825 件</b>で実質 1 本。崖で変わるのは <b><code>h2</code> の 20px → 16px だけ</b>で、本文もベースも据え置き。</p>
+  <table class="scale-table">
+    <thead><tr><th>項目</th><th>≥ 769px</th><th>≤ 768px</th><th>備考</th></tr></thead>
+    <tbody>
+      <tr><td><code>html</code> font-size</td><td><b>13px</b></td><td><b>13px</b></td><td>1rem = 13px。1920〜320px で固定</td></tr>
+      <tr><td><code>body</code> font-size</td><td>13px</td><td>13px</td><td>同上</td></tr>
+      <tr><td><code>body</code> letter-spacing</td><td>0.65px</td><td>0.65px</td><td>0.05em の絶対値継承</td></tr>
+      <tr><td><code>body</code> line-height</td><td>13px</td><td>13px</td><td><code>html { line-height: 1 }</code> 由来</td></tr>
+      <tr><td>Heading 2</td><td><b>20px</b></td><td><b>16px</b></td><td>唯一縮む要素</td></tr>
+      <tr><td>Body</td><td>14px</td><td>14px</td><td>据え置き</td></tr>
+      <tr><td>border-radius</td><td colspan="2"><b>0 種</b></td><td>2 ページとも実測 0</td></tr>
+      <tr><td>box-shadow</td><td colspan="2"><b>0 種</b></td><td>2 ページとも実測 0</td></tr>
+      <tr><td>Container</td><td colspan="2">1500px</td><td>gap は 10px</td></tr>
+    </tbody>
+  </table>
+  <div class="flat-note"><b>実サイトの <code>font-family: lato</code> は死んだ別名。</b><code>@font-face</code> もフォント要求も 0 件で、<code>lato, sans-serif</code> と <code>sans-serif</code> の実測幅が <b>562px / 562px と完全一致</b>（Arial は 498.92px）。日付・<code>MENU</code>・専攻略号の 29 要素が generic sans-serif で出ている。<b>真似しない。</b></div>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-name">専門学校 桑沢デザイン研究所</div>
+      <div class="footer-addr">〒150-0041 東京都渋谷区神南 1-4-17</div>
+    </div>
+    <div class="footer-copy">Copyright © KUWASAWA DESIGN SCHOOL</div>
+  </div>
+</footer>
+
+</body>
+</html>

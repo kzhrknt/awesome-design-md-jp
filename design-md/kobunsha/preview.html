@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 光文社（KOBUNSHA）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@600&family=Noto+Sans+JP:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       自社トークンは実質存在しない（own: 2、残り 60 個は WordPress admin / Gutenberg）。
+       以下はすべて computed style の実測値。2026-11-16 */
+    --ink-strong: #292929;   /* ★お知らせの見出し（可視 31 要素）。面としても最多（25 要素） */
+    --ink:        #3b3b3b;   /* ★本文・ナビ（可視 20〜22 要素）。純黒ではない */
+    --muted:      #88929d;   /* セクション見出しの和文・日付（可視 33 要素） */
+    --muted-2:    #727c86;   /* 下層の雑誌名リスト（可視 32 要素）。少し濃い */
+    --border:     #c4c4c4;   /* 法定表記まわり */
+    --surface:    #efefef;   /* ボタンの薄面・タグ（可視 4〜5 要素） */
+    --veil:       rgba(255, 255, 255, 0.6);   /* ★見出しブロックの面。背後のグラデを透かす */
+    --line:       #707070;   /* お知らせ行頭の 2px 縦罫（linear-gradient で引く・23 要素） */
+    --white:      #ffffff;
+
+    /* ★見えている地はグラデーション。body の白（pageBackground.resolved）ではない */
+    --bg-from:    #ecedef;
+    --bg-to:      #d2dae2;
+
+    /* === Fonts ===
+       Noto Sans JP は Google Fonts の可変フォント（wght@100..900）を 1 本。実サイトと同一。
+       実使用は 500（169 要素）/ 600（156 要素）の 2 段で、700 以上は 1 要素も無い。
+       欧文見出しは Josefin Sans 600 の 1 本だけ。
+       実サイトは和文見出しに "Big Caslon", serif と書いているが、Big Caslon は
+       欧文専用の macOS 同梱書体で CJK グリフを持たず、和文は必ず serif に落ちる
+       （実測: "Big Caslon", serif = 400.00px / serif = 400.00px で完全一致）。
+       ここでは和文明朝を明示したチェーンに直して再現している。 */
+    --font-ja:     "Noto Sans JP", sans-serif;
+    --font-en:     "Josefin Sans", sans-serif;
+    --font-mincho: "Big Caslon", "Hiragino Mincho ProN", "Yu Mincho", "游明朝", serif;
+    --font-mono:   SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height ===
+       既定は 1.15（トップ 59 / 下層 65 要素で最多）。日本語の本文としては詰まりすぎなので、
+       読ませるブロックにだけ 2.5 / 3.56 を明示して切り分けている。 */
+    --lh:       1.15;   /* ★既定 */
+    --lh-nav:   1.38;
+    --lh-tag:   1.23;
+    --lh-read:  2.5;    /* ★下層の説明文（8 要素） */
+    --lh-lead:  3.56;   /* トップの企業理念（3 要素） */
+    --lh-hero:  1;      /* ヒーローのコピー */
+
+    /* === Letter spacing ===
+       和文は normal が既定（トップ 142 / 下層 97 要素）。
+       当てているのは欧文だけで、値は一律 0.02em。 */
+    --ls:    normal;
+    --ls-en: 0.02em;
+
+    /* === Shape ===
+       ボタンは border-radius: 1440px（＝完全な丸。「十分に大きい値」という書き方）。
+       カードの角丸はヒーローと同じ vh 式。 */
+    --r-pill: 1440px;
+    --r-card: min(16px, 1.48148vh);
+
+    /* === ★ヒーローは viewport の「高さ」に追従する（設計高 1080px）===
+       107/1080 = 9.90741% / 700/1080 = 64.8148% / 16/1080 = 1.48148% / 30/1080 = 2.77778% */
+    --hero-fs:   min(107px, 9.90741vh);
+    --hero-img:  min(700px, 64.8148vh);
+    --hero-pad:  min(30px, 2.77778vh);
+
+    --container: 1440px;
+    --column:    1160px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* ルートは 16px 固定。19 幅（1920〜320px）すべてで 1px も動かない。
+     幅方向は固定で、流体なのは高さ方向。 */
+  html { font-size: 16px; }
+
+  body {
+    /* 実サイトの body は白だが、見えている地は .l-bg::before のグラデーション。
+       ここでは body に直接当てて同じ見た目にしている。 */
+    background: linear-gradient(to right, var(--bg-from) 0%, var(--bg-to) 100%);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: var(--font-ja);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+    /* font-feature-settings は実サイトで 1 要素も使われていない（実測 0 件）。
+       字間を normal で通す方針と一貫している。 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { background: var(--veil); backdrop-filter: blur(6px); }
+  .header-inner { display: flex; align-items: center; gap: 26px; max-width: var(--container); margin: 0 auto; padding: 16px 20px; }
+  .logo { font-family: var(--font-ja); font-size: 22px; font-weight: 600; letter-spacing: .08em; line-height: var(--lh); color: var(--ink-strong); }
+  .header-nav { display: flex; gap: 22px; margin-left: auto; }
+  .header-nav a { font-size: 15px; font-weight: 600; line-height: var(--lh-nav); letter-spacing: var(--ls); color: var(--ink); text-decoration: none; }
+  .header-cta { background: var(--ink-strong); color: var(--surface); font-size: 13px; font-weight: 600; line-height: var(--lh); padding: 10px 18px; text-decoration: none; }
+
+  /* ★HERO — vh 流体 */
+  .hero { padding: 56px 20px 64px; }
+  .hero-inner { max-width: var(--container); margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; }
+  /* 実サイトの白いコピーは写真の帯に重なって出る。ここでも面そのものに
+     background-image を持たせて、白文字が地に沈まないようにしている
+     （兄弟の絶対配置にすると lint の effectiveBg が祖先しか遡れず判定できない）。 */
+  .hero-copy-box {
+    border-radius: var(--r-card);
+    padding: var(--hero-pad);
+    background-image: linear-gradient(rgba(41,41,41,.10), rgba(41,41,41,.34)),
+                      linear-gradient(115deg, #7e8a95 0%, #5c6671 60%, #434c55 100%);
+  }
+  .hero-copy-ja { font-size: 16px; font-weight: 500; line-height: 2; letter-spacing: var(--ls); color: var(--white); margin-bottom: 18px; opacity: .92; }
+  .hero-copy {
+    font-family: var(--font-en);
+    font-size: var(--hero-fs);      /* min(107px, 9.90741vh) */
+    font-weight: 600;
+    line-height: var(--lh-hero);
+    letter-spacing: var(--ls-en);   /* 0.02em。サイズに比例して px が変わる */
+    color: var(--white);
+  }
+  .hero-photo {
+    width: var(--hero-img);          /* min(700px, 64.8148vh) */
+    aspect-ratio: 700 / 470;
+    border-radius: var(--r-card);    /* min(16px, 1.48148vh) */
+    padding: var(--hero-pad);        /* min(30px, 2.77778vh) */
+    /* 面そのものに background-image を持たせる（兄弟の絶対配置にしない） */
+    background-image: linear-gradient(rgba(41,41,41,.12), rgba(41,41,41,.42)),
+                      linear-gradient(140deg, #b9c3cc 0%, #8e99a4 48%, #5f6973 100%);
+    display: flex; align-items: flex-end;
+  }
+  .hero-photo-cap { font-size: 13px; font-weight: 600; line-height: var(--lh); color: var(--white); }
+
+  /* SECTIONS */
+  .section { padding: 62px 20px; max-width: var(--column); margin: 0 auto; }
+  .section-wide { padding: 62px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: .08em; margin-bottom: 10px; }
+  .section-title-en { font-family: var(--font-en); font-size: 54px; font-weight: 600; line-height: 1.02; letter-spacing: var(--ls-en); color: var(--ink-strong); }
+  /* 和文見出し。実サイトは "Big Caslon", serif で、和文は serif に落ちる */
+  .section-title-ja { font-family: var(--font-mincho); font-size: 20px; font-weight: 600; line-height: var(--lh); letter-spacing: 0.02em; color: var(--muted); margin-top: 8px; }
+  .section-lead { font-size: 16px; font-weight: 500; line-height: var(--lh-read); letter-spacing: var(--ls); margin: 22px 0 34px; max-width: 900px; color: var(--ink); }
+  .section-lead b { font-weight: 600; color: var(--ink-strong); }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--surface); padding: 1px 5px; }
+
+  .panel { background: var(--veil); padding: 34px 32px 38px; border-radius: var(--r-card); }
+
+  /* 01 COLORS */
+  .swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .sw { background: var(--white); border-radius: var(--r-card); overflow: hidden; }
+  .sw-chip { height: 82px; }
+  .sw-body { padding: 11px 13px 15px; }
+  .sw-name { font-size: 14px; font-weight: 600; line-height: var(--lh); color: var(--ink-strong); }
+  .sw-hex { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .sw-note { font-size: 12px; font-weight: 500; line-height: 1.5; color: var(--muted-2); margin-top: 6px; }
+
+  /* 02 TYPE */
+  .type-row { border-top: 1px solid var(--border); padding: 20px 0; display: grid; grid-template-columns: 190px 1fr; gap: 24px; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; color: var(--muted-2); line-height: 1.5; }
+  .t-en   { font-family: var(--font-en); font-size: 54px; font-weight: 600; line-height: 1.02; letter-spacing: var(--ls-en); color: var(--ink-strong); }
+  .t-ja   { font-family: var(--font-mincho); font-size: 20px; font-weight: 600; line-height: var(--lh); letter-spacing: 0.02em; color: var(--muted); }
+  .t-body { font-size: 16px; font-weight: 500; line-height: var(--lh); letter-spacing: var(--ls); }
+  .t-read { font-size: 16px; font-weight: 500; line-height: var(--lh-read); letter-spacing: var(--ls); max-width: 760px; }
+  .t-nav  { font-size: 15px; font-weight: 600; line-height: var(--lh-nav); letter-spacing: var(--ls); }
+  .t-tag  { font-size: 13px; font-weight: 600; line-height: var(--lh-tag); letter-spacing: var(--ls); color: var(--muted); }
+
+  .weights { display: flex; gap: 26px; flex-wrap: wrap; margin-top: 8px; }
+  .w-item { font-size: 22px; line-height: var(--lh); }
+  .w-item span { display: block; font-family: var(--font-mono); font-size: 11px; color: var(--muted-2); margin-top: 4px; letter-spacing: 0; }
+  .w-off { opacity: .35; }
+
+  /* 03 HERO SCALE table */
+  .scale-table { width: 100%; border-collapse: collapse; font-size: 13px; font-weight: 500; letter-spacing: var(--ls); }
+  .scale-table th, .scale-table td { border-bottom: 1px solid var(--border); padding: 9px 10px; text-align: left; line-height: 1.5; }
+  .scale-table th { font-weight: 600; color: var(--muted); }
+  .scale-table tr.key td { background: rgba(255,255,255,.55); font-weight: 600; color: var(--ink-strong); }
+  .scale-table td code { background: rgba(255,255,255,.7); }
+
+  /* 04 BUTTONS */
+  .btn-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; border-radius: var(--r-pill); border: none; cursor: pointer; text-decoration: none; font-family: var(--font-ja); font-size: 18px; font-weight: 500; line-height: 1.15; letter-spacing: var(--ls); padding: 17px 36px; box-shadow: none; }
+  .btn-light { background: var(--surface); color: var(--ink); }
+  .btn-dark  { background: var(--ink-strong); color: var(--surface); }
+  .btn-line  { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+  .btn-circle { width: 56px; height: 56px; border-radius: 50%; background: var(--surface); color: var(--ink); font-size: 16px; font-weight: 500; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 1px 6px rgba(70, 71, 77, 0.3); border: none; cursor: pointer; }
+  .is-focus { outline: 2px solid var(--ink-strong); outline-offset: 3px; }
+
+  /* 05 NEWS */
+  .news-row {
+    display: grid; grid-template-columns: 110px 96px 1fr; gap: 18px; align-items: baseline;
+    padding: 15px 0 15px 16px;
+    /* 実サイトは border-left ではなく linear-gradient のハードストップで 2px の縦罫を引く */
+    background-image: linear-gradient(to right, var(--line) 2px, rgba(0,0,0,0) 2px);
+  }
+  .news-date { font-size: 13px; font-weight: 600; line-height: var(--lh-tag); color: var(--muted); }
+  .news-cat  { font-size: 13px; font-weight: 600; line-height: var(--lh-tag); color: var(--ink); background: var(--surface); padding: 4px 10px; text-align: center; }
+  .news-ttl  { font-size: 16px; font-weight: 500; line-height: var(--lh); color: var(--ink-strong); text-decoration: none; }
+  .news-ttl:hover { text-decoration: underline; }
+
+  /* 06 CARDS */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 44px 32px; }
+  .card { background: var(--white); border-radius: var(--r-card); overflow: hidden; box-shadow: none; }
+  .card-thumb { height: 150px; background-image: linear-gradient(150deg, #c6ced6 0%, #99a3ad 100%); }
+  .card-body { padding: 18px 20px 24px; }
+  .card-en { font-family: var(--font-en); font-size: 24px; font-weight: 600; line-height: 1.02; letter-spacing: var(--ls-en); color: var(--ink-strong); }
+  .card-ja { font-family: var(--font-mincho); font-size: 18px; font-weight: 600; line-height: var(--lh); letter-spacing: 0.02em; color: var(--muted); margin-top: 6px; }
+  .card-txt { font-size: 16px; font-weight: 500; line-height: var(--lh-read); color: var(--ink); margin-top: 10px; }
+
+  /* FOOTER */
+  .footer { background: var(--ink-strong); color: var(--surface); padding: 44px 20px; margin-top: 20px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap; }
+  .footer-name { font-size: 18px; font-weight: 600; line-height: var(--lh); }
+  .footer-addr { font-size: 13px; font-weight: 500; line-height: 1.8; margin-top: 8px; opacity: .8; }
+  .footer-copy { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 400; margin-left: auto; opacity: .7; }
+
+  @media (max-width: 1100px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 767px) {
+    /* 実サイトはここで vh 流体 → vw 式に切り替わる */
+    :root {
+      --hero-fs:  11vw;
+      --hero-img: 80vw;
+      --hero-pad: 4vw;
+      --r-card:   4.26667vw;
+    }
+    .hero-inner { grid-template-columns: 1fr; }
+    .section, .section-wide { padding: 42px 16px; }
+    .section-title-en { font-size: 34px; }
+    .section-title-ja { font-size: 14px; }
+    .t-en { font-size: 34px; }
+    .t-ja { font-size: 14px; }
+    .swatches { grid-template-columns: repeat(2, 1fr); }
+    .cards { grid-template-columns: 1fr; }
+    .header-nav { display: none; }
+    .news-row { grid-template-columns: 1fr; gap: 6px; }
+    .type-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">光文社</div>
+    <nav class="header-nav">
+      <a href="#colors">会社案内</a>
+      <a href="#type">事業紹介</a>
+      <a href="#hero">広告掲載について</a>
+      <a href="#news">お知らせ</a>
+      <a href="#buttons">お問い合わせ・FAQ</a>
+    </nav>
+    <a class="header-cta" href="#buttons">採用情報</a>
+  </div>
+</header>
+
+<section class="hero" id="hero">
+  <div class="hero-inner">
+    <div class="hero-copy-box">
+      <div class="hero-copy-ja">明日のあなたへ、<br>ときめきを</div>
+      <div class="hero-copy">Your Passion,<br>Our Inspiration</div>
+    </div>
+    <div class="hero-photo"><div class="hero-photo-cap">ヒーローは viewport の「高さ」に追従する</div></div>
+  </div>
+</section>
+
+<section class="section-wide" id="scale">
+  <div class="section-label">01 / Fluid by Height</div>
+  <h2 class="section-title-en">Sized by vh</h2>
+  <div class="section-title-ja">高さで組む</div>
+  <p class="section-lead">このサイトは <b><code>vw</code> ではなく <code>vh</code></b> でヒーローを組む。文字サイズも写真の幅も角丸も内側の余白も、すべて <code>min(固定値, N vh)</code>。<b>分母はすべて 1080px＝設計高</b>。スクロールせずに 1 スライドが必ず収まる。<b>幅だけ測ると「固定サイズのサイト」に見える</b>——<code>html</code> も <code>body</code> も 1920〜320px の 19 幅すべてで 16px から 1px も動かない。</p>
+  <div class="panel">
+    <table class="scale-table">
+      <thead><tr><th>viewport height</th><th>コピーの font-size</th><th>letter-spacing</th><th>写真の width</th><th>写真の radius</th><th>スライドの padding</th></tr></thead>
+      <tbody>
+        <tr><td>1440px</td><td>107px</td><td>2.14px</td><td>700px</td><td>16px</td><td>30px</td></tr>
+        <tr><td>1200px</td><td>107px</td><td>2.14px</td><td>700px</td><td>16px</td><td>30px</td></tr>
+        <tr class="key"><td>1080px（設計高）</td><td>107px</td><td>2.14px</td><td>700px</td><td>16px</td><td>30px</td></tr>
+        <tr><td>1000px</td><td>99.0741px</td><td>1.98148px</td><td>648.141px</td><td>14.8148px</td><td>27.7778px</td></tr>
+        <tr><td>900px</td><td>89.1667px</td><td>1.78333px</td><td>583.328px</td><td>13.3333px</td><td>25px</td></tr>
+        <tr><td>800px</td><td>79.2593px</td><td>1.58519px</td><td>518.516px</td><td>11.8519px</td><td>22.2222px</td></tr>
+        <tr><td>700px</td><td>69.3519px</td><td>1.38704px</td><td>453.703px</td><td>10.3704px</td><td>19.4444px</td></tr>
+        <tr><td>600px</td><td>59.4444px</td><td>1.18889px</td><td>388.875px</td><td>8.88889px</td><td>16.6667px</td></tr>
+      </tbody>
+    </table>
+    <p class="section-lead" style="margin-bottom:0;"><code>font-size: min(107px, 9.90741vh)</code> / <code>width: min(700px, 64.8148vh)</code> / <code>border-radius: min(16px, 1.48148vh)</code> / <code>padding-inline: min(30px, 2.77778vh)</code>。<b>767px 以下では <code>vw</code> 式に切り替わる</b>（<code>4vw</code> / <code>80vw</code> / <code>4.26667vw</code>）。このページも同じ指定で組んであるので、ブラウザの高さを変えると上のヒーローが追従する。</p>
+  </div>
+</section>
+
+<section class="section" id="colors">
+  <div class="section-label">02 / Colors</div>
+  <h2 class="section-title-en">Six Grays</h2>
+  <div class="section-title-ja">彩度のある色がない</div>
+  <p class="section-lead">ブランドカラーと呼べる有彩色が 1 つも無い。<b>グレーが 6 段</b>あり、これを潰すと階層が消える。地は <code>body</code> の白ではなく <b><code>linear-gradient(to right, #ecedef 0%, #d2dae2 100%)</code></b>。<code>pageBackground.resolved</code> を鵜呑みにすると地色を取り違える。</p>
+  <div class="swatches">
+    <div class="sw"><div class="sw-chip" style="background:var(--ink-strong)"></div><div class="sw-body"><div class="sw-name">Ink Strong</div><div class="sw-hex">#292929</div><div class="sw-note">見出し 31 要素／面 25 要素</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--ink)"></div><div class="sw-body"><div class="sw-name">Ink（本文）</div><div class="sw-hex">#3b3b3b</div><div class="sw-note">純黒ではない</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--muted-2)"></div><div class="sw-body"><div class="sw-name">Muted 2</div><div class="sw-hex">#727c86</div><div class="sw-note">下層の雑誌名 32 要素</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--muted)"></div><div class="sw-body"><div class="sw-name">Muted</div><div class="sw-hex">#88929d</div><div class="sw-note">和文見出し・日付 33 要素</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--border)"></div><div class="sw-body"><div class="sw-name">Border</div><div class="sw-hex">#c4c4c4</div><div class="sw-note">法定表記まわり</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--surface)"></div><div class="sw-body"><div class="sw-name">Surface</div><div class="sw-hex">#efefef</div><div class="sw-note">ボタンの薄面・タグ</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:linear-gradient(to right,var(--bg-from),var(--bg-to))"></div><div class="sw-body"><div class="sw-name">Background</div><div class="sw-hex">#ecedef → #d2dae2</div><div class="sw-note">★見えている地</div></div></div>
+    <div class="sw"><div class="sw-chip" style="background:var(--line)"></div><div class="sw-body"><div class="sw-name">Line</div><div class="sw-hex">#707070</div><div class="sw-note">2px の縦罫。gradient で引く</div></div></div>
+  </div>
+</section>
+
+<section class="section" id="type">
+  <div class="section-label">03 / Typography</div>
+  <h2 class="section-title-en">One Variable Font</h2>
+  <div class="section-title-ja">可変フォント 1 本と、欧文 1 本</div>
+  <p class="section-lead">和文は <b>Noto Sans JP の可変フォント（<code>wght@100..900</code>）1 本</b>。ただし実使用は <b>500 と 600 の 2 段</b>で、700 以上は 1 要素も無い。<b>和文の <code>letter-spacing</code> は <code>normal</code></b>（トップ 142 / 下層 97 要素）で、当てているのは<b>欧文の <code>0.02em</code> だけ</b>。</p>
+
+  <div class="type-row"><div class="type-meta">Section Title (EN)<br>Josefin Sans 54px / 600<br>1.02 / ls 0.02em</div><div class="t-en">OUR BUSINESS</div></div>
+  <div class="type-row"><div class="type-meta">Section Title (JA)<br>20px / 600 / 1.15<br>実サイトは serif に落ちる</div><div class="t-ja">わたしたちの企業理念</div></div>
+  <div class="type-row"><div class="type-meta">Body（既定）<br>16px / 500 / <b>1.15</b><br>ls normal</div><div class="t-body">光文社は、読者に寄り添い続けてきました。</div></div>
+  <div class="type-row"><div class="type-meta">読ませる本文<br>16px / 500 / <b>2.5</b></div><div class="t-read">光文社が他社に先駆けて切り拓いた女性誌群を軸に、書籍、雑誌、イベントや体験、IPビジネスまで。読者のときめきを形にする事業を広げています。</div></div>
+  <div class="type-row"><div class="type-meta">Nav<br>15px / 600 / 1.38</div><div class="t-nav">会社案内　事業紹介　広告掲載について</div></div>
+  <div class="type-row"><div class="type-meta">Meta / Tag<br>13px / 600 / 1.23</div><div class="t-tag">2026.10.15　プレスリリース</div></div>
+
+  <div class="type-row"><div class="type-meta">使っているウェイト<br>400 は法定表記の 2 要素のみ</div><div>
+    <div class="weights">
+      <div class="w-item w-off" style="font-weight:100">光文社<span>100 — 0 要素</span></div>
+      <div class="w-item w-off" style="font-weight:300">光文社<span>300 — 0 要素</span></div>
+      <div class="w-item" style="font-weight:400">光文社<span>400 — 2 要素</span></div>
+      <div class="w-item" style="font-weight:500">光文社<span>★500 — 169 要素</span></div>
+      <div class="w-item" style="font-weight:600">光文社<span>★600 — 156 要素</span></div>
+      <div class="w-item w-off" style="font-weight:700">光文社<span>700 — 0 要素</span></div>
+      <div class="w-item w-off" style="font-weight:900">光文社<span>900 — 0 要素</span></div>
+    </div>
+  </div></div>
+
+  <div class="panel" style="margin-top:28px;">
+    <div class="t-body" style="font-weight:600;color:var(--ink-strong);">和文見出しに欧文専用書体が当たっている</div>
+    <p class="section-lead" style="margin:12px 0 0;">実サイトは <code>.c-headline__ttl-ja { font-family: "Big Caslon", serif }</code>。<b>Big Caslon は macOS 同梱の欧文ディスプレイセリフで、CJK グリフを 1 文字も持たない。</b>実測（40px）で <code>"Big Caslon", serif</code> と <code>serif</code> の和文幅は <b>400.00px / 400.00px と完全一致</b>（欧文は 465.97px / 524.53px と割れるので、書体自体は端末に入っている）。<b>クラス名が <code>ttl-ja</code>＝和文見出し専用なのに、和文には一生当たらない。</b>結果、見出しは OS 既定の明朝で出る——macOS はヒラギノ明朝／游明朝、Windows は游明朝／MS P明朝。<b>新規実装では和文明朝をチェーンに明示する。</b></p>
+  </div>
+</section>
+
+<section class="section" id="buttons">
+  <div class="section-label">04 / Buttons</div>
+  <h2 class="section-title-en">Fully Round</h2>
+  <div class="section-title-ja">完全な丸、3 種だけ</div>
+  <p class="section-lead">すべて <code>border-radius: 1440px</code>。これは「十分に大きい値」という書き方で、<b>数値そのものに意味はない</b>。薄面・濃面・線の 3 種しかなく、<b>影は無い</b>。影を持つのはスライダーの丸ボタン 1 種だけ。</p>
+  <div class="btn-row">
+    <a class="btn btn-light" href="#buttons">パーパスについて</a>
+    <a class="btn btn-dark" href="#buttons">2027年度 採用サイト</a>
+    <a class="btn btn-line" href="#buttons">お知らせ一覧へ</a>
+    <a class="btn btn-light is-focus" href="#buttons">フォーカス状態</a>
+    <button class="btn-circle" aria-label="次へ">›</button>
+  </div>
+</section>
+
+<section class="section" id="news">
+  <div class="section-label">05 / News</div>
+  <h2 class="section-title-en">News</h2>
+  <div class="section-title-ja">お知らせ</div>
+  <p class="section-lead">行頭の 2px の縦罫は <code>border-left</code> ではなく <b><code>linear-gradient(to right, #707070 2px, transparent 2px)</code></b> のハードストップで引く（実測 23 要素）。</p>
+  <div class="panel">
+    <div class="news-row"><span class="news-date">2026.10.15</span><span class="news-cat">イベント</span><a class="news-ttl" href="#news">光文社 企画コンテスト2026 開催！</a></div>
+    <div class="news-row"><span class="news-date">2026.10.13</span><span class="news-cat">イベント</span><a class="news-ttl" href="#news">校閲体験イベントを開催</a></div>
+    <div class="news-row"><span class="news-date">2026.10.05</span><span class="news-cat">リリース</span><a class="news-ttl" href="#news">光文社新書『人が集まる企業は何が違うのか』が、重版出来</a></div>
+  </div>
+</section>
+
+<section class="section-wide" id="cards">
+  <div class="section-label">06 / Cards</div>
+  <h2 class="section-title-en">MONTHLY MAGAZINE and…</h2>
+  <div class="section-title-ja">月刊誌ほか</div>
+  <p class="section-lead">カードは白面に <code>border-radius: min(16px, 1.48148vh)</code>。<b>影は使わない。</b>奥行きは「白の半透明の面（<code>rgba(255,255,255,.6)</code>）をグラデーションの上に重ねる」ことで作る。グリッドの <code>gap</code> は <code>44px 32px</code>。</p>
+  <div class="cards">
+    <div class="card"><div class="card-thumb"></div><div class="card-body"><div class="card-en">CLASSY.</div><div class="card-ja">月刊誌</div><div class="card-txt">働く女性の毎日に、少しのときめきを足す。</div></div></div>
+    <div class="card"><div class="card-thumb"></div><div class="card-body"><div class="card-en">VERY</div><div class="card-ja">月刊誌</div><div class="card-txt">家族と自分、その両方を大切にしたい人へ。</div></div></div>
+    <div class="card"><div class="card-thumb"></div><div class="card-body"><div class="card-en">STORY</div><div class="card-ja">月刊誌</div><div class="card-txt">年齢を重ねることを、楽しみに変える。</div></div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-name">株式会社 光文社</div>
+      <div class="footer-addr">〒112-8011 東京都文京区音羽 1-16-6</div>
+    </div>
+    <div class="footer-copy">© Kobunsha Co., Ltd. All Rights Reserved.</div>
+  </div>
+</footer>
+
+</body>
+</html>
