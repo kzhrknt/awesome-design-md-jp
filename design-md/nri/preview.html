@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 野村総合研究所（NRI）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- 実サイトと同一。可変フォント 1 本だけを読む -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトの CSS Custom Properties は 8 個（うち 4 個が同じネイビーの別名）。
+       以下は computed style の実測値。2026-11-17 */
+    --navy:        #00196e;   /* ★--color-NRINavy / --color-navy / --color-link / --color-btn-primary
+                                 ナビの文字 12 要素 / CTA の面 7 要素 */
+    --blue:        #005bac;   /* 下層のカード見出し。文字 25 要素で最多。トークン外のハードコード */
+    --focus:       #64afc3;   /* --color-focus。ネイビーではない明るい水色 */
+
+    --text-900:    #0a0a0a;   /* 可視 13 要素。リード・セクション見出し */
+    --text-800:    #222222;   /* 可視 17 要素。--color-black の宣言値もこれ */
+    --text-700:    #333333;   /* 可視 16 要素。ニュース本文 */
+    --text-600:    #525252;   /* 可視 18 要素で最多。補助テキスト */
+    --text-500:    #4f4f4f;   /* 可視 12 要素。日付・メタ */
+
+    --white:       #ffffff;   /* --color-white */
+    --bg:          #ffffff;   /* ページ背景（ヒーローの背景画像に覆われるので計測は赤を返すが、地色は白） */
+    --surface:     #f9f9f9;   /* セクションの地 */
+    --surface-2:   #fafafa;
+    --surface-3:   #fcfcfc;   /* 言語切替 */
+    --input-bg:    #efefef;   /* 検索ボックス */
+    --border:      #e0e0e0;   /* トップのカード */
+    --border-2:    #eeeeee;   /* 下層のカード */
+
+    /* === Font ===
+       実サイトは "Noto Sans JP", sans-serif ただ 1 本。可変フォント wght@400..700。
+       欧文（Dream up the future.）も同じ書体で組む。
+       実測: distributions.fontFamily は 2 ページとも 1 種類で 100%（108/108・104/104 要素）。
+       ヒラギノ・游ゴシック・メイリオは 1 つもスタックに書かれていない。 */
+    --font:      "Noto Sans JP", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: 無単位の比率を各要素が宣言し直す === */
+    --lh-base:  1.50;   /* ★既定。トップ 55 要素 / 下層 41 要素 */
+    --lh-card:  1.40;   /* カード・見出し（23 要素） */
+    --lh-long:  1.80;   /* 長い段落（下層 9 要素） */
+    --lh-news:  1.75;   /* ニュース本文（6 要素） */
+    --lh-tight: 1.25;   /* 下層のカード見出し（25 要素） */
+
+    /* === Letter spacing: em を各要素が持つ。body から px 継承していない === */
+    --ls-nav:   0.02em;     /* 14px → 0.28px（最多 32 要素） */
+    --ls-cta:   0.04em;     /* 16px → 0.64px / 14px → 0.56px / 20px → 0.8px */
+    --ls-sect:  0.047em;    /* 34px → 1.6px */
+    --ls-lead:  0.0125em;   /* 16px → 0.2px */
+    --ls-hero:  0.00625em;  /* 64px → 0.4px。大きい文字ほど em が小さい */
+
+    /* === Radius: 12px が支配的（トップ 30 / 下層 53 要素） === */
+    --r-card:  12px;
+    --r-menu:  14px;
+    --r-hero:  16px;
+    --r-btn:   8px;
+    --r-col:   24px;
+
+    /* === Shadow: すべて「ほぼ真下に 1px、ごく淡く」。blur は 2〜4px === */
+    --sh-card:  rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;   /* 下層のカード 26 要素 */
+    --sh-card2: rgba(0, 0, 0, 0.1)  0px 1px 3px 0px;   /* トップのカード 7 要素 */
+    --sh-cta:   rgba(0, 0, 0, 0.2)  0px 1px 4px 0px;   /* ネイビー CTA 4 要素 */
+    --sh-col:   rgba(0, 0, 0, 0.1)  0px 4px 10px 0px;  /* 唯一「浮く」影 1 要素 */
+    --sh-onimg: rgba(255,255,255,0.5) 0px 0px 2px 0px; /* ヒーロー上の白文字。白い影 1 要素 */
+
+    --container: 1440px;
+    --column:    1120px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-700);
+    font-family: var(--font);
+    font-size: 16px;          /* html も body も 19 幅すべてで 16px 固定。流体も崖も無い */
+    font-weight: 400;
+    line-height: var(--lh-base);
+    letter-spacing: normal;   /* 既定は normal（トップ 52 要素） */
+    /* font-feature-settings は書かない。実サイトは palt 0 要素（効くのに使っていない） */
+    word-break: normal;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid var(--border); background: var(--white); }
+  .header-inner { display: flex; align-items: center; gap: 28px; max-width: var(--container); margin: 0 auto; padding: 18px 40px; }
+  .logo { font-size: 26px; font-weight: 700; color: var(--navy); letter-spacing: var(--ls-cta); text-decoration: none; }
+  .header-nav { display: flex; gap: 32px; margin-left: auto; }
+  .header-nav a { font-size: 14px; font-weight: 500; line-height: var(--lh-base); letter-spacing: var(--ls-nav); color: var(--navy); text-decoration: none; }
+  .header-util { display: flex; gap: 24px; }
+  .header-util a { font-size: 12px; font-weight: 400; line-height: var(--lh-base); letter-spacing: var(--ls-nav); color: var(--text-600); text-decoration: none; }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    /* 実サイトのヒーローは bg__mv.avif（1440x830）。ここは色で代役を作る */
+    background-image:
+      linear-gradient(140deg, rgba(255,255,255,.72) 0%, rgba(255,255,255,.30) 52%, rgba(0,25,110,.14) 100%),
+      linear-gradient(200deg, #dde6f3 0%, #c8d8ee 42%, #e8eef7 100%);
+    padding: 96px 40px 56px;
+  }
+  .hero-inner { max-width: var(--column); margin: 0 auto; }
+  .hero-title {
+    font-size: 64px; font-weight: 400; line-height: var(--lh-card);
+    letter-spacing: var(--ls-hero); color: var(--navy);
+    text-shadow: 0 0 2px rgba(255,255,255,.5);   /* 実測の白い影 */
+  }
+  .hero-lead { font-size: 18px; font-weight: 600; line-height: var(--lh-base); letter-spacing: var(--ls-lead); color: var(--text-900); margin-top: 22px; }
+  .hero-cta { margin-top: 32px; }
+  .hero-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; max-width: var(--column); margin: 56px auto 0; }
+  .hero-card {
+    background: rgba(255,255,255,.4);   /* 実測。背景画像を透かす半透明 */
+    border-radius: var(--r-hero); padding: 20px; text-decoration: none; display: block;
+  }
+  .hero-card b { display: block; font-size: 16px; font-weight: 700; line-height: var(--lh-card); color: var(--text-800); }
+  .hero-card span { display: block; font-size: 14px; line-height: var(--lh-tight); color: var(--text-800); margin-top: 8px; }
+
+  /* SECTIONS */
+  .section { padding: 72px 40px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--surface); }
+  .section-alt .section-inner { padding: 72px 40px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--text-600); margin-bottom: 10px; }
+  .eyebrow { display: inline-block; font-size: 12px; font-weight: 700; line-height: 1; letter-spacing: var(--ls-nav); color: var(--white); background: var(--navy); border-radius: var(--r-btn); padding: 6px 12px; }
+  .section-title { font-size: 34px; font-weight: 500; line-height: var(--lh-card); letter-spacing: var(--ls-sect); color: var(--text-900); margin: 16px 0 16px; }
+  .section-lead { font-size: 18px; font-weight: 600; line-height: var(--lh-base); letter-spacing: var(--ls-lead); color: var(--text-600); max-width: 900px; margin-bottom: 36px; }
+  .note { font-size: 14px; line-height: 1.9; letter-spacing: var(--ls-nav); color: var(--text-600); margin-top: 20px; max-width: 900px; }
+  .note b { color: var(--text-900); }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--input-bg); color: var(--text-900); padding: 1px 5px; border-radius: 3px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(216px, 1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--border); border-radius: var(--r-card); background: var(--white); overflow: hidden; box-shadow: var(--sh-card); }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 14px; }
+  .swatch-name { font-size: 14px; font-weight: 700; line-height: var(--lh-base); letter-spacing: var(--ls-nav); color: var(--text-800); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--text-500); margin-top: 4px; }
+  .swatch-use { font-size: 12px; line-height: 1.6; letter-spacing: var(--ls-nav); color: var(--text-600); margin-top: 7px; }
+
+  /* TYPOGRAPHY */
+  .scale-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 30px; align-items: baseline; }
+  .scale-bar span { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-btn); padding: 8px 14px; line-height: var(--lh-base); color: var(--text-800); }
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--border); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-500); line-height: 1.75; }
+  .type-meta b { display: block; font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--text-900); letter-spacing: var(--ls-nav); }
+  .type-sample { color: var(--text-900); }
+
+  /* WEIGHTS */
+  .wt-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; margin-top: 8px; }
+  .wt { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-btn); padding: 10px 16px; font-size: 20px; color: var(--text-900); line-height: var(--lh-card); }
+  .wt i { display: block; font-family: var(--font-mono); font-style: normal; font-size: 10px; color: var(--text-500); margin-top: 4px; }
+  .wt.is-off { opacity: .45; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 26px; }
+  .btn { font-family: var(--font); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+  .btn-primary {
+    background: var(--navy); color: var(--white);
+    border: 1px solid var(--navy);          /* 面と同色の枠を必ず置く */
+    border-radius: var(--r-card);
+    padding: 12px 8px 12px 24px;            /* 左右非対称。右に矢印を置く前提 */
+    font-size: 16px; font-weight: 700; line-height: var(--lh-base); letter-spacing: var(--ls-cta);
+    box-shadow: var(--sh-cta);
+  }
+  .btn-primary-sm {
+    background: var(--navy); color: var(--white); border: 1px solid var(--navy);
+    border-radius: var(--r-btn); padding: 12px 40px;
+    font-size: 14px; font-weight: 700; line-height: var(--lh-base); letter-spacing: var(--ls-cta);
+    box-shadow: var(--sh-cta);
+  }
+  .btn-onimg {
+    background: transparent; color: var(--white); border: 1px solid var(--white);
+    border-radius: var(--r-btn); padding: 12px 16px 12px 32px;
+    font-size: 14px; font-weight: 600; line-height: var(--lh-base); letter-spacing: var(--ls-cta);
+  }
+  .btn-lang {
+    background: transparent; color: var(--text-900); border: 1px solid rgba(0, 25, 110, .1);
+    border-radius: var(--r-btn); padding: 8px 14px; font-size: 16px; font-weight: 400; line-height: var(--lh-base);
+  }
+  .btn-onimg-wrap { background: linear-gradient(120deg, #1d3c86, #00196e); border-radius: var(--r-card); padding: 20px; display: inline-flex; }
+
+  /* INPUTS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 26px; }
+  .field label { display: block; font-size: 14px; font-weight: 500; line-height: var(--lh-base); letter-spacing: var(--ls-nav); color: var(--text-800); margin-bottom: 8px; }
+  .field input, .field select {
+    width: 100%; background: var(--input-bg); color: var(--text-900);
+    border: 0; border-radius: var(--r-btn);
+    padding: 0 14px; height: 48px; font-size: 16px; line-height: var(--lh-base); font-family: var(--font);
+  }
+  .field.is-focus input { outline: 3px solid var(--focus); outline-offset: 1px; }
+  .field-msg { font-size: 12px; line-height: 1.6; letter-spacing: var(--ls-nav); color: var(--text-600); margin-top: 7px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 32px; }
+  .card {
+    background: var(--white); border: 1px solid var(--border-2); border-radius: var(--r-card);
+    padding: 24px; text-decoration: none; display: block; box-shadow: var(--sh-card);
+  }
+  .card-title { font-size: 20px; font-weight: 500; line-height: var(--lh-tight); letter-spacing: var(--ls-cta); color: var(--blue); }
+  .card-desc { font-size: 16px; line-height: var(--lh-long); color: var(--text-800); margin-top: 12px; }
+  .card-cat { font-size: 12px; line-height: var(--lh-base); letter-spacing: var(--ls-nav); color: var(--text-600); }
+  .card-plain { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-card); padding: 0; overflow: hidden; text-decoration: none; display: block; box-shadow: var(--sh-card2); }
+  .card-plain .pad { padding: 20px; }
+  .card-plain .thumb { height: 120px; background: linear-gradient(135deg, #e6ecf6, #cdd9ee); }
+  .card-plain .t { font-size: 16px; line-height: var(--lh-card); color: var(--text-800); margin-top: 8px; }
+
+  /* NEWS */
+  .news-row { display: flex; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--border); align-items: baseline; }
+  .news-date { font-size: 12px; line-height: var(--lh-news); letter-spacing: var(--ls-nav); color: var(--text-500); width: 112px; flex-shrink: 0; }
+  .news-cat { font-size: 12px; line-height: var(--lh-news); letter-spacing: var(--ls-nav); color: var(--text-600); width: 120px; flex-shrink: 0; }
+  .news-title { font-size: 17px; line-height: var(--lh-news); color: var(--text-700); text-decoration: none; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 28px; }
+  .elev { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-card); padding: 26px; text-align: center; }
+  .elev.e1 { box-shadow: var(--sh-card); }
+  .elev.e2 { box-shadow: var(--sh-card2); }
+  .elev.e3 { box-shadow: var(--sh-cta); }
+  .elev.e4 { box-shadow: var(--sh-col); }
+  .elev-name { font-size: 16px; font-weight: 700; line-height: var(--lh-base); color: var(--text-900); }
+  .elev-val { font-family: var(--font-mono); font-size: 10px; color: var(--text-500); margin-top: 8px; }
+
+  /* RADIUS */
+  .radius-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 24px; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 112px; height: 70px; background: #c9d7ee; border: 1px solid #8ea6d4; }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; color: var(--text-500); margin-top: 7px; }
+
+  /* LAYOUT */
+  .layout-demo { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .layout-bar { background: #dfe6f3; border-radius: var(--r-btn); height: 38px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; color: var(--navy); }
+
+  /* FOOTER */
+  .footer { background: var(--navy); color: var(--white); padding: 48px 40px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-head { font-size: 24px; font-weight: 700; line-height: var(--lh-card); letter-spacing: var(--ls-cta); }
+  .footer-cols { display: flex; gap: 96px; margin-top: 24px; flex-wrap: wrap; }
+  .footer-col-title { font-size: 14px; font-weight: 700; line-height: var(--lh-base); letter-spacing: var(--ls-nav); }
+  .footer-col a { display: block; font-size: 14px; line-height: 2; letter-spacing: var(--ls-nav); color: var(--white); text-decoration: none; opacity: .85; }
+  .footer-legal { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 32px; }
+  .footer-legal a { font-size: 10px; line-height: var(--lh-base); letter-spacing: var(--ls-lead); color: var(--white); text-decoration: none; opacity: .75; }
+
+  @media (max-width: 1024px) {
+    .hero-cards { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 767px) {
+    .section, .section-alt .section-inner, .hero { padding: 44px 16px; }
+    .hero-title { font-size: 34px; }
+    .section-title { font-size: 24px; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .header-nav, .header-util { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">NRI</a>
+    <nav class="header-nav">
+      <a href="#">サービス・ソリューション</a><a href="#">ナレッジ・インサイト</a><a href="#">企業情報</a><a href="#">サステナビリティ</a>
+    </nav>
+    <div class="header-util"><a href="#">ニュース</a><a href="#">株主･投資家情報(IR)</a><a href="#">採用情報</a></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <!-- 実サイトは欧文と和文が同じ 1 要素・同じ書体（Noto Sans JP）。欧文専用の書体は読み込んでいない -->
+    <h1 class="hero-title">Dream up the future.未来創発</h1>
+    <p class="hero-lead">NRIグループは情熱と誇りを胸に、あくなき挑戦を続けていきます。</p>
+    <div class="hero-cta"><a href="#" class="btn btn-primary-sm">企業理念</a></div>
+  </div>
+  <div class="hero-cards">
+    <a href="#" class="hero-card"><b>価値共創</b><span>お客様との価値共創を通じて持続可能な未来社会づくりに貢献していきます。</span></a>
+    <a href="#" class="hero-card"><b>NRI AI</b><span>コンサルティングから基盤構築、実行支援まで、AIの時代に最適な変革を支援します。</span></a>
+    <a href="#" class="hero-card"><b>&amp;N 未来創発ラボ</b><span>野村総合研究所が運営するメディアサイトを刷新しました。</span></a>
+  </div>
+</section>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="eyebrow">Color Palette</div>
+  <h2 class="section-title">ネイビー一色。ただし青は 2 つある</h2>
+  <p class="section-lead">CSS 変数は 8 個で、うち <code>--color-NRINavy</code> / <code>--color-navy</code> / <code>--color-link</code> / <code>--color-btn-primary</code> の <b>4 個が同じ <code>#00196e</code></b>。設計トークンというより「1 色しかない」ことの表明。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#00196e"></div><div class="swatch-body"><div class="swatch-name">NRI ネイビー</div><div class="swatch-hex">#00196e</div><div class="swatch-use">★ナビの文字 12 要素 / CTA の面 7 要素。4 つの変数が同値</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#005bac"></div><div class="swatch-body"><div class="swatch-name">Sub Blue</div><div class="swatch-hex">#005bac</div><div class="swatch-use">★下層のカード見出し。文字 25 要素で最多。<b>トークン外</b></div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#64afc3"></div><div class="swatch-body"><div class="swatch-name">Focus Ring</div><div class="swatch-hex">#64afc3</div><div class="swatch-use">--color-focus。ブランドのネイビーではない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#0a0a0a"></div><div class="swatch-body"><div class="swatch-name">Text 900</div><div class="swatch-hex">#0a0a0a</div><div class="swatch-use">可視 13 要素。リード・セクション見出し</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#222222"></div><div class="swatch-body"><div class="swatch-name">Text 800</div><div class="swatch-hex">#222222</div><div class="swatch-use">可視 17 要素。<code>--color-black</code> の宣言値もこれ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Text 700</div><div class="swatch-hex">#333333</div><div class="swatch-use">可視 16 要素。ニュース本文</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#525252"></div><div class="swatch-body"><div class="swatch-name">Text 600</div><div class="swatch-hex">#525252</div><div class="swatch-use">★可視 18 要素で最多。リード・ラベル</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#4f4f4f"></div><div class="swatch-body"><div class="swatch-name">Text 500</div><div class="swatch-hex">#4f4f4f</div><div class="swatch-use">可視 12 要素。日付・メタ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#efefef"></div><div class="swatch-body"><div class="swatch-name">Input BG</div><div class="swatch-hex">#efefef</div><div class="swatch-use">検索ボックスの面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e0e0e0"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#e0e0e0</div><div class="swatch-use">トップのカードの枠</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#eeeeee"></div><div class="swatch-body"><div class="swatch-name">Border 2</div><div class="swatch-hex">#eeeeee</div><div class="swatch-use">下層のカードの枠</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f9f9f9"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#f9f9f9</div><div class="swatch-use">セクションの地</div></div></div>
+  </div>
+
+  <p class="note"><b>黒が 5 段あるのにトークンは <code>--color-black: #222</code> の 1 つだけ。</b>宣言と実装が合っていないので、<b>変数の値をそのまま本文色に使わない</b>。実装の本文は <code>#0a0a0a</code> / <code>#333333</code> / <code>#525252</code> が中心。</p>
+  <p class="note"><b><code>#00196e</code> と <code>#005bac</code> は別の青で、どちらも実装されている。</b>ネイビーはナビ・CTA・グローバルなリンク、<code>#005bac</code> は下層のサービス一覧カードの見出し（25 要素で最多）。片方に寄せないこと。</p>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <div class="eyebrow">Typography</div>
+  <h2 class="section-title">Noto Sans JP の可変フォント 1 本</h2>
+  <p class="section-lead">読み込んでいるのは <code>css2?family=Noto+Sans+JP:wght@400..700&amp;display=swap</code> の<b>たった 1 本</b>。<code>distributions.fontFamily</code> は 2 ページとも <code>"Noto Sans JP", sans-serif</code> 1 種類で 100%（108/108・104/104 要素）。<b>欧文も和文もこれで組む。</b></p>
+
+  <div class="scale-bar">
+    <span style="font-size:10px">10</span><span style="font-size:12px">12</span><span style="font-size:14px">14</span>
+    <span style="font-size:16px">16</span><span style="font-size:17px">17</span><span style="font-size:18px">18</span>
+    <span style="font-size:20px">20</span><span style="font-size:24px">24</span><span style="font-size:34px">34</span>
+    <span style="font-size:48px">48</span><span style="font-size:64px">64</span>
+  </div>
+
+  <p class="note" style="margin-top:0"><b>ウェイトは 400 / 500 / 600 / 700 の 4 段だけ。</b>可変軸が <code>400..700</code> なので、<b>300 や 900 を当てても 400 / 700 に丸められる</b>（合成太字にもならない）。</p>
+  <div class="wt-row">
+    <div class="wt" style="font-weight:300">未来創発<i>300 → 400 で出る</i></div>
+    <div class="wt" style="font-weight:400">未来創発<i>400（53 要素）</i></div>
+    <div class="wt" style="font-weight:500">未来創発<i>500（26 要素）</i></div>
+    <div class="wt" style="font-weight:600">未来創発<i>600（12 要素）</i></div>
+    <div class="wt" style="font-weight:700">未来創発<i>700（17 要素）</i></div>
+    <div class="wt is-off" style="font-weight:900">未来創発<i>900 → 700 で出る</i></div>
+  </div>
+
+  <div style="margin-top:32px">
+    <div class="type-row"><div class="type-meta"><b>Hero ★</b>64px / 400<br>lh 1.40 / ls 0.4px（0.00625em）</div><div class="type-sample" style="font-size:64px;font-weight:400;line-height:1.40;letter-spacing:.4px;color:#00196e">Dream up the future.未来創発</div></div>
+    <div class="type-row"><div class="type-meta"><b>Lead (下層)</b>48px / 400<br>lh 1.40 / ls 0.4px</div><div class="type-sample" style="font-size:48px;font-weight:400;line-height:1.40;letter-spacing:.4px">それぞれの機能が有機的につながり</div></div>
+    <div class="type-row"><div class="type-meta"><b>Section ★</b>34px / 500<br>lh 1.40 / ls 1.6px（0.047em）</div><div class="type-sample" style="font-size:34px;font-weight:500;line-height:1.40;letter-spacing:1.6px">サービス・ソリューション</div></div>
+    <div class="type-row"><div class="type-meta"><b>Sub Heading</b>24px / 700<br>lh 1.40 / ls normal</div><div class="type-sample" style="font-size:24px;font-weight:700;line-height:1.40">注目トピックス</div></div>
+    <div class="type-row"><div class="type-meta"><b>Card Title ★</b>20px / 500<br>lh 1.25 / ls 0.8px（0.04em）<br>color #005bac</div><div class="type-sample" style="font-size:20px;font-weight:500;line-height:1.25;letter-spacing:.8px;color:#005bac">デジタルトランスフォーメーション</div></div>
+    <div class="type-row"><div class="type-meta"><b>Lead</b>18px / 600<br>lh 1.50 / ls 0.2px</div><div class="type-sample" style="font-size:18px;font-weight:600;line-height:1.50;letter-spacing:.2px;color:#525252">話題のテーマや社会的テーマについて、NRIの調査・研究をお届けします。</div></div>
+    <div class="type-row"><div class="type-meta"><b>News</b>17px / 400<br>lh 1.47 / ls normal</div><div class="type-sample" style="font-size:17px;line-height:1.47;color:#333333">野村総合研究所、IR優良企業賞2026において「IR優良企業特別賞」を受賞</div></div>
+    <div class="type-row"><div class="type-meta"><b>Body</b>16px / 400<br>lh 1.50 / ls normal</div><div class="type-sample" style="font-size:16px;line-height:1.50;color:#333333">お客様との価値共創を通じて、持続可能な未来社会づくりに貢献していきます。</div></div>
+    <div class="type-row"><div class="type-meta"><b>Nav / Label ★</b>14px / 500<br>lh 1.50 / ls 0.28px（0.02em）</div><div class="type-sample" style="font-size:14px;font-weight:500;line-height:1.50;letter-spacing:.28px;color:#00196e">ナレッジ・インサイト</div></div>
+    <div class="type-row"><div class="type-meta"><b>Meta / Date</b>12px / 400<br>lh 1.50 / ls 0.28px</div><div class="type-sample" style="font-size:12px;line-height:1.50;letter-spacing:.28px;color:#4f4f4f">2026年11月13日</div></div>
+    <div class="type-row"><div class="type-meta"><b>Legal</b>10px / 400<br>lh 1.50 / ls 0.2px</div><div class="type-sample" style="font-size:10px;line-height:1.50;letter-spacing:.2px;color:#4f4f4f">免責条項　サイト利用規定　個人情報保護方針</div></div>
+  </div>
+
+  <p class="note"><b><code>letter-spacing</code> は <code>em</code> を各要素が持つ型</b>（<code>body</code> から px で継承していない。サイズに比例して px が変わる）。<b>大きい文字ほど <code>em</code> が小さい</b>──64px の見出しは 0.00625em とほぼ <code>normal</code>、20px のカード見出しは 0.04em、14px のラベルは 0.02em。一律の字間を配らないこと。</p>
+
+  <p class="note"><b><code>font-feature-settings: "palt"</code> は 2 ページとも 0 要素。</b>効かないのではなく、<b>効くのに使っていない</b>（実スタック・64px・weight 400 で実測 <code>normal</code> 1934.17px → <code>"palt"</code> 1762.84px ＝ <b>−8.9%</b>）。足すと既存のレイアウトと別物になるので、再現するときも足さない。</p>
+
+  <p class="note"><b><code>pwid</code> が 1 要素だけ残っているが、これは意図ではなく Figma のコピペ。</b>フッターのバナー見出しの CSS が <code>color: var(--Foreground-Low-Emphasis, #525252); leading-trim: both; text-edge: cap; font-feature-settings: "pwid" on</code> になっている。<code>leading-trim</code> と <code>text-edge</code> はブラウザが無視し、変数は定義されていないのでフォールバックの <code>#525252</code> が効く。<b>再現しないこと。</b></p>
+</div>
+</section>
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Components</div>
+  <div class="eyebrow">Buttons &amp; Inputs</div>
+  <h2 class="section-title">面色の CTA には必ず同色の枠を置く</h2>
+  <p class="section-lead">ネイビーのボタンは <code>background: #00196e</code> に <code>border: 1px solid #00196e</code> を重ねる。<b><code>padding</code> が左右非対称</b>（<code>12px 8px 12px 24px</code>）なのは、右に矢印アイコンを絶対配置する前提だから。</p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-primary">ニュース一覧</a>
+    <a href="#" class="btn btn-primary-sm">企業理念</a>
+    <button class="btn btn-lang">日本語 / English / 中文简体</button>
+  </div>
+  <div class="btn-onimg-wrap"><a href="#" class="btn btn-onimg">未来創発センターについて</a></div>
+
+  <div class="form-grid" style="margin-top:40px">
+    <div class="field"><label for="f1">サイト内検索</label><input id="f1" type="text" placeholder="気になるキーワードを入力"><div class="field-msg">面 #efefef / border 0 / radius 8px</div></div>
+    <div class="field is-focus"><label for="f2">フォーカス時</label><input id="f2" type="text" value="未来創発"><div class="field-msg">フォーカスリングは #64afc3（ブランドのネイビーではない）</div></div>
+    <div class="field"><label for="f3">カテゴリ</label><select id="f3"><option>業種から探す</option><option>テーマから探す</option></select><div class="field-msg">16px / 400 / line-height 1.50</div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="cards">
+<div class="section-inner">
+  <div class="section-label">04 / Cards</div>
+  <div class="eyebrow">Cards</div>
+  <h2 class="section-title">角丸 12px ＋ 1px の枠 ＋ 淡い影</h2>
+  <p class="section-lead"><code>border-radius: 12px</code> が支配的（トップ 30 要素 / 下層 53 要素）。カード見出しは <b>20px / weight 500 / <code>line-height: 1.25</code> / <code>letter-spacing: 0.8px</code> / 色 <code>#005bac</code></b>。</p>
+
+  <div class="card-grid">
+    <a href="#" class="card"><div class="card-title">AI活用</div><div class="card-desc">お客様「それぞれ」のAI活用のご支援</div></a>
+    <a href="#" class="card"><div class="card-title">デジタルトランスフォーメーション</div><div class="card-desc">デジタル技術とデータ活用を通じた事業・業務と組織の変革</div></a>
+    <a href="#" class="card"><div class="card-title">CX・UX・デザイン</div><div class="card-desc">顧客期待を超え、感動でロイヤリティを高めるエクスペリエンス</div></a>
+  </div>
+
+  <div class="card-grid" style="margin-top:32px">
+    <a href="#" class="card-plain"><div class="thumb"></div><div class="pad"><div class="card-cat">出版・刊行物</div><div class="t">日本の資産運用ビジネス 2026/2027</div></div></a>
+    <a href="#" class="card-plain"><div class="thumb"></div><div class="pad"><div class="card-cat">レポート</div><div class="t">Fundmark Report 最新号</div></div></a>
+    <a href="#" class="card-plain"><div class="thumb"></div><div class="pad"><div class="card-cat">出版・刊行物</div><div class="t">NRIマネジメントレビュー 2026年11月号</div></div></a>
+  </div>
+
+  <div style="margin-top:40px">
+    <div class="news-row"><div class="news-date">2026年11月16日</div><div class="news-cat">お知らせ</div><a href="#" class="news-title">野村ホールディングス・野村総合研究所・BOOSTRYの3社による取り組みについて</a></div>
+    <div class="news-row"><div class="news-date">2026年11月11日</div><div class="news-cat">ニュースリリース</div><a href="#" class="news-title">残業減による収入減を理由に「もっと働きたい」正社員は約4割</a></div>
+    <div class="news-row"><div class="news-date">2026年10月26日</div><div class="news-cat">お知らせ</div><a href="#" class="news-title">野村総合研究所、IR優良企業賞2026において「IR優良企業特別賞」を受賞</a></div>
+  </div>
+  <div style="margin-top:26px"><a href="#" class="btn btn-primary">ニュース一覧</a></div>
+</div>
+</section>
+
+<section class="section" id="elevation">
+  <div class="section-label">05 / Elevation &amp; Radius</div>
+  <div class="eyebrow">Depth</div>
+  <h2 class="section-title">blur は 2〜4px。持ち上げない</h2>
+  <p class="section-lead">影は 5 種類あって、どれも「ほぼ真下に 1px、ごく淡く」。<b>カードを持ち上げるのではなく、輪郭をわずかに立てるだけ。</b></p>
+
+  <div class="elev-grid">
+    <div class="elev e1"><div class="elev-name">Card（下層）</div><div class="elev-val">rgba(0,0,0,.06) 0 1px 2px<br>26 要素</div></div>
+    <div class="elev e2"><div class="elev-name">Card（トップ）</div><div class="elev-val">rgba(0,0,0,.1) 0 1px 3px<br>7 要素</div></div>
+    <div class="elev e3"><div class="elev-name">CTA</div><div class="elev-val">rgba(0,0,0,.2) 0 1px 4px<br>4 要素</div></div>
+    <div class="elev e4"><div class="elev-name">Column（唯一浮く）</div><div class="elev-val">rgba(0,0,0,.1) 0 4px 10px<br>1 要素</div></div>
+  </div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:2px"></div><div class="radius-label">2px / ハンバーガー</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">8px / ボタン・入力</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:12px"></div><div class="radius-label">★12px / カード・CTA</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:14px"></div><div class="radius-label">14px / メニュー</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:16px"></div><div class="radius-label">16px / ヒーローのカード</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:24px"></div><div class="radius-label">24px / コラム</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:50%"></div><div class="radius-label">50% / アイコン</div></div>
+  </div>
+
+  <p class="note"><b>ヒーロー上の白文字には「白い影」を使う。</b><code>rgba(255,255,255,0.5) 0 0 2px</code> が 1 要素だけ実測された。背景写真から文字を浮かせるための処理で、黒い影ではない。</p>
+</section>
+
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">06 / Layout &amp; Responsive</div>
+  <div class="eyebrow">Layout</div>
+  <h2 class="section-title">1440 と 1120 の二段。ルートは完全固定</h2>
+  <p class="section-lead">全幅のセクションは <b>1440px</b>、本文カラムは <b>1120px</b>。<code>gap</code> は 8 / 16 / 24 / 32 / 40 / 80 / 96px と 8 の倍数。</p>
+
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:100%">container 1440px — 全幅セクション（トップで 10 箇所）</div>
+    <div class="layout-bar" style="width:78%">column 1120px — 本文カラム（下層で 6 箇所）</div>
+    <div class="layout-bar" style="width:52%">gap 32px — カードグリッド</div>
+  </div>
+
+  <p class="note"><b>ルートは 19 幅すべてで <code>html: 16px</code> / <code>body: 16px</code> 固定。</b>1920 / 1600 / 1441 / 1440 / 1200 / 1026 / 1025 / 1024 / 900 / 834 / 821 / 820 / 819 / 768 / 767 / 600 / 430 / 375 / 320px を測って 1px も動かない。<b><code>clamp()</code> も <code>vw</code> も <code>rem</code> 連動も使っていない。</b>唯一の変化は 375px 以下で <code>&lt;p&gt;</code> が 18px → 16px に落ちること。</p>
+
+  <p class="note"><b>ブレークポイントはモバイルファースト</b>：<code>min-width: 768px</code>（467 / 296 件）と <code>min-width: 1025px</code>（196 / 126 件）が主軸で、<code>min-width: 1441px</code> は全幅セクションの上限処理。820/819px にも 751/750px にも崖は無い（実測で確認）。</p>
+
+  <p class="note"><b>縦組みは 2 ページとも 0 要素。</b><code>writing-mode</code> は全要素 <code>horizontal-tb</code>。<code>word-break</code> は <code>normal</code>。</p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-head">野村総合研究所</div>
+    <div class="footer-cols">
+      <div class="footer-col"><div class="footer-col-title">サービス・ソリューション</div><a href="#">業種から探す</a><a href="#">テーマから探す</a><a href="#">サービス一覧</a></div>
+      <div class="footer-col"><div class="footer-col-title">ナレッジ・インサイト</div><a href="#">出版・刊行物</a><a href="#">レポート</a><a href="#">用語解説</a></div>
+      <div class="footer-col"><div class="footer-col-title">企業情報</div><a href="#">社長メッセージ</a><a href="#">経営ビジョン</a><a href="#">会社概要</a></div>
+    </div>
+    <div class="footer-legal"><a href="#">免責条項</a><a href="#">サイト利用規定</a><a href="#">個人情報保護方針</a><a href="#">ソーシャルメディアポリシー</a></div>
+  </div>
+</footer>
+
+</body>
+</html>

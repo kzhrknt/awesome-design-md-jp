@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 日本特殊陶業（Niterra）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- 実サイトと同一の 1 本。Figtree / Noto Sans JP / Outfit -->
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Outfit:wght@100;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Fonts ===
+       実サイトの :root にそのまま入っている 5 本。2026-11-17 実測 */
+    --font:         "Noto Sans JP", system-ui, -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+    --font-jp:      "Noto Sans JP", system-ui, -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+    --font-en:      "Outfit", system-ui, -apple-system, sans-serif;
+    --font-en-unit: "Figtree", "Outfit", system-ui, -apple-system, sans-serif;  /* ※記号だけに使う（下の注記） */
+    --font-en-jp:   "Outfit", "Noto Sans JP", system-ui, -apple-system, sans-serif;
+    --font-mono:    SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Colors: 9 段 × 3 系統のランプがそのまま CSS 変数 === */
+    --niterra-primary-100: #f6fafa;
+    --niterra-primary-200: #cde9eb;
+    --niterra-primary-300: #a4d7da;
+    --niterra-primary-400: #6ab9bf;
+    --niterra-primary-500: #3fa5ac;
+    --niterra-primary-600: #2a8c96;
+    --niterra-primary-700: #007b84;   /* 面 2 要素 */
+    --niterra-primary-800: #005d63;   /* ★実質のブランド色。文字 28/43 要素・面 9/11 要素 */
+    --niterra-primary-900: #003f45;
+
+    --niterra-secondary-100: #fdfaf4;
+    --niterra-secondary-200: #ffedc8;
+    --niterra-secondary-300: #ffdb92;
+    --niterra-secondary-400: #ffc95d;   /* ★NEW バッジの面 6 要素・英字ラベルの文字 6 要素 */
+    --niterra-secondary-500: #fcaf17;
+    --niterra-secondary-600: #f99d1c;
+    --niterra-secondary-700: #dc8710;
+    --niterra-secondary-800: #9b5d06;   /* 下層の英字見出し 9 要素 */
+    --niterra-secondary-900: #543304;
+
+    --niterra-neutral-100: #ffffff;   /* 反転文字 73/76 要素 */
+    --niterra-neutral-200: #f2f4f4;   /* 下層のヒーローの地 */
+    --niterra-neutral-300: #e5e8e8;   /* 数値カードの地 6/7 要素 */
+    --niterra-neutral-400: #c2c6c6;
+    --niterra-neutral-500: #9da3a3;
+    --niterra-neutral-600: #6a6e6e;   /* 注記・補助 6 要素 */
+    --niterra-neutral-700: #4a5252;   /* ★UI テキスト 32/20 要素 */
+    --niterra-neutral-800: #273535;   /* ★本文 10/9 要素。--color-fg も同値 */
+    --niterra-neutral-900: #0d2020;
+
+    --niterra-text-link:       #19869e;
+    --niterra-text-link-hover: #1877ab;
+    --niterra-base-bg:         #f4f7f7;
+
+    /* 短縮エイリアス（--color-muted / --color-border はランプのどの段とも一致しない旧値） */
+    --color-bg:      #ffffff;
+    --color-fg:      #273535;
+    --color-muted:   #666666;
+    --color-primary: #005d63;
+    --color-border:  #e2e2e2;
+    --radius: 8px;
+    --space:  16px;
+
+    /* 製品カテゴリの色（トークン外・下層でハードコード） */
+    --cat-green: #006228;
+    --cat-red:   #ff0000;
+
+    /* === Line height === */
+    --lh-base:  1.50;   /* ★既定（85/81 要素） */
+    --lh-long:  1.80;   /* 長文 */
+    --lh-head:  1.30;   /* 見出し・カード */
+    --lh-tight: 1.20;   /* 日付・バッジ */
+    --lh-en:    1.00;   /* ★英字ラベル（Outfit）だけ。18/24 要素 */
+
+    /* === Letter spacing: 既定は normal（140/134 要素）=== */
+    --ls-num:   0.05em;   /* 60px → 3px */
+    --ls-head:  0.06em;   /* 32px → 1.92px */
+    --ls-nav:   0.05em;   /* 14px → 0.7px */
+    --ls-sub:   0.04em;   /* 33px → 1.32px / 24px → 0.96px */
+    --ls-lead:  0.03em;   /* 18px → 0.54px */
+    --ls-card:  0.02em;   /* 24px → 0.48px */
+    --ls-small: 0.07em;   /* 12px → 0.84px */
+
+    --container: 1312px;   /* ヒーロー見出しの流体の上限もこの幅で止まる */
+    --column:    1168px;
+    --read:      930px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--color-bg);
+    color: var(--niterra-neutral-800);
+    font-family: var(--font-jp);
+    font-size: 16px;
+    font-weight: 500;            /* ★既定ウェイトが 500（128/109 要素で最多） */
+    line-height: var(--lh-base);
+    letter-spacing: normal;
+    /* font-feature-settings は書かない。実サイトは 0 要素（効くのに使っていない） */
+    word-break: normal;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ルートは 820px を境に 16px → 14px の 2 段切替（実測） */
+  @media (max-width: 819px) { html { font-size: 14px; } body { font-size: 14px; } }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid var(--color-border); background: var(--color-bg); }
+  .header-inner { display: flex; align-items: center; gap: 28px; max-width: var(--container); margin: 0 auto; padding: 16px 32px; }
+  .logo { font-family: var(--font-en); font-size: 28px; font-weight: 600; color: var(--niterra-primary-800); text-decoration: none; }
+  .logo small { display: block; font-family: var(--font-jp); font-size: 11px; font-weight: 500; letter-spacing: var(--ls-nav); }
+  .header-nav { display: flex; gap: 28px; margin-left: auto; }
+  .header-nav a { font-size: 14px; font-weight: 500; line-height: var(--lh-base); letter-spacing: var(--ls-nav); color: var(--niterra-neutral-700); text-decoration: none; }
+  .header-util { display: flex; gap: 20px; }
+  .header-util a { font-size: 13px; font-weight: 500; line-height: var(--lh-base); color: var(--niterra-neutral-700); text-decoration: none; }
+
+  /* HERO — モザイクのタイル格子。gap だけ 2px */
+  .hero { max-width: var(--container); margin: 0 auto; padding: 32px; }
+  .mosaic { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 168px; gap: 2px; }
+  .tile { border-radius: 0; overflow: hidden; display: flex; align-items: flex-end; padding: 20px; text-decoration: none; }
+  .tile-copy { grid-column: span 2; grid-row: span 2; background: var(--color-bg); align-items: center; padding: 8px 24px 8px 8px; }
+  .tile-photo-a { background: linear-gradient(150deg, #7fae82, #3e6f52); }
+  .tile-photo-b { background: linear-gradient(150deg, #9ec6e4, #4d7ea8); grid-row: span 2; }
+  .tile-photo-c { background: linear-gradient(150deg, #cdd6d6, #7f8c8c); }
+  .tile-photo-d { background: linear-gradient(150deg, #e2d2ad, #a08c5e); }
+  .tile-cap { background: var(--niterra-primary-800); color: var(--niterra-neutral-100); display: block; }
+  .tile-cap .en { font-family: var(--font-en); font-size: 16px; font-weight: 500; line-height: var(--lh-en); color: var(--niterra-secondary-400); }
+  .tile-cap .ja { font-size: 24px; font-weight: 500; line-height: var(--lh-head); letter-spacing: var(--ls-card); margin-top: 10px; }
+  .catch-sub { font-size: 32px; font-weight: 400; line-height: var(--lh-head); letter-spacing: var(--ls-sub); color: var(--niterra-neutral-800); }
+  .catch-main { font-size: 64px; font-weight: 700; line-height: var(--lh-head); color: var(--niterra-primary-800); margin-top: 6px; }
+
+  /* SECTIONS */
+  .section { padding: 72px 32px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--niterra-base-bg); }
+  .section-alt .section-inner { padding: 72px 32px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--niterra-neutral-600); margin-bottom: 10px; }
+  .eyebrow { display: inline-block; font-family: var(--font-en); font-size: 16px; font-weight: 500; line-height: var(--lh-en); color: var(--niterra-secondary-800); }
+  .section-title { font-size: 32px; font-weight: 700; line-height: var(--lh-head); letter-spacing: var(--ls-head); color: var(--niterra-primary-800); margin: 12px 0 16px; }
+  .section-lead { font-size: 18px; font-weight: 400; line-height: var(--lh-long); letter-spacing: var(--ls-lead); color: var(--niterra-neutral-800); max-width: var(--read); margin-bottom: 36px; }
+  .note { font-size: 14px; font-weight: 400; line-height: 1.9; color: var(--niterra-neutral-700); margin-top: 20px; max-width: var(--read); }
+  .note b { color: var(--niterra-neutral-800); font-weight: 700; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--niterra-neutral-200); color: var(--niterra-neutral-900); padding: 1px 5px; border-radius: 3px; }
+
+  /* COLOR RAMPS */
+  .ramp { margin-bottom: 26px; }
+  .ramp-name { font-size: 14px; font-weight: 700; letter-spacing: var(--ls-nav); color: var(--niterra-neutral-800); margin-bottom: 8px; }
+  .ramp-row { display: grid; grid-template-columns: repeat(9, 1fr); gap: 2px; }
+  .ramp-cell { height: 68px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px; font-family: var(--font-mono); font-size: 10px; }
+  .ramp-cell.dark { color: #ffffff; }
+  .ramp-cell.light { color: #0d2020; }
+  .ramp-use { display: grid; grid-template-columns: repeat(9, 1fr); gap: 2px; margin-top: 5px; }
+  .ramp-use span { font-size: 10px; line-height: 1.4; color: var(--niterra-neutral-600); text-align: center; }
+
+  /* TYPOGRAPHY */
+  .scale-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; align-items: baseline; }
+  .scale-bar span { background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 8px 14px; line-height: var(--lh-base); color: var(--niterra-neutral-800); }
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--color-border); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--niterra-neutral-600); line-height: 1.75; }
+  .type-meta b { display: block; font-family: var(--font-jp); font-size: 13px; font-weight: 700; color: var(--niterra-neutral-800); }
+  .type-sample { color: var(--niterra-neutral-800); }
+
+  /* STATS */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .stat { background: var(--niterra-neutral-300); border-radius: 0; padding: 28px 24px; }
+  .stat-label { font-size: 18px; font-weight: 500; line-height: var(--lh-base); color: var(--niterra-neutral-700); }
+  .stat-value { font-size: 60px; font-weight: 600; line-height: 1.05; letter-spacing: var(--ls-num); color: var(--niterra-primary-800); margin-top: 8px; }
+  .stat-value small { font-size: 32px; font-weight: 600; letter-spacing: normal; }
+  .stat-value small.jp { font-family: var(--font-jp); }    /* ★和文の単位は --font-jp */
+  .stat-value small.sym { font-family: var(--font-en-unit); } /* 記号（%）だけ --font-en-unit */
+  .stat-note { font-size: 12px; font-weight: 500; line-height: var(--lh-tight); color: var(--niterra-neutral-600); margin-top: 10px; }
+
+  /* BADGES / BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 24px; }
+  .badge-new { display: inline-block; background: var(--niterra-secondary-400); color: var(--niterra-primary-800); font-family: var(--font-en); font-size: 12px; font-weight: 500; line-height: var(--lh-tight); border-radius: 4px; padding: 4px 8px; }
+  .badge-pill { display: inline-block; background: transparent; color: var(--niterra-neutral-700); border: 1px solid var(--color-border); font-size: 12px; font-weight: 500; line-height: var(--lh-tight); border-radius: 9999px; padding: 4px 14px; }
+  .badge-cat { display: inline-block; color: var(--niterra-neutral-100); font-size: 12px; font-weight: 500; line-height: var(--lh-tight); border-radius: 4px; padding: 4px 10px; }
+  .btn-link { display: inline-flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 500; line-height: var(--lh-base); color: var(--niterra-primary-800); text-decoration: none; }
+  .btn-link::after { content: "→"; }
+  .btn-solid { display: inline-flex; align-items: center; background: var(--niterra-primary-800); color: var(--niterra-neutral-100); border: 0; border-radius: var(--radius); padding: var(--space) 24px; font-family: var(--font-jp); font-size: 16px; font-weight: 500; cursor: pointer; }
+
+  /* INPUTS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 26px; }
+  .field label { display: block; font-size: 14px; font-weight: 500; line-height: var(--lh-base); letter-spacing: var(--ls-nav); color: var(--niterra-neutral-700); margin-bottom: 8px; }
+  .field input, .field select {
+    width: 100%; background: var(--color-bg); color: var(--niterra-neutral-800);
+    border: 1px solid var(--color-border); border-radius: var(--radius);
+    padding: 0 14px; height: 48px; font-size: 14px; font-weight: 500; font-family: var(--font-jp);
+  }
+  .field.is-focus input { outline: 3px solid var(--niterra-primary-400); outline-offset: 1px; }
+  .field-msg { font-size: 12px; line-height: 1.6; color: var(--niterra-neutral-600); margin-top: 7px; }
+
+  /* NEWS */
+  .news-row { display: flex; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--color-border); align-items: center; flex-wrap: wrap; }
+  .news-date { font-size: 12px; font-weight: 500; line-height: var(--lh-tight); color: var(--niterra-neutral-700); width: 104px; flex-shrink: 0; }
+  .news-title { font-size: 16px; font-weight: 500; line-height: var(--lh-base); color: var(--niterra-neutral-800); text-decoration: none; }
+
+  /* VERTICAL (下層の章見出し)
+     実測（1440px）: v-en は left 160、v-ja は left 192 ＝ 欧文が左・和文が右。
+     親は素の flex（row）で、DOM 順は en → ja。 */
+  .vwrap { display: flex; gap: 12px; align-items: flex-start; background: var(--niterra-neutral-200); border-radius: var(--radius); padding: 28px; }
+  .v-en { writing-mode: vertical-rl; flex: 0 0 auto; font-family: var(--font-en); font-size: 20px; font-weight: 400; line-height: var(--lh-en); letter-spacing: normal; color: var(--niterra-secondary-800); }
+  .v-ja { writing-mode: vertical-rl; flex: 0 0 auto; font-family: var(--font-jp); font-size: 32px; font-weight: 500; line-height: 1.05; letter-spacing: var(--ls-sub); color: var(--niterra-primary-800); }
+  .vwrap .body { flex: 1 1 auto; min-width: 0; font-size: 18px; font-weight: 400; line-height: var(--lh-long); letter-spacing: var(--ls-lead); color: var(--niterra-neutral-800); }
+
+  /* 社是は「縦組みを横に並べる」ので row-reverse（実測: left 1164 → 1065 → 966 → 868 と右から左へ） */
+  .values { display: flex; flex-direction: row-reverse; justify-content: flex-start; gap: 32px; margin-top: 28px; }
+  .value { display: flex; flex-direction: row-reverse; gap: 10px; }
+  .value-title { writing-mode: vertical-rl; font-family: var(--font-jp); font-size: 40px; font-weight: 300; line-height: 1.05; letter-spacing: normal; color: var(--niterra-primary-800); }
+  .value-text { writing-mode: vertical-rl; font-family: var(--font-jp); font-size: 14px; font-weight: 400; line-height: 1.05; letter-spacing: normal; color: var(--niterra-neutral-700); }
+
+  /* RADIUS / ELEVATION */
+  .radius-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 112px; height: 70px; background: var(--niterra-primary-300); border: 1px solid var(--niterra-primary-600); }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; color: var(--niterra-neutral-600); margin-top: 7px; }
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-top: 8px; }
+  .elev { background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 24px; text-align: center; }
+  .elev.e1 { box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px 0px; }
+  .elev-name { font-size: 16px; font-weight: 700; color: var(--niterra-neutral-800); }
+  .elev-val { font-family: var(--font-mono); font-size: 10px; color: var(--niterra-neutral-600); margin-top: 8px; }
+
+  /* LAYOUT */
+  .layout-demo { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .layout-bar { background: var(--niterra-primary-200); border-radius: var(--radius); height: 38px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; color: var(--niterra-primary-900); }
+  .fluid-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+  .fluid-table th, .fluid-table td { font-size: 13px; line-height: 1.7; text-align: left; padding: 7px 12px 7px 0; border-bottom: 1px solid var(--color-border); color: var(--niterra-neutral-800); }
+  .fluid-table th { font-weight: 700; color: var(--niterra-neutral-900); }
+  .fluid-table td.m { font-family: var(--font-mono); font-size: 12px; }
+
+  /* FOOTER */
+  .footer { background: var(--niterra-primary-800); color: var(--niterra-neutral-100); padding: 48px 32px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-head { font-family: var(--font-en); font-size: 28px; font-weight: 600; line-height: var(--lh-en); }
+  .footer-cols { display: flex; gap: 96px; margin-top: 28px; flex-wrap: wrap; }
+  .footer-col-title { font-size: 14px; font-weight: 700; letter-spacing: var(--ls-nav); }
+  .footer-col a { display: block; font-size: 13px; font-weight: 500; line-height: 2; color: var(--niterra-neutral-100); text-decoration: none; opacity: .85; }
+  .footer-copy { font-size: 12px; font-weight: 500; line-height: var(--lh-long); margin-top: 32px; opacity: .8; }
+
+  @media (max-width: 819px) {
+    .mosaic { grid-template-columns: repeat(2, 1fr); }
+    .tile-copy { grid-column: span 2; }
+    .catch-main { font-size: 26px; }   /* 実サイトは 6.93333vw（設計幅 375px） */
+    .catch-sub { font-size: 20px; }
+    .stats { grid-template-columns: 1fr; }
+    .section, .section-alt .section-inner, .hero { padding: 44px 16px; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .header-nav, .header-util { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">Niterra<small>日本特殊陶業</small></a>
+    <nav class="header-nav">
+      <a href="#">企業情報</a><a href="#">製品情報</a><a href="#">研究・開発</a><a href="#">株主・投資家情報</a><a href="#">サステナビリティ</a>
+    </nav>
+    <div class="header-util"><a href="#">ニュース</a><a href="#">お問い合わせ</a></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="mosaic">
+    <div class="tile tile-copy">
+      <div>
+        <!-- 見出しの折り返しは span で手で区切る。鉤括弧は ｢ ｣（U+FF62 / U+FF63） -->
+        <div class="catch-sub"><span>“特殊な”技術と発想で</span><br><span>社会的課題を解決し、</span></div>
+        <div class="catch-main"><span>｢地球を輝かせる</span><br><span>企業｣となる</span></div>
+      </div>
+    </div>
+    <a href="#" class="tile tile-photo-a"></a>
+    <a href="#" class="tile tile-photo-b"></a>
+    <a href="#" class="tile tile-cap"><span class="en">At a Glance</span><span class="ja">ひと目でわかるNiterraグループ</span></a>
+    <a href="#" class="tile tile-photo-c"></a>
+    <a href="#" class="tile tile-cap"><span class="en">Management Plan</span><span class="ja">経営計画</span></a>
+    <a href="#" class="tile tile-photo-d"></a>
+    <a href="#" class="tile tile-cap"><span class="en">Investor’s Guide</span><span class="ja">投資家の皆さまへ</span></a>
+  </div>
+</section>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="eyebrow">Color Palette</div>
+  <h2 class="section-title">9 段 × 3 系統のランプ</h2>
+  <p class="section-lead">CSS 変数 42 個のうち 27 個が <b>primary / secondary / neutral の 9 段ランプ</b>。実装で使うのは 700〜800 段と 200〜300 段に集中する。</p>
+
+  <div class="ramp">
+    <div class="ramp-name">--niterra-primary-*（ティール）</div>
+    <div class="ramp-row">
+      <div class="ramp-cell light" style="background:#f6fafa">100</div>
+      <div class="ramp-cell light" style="background:#cde9eb">200</div>
+      <div class="ramp-cell light" style="background:#a4d7da">300</div>
+      <div class="ramp-cell light" style="background:#6ab9bf">400</div>
+      <div class="ramp-cell dark"  style="background:#3fa5ac">500</div>
+      <div class="ramp-cell dark"  style="background:#2a8c96">600</div>
+      <div class="ramp-cell dark"  style="background:#007b84">700</div>
+      <div class="ramp-cell dark"  style="background:#005d63">800</div>
+      <div class="ramp-cell dark"  style="background:#003f45">900</div>
+    </div>
+    <div class="ramp-use"><span></span><span></span><span></span><span></span><span></span><span></span><span>面2</span><span>★本体<br>文字28/43</span><span></span></div>
+  </div>
+
+  <div class="ramp">
+    <div class="ramp-name">--niterra-secondary-*（イエロー）</div>
+    <div class="ramp-row">
+      <div class="ramp-cell light" style="background:#fdfaf4">100</div>
+      <div class="ramp-cell light" style="background:#ffedc8">200</div>
+      <div class="ramp-cell light" style="background:#ffdb92">300</div>
+      <div class="ramp-cell light" style="background:#ffc95d">400</div>
+      <div class="ramp-cell light" style="background:#fcaf17">500</div>
+      <div class="ramp-cell light" style="background:#f99d1c">600</div>
+      <div class="ramp-cell dark"  style="background:#dc8710">700</div>
+      <div class="ramp-cell dark"  style="background:#9b5d06">800</div>
+      <div class="ramp-cell dark"  style="background:#543304">900</div>
+    </div>
+    <div class="ramp-use"><span></span><span></span><span></span><span>★NEW<br>面6</span><span></span><span></span><span></span><span>下層の<br>英字見出し</span><span></span></div>
+  </div>
+
+  <div class="ramp">
+    <div class="ramp-name">--niterra-neutral-*</div>
+    <div class="ramp-row">
+      <div class="ramp-cell light" style="background:#ffffff;border:1px solid #e2e2e2">100</div>
+      <div class="ramp-cell light" style="background:#f2f4f4">200</div>
+      <div class="ramp-cell light" style="background:#e5e8e8">300</div>
+      <div class="ramp-cell light" style="background:#c2c6c6">400</div>
+      <div class="ramp-cell light" style="background:#9da3a3">500</div>
+      <div class="ramp-cell dark"  style="background:#6a6e6e">600</div>
+      <div class="ramp-cell dark"  style="background:#4a5252">700</div>
+      <div class="ramp-cell dark"  style="background:#273535">800</div>
+      <div class="ramp-cell dark"  style="background:#0d2020">900</div>
+    </div>
+    <div class="ramp-use"><span>反転<br>73/76</span><span>下層の地</span><span>数値<br>カード</span><span></span><span></span><span>注記</span><span>★UI<br>32/20</span><span>★本文<br>10/9</span><span></span></div>
+  </div>
+
+  <p class="note"><b><code>--color-muted: #666666</code> と <code>--color-border: #e2e2e2</code> はランプのどの段とも一致しない別値。</b>ランプが正でエイリアスが古い、という二重化が残っている。</p>
+  <p class="note"><b><code>#138995</code> はサイトの色ではない。</b>Cookie 同意バナー（<code>cf2Lf6</code> クラス）の面色で、トークンにも実装にも無い。<code>interactive</code> の上位に「同意する／調整する／拒否する」が並ぶが、サイトの CTA ではない。</p>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <div class="eyebrow">Typography</div>
+  <h2 class="section-title">書体を役割で 3 本に分ける</h2>
+  <p class="section-lead"><code>--font-jp</code>（Noto Sans JP・127〜145 要素）／ <code>--font-en</code>（Outfit・21〜28 要素）／ <code>--font-en-unit</code>（Figtree → Outfit・1〜5 要素）。<b>既定ウェイトは 500。</b></p>
+
+  <div class="scale-bar">
+    <span style="font-size:10px">10</span><span style="font-size:12px">12</span><span style="font-size:13px">13</span>
+    <span style="font-size:14px">14</span><span style="font-size:16px">16</span><span style="font-size:18px">18</span>
+    <span style="font-size:24px">24</span><span style="font-size:32px">32</span><span style="font-size:60px">60</span>
+    <span style="font-size:64px">64</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Hero Main ★</b>--font-jp / 64px / 700<br>lh 1.30 / ls normal<br>（820〜1312px は流体）</div><div class="type-sample" style="font-size:64px;font-weight:700;line-height:1.30;color:#005d63">｢地球を輝かせる企業｣となる</div></div>
+  <div class="type-row"><div class="type-meta"><b>Hero Sub</b>--font-jp / 32px / 400<br>lh 1.30 / ls 1.32px（0.04em）</div><div class="type-sample" style="font-size:32px;font-weight:400;line-height:1.30;letter-spacing:1.32px">“特殊な”技術と発想で社会的課題を解決し、</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section ★</b>--font-jp / 32px / 700<br>lh 1.30 / ls 1.92px（0.06em）</div><div class="type-sample" style="font-size:32px;font-weight:700;line-height:1.30;letter-spacing:1.92px;color:#005d63">数字で見るNiterraグループ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Title</b>--font-jp / 24px / 500<br>lh 1.30 / ls 0.48px（0.02em）</div><div class="type-sample" style="font-size:24px;font-weight:500;line-height:1.30;letter-spacing:.48px">ひと目でわかるNiterraグループ</div></div>
+  <div class="type-row"><div class="type-meta"><b>EN Label ★</b>--font-en（Outfit） / 16px / 500<br><b style="display:inline">lh 1.00</b> / ls normal</div><div class="type-sample" style="font-family:var(--font-en);font-size:16px;font-weight:500;line-height:1.00;color:#ffc95d;background:#005d63;display:inline-block;padding:10px 14px">At a Glance</div></div>
+  <div class="type-row"><div class="type-meta"><b>Lead</b>--font-jp / 18px / 400<br>lh 1.80 / ls 0.54px（0.03em）</div><div class="type-sample" style="font-size:18px;font-weight:400;line-height:1.80;letter-spacing:.54px">日本特殊陶業は、セラミックを核にした素材・成形・焼成の技術で社会的課題を解決します。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body</b>--font-jp / 16px / 500<br>lh 1.50 / ls normal</div><div class="type-sample" style="font-size:16px;font-weight:500;line-height:1.50">スパークプラグ、排気ガス用センサが最適な燃焼状態をつくります。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav</b>--font-jp / 14px / 500<br>lh 1.50 / ls 0.7px（0.05em）</div><div class="type-sample" style="font-size:14px;font-weight:500;line-height:1.50;letter-spacing:.7px;color:#4a5252">企業情報　製品情報　研究・開発</div></div>
+  <div class="type-row"><div class="type-meta"><b>Utility</b>--font-jp / 13px / 500<br>lh 1.50 / ls normal</div><div class="type-sample" style="font-size:13px;font-weight:500;line-height:1.50;color:#4a5252">ニュース　サイトマップ　お問い合わせ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Date / Badge ★</b>--font-jp / 12px / 500<br>lh 1.20<br>66/55 要素で最多</div><div class="type-sample" style="font-size:12px;font-weight:500;line-height:1.20;color:#4a5252">2026年11月16日</div></div>
+
+  <p class="note"><b>ウェイトは 300 / 400 / 500 / 600 / 700 の 5 段。既定は 500。</b>300 は社是の 4 語（独立自営・素志貫徹・至誠信実）だけ、700 はヒーローなど 2〜7 要素しかない。<b>ウェイト 100 / 200 / 800 / 900 は <code>@font-face</code> が無いので要求しない。</b></p>
+
+  <p class="note"><b><code>font-feature-settings</code> は 2 ページとも 0 要素。</b>効かないのではなく、<b>効くのに使っていない</b>（実スタック・32px / weight 700 で実測 <code>normal</code> 971.48px → <code>"palt"</code> 887.77px ＝ <b>−8.6%</b>、<code>"halt"</code> 907.48px、<code>"pwid"</code> 1003.48px）。足すと <code>&lt;span&gt;</code> で手組みした見出しの改行が崩れる。</p>
+</div>
+</section>
+
+<section class="section" id="unit">
+  <div class="section-label">03 / Numbers</div>
+  <div class="eyebrow">By the Numbers</div>
+  <h2 class="section-title">単位の書体に注意する</h2>
+  <p class="section-lead">数値は <b>60px / weight 600 / <code>letter-spacing: 3px</code>（0.05em）</b>、単位は <code>&lt;small&gt;</code> の 32px / weight 600。<b>ただし実サイトはこの <code>&lt;small&gt;</code> に <code>--font-en-unit</code> を当てている。</b></p>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">創立年</div><div class="stat-value">1936<small class="jp">年</small></div><div class="stat-note">創業90周年</div></div>
+    <div class="stat"><div class="stat-label">連結売上収益</div><div class="stat-value">7,312<small class="jp">億円</small></div><div class="stat-note">※2026年3月期</div></div>
+    <div class="stat"><div class="stat-label">海外売上比率</div><div class="stat-value">81<small class="sym">%</small></div><div class="stat-note">※2026年3月末時点</div></div>
+  </div>
+
+  <p class="note"><b>Figtree も Outfit も CJK を持たないので、「年」「億円」は OS ローカルの書体に落ちる。</b>実サイトを CDP の <code>CSS.getPlatformFontsForNode</code> で測ると、<code>年</code> → <b>Hiragino Kaku Gothic ProN</b>（＝ <code>system-ui</code>）、<code>億円</code> → <b>Hiragino Kaku Gothic ProN</b>、<code>%</code> → <b>Figtree</b>、同じブロックの <code>拠点</code> → <b>Noto Sans JP</b>。<b>1 つの数値ブロックの中で 3 つの書体が混ざり、OS が変われば和文の単位の字面も変わる。</b></p>
+  <p class="note"><b>このプレビューでは和文の単位に <code>--font-jp</code> を当て直してある</b>（<code>&lt;small class="jp"&gt;</code>）。<code>--font-en-unit</code> は <code>%</code> のような記号だけに限ること。</p>
+</section>
+
+<section class="section-alt" id="components">
+<div class="section-inner">
+  <div class="section-label">04 / Components</div>
+  <div class="eyebrow">Badges &amp; Links</div>
+  <h2 class="section-title">バッジの角丸を用途で分ける</h2>
+  <p class="section-lead"><b>状態（NEW）は 4px の角丸、分類（トピックス）は <code>9999px</code> のピル。</b>このサイトは「ボタン」をほとんど使わず、導線は写真タイルと矢印付きテキストリンクで作る。</p>
+
+  <div class="btn-grid">
+    <span class="badge-new">NEW</span>
+    <span class="badge-pill">トピックス</span>
+    <span class="badge-pill">その他</span>
+    <span class="badge-cat" style="background:var(--cat-green)">半導体関連部品</span>
+    <span class="badge-cat" style="background:var(--cat-red)">自動車部品</span>
+    <span class="badge-cat" style="background:var(--niterra-neutral-600)">産業用セラミック</span>
+  </div>
+
+  <div class="btn-grid">
+    <a href="#" class="btn-link">企業情報トップへ</a>
+    <a href="#" class="btn-link">プレスリリースへ</a>
+    <button class="btn-solid">資料をダウンロード</button>
+  </div>
+
+  <div class="form-grid" style="margin-top:36px">
+    <div class="field"><label for="g1">サイト内検索</label><input id="g1" type="text" placeholder="キーワードを入力"><div class="field-msg">border 1px solid #e2e2e2 / radius 8px（--radius）</div></div>
+    <div class="field is-focus"><label for="g2">フォーカス時</label><input id="g2" type="text" value="セラミックス"><div class="field-msg">primary-400 のリング</div></div>
+  </div>
+
+  <div style="margin-top:36px">
+    <div class="news-row"><div class="news-date">2026年11月16日</div><span class="badge-new">NEW</span><span class="badge-pill">トピックス</span><a href="#" class="news-title">Niterraグループの新しい研究拠点が稼働しました</a></div>
+    <div class="news-row"><div class="news-date">2026年11月04日</div><span class="badge-pill">その他</span><a href="#" class="news-title">創立90周年記念サイトを公開しました</a></div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="vertical">
+  <div class="section-label">05 / Vertical Writing</div>
+  <div class="eyebrow">Vertical</div>
+  <h2 class="section-title">下層の章見出しだけ縦組み</h2>
+  <p class="section-lead">トップは 0 要素、下層（<code>/at_a_glance/</code>）に <code>vertical-rl</code> が <b>12 要素</b>。欧文（Outfit）も縦に流しているので、短い語だけに使う。</p>
+
+  <div class="vwrap">
+    <div class="v-en">About Niterra</div>
+    <div class="v-ja">どんな会社？</div>
+    <div class="body">
+      日本特殊陶業は、セラミックを核にした素材・成形・焼成の技術で、自動車・半導体・医療・環境エネルギーの各分野に製品を届けています。
+    </div>
+  </div>
+
+  <p class="note">章見出しは <b>欧文が左（left 160）・和文が右（left 192）</b>で、親は素の <code>flex</code>（row）。DOM 順は欧文 → 和文。縦の和文は <b>32px / weight 500 / <code>line-height: 1.05</code> / <code>letter-spacing: 0.96px</code>（0.04em）</b>、欧文は <b>20px / weight 400 / <code>line-height: 1.00</code> / <code>letter-spacing: normal</code></b>。</p>
+
+  <p class="note" style="margin-bottom:0"><b>社是のように「縦組みを横に並べる」ときだけ <code>flex-direction: row-reverse</code> にする。</b>実測では 4 つの語が left 1164 → 1065 → 966 → 868 と<b>右から左へ</b>置かれている。素の <code>flex</code> だと DOM 順に左→右へ並び、日本語の縦組みとして読む向きと逆になる。</p>
+  <div class="values">
+    <div class="value"><div class="value-title">独立自営</div><div class="value-text">安易に人に頼らず、自分の力を信じて仕事に取り組む</div></div>
+    <div class="value"><div class="value-title">素志貫徹</div><div class="value-text">譲れない志を持ち、最後までやり抜く</div></div>
+    <div class="value"><div class="value-title">至誠信実</div><div class="value-text">この上なく誠実であり、真面目で偽りがない</div></div>
+    <div class="value"><div class="value-title">四海兄弟</div><div class="value-text">世界の平和・共同幸福につながる事業を行う</div></div>
+  </div>
+
+  <p class="note"><b>縦組みに <code>palt</code> を足さないこと。</b>横組み用の軸なので、縦組みではエラーも警告も出さずに無視される。詰めたいなら <code>vpal</code> / <code>vhal</code> / <code>vkrn</code> を使う。</p>
+</section>
+
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">06 / Layout, Depth &amp; Responsive</div>
+  <div class="eyebrow">Layout</div>
+  <h2 class="section-title">影を使わず、面色の段差で奥行きを作る</h2>
+  <p class="section-lead">実測の <code>box-shadow</code> は 2 ページ合わせて 2 種類だけで、片方は Cookie バナー由来。<b>奥行きは neutral-200 / 300 と白の段差と、タイルの 2px の隙間で作る。</b></p>
+
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">既定</div><div class="elev-val">box-shadow なし<br>border 1px solid #e2e2e2</div></div>
+    <div class="elev e1"><div class="elev-name">社是のカード（唯一）</div><div class="elev-val">rgba(0,0,0,.1) 0 2px 8px<br>下層で 1 要素</div></div>
+  </div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:0"></div><div class="radius-label">0 / モザイクタイル</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">4px / 状態バッジ</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">8px / --radius</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:9999px"></div><div class="radius-label">9999px / 分類ピル</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:50%"></div><div class="radius-label">50% / アイコン</div></div>
+  </div>
+
+  <div class="layout-demo" style="margin-top:36px">
+    <div class="layout-bar" style="width:100%">container 1312px — トップのコンテンツ幅（ヒーローの流体もこの幅で止まる）</div>
+    <div class="layout-bar" style="width:89%">column 1168px — 下層のコンテンツ幅</div>
+    <div class="layout-bar" style="width:71%">read 930px — 本文の読み幅</div>
+    <div class="layout-bar" style="width:34%">gap 2px — モザイクタイルの隙間</div>
+  </div>
+
+  <p class="note" style="margin-top:28px"><b>ルートは 820px を境に 16px → 14px の 2 段切替。</b><code>@media (min-width: 820px)</code> が 261 / 327 件とこのサイトの主軸で、Bootstrap の既定（576 / 768 / 992 / 1200 / 1400px）も混ざるがほとんど使われていない。</p>
+
+  <p class="note"><b>ヒーロー見出しは 3 段構成で、820 / 819px に 1.47 倍の崖がある</b>（モバイルのほうが大きい）。規定の 4 幅（1440 / 1200 / 834 / 375px）では崖が見えない。</p>
+
+  <table class="fluid-table">
+    <tr><th>幅</th><th>実測</th><th>式</th></tr>
+    <tr><td class="m">1920 / 1440 / <b>1312px</b></td><td class="m"><b>64px</b></td><td>上限クランプ（＝コンテナ幅でちょうど到達）</td></tr>
+    <tr><td class="m">1200px</td><td class="m">58.2194px</td><td class="m">(100vw − 72px) × 16 ÷ 310</td></tr>
+    <tr><td class="m">1024px</td><td class="m">49.1355px</td><td class="m">同上</td></tr>
+    <tr><td class="m">900px</td><td class="m">42.7355px</td><td class="m">同上</td></tr>
+    <tr><td class="m"><b>820px</b></td><td class="m"><b>38.6065px</b></td><td>デスクトップ側の最小</td></tr>
+    <tr><td class="m"><b>819px</b></td><td class="m"><b>56.784px</b></td><td class="m">6.93333vw（＝ 26 ÷ 375）— <b>1.47 倍に跳ぶ</b></td></tr>
+    <tr><td class="m">768px</td><td class="m">53.248px</td><td class="m">同上</td></tr>
+    <tr><td class="m">375px</td><td class="m"><b>26px</b></td><td>モバイル設計幅 375px でちょうど</td></tr>
+  </table>
+
+  <p class="note">ほかの流体: <code>clamp(24px, 24px + (100vw - 820px) * 8 / 220, 32px)</code>（820〜1040px で 24 → 32px）、<code>clamp(12px, (100vw - 880px) * 0.00556 + 12px, 14px)</code>（880〜1240px で 12 → 14px）。<code>&lt;p&gt;</code> は 960px 以上で 24px 固定、960〜820px で <code>2.5vw</code>、819px 以下で 20.496px 固定。</p>
+
+  <p class="note"><b><code>--pc-px</code> / <code>--sp-px</code> という流体単位の変数が CSS にあるが、宣言は <code>html:lang(en)</code> の中だけ。</b>日本語ページでは未定義で <code>calc(38 * var(--pc-px))</code> は無効になる。<b>英語版専用の仕組みなので、日本語の再現では使わない。</b></p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-head">Niterra</div>
+    <div class="footer-cols">
+      <div class="footer-col"><div class="footer-col-title">企業情報</div><a href="#">トップメッセージ</a><a href="#">ブランドについて</a><a href="#">会社概要</a></div>
+      <div class="footer-col"><div class="footer-col-title">製品情報</div><a href="#">自動車部品</a><a href="#">半導体関連部品</a><a href="#">医療機器</a></div>
+      <div class="footer-col"><div class="footer-col-title">株主・投資家情報</div><a href="#">経営方針</a><a href="#">IRライブラリ</a><a href="#">財務・業績情報</a></div>
+    </div>
+    <div class="footer-copy">© Niterra Co., Ltd.</div>
+  </div>
+</footer>
+
+</body>
+</html>

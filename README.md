@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (643 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (646 sites)</a>
 </p>
 
 <table>
@@ -1001,6 +1001,11 @@
 </tr>
 <tr>
 <td align="center"><strong>三菱ガス化学</strong><br><img src="design-md/mgc/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>野村総合研究所</strong><br><img src="design-md/nri/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>日本特殊陶業</strong><br><img src="design-md/ngkntk/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>芝浦工業大学</strong><br><img src="design-md/shibaura-it/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1705,11 +1710,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [専門学校桑沢デザイン研究所 (KUWASAWA DESIGN SCHOOL)](https://www.kds.ac.jp/) | Design School / Education | [DESIGN.md](design-md/kds/DESIGN.md) | [preview.html](design-md/kds/preview.html) |
 | [光文社 (KOBUNSHA)](https://www.kobunsha.com/) | Publishing / Magazines | [DESIGN.md](design-md/kobunsha/DESIGN.md) | [preview.html](design-md/kobunsha/preview.html) |
 | [三菱ガス化学 (Mitsubishi Gas Chemical)](https://www.mgc.co.jp/) | Chemicals / Corporate | [DESIGN.md](design-md/mgc/DESIGN.md) | [preview.html](design-md/mgc/preview.html) |
+| [野村総合研究所 (Nomura Research Institute)](https://www.nri.com/jp) | IT Consulting / Think Tank | [DESIGN.md](design-md/nri/DESIGN.md) | [preview.html](design-md/nri/preview.html) |
+| [日本特殊陶業 (Niterra)](https://www.niterragroup.com/) | Ceramics / Corporate | [DESIGN.md](design-md/ngkntk/DESIGN.md) | [preview.html](design-md/ngkntk/preview.html) |
+| [芝浦工業大学 (Shibaura Institute of Technology)](https://www.shibaura-it.ac.jp/) | University / Engineering | [DESIGN.md](design-md/shibaura-it/DESIGN.md) | [preview.html](design-md/shibaura-it/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (643 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (646 sites)</a>
 </p>
 
 <table>
@@ -2676,6 +2684,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>三菱ガス化学</strong><br><img src="design-md/mgc/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>野村総合研究所</strong><br><img src="design-md/nri/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>日本特殊陶業</strong><br><img src="design-md/ngkntk/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>芝浦工業大学</strong><br><img src="design-md/shibaura-it/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 芝浦工業大学（Shibaura Institute of Technology）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- 実サイトと同一の 2 本。2 本目は text= で 21 文字だけ配信させる文字集合サブセット -->
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@200;300;600&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap&text=,0123456789ACEGHLNRSU" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトの CSS Custom Properties は --header-height / --dvh / --height の 3 個だけ
+       （残り 13 個は Swiper の既定値）。色もサイズも全部ハードコード。
+       以下は computed style の実測値。2026-11-17 */
+    --green:   #134e3b;   /* ★深緑。文字 56/51 要素・面 22/4 要素 */
+    --green-a: rgba(19, 78, 59, .2);   /* 薄い面 27 要素 */
+    --teal:    #008482;   /* CTA・リンク・バッジ。面 21/9 要素 */
+    --cat-blue:   #4274b7;   /* 連携・貢献 / 研究 / お知らせ。面 8 要素 */
+    --cat-purple: #7e498b;   /* 大学院の専攻。面 8 要素 */
+    --done:       #9d2c3b;   /* 終了ラベル 2 要素 */
+
+    --text:      #000000;   /* ★既定。可視 364/339 要素で圧倒的最多 */
+    --text-sub:  #646464;   /* 補助 77/6 要素 */
+    --text-weak: #969696;   /* 下層の見出し補助 5 要素 */
+    --text-700:  #333333;   /* 下層の本文 10 要素 */
+    --white:     #ffffff;
+    --bg:        #ffffff;
+    --border:    #d7d7d7;   /* ボタン・カードの 1px */
+    --rule:      #cccccc;   /* 区切り 48 要素 */
+    --surface:   #f5f5f5;
+    --surface-2: #fafafa;
+
+    /* ヒーロー下の帯と下層のタイトル背景（1 種類を使い回す） */
+    --band: linear-gradient(270deg,
+              #4aaed3 0px, #4aaed3 6.41026%,
+              #4ac4d3 23.8462%,
+              #89f2b8 76.1538%,
+              #bef2dc 87.1795%, #bef2dc 100%);
+
+    /* === Fonts ===
+       Noto Sans JP（300/400/500/700） ＋ Lexend（英字ラベル） ＋ Inter（日付・番号だけ）。
+       フォールバックは sans-serif ひとつ。ヒラギノ・游ゴシック・メイリオは 1 つも書かれていない。 */
+    --font:      "Noto Sans JP", sans-serif;
+    --font-en:   Lexend, sans-serif;
+    --font-num:  Inter, sans-serif;      /* ★text= で 21 文字しか配信されない */
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height === */
+    --lh-menu:  1.38;   /* ★メニューのリンク。274/274 要素で最多 */
+    --lh-body:  2.00;   /* 本文 69/30 要素 */
+    --lh-nav:   1.53;
+    --lh-util:  1.86;
+    --lh-mid:   1.67;
+    --lh-news:  1.60;
+    --lh-hero:  1.32;
+
+    /* === Letter spacing: 0.04em が既定。em を各要素が持つ === */
+    --ls:       0.04em;   /* 13px → 0.52px（274 要素で最多） */
+    --ls-hero:  0.12em;   /* 68px → 8.16px。ヒーローだけ */
+    --ls-h2:    0.048em;  /* 40px → 1.92px */
+    --ls-lead:  0.032em;  /* 40px → 1.28px */
+    --ls-news:  0.03em;   /* 20px → 0.6px */
+    --ls-vert:  -0.04em;  /* 14px → −0.56px。縦組みタブだけ（唯一の負値） */
+
+    /* === Radius === */
+    --r-box:   6px;    /* ★58/23 要素で最多 */
+    --r-badge: 3px;    /* バッジ 26 要素 */
+    --r-pill:  20px;   /* 検索 */
+    --r-soft:  8px;    /* 寄付 */
+
+    --header-height: 80px;   /* 唯一の設計トークン */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* ルートはトップ 16px（宣言なし＝UA 既定）／下層 10px（62.5%）の 2 世代同居。
+     ここでは下層側を再現して 62.5% にしてある。
+     rem で寸法を書くとページによって 1.6 倍ずれるので、実サイトは px で書いている。 */
+  html { font-size: 62.5%; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 15px;          /* ≥751px は 15px 固定。≤750px で vw へ（下の @media） */
+    font-weight: 400;
+    line-height: var(--lh-body);
+    letter-spacing: normal;
+    font-feature-settings: "palt";   /* ★これがこのサイトの核心。実測 3993 要素へ継承 */
+    word-break: normal;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 751 → 750px で 15px → 26px、1px またいで 1.73 倍に跳ぶ。
+     3.4666666667vw = 26 ÷ 750（モバイル設計幅 750px）。375px でちょうど 13px。 */
+  @media screen and (max-width: 750px) { body { font-size: 3.4666666667vw; } }
+
+  /* ★横組み用の palt は縦組みでは黙って無視される。縦組みでは vpal に上書きする */
+  [style*="vertical"], .vtab a { font-feature-settings: "vpal"; }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid var(--rule); background: var(--bg); height: var(--header-height); display: flex; align-items: center; }
+  .header-inner { display: flex; align-items: center; gap: 28px; width: 95%; margin: 0 auto; }
+  .logo { font-size: 22px; font-weight: 500; letter-spacing: var(--ls); color: var(--green); text-decoration: none; }
+  .logo small { display: block; font-family: var(--font-en); font-size: 10px; font-weight: 300; letter-spacing: .08em; color: var(--green); }
+  .header-nav { display: flex; gap: 26px; margin-left: auto; }
+  .header-nav a { font-size: 17px; font-weight: 500; line-height: var(--lh-nav); letter-spacing: .68px; color: var(--green); text-decoration: none; }
+  .header-util { display: flex; gap: 18px; }
+  .header-util a { font-size: 14px; font-weight: 400; line-height: var(--lh-util); letter-spacing: .56px; color: var(--text); text-decoration: none; }
+  .header-en { font-family: var(--font-en); font-size: 11px; font-weight: 300; letter-spacing: .06em; color: var(--text); }
+
+  /* SKIP LINK — 実サイトは UA 既定の #0000ee のまま。ここでは色を当てている */
+  .skip { position: absolute; left: -9999px; }
+
+  /* HERO */
+  .hero { position: relative; background: linear-gradient(160deg, #27564a, #12332c); overflow: hidden; }
+  .hero-inner { width: 95%; margin: 0 auto; padding: 120px 0 90px; position: relative; z-index: 1; }
+  .hero-title { font-size: 68px; font-weight: 700; line-height: var(--lh-hero); color: var(--white); }
+  /* 実サイトは 1 文字ずつ <span>（文字ごとのアニメーションのため）。
+     letter-spacing が最後の文字の右にも効くので、行末に 8.16px の余白が残る */
+  .hero-title span { letter-spacing: var(--ls-hero); }
+  .hero-cta { display: inline-flex; align-items: center; gap: 14px; margin-top: 40px; font-size: 15px; font-weight: 500; letter-spacing: var(--ls); color: var(--white); text-decoration: none; }
+  .hero-cta i { width: 44px; height: 44px; border: 1px solid rgba(255,255,255,.8); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-style: normal; }
+  .band { height: 10px; background-image: var(--band); }
+
+  /* 右端の縦タブ（実測: left 1396 で 4 つとも同じ、top が 826 → 1177 と下へ。親は flex column） */
+  .vtab { position: absolute; right: 0; top: 140px; display: flex; flex-direction: column; gap: 2px; z-index: 2; }
+  .vtab a {
+    writing-mode: vertical-rl;
+    background: var(--white); color: var(--green);
+    border: 1px solid var(--border); border-right: 0;
+    border-radius: var(--r-soft) 0 0 var(--r-soft);
+    padding: 16px 6px; width: 40px;
+    font-size: 14px; font-weight: 400; line-height: 28px; letter-spacing: var(--ls-vert);
+    text-decoration: none;
+  }
+  .vtab a.is-teal { background: var(--teal); color: var(--white); border-color: var(--teal); }
+
+  /* SECTIONS */
+  .section { padding: 72px 0; width: 95%; margin: 0 auto; }
+  .section-alt { background: var(--surface-2); }
+  .section-alt .section-inner { padding: 72px 0; width: 95%; margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--text-sub); margin-bottom: 10px; }
+  .eyebrow { display: inline-block; font-family: var(--font-en); font-size: 26px; font-weight: 600; line-height: 1.2; color: var(--green); }
+  .section-title { font-size: 40px; font-weight: 500; line-height: 1.50; letter-spacing: var(--ls-h2); color: var(--text); margin: 8px 0 16px; }
+  .section-lead { font-size: 15px; font-weight: 400; line-height: var(--lh-body); color: var(--text); max-width: 900px; margin-bottom: 36px; }
+  .note { font-size: 14px; font-weight: 400; line-height: 1.9; letter-spacing: var(--ls); color: var(--text-sub); margin-top: 20px; max-width: 900px; }
+  .note b { color: var(--text); font-weight: 500; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--surface); color: var(--text); padding: 1px 5px; border-radius: var(--r-badge); }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(216px, 1fr)); gap: 40px 2.92683%; }
+  .swatch { border: 1px solid var(--border); border-radius: var(--r-box); background: var(--white); overflow: hidden; }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 14px; }
+  .swatch-name { font-size: 15px; font-weight: 500; line-height: var(--lh-nav); letter-spacing: var(--ls); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--text-sub); margin-top: 4px; }
+  .swatch-use { font-size: 12px; line-height: 1.6; letter-spacing: var(--ls); color: var(--text-sub); margin-top: 7px; }
+
+  /* TYPOGRAPHY */
+  .scale-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; align-items: baseline; }
+  .scale-bar span { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-box); padding: 8px 14px; line-height: var(--lh-nav); }
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-sub); line-height: 1.75; }
+  .type-meta b { display: block; font-family: var(--font); font-size: 13px; font-weight: 500; letter-spacing: var(--ls); color: var(--text); }
+
+  /* PALT DEMO */
+  .palt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 8px; }
+  .palt-box { border: 1px solid var(--border); border-radius: var(--r-box); padding: 20px; background: var(--white); }
+  .palt-box .t { font-size: 30px; font-weight: 400; line-height: 1.5; }
+  .palt-box.off .t { font-feature-settings: normal; }
+  .palt-box.on  .t { font-feature-settings: "palt"; }
+  .palt-box .m { font-family: var(--font-mono); font-size: 11px; color: var(--text-sub); margin-top: 10px; }
+
+  /* SUBSET DEMO */
+  .subset { display: flex; gap: 28px; flex-wrap: wrap; align-items: baseline; margin-top: 10px; }
+  .subset-item { border: 1px solid var(--border); border-radius: var(--r-box); padding: 16px 20px; background: var(--white); }
+  .subset-item .s { font-family: var(--font-num); font-size: 26px; font-weight: 400; }
+  .subset-item .m { font-family: var(--font-mono); font-size: 10px; color: var(--text-sub); margin-top: 6px; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 24px; }
+  .btn { font-family: var(--font); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; font-size: 15px; font-weight: 400; letter-spacing: normal; }
+  .btn-box { background: var(--white); color: var(--text); border: 1px solid var(--border); border-radius: var(--r-box); padding: 14px 50px 14px 20px; }
+  .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--r-box); padding: 14px 50px 14px 20px; }
+  .btn-teal { background: var(--teal); color: var(--white); border: 0; border-radius: 0; padding: 12px 28px; }
+  .btn-donate { background: var(--white); color: var(--teal); border: 1px solid var(--teal); border-radius: var(--r-soft); padding: 16px 28px; }
+  .badge { display: inline-block; color: var(--white); border-radius: var(--r-badge); padding: 2px 10px; font-size: 14px; font-weight: 400; line-height: var(--lh-util); }
+
+  /* INPUTS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 40px 2.92683%; }
+  .field label { display: block; font-size: 15px; font-weight: 500; line-height: var(--lh-nav); letter-spacing: var(--ls); margin-bottom: 8px; }
+  .field input, .field select {
+    width: 100%; background: var(--white); color: var(--text);
+    border: 1px solid var(--border); border-radius: var(--r-box);
+    padding: 0 14px; height: 48px; font-size: 15px; font-family: var(--font);
+  }
+  .field.is-search input { border-radius: var(--r-pill); }
+  .field.is-focus input { outline: 3px solid var(--teal); outline-offset: 1px; }
+  .field-msg { font-size: 12px; line-height: 1.6; letter-spacing: var(--ls); color: var(--text-sub); margin-top: 7px; }
+
+  /* NEWS */
+  .news-row { display: flex; gap: 10px; padding: 16px 0; border-bottom: 1px solid var(--rule); align-items: center; flex-wrap: wrap; }
+  .news-date { font-family: var(--font-num); font-size: 15px; font-weight: 400; color: var(--text-sub); width: 108px; flex-shrink: 0; }
+  .news-title { font-size: 20px; font-weight: 500; line-height: var(--lh-news); letter-spacing: var(--ls-news); color: var(--text); text-decoration: none; }
+
+  /* MENU（13px / 500 / lh 1.38 / ls 0.52px が 274 要素で最多） */
+  .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px 2.92683%; }
+  .menu-col-title { font-size: 17px; font-weight: 500; line-height: var(--lh-nav); letter-spacing: .68px; color: var(--green); padding-bottom: 10px; border-bottom: 1px solid var(--rule); }
+  .menu-col a { display: block; font-size: 13px; font-weight: 500; line-height: var(--lh-menu); letter-spacing: .52px; color: var(--text); text-decoration: none; padding: 9px 0; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px 2.92683%; }
+  .card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-box); overflow: hidden; text-decoration: none; display: block; color: var(--text); }
+  .card .thumb { height: 128px; background-image: var(--band); }
+  .card .pad { padding: 18px; }
+  .card .t { font-size: 20px; font-weight: 500; line-height: var(--lh-news); letter-spacing: var(--ls-news); }
+  .card .d { font-family: var(--font-num); font-size: 15px; color: var(--text-sub); margin-top: 10px; }
+
+  /* RADIUS */
+  .radius-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 112px; height: 70px; background: var(--green-a); border: 1px solid var(--green); }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; color: var(--text-sub); margin-top: 7px; }
+
+  /* LAYOUT */
+  .layout-demo { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .layout-bar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-box); height: 38px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; color: var(--text); }
+  .fluid-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+  .fluid-table th, .fluid-table td { font-size: 13px; line-height: 1.7; letter-spacing: .52px; text-align: left; padding: 7px 12px 7px 0; border-bottom: 1px solid var(--rule); }
+  .fluid-table th { font-weight: 500; }
+  .fluid-table td.m { font-family: var(--font-mono); font-size: 12px; letter-spacing: normal; }
+
+  /* FOOTER */
+  .footer { background: var(--green); color: var(--white); padding: 48px 0; }
+  .footer-inner { width: 95%; margin: 0 auto; }
+  .footer-head { font-size: 24px; font-weight: 500; line-height: var(--lh-mid); letter-spacing: var(--ls); }
+  .footer-head small { display: block; font-family: var(--font-en); font-size: 12px; font-weight: 300; letter-spacing: .08em; margin-top: 6px; }
+  .footer-cols { display: flex; gap: 48px; margin-top: 28px; flex-wrap: wrap; }
+  .footer-col-title { font-size: 15px; font-weight: 500; letter-spacing: var(--ls); }
+  .footer-col a { display: block; font-size: 13px; font-weight: 500; line-height: 2; letter-spacing: .52px; color: var(--white); text-decoration: none; opacity: .88; }
+  .footer-copy { font-family: var(--font-en); font-size: 12px; font-weight: 300; line-height: var(--lh-body); margin-top: 32px; opacity: .8; }
+
+  @media (max-width: 959px) {
+    .menu-grid, .card-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 750px) {
+    .section, .section-alt .section-inner { padding: 44px 0; }
+    .hero-inner { padding: 70px 0 50px; }
+    .hero-title { font-size: 34px; }
+    .section-title { font-size: 26px; }
+    .menu-grid, .card-grid, .palt-grid { grid-template-columns: 1fr; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .header-nav, .header-util { display: none; }
+    .vtab { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip">本文へスキップ</a>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">芝浦工業大学<small>SHIBAURA INSTITUTE OF TECHNOLOGY</small></a>
+    <nav class="header-nav">
+      <a href="#">芝浦工業大学とは</a><a href="#">学部・大学院</a><a href="#">研究・産学連携</a><a href="#">グローバル</a><a href="#">入学案内</a>
+    </nav>
+    <div class="header-util"><a href="#">受験生</a><a href="#">在学生・保証人</a><a href="#">卒業生</a></div>
+    <span class="header-en">LANGUAGE / SEARCH</span>
+  </div>
+</header>
+
+<section class="hero" id="main">
+  <div class="hero-inner">
+    <!-- 実サイトは 1 文字ずつ <span>。68px / weight 700 / letter-spacing 8.16px（0.12em）/ lh 1.32 -->
+    <h1 class="hero-title"><span>世</span><span>界</span><span>に</span><span>学</span><span>び</span><br><span>世</span><span>界</span><span>に</span><span>貢</span><span>献</span><span>す</span><span>る</span></h1>
+    <a href="#" class="hero-cta">長期ビジョン<i>→</i></a>
+  </div>
+  <nav class="vtab">
+    <a href="#">アクセス</a>
+    <a href="#">お問い合わせ</a>
+    <a href="#">公開講座</a>
+    <a href="#" class="is-teal">寄付</a>
+  </nav>
+</section>
+<div class="band"></div>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="eyebrow">Color</div>
+  <h2 class="section-title">黒の本文、深緑の見出し</h2>
+  <p class="section-lead">本文は <b><code>#000000</code> が 364 / 339 要素で圧倒的最多</b>。ブランドの深緑 <code>#134e3b</code> は見出しとナビ、ティール <code>#008482</code> は CTA とリンク。<b>設計トークンは持っていない</b>（CSS 変数は <code>--header-height</code> ほか 3 個だけ）。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#134e3b"></div><div class="swatch-body"><div class="swatch-name">Deep Green</div><div class="swatch-hex">#134e3b</div><div class="swatch-use">★文字 56/51 要素・面 22/4 要素。見出し・ナビ・フッター</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#008482"></div><div class="swatch-body"><div class="swatch-name">Teal</div><div class="swatch-hex">#008482</div><div class="swatch-use">CTA・リンク・バッジ。面 21/9 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#4274b7"></div><div class="swatch-body"><div class="swatch-name">Category Blue</div><div class="swatch-hex">#4274b7</div><div class="swatch-use">連携・貢献 / 研究 / お知らせ。面 8 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#7e498b"></div><div class="swatch-body"><div class="swatch-name">Category Purple</div><div class="swatch-hex">#7e498b</div><div class="swatch-use">大学院の専攻。面 8 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#9d2c3b"></div><div class="swatch-body"><div class="swatch-name">Done</div><div class="swatch-hex">#9d2c3b</div><div class="swatch-use">「終了しました」2 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Text</div><div class="swatch-hex">#000000</div><div class="swatch-use">★既定の本文。可視 364/339 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#646464"></div><div class="swatch-body"><div class="swatch-name">Text Sub</div><div class="swatch-hex">#646464</div><div class="swatch-use">補助・日付 77/6 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#969696"></div><div class="swatch-body"><div class="swatch-name">Text Weak</div><div class="swatch-hex">#969696</div><div class="swatch-use">下層の見出し補助 5 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#d7d7d7"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#d7d7d7</div><div class="swatch-use">ボタン・カードの 1px</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#cccccc"></div><div class="swatch-body"><div class="swatch-name">Rule</div><div class="swatch-hex">#cccccc</div><div class="swatch-use">区切り 48 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f5f5f5"></div><div class="swatch-body"><div class="swatch-name">Surface</div><div class="swatch-hex">#f5f5f5</div><div class="swatch-use">「重要なお知らせ」の帯</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background-image:linear-gradient(270deg,#4aaed3 0px,#4aaed3 6.41026%,#4ac4d3 23.8462%,#89f2b8 76.1538%,#bef2dc 87.1795%,#bef2dc 100%)"></div><div class="swatch-body"><div class="swatch-name">Band Gradient</div><div class="swatch-hex">270deg / 5 stops</div><div class="swatch-use">★ノイズ SVG を重ねた 2 枚重ね。帯と下層タイトルで使い回す</div></div></div>
+  </div>
+
+  <p class="note"><b><code>#0000ee</code> が 9 要素あるが、これはブランド色ではない。</b>スキップリンク（<code>目次</code> / <code>本文</code> / <code>芝浦工業大学</code>）が素の <code>&lt;a&gt;</code> のまま置かれていて、<b>UA 既定の青</b>が出ている。再現するときは色を当てること。</p>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <div class="eyebrow">Typography</div>
+  <h2 class="section-title">body に palt を 1 行</h2>
+  <p class="section-lead"><code>.sit body { font-family: "Noto Sans JP", sans-serif; font-weight: 400; font-feature-settings: "palt" }</code> の 1 行で、<b>実測 3993 要素（トップ）／ 2806 要素（下層）</b>に字詰めが配られている。</p>
+
+  <div class="palt-grid">
+    <div class="palt-box off"><div class="t">「研究」の成果を、社会へ。（2026年）</div><div class="m">font-feature-settings: normal<br>実測 906.64px（30px / weight 400）</div></div>
+    <div class="palt-box on"><div class="t">「研究」の成果を、社会へ。（2026年）</div><div class="m">font-feature-settings: "palt" ← 実サイト<br>実測 826.34px ＝ <b>−8.9%</b></div></div>
+  </div>
+
+  <p class="note"><b>ただし、その <code>palt</code> が縦組みの 4 要素にも降りている。</b>クロス集計は <code>"palt" @ horizontal-tb</code> 3993 ／ <code>"palt" @ vertical-rl</code> <b>4</b>。<b>横組み用の <code>palt</code> は縦組みでは黙って無視される</b>（エラーも警告も出ない）ので、右端の固定タブは詰まっていない。このプレビューでは縦タブを <code>font-feature-settings: "vpal"</code> に上書きしてある。</p>
+
+  <h3 style="font-size:24px;font-weight:500;letter-spacing:.96px;line-height:1.67;margin-top:40px">数字のためだけの文字集合サブセット</h3>
+  <p class="section-lead" style="margin-bottom:12px">Inter は <code>css2?family=Inter:wght@400;600&amp;display=swap&amp;<b>text=,0123456789ACEGHLNRSU</b></code> で読み込まれている。Google Fonts の <code>text=</code> は「この文字だけ入ったファイルを返す」機能で、<b>カンマ・数字 0〜9・大文字 A C E G H L N R S U の計 21 文字</b>しか配信されない。</p>
+
+  <div class="subset">
+    <div class="subset-item"><div class="s">2026/11/13</div><div class="m">Inter で出る（数字とスラッシュ）</div></div>
+    <div class="subset-item"><div class="s">1 2 3</div><div class="m">Inter で出る（番号）</div></div>
+    <div class="subset-item"><div class="s">research</div><div class="m">小文字は配信外 → sans-serif に落ちる</div></div>
+    <div class="subset-item"><div class="s">研究</div><div class="m">和文は配信外 → sans-serif に落ちる</div></div>
+  </div>
+
+  <p class="note"><b><code>document.fonts</code> で Inter は 1 サブセットしか載らない。</b>Noto Sans JP が 124 件（loaded 51 / unloaded 73）なのと対照的で、これが「サブセット配信か普通の配信か」の見分け方になる。</p>
+
+  <div class="scale-bar" style="margin-top:36px">
+    <span style="font-size:12px">12</span><span style="font-size:13px">13</span><span style="font-size:14px">14</span>
+    <span style="font-size:15px">15</span><span style="font-size:17px">17</span><span style="font-size:20px">20</span>
+    <span style="font-size:24px">24</span><span style="font-size:30px">30</span><span style="font-size:40px">40</span>
+    <span style="font-size:46px">46</span><span style="font-size:68px">68</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Hero ★</b>Noto Sans JP / 68px / 700<br>lh 1.32 / <b style="display:inline">ls 8.16px（0.12em）</b></div><div style="font-size:68px;font-weight:700;line-height:1.32;letter-spacing:8.16px;color:#134e3b">世界に学び</div></div>
+  <div class="type-row"><div class="type-meta"><b>H1（下層）</b>Noto Sans JP / 46px / 500<br>ls 1.84px（0.04em）</div><div style="font-size:46px;font-weight:500;letter-spacing:1.84px">芝浦工業大学とは</div></div>
+  <div class="type-row"><div class="type-meta"><b>EN Section</b>Lexend / 54px / 600<br>ls normal</div><div style="font-family:var(--font-en);font-size:54px;font-weight:600;color:#134e3b">Information</div></div>
+  <div class="type-row"><div class="type-meta"><b>H2（下層）</b>Noto Sans JP / 40px / 500<br>lh 1.50 / ls 1.92px（0.048em）</div><div style="font-size:40px;font-weight:500;line-height:1.50;letter-spacing:1.92px">大学概要</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section</b>Noto Sans JP / 30px / 400<br>lh 1.67 / ls normal</div><div style="font-size:30px;font-weight:400;line-height:1.67">新着情報</div></div>
+  <div class="type-row"><div class="type-meta"><b>H3</b>Noto Sans JP / 24px / 500<br>lh 1.67 / ls 0.96px（0.04em）</div><div style="font-size:24px;font-weight:500;line-height:1.67;letter-spacing:.96px">建学の精神／理念・目的／3つの方針</div></div>
+  <div class="type-row"><div class="type-meta"><b>News</b>Noto Sans JP / 20px / 500<br>lh 1.60 / ls 0.6px（0.03em）</div><div style="font-size:20px;font-weight:500;line-height:1.60;letter-spacing:.6px">東光電気工事と芝浦工業大学、分散型電源の系統連系に関する共同研究を開始</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav ★</b>Noto Sans JP / 17px / 500<br>lh 1.53 / ls 0.68px（0.04em）<br>82/52 要素</div><div style="font-size:17px;font-weight:500;line-height:1.53;letter-spacing:.68px;color:#134e3b">大学について　大学の取り組み　情報公表</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body</b>Noto Sans JP / 15px / 400<br><b style="display:inline">lh 2.00</b> / ls normal</div><div style="font-size:15px;font-weight:400;line-height:2.00">学生が何を学んだかを大切にする教育へのシフトと、地域社会と共に世界レベルで独創的な研究を行う拠点づくりを進めています。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Utility</b>Noto Sans JP / 14px / 400<br>lh 1.86 / ls 0.56px（0.04em）</div><div style="font-size:14px;font-weight:400;line-height:1.86;letter-spacing:.56px">受験生　在学生・保証人　卒業生　企業・研究者　一般</div></div>
+  <div class="type-row"><div class="type-meta"><b>Menu ★</b>Noto Sans JP / 13px / 500<br>lh 1.38 / ls 0.52px（0.04em）<br><b style="display:inline">274 要素で最多</b></div><div style="font-size:13px;font-weight:500;line-height:1.38;letter-spacing:.52px">長期ビジョン（Centennial SIT Action）　大学ランキング　データで見る芝浦工業大学</div></div>
+  <div class="type-row"><div class="type-meta"><b>Vertical Tab</b>Noto Sans JP / 14px / 400<br>lh 28px（2.00） / <b style="display:inline">ls −0.56px（−0.04em）</b></div><div style="font-size:14px;font-weight:400;line-height:2.00;letter-spacing:-.56px">アクセス　お問い合わせ　公開講座　寄付</div></div>
+
+  <p class="note"><b>ウェイトは 300 / 400 / 500 / 700 の 4 段。既定は 500</b>（400 / 373 要素）。<b>700 はヒーローの 12 文字だけ</b>、300 は <code>LANGUAGE</code> / <code>SEARCH</code> / <code>日本語</code> の 6 要素だけ。<b>600 は Lexend 専用</b>で、和文に 600 を当てると <code>@font-face</code> に無いので 700 で出る。</p>
+
+  <p class="note"><b><code>letter-spacing</code> は 0.04em が既定</b>（13px → 0.52px が 274 要素で最多）。<b>ヒーローだけ 0.12em（8.16px）と大きく空け、縦組みタブだけ −0.04em と詰める</b>──符号が逆。それ以外は 0.04em か <code>normal</code> の 2 択。</p>
+</div>
+</section>
+
+<section class="section" id="components">
+  <div class="section-label">03 / Components</div>
+  <div class="eyebrow">Components</div>
+  <h2 class="section-title">箱は 6px、バッジは 3px</h2>
+  <p class="section-lead">角丸は <b>6px が支配的</b>（58 / 23 要素）で、<b>バッジだけその半分の 3px</b>。<code>padding</code> が左右非対称なのは、左にアイコン・右に矢印を絶対配置する前提。</p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-box">学部・大学院</a>
+    <a href="#" class="btn btn-ghost">大学概要</a>
+    <a href="#" class="btn btn-teal">一覧へ戻る</a>
+    <a href="#" class="btn btn-donate">寄付</a>
+  </div>
+
+  <div class="btn-grid">
+    <span class="badge" style="background:#008482">セミナー</span>
+    <span class="badge" style="background:#008482">行事</span>
+    <span class="badge" style="background:#4274b7">連携・貢献</span>
+    <span class="badge" style="background:#4274b7">研究</span>
+    <span class="badge" style="background:#7e498b">システム理工学専攻</span>
+    <span style="font-size:14px;color:#9d2c3b">終了しました</span>
+  </div>
+
+  <div class="form-grid" style="margin-top:36px">
+    <div class="field is-search"><label for="s1">サイト内検索</label><input id="s1" type="text" placeholder="キーワードを入力"><div class="field-msg">検索だけ radius 20px</div></div>
+    <div class="field"><label for="s2">学部を選ぶ</label><select id="s2"><option>工学部</option><option>システム理工学部</option><option>デザイン工学部</option></select><div class="field-msg">border 1px solid #d7d7d7 / radius 6px</div></div>
+    <div class="field is-focus"><label for="s3">フォーカス時</label><input id="s3" type="text" value="長期ビジョン"><div class="field-msg">リングは #008482</div></div>
+  </div>
+
+  <div style="margin-top:40px">
+    <div class="news-row"><div class="news-date">2026/11/13</div><span class="badge" style="background:#4274b7">研究</span><a href="#" class="news-title">根津綾杜さんが第64回日本人工臓器学会大会にて萌芽的研究賞を受賞</a></div>
+    <div class="news-row"><div class="news-date">2026/11/12</div><span class="badge" style="background:#008482">行事</span><a href="#" class="news-title">東京薬科大学にて、薬×工ショーケース展示会を開催</a></div>
+    <div class="news-row"><div class="news-date">2026/11/12</div><span class="badge" style="background:#4274b7">連携・貢献</span><a href="#" class="news-title">芝浦工業大学 創立100周年に向けたティザーを公開</a></div>
+  </div>
+</section>
+
+<section class="section-alt" id="menu">
+<div class="section-inner">
+  <div class="section-label">04 / Menu &amp; Cards</div>
+  <div class="eyebrow">Menu</div>
+  <h2 class="section-title">13px / 500 / lh 1.38 が 274 要素</h2>
+  <p class="section-lead">このサイトで一番多いテキストは<b>メガメニューのリンク</b>。<code>font-size: 13px</code> / <code>weight: 500</code> / <code>line-height: 1.38</code> / <code>letter-spacing: 0.52px</code> がトップでも下層でも同じ <b>274 要素</b>。</p>
+
+  <div class="menu-grid">
+    <div class="menu-col"><div class="menu-col-title">大学について</div><a href="#">建学の精神／理念・目的／3つの方針</a><a href="#">長期ビジョン（Centennial SIT Action）</a><a href="#">大学ランキング</a><a href="#">データで見る芝浦工業大学</a></div>
+    <div class="menu-col"><div class="menu-col-title">大学の取り組み</div><a href="#">教育の質保証</a><a href="#">ダイバーシティ推進</a><a href="#">社会連携・地域貢献</a><a href="#">SDGsへの取り組み</a></div>
+    <div class="menu-col"><div class="menu-col-title">情報公表</div><a href="#">教育情報の公表</a><a href="#">財務情報</a><a href="#">自己点検・評価</a><a href="#">認証評価</a></div>
+    <div class="menu-col"><div class="menu-col-title">学校法人</div><a href="#">理事長挨拶</a><a href="#">役員・評議員</a><a href="#">沿革</a><a href="#">生涯学習・公開講座</a></div>
+  </div>
+
+  <div class="card-grid" style="margin-top:44px">
+    <a href="#" class="card"><div class="thumb"></div><div class="pad"><div class="t">大学に関するさまざまな話題をお伝えします。</div><div class="d">2026/11/13</div></div></a>
+    <a href="#" class="card"><div class="thumb"></div><div class="pad"><div class="t">薬×工ショーケース展示会を開催しました</div><div class="d">2026/11/12</div></div></a>
+    <a href="#" class="card"><div class="thumb"></div><div class="pad"><div class="t">創立100周年に向けたティザーを公開しました</div><div class="d">2026/11/12</div></div></a>
+  </div>
+
+  <p class="note"><b>カードのサムネイルにも帯と同じグラデーションを使い回している</b>（<code>linear-gradient(270deg, …)</code> ＋ ノイズ SVG の 2 枚重ね）。</p>
+</div>
+</section>
+
+<section class="section" id="layout">
+  <div class="section-label">05 / Layout, Depth &amp; Responsive</div>
+  <div class="eyebrow">Layout</div>
+  <h2 class="section-title">コンテナは 95%。影は使わない</h2>
+  <p class="section-lead"><code>max-width</code> の px 上限が無く、<b>1920px でもコンテンツは 95% まで広がる</b>。<code>gap</code> は <code>40px 2.92683%</code> のように<b>行だけ px・列だけ %</b>。</p>
+
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:95%">container 95%（px の上限なし）</div>
+    <div class="layout-bar" style="width:70%">gap 40px 2.92683% — カードグリッド（行 px / 列 %）</div>
+    <div class="layout-bar" style="width:40%">--header-height: 80px（唯一の設計トークン）</div>
+  </div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:3px"></div><div class="radius-label">3px / バッジ</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:6px"></div><div class="radius-label">★6px / 箱・カード</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:6px 6px 0 0"></div><div class="radius-label">6px 6px 0 0 / タブ上端</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:0 30px 30px 0"></div><div class="radius-label">0 30px 30px 0 / 左から伸びる帯</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">8px / 寄付</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:20px"></div><div class="radius-label">20px / 検索</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:50%"></div><div class="radius-label">50% / アイコン</div></div>
+  </div>
+
+  <p class="note" style="margin-top:28px"><b><code>box-shadow</code> はサイト全体で 1 種類・1 要素だけ</b>（<code>rgba(0,0,0,.5) 0 5px 30px</code>＝オープニングのカーテン）。奥行きは <code>1px solid #d7d7d7</code> の枠線と <code>#f5f5f5</code> / <code>#fafafa</code> の面色で作る。</p>
+
+  <p class="note"><b>トップと下層でルートが違う（2 世代同居）。</b>トップは <code>html</code> に <code>font-size</code> の宣言が無く <b>UA 既定の 16px</b>、下層は <code>62.5%</code> で <b>10px</b>。<code>body</code> はどちらも 15px なので本文の見た目は揃うが、<b><code>rem</code> の意味が 1.6 倍ずれる</b>ので px で書くこと。ブレークポイントも、トップは <code>min-width: 751px</code> 系、下層は <code>max-width: 1259px</code> / <code>max-width: 959px</code> 系と書き方が違う。</p>
+
+  <p class="note"><b><code>html</code> は固定のまま、<code>body</code> だけが 750px を境に <code>vw</code> 流体へ切り替わる。</b>規定の 4 幅（1440 / 1200 / 834 / 375px）では 834px も 375px も素直に見えるので、崖が見えない。</p>
+
+  <table class="fluid-table">
+    <tr><th>幅</th><th>html（トップ / 下層）</th><th>body</th><th>h1（トップ / 下層）</th></tr>
+    <tr><td class="m">1920 〜 <b>751px</b></td><td class="m">16px / 10px</td><td class="m"><b>15px</b>（固定）</td><td class="m">30px / 46px</td></tr>
+    <tr><td class="m"><b>750px</b></td><td class="m">16px / 10px</td><td class="m"><b>26px</b></td><td class="m"><b>52px / 60px</b></td></tr>
+    <tr><td class="m">430px</td><td class="m">16px / 10px</td><td class="m">14.9067px</td><td class="m">29.81px / 34.40px</td></tr>
+    <tr><td class="m"><b>375px</b></td><td class="m">16px / 10px</td><td class="m"><b>13px</b></td><td class="m">26px / 30px</td></tr>
+    <tr><td class="m">320px</td><td class="m">16px / 10px</td><td class="m">11.0933px</td><td class="m">22.19px / 25.60px</td></tr>
+  </table>
+
+  <p class="note"><b>751 → 750px で <code>body</code> が 15px → 26px、1px またいで 1.73 倍に跳ぶ</b>（モバイルのほうが大きい）。<code>3.4666666667vw</code> ＝ <b>26 ÷ 750</b> なので、<b>モバイルの設計幅は 750px</b>（375pt × 2 の 2 倍解像度カンバス）。375px でちょうど 13px に着地する。モバイル専用の見出しにも <code>10.6666666667vw</code>（80 ÷ 750）など <code>vw</code> の直書きが 8 種ある。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-head">芝浦工業大学<small>SHIBAURA INSTITUTE OF TECHNOLOGY</small></div>
+    <div class="footer-cols">
+      <div class="footer-col"><div class="footer-col-title">大学について</div><a href="#">建学の精神</a><a href="#">長期ビジョン</a><a href="#">沿革</a></div>
+      <div class="footer-col"><div class="footer-col-title">学部・大学院</div><a href="#">工学部</a><a href="#">システム理工学部</a><a href="#">デザイン工学部</a></div>
+      <div class="footer-col"><div class="footer-col-title">在学生の方へ</div><a href="#">学生生活</a><a href="#">キャリア支援</a><a href="#">公開講座</a></div>
+    </div>
+    <div class="footer-copy">© Shibaura Institute of Technology</div>
+  </div>
+</footer>
+
+</body>
+</html>
