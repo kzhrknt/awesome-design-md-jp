@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ティアフォー (TIER IV)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!--
+  和文は実サイトと同一（Noto Sans JP の可変フォント wght@100..900）。
+  欧文の futura-pt は Adobe Fonts のドメインライセンスでローカルでは出ないため、
+  同系統のジオメトリックサンセリフ Jost（Google Fonts）で代替している。
+-->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトの CSS Custom Properties は 16 個（自社 16 / プラットフォーム 0）。
+       変数名は Figma のエクスポートそのままで、グループ名が二重になっている。
+       値は実サイトの宣言をそのまま。2026-11-18 */
+    --text-default:   #1f2933;   /* ★--Text-Default。文字色（下層 101 要素で最多）かつ --BG-BGnormal と同値 */
+    --text-blue:      #5cb4c0;   /* ★--Text-Blue。ラベルの文字色（トップ 8 / 下層 10 要素） */
+    --text-white:     #ffffff;   /* --Text-White */
+    --bg-normal:      #1f2933;   /* --BG-BGnormal。暗いセクションの面 */
+    --bg-dark:        #171c21;   /* --BG-BGdark。フッター */
+    --bg-darkest:     #090b0d;   /* --bgb-gdark-20。CTA の面 */
+    --divider:        #e1e1e1;   /* --Divider-Dividerlight */
+    --tier4white:     #f9fbfd;   /* ★--BG-tier4white。ページ背景。純白ではない */
+    --gradation-dark: linear-gradient(90deg, #283d56, #3c5f79);  /* --Gradation-Gradation-dark */
+
+    --surface-soft:   #f1f4fa;   /* 役員カード・言語切替 */
+    --badge:          #515973;   /* 役職バッジの面 */
+    --hero-dark:      #1a3148;   /* ヒーローの ::after（1440x900） */
+
+    /* === Font ===
+       実サイトの --ff-jp / --ff-en をそのまま。--ff-en の futura-pt だけ Jost で代替。
+       スタックに "游ゴシック Medium" が無いので、Noto が落ちた Windows では細く出る。 */
+    --ff-jp: "Noto Sans JP", "游ゴシック", YuGothic, "ヒラギノ角ゴ Pro",
+             "Hiragino Kaku Gothic Pro", "メイリオ", "Meiryo", Osaka,
+             "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+    --ff-en: "Jost", "futura-pt", "Futura PT", sans-serif;  /* 実サイトは futura-pt が先頭 */
+    --ff-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: body は 1。本文ブロックで必ず上書きする === */
+    --lh-root:  1.15;
+    --lh-body:  1.75;   /* 本文（下層 47 要素） */
+    --lh-head:  1.50;   /* 大見出し（下層 67 要素で最多） */
+    --lh-tight: 1.20;   /* 中見出し・ナビ */
+
+    /* === Letter spacing: サイト全体で normal。CSS に出る宣言は letter-spacing:0 のみ === */
+
+    /* === Radius === */
+    --r-card:  30px;    /* カード（下層 34 要素で最多） */
+    --r-sect:  60px;    /* セクションの大きな角 */
+    --r-pill:  9999px;  /* CTA */
+    --r-input: 8px;
+
+    /* === Shadow: 色は黒ではなく rgba(16,18,36,.08)。ぼかし半径だけ 12 / 16px の 2 段 === */
+    --sh-card:  rgba(16, 18, 36, 0.08) 0px 3px 12px 0px;
+    --sh-float: rgba(16, 18, 36, 0.08) 0px 4px 16px 0px;
+    --sh-head:  rgba(0, 0, 0, 0.1) 0px 1px 4px 0px;
+
+    --container: 1440px;
+    --column:    900px;
+    --narrow:    700px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--tier4white);
+    color: var(--text-default);
+    font-family: var(--ff-jp);
+    font-size: 18px;            /* 実サイトの 1440px 時の値（1rem = 7.5px の 2.4rem） */
+    font-weight: 400;
+    line-height: 1;             /* ★実サイトのまま。本文ブロックで必ず上書きする */
+    letter-spacing: normal;     /* ★字間は一切触らない（可視 140/148 要素が normal） */
+    /* font-feature-settings は書かない。実サイトは CSS に 1 件も無く実測 0 要素 */
+    word-break: normal;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { position: relative; padding: 20px; }
+  .header-inner {
+    display: flex; align-items: center; gap: 28px;
+    max-width: 1380px; margin: 0 auto; padding: 18px 32px;
+    background: rgba(255,255,255,.8); border-radius: var(--r-pill); box-shadow: var(--sh-head);
+  }
+  .logo { font-family: var(--ff-en); font-size: 22px; font-weight: 500; letter-spacing: 3px; color: var(--text-default); text-decoration: none; }
+  .header-nav { display: flex; gap: 30px; margin-left: auto; }
+  .header-nav a { font-size: 14px; font-weight: 400; line-height: 1; color: var(--text-default); text-decoration: none; }
+  .header-lang { background: var(--surface-soft); color: var(--text-default); border-radius: var(--r-input); padding: 8px 14px; font-size: 14px; }
+
+  /* HERO */
+  .hero { max-width: var(--container); margin: 0 auto; padding: 24px 20px 72px; }
+  .hero h1 { font-size: 48px; font-weight: 700; line-height: var(--lh-head); color: var(--text-default); }
+  .hero-media {
+    margin-top: 32px; height: 360px; border-radius: var(--r-sect);
+    /* 実サイトのヒーローは hubfs の mp4（1380x768）。ここは色で代役を作る */
+    background-image:
+      linear-gradient(180deg, rgba(26,49,72,.10) 0%, rgba(26,49,72,.55) 100%),
+      linear-gradient(135deg, #1a3148 0%, #283d56 48%, #3c5f79 100%);
+    display: flex; align-items: flex-end; padding: 36px;
+  }
+  .hero-en { font-family: var(--ff-en); font-size: 54px; font-weight: 500; line-height: var(--lh-tight); color: var(--text-white); }
+  .hero-lead { font-size: 21px; font-weight: 400; line-height: var(--lh-body); color: var(--text-default); margin-top: 28px; max-width: var(--column); }
+
+  /* SECTIONS */
+  .section { padding: 72px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-inner { max-width: var(--column); margin: 0 auto; }
+  .section-wide { max-width: 1240px; margin: 0 auto; }
+  .section-alt { background: #ffffff; border-radius: var(--r-sect) var(--r-sect) 0 0; }
+  .section-label { font-family: var(--ff-mono); font-size: 12px; color: var(--text-blue); margin-bottom: 10px; }
+  .eyebrow { font-family: var(--ff-en); font-size: 16px; font-weight: 500; line-height: 1.2; color: var(--text-blue); }
+  .section-title { font-size: 42px; font-weight: 700; line-height: var(--lh-tight); color: var(--text-default); margin: 10px 0 18px; }
+  .section-lead { font-size: 18px; font-weight: 400; line-height: var(--lh-body); color: var(--text-default); max-width: var(--column); margin-bottom: 34px; }
+  .note { font-size: 16px; line-height: var(--lh-body); color: var(--text-default); margin-top: 22px; max-width: 1000px; }
+  .note b { font-weight: 700; }
+  code { font-family: var(--ff-mono); font-size: 13px; background: var(--surface-soft); color: var(--text-default); padding: 1px 5px; border-radius: 4px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(224px, 1fr)); gap: 18px; }
+  .swatch { border-radius: 16px; background: #ffffff; overflow: hidden; box-shadow: var(--sh-card); }
+  .swatch-chip { height: 80px; }
+  .swatch-body { padding: 16px; }
+  .swatch-name { font-size: 15px; font-weight: 700; line-height: 1.4; color: var(--text-default); }
+  .swatch-hex { font-family: var(--ff-mono); font-size: 11px; color: #5b6670; margin-top: 4px; }
+  .swatch-use { font-size: 13px; line-height: 1.6; color: #41505c; margin-top: 8px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 22px 0; border-bottom: 1px solid var(--divider); align-items: baseline; }
+  .type-meta { font-family: var(--ff-mono); font-size: 11px; line-height: 1.8; color: #5b6670; }
+  .type-meta b { display: block; font-family: var(--ff-jp); font-size: 13px; font-weight: 700; color: var(--text-default); }
+  .type-sample { color: var(--text-default); }
+
+  /* WEIGHTS */
+  .wt-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; margin-top: 12px; }
+  .wt { background: #ffffff; border-radius: 12px; box-shadow: var(--sh-card); padding: 12px 18px; font-size: 20px; line-height: 1.4; color: var(--text-default); }
+  .wt i { display: block; font-family: var(--ff-mono); font-style: normal; font-size: 10px; color: #5b6670; margin-top: 4px; }
+  .wt.is-off { opacity: .42; }
+
+  /* KANGXI */
+  .kx-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 22px; margin-top: 20px; }
+  .kx-card { background: #ffffff; border-radius: 16px; box-shadow: var(--sh-card); padding: 22px; }
+  .kx-card h4 { font-size: 14px; font-weight: 700; line-height: 1.4; color: var(--text-default); margin-bottom: 14px; }
+  .kx-big { font-size: 42px; font-weight: 700; line-height: var(--lh-tight); color: var(--text-default); }
+  .kx-val { font-family: var(--ff-mono); font-size: 11px; line-height: 1.7; color: #5b6670; margin-top: 12px; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin-bottom: 28px; }
+  .btn { font-family: var(--ff-jp); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; border: 0; }
+  .btn-primary { background: var(--bg-darkest); color: var(--text-white); border-radius: var(--r-pill); padding: 18px 40px; font-size: 12px; font-weight: 700; line-height: 1; }
+  .btn-secondary { background: #ffffff; color: var(--text-default); border-radius: var(--r-pill); padding: 18px 40px; font-size: 12px; font-weight: 700; line-height: 1; box-shadow: var(--sh-card); }
+  .btn-gradient { background: var(--gradation-dark); color: var(--text-white); border-radius: var(--r-pill); padding: 18px 44px; font-size: 16px; font-weight: 700; line-height: 1; }
+  .badge { background: var(--badge); color: var(--text-white); border-radius: var(--r-input); padding: 6px 18px; font-size: 16.5px; font-weight: 700; line-height: 1.5; display: inline-block; }
+  .chip { background: var(--surface-soft); color: var(--text-default); border-radius: var(--r-input); padding: 8px 16px; font-size: 14px; font-weight: 400; line-height: 1; display: inline-block; }
+
+  /* INPUTS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 26px; }
+  .field label { display: block; font-size: 14px; font-weight: 700; line-height: 1.5; color: var(--text-default); margin-bottom: 8px; }
+  .field input, .field select {
+    width: 100%; background: #ffffff; color: var(--text-default);
+    border: 1px solid var(--divider); border-radius: var(--r-input);
+    padding: 12px 16px; font-size: 14px; line-height: 1.5; font-family: var(--ff-jp);
+  }
+  .field.is-focus input { outline: 3px solid var(--text-blue); outline-offset: 1px; }
+  .field-msg { font-size: 13px; line-height: 1.7; color: #41505c; margin-top: 8px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 36px; }
+  .card { background: #ffffff; border-radius: var(--r-card); box-shadow: var(--sh-card); overflow: hidden; text-decoration: none; display: block; }
+  .card .thumb { height: 150px; background: linear-gradient(135deg, #dfe9f3, #c3d6e4); }
+  .card .pad { padding: 26px; }
+  .card-eyebrow { font-family: var(--ff-en); font-size: 14px; font-weight: 500; line-height: 1.2; color: var(--text-blue); }
+  .card-title { font-size: 24px; font-weight: 700; line-height: var(--lh-head); color: var(--text-default); margin-top: 8px; }
+  .card-desc { font-size: 16px; line-height: var(--lh-body); color: var(--text-default); margin-top: 12px; }
+
+  /* MEMBER */
+  .member-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 36px; }
+  .member { background: var(--surface-soft); border-radius: var(--r-card); padding: 26px; }
+  .member-name { font-size: 24px; font-weight: 700; line-height: var(--lh-head); color: var(--text-default); }
+  .member-role { font-family: var(--ff-en); font-size: 18px; font-weight: 500; line-height: 1.5; color: var(--text-default); margin-top: 6px; }
+  .member-note { font-family: var(--ff-mono); font-size: 11px; color: #5b6670; margin-top: 10px; line-height: 1.7; }
+
+  /* NEWS */
+  .news-row { display: flex; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--divider); align-items: baseline; }
+  .news-date { font-size: 13.5px; font-weight: 500; line-height: 1.5; color: var(--text-default); width: 120px; flex-shrink: 0; }
+  .news-cat { font-size: 13.5px; font-weight: 500; line-height: 1.5; color: var(--text-blue); width: 140px; flex-shrink: 0; }
+  .news-title { font-size: 18px; font-weight: 400; line-height: var(--lh-body); color: var(--text-default); text-decoration: none; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 30px; }
+  .elev { background: #ffffff; border-radius: 16px; padding: 28px; text-align: center; }
+  .elev.e1 { box-shadow: var(--sh-card); }
+  .elev.e2 { box-shadow: var(--sh-float); }
+  .elev.e3 { box-shadow: var(--sh-head); }
+  .elev-name { font-size: 16px; font-weight: 700; line-height: 1.5; color: var(--text-default); }
+  .elev-val { font-family: var(--ff-mono); font-size: 10px; color: #5b6670; margin-top: 8px; line-height: 1.7; }
+
+  /* RADIUS */
+  .radius-row { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 24px; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 128px; height: 84px; background: #9dc7ce; border: 1px solid #3f7d88; }
+  .radius-label { font-family: var(--ff-mono); font-size: 11px; color: #5b6670; margin-top: 8px; }
+
+  /* WIDTH TABLE */
+  .wtable { width: 100%; border-collapse: collapse; margin-top: 18px; font-size: 14px; }
+  .wtable th, .wtable td { border-bottom: 1px solid var(--divider); padding: 9px 12px; text-align: left; line-height: 1.5; color: var(--text-default); }
+  .wtable th { font-weight: 700; }
+  .wtable td.num { font-family: var(--ff-mono); font-size: 13px; }
+  .wtable tr.cliff td { background: #fdf0e6; font-weight: 700; }
+
+  /* LAYOUT */
+  .layout-demo { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .layout-bar { background: #dbe8ec; border-radius: var(--r-input); height: 40px; display: flex; align-items: center; justify-content: center; font-family: var(--ff-mono); font-size: 11px; color: #22535c; }
+
+  /* FOOTER */
+  .footer { background: var(--bg-dark); color: var(--text-white); padding: 64px 20px; border-radius: var(--r-sect) var(--r-sect) 0 0; margin-top: 60px; }
+  .footer-inner { max-width: 1240px; margin: 0 auto; }
+  .footer-head { font-family: var(--ff-en); font-size: 28px; font-weight: 500; line-height: 1.3; letter-spacing: 2px; }
+  .footer-cols { display: flex; gap: 88px; margin-top: 32px; flex-wrap: wrap; }
+  .footer-col-title { font-size: 14px; font-weight: 700; line-height: 1.6; color: var(--text-white); }
+  .footer-col a { display: block; font-size: 14px; line-height: 2.1; color: var(--text-white); text-decoration: none; opacity: .82; }
+  .footer-legal { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 36px; }
+  .footer-legal a { font-size: 12px; line-height: 1.6; color: var(--text-white); text-decoration: none; opacity: .7; }
+
+  @media (max-width: 1079px) {
+    .section { padding: 48px 16px; }
+    .section-title { font-size: 30px; }
+    .hero h1 { font-size: 34px; }
+    .hero-en { font-size: 36px; }
+  }
+  @media (max-width: 767px) {
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .header-nav { display: none; }
+    .kx-big { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">TIER IV</a>
+    <nav class="header-nav">
+      <a href="#">オープンソース</a><a href="#">サービス</a><a href="#">製品</a><a href="#">会社情報</a><a href="#">IR</a><a href="#">最新情報</a><a href="#">採用</a>
+    </nav>
+    <span class="header-lang">日本語</span>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>自動運転の民主化</h1>
+  <div class="hero-media">
+    <div class="hero-en">The professional</div>
+  </div>
+  <p class="hero-lead">誰もやったことのないやりかたで、誰もやったことのないことをやる。既存の価値を壊すのは繊細に。新しい価値を創るのは大胆に。</p>
+</section>
+
+<section class="section" id="colors">
+  <div class="section-wide">
+    <div class="section-label">01 / Colors</div>
+    <div class="eyebrow">Color Palette</div>
+    <h2 class="section-title">ネイビーが文字色と面色を兼ねる</h2>
+    <p class="section-lead">
+      CSS 変数は自社トークン 16 個。<code>--Text-Default</code> と <code>--BG-BGnormal</code> が<b>同じ <code>#1f2933</code></b> で、
+      文字色としても暗いセクションの面としても使われる。変数名は Figma のエクスポートそのままで、
+      <code>--BG-BGnormal</code> <code>--Gradation-Gradation-dark</code> のように<b>グループ名が二重になっている</b>（命名は真似しない）。
+    </p>
+
+    <div class="color-grid">
+      <div class="swatch"><div class="swatch-chip" style="background:#5cb4c0"></div><div class="swatch-body"><div class="swatch-name">Text Blue</div><div class="swatch-hex">#5cb4c0</div><div class="swatch-use">★<code>--Text-Blue</code>。ラベルの文字色（トップ 8 / 下層 10 要素）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#1f2933"></div><div class="swatch-body"><div class="swatch-name">Text Default / BG Normal</div><div class="swatch-hex">#1f2933</div><div class="swatch-use">★文字色（下層 101 要素で最多）<b>かつ</b>面色。2 役を兼ねる</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#171c21"></div><div class="swatch-body"><div class="swatch-name">BG Dark</div><div class="swatch-hex">#171c21</div><div class="swatch-use"><code>--BG-BGdark</code>。フッター</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#090b0d"></div><div class="swatch-body"><div class="swatch-name">BG Darkest</div><div class="swatch-hex">#090b0d</div><div class="swatch-use"><code>--bgb-gdark-20</code>。CTA の面</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#f9fbfd"></div><div class="swatch-body"><div class="swatch-name">tier4 white</div><div class="swatch-hex">#f9fbfd</div><div class="swatch-use">★ページ背景。<b>純白ではない</b></div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#1a3148"></div><div class="swatch-body"><div class="swatch-name">Hero Dark</div><div class="swatch-hex">#1a3148</div><div class="swatch-use">ヒーローの <code>::after</code>（1440×900）</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#f1f4fa"></div><div class="swatch-body"><div class="swatch-name">Surface Soft</div><div class="swatch-hex">#f1f4fa</div><div class="swatch-use">役員カード・言語切替</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#515973"></div><div class="swatch-body"><div class="swatch-name">Badge</div><div class="swatch-hex">#515973</div><div class="swatch-use">役職バッジの面。白文字 16.5px / 700</div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#e1e1e1"></div><div class="swatch-body"><div class="swatch-name">Divider</div><div class="swatch-hex">#e1e1e1</div><div class="swatch-use"><code>--Divider-Dividerlight</code></div></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:linear-gradient(90deg,#283d56,#3c5f79)"></div><div class="swatch-body"><div class="swatch-name">Gradation Dark</div><div class="swatch-hex">#283d56 → #3c5f79</div><div class="swatch-use"><code>linear-gradient(90deg, …)</code>。問い合わせ導線の帯</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt">
+  <div class="section" id="typography">
+    <div class="section-wide">
+      <div class="section-label">02 / Typography</div>
+      <div class="eyebrow">Type</div>
+      <h2 class="section-title">字間を一切触らない</h2>
+      <p class="section-lead">
+        可視テキスト 148 要素中 <b>140 要素が <code>letter-spacing: normal</code></b>。残る <code>0.1px</code> <code>0.25px</code> <code>0.5px</code> は
+        すべて Cookiebot のダイアログで、サイト本体ではない。CSS 全文に出てくる字間の宣言は <code>letter-spacing:0</code> の 1 種類だけ。
+      </p>
+
+      <div class="type-row"><div class="type-meta"><b>Display (en)</b>54px / 500 / lh 1.20 / ls normal<br>futura-pt（代替: Jost）</div><div class="type-sample" style="font-family:var(--ff-en);font-size:54px;font-weight:500;line-height:1.2">The professional</div></div>
+      <div class="type-row"><div class="type-meta"><b>Heading 1</b>54px / 700 / lh 1.50 / ls normal<br>下層 h1</div><div class="type-sample" style="font-size:54px;font-weight:700;line-height:1.5">モビリティの価値を再定義する</div></div>
+      <div class="type-row"><div class="type-meta"><b>Heading 2 (大)</b>48px / 700 / lh 1.50 / ls normal</div><div class="type-sample" style="font-size:48px;font-weight:700;line-height:1.5">世界でつくり、世界をつくる。</div></div>
+      <div class="type-row"><div class="type-meta"><b>Heading 2 (中)</b>42px / 700 / lh 1.20 / ls normal</div><div class="type-sample" style="font-size:42px;font-weight:700;line-height:1.2">自動運転の民主化</div></div>
+      <div class="type-row"><div class="type-meta"><b>Heading 3</b>24px / 700 / lh 1.50 / ls normal<br>下層 25 要素</div><div class="type-sample" style="font-size:24px;font-weight:700;line-height:1.5">Autowareのエコシステムの拡大</div></div>
+      <div class="type-row"><div class="type-meta"><b>Lead</b>21px / 400 / lh 1.75 / ls normal</div><div class="type-sample" style="font-size:21px;line-height:1.75">安全な自動運転に資するあらゆるテクノロジーを開放します。</div></div>
+      <div class="type-row"><div class="type-meta"><b>Body</b>18px / 400 / lh 1.75 / ls normal<br>下層 51 要素で最多</div><div class="type-sample" style="font-size:18px;line-height:1.75">自動運転には、人々の感情や生活、そして文化を一変させる力があります。テクノロジーで、新しい価値を生み出し、人々を支え、社会を前に進めます。</div></div>
+      <div class="type-row"><div class="type-meta"><b>Nav / Caption</b>14px / 400 / lh 1.00</div><div class="type-sample" style="font-size:14px;line-height:1">オープンソース / サービス / 製品</div></div>
+      <div class="type-row"><div class="type-meta"><b>Meta</b>13.5px / 500 / ls normal</div><div class="type-sample" style="font-size:13.5px;font-weight:500;line-height:1.5">2026年11月13日　プレスリリース</div></div>
+
+      <p class="note"><b>ウェイトは 400 / 500 / 700 の 3 段。</b>Noto Sans JP は可変フォント（<code>wght@100..900</code>）なので 500 は本物の中間ウェイト。600 は Cookiebot だけなので使わない。</p>
+      <div class="wt-row">
+        <span class="wt" style="font-weight:400">自動運転<i>400 ★</i></span>
+        <span class="wt" style="font-weight:500">自動運転<i>500 ★ メタ情報</i></span>
+        <span class="wt" style="font-weight:700">自動運転<i>700 ★ 見出し</i></span>
+        <span class="wt is-off" style="font-weight:600">自動運転<i>600 — CMP のみ</i></span>
+      </div>
+
+      <p class="note">
+        <b><code>body { line-height: 1 }</code>。</b>無単位の <code>1</code> が全子孫に降りるので、宣言し直さない要素は行が潰れる。
+        実測でも <code>body</code> の行送りは <code>font-size</code> と同値（1440px で 18px / 18px）。<b>本文ブロックでは必ず <code>line-height</code> を上書きする。</b>
+      </p>
+
+      <p class="note">
+        <b>Adobe Fonts の Futura PT を 14 本宣言して、実際に使うのは 1 本だけ。</b>
+        <code>@font-face</code> は <code>futura-pt</code> が 12 本（300/400/500/600/700/800 × roman/italic）＋ <code>futura-pt-bold</code> が 2 本。
+        <code>document.fonts</code> で <code>loaded</code> になるのは <b>weight 500 の 1 本</b>で、当たっているのは会社情報ページの英語役職名 <b>21 要素だけ</b>。
+        <code>Lato</code> と <code>Merriweather</code> も宣言されているが可視 0 要素（HubSpot テーマの既定値の残骸）。
+      </p>
+
+      <p class="note">
+        <b><code>palt</code> は 2 ページとも 0 要素。</b>CSS 全文を grep しても <code>font-feature-settings</code> は 1 件も出てこない。
+        ただし Noto Sans JP は <code>palt</code> を持っており、実スタック・40px・weight 700 で測ると
+        <code>normal</code> <b>1013.16px</b> → <code>"palt"</code> <b>908.31px</b>（<b>−10.35%</b>）。<b>足すと見出しの字面が 1 割詰まって別物になる。</b>
+      </p>
+
+      <h3 style="font-size:24px;font-weight:700;line-height:1.5;margin-top:40px">実サイトの誤り: 康熙部首の混入</h3>
+      <p class="note">
+        本文コピーに<b>康熙部首（CJK 部首補助）が 44 文字・18 種</b>まぎれている
+        （<code>⼤ ⾃ ⺠ ⼈ ⽣ ⽂ ⼀ ⼒ ⽀ ⽇ ⽋ ⾰ ⼼ ⼿ ⾵ ⾝ ⾏ ⽅</code>）。
+        48px の見出し <code>⼈々の可能性が、</code> <code>⽣産的に。</code> や 42px の <code>⾃動運転の⺠主化</code> まで含む。
+        <b>トップページの h1 は正しい漢字の「自動運転の民主化」なので、同じ言葉が同じサイトで 2 通りの文字コードで書かれている。</b>
+        InDesign / Illustrator からのコピーで入り込む事故で、<b>検索・コピー・読み上げが壊れる</b>。再現するときは必ず通常の漢字で書く。
+      </p>
+      <div class="kx-grid">
+        <div class="kx-card">
+          <h4>実サイトのトップ（正しい漢字）</h4>
+          <div class="kx-big">自動運転の民主化</div>
+          <div class="kx-val">自 U+81EA / 民 U+6C11 — 通常の漢字</div>
+        </div>
+        <div class="kx-card">
+          <h4>実サイトの下層（康熙部首）</h4>
+          <div class="kx-big">&#x2F83;動運転の&#x2EA0;主化</div>
+          <div class="kx-val">⾃ U+2F83 / ⺠ U+2EA0 — 部首。検索に引っかからない</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="components">
+  <div class="section-wide">
+    <div class="section-label">03 / Components</div>
+    <div class="eyebrow">Components</div>
+    <h2 class="section-title">pill の CTA と角丸 30px のカード</h2>
+
+    <div class="btn-grid">
+      <a href="#" class="btn btn-primary">お問い合わせ</a>
+      <a href="#" class="btn btn-secondary">資料をダウンロード</a>
+      <a href="#" class="btn btn-gradient">製品・サービスのご相談</a>
+      <span class="badge">取締役</span>
+      <span class="chip">日本語</span>
+    </div>
+
+    <div class="form-grid">
+      <div class="field"><label for="f1">お名前</label><input id="f1" type="text" placeholder="山田 太郎"><div class="field-msg">面 #ffffff / border 1px #e1e1e1 / radius 8px</div></div>
+      <div class="field is-focus"><label for="f2">フォーカス時</label><input id="f2" type="text" value="ティアフォー"><div class="field-msg">フォーカス表現は実サイトに明示指定が無いため #5cb4c0 で代役</div></div>
+      <div class="field"><label for="f3">お問い合わせ種別</label><select id="f3"><option>モビリティサービス</option><option>デベロップメントサービス</option><option>ソリューションサービス</option></select><div class="field-msg">14px / 400 / line-height 1.50</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt">
+  <div class="section" id="cards">
+    <div class="section-wide">
+      <div class="section-label">04 / Cards &amp; News</div>
+      <div class="eyebrow">Cards</div>
+      <h2 class="section-title">角丸 30px、影は 0 3px 12px のネイビー</h2>
+      <p class="section-lead">影の色は黒ではなく <code>rgba(16, 18, 36, 0.08)</code>。<b>黒に丸めない。</b>ぼかし半径だけを 12px / 16px と変えて 2 段にしている。</p>
+
+      <div class="card-grid">
+        <a href="#" class="card"><div class="thumb"></div><div class="pad"><div class="card-eyebrow">Open Source</div><div class="card-title">Autowareのエコシステムの拡大</div><div class="card-desc">安全な自動運転に資するあらゆるテクノロジーを開放し、様々な組織・個人が発展に貢献できる開放的なエコシステムを構築します。</div></div></a>
+        <a href="#" class="card"><div class="thumb"></div><div class="pad"><div class="card-eyebrow">Service</div><div class="card-title">技術と社会を文化でつなぐ</div><div class="card-desc">移動そのものを再設計し、人々の生活と文化の変化まで見据えてサービスを組み立てます。</div></div></a>
+        <a href="#" class="card"><div class="thumb"></div><div class="pad"><div class="card-eyebrow">Global</div><div class="card-title">ティアフォーの事業のグローバル展開</div><div class="card-desc">世界でつくり、世界をつくる。各地のパートナーとともに実装を進めています。</div></div></a>
+      </div>
+
+      <h3 style="font-size:24px;font-weight:700;line-height:1.5;margin:46px 0 16px">経営陣（欧文は futura-pt）</h3>
+      <div class="member-grid">
+        <div class="member"><div class="member-name">加藤 真平</div><div class="member-role">CEO / CTO</div><div class="member-note">役職名だけ --ff-en（futura-pt 500）。<br>サイト全体で 21 要素のみ</div></div>
+        <div class="member"><div class="member-name">田中 大輔</div><div class="member-role">EVP / CFO</div><div class="member-note">和文の氏名は --ff-jp（Noto Sans JP 700）</div></div>
+        <div class="member"><div class="member-name">佐藤 彩花</div><div class="member-role">EVP / CSO</div><div class="member-note">和欧で書体を切り替える唯一の箇所</div></div>
+      </div>
+
+      <h3 style="font-size:24px;font-weight:700;line-height:1.5;margin:46px 0 10px">最新情報</h3>
+      <div class="news-row"><div class="news-date">2026年11月13日</div><div class="news-cat">プレスリリース</div><a href="#" class="news-title">Autoware を用いた一般道での自動運転実証を開始</a></div>
+      <div class="news-row"><div class="news-date">2026年11月12日</div><div class="news-cat">プレスリリース</div><a href="#" class="news-title">モビリティサービス向け新製品を発表</a></div>
+      <div class="news-row"><div class="news-date">2026年10月30日</div><div class="news-cat">IR</div><a href="#" class="news-title">2026年12月期 第3四半期決算を発表しました</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="elevation">
+  <div class="section-wide">
+    <div class="section-label">05 / Elevation &amp; Radius</div>
+    <div class="eyebrow">Elevation</div>
+    <h2 class="section-title">影はネイビー。角丸は 30px と 60px</h2>
+
+    <div class="elev-grid">
+      <div class="elev"><div class="elev-name">Level 0</div><div class="elev-val">none<br>面を分ける箇所の大半</div></div>
+      <div class="elev e1"><div class="elev-name">Level 1</div><div class="elev-val">rgba(16,18,36,.08) 0 3px 12px<br>カード（下層 14 要素）</div></div>
+      <div class="elev e2"><div class="elev-name">Level 2</div><div class="elev-val">rgba(16,18,36,.08) 0 4px 16px<br>浮いたナビ・リンクカード（6 要素）</div></div>
+      <div class="elev e3"><div class="elev-name">Header</div><div class="elev-val">rgba(0,0,0,.1) 0 1px 4px<br>ヘッダーの薄い影</div></div>
+    </div>
+
+    <div class="radius-row">
+      <div class="radius-item"><div class="radius-box" style="border-radius:60px"></div><div class="radius-label">60px — セクション</div></div>
+      <div class="radius-item"><div class="radius-box" style="border-radius:60px 60px 0 0"></div><div class="radius-label">60px 60px 0 0 — 上だけ</div></div>
+      <div class="radius-item"><div class="radius-box" style="border-radius:30px"></div><div class="radius-label">30px — カード（34 要素）</div></div>
+      <div class="radius-item"><div class="radius-box" style="border-radius:9999px"></div><div class="radius-label">9999px — CTA pill</div></div>
+      <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">8px — 入力欄・チップ</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt">
+  <div class="section" id="layout">
+    <div class="section-wide">
+      <div class="section-label">06 / Layout &amp; Responsive</div>
+      <div class="eyebrow">Layout</div>
+      <h2 class="section-title">ルートは JS 変数連動の流体。1079/1080px に 5.12 倍の崖がある</h2>
+      <p class="section-lead">
+        <code>html { font-size: calc(var(--window-width) / 192) }</code>（デスクトップ）と
+        <code>calc(var(--window-width) / 37.5)</code>（≤1079px）の 2 段。<code>--window-width</code> は <b>JS が実ウィンドウ幅を px で書き込む変数</b>で、
+        実質 <code>vw</code> と同じだがスクロールバー幅を含まない。設計幅はデスクトップ <b>1920px</b>・モバイル <b>375px</b>。
+      </p>
+
+      <table class="wtable">
+        <tr><th>幅</th><th>html</th><th>body</th><th>h1</th><th>h2</th></tr>
+        <tr><td>1920px</td><td class="num">10px</td><td class="num">24px</td><td class="num">72px</td><td class="num">56px</td></tr>
+        <tr><td>1440px</td><td class="num">7.5px</td><td class="num">18px</td><td class="num">54px</td><td class="num">42px</td></tr>
+        <tr><td>1200px</td><td class="num">6.25px</td><td class="num">15px</td><td class="num">45px</td><td class="num">35px</td></tr>
+        <tr class="cliff"><td>1080px</td><td class="num">5.625px</td><td class="num">13.5px</td><td class="num">40.5px</td><td class="num">31.5px</td></tr>
+        <tr class="cliff"><td>1079px</td><td class="num">28.773px</td><td class="num">46.04px</td><td class="num">97.83px</td><td class="num">80.57px</td></tr>
+        <tr><td>834px</td><td class="num">22.24px</td><td class="num">35.58px</td><td class="num">75.62px</td><td class="num">62.27px</td></tr>
+        <tr><td>768px</td><td class="num">20.48px</td><td class="num">32.77px</td><td class="num">69.63px</td><td class="num">57.34px</td></tr>
+        <tr><td>600px</td><td class="num">16px</td><td class="num">25.6px</td><td class="num">54.4px</td><td class="num">44.8px</td></tr>
+        <tr><td>375px</td><td class="num">10px</td><td class="num">16px</td><td class="num">34px</td><td class="num">28px</td></tr>
+        <tr><td>320px</td><td class="num">8.533px</td><td class="num">13.65px</td><td class="num">29.01px</td><td class="num">23.89px</td></tr>
+      </table>
+
+      <p class="note">
+        <b>1080 → 1079px の 1px で <code>html</code> が 5.12 倍に跳ぶ。</b>収録済みサイトの崖（ドトール 4.1 倍・関西ペイント 3.64 倍・第一三共 2.3 倍）を超える最大値。
+        デスクトップの最小は <b>1080px の 5.625px</b> で、ここでは本文が 13.5px まで縮む。
+        <b>規定の 4 幅（1440 / 1200 / 834 / 375px）では崖が見えない。</b>境目の <code>max-width: 1079px</code> の ±1px を必ず測る。
+      </p>
+
+      <div class="layout-demo" style="margin-top:28px">
+        <div class="layout-bar" style="width:100%">viewport</div>
+        <div class="layout-bar" style="width:1240px;max-width:100%">wide 1240px</div>
+        <div class="layout-bar" style="width:900px;max-width:100%">column 900px（下層 13 要素で最多）</div>
+        <div class="layout-bar" style="width:700px;max-width:100%">narrow 700px</div>
+      </div>
+
+      <p class="note">
+        ブレークポイントは <code>screen and (max-width: 1079px)</code> が <b>47 件で最多</b>、
+        <code>screen and (min-width: 1080px)</code> が 15 件、<code>(max-width: 767px)</code> が 9 件。
+        <code>gap</code> は <code>12px</code> / <code>24px</code> / <code>36px</code> / <code>48px 3.125%</code> / <code>90px 39.75px</code> と、<b>横方向に % を使う箇所がある</b>。
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-head">TIER IV</div>
+    <div class="footer-cols">
+      <div class="footer-col"><div class="footer-col-title">オープンソース</div><a href="#">ティアフォーのオープンソース戦略</a><a href="#">Autowareの概要</a><a href="#">Autowareのコミュニティ</a></div>
+      <div class="footer-col"><div class="footer-col-title">サービス</div><a href="#">モビリティサービス</a><a href="#">デベロップメントサービス</a><a href="#">ソリューションサービス</a></div>
+      <div class="footer-col"><div class="footer-col-title">会社情報</div><a href="#">ミッション・ビジョン</a><a href="#">経営体制</a><a href="#">事例・プロジェクト</a></div>
+      <div class="footer-col"><div class="footer-col-title">その他</div><a href="#">IR</a><a href="#">最新情報</a><a href="#">採用</a></div>
+    </div>
+    <div class="footer-legal"><a href="#">プライバシーポリシー</a><a href="#">Cookieポリシー</a><a href="#">お問い合わせ</a></div>
+  </div>
+</footer>
+
+</body>
+</html>

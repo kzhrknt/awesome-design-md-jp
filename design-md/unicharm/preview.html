@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ユニ・チャーム (Unicharm)</title>
+<!--
+  実サイトは Web フォントを 1 本も使わない（@font-face 0 件・フォント要求 0 件）。
+  Google Fonts で Noto Sans JP を @import しているが CSS に font-family 指定が無く可視 0 要素。
+  したがってこの preview も Web フォントを読み込まない。OS の游ゴシックで組む。
+-->
+<style>
+  :root {
+    /* === Colors ===
+       実サイトの CSS Custom Properties は 0 個（読めなかったシート 0 枚 / body 宣言 0 個まで確認）。
+       以下はすべて computed style の実測値。2026-11-18 */
+    --orange:     #f08100;   /* ★ブランドオレンジ。メニュー / PAGE TOP の丸ボタンの面だけ */
+    --navy:       #1e2766;   /* ★ブランドネイビー。ヒーローカルーセルの操作ボタンの面 */
+    --link:       #3860be;   /* 本文中のテキストリンク */
+
+    --text:       #262626;   /* ★本文・見出し。トップ 111 要素 / 下層 59 要素で最多。純黒は使わない */
+    --text-sub:   #696969;   /* リード文・注記 */
+    --text-label: #555555;   /* カード内の分類ラベル */
+
+    --white:      #ffffff;
+    --bg:         #ffffff;   /* ページ背景。2 ページとも根拠 body */
+    --band:       #fdf9f1;   /* ★フッターのナビ帯（1440x328）。サイト唯一の有彩色の大面積 */
+    --cta-fill:   #e8e8e8;   /* ★CTA の pill（573x81 / radius 40px / padding 24px 30px） */
+    --input-bg:   #f5f5f5;   /* サイト内検索（radius 18px / height 34px） */
+    --border:     #dcdcdc;   /* 罫線（面を区切る唯一の手段） */
+
+    /* === Font ===
+       実サイトに存在するスタックはこの 1 種類だけ（トップ 122/122・下層 63/63 要素）。
+       Medium を Regular より前に置くことで Windows の游ゴシック問題を回避している。
+       ヒラギノは ProN ではなく Pro（実サイトのまま。新規設計では ProN を推奨）。 */
+    --font: 游ゴシック体, YuGothic, "游ゴシック Medium", "Yu Gothic Medium",
+            游ゴシック, "Yu Gothic", "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro",
+            メイリオ, Meiryo, "ＭＳ Ｐゴシック", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: 無単位。body の 1.7 が最多（81 要素）、見出しだけ 1.4 に当て直す === */
+    --lh-body:  1.70;
+    --lh-head:  1.40;
+    --lh-title: 1.20;
+    --lh-nav:   1.50;
+
+    /* === Letter spacing ===
+       実サイトは body に 0.05em を 1 回だけ書き、16px で解決された 0.8px が全子孫へ降りる。
+       可視 122 要素中 101 要素が 0.8px。50px の h1 でも 0.8px のまま。 */
+    --ls-inherit: 0.05em;    /* body にだけ書く。子では再宣言しない */
+    --ls-nav:     -0.005em;  /* グローバルナビ 8 要素だけ -0.08px に詰める */
+
+    /* === Radius === */
+    --r-pill:   40px;   /* CTA */
+    --r-input:  18px;   /* 検索ボックス */
+    --r-arrow:  30px;   /* カルーセルの前へ / 次へ */
+    --r-round:  50%;    /* アイコンボタン */
+
+    --container: 1280px;
+    --column:    1180px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 16px;               /* html に font-size 宣言が無く UA 既定 16px。19 幅すべて固定 */
+    font-weight: 400;
+    line-height: var(--lh-body);   /* 無単位 1.7。各要素が自分のサイズで再計算する */
+    letter-spacing: var(--ls-inherit);  /* 16px × 0.05 = 0.8px が絶対値で降りる */
+    word-break: break-word;        /* 実サイトの指定（overflow-wrap: break-word の別名） */
+    /* font-feature-settings は書かない。実サイトは palt 0 要素（効くのに使っていない） */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid var(--border); background: var(--white); }
+  .header-util { display: flex; justify-content: flex-end; gap: 24px; align-items: center; max-width: var(--container); margin: 0 auto; padding: 14px 20px 0; }
+  .header-util a { font-size: 14px; color: var(--text); text-decoration: none; }
+  .search { background: var(--input-bg); border: 0; border-radius: var(--r-input); height: 34px; width: 270px; padding: 0 16px; font-family: var(--font); font-size: 14px; color: var(--text); }
+  .header-inner { display: flex; align-items: flex-end; gap: 40px; max-width: var(--container); margin: 0 auto; padding: 10px 20px 22px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-mark { width: 38px; height: 38px; border-radius: var(--r-round); background: var(--orange); }
+  .logo-text { font-size: 22px; font-weight: 700; color: var(--navy); line-height: var(--lh-title); }
+  .header-nav { display: flex; gap: 32px; margin-left: auto; }
+  .header-nav a { font-size: 16px; font-weight: 700; letter-spacing: var(--ls-nav); color: var(--text); text-decoration: none; }
+
+  /* HERO */
+  .hero { position: relative; max-width: var(--container); margin: 0 auto; padding: 0 20px; }
+  .hero-slide {
+    /* 実サイトのヒーローは 1280x670 の JPG が 9 枚回るカルーセル。
+       見出しは画像に焼き込まれていて、テキストとしては存在しない（帯の最大テキストは 16px のナビ）。
+       ここは色と図形で代役を作り、「文字は画像」であることを注記で示す */
+    height: 420px; border-radius: 0;
+    background-image:
+      linear-gradient(110deg, rgba(255,255,255,.90) 0%, rgba(255,255,255,.55) 46%, rgba(30,39,102,.10) 100%),
+      radial-gradient(circle at 24% 72%, #ffd79a 0 16%, transparent 17%),
+      linear-gradient(135deg, #e8ecf8 0%, #d7deef 54%, #f6e5cf 100%);
+    display: flex; align-items: flex-end; padding: 32px;
+  }
+  .hero-note { font-size: 13px; line-height: 1.8; color: var(--text); background: rgba(255,255,255,.88); border-radius: 6px; padding: 12px 16px; max-width: 640px; }
+  .hero-note b { font-weight: 700; }
+  .hero-ctrl { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
+  .ctrl-round { width: 34px; height: 34px; border: 0; border-radius: var(--r-round); background: var(--navy); color: var(--white); font-family: var(--font); font-size: 11px; cursor: pointer; }
+  .ctrl-arrow { width: 56px; height: 34px; border: 0; border-radius: var(--r-arrow); background: var(--navy); color: var(--white); font-family: var(--font); font-size: 12px; cursor: pointer; }
+
+  /* SECTIONS */
+  .section { padding: 68px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--band); }
+  .section-alt .section-inner { padding: 68px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: normal; color: var(--text-sub); margin-bottom: 10px; }
+  .section-title { font-size: 28px; font-weight: 700; line-height: var(--lh-head); color: var(--text); margin-bottom: 14px; }
+  .section-lead { font-size: 16px; line-height: var(--lh-body); color: var(--text-sub); max-width: 900px; margin-bottom: 34px; }
+  .note { font-size: 14px; line-height: 1.9; color: var(--text-sub); margin-top: 22px; max-width: 920px; }
+  .note b { color: var(--text); font-weight: 700; }
+  code { font-family: var(--font-mono); font-size: 12px; letter-spacing: normal; background: var(--input-bg); color: var(--text); padding: 1px 5px; border-radius: 3px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(218px, 1fr)); gap: 16px; }
+  .swatch { border: 1px solid var(--border); background: var(--white); overflow: hidden; }
+  .swatch-chip { height: 78px; }
+  .swatch-body { padding: 14px; }
+  .swatch-name { font-size: 15px; font-weight: 700; line-height: var(--lh-head); color: var(--text); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; letter-spacing: normal; color: var(--text-sub); margin-top: 4px; }
+  .swatch-use { font-size: 12px; line-height: 1.7; color: var(--text-sub); margin-top: 7px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--border); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: normal; line-height: 1.8; color: var(--text-sub); }
+  .type-meta b { display: block; font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--text); }
+  .type-sample { color: var(--text); }
+
+  /* WEIGHTS */
+  .wt-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; margin-top: 10px; }
+  .wt { background: var(--white); border: 1px solid var(--border); padding: 10px 16px; font-size: 20px; line-height: var(--lh-head); color: var(--text); }
+  .wt i { display: block; font-family: var(--font-mono); font-style: normal; font-size: 10px; letter-spacing: normal; color: var(--text-sub); margin-top: 4px; }
+  .wt.is-off { opacity: .4; }
+
+  /* LETTER SPACING DEMO */
+  .ls-demo { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 22px; margin-top: 20px; }
+  .ls-card { border: 1px solid var(--border); background: var(--white); padding: 20px; }
+  .ls-card h4 { font-size: 14px; font-weight: 700; line-height: var(--lh-head); color: var(--text); margin-bottom: 12px; }
+  .ls-big { font-size: 50px; font-weight: 700; line-height: var(--lh-title); color: var(--text); }
+  .ls-big.is-wrong { letter-spacing: 0.05em; }   /* em を再宣言するとこうなる（実サイトと別物） */
+  .ls-val { font-family: var(--font-mono); font-size: 11px; letter-spacing: normal; color: var(--text-sub); margin-top: 10px; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin-bottom: 26px; }
+  .btn { font-family: var(--font); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; border: 0; }
+  .btn-pill { background: var(--cta-fill); color: var(--text); border-radius: var(--r-pill); padding: 24px 30px; font-size: 18px; font-weight: 700; line-height: var(--lh-body); letter-spacing: 0.8px; min-width: 300px; }
+  .btn-icon { background: var(--orange); color: var(--white); border-radius: var(--r-round); width: 56px; height: 56px; font-size: 12px; font-weight: 700; }
+  .btn-link { background: transparent; color: var(--link); font-size: 16px; text-decoration: underline; }
+
+  /* INPUTS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 26px; }
+  .field label { display: block; font-size: 14px; font-weight: 700; line-height: var(--lh-nav); color: var(--text); margin-bottom: 8px; }
+  .field input, .field select {
+    width: 100%; background: var(--input-bg); color: var(--text);
+    border: 0; border-radius: var(--r-input); height: 44px; padding: 0 16px;
+    font-size: 16px; line-height: var(--lh-nav); font-family: var(--font);
+  }
+  .field.is-focus input { outline: 3px solid var(--navy); outline-offset: 1px; }
+  .field-msg { font-size: 12px; line-height: 1.7; color: var(--text-sub); margin-top: 7px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 32px; }
+  .card { background: var(--white); border: 0; border-radius: 0; box-shadow: none; text-decoration: none; display: block; }
+  .card .thumb { height: 150px; background: linear-gradient(135deg, #e9eef8, #d6def0); }
+  .card-cat { font-size: 14px; font-weight: 700; line-height: var(--lh-nav); color: var(--text-label); margin-top: 14px; }
+  .card-title { font-size: 21px; font-weight: 700; line-height: var(--lh-head); color: var(--text); margin-top: 6px; }
+  .card-desc { font-size: 16px; line-height: var(--lh-body); color: var(--text); margin-top: 10px; }
+
+  /* NEWS */
+  .news-row { display: flex; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--border); align-items: baseline; }
+  .news-date { font-size: 14px; line-height: var(--lh-body); color: var(--text-sub); width: 118px; flex-shrink: 0; }
+  .news-cat { font-size: 14px; font-weight: 700; line-height: var(--lh-body); color: var(--text-label); width: 140px; flex-shrink: 0; }
+  .news-title { font-size: 16px; line-height: var(--lh-body); color: var(--text); text-decoration: none; }
+
+  /* ELEVATION */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 28px; }
+  .elev { background: var(--white); border: 1px solid var(--border); padding: 28px; text-align: center; }
+  .elev-name { font-size: 16px; font-weight: 700; line-height: var(--lh-nav); color: var(--text); }
+  .elev-val { font-family: var(--font-mono); font-size: 10px; letter-spacing: normal; color: var(--text-sub); margin-top: 8px; line-height: 1.7; }
+
+  /* RADIUS */
+  .radius-row { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 22px; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 118px; height: 72px; background: #c5cde6; border: 1px solid #7f8cb5; }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: normal; color: var(--text-sub); margin-top: 7px; }
+
+  /* LAYOUT */
+  .layout-demo { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .layout-bar { background: #dde3f0; height: 38px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; letter-spacing: normal; color: var(--navy); }
+
+  /* FOOTER */
+  .footer { background: var(--band); padding: 48px 20px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-cols { display: flex; gap: 88px; flex-wrap: wrap; }
+  .footer-col-title { font-size: 16px; font-weight: 700; line-height: var(--lh-nav); color: var(--text); }
+  .footer-col a { display: block; font-size: 13px; line-height: 2.1; color: var(--text); text-decoration: none; }
+  .footer-legal { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 34px; border-top: 1px solid var(--border); padding-top: 20px; }
+  .footer-legal a { font-size: 13px; color: var(--text); text-decoration: none; }
+
+  @media (max-width: 768px) {
+    .section, .section-alt .section-inner, .footer { padding: 44px 16px; }
+    .section-title { font-size: 22px; }
+    .card-title { font-size: 18px; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .header-nav, .header-util { display: none; }
+    .ls-big { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-util">
+    <a href="#">お問い合わせ</a><a href="#">Global Website</a><a href="#">English</a>
+    <input class="search" type="text" placeholder="サイト内検索">
+  </div>
+  <div class="header-inner">
+    <a href="#" class="logo"><span class="logo-mark"></span><span class="logo-text">ユニ・チャーム</span></a>
+    <nav class="header-nav">
+      <a href="#">企業情報</a><a href="#">サステナビリティ</a><a href="#">イノベーション</a><a href="#">投資家情報</a><a href="#">採用情報</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-slide">
+    <p class="hero-note">
+      <b>ヒーローの大見出しは画像。</b>実サイトのファーストビューは 1280×670 の JPG が 9 枚回るカルーセルで、
+      「いっしょなら、なんでもできそう。いつまでも。／ Love Your Possibilities」は画像に焼き込まれている。
+      <b>ヒーロー帯の最大テキストは 16px のナビゲーション</b>しかない（<code>suspectImageHeadline: true</code>）。
+      <code>alt</code> は正しく入っているので、スクリーンリーダーには読まれる。
+    </p>
+  </div>
+  <div class="hero-ctrl">
+    <button class="ctrl-arrow">前へ</button>
+    <button class="ctrl-round">停止</button>
+    <button class="ctrl-arrow">次へ</button>
+  </div>
+</section>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">塗る面がほとんど無い。白地とクリーム帯とグレーの pill だけ</h2>
+  <p class="section-lead">
+    <code>uniqueBackgrounds</code> の上位に並ぶ色は<b>ほぼ全部が Cookie バナー（OneTrust）由来で、幅も高さも 0 の不可視要素</b>。
+    実際にページに塗られているのは、フッターのクリーム帯・CTA の pill・検索ボックス・丸アイコンの 4 つしかない。
+    <b>CSS Custom Properties は 0 個</b>（読めなかったシート 0 枚・<code>body</code> 宣言 0 個まで確認済み）。
+  </p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#f08100"></div><div class="swatch-body"><div class="swatch-name">Brand Orange</div><div class="swatch-hex">#f08100</div><div class="swatch-use">★メニュー / PAGE TOP の丸ボタンの面だけ。本文やリンクには使わない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#1e2766"></div><div class="swatch-body"><div class="swatch-name">Brand Navy</div><div class="swatch-hex">#1e2766</div><div class="swatch-use">★ヒーローカルーセルの再生 / 停止 / 前へ / 次への面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#3860be"></div><div class="swatch-body"><div class="swatch-name">Link Blue</div><div class="swatch-hex">#3860be</div><div class="swatch-use">本文中のテキストリンク</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#262626"></div><div class="swatch-body"><div class="swatch-name">Text</div><div class="swatch-hex">#262626</div><div class="swatch-use">★本文・見出し。トップ 111 要素 / 下層 59 要素で最多。<b>純黒は使わない</b></div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#696969"></div><div class="swatch-body"><div class="swatch-name">Text Sub</div><div class="swatch-hex">#696969</div><div class="swatch-use">リード文・注記</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#555555"></div><div class="swatch-body"><div class="swatch-name">Text Label</div><div class="swatch-hex">#555555</div><div class="swatch-use">カード内の分類ラベル（14px / 700）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fdf9f1"></div><div class="swatch-body"><div class="swatch-name">Footer Band</div><div class="swatch-hex">#fdf9f1</div><div class="swatch-use">★フッターのナビ帯（1440×328）。サイト唯一の有彩色の大面積</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e8e8e8"></div><div class="swatch-body"><div class="swatch-name">CTA Fill</div><div class="swatch-hex">#e8e8e8</div><div class="swatch-use">★pill ボタン（573×81 / radius 40px / padding 24px 30px）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f5f5f5"></div><div class="swatch-body"><div class="swatch-name">Input</div><div class="swatch-hex">#f5f5f5</div><div class="swatch-use">サイト内検索（radius 18px / height 34px）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffffff;border-bottom:1px solid #dcdcdc"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-use"><code>body</code> に直接指定。2 ページとも根拠 <code>body</code></div></div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="typography">
+  <div class="section-inner">
+    <div class="section-label">02 / Typography</div>
+    <h2 class="section-title">Web フォントを 1 本も読まない。スタックは 1 種類だけ</h2>
+    <p class="section-lead">
+      <code>@font-face</code> は CSS 全文に <b>0 件</b>。フォントファイルの要求も <b>0 件</b>。
+      <code>distributions.fontFamily</code> は 2 ページとも<b>たった 1 種類</b>で 100%（トップ 122/122・下層 63/63 要素）。
+      CDP の <code>CSS.getPlatformFontsForNode</code> で実描画書体を取ると、和文はすべて <code>YuGothic</code> に解決される。
+    </p>
+
+    <div class="type-row"><div class="type-meta"><b>Display</b>50px / 700 / lh 1.20 / ls 0.8px<br>下層 h1</div><div class="type-sample" style="font-size:50px;font-weight:700;line-height:1.2">トップメッセージ</div></div>
+    <div class="type-row"><div class="type-meta"><b>Heading 1</b>28px / 700 / lh 1.40 / ls 0.8px<br>9 要素</div><div class="type-sample" style="font-size:28px;font-weight:700;line-height:1.4">共生社会の実現をめざして</div></div>
+    <div class="type-row"><div class="type-meta"><b>Heading 2</b>22px / 700 / lh 1.40 / ls 0.8px<br>7 要素</div><div class="type-sample" style="font-size:22px;font-weight:700;line-height:1.4">ウェルネスケア / ペットケア</div></div>
+    <div class="type-row"><div class="type-meta"><b>Heading 3</b>21px / 700 / lh 1.40 / ls 0.8px</div><div class="type-sample" style="font-size:21px;font-weight:700;line-height:1.4">紙パンツ・紙おむつリサイクルの取り組み</div></div>
+    <div class="type-row"><div class="type-meta"><b>CTA</b>18px / 700 / lh 1.70 / ls 0.8px</div><div class="type-sample" style="font-size:18px;font-weight:700;line-height:1.7">サステナビリティ</div></div>
+    <div class="type-row"><div class="type-meta"><b>Body</b>16px / 400 / lh 1.70 / ls 0.8px<br>可視 74 要素で最多</div><div class="type-sample" style="font-size:16px;line-height:1.7">ユニ・チャームは、事業を通じてお客様に貢献するのはもちろん、社会課題の解決にも取り組んでいきます。</div></div>
+    <div class="type-row"><div class="type-meta"><b>Caption</b>14px / 400 / lh 1.70 / ls 0.8px</div><div class="type-sample" style="font-size:14px;line-height:1.7">かんたん応募サービス / ソフィクラブ</div></div>
+    <div class="type-row"><div class="type-meta"><b>Small</b>13px・12px / 400 / lh 1.70</div><div class="type-sample" style="font-size:13px;line-height:1.7">サイトマップ / ウェブサイト利用規約</div></div>
+
+    <p class="note"><b>ウェイトは 400 と 700 の 2 段だけ。</b>トップページは 400 が 60 要素・700 が 60 要素でちょうど半々。600 が 2 要素だけ出るが、これは Cookie バナーのボタンでサイト本体ではない。500 は 1 要素も無い。</p>
+    <div class="wt-row">
+      <span class="wt">共生社会<i>400 ★</i></span>
+      <span class="wt" style="font-weight:700">共生社会<i>700 ★</i></span>
+      <span class="wt is-off" style="font-weight:500">共生社会<i>500 — 不使用</i></span>
+      <span class="wt is-off" style="font-weight:600">共生社会<i>600 — CMP のみ</i></span>
+    </div>
+
+    <p class="note"><b>字間は <code>body</code> に <code>0.05em</code> を 1 回だけ書いて、<code>0.8px</code> という絶対値で全部に降ろす。</b>
+    <code>em</code> 宣言は親の <code>font-size</code>（16px）で px に解決されてから継承されるので、<b>50px の見出しでも字間は 0.8px のまま</b>（= 0.016em）。
+    子要素で <code>em</code> を再宣言すると下の右のようになり、実サイトと別物になる。</p>
+    <div class="ls-demo">
+      <div class="ls-card">
+        <h4>実サイト（body からの px 継承）</h4>
+        <div class="ls-big">トップメッセージ</div>
+        <div class="ls-val">letter-spacing: 0.8px（= 0.016em）</div>
+      </div>
+      <div class="ls-card">
+        <h4>やってはいけない（em を再宣言）</h4>
+        <div class="ls-big is-wrong">トップメッセージ</div>
+        <div class="ls-val">letter-spacing: 0.05em（= 2.5px。3 倍に広がる）</div>
+      </div>
+    </div>
+
+    <p class="note"><b><code>line-height</code> と <code>letter-spacing</code> は同じ <code>body</code> 宣言にあるのに継承のしかたが正反対。</b>
+    <code>line-height: 1.7</code> は無単位なので各要素が自分のサイズで掛け直すが、<code>letter-spacing: 0.05em</code> は 16px で px に解決されてから降りる。</p>
+
+    <p class="note"><b><code>palt</code> は 2 ページとも 0 要素。だが游ゴシック体は <code>palt</code> を持っており、足せば効く。</b>
+    実スタック・40px・weight 400 で隠し要素の幅を測ると <code>normal</code> <b>1027.61px</b> → <code>"palt"</code> <b>920.64px</b>（<b>−10.41%</b>）、<code>"halt"</code> は 947.61px（−7.79%）。
+    「効かないから使っていない」ではなく<b>「効くのに使っていない」</b>ので、親切のつもりで足すと見出しの字面が 1 割詰まる。</p>
+
+    <p class="note"><b>Google Fonts で Noto Sans JP を読み込ませているが、1 文字も使っていない。</b>
+    <code>@import url(.../css2?family=Noto+Sans+JP:wght@400;700&amp;display=swap)</code> があり <code>document.fonts</code> にも載るが、
+    CSS 全文に <code>Noto Sans JP</code> という <code>font-family</code> 指定が <b>1 度も無く</b>、可視要素も 0 件、フォントファイルの要求も 0 件。</p>
+  </div>
+</section>
+
+<section class="section" id="components">
+  <div class="section-label">03 / Components</div>
+  <h2 class="section-title">CTA は角丸 40px の pill。面はグレーで、ブランド色は使わない</h2>
+  <p class="section-lead">実サイトの CTA は 573×81px・<code>border-radius: 40px</code>・<code>padding: 24px 30px</code>・18px / weight 700。面は <code>#e8e8e8</code> で、オレンジもネイビーも使わない。</p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-pill">サステナビリティ</a>
+    <a href="#" class="btn btn-pill">ニュースリリース一覧へ</a>
+    <button class="btn btn-icon">MENU</button>
+    <a href="#" class="btn btn-link">プライバシーポリシー</a>
+  </div>
+
+  <div class="form-grid">
+    <div class="field"><label for="f1">サイト内検索</label><input id="f1" type="text" placeholder="キーワードを入力"><div class="field-msg">面 #f5f5f5 / border 0 / radius 18px / height 34px（実サイト）</div></div>
+    <div class="field is-focus"><label for="f2">フォーカス時</label><input id="f2" type="text" value="紙おむつリサイクル"><div class="field-msg">フォーカス表現は実サイトに明示指定が無いため、ブランドネイビーで代役</div></div>
+    <div class="field"><label for="f3">カテゴリ</label><select id="f3"><option>すべて</option><option>IRニュース</option><option>サステナビリティニュース</option></select><div class="field-msg">16px / 400 / line-height 1.50</div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="cards">
+  <div class="section-inner">
+    <div class="section-label">04 / Cards &amp; News</div>
+    <h2 class="section-title">カードに枠も影も角丸も無い。区切るのは余白と罫線だけ</h2>
+    <p class="section-lead">実サイトのカードは <code>border: none</code> / <code>border-radius: 0</code> / <code>box-shadow: none</code>。面の差で浮かせることをしない。</p>
+
+    <div class="card-grid">
+      <a href="#" class="card"><div class="thumb"></div><div class="card-cat">イノベーション</div><div class="card-title">不織布・吸収体の技術で、くらしを支える</div><div class="card-desc">赤ちゃんから高齢者、ペットまで。素材の技術が暮らしのあらゆる場面につながっています。</div></a>
+      <a href="#" class="card"><div class="thumb"></div><div class="card-cat">サステナビリティ</div><div class="card-title">Kyo-sei Life Vision 2035</div><div class="card-desc">共生社会の実現に向けた中長期 ESG 目標。10 の重要課題と指標を定めています。</div></a>
+      <a href="#" class="card"><div class="thumb"></div><div class="card-cat">投資家情報</div><div class="card-title">統合レポート2026</div><div class="card-desc">財務・非財務の情報を一冊にまとめ、価値創造の道筋をご説明しています。</div></a>
+    </div>
+
+    <h3 style="font-size:21px;font-weight:700;line-height:1.4;margin:44px 0 6px">ニュースリリース</h3>
+    <div class="news-row"><div class="news-date">2026.11.14</div><div class="news-cat">ニュースリリース</div><a href="#" class="news-title">紙パンツ・紙おむつの水平リサイクル、実証地域を拡大</a></div>
+    <div class="news-row"><div class="news-date">2026.11.07</div><div class="news-cat">IRニュース</div><a href="#" class="news-title">2026年12月期 第3四半期決算説明資料を掲載しました</a></div>
+    <div class="news-row"><div class="news-date">2026.10.30</div><div class="news-cat">サステナビリティ</div><a href="#" class="news-title">サステナビリティレポート2026 を公開しました</a></div>
+  </div>
+</section>
+
+<section class="section" id="elevation">
+  <div class="section-label">05 / Elevation &amp; Radius</div>
+  <h2 class="section-title">影が存在しない</h2>
+  <p class="section-lead">可視要素の <code>box-shadow</code> は 2 ページとも 1 種類しか出ず、その 1 つが Cookie バナー（OneTrust 由来）。<b>サイト本体に影は 1 つも無い。</b></p>
+
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">Level 0</div><div class="elev-val">none<br>サイト本体のすべての要素</div></div>
+    <div class="elev" style="box-shadow:rgba(0,0,0,0.2) 0px 0px 18px 0px"><div class="elev-name">CMP のみ</div><div class="elev-val">rgba(0,0,0,0.2) 0 0 18px<br>Cookie バナー。設計ではない</div></div>
+  </div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:40px"></div><div class="radius-label">40px — CTA pill</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:30px"></div><div class="radius-label">30px — カルーセル矢印</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:18px"></div><div class="radius-label">18px — 検索ボックス</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:50%;width:72px"></div><div class="radius-label">50% — アイコンボタン</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:0"></div><div class="radius-label">0px — カード・画像</div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="layout">
+  <div class="section-inner">
+    <div class="section-label">06 / Layout &amp; Responsive</div>
+    <h2 class="section-title">1280px のコンテナ、ブレークポイントは 768/769 の 1 本だけ</h2>
+    <p class="section-lead">
+      <code>html</code> に <code>font-size</code> の宣言が CSS に 1 件も無く <b>UA 既定の 16px</b>。<code>body { font-size: 16px }</code>。
+      1920 / 1600 / 1440 / 1280 / 1200 / 1080 / 1079 / 1024 / 992 / 834 / 768 / 767 / 600 / 480 / 414 / 390 / 375 / 360 / 320px の
+      <b>19 幅すべてで <code>html</code> も <code>body</code> も 16px から 1px も動かない</b>。
+    </p>
+
+    <div class="layout-demo">
+      <div class="layout-bar" style="width:100%">viewport</div>
+      <div class="layout-bar" style="width:1280px;max-width:100%">container 1280px（14 要素で最多）</div>
+      <div class="layout-bar" style="width:1180px;max-width:100%">column 1180px</div>
+      <div class="layout-bar" style="width:720px;max-width:100%">narrow 720px</div>
+    </div>
+
+    <p class="note">
+      ブレークポイントは <code>screen and (min-width: 769px), print</code> が <b>41 件で最多</b>（印刷も同じ扱い）、
+      <code>screen and (max-width: 768px)</code> が 7 件。<b>タブレット用の中間段は無い。</b>
+      本文 16px はモバイルでも変えず、縮むのは見出しだけ（h2 <code>20px → 18px</code> / h3 <code>21px → 18px</code>）。
+      グリッドは CSS Grid ではなく <code>width: 33.3333%</code> / <code>25%</code> の % 指定で、<code>gap</code> の宣言は 0 件。
+    </p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-cols">
+      <div class="footer-col"><div class="footer-col-title">企業情報</div><a href="#">トップメッセージ</a><a href="#">ユニ・チャームウェイ</a><a href="#">会社概要</a><a href="#">社史</a></div>
+      <div class="footer-col"><div class="footer-col-title">サステナビリティ</div><a href="#">Kyo-sei Life Vision 2035</a><a href="#">ESGデータ</a><a href="#">外部評価</a></div>
+      <div class="footer-col"><div class="footer-col-title">投資家情報</div><a href="#">財務・業績情報</a><a href="#">IRライブラリー</a><a href="#">株式情報</a></div>
+      <div class="footer-col"><div class="footer-col-title">採用情報</div><a href="#">新卒採用</a><a href="#">中途採用</a><a href="#">障がい者採用</a></div>
+    </div>
+    <div class="footer-legal">
+      <a href="#">サイトマップ</a><a href="#">ウェブサイト利用規約</a><a href="#">プライバシーポリシー</a><a href="#">ソーシャルメディアポリシー</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

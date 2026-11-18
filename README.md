@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (646 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (649 sites)</a>
 </p>
 
 <table>
@@ -1006,6 +1006,11 @@
 </tr>
 <tr>
 <td align="center"><strong>芝浦工業大学</strong><br><img src="design-md/shibaura-it/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ユニ・チャーム</strong><br><img src="design-md/unicharm/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ティアフォー</strong><br><img src="design-md/tier4/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>IAMAS</strong><br><img src="design-md/iamas/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1713,11 +1718,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [野村総合研究所 (Nomura Research Institute)](https://www.nri.com/jp) | IT Consulting / Think Tank | [DESIGN.md](design-md/nri/DESIGN.md) | [preview.html](design-md/nri/preview.html) |
 | [日本特殊陶業 (Niterra)](https://www.niterragroup.com/) | Ceramics / Corporate | [DESIGN.md](design-md/ngkntk/DESIGN.md) | [preview.html](design-md/ngkntk/preview.html) |
 | [芝浦工業大学 (Shibaura Institute of Technology)](https://www.shibaura-it.ac.jp/) | University / Engineering | [DESIGN.md](design-md/shibaura-it/DESIGN.md) | [preview.html](design-md/shibaura-it/preview.html) |
+| [ユニ・チャーム (Unicharm)](https://www.unicharm.co.jp/ja/home.html) | Personal Care / Consumer Goods | [DESIGN.md](design-md/unicharm/DESIGN.md) | [preview.html](design-md/unicharm/preview.html) |
+| [ティアフォー (TIER IV)](https://tier4.co.jp/) | Autonomous Driving / Software | [DESIGN.md](design-md/tier4/DESIGN.md) | [preview.html](design-md/tier4/preview.html) |
+| [情報科学芸術大学院大学 (IAMAS)](https://www.iamas.ac.jp/) | University / Media Arts | [DESIGN.md](design-md/iamas/DESIGN.md) | [preview.html](design-md/iamas/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (646 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (649 sites)</a>
 </p>
 
 <table>
@@ -2689,6 +2697,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>芝浦工業大学</strong><br><img src="design-md/shibaura-it/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ユニ・チャーム</strong><br><img src="design-md/unicharm/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ティアフォー</strong><br><img src="design-md/tier4/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>IAMAS</strong><br><img src="design-md/iamas/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
