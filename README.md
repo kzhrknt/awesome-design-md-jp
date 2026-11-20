@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (649 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (652 sites)</a>
 </p>
 
 <table>
@@ -1011,6 +1011,11 @@
 </tr>
 <tr>
 <td align="center"><strong>IAMAS</strong><br><img src="design-md/iamas/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>エアークローゼット</strong><br><img src="design-md/air-closet/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>アマナ</strong><br><img src="design-md/amana/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>三菱重工業</strong><br><img src="design-md/mhi/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1721,11 +1726,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [ユニ・チャーム (Unicharm)](https://www.unicharm.co.jp/ja/home.html) | Personal Care / Consumer Goods | [DESIGN.md](design-md/unicharm/DESIGN.md) | [preview.html](design-md/unicharm/preview.html) |
 | [ティアフォー (TIER IV)](https://tier4.co.jp/) | Autonomous Driving / Software | [DESIGN.md](design-md/tier4/DESIGN.md) | [preview.html](design-md/tier4/preview.html) |
 | [情報科学芸術大学院大学 (IAMAS)](https://www.iamas.ac.jp/) | University / Media Arts | [DESIGN.md](design-md/iamas/DESIGN.md) | [preview.html](design-md/iamas/preview.html) |
+| [エアークローゼット (airCloset)](https://www.air-closet.com/) | Fashion Subscription / D2C | [DESIGN.md](design-md/air-closet/DESIGN.md) | [preview.html](design-md/air-closet/preview.html) |
+| [アマナ (amana)](https://amana.jp/) | Visual Communication / Agency | [DESIGN.md](design-md/amana/DESIGN.md) | [preview.html](design-md/amana/preview.html) |
+| [三菱重工業 (Mitsubishi Heavy Industries)](https://www.mhi.com/jp) | Heavy Industry / Corporate | [DESIGN.md](design-md/mhi/DESIGN.md) | [preview.html](design-md/mhi/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (649 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (652 sites)</a>
 </p>
 
 <table>
@@ -2702,6 +2710,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>IAMAS</strong><br><img src="design-md/iamas/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>エアークローゼット</strong><br><img src="design-md/air-closet/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>アマナ</strong><br><img src="design-md/amana/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>三菱重工業</strong><br><img src="design-md/mhi/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

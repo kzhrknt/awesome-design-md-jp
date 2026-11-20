@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: アマナ amana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!--
+  実サイトは Noto Sans JP と "Custom Helvetica"（実体は Helvetica Neue）を
+  自社ホスト（next/font のセルフホスト）から配信している。フォント要求 57 件はすべて amana.jp。
+  ここではローカルで再現できないため Noto Sans JP を Google Fonts から読み、
+  欧文は OS の Helvetica Neue をスタック先頭に置いて同じ和欧二層を作る。
+-->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトの :root には自社トークンが 108 個（プラットフォーム由来 0 / CORS 失敗 0 /
+       body 宣言 0）。名前と値はすべて実サイトのまま。2026-11-20 に実測 */
+    --sys-schemes-surface:            #ffffff;
+    --sys-schemes-on-surface:         #333333;  /* 日付・補助テキスト（可視 18 要素） */
+    --sys-schemes-on-surface-variant: #54565a;  /* ★リンク 18 要素。影の色もこれ */
+    --sys-schemes-inverse-on-surface: #cccccc;
+    --sys-schemes-background:         #eeeeee;  /* ★ページ背景（body の実測値） */
+    --sys-schemes-on-background:      #000000;  /* 見出し（可視 26 要素） */
+    --sys-schemes-inverse-background: #131313;
+    --sys-schemes-inverse-on-background: #ffffff;
+    --sys-schemes-outline:            #bbbbbd;
+    --sys-schemes-outline-variant:    #eeeeee;
+    --sys-schemes-brand:              #231815;
+    --sys-schemes-on-gradation:       #ffffff;
+
+    /* サービス 5 分類。ピルの枠線と文字色の両方に同じ色を当て、面は塗らない */
+    --sys-schemes-service-strategy: #8d5ea5;
+    --sys-schemes-service-content:  #e54aad;
+    --sys-schemes-service-visual:   #f3a83b;
+    --sys-schemes-service-process:  #007b49;
+    --sys-schemes-service-media:    #54c5d7;
+
+    --sys-schemes-caution:     #e81e17;
+    --sys-schemes-for-client:  #e81e17;
+    --sys-schemes-for-partner: #1653a3;
+    --sys-schemes-for-others:  #007b49;
+    --sys-schemes-tba:         #8dc122;   /* ★宣言はあるが 2 ページとも可視 0 要素 */
+    --sys-schemes-gradation-1: #1a60bc;   /* ★同上。ヒーローはこの 2 色を使っていない */
+    --sys-schemes-gradation-2: #eb3d37;
+
+    /* === Radius ===　11 段。実測で使われているのは sm / lg / xs / full / 2xl-inc の 5 段 */
+    --sys-schemes-radius-none:   0;
+    --sys-schemes-radius-xs:     4px;
+    --sys-schemes-radius-sm:     8px;
+    --sys-schemes-radius-md:     12px;
+    --sys-schemes-radius-lg:     16px;
+    --sys-schemes-radius-lg-inc: 20px;
+    --sys-schemes-radius-xl:     24px;
+    --sys-schemes-radius-xl-inc: 32px;
+    --sys-schemes-radius-2xl:     40px;
+    --sys-schemes-radius-2xl-inc: 48px;
+    --sys-schemes-radius-full:   1000px;
+
+    /* === Layout ===　幅もヘッダー高もトークン */
+    --width-site-content:   1280px;
+    --width-narrow-content: 992px;
+    --header-height-pc: 64px;
+    --header-height-sp: 48px;
+    --header-position-pc: 10px;
+
+    /* === Font ===
+       実サイト: "Custom Helvetica", "Noto Sans JP", "Noto Sans JP Fallback", sans-serif
+       欧文を先頭・和文を 2 番目に置くと、1 要素の中で書体が自動で分かれる。
+       3 番目の Fallback は next/font が生成するメトリクス合わせのローカル代替（書体ではない）。 */
+    --font-mixed: "Helvetica Neue", Helvetica, "Noto Sans JP", sans-serif;
+    --font-mono:  SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Shadow ===　このサイトの影は 1 種だけ。色は黒ではなく #54565a の 8% */
+    --shadow-1: 0 2px 4px rgba(84, 86, 90, .08);
+  }
+
+  html { font-size: 62.5%; }   /* ★1rem = 10px。1920〜320px の 18 幅すべてで動かない */
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--sys-schemes-background);
+    color: var(--sys-schemes-on-background);
+    font-family: var(--font-mixed);
+    font-size: 16px;            /* ★768px 以上。767px 以下で 14px */
+    font-weight: 500;           /* ★既定。可視 5547 / 5689 要素 */
+    line-height: 1.50;
+    letter-spacing: normal;     /* ★5688 / 5689 要素 */
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (max-width: 767px) { body { font-size: 14px; } }
+
+  .wrap { max-width: var(--width-site-content); margin: 0 auto; padding: 0 24px; }
+
+  /* HEADER — 浮いたカプセル型 */
+  .header { position: sticky; top: var(--header-position-pc); z-index: 13; margin: 10px auto 0; max-width: var(--width-site-content); display: flex; gap: 8px; padding: 0 24px; }
+  .header-main { flex: 1; height: var(--header-height-pc); background: var(--sys-schemes-surface); border-radius: var(--sys-schemes-radius-lg); box-shadow: var(--shadow-1); display: flex; align-items: center; gap: 28px; padding: 0 24px; }
+  .logo { font-size: 20px; font-weight: 700; letter-spacing: normal; color: var(--sys-schemes-brand); }
+  .header-nav { display: flex; gap: 22px; margin-left: auto; }
+  .header-nav a { font-size: 12px; font-weight: 500; line-height: 2.00; color: var(--sys-schemes-on-background); text-decoration: none; }
+  .header-ico { width: var(--header-height-pc); height: var(--header-height-pc); background: var(--sys-schemes-surface); border-radius: var(--sys-schemes-radius-lg); box-shadow: var(--shadow-1); display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--sys-schemes-on-surface-variant); }
+
+  /* HERO — ノイズ SVG ＋ 位置つき radial-gradient 4 枚 */
+  .hero {
+    margin: 16px auto 0; max-width: var(--width-site-content); height: 420px; border-radius: var(--sys-schemes-radius-xl-inc);
+    position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
+    background-image:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 3000 3000' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E"),
+      radial-gradient(circle at 5.10119% 45.574%,  rgb(223,29,22) 0%, rgba(0,0,0,0) 137%),
+      radial-gradient(circle at 58.3003% 101.672%, rgb(223,22,92) 0%, rgba(0,0,0,0) 70%),
+      radial-gradient(circle at 102.885% 95.5489%, rgb(242,166,58) 0%, rgba(0,0,0,0) 46%),
+      radial-gradient(circle at 101.658% 4.95993%, rgb(242,166,58) 0%, rgba(0,0,0,0) 119%);
+  }
+  .hero-ttl { font-size: 34.8px; font-weight: 700; line-height: 1.24; letter-spacing: normal; color: var(--sys-schemes-on-gradation); text-align: center; text-shadow: 0 1px 10px rgba(0,0,0,.28); }
+  .hero-ttl small { display: block; font-size: 15.4px; font-weight: 500; margin-top: 8px; }
+
+  /* SECTIONS */
+  .section { padding: 56px 0; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: normal; color: var(--sys-schemes-on-surface-variant); }
+  .section-ttl { font-size: 24px; font-weight: 600; line-height: 1.70; color: var(--sys-schemes-on-background); margin: 6px 0 12px; }
+  .section-lead { font-size: 18px; font-weight: 400; line-height: 1.75; color: var(--sys-schemes-on-surface); max-width: var(--width-narrow-content); }
+
+  .note { background: var(--sys-schemes-surface); border-radius: var(--sys-schemes-radius-lg); box-shadow: var(--shadow-1); padding: 18px 20px; margin-top: 20px; font-size: 14px; line-height: 1.70; color: var(--sys-schemes-on-surface); }
+  .note b { color: var(--sys-schemes-on-background); }
+  .note code { font-family: var(--font-mono); font-size: .92em; background: var(--sys-schemes-outline-variant); border-radius: var(--sys-schemes-radius-xs); padding: 1px 4px; }
+
+  /* SWATCH */
+  .sw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; margin-top: 20px; }
+  .sw { background: var(--sys-schemes-surface); border-radius: var(--sys-schemes-radius-md); box-shadow: var(--shadow-1); overflow: hidden; }
+  .sw-chip { height: 56px; }
+  .sw-meta { padding: 10px 12px; font-size: 12px; line-height: 1.70; color: var(--sys-schemes-on-surface); }
+  .sw-meta b { display: block; font-family: var(--font-mono); font-size: 13px; letter-spacing: normal; color: var(--sys-schemes-on-background); }
+  .sw-meta i { font-style: normal; display: block; color: var(--sys-schemes-on-surface-variant); }
+
+  /* TYPE */
+  .type-row { display: grid; grid-template-columns: 220px 1fr; gap: 20px; padding: 14px 0; border-bottom: 1px solid var(--sys-schemes-outline-variant); align-items: baseline; }
+  .type-meta { font-size: 12px; line-height: 1.70; color: var(--sys-schemes-on-surface-variant); }
+  .type-meta b { display: block; font-size: 13px; color: var(--sys-schemes-on-background); }
+  .type-sample { color: var(--sys-schemes-on-background); overflow-wrap: anywhere; }
+
+  .wt-row { display: flex; flex-wrap: wrap; gap: 26px; margin-top: 22px; align-items: flex-end; }
+  .wt { font-size: 20px; line-height: 1.50; color: var(--sys-schemes-on-background); }
+  .wt i { display: block; font-style: normal; font-size: 11px; color: var(--sys-schemes-on-surface-variant); margin-top: 3px; }
+
+  /* FONT SPLIT DEMO */
+  .split { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 18px; }
+  .split-card { background: var(--sys-schemes-surface); border-radius: var(--sys-schemes-radius-md); box-shadow: var(--shadow-1); padding: 16px 18px; }
+  .split-card h4 { font-size: 13px; font-weight: 600; color: var(--sys-schemes-on-background); margin-bottom: 8px; }
+  .split-card .line { font-size: 18px; line-height: 1.70; color: var(--sys-schemes-on-background); }
+  .split-card .v { font-family: var(--font-mono); font-size: 11px; letter-spacing: normal; color: var(--sys-schemes-on-surface-variant); margin-top: 8px; line-height: 1.7; }
+  .only-jp { font-family: "Noto Sans JP", sans-serif; }
+
+  /* TAGS */
+  .tag-grid { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 14px; }
+  .tag { display: inline-flex; padding: 7px 23px; border-radius: var(--sys-schemes-radius-sm); border: 1px solid currentColor; font-size: 13px; font-weight: 500; line-height: 1.50; background: none; }
+  .t-strategy { color: var(--sys-schemes-service-strategy); }
+  .t-content  { color: var(--sys-schemes-service-content); }
+  .t-visual   { color: var(--sys-schemes-service-visual); }
+  .t-process  { color: var(--sys-schemes-service-process); }
+  .t-media    { color: var(--sys-schemes-service-media); }
+
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 20px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-size: 14px; font-weight: 500; line-height: 1.65; }
+  .btn-pill { background: var(--sys-schemes-surface); color: var(--sys-schemes-on-surface-variant); border-radius: var(--sys-schemes-radius-full); box-shadow: var(--shadow-1); padding: 10px 24px; }
+  .btn-cmp { background: var(--sys-schemes-on-surface-variant); color: var(--sys-schemes-surface); border-radius: var(--sys-schemes-radius-full); padding: 12px 20px 12px 24px; }
+  .split-pill { display: inline-flex; }
+  .split-pill a:first-child { border-radius: var(--sys-schemes-radius-full) 0 0 var(--sys-schemes-radius-full); background: #e27318; color: var(--sys-schemes-on-gradation); padding: 10px 22px; text-decoration: none; font-size: 14px; }
+  .split-pill a:last-child { border-radius: 0 var(--sys-schemes-radius-full) var(--sys-schemes-radius-full) 0; background: #b1b6a5; color: var(--sys-schemes-on-gradation); padding: 10px 22px; text-decoration: none; font-size: 14px; margin-left: 1px; }
+  .badge { display: inline-flex; background: var(--sys-schemes-caution); color: var(--sys-schemes-on-gradation); padding: 12px; font-size: 12px; font-weight: 500; }
+
+  /* FORM */
+  .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 22px; }
+  .field label { display: block; font-size: 13px; font-weight: 500; color: var(--sys-schemes-on-background); margin-bottom: 6px; }
+  .field input, .field select { width: 100%; font-family: var(--font-mixed); font-size: 14px; line-height: 1.50; color: var(--sys-schemes-on-surface); background: var(--sys-schemes-surface); border: 1px solid var(--sys-schemes-outline); border-radius: var(--sys-schemes-radius-sm); padding: 10px 12px; }
+  .field.is-focus input { border-color: var(--sys-schemes-on-surface-variant); box-shadow: 0 0 0 3px rgba(84,86,90,.14); }
+  .field-msg { font-size: 11px; color: var(--sys-schemes-on-surface-variant); margin-top: 5px; line-height: 1.70; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 20px; }
+  .card { background: var(--sys-schemes-surface); border-radius: var(--sys-schemes-radius-lg); box-shadow: var(--shadow-1); overflow: hidden; text-decoration: none; display: block; }
+  .card .thumb { height: 180px; position: relative;
+    background-image:
+      linear-gradient(rgba(217,217,217,0) 0, rgba(114,114,114,.45) 34.135%, rgba(47,47,47,.95) 77.885%),
+      linear-gradient(130deg, #6c7a8c 0%, #94836e 48%, #3a4350 100%); }
+  .card .thumb span { position: absolute; left: 16px; right: 16px; bottom: 14px; font-size: 18px; font-weight: 500; line-height: 1.55; color: var(--sys-schemes-inverse-on-background); }
+  .card .pad { padding: 14px 16px; }
+  .card .desc { font-size: 14px; font-weight: 400; line-height: 1.65; color: var(--sys-schemes-on-surface); }
+
+  .evt { margin-top: 16px; max-width: 420px; }
+  .evt-top { background: var(--sys-schemes-surface); border-radius: var(--sys-schemes-radius-lg) var(--sys-schemes-radius-lg) 0 0; box-shadow: var(--shadow-1); padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
+  .evt-bot { background: var(--sys-schemes-surface); border-radius: 0 0 var(--sys-schemes-radius-lg) var(--sys-schemes-radius-lg); box-shadow: var(--shadow-1); padding: 12px 16px; border-top: 1px solid var(--sys-schemes-outline-variant); font-size: 14px; font-weight: 700; line-height: 1.30; color: var(--sys-schemes-on-surface); }
+
+  /* ELEVATION / RADIUS */
+  .elev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 20px; }
+  .elev { background: var(--sys-schemes-surface); border-radius: var(--sys-schemes-radius-md); padding: 16px; }
+  .elev.l1 { box-shadow: var(--shadow-1); }
+  .elev.l1b { box-shadow: 0 2px 4px color(srgb 0.329412 0.337255 0.352941 / 0.08); }
+  .elev.l0 { border: 1px solid var(--sys-schemes-outline); }
+  .elev-name { font-size: 13px; font-weight: 600; color: var(--sys-schemes-on-background); }
+  .elev-val { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: normal; color: var(--sys-schemes-on-surface-variant); margin-top: 6px; line-height: 1.7; word-break: break-all; }
+
+  .radius-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 22px; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 92px; height: 48px; background: var(--sys-schemes-on-surface-variant); }
+  .radius-label { font-size: 11px; color: var(--sys-schemes-on-surface-variant); margin-top: 6px; }
+
+  /* LAYOUT */
+  .layout-demo { margin-top: 18px; }
+  .layout-bar { background: var(--sys-schemes-surface); border-radius: var(--sys-schemes-radius-sm); box-shadow: var(--shadow-1); font-family: var(--font-mono); font-size: 12px; letter-spacing: normal; color: var(--sys-schemes-on-surface); padding: 8px 12px; margin-bottom: 6px; }
+  .layout-bar.c { background: var(--sys-schemes-on-surface-variant); color: var(--sys-schemes-surface); }
+
+  table.bp { width: 100%; border-collapse: collapse; margin-top: 18px; font-size: 13px; background: var(--sys-schemes-surface); border-radius: var(--sys-schemes-radius-sm); overflow: hidden; }
+  table.bp th, table.bp td { border: 1px solid var(--sys-schemes-outline-variant); padding: 8px 10px; text-align: left; line-height: 1.70; }
+  table.bp th { background: var(--sys-schemes-outline-variant); font-weight: 600; color: var(--sys-schemes-on-background); }
+  table.bp td.num { font-family: var(--font-mono); letter-spacing: normal; }
+  table.bp td em { font-style: normal; font-weight: 700; color: var(--sys-schemes-caution); }
+
+  /* VERTICAL */
+  .vert-demo { display: flex; gap: 20px; align-items: flex-start; margin-top: 18px; }
+  .vert-card { background: var(--sys-schemes-surface); border-radius: var(--sys-schemes-radius-md); box-shadow: var(--shadow-1); padding: 16px; }
+  .vert-scroll { writing-mode: vertical-rl; font-size: 14px; line-height: 1.50; letter-spacing: normal; color: var(--sys-schemes-on-surface-variant); height: 120px; }
+
+  /* FOOTER */
+  .footer { background: var(--sys-schemes-on-surface-variant); color: var(--sys-schemes-on-gradation); margin-top: 40px; }
+  .footer-inner { max-width: var(--width-site-content); margin: 0 auto; padding: 40px 24px; }
+  .footer-cols { display: flex; flex-wrap: wrap; gap: 40px; }
+  .footer-col a { display: block; font-size: 12px; line-height: 2.00; color: var(--sys-schemes-on-gradation); text-decoration: none; }
+  .footer-col-title { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  .footer-copy { font-size: 12px; font-weight: 300; line-height: 1.00; margin-top: 28px; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-main">
+    <div class="logo">amana</div>
+    <nav class="header-nav">
+      <a href="#">アマナについて</a><a href="#">ソリューション</a><a href="#">実績</a><a href="#">Insights</a><a href="#">動画</a><a href="#">イベント</a><a href="#">People</a>
+    </nav>
+  </div>
+  <div class="header-ico">EN</div>
+</header>
+
+<div class="hero">
+  <div class="hero-ttl">Co-Creation<small>with amana</small></div>
+</div>
+
+<div class="wrap">
+
+<section class="section">
+  <div class="section-label">01 / Color Tokens</div>
+  <h2 class="section-ttl">色はすべて --sys-schemes-* で宣言する</h2>
+  <p class="section-lead"><code>:root</code> に自社トークンが <b>108 個</b>（プラットフォーム由来 0 個、CORS で読めなかったシート 0 枚、<code>body</code> だけの宣言 0 個）。CSS に hex を直書きしない。</p>
+
+  <div class="sw-grid">
+    <div class="sw"><div class="sw-chip" style="background:#eeeeee"></div><div class="sw-meta"><b>#eeeeee</b>--sys-schemes-background<i>★ページ背景（body）</i></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#ffffff"></div><div class="sw-meta"><b>#ffffff</b>--sys-schemes-surface<i>カード・ヘッダー</i></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#000000"></div><div class="sw-meta"><b>#000000</b>--sys-schemes-on-background<i>見出し 26 要素</i></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#333333"></div><div class="sw-meta"><b>#333333</b>--sys-schemes-on-surface<i>日付 18 要素</i></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#54565a"></div><div class="sw-meta"><b>#54565a</b>--sys-schemes-on-surface-variant<i>★リンク 18 要素・影の色</i></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#bbbbbd"></div><div class="sw-meta"><b>#bbbbbd</b>--sys-schemes-outline<i>罫線</i></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#231815"></div><div class="sw-meta"><b>#231815</b>--sys-schemes-brand<i>ロゴの墨色</i></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#131313"></div><div class="sw-meta"><b>#131313</b>--sys-schemes-inverse-background<i>実績の黒面 1 要素</i></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#e81e17"></div><div class="sw-meta"><b>#e81e17</b>--sys-schemes-caution<i>募集中バッジ 面 8 要素</i></div></div>
+  </div>
+
+  <h3 class="section-ttl" style="font-size:18px;margin-top:32px">Service Colors — ソリューション 5 分類</h3>
+  <div class="sw-grid">
+    <div class="sw"><div class="sw-chip" style="background:#8d5ea5"></div><div class="sw-meta"><b>#8d5ea5</b>service-strategy<i>戦略設計（可視 13 要素）</i></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#e54aad"></div><div class="sw-meta"><b>#e54aad</b>service-content<i>コンテンツ開発（21 要素）</i></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#f3a83b"></div><div class="sw-meta"><b>#f3a83b</b>service-visual<i>ビジュアル開発（12 要素）</i></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#007b49"></div><div class="sw-meta"><b>#007b49</b>service-process<i>プロセス構築（10 要素）</i></div></div>
+    <div class="sw"><div class="sw-chip" style="background:#54c5d7"></div><div class="sw-meta"><b>#54c5d7</b>service-media<i>メディア（3 要素）</i></div></div>
+  </div>
+
+  <p class="note">
+    <b>宣言はあるが実装されていないトークンがある。</b><code>--sys-schemes-tba</code>（<code>#8dc122</code>）は 2 ページとも可視 0 要素。
+    <code>--sys-schemes-gradation-1</code>（<code>#1a60bc</code>）/ <code>-2</code>（<code>#eb3d37</code>）も使われておらず、
+    実際のグラデーションは <code>--c-0</code> 〜 <code>--c-2</code> と <code>--x-N</code> <code>--y-N</code> の<b>位置つき 3 色</b>を JS が書き換えて動かしている。
+  </p>
+</section>
+
+<section class="section">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-ttl">欧文を先頭、和文を 2 番目に置く和欧二層</h2>
+  <p class="section-lead">トップページの可視 5689 要素すべてが <code>var(--font-mixed)</code> の 1 スタック。欧文書体が CJK グリフを持たないので、<b>1 要素の中で欧文と和文が自動的に分かれる</b>。</p>
+
+  <div class="split">
+    <div class="split-card">
+      <h4>実サイトの宣言（和欧二層が正しく機能している）</h4>
+      <div class="line">パナソニック LUMIX L10｜一貫した世界観</div>
+      <div class="v">"Custom Helvetica", "Noto Sans JP",<br>"Noto Sans JP Fallback", sans-serif<br><br>CDP 実測 → Noto Sans JP 38 グリフ<br>　　　　　　＋ Helvetica Neue 10 グリフ</div>
+    </div>
+    <div class="split-card">
+      <h4>和文だけのスタックにすると欧文も和文書体で出る</h4>
+      <div class="line only-jp">パナソニック LUMIX L10｜一貫した世界観</div>
+      <div class="v">"Noto Sans JP", sans-serif<br><br>LUMIX / L10 の字形が変わる。<br>欧文の表情を残したいなら先頭に欧文書体を置く</div>
+    </div>
+  </div>
+
+  <p class="note">
+    <b>フォントは Google Fonts ではなく自社ホストから配信している。</b>フォントファイルの要求 <b>57 件がすべて <code>amana.jp/_next/static/media/</code></b>（next/font のセルフホスト）で、
+    <code>gstatic.com</code> へのリクエストは 0 件。
+    3 番目の <code>"Noto Sans JP Fallback"</code> は<b>書体ではなくメトリクス合わせ</b>で、<code>size-adjust</code> / <code>ascent-override</code> を当てたローカル代替。
+    Web フォントが届くまでの数百 ms をこれが埋めるので、<code>font-display: swap</code> でも行送りが動かない。
+  </p>
+
+  <div class="type-row"><div class="type-meta"><b>Display（下層）</b>76px / 700 / lh 1.50<br>/about/ に 3 要素</div><div class="type-sample" style="font-size:76px;font-weight:700;line-height:1.50">Message</div></div>
+  <div class="type-row"><div class="type-meta"><b>Hero</b>34.8px / 700 / lh 1.24<br>可視 1 要素</div><div class="type-sample" style="font-size:34.8px;font-weight:700;line-height:1.24">Co-Creation</div></div>
+  <div class="type-row"><div class="type-meta"><b>H2</b>24px / 600 / lh 1.70<br>可視 8 要素</div><div class="type-sample" style="font-size:24px;font-weight:600;line-height:1.70">アマナについて</div></div>
+  <div class="type-row"><div class="type-meta"><b>Statement</b>22px / 400 / lh 1.24<br>可視 28 要素</div><div class="type-sample" style="font-size:22px;font-weight:400;line-height:1.24">世界にノイズと美意識を</div></div>
+  <div class="type-row"><div class="type-meta"><b>Lead</b>20px / 400 / lh 1.75<br>/about/ に 5 要素</div><div class="type-sample" style="font-size:20px;font-weight:400;line-height:1.75">アマナが創業以来変わらず大切にしていること、それは人の創造力です。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>18px / 400 / lh 1.75<br>可視 29 要素</div><div class="type-sample" style="font-size:18px;font-weight:400;line-height:1.75">新たな問いを生む「ノイズ」が常識を覆し、人の感性を揺さぶる。その力が社会を前へ動かすと考えています。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Title</b>18px / 500 / lh 1.55</div><div class="type-sample" style="font-size:18px;font-weight:500;line-height:1.55">再春館製薬所｜「ドモホルンリンクル」のイメージを刷新</div></div>
+  <div class="type-row"><div class="type-meta"><b>UI</b>14px / 500 / lh 1.65<br>可視 23 要素</div><div class="type-sample" style="font-size:14px;font-weight:500;line-height:1.65">View All Works</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav / Tag</b>13px・12px / 500 / lh 1.50</div><div class="type-sample" style="font-size:13px;font-weight:500;line-height:1.50">ブランディング　らしさAI　BX Design　グラフィックデザイン</div></div>
+
+  <div class="wt-row">
+    <span class="wt" style="font-weight:300">世界にノイズと美意識を<i>300 — ©amana inc. ほか 4 要素のみ</i></span>
+    <span class="wt" style="font-weight:400">世界にノイズと美意識を<i>400 — 本文のステートメント（121 要素）</i></span>
+    <span class="wt" style="font-weight:500">世界にノイズと美意識を<i>500 ★既定（5547 / 5689 要素）</i></span>
+    <span class="wt" style="font-weight:600">世界にノイズと美意識を<i>600 — セクション見出し（9 要素）</i></span>
+    <span class="wt" style="font-weight:700">世界にノイズと美意識を<i>700 — 英語の大見出しと日付（8 要素）</i></span>
+  </div>
+
+  <p class="note">
+    <b><code>letter-spacing</code> は可視 5689 要素中 5688 要素が <code>normal</code>。</b>例外は <code>amana NEWS</code> の <code>-0.24px</code> 1 要素だけ。
+    <code>font-feature-settings</code> は 2 ページとも <b>0 要素</b>で、<code>palt</code> も <code>halt</code> も使っていない。
+    本番書体の Noto Sans JP は <code>palt</code> テーブルを持つので、<b>足せば効いてしまう。足さない。</b>
+  </p>
+
+  <p class="note">
+    <b>行間は 2 段。</b>読ませる文章が <code>1.70</code>〜<code>1.75</code>、UI が <code>1.50</code>。
+    トップは UI が多いので <code>1.50</code> が 5424 要素、<code>/about/</code> では <code>1.70</code> が 87 / 165 要素で最多になる。
+    <code>line-height</code> はすべて<b>無単位の比率</b>で、<code>em</code> 宣言も px 固定も無い。
+  </p>
+
+  <div class="vert-demo">
+    <div class="vert-card">
+      <div class="vert-scroll">Scroll</div>
+    </div>
+    <p class="note" style="margin-top:0;flex:1">
+      <b><code>writing-mode: vertical-rl</code> は <code>/about/</code> に 6 要素出るが、中身は <code>Scroll</code> の 1 語（14px）と SVG の <code>path</code> 5 つだけ。</b>
+      和文の縦組みは 1 文字も無い。<b>件数だけ見て「縦組みのサイト」と書かない。</b>新規実装で和文に縦組みを足さないこと。
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-label">03 / Components</div>
+  <h2 class="section-ttl">面を塗らないサービスタグと、白いピル</h2>
+
+  <div class="tag-grid">
+    <span class="tag t-strategy">ブランディング</span><span class="tag t-strategy">らしさAI</span><span class="tag t-strategy">BX Design</span>
+    <span class="tag t-content">グラフィック</span><span class="tag t-content">EVOKE</span>
+    <span class="tag t-visual">グラフィックデザイン</span><span class="tag t-visual">撮影</span>
+    <span class="tag t-process">体制構築</span><span class="tag t-process">Great RIVER</span>
+    <span class="tag t-media">メディア事業</span><span class="tag t-media">IMA</span>
+  </div>
+  <div class="field-msg" style="margin-top:8px">border-radius 8px / padding 7px 23px / 13px weight 500 / タグ同士の gap は <b>3px</b>（実測 70 要素で最多）</div>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-pill">View All Works</a>
+    <a href="#" class="btn btn-cmp">同意して閉じる</a>
+    <span class="split-pill"><a href="#">お取引のご依頼・相談</a><a href="#">取材に関するお問合せ</a></span>
+    <span class="badge">募集中</span>
+  </div>
+  <div class="field-msg" style="margin-top:8px">連結ピルは <code>border-radius: 1000px 0 0 1000px</code> と <code>0 1000px 1000px 0</code> を隣り合わせて 1 本に見せる（各 1 要素）</div>
+
+  <div class="form-grid">
+    <div class="field"><label for="f1">会社名</label><input id="f1" type="text" placeholder="株式会社アマナ"><div class="field-msg">面 #ffffff / border 1px #bbbbbd / radius 8px</div></div>
+    <div class="field is-focus"><label for="f2">フォーカス時</label><input id="f2" type="text" value="ビジュアルコミュニケーション"><div class="field-msg">実サイトのトップに素の input は無いため #54565a で代役</div></div>
+    <div class="field"><label for="f3">ご相談の種類</label><select id="f3"><option>戦略設計</option><option>コンテンツ開発</option><option>ビジュアル開発</option></select><div class="field-msg">14px / line-height 1.50 / letter-spacing normal</div></div>
+  </div>
+
+  <div class="card-grid">
+    <a href="#" class="card"><div class="thumb"><span>再春館製薬所｜「ドモホルンリンクル」のイメージを刷新</span></div><div class="pad"><div class="desc">再春館製薬所が展開する「ドモホルンリンクル」において、ブランドの世界観を一貫させたビジュアル開発を担当しました。</div></div></a>
+    <a href="#" class="card"><div class="thumb"><span>伊藤ハム『伝承』｜シズル・人物・商品を一貫した世界観で</span></div><div class="pad"><div class="desc">伊藤ハムの贈答用ブランド「伝承」のプロモーションにおいて、撮影からグラフィックまでを統合的に設計しました。</div></div></a>
+  </div>
+
+  <div class="evt">
+    <div class="evt-top"><span class="badge">募集中</span><span style="font-size:14px;font-weight:700;line-height:1.30">2026.12.15 Tue. 17:00 -</span></div>
+    <div class="evt-bot">ビジュアルコミュニケーション実践セミナー</div>
+  </div>
+  <div class="field-msg" style="margin-top:8px">カードを <code>16px 16px 0 0</code> と <code>0 0 16px 16px</code> の 2 枚に分けて積む（各 8 要素）</div>
+</section>
+
+<section class="section">
+  <div class="section-label">04 / Elevation &amp; Radius</div>
+  <h2 class="section-ttl">影は 1 種類だけ。色は黒ではなく #54565a の 8%</h2>
+
+  <div class="elev-grid">
+    <div class="elev l0"><div class="elev-name">Level 0</div><div class="elev-val">none<br>タグ・テキストリンク</div></div>
+    <div class="elev l1"><div class="elev-name">Level 1（rgba 記法）</div><div class="elev-val">0 2px 4px rgba(84, 86, 90, .08)<br>トップ 40 / 下層 9 要素</div></div>
+    <div class="elev l1b"><div class="elev-name">Level 1（color() 記法）</div><div class="elev-val">0 2px 4px color(srgb 0.329412 0.337255 0.352941 / 0.08)<br>トップ 70 / 下層 63 要素</div></div>
+  </div>
+
+  <p class="note">
+    <b>同じ影が 2 つの記法で並んでいる。</b><code>srgb 0.329412 0.337255 0.352941</code> は <code>rgb(84, 86, 90)</code> = <code>#54565a</code> = <code>--sys-schemes-on-surface-variant</code> と同じ色で、
+    計算経路が違うだけで見た目は同じ。<b>新規実装では <code>rgba(84, 86, 90, .08)</code> に統一してよい。</b>
+    <code>rgba(0,0,0,.08)</code> に丸めるとグレー地（<code>#eeeeee</code>）の上で濁る。
+  </p>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">xs 4px（12 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">sm 8px ★タグ（65 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:12px"></div><div class="radius-label">md 12px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:16px"></div><div class="radius-label">lg 16px ★カード（39 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:24px"></div><div class="radius-label">xl 24px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:32px"></div><div class="radius-label">xl-inc 32px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:48px"></div><div class="radius-label">2xl-inc 48px（4 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:1000px"></div><div class="radius-label">full 1000px（9 要素）</div></div>
+  </div>
+  <div class="field-msg" style="margin-top:10px">トークンは 11 段あるが、実測で使われているのは <b>sm / lg / xs / full / 2xl-inc の 5 段だけ</b>。</div>
+</section>
+
+<section class="section">
+  <div class="section-label">05 / Layout &amp; Responsive</div>
+  <h2 class="section-ttl">ルートは 18 幅すべて 10px。切り替わるのは body だけ</h2>
+
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:100%">viewport</div>
+    <div class="layout-bar c" style="width:1280px;max-width:100%">--width-site-content 1280px</div>
+    <div class="layout-bar" style="width:992px;max-width:100%">--width-narrow-content 992px（読み物の本文幅）</div>
+  </div>
+
+  <table class="bp">
+    <tr><th>幅</th><th>html</th><th>body</th><th>h2</th><th>a</th></tr>
+    <tr><td class="num">1920 / 1440 / 1200 / 992 / 834 / 768px</td><td class="num">10px</td><td class="num"><em>16px</em></td><td class="num">24px</td><td class="num">12px</td></tr>
+    <tr><td class="num">767 / 680 / 480 / 375 / 320px</td><td class="num">10px</td><td class="num"><em>14px</em></td><td class="num">18px</td><td class="num"><em>15px</em></td></tr>
+  </table>
+
+  <p class="note">
+    <b><code>html</code> は <code>62.5%</code> = 10px から 1px も動かない</b>（1920〜320px の 18 幅で実測）。流体も <code>clamp()</code> も使っていない。
+    <b>切り替わるのは <code>body</code> と各要素だけで、境目は 768 / 767px の 1 箇所</b>（<code>(min-width: 768px)</code> が 369 件、<code>(max-width: 767px)</code> が 237 件）。
+    本文 16 → 14px、見出し 24 → 18px に下がる一方、<b>リンクだけ 12 → 15px と大きくなる</b>（タップ領域の確保）。
+    <code>(prefers-reduced-motion: reduce)</code> にも 3 件対応している。
+  </p>
+
+  <p class="note">
+    <b>ヘッダーは浮いたカプセル型。</b><code>--header-height-pc: 64px</code> / <code>--header-height-sp: 48px</code>、
+    上端からの浮き量は <code>--header-position-pc: 10px</code> / <code>-sp: 8px</code>。
+    スクロール位置の調整も <code>--scroll-margin-top-pc: calc(64px + 40px)</code> とトークン化されている。
+    <b>サービスタグは高さ約 31px で 44px を下回る</b>ので、モバイルでは高さを足すこと。
+  </p>
+</section>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-cols">
+      <div class="footer-col"><div class="footer-col-title">アマナについて</div><a href="#">世界にノイズと美意識を</a><a href="#">会社情報</a><a href="#">グループ会社</a><a href="#">アクセス</a></div>
+      <div class="footer-col"><div class="footer-col-title">ソリューション</div><a href="#">戦略設計</a><a href="#">コンテンツ開発</a><a href="#">ビジュアル開発</a><a href="#">プロセス構築</a><a href="#">メディア</a></div>
+      <div class="footer-col"><div class="footer-col-title">その他</div><a href="#">実績</a><a href="#">Insights</a><a href="#">イベント</a><a href="#">採用情報</a></div>
+    </div>
+    <div class="footer-copy">©amana inc.</div>
+  </div>
+</footer>
+
+</body>
+</html>
