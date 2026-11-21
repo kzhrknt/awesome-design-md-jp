@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 文化学園（BUNKA GAKUEN）</title>
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は実サイトに 0 個。以下は computed style の実測値。2026-11-21 */
+    --purple:      #9b83af;   /* ★藤紫。面として可視 51 要素・最多。ナビ・導線・帯 */
+    --purple-deep: #745490;   /* 文字 30 要素（英字副題）／ 面 5 要素（＞＞MORE） */
+    --purple-dark: #65418f;   /* 下層のラベル 10 要素。トップには出ない */
+    --purple-mag:  #b773af;   /* 100周年バナーの 1 要素だけ */
+    --purple-pale: #f1eef5;   /* カードの地（4 要素） */
+    --text:        #333333;   /* ★既定の文字色。可視 61 要素・最多 */
+    --text-mincho: #595757;   /* 游明朝で組む読み物（可視 23 要素）。#333 よりわずかに暖かい */
+    --text-black:  #000000;   /* ニュース見出し・リード（可視 22 要素） */
+    --gray:        #eeeeee;
+    --gray-dark:   #434343;
+    --bg:          #ffffff;
+
+    /* === Fonts ===
+       ★Web フォントは 1 本も読まない。
+       @font-face は CSS 全文（103,909 文字）に 0 件、document.fonts は空、フォント要求も 0 件。
+       CDP の実描画確認では、ニュース見出しも学校名も YuMincho が当たる。 */
+    --font-mincho: YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "ヒラギノ明朝 ProN", serif;
+    --font-gothic: "游ゴシック Medium", YuGothic, "ヒラギノ角ゴ Pro W3",
+                   "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, sans-serif;
+    --font-mono:   SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Letter spacing ===
+       宣言は 0.15em / 0.2em / 0.25em / 0.5em の 4 段 ＋ normal の 5 つしかない。 */
+    --ls-wide:  0.5em;    /* 英字の副題（15px → 7.5px） */
+    --ls-mid:   0.25em;   /* キャプション帯（13px → 3.25px） */
+    --ls-sub:   0.2em;
+    --ls-head:  0.15em;   /* セクション見出し（26px → 3.9px） */
+
+    /* === Line height ===
+       body に宣言が無く、UA 既定の normal が全子孫の既定（可視 62 要素・最多）。 */
+    --lh-list:  2.33;   /* 施設名リスト（19 要素） */
+    --lh-read:  2.0;    /* 読み物（15 要素） */
+    --lh-link:  2.58;   /* ＞＞MORE（14 要素） */
+    --lh-head:  1.3;    /* 見出し（16 要素） */
+    --lh-en:    1.16;   /* 欧文（9 要素） */
+
+    --container: 1080px;   /* トップの外枠（6 要素） */
+    --content:   980px;    /* 本文（下層で 9 要素・最多） */
+    --narrow:    800px;
+
+    --r: 0;   /* ★トップは border-radius 0 種。角を丸めない */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* ★実サイトは html { font-size } の宣言が 1 件も無い＝UA 既定の 16px。19 幅すべて固定 */
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-gothic);
+    font-size: 13px;          /* ★body は 13px */
+    font-weight: 400;
+    /* ★line-height は宣言しない（UA 既定の normal が全子孫に降りる） */
+    letter-spacing: normal;
+    word-break: normal;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid var(--gray); }
+  .header-inner { display: flex; align-items: center; gap: 24px; max-width: var(--container); margin: 0 auto; padding: 16px 20px; }
+  .logo { font-family: var(--font-mincho); font-size: 20px; letter-spacing: var(--ls-head); color: var(--text-black); text-decoration: none; }
+  .logo small { font-size: 12px; letter-spacing: normal; margin-right: 6px; }
+  .header-nav { display: flex; gap: 22px; margin-left: auto; }
+  .header-nav a { font-size: 13px; line-height: 1.8; color: var(--text); text-decoration: none; }
+
+  /* NAV BAND（藤紫の面） */
+  .navband { background: var(--purple); }
+  .navband-inner { display: flex; max-width: var(--container); margin: 0 auto; }
+  .navband a { flex: 1; padding: 14px 10px; text-align: center; color: #fff; text-decoration: none; border-left: 1px solid rgba(255,255,255,.35); }
+  .navband a:last-child { border-right: 1px solid rgba(255,255,255,.35); }
+  .navband .ja { display: block; font-family: var(--font-mincho); font-size: 13px; line-height: var(--lh-head); }
+  .navband .en { display: block; font-family: var(--font-mincho); font-size: 10px; line-height: var(--lh-en); letter-spacing: var(--ls-head); margin-top: 4px; }
+
+  /* SECTIONS */
+  .section { padding: 64px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--purple-pale); }
+  .section-alt .section-inner { padding: 64px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: #8b8b8b; margin-bottom: 10px; }
+  .eyebrow { font-family: var(--font-mincho); font-size: 15px; letter-spacing: var(--ls-wide); line-height: var(--lh-head); color: var(--purple-deep); }
+  .section-title { font-family: var(--font-mincho); font-size: 26px; letter-spacing: var(--ls-head); line-height: var(--lh-head); color: var(--text-black); margin: 14px 0 18px; }
+  .section-lead { font-family: var(--font-mincho); font-size: 14px; line-height: var(--lh-read); color: var(--text-mincho); max-width: var(--content); margin-bottom: 34px; }
+  .note { font-size: 13px; line-height: 1.9; color: #555; margin-top: 20px; max-width: var(--content); }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--purple-pale); padding: 1px 5px; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(205px, 1fr)); gap: 12px; }
+  .swatch { border: 1px solid var(--gray); background: var(--bg); }
+  .swatch-chip { height: 74px; }
+  .swatch-body { padding: 12px; }
+  .swatch-name { font-size: 13px; font-weight: 700; line-height: 1.6; color: var(--text-black); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: #8b8b8b; margin-top: 3px; }
+  .swatch-use { font-size: 12px; line-height: 1.7; color: #555; margin-top: 6px; }
+
+  /* TYPOGRAPHY */
+  .scale-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; align-items: baseline; }
+  .scale-bar span { background: var(--purple-pale); padding: 8px 14px; line-height: 1.5; font-family: var(--font-mincho); }
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--gray); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: #8b8b8b; line-height: 1.75; }
+  .type-meta b { display: block; font-family: var(--font-gothic); font-size: 13px; font-weight: 700; color: var(--text-black); }
+
+  /* LETTER-SPACING DEMO */
+  .ls-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .ls-box { border: 1px solid var(--gray); padding: 20px; background: var(--bg); }
+  .ls-box h4 { font-family: var(--font-mono); font-size: 11px; font-weight: 400; color: #8b8b8b; margin-bottom: 12px; }
+  .ls-box p { font-family: var(--font-mincho); font-size: 15px; line-height: var(--lh-head); color: var(--text-black); }
+
+  /* INHERIT DEMO（em 宣言が px で降りる） */
+  .inh { border: 1px solid var(--gray); padding: 20px; background: var(--bg); }
+  .inh .parent { font-size: 13px; letter-spacing: 0.25em; font-family: var(--font-mincho); color: var(--text-black); }
+  .inh .child  { font-size: 8px; display: block; margin-top: 12px; }
+  .inh .fixed  { font-size: 8px; letter-spacing: 0.25em; display: block; margin-top: 12px; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 22px; }
+  .btn { font-family: var(--font-gothic); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; border: none; border-radius: var(--r); }
+  .btn-more { background: var(--purple-deep); color: #fff; font-size: 18px; line-height: var(--lh-link); padding: 0 28px; }
+  .btn-nav  { background: var(--purple); color: #fff; font-size: 13px; line-height: 2.2; padding: 0 22px; }
+  .btn-100  { background: var(--purple-mag); color: #fff; font-size: 13px; line-height: 2.2; padding: 0 22px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+  .card { background: var(--purple-pale); border-radius: var(--r); padding: 22px; }
+  .card-ja { font-family: var(--font-mincho); font-size: 20px; line-height: 1.4; color: var(--text-black); }
+  .card-en { font-family: var(--font-mincho); font-size: 10px; line-height: var(--lh-en); letter-spacing: var(--ls-head); color: var(--purple-deep); margin-top: 6px; }
+  .card-txt { font-family: var(--font-mincho); font-size: 14px; line-height: var(--lh-read); color: var(--text-mincho); margin-top: 12px; }
+
+  /* NEWS LIST */
+  .news { max-width: var(--content); }
+  .news li { list-style: none; display: grid; grid-template-columns: 110px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--gray); }
+  .news .date { font-family: var(--font-mincho); font-size: 14px; font-weight: 700; color: var(--text-mincho); }
+  .news .ttl  { font-family: var(--font-mincho); font-size: 14px; line-height: var(--lh-read); color: var(--text-black); }
+
+  /* FACILITY LIST（8px のラベル） */
+  .fac { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+  .fac div { font-family: var(--font-mincho); font-size: 8px; line-height: 2.33; letter-spacing: var(--ls-head); color: var(--text); border-bottom: 1px solid var(--gray); padding-bottom: 6px; }
+
+  /* GRADIENT（下層） */
+  .grad-band { color: #fff; font-family: var(--font-mincho); font-size: 20px; letter-spacing: var(--ls-head); line-height: var(--lh-head); padding: 14px 22px;
+    background: linear-gradient(to right, rgb(101,65,143) 55%, rgba(101,65,143,.96) 57%, rgba(101,65,143,.92) 59%, rgba(255,255,255,0) 100%); }
+  .grad-box { margin-top: 16px; padding: 40px 24px; font-family: var(--font-mincho); font-size: 22px; line-height: var(--lh-head); color: var(--text-black);
+    background: linear-gradient(rgb(255,255,255) 0%, rgb(197,183,212) 100%); }
+
+  /* ELEVATION / LAYOUT */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 28px; }
+  .elev { background: var(--bg); border: 1px solid var(--gray); padding: 28px; text-align: center; }
+  .elev.e1 { box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 4px 0px; border-color: transparent; }
+  .elev-name { font-size: 14px; font-weight: 700; line-height: 1.6; color: var(--text-black); }
+  .elev-val { font-family: var(--font-mono); font-size: 11px; color: #8b8b8b; margin-top: 8px; }
+  .layout-demo { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .layout-bar { background: var(--purple-pale); height: 38px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; color: #555; }
+
+  /* FOOTER */
+  .footer { background: var(--gray-dark); color: #fff; padding: 40px 20px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-head { font-family: var(--font-mincho); font-size: 18px; letter-spacing: var(--ls-head); line-height: var(--lh-head); }
+  .footer-cols { display: flex; gap: 44px; margin-top: 20px; flex-wrap: wrap; }
+  .footer-col a { display: block; font-size: 13px; line-height: 2; color: #fff; text-decoration: none; opacity: .85; }
+  .footer-copy { font-size: 11px; line-height: 1.6; margin-top: 28px; opacity: .7; }
+
+  /* ★実サイトは print も同じ扱い: print, screen and (max-width: 1080px) */
+  @media print, screen and (max-width: 1080px) {
+    .section, .section-alt .section-inner { padding: 48px 18px; }
+  }
+  @media print, screen and (max-width: 747px) {
+    .section, .section-alt .section-inner { padding: 40px 16px; }
+    .section-title { font-size: 22px; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .ls-grid { grid-template-columns: 1fr; }
+    .header-nav { display: none; }
+    .navband-inner { flex-wrap: wrap; }
+    .navband a { flex: 1 1 50%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo"><small>学校法人</small>文化学園</a>
+    <nav class="header-nav"><a href="#">Language</a><a href="#">検索</a></nav>
+  </div>
+</header>
+
+<nav class="navband">
+  <div class="navband-inner">
+    <a href="#"><span class="ja">BUNKAを知る</span><span class="en">What&rsquo;s BUNKA?</span></a>
+    <a href="#"><span class="ja">学校・施設一覧</span><span class="en">School list</span></a>
+    <a href="#"><span class="ja">アクセス/構内図</span><span class="en">Access</span></a>
+    <a href="#"><span class="ja">ニュース</span><span class="en">News &amp; Topics</span></a>
+  </div>
+</nav>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="eyebrow">Color Palette</div>
+  <h2 class="section-title">紫が5系統</h2>
+  <p class="section-lead">面は藤紫 <code>#9b83af</code>（可視 51 要素・最多）、文字とボタンは <code>#745490</code>、地は <code>#f1eef5</code>。残り 2 つは下層と周年サイト専用で、新規実装ではこの 3 つに絞ってよい。CSS Custom Properties は <b>0 個</b>。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#9b83af"></div><div class="swatch-body"><div class="swatch-name">藤紫（面）</div><div class="swatch-hex">#9b83af</div><div class="swatch-use">★可視 51 要素・最多。ナビ・導線・帯</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#745490"></div><div class="swatch-body"><div class="swatch-name">濃紫</div><div class="swatch-hex">#745490</div><div class="swatch-use">文字 30 要素（英字副題）／ 面 5 要素（＞＞MORE）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#65418f"></div><div class="swatch-body"><div class="swatch-name">深紫（下層）</div><div class="swatch-hex">#65418f</div><div class="swatch-use">下層のラベル 10 要素。トップには出ない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#b773af"></div><div class="swatch-body"><div class="swatch-name">マゼンタ紫</div><div class="swatch-hex">#b773af</div><div class="swatch-use">100周年特設サイトのリンク 1 要素だけ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f1eef5"></div><div class="swatch-body"><div class="swatch-name">淡紫（地）</div><div class="swatch-hex">#f1eef5</div><div class="swatch-use">カードの地（4 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#333333</div><div class="swatch-use">★既定の文字色。可視 61 要素・最多</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#595757"></div><div class="swatch-body"><div class="swatch-name">Text Mincho</div><div class="swatch-hex">#595757</div><div class="swatch-use">游明朝で組む読み物（可視 23 要素）。#333 よりわずかに暖かい</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Text Black</div><div class="swatch-hex">#000000</div><div class="swatch-use">ニュース見出し・リード（可視 22 要素）</div></div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <div class="eyebrow">Typography</div>
+  <h2 class="section-title">游明朝だけで、0.5em まで空ける</h2>
+  <p class="section-lead"><b>Web フォントを 1 本も読まない。</b> <code>@font-face</code> は CSS 全文（103,909 文字）に 0 件、<code>document.fonts</code> は空、フォント要求も 0 件。読み物と見出しは游明朝（可視 106 要素）、ナビと補助は游ゴシック Medium（63 要素）。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:8px">8</span><span style="font-size:10px">10</span><span style="font-size:12px">12</span>
+    <span style="font-size:13px">13</span><span style="font-size:14px">14</span><span style="font-size:15px">15</span>
+    <span style="font-size:18px">18</span><span style="font-size:20px">20</span><span style="font-size:26px">26</span>
+    <span style="font-size:50px">50</span><span style="font-size:55px">55</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Display（下層）</b>游明朝 / 55px / 600<br>lh 1.30</div><div style="font-family:var(--font-mincho);font-size:55px;font-weight:600;line-height:1.3;color:var(--text-black)">文化の創造</div></div>
+  <div class="type-row"><div class="type-meta"><b>Display 2（下層）</b>游明朝 / 50px / 600<br>lh 1.30</div><div style="font-family:var(--font-mincho);font-size:50px;font-weight:600;line-height:1.3;color:var(--text-black)">外へ広がるネットワーク</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Title ★</b>游明朝 / 26px / 400<br>lh normal / <b style="display:inline">ls 0.15em（3.9px）</b></div><div style="font-family:var(--font-mincho);font-size:26px;letter-spacing:.15em;color:var(--text-black)">BUNKAで学ぶ価値</div></div>
+  <div class="type-row"><div class="type-meta"><b>School Name</b>游明朝 / 20px / 400<br>lh 1.40</div><div style="font-family:var(--font-mincho);font-size:20px;line-height:1.4;color:var(--text-black)">文化ファッション大学院大学</div></div>
+  <div class="type-row"><div class="type-meta"><b>Link</b>游ゴシック / 18px / 400<br>lh 2.58</div><div style="font-size:18px;line-height:2.58;color:var(--purple-deep)">＞＞MORE</div></div>
+  <div class="type-row"><div class="type-meta"><b>Subtitle (EN) ★</b>游明朝 / 15px / 400<br>lh 1.30 / <b style="display:inline">ls 0.5em（7.5px）</b></div><div style="font-family:var(--font-mincho);font-size:15px;letter-spacing:.5em;line-height:1.3;color:var(--purple-deep)">What&rsquo;s BUNKA?</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body</b>游明朝 / 14px / 400<br>lh 2.00</div><div style="font-family:var(--font-mincho);font-size:14px;line-height:2;color:var(--text-mincho)">「新しい美と文化の創造」が建学の精神。ファッションを中心に、デザイン・住環境・国際文化まで広く学べます。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Base ★</b>游ゴシック / <b style="display:inline">13px</b> / 400<br>lh <b style="display:inline">normal</b>（宣言なし）</div><div style="font-size:13px">body の既定。h1 / h2 / h3 / p もすべてこの 13px のまま（19 幅で確認）</div></div>
+  <div class="type-row"><div class="type-meta"><b>Caption</b>游ゴシック / 12px / 400<br>可視 48 要素・最多</div><div style="font-size:12px">文化学園服飾博物館・文化学園図書館・文化学園ファッションリソースセンター</div></div>
+  <div class="type-row"><div class="type-meta"><b>Micro</b>游明朝 / <b style="display:inline">8px</b> / 400<br>lh 1.30 / ls 0.15em</div><div style="font-family:var(--font-mincho);font-size:8px;letter-spacing:.15em;line-height:1.3;color:var(--text)">文化学園知財センター・文化学園国際交流センター（20 要素）</div></div>
+
+  <h3 style="font-family:var(--font-mincho);font-size:20px;letter-spacing:.15em;line-height:1.3;margin:36px 0 6px;color:var(--text-black)">字間は4段しかない</h3>
+  <p class="note" style="margin-top:0">宣言は <code>0.15em</code> / <code>0.2em</code> / <code>0.25em</code> / <code>0.5em</code> ＋ <code>normal</code> の 5 つだけ。<b><code>0.5em</code> は和文としては極端に広い。</b></p>
+  <div class="ls-grid">
+    <div class="ls-box"><h4>letter-spacing: normal</h4><p>What&rsquo;s BUNKA?　新しい文化を創りだす</p></div>
+    <div class="ls-box"><h4>letter-spacing: 0.15em ★見出し</h4><p style="letter-spacing:.15em">What&rsquo;s BUNKA?　新しい文化を創りだす</p></div>
+    <div class="ls-box"><h4>letter-spacing: 0.25em</h4><p style="letter-spacing:.25em">What&rsquo;s BUNKA?　新しい文化を創りだす</p></div>
+    <div class="ls-box"><h4>letter-spacing: 0.5em ★英字副題</h4><p style="letter-spacing:.5em">What&rsquo;s BUNKA?　新しい文化を創りだす</p></div>
+  </div>
+
+  <h3 style="font-family:var(--font-mincho);font-size:20px;letter-spacing:.15em;line-height:1.3;margin:36px 0 6px;color:var(--text-black)">em 宣言は px で子へ降りる</h3>
+  <p class="note" style="margin-top:0"><code>0.25em</code> を 13px の親に書くと <b>3.25px という絶対値</b>が降り、8px の子では <b>0.406em</b> に化ける（実測）。小さい文字ほど字間が広く見える。</p>
+  <div class="inh">
+    <div class="parent">親 13px に letter-spacing: 0.25em（= 3.25px）
+      <span class="child">子 8px・宣言なし → 3.25px が降りる（= 0.406em）文化学園服飾博物館</span>
+      <span class="fixed">子 8px・0.25em を宣言し直す → 2px（= 0.25em）文化学園服飾博物館</span>
+    </div>
+  </div>
+
+  <p class="note"><b><code>font-feature-settings</code> は 1 要素も使っていない</b>（両ページとも 0 件）。ただし游ゴシックでは <code>palt</code> が <b>−6.05%</b> 効く（実測 1123.20px → 1055.28px）。<b>「効かないから使っていない」のではなく「効くのに使っていない」</b>ので、足すと別物になる。</p>
+
+  <p class="note"><b>実サイトの 2 つの誤り（並記）</b>:<br>
+  ① <code>YuGothicM</code> がスタックにあるが <code>@font-face</code> は 0 件 → 必ず外れる（先頭の <code>"游ゴシック Medium"</code> が当たるので実害は小さい）<br>
+  ② ゴシックのスタックなのに受け皿が <code>serif</code> のものがある（<code>"游ゴシック Medium", YuGothic, YuGothicM, serif</code>）→ 游ゴシックが無い端末で<b>明朝で出る</b>。正しくは <code>sans-serif</code></p>
+</div>
+</section>
+
+<section class="section" id="components">
+  <div class="section-label">03 / Components</div>
+  <div class="eyebrow">Components</div>
+  <h2 class="section-title">角丸も影も使わない</h2>
+  <p class="section-lead">トップの <code>border-radius</code> は <b>0 種</b>、<code>box-shadow</code> も <b>0 種</b>。面と罫線だけで組む。</p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-more">＞＞MORE</a>
+    <a href="#" class="btn btn-nav">BUNKAを知る</a>
+    <a href="#" class="btn btn-100">文化学園創立100周年特設サイト</a>
+  </div>
+
+  <h3 style="font-family:var(--font-mincho);font-size:20px;letter-spacing:.15em;line-height:1.3;margin:36px 0 16px;color:var(--text-black)">カード（和文20px ＋ 英字10px の二段）</h3>
+  <div class="card-grid">
+    <div class="card"><div class="card-ja">文化学園大学</div><div class="card-en">BUNKA GAKUEN UNIVERSITY</div><div class="card-txt">服装学部・造形学部・国際文化学部。</div></div>
+    <div class="card"><div class="card-ja">文化服装学院</div><div class="card-en">BUNKA FASHION COLLEGE</div><div class="card-txt">日本初の服飾教育学校。</div></div>
+    <div class="card"><div class="card-ja">文化ファッション<br>大学院大学</div><div class="card-en">BUNKA FASHION GRADUATE UNIVERSITY</div><div class="card-txt">ファッションの専門職大学院。</div></div>
+  </div>
+
+  <h3 style="font-family:var(--font-mincho);font-size:20px;letter-spacing:.15em;line-height:1.3;margin:36px 0 16px;color:var(--text-black)">ニュース（行間 2.0）</h3>
+  <ul class="news">
+    <li><span class="date">2026.11.20</span><span class="ttl">故 大沼淳 元理事長 七回忌墓参のご報告</span></li>
+    <li><span class="date">2026.11.13</span><span class="ttl">【重要】文化購買事業部におけるメールアドレス情報に関するお知らせ</span></li>
+    <li><span class="date">2026.10.28</span><span class="ttl">学校法人文化学園法人ホームページのアクセス障害について</span></li>
+  </ul>
+
+  <h3 style="font-family:var(--font-mincho);font-size:20px;letter-spacing:.15em;line-height:1.3;margin:36px 0 16px;color:var(--text-black)">施設一覧（8px・行間 2.33）</h3>
+  <div class="fac">
+    <div>文化学園図書館</div><div>文化学園服飾博物館</div><div>文化学園ファッションリソースセンター</div>
+    <div>文化学園知財センター</div><div>文化学園国際交流センター</div><div>新宿文化クイントビル</div>
+  </div>
+
+  <h3 style="font-family:var(--font-mincho);font-size:20px;letter-spacing:.15em;line-height:1.3;margin:36px 0 16px;color:var(--text-black)">下層のグラデーション</h3>
+  <div class="grad-band">BUNKA DNA</div>
+  <div class="grad-box">新たな価値を創造する「人」を育む教育</div>
+  <p class="note">帯の停止位置 <code>55% / 57% / 59%</code> は丸めずそのまま写す。章の地は白から藤紫 <code>rgb(197,183,212)</code> へ。</p>
+</section>
+
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">04 / Elevation &amp; Layout</div>
+  <div class="eyebrow">Depth</div>
+  <h2 class="section-title">影はトップに0種</h2>
+  <p class="section-lead">トップは影を 1 つも使わない。下層にだけ画像の縁取りとして <code>rgba(0,0,0,0.3) 0 0 4px 0</code> が 7 要素ある。</p>
+
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">Level 0</div><div class="elev-val">none（トップは全要素これ）</div></div>
+    <div class="elev e1"><div class="elev-name">Level 1</div><div class="elev-val">rgba(0,0,0,0.3) 0 0 4px 0（下層の画像 7 要素）</div></div>
+  </div>
+
+  <h3 style="font-family:var(--font-mincho);font-size:20px;letter-spacing:.15em;line-height:1.3;margin:40px 0 16px;color:var(--text-black)">コンテナ幅</h3>
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:100%">1080px — トップの外枠（6 要素）</div>
+    <div class="layout-bar" style="width:90.7%">980px — 本文（下層で 9 要素・最多）</div>
+    <div class="layout-bar" style="width:74.1%">800px — 読み物</div>
+  </div>
+  <p class="note"><code>gap</code> の宣言は <b>0 件</b>。余白はすべて <code>margin</code> / <code>padding</code> で作る。</p>
+</div>
+</section>
+
+<section class="section" id="responsive">
+  <div class="section-label">05 / Responsive</div>
+  <div class="eyebrow">Responsive</div>
+  <h2 class="section-title">ルートは宣言なしの16px</h2>
+  <p class="section-lead">CSS 全文に <code>html { font-size }</code> が <b>1 件も無い</b>（＝UA 既定の 16px）。<code>body</code> は 13px で、1920〜320px の <b>19 幅すべてで 1px も動かない</b>。<code>h1</code> / <code>h2</code> / <code>h3</code> / <code>p</code> も全幅 13px のまま。流体も <code>clamp()</code> も崖も無い。</p>
+  <p class="note">ブレークポイントは <code>print, screen and (max-width: 1080px)</code> と <code>print, screen and (max-width: 747px)</code>。<b><code>print,</code> を併記するのがこのサイトの癖</b>で、印刷時もタブレット幅のレイアウトになる。</p>
+  <p class="note"><b>ヒーローは <code>&lt;canvas&gt;</code>。</b>「新しい文化を創りだす / BUNKA GAKUEN」の大きな文字は DOM に存在せず（ヒーロー帯の最大テキストは 26px）、2D コンテキストに描画されている。<b>しかも属性 1080×620 を CSS で 1440×827 へ拡大している</b>ので、実機では文字がやや甘い。</p>
+  <p class="note"><code>html</code> / <code>body</code> / ほぼすべての <code>div</code> に <code>background-image: url(clear.gif)</code>（1×1 の透明 GIF）が当たっている。IE 時代の名残で、<b>再現しないこと</b>。</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-head">学校法人 文化学園</div>
+    <div class="footer-cols">
+      <div class="footer-col"><a href="#">理事長挨拶</a><a href="#">学園の歩み</a><a href="#">組織構成</a></div>
+      <div class="footer-col"><a href="#">情報公開</a><a href="#">アクセス/構内図</a><a href="#">採用</a></div>
+      <div class="footer-col"><a href="#">利用規約</a><a href="#">個人情報の取り扱いについて</a></div>
+    </div>
+    <p class="footer-copy">&copy; BUNKA GAKUEN EDUCATIONAL FOUNDATION</p>
+  </div>
+</footer>
+
+</body>
+</html>

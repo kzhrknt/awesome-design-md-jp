@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ダイビル（DAIBIRU）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@200;300;400;500;600;700&family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/yakuhanjp@4.1.1/dist/css/yakuhanjp.min.css" rel="stylesheet">
+<style>
+  :root {
+    /* === Design Tokens ===
+       実サイトの :root に 22 個（自社 20 / Swiper 2）。値はそのまま。2026-11-21 */
+    --font_family:    YakuHanJP, 'Noto Sans JP', sans-serif;
+    --font_family_en: 'Inter', sans-serif;      /* ★可視 0 要素。Inter は読み込みもない */
+    --font_barlow:    Barlow, sans-serif;
+
+    --white: #fff;        --black: #000;
+    --blue: #005FCE;      --blue_light: #00B2F0;   /* blue_light は可視 0 要素 */
+    --blue_dark: #21303C;
+    --blue_grade_x: linear-gradient(to right, #005bd8 0%, #00b7fa 100%);  /* ★可視 0 要素 */
+    --red: #A80024;       --gold: #90712B;         /* ともに可視 0 要素 */
+    --gray: #90989E;      --gray_light: #F4F4F4;
+    --gray_dark: #4B4B4B; --gray_line: #ccc;
+
+    --header_h: 100px;    /* モバイルで 70px */
+    --max_w: 1000px;
+    --easing: cubic-bezier(.8, 0, .4, 1);
+    --border_radius: 6px;
+
+    /* === 実装されているグラデーション（トークンの値とは別物） === */
+    --grad-cta: linear-gradient(to right, #002089 0%, #0069d3 100%);   /* トップ 2 / 下層 11 要素 */
+    --grad-alt: linear-gradient(to right, #004cb4 0%, #00abea 100%);   /* 下層 1 要素 */
+
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    --container: 1200px;   /* 既定（6 要素） */
+    --content:   1080px;   /* 本文（5 要素） */
+    --wide:      1360px;   /* 下層のワイド（5 要素） */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* ★このサイトの核心。1rem = 1px。CSS には px の数値をそのまま rem で書く */
+  html { font-size: 1px; }
+
+  body {
+    background: var(--white);
+    color: var(--gray_dark);
+    font-family: var(--font_family);
+    font-size: 16rem;        /* = 16px。19 幅すべてで固定 */
+    font-weight: 500;        /* ★既定は 500（可視 76 要素・最多）。400 ではない */
+    line-height: 1;          /* ★全子孫の既定。本文ブロックは宣言し直す */
+    letter-spacing: 0;       /* ★全子孫の既定 */
+    overflow-wrap: normal;
+    word-break: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid var(--gray_line); background: var(--white); }
+  .header-inner { display: flex; align-items: center; gap: 24rem; max-width: var(--container); margin: 0 auto; padding: 0 20rem; height: var(--header_h); }
+  .logo { display: flex; align-items: center; gap: 8rem; text-decoration: none; color: var(--blue); font-size: 24rem; font-weight: 700; line-height: 1.35; }
+  .logo-mark { width: 30rem; height: 30rem; border-radius: 50%; background: var(--blue); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: var(--font_barlow); font-size: 16rem; font-weight: 700; }
+  .header-nav { display: flex; gap: 22rem; margin-left: auto; }
+  .header-nav a { font-size: 16rem; font-weight: 500; line-height: 1.35; color: var(--black); text-decoration: none; }
+  .lang { display: flex; border-radius: 1440rem; overflow: hidden; border: 1px solid var(--gray_line); }
+  .lang span, .lang a { font-size: 12rem; font-weight: 500; line-height: 22rem; padding: 0 14rem; text-decoration: none; }
+  .lang .on { background: var(--blue); color: var(--white); }
+  .lang .off { color: var(--gray); }
+
+  /* SECTIONS */
+  .section { padding: 60rem 20rem; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--gray_light); }
+  .section-alt .section-inner { padding: 60rem 20rem; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12rem; color: var(--gray); margin-bottom: 10rem; line-height: 1.5; }
+  .eyebrow { font-family: var(--font_barlow); font-size: 70rem; font-weight: 200; line-height: 1; color: var(--blue_dark); }
+  .section-title { font-size: 32rem; font-weight: 700; line-height: 1.35; letter-spacing: .1em; color: var(--black); margin: 10rem 0 16rem; }
+  .section-lead { font-size: 16rem; font-weight: 500; line-height: 1.5; max-width: var(--content); margin-bottom: 32rem; }
+  .note { font-size: 14rem; font-weight: 400; line-height: 1.75; color: #555; margin-top: 20rem; max-width: var(--content); }
+  code { font-family: var(--font-mono); font-size: 12rem; background: var(--gray_light); padding: 1rem 5rem; border-radius: 3rem; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210rem, 1fr)); gap: 12rem; }
+  .swatch { border: 1px solid var(--gray_line); border-radius: var(--border_radius); overflow: hidden; background: var(--white); }
+  .swatch-chip { height: 72rem; }
+  .swatch-body { padding: 12rem; }
+  .swatch-name { font-size: 14rem; font-weight: 700; line-height: 1.5; color: var(--black); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11rem; color: var(--gray); margin-top: 3rem; line-height: 1.5; }
+  .swatch-use { font-size: 12rem; font-weight: 400; line-height: 1.6; color: #555; margin-top: 6rem; }
+
+  /* TYPOGRAPHY */
+  .scale-bar { display: flex; gap: 8rem; flex-wrap: wrap; margin-bottom: 28rem; align-items: baseline; }
+  .scale-bar span { background: var(--gray_light); padding: 8rem 14rem; border-radius: 4rem; line-height: 1.5; }
+  .type-row { display: grid; grid-template-columns: 250rem 1fr; gap: 24rem; padding: 20rem 0; border-bottom: 1px solid var(--gray_line); align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11rem; color: var(--gray); line-height: 1.75; }
+  .type-meta b { display: block; font-family: var(--font_family); font-size: 13rem; font-weight: 700; color: var(--black); }
+
+  /* YAKUHAN DEMO */
+  .yk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18rem; }
+  .yk-box { border: 1px solid var(--gray_line); border-radius: var(--border_radius); padding: 20rem; background: var(--white); }
+  .yk-box h4 { font-family: var(--font-mono); font-size: 11rem; font-weight: 400; color: var(--gray); margin-bottom: 10rem; line-height: 1.5; }
+  .yk-box p { font-size: 24rem; font-weight: 700; line-height: 1.5; color: var(--black); }
+  .yk-off { font-family: 'Noto Sans JP', sans-serif; }
+  .yk-on  { font-family: YakuHanJP, 'Noto Sans JP', sans-serif; }
+
+  /* LINE-HEIGHT DEMO */
+  .lh-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18rem; }
+  .lh-box { border: 1px solid var(--gray_line); border-radius: var(--border_radius); padding: 20rem; background: var(--white); }
+  .lh-box h4 { font-family: var(--font-mono); font-size: 11rem; font-weight: 400; color: var(--gray); margin-bottom: 10rem; line-height: 1.5; }
+  .lh-1 p { font-size: 16rem; line-height: 1; }
+  .lh-15 p { font-size: 16rem; line-height: 1.5; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 16rem; align-items: center; margin-bottom: 22rem; }
+  .btn { font-family: var(--font_family); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; border: none; color: var(--white); }
+  .btn-cta { background: var(--grad-cta); border-radius: var(--border_radius); font-size: 18rem; font-weight: 700; height: 56rem; padding: 0 32rem; letter-spacing: .1em; transition: opacity .4s var(--easing); }
+  .btn-alt { background: var(--grad-alt); border-radius: var(--border_radius); font-size: 18rem; font-weight: 700; height: 56rem; padding: 0 32rem; letter-spacing: .1em; }
+  .btn-solid { background: var(--blue_dark); border-radius: var(--border_radius); font-size: 16rem; font-weight: 500; height: 48rem; padding: 0 28rem; }
+  .btn-pill { background: var(--blue); border-radius: 1440rem; font-size: 12rem; font-weight: 500; height: 28rem; padding: 0 20rem; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300rem, 1fr)); gap: 20rem; }
+  .prop-card { border-radius: 10rem 10rem 0 0; overflow: hidden; background: var(--white); border: 1px solid var(--gray_line); border-bottom-width: 3px; border-bottom-color: var(--blue_dark); }
+  .prop-head { background: var(--blue_dark); color: var(--white); font-family: var(--font_barlow); font-size: 22rem; font-weight: 700; line-height: 1.35; padding: 12rem 18rem; }
+  .prop-body { padding: 18rem; }
+  .prop-ttl { font-size: 18rem; font-weight: 700; line-height: 1.35; letter-spacing: .1em; color: var(--black); }
+  .prop-txt { font-size: 14rem; font-weight: 400; line-height: 1.5; color: var(--gray_dark); margin-top: 8rem; }
+  .plain-card { border: 1px solid var(--gray_line); border-radius: var(--border_radius); padding: 22rem; background: var(--white); }
+  .plain-ttl { font-size: 26rem; font-weight: 500; line-height: 1.5; letter-spacing: .1em; color: var(--black); }
+  .plain-txt { font-size: 16rem; font-weight: 400; line-height: 1.5; margin-top: 10rem; }
+
+  /* ELEVATION / LAYOUT */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240rem, 1fr)); gap: 28rem; }
+  .elev { background: var(--white); border: 1px solid var(--gray_line); border-radius: var(--border_radius); padding: 28rem; text-align: center; }
+  .elev.flat { background: var(--blue_dark); color: var(--white); border-color: transparent; }
+  .elev-name { font-size: 16rem; font-weight: 700; line-height: 1.5; }
+  .elev-val { font-family: var(--font-mono); font-size: 11rem; margin-top: 8rem; line-height: 1.6; opacity: .75; }
+  .layout-demo { display: flex; flex-direction: column; gap: 10rem; align-items: center; }
+  .layout-bar { background: var(--gray_light); height: 38rem; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11rem; color: #555; border-radius: 4rem; }
+  .radius-row { display: flex; gap: 20rem; flex-wrap: wrap; margin-top: 28rem; justify-content: center; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 112rem; height: 70rem; background: var(--blue); }
+  .radius-label { font-family: var(--font-mono); font-size: 11rem; color: var(--gray); margin-top: 7rem; line-height: 1.6; }
+
+  /* FOOTER */
+  .footer { background: var(--blue_dark); color: var(--white); padding: 44rem 20rem; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-head { font-family: var(--font_barlow); font-size: 40rem; font-weight: 200; line-height: 1; }
+  .footer-cols { display: flex; gap: 48rem; margin-top: 22rem; flex-wrap: wrap; }
+  .footer-col a { display: block; font-size: 14rem; font-weight: 400; line-height: 1.8; color: var(--white); text-decoration: none; opacity: .85; }
+  .footer-copy { font-size: 12rem; font-weight: 400; line-height: 1.6; margin-top: 28rem; opacity: .7; letter-spacing: .055em; }
+
+  /* ★実サイトは print, screen and (min-width: …) の形で書く */
+  @media screen and (max-width: 999px) {
+    .section, .section-alt .section-inner { padding: 48rem 18rem; }
+  }
+  @media screen and (max-width: 767px) {
+    :root { --header_h: 70px; }
+    .section, .section-alt .section-inner { padding: 40rem 16rem; }
+    .section-title { font-size: 24rem; }
+    .eyebrow { font-size: 44rem; }
+    .type-row { grid-template-columns: 1fr; gap: 8rem; }
+    .yk-grid, .lh-grid { grid-template-columns: 1fr; }
+    .header-nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo"><span class="logo-mark">D</span>ダイビル</a>
+    <nav class="header-nav">
+      <a href="#">知る、ダイビル</a><a href="#">プロジェクトストーリー</a><a href="#">企業情報</a><a href="#">物件情報</a>
+    </nav>
+    <div class="lang"><span class="on">JP</span><a href="#" class="off">EN</a></div>
+  </div>
+</header>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="eyebrow">Color</div>
+  <h2 class="section-title">紺の面と、青のグラデーション</h2>
+  <p class="section-lead">面は <code>#21303C</code>（<code>--blue_dark</code>・<b>488 要素で最多</b>）、リンクと強調は <code>#005FCE</code>。CTA だけ <b>グラデーション</b>で、<b>その値はトークン <code>--blue_grade_x</code> とは別物</b>（宣言 <code>#005bd8 → #00b7fa</code> ／ 実装 <code>#002089 → #0069d3</code>）。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#21303C"></div><div class="swatch-body"><div class="swatch-name">ダイビル紺</div><div class="swatch-hex">#21303C（--blue_dark）</div><div class="swatch-use">★面として 488 要素・最多。ナビの地・カードの帯・フッター</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#005FCE"></div><div class="swatch-body"><div class="swatch-name">ダイビル青</div><div class="swatch-hex">#005FCE（--blue）</div><div class="swatch-use">面 114 要素 ／ 文字 42 要素。リンク・JP の選択状態</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:linear-gradient(to right,#002089 0%,#0069d3 100%)"></div><div class="swatch-body"><div class="swatch-name">CTA グラデ（実装）</div><div class="swatch-hex">#002089 → #0069d3</div><div class="swatch-use">★トップ 2 / 下層 11 要素。トークンの値ではない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:linear-gradient(to right,#005bd8 0%,#00b7fa 100%)"></div><div class="swatch-body"><div class="swatch-name">--blue_grade_x（宣言）</div><div class="swatch-hex">#005bd8 → #00b7fa</div><div class="swatch-use">★可視 0 要素。宣言だけで使われていない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#4B4B4B"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#4B4B4B（--gray_dark）</div><div class="swatch-use">body の既定（可視 5 / 下層 19 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#90989E"></div><div class="swatch-body"><div class="swatch-name">Muted</div><div class="swatch-hex">#90989E（--gray）</div><div class="swatch-use">サブ導線（可視 29 要素・両ページ同数）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#F4F4F4"></div><div class="swatch-body"><div class="swatch-name">Surface Light</div><div class="swatch-hex">#F4F4F4（--gray_light）</div><div class="swatch-use">表・カードの地</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#A80024"></div><div class="swatch-body"><div class="swatch-name">--red</div><div class="swatch-hex">#A80024</div><div class="swatch-use">★可視 0 要素。--gold #90712B・--blue_light #00B2F0 も同様</div></div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <div class="eyebrow">Type</div>
+  <h2 class="section-title">1rem = 1px と、約物だけの書体</h2>
+  <p class="section-lead"><code>html { font-size: 1px }</code> なので <code>body { font-size: 16rem }</code> が 16px、見出しは <code>50rem</code> が 50px。<b>px の値をそのまま rem で書く</b>ための仕掛けで、19 幅すべてでルートは 1px のまま。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:12rem">12</span><span style="font-size:14rem">14</span><span style="font-size:16rem">16</span>
+    <span style="font-size:18rem">18</span><span style="font-size:20rem">20</span><span style="font-size:22rem">22</span>
+    <span style="font-size:26rem">26</span><span style="font-size:50rem">50</span>
+    <span style="font-size:70rem;font-family:var(--font_barlow);font-weight:200">70</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Display (EN) ★</b>Barlow / 70px（70rem）/ <b style="display:inline">200</b><br>lh 1.00 / ls normal</div><div style="font-family:var(--font_barlow);font-size:70rem;font-weight:200;line-height:1;color:var(--blue_dark)">News</div></div>
+  <div class="type-row"><div class="type-meta"><b>Display 2 (EN)</b>Barlow / 68px / 200<br>lh 1.00</div><div style="font-family:var(--font_barlow);font-size:68rem;font-weight:200;line-height:1;color:var(--blue_dark)">Project Story</div></div>
+  <div class="type-row"><div class="type-meta"><b>Page Title</b>Noto Sans JP / 50px / 700<br>lh 1.35 / <b style="display:inline">ls 0.1em（5px）</b></div><div style="font-size:50rem;font-weight:700;line-height:1.35;letter-spacing:.1em;color:var(--black)">知る、ダイビル</div></div>
+  <div class="type-row"><div class="type-meta"><b>Heading</b>Noto Sans JP / 26px / 500<br>lh 1.50 / ls 0.1em（2.6px）</div><div style="font-size:26rem;font-weight:500;line-height:1.5;letter-spacing:.1em;color:var(--black)">良い街を創るために「ダイビルのビル造り」</div></div>
+  <div class="type-row"><div class="type-meta"><b>Label (EN)</b>Barlow / 22px / <b style="display:inline">700</b><br>lh 1.35 / ls normal</div><div style="font-family:var(--font_barlow);font-size:22rem;font-weight:700;line-height:1.35;color:var(--blue_dark)">OSAKA / TOKYO / VIETNAM</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav / Lead</b>Noto Sans JP / 18px / 500・700<br>lh 1.35 / ls 2.4px・2px</div><div style="font-size:18rem;font-weight:500;line-height:1.35;letter-spacing:2rem;color:var(--black)">プロジェクトストーリーを見る</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>Noto Sans JP / 16px / <b style="display:inline">500</b><br>lh 1.50（可視 38 要素・最多）</div><div style="font-size:16rem;font-weight:500;line-height:1.5">「賑わいのある街創り」を目指す私たちダイビルグループは、創業以来100年を超えてなおビルを造り続けています。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Caption</b>Noto Sans JP / 14px / 500<br>lh 1.35 / ls 0.1em（1.4px）</div><div style="font-size:14rem;font-weight:500;line-height:1.35;letter-spacing:.1em;color:var(--gray_dark)">データセンター　財務　企業</div></div>
+  <div class="type-row"><div class="type-meta"><b>Small</b>Noto Sans JP / 12px / 400<br>lh 1.00（31 要素）</div><div style="font-size:12rem;font-weight:400;line-height:1;color:var(--gray)">ホーム ＞ 知る、ダイビル ＞ 歴史</div></div>
+
+  <h3 style="font-size:20rem;font-weight:700;line-height:1.5;letter-spacing:.1em;margin:36rem 0 6rem;color:var(--black)">YakuHanJP は約物だけを受け持つ</h3>
+  <p class="note" style="margin-top:0">CDP の実描画確認では、<code>知る、ダイビル</code> の<b>読点 <code>、</code> の 1 文字だけが <code>Yaku Han JP Medium</code>、残り 6 文字が <code>Noto Sans JP</code></b>。約物の余白だけサブセットフォントに逃がす設計が機能している。</p>
+  <div class="yk-grid">
+    <div class="yk-box"><h4>'Noto Sans JP', sans-serif（約物そのまま）</h4><p class="yk-off">知る、ダイビル。「ビル造り」の100年</p></div>
+    <div class="yk-box"><h4>YakuHanJP, 'Noto Sans JP'（★実サイト）</h4><p class="yk-on">知る、ダイビル。「ビル造り」の100年</p></div>
+  </div>
+
+  <h3 style="font-size:20rem;font-weight:700;line-height:1.5;letter-spacing:.1em;margin:36rem 0 6rem;color:var(--black)">line-height: 1 が全子孫の既定</h3>
+  <p class="note" style="margin-top:0"><code>body { line-height: 1 }</code> なので、<b>本文ブロックで宣言を忘れると行が潰れる</b>。実測でも比率 1.00 が 38 要素（下層 43 要素で最多）。</p>
+  <div class="lh-grid">
+    <div class="lh-box lh-1"><h4>line-height: 1（既定が降りたまま）</h4><p>1920年代、大阪は東京をしのぐ日本一の都市でした。旧ダイビル本館の特長は華やかさだけではありません。</p></div>
+    <div class="lh-box lh-15"><h4>line-height: 1.5（★本文で宣言し直す）</h4><p>1920年代、大阪は東京をしのぐ日本一の都市でした。旧ダイビル本館の特長は華やかさだけではありません。</p></div>
+  </div>
+
+  <p class="note"><b>字間は各要素が <code>em</code> を持つ。</b> 50px → 5px、26px → 2.6px、14px → 1.4px と<b>サイズに比例して px が変わる</b>（= どれも 0.1em）。<code>body</code> からの px 継承ではない。</p>
+  <p class="note"><b><code>--font_family_en: 'Inter', sans-serif</code> は使わない。</b> フォントを調達していないので <code>sans-serif</code> に落ちる。可視要素も 0。欧文は Barlow（weight 200 と 700 の 2 段）だけ。</p>
+  <p class="note"><b><code>font-feature-settings</code> は 0 要素。</b> 実測でも <code>palt</code> は −0.93% しか動かない（YakuHanJP が先に約物を詰めているため）。足す必要はない。</p>
+  <p class="note"><b>実サイトの誤り（並記）</b>: <code>letter-spacing: 1.5</code>（単位なし）という宣言が 1 つあるが、単位なしの数値は無効なので<b>効いていない</b>。<code>1.5px</code> か <code>0.1em</code> のつもりだったと思われる。</p>
+</div>
+</section>
+
+<section class="section" id="components">
+  <div class="section-label">03 / Components</div>
+  <div class="eyebrow">Parts</div>
+  <h2 class="section-title">角丸はトークンと実装が5種に割れる</h2>
+  <p class="section-lead"><code>--border_radius: 6px</code> というトークンがあるのに、実装は <b>5 種類</b>（<code>10px 10px 0 0</code> 22 要素 / <code>6px</code> 17 / <code>50%</code> 12 / <code>10px</code> 12 / <code>1440px</code> 5〜11）。<b>物件カードの「上辺だけ 10px」がこのサイトらしい形。</b></p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-cta">知る、ダイビル</a>
+    <a href="#" class="btn btn-alt">歴史を知る</a>
+    <a href="#" class="btn btn-solid">プロジェクトストーリー</a>
+    <a href="#" class="btn btn-pill">ニュースの一覧を見る</a>
+  </div>
+  <p class="note" style="margin-top:0">トランジションは <code>--easing: cubic-bezier(.8, 0, .4, 1)</code> の 1 本で統一する（立ち上がりが遅く、終わりが速い）。</p>
+
+  <h3 style="font-size:20rem;font-weight:700;line-height:1.5;letter-spacing:.1em;margin:36rem 0 16rem;color:var(--black)">物件カード（border-radius: 10px 10px 0 0）</h3>
+  <div class="card-grid">
+    <div class="prop-card"><div class="prop-head">OSAKA</div><div class="prop-body"><div class="prop-ttl">中之島ダイビル</div><div class="prop-txt">御堂筋ダイビル建替計画を含む、大阪中心部のオフィス群。</div></div></div>
+    <div class="prop-card"><div class="prop-head">TOKYO</div><div class="prop-body"><div class="prop-ttl">八重洲ダイビル</div><div class="prop-txt">八重洲ダイビル建替計画。東京駅前の再開発。</div></div></div>
+    <div class="prop-card"><div class="prop-head">VIETNAM</div><div class="prop-body"><div class="prop-ttl">CornerStone Building</div><div class="prop-txt">ハノイ中心部のオフィスビル。</div></div></div>
+  </div>
+
+  <h3 style="font-size:20rem;font-weight:700;line-height:1.5;letter-spacing:.1em;margin:36rem 0 16rem;color:var(--black)">汎用カード（border-radius: 6px）</h3>
+  <div class="card-grid">
+    <div class="plain-card"><div class="plain-ttl">「大大阪」時代、都市の象徴であったダイビル</div><div class="plain-txt">1920年代、大阪は東京をしのぐ日本一の都市でした。</div></div>
+    <div class="plain-card"><div class="plain-ttl">100年前からビルを造る、オフィスビルのパイオニア</div><div class="plain-txt">ビル開発から管理までを行う、一貫経営。</div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">04 / Elevation &amp; Layout</div>
+  <div class="eyebrow">Depth</div>
+  <h2 class="section-title">影は0種</h2>
+  <p class="section-lead">自社の要素に <code>box-shadow</code> は 1 つも無い。実測で出る <code>rgba(0,0,0,0.3) 0 30px 70px 0</code> は <b>Cookiebot（同意バナー）由来の 1 要素</b>。奥行きは影ではなく<b>紺の面と青のグラデーション</b>で作る。</p>
+
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">Level 0</div><div class="elev-val">none（自社の要素はすべてこれ）</div></div>
+    <div class="elev flat"><div class="elev-name">面で作る奥行き</div><div class="elev-val">background: #21303C（488 要素）</div></div>
+  </div>
+
+  <h3 style="font-size:20rem;font-weight:700;line-height:1.5;letter-spacing:.1em;margin:40rem 0 16rem;color:var(--black)">コンテナ幅</h3>
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:100%">1200px — 既定（6 要素）</div>
+    <div class="layout-bar" style="width:90%">1080px — 本文（5 要素）</div>
+    <div class="layout-bar" style="width:83.3%">1000px — --max_w（トークンの宣言値）</div>
+  </div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:10px 10px 0 0"></div><div class="radius-label">10px 10px 0 0（物件・22 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:6px"></div><div class="radius-label">6px（--border_radius・17 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:10px"></div><div class="radius-label">10px（画像タイル・12 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:1440px"></div><div class="radius-label">1440px（ピル・5〜11 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:50%;width:70rem"></div><div class="radius-label">50%（アイコン・12 要素）</div></div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="responsive">
+  <div class="section-label">05 / Responsive</div>
+  <div class="eyebrow">Width</div>
+  <h2 class="section-title">ルートは19幅すべてで1px</h2>
+  <p class="section-lead"><code>html</code> 1px / <code>body</code> 16px は 1920〜320px の <b>19 幅すべてで動かない</b>。<code>h2</code> も 24px、<code>p</code> も 15px のまま。流体も <code>clamp()</code> も崖も無い。CSS 内に <code>body { font-size: 14rem }</code> があるが、<b>19 幅のどれでも到達しない</b>。</p>
+  <p class="note">ブレークポイントは <code>print, screen and (min-width: 1000px)</code> が 10 件で最多。ほかに 1560 / 1400 / 1365 / 1279 / 1169 / 999 / 767 / 499px。<b><code>min-width</code> 基準と <code>print,</code> の併記</b>がこのサイトの癖。</p>
+  <p class="note"><code>--header_h</code> は 100px → 70px に切り替わる。言語切替（<code>JP</code> / <code>EN</code>）は <code>height: 22px</code> でモバイルも同じなので、<b>44px 基準を満たさない</b>。</p>
+  <p class="note"><b>ヒーローは three.js の <code>&lt;canvas&gt;</code>（2020×1405・<code>data-engine="three.js r153"</code>）。</b>「BUILD NEXT.」は <code>mv_logo.svg</code>（529×49・<code>alt="BUILD NEXT"</code>）の画像で、その下の「ビルを造り、街を創り、時代を拓く」だけが実テキスト。<b>ロゴタイプを Barlow で組み直さないこと。</b></p>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-head">DAIBIRU</div>
+    <div class="footer-cols">
+      <div class="footer-col"><a href="#">知る、ダイビル</a><a href="#">プロジェクトストーリー</a><a href="#">企業情報</a></div>
+      <div class="footer-col"><a href="#">物件情報</a><a href="#">サステナビリティ</a><a href="#">採用情報</a></div>
+      <div class="footer-col"><a href="#">ニュース</a><a href="#">資料室</a><a href="#">お問い合わせ</a></div>
+    </div>
+    <p class="footer-copy">&copy; Copyright DAIBIRU Corporation. All Rights Reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>

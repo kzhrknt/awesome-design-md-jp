@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (652 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (655 sites)</a>
 </p>
 
 <table>
@@ -1016,6 +1016,11 @@
 </tr>
 <tr>
 <td align="center"><strong>三菱重工業</strong><br><img src="design-md/mhi/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ビットバンク</strong><br><img src="design-md/bitbank/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>文化学園</strong><br><img src="design-md/bunka/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>ダイビル</strong><br><img src="design-md/daibiru/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1729,11 +1734,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [エアークローゼット (airCloset)](https://www.air-closet.com/) | Fashion Subscription / D2C | [DESIGN.md](design-md/air-closet/DESIGN.md) | [preview.html](design-md/air-closet/preview.html) |
 | [アマナ (amana)](https://amana.jp/) | Visual Communication / Agency | [DESIGN.md](design-md/amana/DESIGN.md) | [preview.html](design-md/amana/preview.html) |
 | [三菱重工業 (Mitsubishi Heavy Industries)](https://www.mhi.com/jp) | Heavy Industry / Corporate | [DESIGN.md](design-md/mhi/DESIGN.md) | [preview.html](design-md/mhi/preview.html) |
+| [ビットバンク (bitbank)](https://bitbank.cc/) | Crypto Exchange / Fintech | [DESIGN.md](design-md/bitbank/DESIGN.md) | [preview.html](design-md/bitbank/preview.html) |
+| [文化学園 (BUNKA GAKUEN)](https://bunka.ac.jp/) | Education / Fashion School | [DESIGN.md](design-md/bunka/DESIGN.md) | [preview.html](design-md/bunka/preview.html) |
+| [ダイビル (DAIBIRU)](https://www.daibiru.co.jp/) | Real Estate / Office Buildings | [DESIGN.md](design-md/daibiru/DESIGN.md) | [preview.html](design-md/daibiru/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (652 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (655 sites)</a>
 </p>
 
 <table>
@@ -2715,6 +2723,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>三菱重工業</strong><br><img src="design-md/mhi/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ビットバンク</strong><br><img src="design-md/bitbank/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>文化学園</strong><br><img src="design-md/bunka/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>ダイビル</strong><br><img src="design-md/daibiru/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
