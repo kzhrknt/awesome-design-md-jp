@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (655 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (658 sites)</a>
 </p>
 
 <table>
@@ -1021,6 +1021,11 @@
 </tr>
 <tr>
 <td align="center"><strong>ダイビル</strong><br><img src="design-md/daibiru/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>セラミック・ジャパン</strong><br><img src="design-md/ceramic-japan/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>大同特殊鋼</strong><br><img src="design-md/daido-steel/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>博展</strong><br><img src="design-md/hakuten/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1737,11 +1742,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [ビットバンク (bitbank)](https://bitbank.cc/) | Crypto Exchange / Fintech | [DESIGN.md](design-md/bitbank/DESIGN.md) | [preview.html](design-md/bitbank/preview.html) |
 | [文化学園 (BUNKA GAKUEN)](https://bunka.ac.jp/) | Education / Fashion School | [DESIGN.md](design-md/bunka/DESIGN.md) | [preview.html](design-md/bunka/preview.html) |
 | [ダイビル (DAIBIRU)](https://www.daibiru.co.jp/) | Real Estate / Office Buildings | [DESIGN.md](design-md/daibiru/DESIGN.md) | [preview.html](design-md/daibiru/preview.html) |
+| [セラミック・ジャパン (Ceramic Japan)](https://ceramic-japan.co.jp/) | Ceramics / Manufacturer | [DESIGN.md](design-md/ceramic-japan/DESIGN.md) | [preview.html](design-md/ceramic-japan/preview.html) |
+| [大同特殊鋼 (Daido Steel)](https://www.daido.co.jp/) | Specialty Steel / Corporate | [DESIGN.md](design-md/daido-steel/DESIGN.md) | [preview.html](design-md/daido-steel/preview.html) |
+| [博展 (HAKUTEN)](https://www.hakuten.co.jp/) | Experience Design / Agency | [DESIGN.md](design-md/hakuten/DESIGN.md) | [preview.html](design-md/hakuten/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (655 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (658 sites)</a>
 </p>
 
 <table>
@@ -2728,6 +2736,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>ダイビル</strong><br><img src="design-md/daibiru/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>セラミック・ジャパン</strong><br><img src="design-md/ceramic-japan/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>大同特殊鋼</strong><br><img src="design-md/daido-steel/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>博展</strong><br><img src="design-md/hakuten/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

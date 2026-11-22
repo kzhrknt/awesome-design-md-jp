@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 博展（HAKUTEN）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@200;500;700&family=Noto+Sans+JP:wght@100;300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Sizes ===
+       ★このサイトの核心。CSS 変数 78 個のうち約 72 個が --vw<N>px という
+       「設計 px を名前にして値は vw」のサイズトークン。
+       デスクトップは N ÷ 1440 × 100 vw、モバイル（_s）は N ÷ 375 × 100 vw。
+       色のトークンは 1 つも無い。2026-11-22 実測 */
+    --vw4px:  0.277777vw;  --vw5px:  0.347222vw;  --vw6px:  0.42vw;
+    --vw8px:  0.555555vw;  --vw10px: 0.694444vw;  --vw11px: 0.763888vw;
+    --vw12px: 0.833333vw;  --vw13px: 0.902777vw;  --vw14px: 0.972222vw;
+    --vw15px: 1.041666vw;  --vw16px: 1.111111vw;  --vw17px: 1.180555vw;
+    --vw18px: 1.25vw;      --vw20px: 1.388888vw;  --vw24px: 1.666666vw;
+    --vw26px: 1.805555vw;  --vw30px: 2.083333vw;  --vw32px: 2.222222vw;
+    --vw36px: 2.5vw;       --vw40px: 2.777777vw;  --vw48px: 3.333333vw;
+    --vw56px: 3.888888vw;
+    /* モバイル（設計幅 375px） */
+    --vw10px_s: 2.666666vw; --vw12px_s: 3.2vw;     --vw13px_s: 3.466666vw;
+    --vw14px_s: 3.733333vw; --vw15px_s: 4vw;       --vw16px_s: 4.266666vw;
+    --vw18px_s: 4.8vw;      --vw20px_s: 5.333333vw;--vw24px_s: 6.4vw;
+    --vw30px_s: 8vw;        --vw32px_s: 8.533333vw;--vw36px_s: 9.6vw;
+    --vw40px_s: 10.666666vw;--vw48px_s: 12.8vw;    --vw56px_s: 14.933333vw;
+
+    /* === Easing（:root にある唯一の非サイズ変数） === */
+    --easeOutExpo:   cubic-bezier(0.16, 1, 0.3, 1);
+    --easeOutQuint:  cubic-bezier(0.22, 1, 0.36, 1);
+    --easeOutCirc:   cubic-bezier(0, 0.55, 0.45, 1);
+    --easeInOutCirc: cubic-bezier(0.85, 0, 0.15, 1);
+
+    /* === Colors ===
+       ★CSS 変数には色が 1 つも無い。すべて直書き。以下は computed style の実測値 */
+    --charcoal:  #3b3b3d;   /* ★唯一のブランド色。文字 29 要素 ＋ 面 10 要素 */
+    --text-2:    #3c3c3c;   /* 事例カードのクライアント名（可視 10 要素） */
+    --border:    #5c5c5c;   /* CTA のピル枠 */
+    --label:     #838383;   /* MEDIA / NEWS のラベル（可視 5 要素） */
+    --muted:     #959595;   /* タグ（可視 11 要素） */
+    --surface:   #e9e8e7;   /* 淡い面（可視 8 要素） */
+    --white:     #ffffff;   /* ★最多の文字色（可視 72 要素） */
+    --bg:        #ffffff;
+
+    /* === Fonts === */
+    --font-jp: "Noto Sans JP", sans-serif;                          /* weight 100/300/400/500/700 */
+    --font-en: "Be Vietnam Pro", "Noto Sans JP", sans-serif;        /* weight 200/500/700 のみ実在 */
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Letter spacing: normal が既定（可視 86 要素）。
+       小さい文字は 0.05em、大きい見出しは負 === */
+    --ls-body:  0.05em;    /* 18px → 0.9px / 14px → 0.7px / 12px → 0.6px */
+    --ls-huge:  -0.025em;  /* 88px → -2.2px */
+    --ls-large: -0.02em;   /* 36px → -0.72px */
+
+    --r-pill: 19px;
+    /* box-shadow は 2 ページとも 0 種。変数を置かない */
+    --container: 1200px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { font-size: 16px; }          /* ★19 幅すべて 16px で固定。可変は body 側 */
+  body {
+    background: var(--bg);
+    color: var(--charcoal);
+    font-family: var(--font-jp);
+    font-size: min(var(--vw18px), 18px);   /* ★= min(1.25vw, 18px)。1440px で 18px、769px で 9.61px */
+    font-weight: 400;
+    line-height: normal;               /* ★実サイトは body に line-height を宣言していない */
+    letter-spacing: normal;
+    /* font-feature-settings は書かない。
+       実サイトは "palt" を 22 要素（Web マガジンの記事タイトル）だけに配っている。
+       効かないわけではなく（Noto Sans JP の約物で -23.36%）、使っていないだけ。 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { background: var(--charcoal); color: var(--white); }
+  .header-inner { display: flex; align-items: center; max-width: var(--container); margin: 0 auto; padding: 18px 20px; gap: 26px; }
+  .logo { font-family: var(--font-en); font-size: 18px; font-weight: 700; color: var(--white); text-decoration: none; letter-spacing: 0.04em; }
+  .header-nav { display: flex; gap: 22px; margin-left: auto; }
+  .header-nav a { font-family: var(--font-en); font-size: 13px; font-weight: 700; line-height: 1; color: var(--white); text-decoration: none; }
+
+  /* HERO */
+  .hero {
+    position: relative; min-height: 440px; display: flex; align-items: center;
+    padding: 70px 20px;
+    background-image:
+      linear-gradient(rgba(20, 18, 16, .58), rgba(20, 18, 16, .68)),
+      linear-gradient(135deg, #4a3f36 0%, #6b5c4e 42%, #3a332c 78%, #55493e 100%);
+    background-size: cover;
+  }
+  .hero-inner { max-width: var(--container); margin: 0 auto; width: 100%; }
+  .hero-copy { font-size: 40px; font-weight: 700; line-height: 1.55; color: var(--white); }
+  .hero-sub { font-family: var(--font-en); font-size: 26px; font-weight: 500; line-height: 1.4; color: var(--white); margin-top: 20px; }
+  .hero-note { font-family: var(--font-mono); font-size: 12px; color: rgba(255,255,255,.8); margin-top: 26px; }
+
+  /* SECTIONS */
+  .section { padding: 64px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--surface); }
+  .section-alt .section-inner { padding: 64px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: #6e6e6e; margin-bottom: 12px; }
+  .section-title { font-family: var(--font-en); font-size: 48px; font-weight: 700; line-height: 1.40; letter-spacing: normal; margin-bottom: 8px; }
+  .section-sub { font-size: 18px; font-weight: 700; line-height: 1.5; letter-spacing: var(--ls-body); margin-bottom: 18px; }
+  .lead { font-size: 18px; line-height: 1.78; letter-spacing: var(--ls-body); max-width: 820px; margin-bottom: 32px; }
+  .note { font-size: 16px; line-height: 1.78; letter-spacing: var(--ls-body); color: #4a4a4c; margin-top: 22px; max-width: 840px; }
+  code { font-family: var(--font-mono); font-size: 13px; background: var(--surface); padding: 1px 5px; letter-spacing: normal; }
+  .section-alt code { background: #dcdad8; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .swatch { border: 1px solid #d6d4d2; background: var(--bg); }
+  .swatch-chip { height: 76px; }
+  .swatch-body { padding: 12px; }
+  .swatch-name { font-size: 14px; font-weight: 700; line-height: 1.4; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--label); margin-top: 3px; }
+  .swatch-use { font-size: 12px; line-height: 1.6; color: #4a4a4c; margin-top: 6px; letter-spacing: var(--ls-body); }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid #d6d4d2; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: #6e6e6e; line-height: 1.75; }
+  .type-meta b { display: block; font-family: var(--font-jp); font-size: 13px; font-weight: 700; color: var(--charcoal); }
+  .scale-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; align-items: baseline; }
+  .scale-bar span { background: var(--surface); padding: 8px 14px; line-height: 1; font-family: var(--font-en); font-weight: 500; }
+  .section-alt .scale-bar span { background: #dcdad8; }
+
+  /* WEIGHT DEMO */
+  .wt-row { display: flex; gap: 26px; flex-wrap: wrap; align-items: baseline; margin-top: 12px; }
+  .wt-item { text-align: center; }
+  .wt-sample { font-family: var(--font-en); font-size: 34px; line-height: 1.3; }
+  .wt-jp { font-family: var(--font-jp); font-size: 32px; line-height: 1.3; }
+  .wt-cap { font-family: var(--font-mono); font-size: 11px; color: #6e6e6e; margin-top: 6px; }
+  .wt-bad .wt-cap { color: #9a2b2b; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 24px; }
+  .btn { font-family: var(--font-en); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+  .btn-pill { background: transparent; color: var(--charcoal); border: 1px solid var(--border); border-radius: var(--r-pill); padding: 10px 32px; font-size: 16px; font-weight: 200; line-height: 1; }
+  .btn-dark { background: var(--charcoal); color: var(--white); border: 0; border-radius: 0; padding: 14px 32px; font-size: 18px; font-weight: 400; line-height: normal; }
+  .btn-light { background: var(--surface); color: var(--charcoal); border: 0; border-radius: 0; padding: 14px 32px; font-size: 18px; font-weight: 400; line-height: normal; }
+  .btn.is-focus { outline: 2px solid var(--charcoal); outline-offset: 3px; }
+  .dots { display: flex; gap: 8px; align-items: center; margin-top: 16px; }
+  .dot { width: 26px; height: 26px; border-radius: 100%; background: var(--surface); color: var(--charcoal); display: flex; align-items: center; justify-content: center; font-size: 13.3333px; font-family: var(--font-en); }
+  .dot.is-on { background: var(--charcoal); color: var(--white); }
+
+  /* WORK CARDS — 写真の上の文字。覆いは要素自身の background-image に重ねる */
+  .work-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+  .work {
+    display: block; text-decoration: none; min-height: 230px;
+    padding: 20px; display: flex; flex-direction: column; justify-content: flex-end;
+    background-image:
+      linear-gradient(rgba(255,255,255,0), rgba(0,0,0,0.8)),
+      linear-gradient(140deg, #6e665c, #403a33);
+    background-size: cover;
+  }
+  .work.w2 { background-image: linear-gradient(rgba(255,255,255,0), rgba(0,0,0,0.8)), linear-gradient(140deg, #5c6670, #333a40); }
+  .work.w3 { background-image: linear-gradient(rgba(255,255,255,0), rgba(0,0,0,0.8)), linear-gradient(140deg, #70655c, #3f3833); }
+  .work-client { font-size: 12px; line-height: 1.5; letter-spacing: var(--ls-body); color: var(--white); opacity: .9; }
+  .work-title { font-size: 18px; font-weight: 700; line-height: 1.5; letter-spacing: var(--ls-body); color: var(--white); margin-top: 6px; }
+  .work-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  .work-tags span { font-size: 14px; line-height: 1.43; letter-spacing: var(--ls-body); color: #d6d4d2; }
+
+  /* HOVER HARD-STOP */
+  .hard { margin-top: 24px; display: flex; gap: 18px; flex-wrap: wrap; }
+  /* 文字は面の境目（50%）に掛けない。左半分が黒なら左寄せ・白文字、右半分が黒なら右寄せ・白文字 */
+  .hard-box {
+    width: 300px; height: 72px; display: flex; align-items: center; justify-content: flex-start;
+    padding-right: 158px; padding-left: 20px;
+    font-family: var(--font-en); font-size: 15px; font-weight: 500; color: var(--white);
+    background-image: linear-gradient(to right, #3b3b3d 0%, #3b3b3d 50%, #ffffff 50%, #ffffff 100%);
+    border: 1px solid var(--border);
+  }
+  .hard-box.rev {
+    justify-content: flex-end; padding-right: 20px; padding-left: 158px;
+    background-image: linear-gradient(to right, #ffffff 0%, #ffffff 50%, #3b3b3d 50%, #3b3b3d 100%);
+  }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 26px; }
+  .field label { display: block; font-size: 14px; font-weight: 700; line-height: 1.5; letter-spacing: var(--ls-body); margin-bottom: 8px; }
+  .field input, .field select {
+    width: 100%; background: var(--bg); color: var(--charcoal);
+    border: 1px solid var(--border); border-radius: 0;
+    padding: 5px 14px; height: 48px; font-size: 16px; line-height: 1.5;
+    font-family: var(--font-jp); letter-spacing: var(--ls-body);
+  }
+  .field.is-focus input { outline: 2px solid var(--charcoal); }
+  .field.is-error input { border-color: #9a2b2b; outline: 2px solid #9a2b2b; }
+  .field-msg { font-size: 12px; line-height: 1.6; color: var(--label); margin-top: 7px; letter-spacing: var(--ls-body); }
+  .field.is-error .field-msg { color: #9a2b2b; }
+
+  /* RADIUS / ELEVATION */
+  .radius-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 130px; height: 58px; background: var(--charcoal); }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; color: #6e6e6e; margin-top: 7px; }
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 24px; margin-top: 18px; }
+  .elev { background: var(--bg); border: 1px solid #d6d4d2; padding: 26px; text-align: center; }
+  .elev-name { font-size: 16px; font-weight: 700; line-height: 1.4; }
+  .elev-val { font-family: var(--font-mono); font-size: 11px; color: #6e6e6e; margin-top: 8px; }
+
+  /* LAYOUT */
+  .layout-demo { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .layout-bar { background: var(--surface); height: 36px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; color: #4a4a4c; }
+  .section-alt .layout-bar { background: #dcdad8; }
+  .cliff { width: 100%; border-collapse: collapse; margin-top: 18px; max-width: 640px; }
+  .cliff th, .cliff td { font-size: 14px; line-height: 1.5; text-align: left; padding: 8px 14px 8px 0; border-bottom: 1px solid #d6d4d2; }
+  .cliff th { font-weight: 700; }
+  .cliff .hl { color: #9a2b2b; font-weight: 700; }
+
+  /* FOOTER */
+  .footer { background: var(--charcoal); color: var(--white); padding: 46px 20px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-head { font-family: var(--font-en); font-size: 32px; font-weight: 700; line-height: 1; }
+  .footer-cols { display: flex; gap: 48px; margin-top: 22px; flex-wrap: wrap; }
+  .footer-col a { display: block; font-size: 14px; font-weight: 300; line-height: 1.8; letter-spacing: 1px; color: var(--white); text-decoration: none; }
+  .footer-copy { font-size: 11px; font-weight: 300; line-height: 1.3; margin-top: 28px; color: #c4c4c4; }
+
+  /* ★実サイトのブレークポイントは 768px の 1 箇所（only screen and (max-width: 768px)） */
+  @media (max-width: 768px) {
+    body { font-size: 16px; }   /* ★769px の 9.61px から 16px に跳ぶ（1.66 倍） */
+    .section, .section-alt .section-inner { padding: 44px 16px; }
+    .section-title { font-size: 40px; }
+    .hero-copy { font-size: 28px; }
+    .hero-sub { font-size: 20px; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .header-nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">HAKUTEN</a>
+    <nav class="header-nav">
+      <a href="#">SERVICE</a><a href="#">WORKS</a><a href="#">STORY</a><a href="#">COMPANY</a><a href="#">CONTACT</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <p class="hero-copy">人と社会の<br>コミュニケーションにココロを通わせ、<br>未来へつなげる原動力をつくる。</p>
+    <p class="hero-sub">Communication Design®</p>
+    <div class="hero-note">全画面の動画ヒーロー ＋ 白の実テキスト。地は #3b3b3d（div.stay 1440×900）</div>
+  </div>
+</div>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">COLOR</h2>
+  <p class="section-sub">色は #3b3b3d と白の 2 つだけ</p>
+  <p class="lead">彩度を持つ色が<b>ひとつも出てこない</b>。ブランド色は <code>#3b3b3d</code> の 1 色で、事例写真とヒーローの動画が色を担う。<b>CSS 変数 78 個の中に色のトークンは 1 つも無い</b>（全部サイズと easing）。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#3b3b3d"></div><div class="swatch-body"><div class="swatch-name">Hakuten Charcoal</div><div class="swatch-hex">#3b3b3d</div><div class="swatch-use">★唯一のブランド色。文字 29 要素 ＋ 面 10 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#3c3c3c"></div><div class="swatch-body"><div class="swatch-name">Text Secondary</div><div class="swatch-hex">#3c3c3c</div><div class="swatch-use">事例カードのクライアント名（可視 10 要素）。#3b3b3d と 1 違い</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#5c5c5c"></div><div class="swatch-body"><div class="swatch-name">Border</div><div class="swatch-hex">#5c5c5c</div><div class="swatch-use">CTA のピル枠（1px solid）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#838383"></div><div class="swatch-body"><div class="swatch-name">Label</div><div class="swatch-hex">#838383</div><div class="swatch-use">MEDIA / NEWS のラベル（可視 5 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#959595"></div><div class="swatch-body"><div class="swatch-name">Muted</div><div class="swatch-hex">#959595</div><div class="swatch-use">タグ（#BtoB・#展示会/学会出展）（可視 11 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#e9e8e7"></div><div class="swatch-body"><div class="swatch-name">Surface Light</div><div class="swatch-hex">#e9e8e7</div><div class="swatch-use">ページネーション・見出し背景（可視 8 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffffff;border-bottom:1px solid #d6d4d2"></div><div class="swatch-body"><div class="swatch-name">White</div><div class="swatch-hex">#ffffff</div><div class="swatch-use">★最多の文字色（可視 72 要素）</div></div></div>
+  </div>
+
+  <p class="note"><b>グレーが 5 段ある。</b><code>#3b3b3d</code> / <code>#3c3c3c</code> / <code>#5c5c5c</code> / <code>#838383</code> / <code>#959595</code> はほぼ同じ色に見えるが用途が分かれているので、まとめずに全部拾うこと。</p>
+</section>
+
+<section class="section-alt" id="tokens">
+<div class="section-inner">
+  <div class="section-label">02 / Tokens</div>
+  <h2 class="section-title">TOKENS</h2>
+  <p class="section-sub">--vw&lt;N&gt;px ＝ 設計 px を名前に、値は vw</p>
+  <p class="lead">CSS 変数 78 個のうち約 72 個がこの形。<b>分母はデスクトップが 1440px、<code>_s</code> 付きのモバイルが 375px</b>。サイズも余白も字間も、全部ここから取る。</p>
+
+  <pre style="font-family:var(--font-mono);font-size:13px;line-height:1.9;background:#dcdad8;padding:18px 20px;overflow-x:auto;letter-spacing:normal">:root {
+  --vw18px:   1.25vw;        /* 18 ÷ 1440 × 100 */
+  --vw48px:   3.333333vw;    /* 48 ÷ 1440 × 100 */
+  --vw56px:   3.888888vw;
+  --vw18px_s: 4.8vw;         /* 18 ÷ 375 × 100 */
+  --vw40px_s: 10.666666vw;
+}
+body { font-size: min(var(--vw18px), 18px); }   /* = min(1.25vw, 18px) */</pre>
+
+  <p class="note"><b><code>html</code> は 19 幅すべて 16px で固定。</b>流体は <code>body</code> 側で作る。<code>html</code> だけ測ると「完全固定のサイト」に見えるので注意。<br>
+  <b><code>--vw*</code> を px に読み替えないこと。</b>読み替えると 1440px 以外の幅で全部ずれる。</p>
+
+  <p class="note"><b>easing もトークン化されている</b>（<code>:root</code> にある唯一の非サイズ変数）。<code>--easeOutExpo</code> / <code>--easeOutQuint</code> / <code>--easeOutCirc</code> / <code>--easeInOutCirc</code> の 4 つから選ぶ。</p>
+</div>
+</section>
+
+<section class="section" id="typography">
+  <div class="section-label">03 / Typography</div>
+  <h2 class="section-title">TYPOGRAPHY</h2>
+  <p class="section-sub">和欧 2 本立てを素直に書く</p>
+  <p class="lead">本文は <code>"Noto Sans JP", sans-serif</code>、欧文要素は <code>"Be Vietnam Pro", "Noto Sans JP", sans-serif</code>。<b>欧文スタックの受け皿に和文書体を入れてある</b>ので、欧文スタックに和文が混じっても generic に落ちない。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:10px">10</span><span style="font-size:12px">12</span><span style="font-size:13px">13</span>
+    <span style="font-size:14px">14</span><span style="font-size:16px">16</span><span style="font-size:18px">18</span>
+    <span style="font-size:32px">32</span><span style="font-size:36px">36</span><span style="font-size:48px">48</span>
+    <span style="font-size:72px;letter-spacing:-.025em">88</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Display (EN) ★</b>Be Vietnam Pro / 88px / 700<br><b style="display:inline">ls -2.2px（-0.025em）</b></div><div style="font-family:var(--font-en);font-size:72px;font-weight:700;line-height:1.1;letter-spacing:-.025em">PURPOSE</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Title (EN)</b>Be Vietnam Pro / 48px / 700<br>lh 1.40 / ls normal</div><div style="font-family:var(--font-en);font-size:48px;font-weight:700;line-height:1.4">CONTACT</div></div>
+  <div class="type-row"><div class="type-meta"><b>信条（和）</b>Noto Sans JP / 36px / <b style="display:inline;color:#9a2b2b">900 → 実際は 700</b><br>ls -0.72px（-0.02em）</div><div style="font-size:36px;font-weight:900;line-height:1.3;letter-spacing:-.02em">挑戦を続ける。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav（開いた状態）</b>Be Vietnam Pro / 32px / 700<br><b style="display:inline">lh 0.80</b>（行が重なる）</div><div style="font-family:var(--font-en);font-size:32px;font-weight:700;line-height:.8">SERVICE<br>WORKS</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body / 記事タイトル ★</b>Noto Sans JP / 18px / 400・700<br>lh <b style="display:inline">normal（宣言なし）</b> / ls 0.9px</div><div style="font-size:18px;line-height:normal;letter-spacing:.05em">空間×テクノロジーで心を動かす。博展コンテンツデザイン局が切り拓く、これからの体験づくり。</div></div>
+  <div class="type-row"><div class="type-meta"><b>本文ブロック</b>Noto Sans JP / 18px / 400<br>lh 1.78（宣言している）</div><div style="font-size:18px;line-height:1.78;letter-spacing:.05em">人・モノ・コトが時間や場所を問わずつながることが当たり前になった今、豊かなコミュニケーションにはココロが必要だ。</div></div>
+  <div class="type-row"><div class="type-meta"><b>CTA</b>Be Vietnam Pro / 16px / <b style="display:inline">200</b><br>lh 1 / ls normal</div><div><a href="#" class="btn btn-pill">WORKS一覧</a></div></div>
+  <div class="type-row"><div class="type-meta"><b>Tag</b>Noto Sans JP / 14px / 500<br>lh 1.43 / ls 0.7px</div><div style="font-size:14px;font-weight:500;line-height:1.43;letter-spacing:.05em;color:#959595">#BtoB　#展示会/学会出展　#受賞作品</div></div>
+  <div class="type-row"><div class="type-meta"><b>Client</b>Noto Sans JP / 12px / 400<br>lh 1.50 / ls 0.6px</div><div style="font-size:12px;line-height:1.5;letter-spacing:.05em;color:#3c3c3c">東京建物株式会社</div></div>
+  <div class="type-row"><div class="type-meta"><b>Footer</b>Noto Sans JP / 10px（--vw10px） / <b style="display:inline">300</b><br>lh 1.30 / ls 1px</div><div style="font-size:10px;font-weight:300;line-height:1.3;letter-spacing:1px">サイトマップ　サイトポリシー　プライバシーポリシー</div></div>
+
+  <p class="note"><b>小さい文字は 0.05em 空け、大きい見出しは負で詰める。</b>18px → 0.9px / 14px → 0.7px / 12px → 0.6px は <b><code>em</code> 宣言が各サイズで px に解決されている</b>形。88px → -2.2px、36px → -0.72px だけ符号が逆になる。</p>
+
+  <h3 style="font-size:20px;font-weight:700;margin-top:34px;line-height:1.4">ウェイトは書かれているより少ない</h3>
+  <div class="wt-row">
+    <div class="wt-item"><div class="wt-sample" style="font-weight:200">Handgloves</div><div class="wt-cap">200 → 830.00px</div></div>
+    <div class="wt-item wt-bad"><div class="wt-sample" style="font-weight:300">Handgloves</div><div class="wt-cap">300 → 830.00px（200 と同値）</div></div>
+    <div class="wt-item wt-bad"><div class="wt-sample" style="font-weight:400">Handgloves</div><div class="wt-cap">400 → 872.81px（500 と同値）</div></div>
+    <div class="wt-item"><div class="wt-sample" style="font-weight:500">Handgloves</div><div class="wt-cap">500 → 872.81px</div></div>
+    <div class="wt-item"><div class="wt-sample" style="font-weight:700">Handgloves</div><div class="wt-cap">700 → 889.50px</div></div>
+    <div class="wt-item wt-bad"><div class="wt-sample" style="font-weight:900">Handgloves</div><div class="wt-cap">900 → 889.50px（700 と同値）</div></div>
+  </div>
+  <p class="note"><b>Be Vietnam Pro は <code>wght@200;500;700</code> の 3 本しか無い。</b>実スタック・100px で実測すると <b>100・200・300 → 830.00px ／ 400・500 → 872.81px ／ 600〜900 → 889.50px</b> の 3 面。<code>distributions.fontWeight</code> には 6 値が出るが、<b>描画は 3 段に丸められる。</b></p>
+
+  <div class="wt-row">
+    <div class="wt-item"><div class="wt-jp" style="font-weight:500">真摯であろう。</div><div class="wt-cap">Noto Sans JP 500 → 813.64px</div></div>
+    <div class="wt-item"><div class="wt-jp" style="font-weight:700">真摯であろう。</div><div class="wt-cap">700 → 837.98px</div></div>
+    <div class="wt-item wt-bad"><div class="wt-jp" style="font-weight:900">真摯であろう。</div><div class="wt-cap">900 → 837.98px（700 と同値・合成太字も起きない）</div></div>
+  </div>
+  <p class="note">Noto Sans JP は <code>wght@100;300;400;500;700</code> の 5 本。<b><code>font-weight: 900</code> を指定しても 700 で描画される</b>ので、実サイトの <code>挑戦を続ける。</code>（36px / weight 900）は実際には 700。</p>
+
+  <p class="note"><b><code>font-feature-settings: "palt"</code> は 22 要素だけ。</b>当たっているのは Web マガジン「tex」の記事タイトル（<code>.top-media__title</code> 18px）と導入文で、サイト本体の見出し・本文には 1 つも配っていない。<b>効かないわけではない</b>（Noto Sans JP の実スタック・48px で約物が 576.00px → 441.47px ＝ <b>-23.36%</b>）。<b>できるのにやっていない</b>ので、<code>body</code> に配ると既存の 1 ブロック以外が全部詰まって別物になる。</p>
+</section>
+
+<section class="section-alt" id="components">
+<div class="section-inner">
+  <div class="section-label">04 / Components</div>
+  <h2 class="section-title">COMPONENTS</h2>
+  <p class="section-sub">面のボタンは角丸ゼロ、CTA だけピル</p>
+  <p class="lead">角丸は <code>19px</code>（ピル）/ <code>50%</code> / <code>100%</code> / <code>0</code> の 4 つだけ。<code>4px</code> や <code>8px</code> のような中間の角丸は語彙に無い。</p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-pill">WORKS一覧</a>
+    <a href="#" class="btn btn-pill">MORE</a>
+    <a href="#" class="btn btn-dark">CONTACT</a>
+    <a href="#" class="btn btn-light">RECRUIT</a>
+    <a href="#" class="btn btn-pill is-focus">フォーカス状態</a>
+  </div>
+  <div class="dots"><span class="dot is-on">1</span><span class="dot">2</span><span class="dot">3</span><span class="dot">4</span></div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:19px"></div><div class="radius-label">19px（CTA のピル）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:0"></div><div class="radius-label">0（面のボタン・カード）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:100%;width:58px"></div><div class="radius-label">100%（ページネーション）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:50%;width:58px"></div><div class="radius-label">50%（アイコン）</div></div>
+  </div>
+
+  <h3 style="font-size:20px;font-weight:700;margin-top:40px;line-height:1.4">ホバーの面反転はハードストップ</h3>
+  <div class="hard">
+    <div class="hard-box">50% で切る</div>
+    <div class="hard-box rev">反転した状態</div>
+  </div>
+  <p class="note">停止位置 <code>50%</code> を 2 回書く <code>linear-gradient(to right, #3b3b3d 0%, #3b3b3d 50%, #fff 50%, #fff 100%)</code>（可視 7 要素）。<b>滑らかに見せる意図は無く、面を切り替えるための装置</b>として使っている。</p>
+</div>
+</section>
+
+<section class="section" id="works">
+  <div class="section-label">05 / Work Cards</div>
+  <h2 class="section-title">WORKS</h2>
+  <p class="section-sub">写真の上の白文字は、覆いを要素自身に重ねる</p>
+  <p class="lead">事例カードは<b>枠も影も無い</b>。写真の上に <code>linear-gradient(rgba(255,255,255,0), rgba(0,0,0,0.8))</code>（可視 20 要素）を重ねて白文字を読ませる。<b>覆いを別要素の絶対配置にしないこと</b>（lint が地色を追えなくなる）。</p>
+
+  <div class="work-grid">
+    <a href="#" class="work"><div class="work-client">東京建物株式会社</div><div class="work-title">国際物流総合展 2026　東京建物ブース</div><div class="work-tags"><span>#BtoB</span><span>#展示会/学会出展</span></div></a>
+    <a href="#" class="work w2"><div class="work-client">株式会社ENTAKU produce</div><div class="work-title">G-CHA &amp; Ba-CHA</div><div class="work-tags"><span>#BtoC</span><span>#店舗/ウィンドウディスプレイ</span></div></a>
+    <a href="#" class="work w3"><div class="work-client">鹿島建設株式会社</div><div class="work-title">まちの文脈を紐解き、光で表現するインスタレーション</div><div class="work-tags"><span>#BtoC</span><span>#アートイベント</span></div></a>
+  </div>
+</section>
+
+<section class="section-alt" id="forms">
+<div class="section-inner">
+  <div class="section-label">06 / Forms</div>
+  <h2 class="section-title">FORMS</h2>
+  <p class="section-sub">角丸ゼロ、枠は #5c5c5c</p>
+  <div class="form-grid">
+    <div class="field"><label for="f1">会社名</label><input id="f1" type="text" value="株式会社 博展"><div class="field-msg">正式名称でご入力ください</div></div>
+    <div class="field is-focus"><label for="f2">メールアドレス（フォーカス）</label><input id="f2" type="text" value="info@example.jp"><div class="field-msg">確認のご連絡を差し上げます</div></div>
+    <div class="field is-error"><label for="f3">ご相談内容（エラー）</label><input id="f3" type="text" value=""><div class="field-msg">ご相談内容をご入力ください</div></div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="elevation">
+  <div class="section-label">07 / Depth</div>
+  <h2 class="section-title">DEPTH</h2>
+  <p class="section-sub">影を 1 つも使わない</p>
+  <p class="lead"><code>box-shadow</code> は 2 ページとも <b>0 種</b>。階層は <code>#3b3b3d</code> の面、<code>#e9e8e7</code> の淡い面、写真の上のグラデーションの覆いで作る。</p>
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">Level 0</div><div class="elev-val">box-shadow: none（全要素）</div></div>
+    <div class="elev" style="background:#e9e8e7"><div class="elev-name">Surface Light</div><div class="elev-val">#e9e8e7</div></div>
+    <div class="elev" style="background:#3b3b3d;color:#ffffff;border-color:#3b3b3d"><div class="elev-name">Charcoal</div><div class="elev-val" style="color:#c4c4c4">#3b3b3d</div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">08 / Layout &amp; Responsive</div>
+  <h2 class="section-title">RESPONSIVE</h2>
+  <p class="section-sub">769 → 768px で 1.66 倍に跳ぶ</p>
+  <p class="lead">コンテナは <b><code>1200px</code></b>。ブレークポイントは <code>only screen and (max-width: 768px)</code> の 1 つだけ。</p>
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:100%">viewport</div>
+    <div class="layout-bar" style="width:1200px;max-width:100%">container 1200px</div>
+    <div class="layout-bar" style="width:90%">90%（下層）</div>
+  </div>
+
+  <table class="cliff">
+    <tr><th>幅</th><th><code>html</code></th><th><code>body</code></th><th><code>h2</code></th></tr>
+    <tr><td>1920px</td><td>16px</td><td>18px（上限）</td><td>48px</td></tr>
+    <tr><td><b>1440px</b></td><td>16px</td><td><b>18px</b></td><td>48px</td></tr>
+    <tr><td>1200px</td><td>16px</td><td>15px</td><td>40px</td></tr>
+    <tr><td>1024px</td><td>16px</td><td>12.8px</td><td>34.13px</td></tr>
+    <tr><td>834px</td><td>16px</td><td>10.425px</td><td>27.8px</td></tr>
+    <tr><td><b>769px</b></td><td>16px</td><td class="hl">9.6125px（最小）</td><td>25.63px</td></tr>
+    <tr><td><b>768px</b></td><td>16px</td><td class="hl">16px（1.66 倍）</td><td class="hl">81.92px（3.2 倍）</td></tr>
+    <tr><td>375px</td><td>16px</td><td>16px</td><td>40px</td></tr>
+  </table>
+
+  <p class="note"><b>768px を境に設計幅が 1440px 側から 375px 側（<code>--vw*_s</code>）に切り替わる</b>ため、<b>モバイルの方が本文が大きい</b>（375px で 15px、769px で 9.61px）。<b>タブレット帯（769〜1024px）だけ本文が 9.6〜12.8px まで縮む</b>のがこの設計の弱点。<br>
+  規定の 4 幅（1440 / 1200 / 834 / 375）だけ測ると、<b>769px の最小も 768px の崖も見えない。</b></p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-head">HAKUTEN</div>
+    <div class="footer-cols">
+      <div class="footer-col"><a href="#">SERVICE</a><a href="#">WORKS</a><a href="#">STORY</a></div>
+      <div class="footer-col"><a href="#">COMPANY</a><a href="#">PURPOSE</a><a href="#">SUSTAINABILITY</a></div>
+      <div class="footer-col"><a href="#">サイトマップ</a><a href="#">サイトポリシー</a><a href="#">プライバシーポリシー</a></div>
+    </div>
+    <div class="footer-copy">株式会社 博展 ／ このプレビューは実測値の再現で、実サイトのスクリーンショットではありません</div>
+  </div>
+</footer>
+
+</body>
+</html>

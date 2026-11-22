@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 大同特殊鋼（Daido Steel）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は 2 ページとも 0 個（html 側も body 側も 0）。
+       以下は computed style の実測値。2026-11-22 */
+    --red:         #dc0012;   /* ★Daido Red。文字 7 要素 ＋ 塗り面 2 要素 */
+    --blue:        #0192be;   /* ★Daido Blue。文字 18 要素 ＋ 塗り面 1 要素 */
+    --black:       #000000;   /* ★本文・ヒーローコピー（可視 49 要素）。純黒 */
+    --nav:         #323232;   /* グローバルナビ（可視 6 要素） */
+    --muted:       #848484;   /* プレースホルダ・日付・言語切替の非選択（可視 14 要素） */
+    --white:       #ffffff;   /* 面の上の文字（可視 19 要素） */
+    --surface:     #eaeaea;   /* ★最多の面（可視 69 要素）。製品検索・ピル */
+    --surface-lt:  #f2f2f2;   /* カテゴリカード（可視 16 要素） */
+    --surface-mid: #6e6d6d;   /* スライダーのページネーション（可視 15 要素） */
+    --bg:          #ffffff;   /* pageBackground.resolved / 根拠 body */
+    /* CMP の #e50111 はクッキーバナー（STRIGHT / IIJ）由来なので採用しない */
+
+    /* === Fonts ===
+       実サイトは Noto Sans JP / Noto Serif JP を 886 件の @font-face で宣言しているが
+       フォント要求は Poppins の 2 件だけで、和文は 1 バイトも読み込まれていない。
+       実描画は游ゴシック（CDP CSS.getPlatformFontsForNode で全要素 YuGothic）。
+       ここでは実サイトのスタックに "游ゴシック Medium" / "Yu Gothic Medium" を補った
+       「正しい書き方」を使う（実サイトには入っていない）。 */
+    --font-jp: Poppins, 游ゴシック体, YuGothic,
+               "游ゴシック Medium", "Yu Gothic Medium",   /* ★実サイトには無い。入れないと Windows で 500 が Regular に落ちる */
+               游ゴシック, "Yu Gothic",
+               "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN",
+               メイリオ, Meiryo, sans-serif;
+    --font-en:   Poppins, sans-serif;   /* loaded は 400 / 500 のみ */
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: 1.00 / 1.30 / 1.50 / 1.56 / 1.80 / 1.88 の 6 段 === */
+    --lh-ui:    1.00;   /* ★ナビ・ボタン（可視 30 要素 / 31 要素）。1 行で収まる UI */
+    --lh-tight: 1.30;   /* 見出し・ニュース（可視 41 要素で最多） */
+    --lh-mid:   1.50;   /* CTA */
+    --lh-hero:  1.56;   /* ヒーローのコピー専用（87.36px / 56px） */
+    --lh-body:  1.88;   /* ★本文（16px / 30px）。下層では 24 要素で最多 */
+
+    /* === Letter spacing: normal が既定（可視 103 要素中 103 要素）。例外は 3 種だけ === */
+    --ls:       normal;
+    --ls-hero:  0.28em;   /* ★ヒーローのみ。56px → 15.68px / 32px → 8.96px */
+    --ls-cta:   1.4px;    /* CTA・欧文見出し（16px → 0.088em） */
+    --ls-tag:   0.8px;    /* 製品カテゴリ */
+
+    /* === Radius: 実質すべて「完全なピル」。9999px ではなく 140〜280px を使う === */
+    --r-pill:   160px;
+    --r-pill-s: 140px;
+    --r-card:   25px;
+    --r-tab:    40px;
+    /* box-shadow は使わない（唯一の影は CMP のもの） */
+
+    --container: 1080px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { font-size: 62.5%; }        /* ★実サイト: html { font-size: 62.5% } = 10px。全幅固定 */
+  body {
+    background: var(--bg);
+    color: var(--black);
+    font-family: var(--font-jp);
+    font-size: 1.6rem;              /* ★16px。800px 以下で 1.5rem = 15px */
+    font-weight: 400;
+    line-height: var(--lh-body);
+    letter-spacing: var(--ls);
+    font-feature-settings: "palt";  /* ★実サイトは 1025 要素に配り、実測で見出し -13.1% 効いている */
+    word-break: break-all;          /* ★実サイトの指定。日本語の禁則処理を無効にして熟語の途中でも折る */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid #e0e0e0; }
+  .header-inner { display: flex; align-items: center; max-width: var(--container); margin: 0 auto; padding: 14px 20px; gap: 24px; }
+  .logo { display: flex; align-items: center; gap: 9px; text-decoration: none; color: var(--black); }
+  .logo-mark { width: 26px; height: 26px; background: var(--red); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 700; line-height: var(--lh-ui); }
+  .logo-text { font-size: 2rem; font-weight: 500; line-height: var(--lh-ui); }
+  .header-nav { display: flex; gap: 20px; margin-left: auto; }
+  .header-nav a { font-size: 1.5rem; font-weight: 500; line-height: var(--lh-ui); color: var(--nav); text-decoration: none; }
+  .header-lang { display: flex; gap: 8px; }
+  .header-lang span { font-size: 1.4rem; font-weight: 500; line-height: var(--lh-ui); color: var(--muted); }
+  .header-lang span.is-on { color: var(--black); }
+
+  /* HERO */
+  .hero {
+    position: relative; min-height: 360px; display: flex; align-items: center;
+    padding: 60px 20px;
+    background-image: linear-gradient(120deg, #d9eef6 0%, #eaf5fa 45%, #cfe6ef 100%);
+  }
+  .hero-inner { max-width: var(--container); margin: 0 auto; width: 100%; }
+  .hero-copy {
+    font-size: 5.6rem;                 /* ★56px（5.6rem） */
+    font-weight: 500;
+    line-height: var(--lh-hero);       /* 1.56 = 87.36px */
+    letter-spacing: var(--ls-hero);    /* ★0.28em = 15.68px */
+    color: var(--black);
+  }
+  .hero-note { font-family: var(--font-mono); font-size: 1.2rem; color: #4a5a60; margin-top: 22px; letter-spacing: normal; word-break: normal; }
+
+  /* SECTIONS */
+  .section { padding: 60px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--surface); }
+  .section-alt .section-inner { padding: 60px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 1.2rem; color: #666; margin-bottom: 12px; letter-spacing: normal; word-break: normal; }
+  .eyebrow { font-family: var(--font-en); font-size: 2.6rem; font-weight: 600; line-height: var(--lh-tight); color: var(--red); letter-spacing: var(--ls-cta); }
+  .section-title { font-size: 3.4rem; font-weight: 500; line-height: 1.58; margin: 10px 0 16px; }
+  .lead { font-size: 1.6rem; line-height: var(--lh-body); max-width: 800px; margin-bottom: 30px; }
+  .note { font-size: 1.6rem; line-height: var(--lh-body); color: #3a3a3a; margin-top: 22px; max-width: 840px; }
+  code { font-family: var(--font-mono); font-size: 1.3rem; background: var(--surface-lt); padding: 1px 5px; letter-spacing: normal; word-break: normal; }
+  .section-alt code { background: #dcdcdc; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .swatch { border: 1px solid #d8d8d8; background: var(--bg); }
+  .swatch-chip { height: 74px; }
+  .swatch-body { padding: 12px; }
+  .swatch-name { font-size: 1.4rem; font-weight: 700; line-height: var(--lh-tight); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 1.1rem; color: var(--muted); margin-top: 3px; letter-spacing: normal; word-break: normal; }
+  .swatch-use { font-size: 1.2rem; line-height: 1.6; color: #444; margin-top: 6px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid #d8d8d8; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 1.1rem; color: #666; line-height: 1.75; letter-spacing: normal; word-break: normal; }
+  .type-meta b { display: block; font-family: var(--font-jp); font-size: 1.3rem; font-weight: 700; color: var(--black); }
+  .scale-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; align-items: baseline; }
+  .scale-bar span { background: var(--surface-lt); padding: 8px 14px; line-height: var(--lh-ui); font-weight: 500; }
+  .section-alt .scale-bar span { background: #dcdcdc; }
+
+  /* PALT DEMO */
+  .palt-row { display: grid; grid-template-columns: 170px 1fr; gap: 20px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid #d8d8d8; }
+  .palt-k { font-family: var(--font-mono); font-size: 1.2rem; color: #666; letter-spacing: normal; word-break: normal; }
+  .palt-v { font-size: 3.2rem; font-weight: 500; line-height: 1.4; white-space: nowrap; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 24px; }
+  .btn { font-family: var(--font-jp); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+  .btn-red { background: var(--red); color: var(--white); border: 4px solid var(--surface-lt); border-radius: var(--r-card); padding: 12px 30px; font-size: 1.6rem; font-weight: 700; line-height: var(--lh-mid); letter-spacing: var(--ls-cta); }
+  .btn-blue { background: var(--blue); color: var(--white); border: 0; border-radius: var(--r-pill); padding: 14px 34px; font-size: 1.6rem; font-weight: 700; line-height: var(--lh-ui); }
+  .btn-outline { background: var(--surface); color: var(--red); border: 1px solid var(--red); border-radius: var(--r-pill); padding: 14px 30px; font-size: 1.6rem; font-weight: 700; line-height: var(--lh-ui); }
+  .btn-tag { background: var(--surface); color: var(--blue); border: 1px solid var(--surface); border-radius: var(--r-pill-s); padding: 9px 22px; font-size: 1.4rem; font-weight: 500; line-height: var(--lh-tight); }
+  .btn-page { background: var(--surface-mid); color: var(--white); border: 0; border-radius: var(--r-pill); padding: 8px 20px; font-size: 1.6rem; font-weight: 700; line-height: var(--lh-ui); letter-spacing: var(--ls-tag); }
+  .btn.is-focus { outline: 3px solid var(--blue); outline-offset: 3px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; }
+  .card { background: var(--surface-lt); border-radius: var(--r-card); padding: 22px 20px; text-decoration: none; color: var(--black); display: block; }
+  .card-title { font-size: 1.6rem; font-weight: 700; line-height: var(--lh-tight); }
+  .card-desc { font-size: 1.4rem; line-height: var(--lh-body); color: #444; margin-top: 8px; }
+
+  /* NEWS */
+  .news { max-width: 840px; }
+  .news-item { display: flex; gap: 22px; padding: 16px 0; border-bottom: 1px solid #d8d8d8; align-items: baseline; }
+  .news-date { font-size: 1.4rem; font-weight: 500; line-height: var(--lh-tight); color: var(--muted); flex-shrink: 0; letter-spacing: normal; word-break: normal; }
+  .news-cat { font-size: 1.3rem; font-weight: 700; line-height: var(--lh-ui); color: var(--red); flex-shrink: 0; }
+  .news-title { font-size: 1.6rem; font-weight: 500; line-height: 1.80; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 26px; }
+  .field label { display: block; font-size: 1.4rem; font-weight: 700; line-height: var(--lh-tight); margin-bottom: 8px; }
+  .field input, .field select {
+    width: 100%; background: var(--bg); color: var(--black);
+    border: 1px solid #c2c2c2; border-radius: var(--r-pill);
+    padding: 5px 20px; height: 48px; font-size: 1.6rem; line-height: var(--lh-ui);
+    font-family: var(--font-jp);
+  }
+  .field input::placeholder { color: var(--muted); }
+  .field.is-focus input { outline: 3px solid var(--blue); }
+  .field.is-error input { border-color: var(--red); outline: 2px solid var(--red); }
+  .field-msg { font-size: 1.2rem; line-height: 1.6; color: var(--muted); margin-top: 7px; }
+  .field.is-error .field-msg { color: var(--red); }
+
+  /* RADIUS / ELEVATION */
+  .radius-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 150px; height: 56px; background: var(--surface-mid); }
+  .radius-label { font-family: var(--font-mono); font-size: 1.1rem; color: #666; margin-top: 7px; letter-spacing: normal; word-break: normal; }
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 24px; margin-top: 18px; }
+  .elev { background: var(--bg); border: 1px solid #d8d8d8; padding: 26px; text-align: center; }
+  .elev-name { font-size: 1.6rem; font-weight: 700; line-height: var(--lh-tight); }
+  .elev-val { font-family: var(--font-mono); font-size: 1.1rem; color: #666; margin-top: 8px; letter-spacing: normal; word-break: normal; }
+
+  /* LAYOUT */
+  .layout-demo { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .layout-bar { background: var(--surface-lt); height: 36px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 1.1rem; color: #444; letter-spacing: normal; word-break: normal; }
+  .section-alt .layout-bar { background: #dcdcdc; }
+  .cliff { width: 100%; border-collapse: collapse; margin-top: 18px; max-width: 700px; }
+  .cliff th, .cliff td { font-size: 1.4rem; line-height: var(--lh-tight); text-align: left; padding: 8px 14px 8px 0; border-bottom: 1px solid #d8d8d8; word-break: normal; }
+  .cliff th { font-weight: 700; }
+  .cliff .hl { color: var(--red); font-weight: 700; }
+
+  /* FOOTER */
+  .footer { background: var(--nav); color: var(--white); padding: 44px 20px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-head { font-family: var(--font-en); font-size: 2.6rem; font-weight: 600; line-height: var(--lh-tight); letter-spacing: var(--ls-cta); }
+  .footer-cols { display: flex; gap: 48px; margin-top: 20px; flex-wrap: wrap; }
+  .footer-col a { display: block; font-size: 1.4rem; line-height: 2; color: var(--white); text-decoration: none; }
+  .footer-copy { font-size: 1.2rem; line-height: var(--lh-tight); margin-top: 28px; color: #c8c8c8; }
+
+  /* ★実サイトのブレークポイントは 800px の 1 箇所（CSS 全文で 608 件） */
+  @media (max-width: 800px) {
+    body { font-size: 1.5rem; }                /* ★16px → 15px */
+    .hero-copy { font-size: 3.2rem; }          /* ★56px → 32px。字間は 0.28em のまま */
+    .section, .section-alt .section-inner { padding: 40px 16px; }
+    .section-title { font-size: 2.6rem; }
+    .eyebrow { font-size: 2.2rem; }
+    .type-row, .palt-row { grid-template-columns: 1fr; gap: 8px; }
+    .header-nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo"><span class="logo-mark">同</span><span class="logo-text">大同特殊鋼</span></a>
+    <nav class="header-nav">
+      <a href="#">特殊鋼とは</a><a href="#">企業情報</a><a href="#">製品情報</a><a href="#">技術・研究情報</a><a href="#">株主・投資家情報</a>
+    </nav>
+    <div class="header-lang"><span class="is-on">JP</span><span>EN</span><span>CN</span></div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <p class="hero-copy">日々になる、<br>特殊な鋼。</p>
+    <div class="hero-note">56px（5.6rem） / weight 500 / line-height 1.56 / letter-spacing 0.28em（= 15.68px） / palt — 実テキスト</div>
+  </div>
+</div>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="eyebrow">COLOR PALETTE</div>
+  <h2 class="section-title">赤と青、あとは淡いグレー</h2>
+  <p class="lead">ブランドの赤 <code>#dc0012</code> と操作系の青 <code>#0192be</code> の 2 色。面はすべて <code>#eaeaea</code> と <code>#f2f2f2</code> の淡いグレーで、彩度のある面はほとんど出てこない。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#dc0012"></div><div class="swatch-body"><div class="swatch-name">Daido Red</div><div class="swatch-hex">#dc0012</div><div class="swatch-use">★文字 7 要素 ＋ 塗り面 2 要素。ロゴの星と同じ赤</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#0192be"></div><div class="swatch-body"><div class="swatch-name">Daido Blue</div><div class="swatch-hex">#0192be</div><div class="swatch-use">★文字 18 要素 ＋ 塗り面 1 要素。リンク・操作系</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#000000</div><div class="swatch-use">★本文・ヒーロー（可視 49 要素）。<b>純黒を使う</b></div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#323232"></div><div class="swatch-body"><div class="swatch-name">Nav</div><div class="swatch-hex">#323232</div><div class="swatch-use">グローバルナビ（可視 6 要素）＋ナビの面</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#848484"></div><div class="swatch-body"><div class="swatch-name">Muted</div><div class="swatch-hex">#848484</div><div class="swatch-use">プレースホルダ・日付・言語切替（可視 14 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#eaeaea"></div><div class="swatch-body"><div class="swatch-name">Surface Gray</div><div class="swatch-hex">#eaeaea</div><div class="swatch-use">★最多の面（可視 69 要素）。製品検索・ピル・タグ</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f2f2f2"></div><div class="swatch-body"><div class="swatch-name">Surface Light</div><div class="swatch-hex">#f2f2f2</div><div class="swatch-use">カテゴリカード（可視 16 要素）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#6e6d6d"></div><div class="swatch-body"><div class="swatch-name">Surface Mid</div><div class="swatch-hex">#6e6d6d</div><div class="swatch-use">スライダーのページネーション（可視 15 要素）</div></div></div>
+  </div>
+
+  <p class="note"><b>赤が 2 つあるのは CMP の混入。</b><code>#e50111</code> は Cookie バナー（STRIGHT / IIJ）由来で、サイト本体には出てこない。<b>ブランド色として採用しないこと。</b></p>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <div class="eyebrow">TYPOGRAPHY</div>
+  <h2 class="section-title">字空けはヒーローだけ</h2>
+  <p class="lead">サイト全体の <code>letter-spacing</code> は <b><code>normal</code> が可視 103 要素中 103 要素</b>。字間を当てているのは<b>ヒーローの 0.28em</b>、CTA の 0.088em、タグの 0.8px の 3 種だけで、本文は詰めも空けもしない。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:1.2rem">12</span><span style="font-size:1.3rem">13</span><span style="font-size:1.4rem">14</span>
+    <span style="font-size:1.5rem">15</span><span style="font-size:1.6rem">16</span><span style="font-size:1.8rem">18</span>
+    <span style="font-size:2rem">20</span><span style="font-size:2.6rem">26</span><span style="font-size:3.4rem">34</span>
+    <span style="font-size:5.6rem;letter-spacing:.28em">56</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Hero Copy ★</b>56px（5.6rem） / 500<br>lh 1.56 / <b style="display:inline">ls 0.28em</b> / palt</div><div style="font-size:5.6rem;font-weight:500;line-height:1.56;letter-spacing:.28em">特殊な鋼。</div></div>
+  <div class="type-row"><div class="type-meta"><b>H1（下層）</b>38px / 500<br>lh 1.30 / ls 3.8px（0.1em）</div><div style="font-size:3.8rem;font-weight:500;line-height:1.3;letter-spacing:3.8px">企業情報</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Title</b>34px / 500<br>lh 1.58 / ls normal</div><div style="font-size:3.4rem;font-weight:500;line-height:1.58">特殊だけど身近。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Eyebrow (EN)</b>Poppins / 26px / <b style="display:inline">600</b><br>lh 1.30。このサイトで 600 は 3 要素だけ</div><div style="font-family:var(--font-en);font-size:2.6rem;font-weight:600;line-height:1.3;letter-spacing:1.4px;color:#dc0012">PRODUCT SEARCH</div></div>
+  <div class="type-row"><div class="type-meta"><b>Sub Heading</b>18px / 500<br>lh <b style="display:inline">1.88</b>（下層の最多）</div><div style="font-size:1.8rem;font-weight:500;line-height:1.88">生活の中で使われている私たちの製品</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>16px / 400<br>lh <b style="display:inline">1.88</b>（30px） / ls normal</div><div style="font-size:1.6rem;line-height:1.88">当社は、グループ事業として、自動車や航空機などの輸送機器、産業機械、電子部品に使われる特殊鋼を製造しています。素材から部品まで一貫した体制で、お客様のものづくりを支えます。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav</b>15px / 500<br>lh <b style="display:inline">1.00</b> / ls normal</div><div style="font-size:1.5rem;font-weight:500;line-height:1;color:#323232">特殊鋼とは　企業情報　製品情報　技術・研究情報</div></div>
+  <div class="type-row"><div class="type-meta"><b>UI / News</b>14px / 500<br>lh 1.30 / ls normal</div><div style="font-size:1.4rem;font-weight:500;line-height:1.3">2027年3月期 第2四半期決算説明会 動画を公開しました</div></div>
+  <div class="type-row"><div class="type-meta"><b>CTA</b>16px / <b style="display:inline">700</b><br>lh 1.50 / ls 1.4px</div><div><a href="#" class="btn btn-red">お見積もり・お問い合わせ</a></div></div>
+
+  <p class="note"><b><code>line-height</code> に落差をつける。</b>ナビとボタンは <code>1.00</code>（可視 30 要素）、本文は <code>1.88</code>。全部 1.5 で揃えるとこのサイトの密度にならない。</p>
+
+  <h3 style="font-size:2rem;font-weight:500;margin-top:34px;line-height:1.3">palt は実際に効いている</h3>
+  <div style="margin-top:16px">
+    <div class="palt-row"><div class="palt-k">normal</div><div class="palt-v" style="font-feature-settings:normal">「あ」、「い」。（う）・（え）</div></div>
+    <div class="palt-row"><div class="palt-k">"palt" <b style="color:#dc0012">-23.58%</b></div><div class="palt-v" style="font-feature-settings:'palt'">「あ」、「い」。（う）・（え）</div></div>
+    <div class="palt-row"><div class="palt-k">normal</div><div class="palt-v" style="font-feature-settings:normal">日々になる、特殊な鋼。</div></div>
+    <div class="palt-row"><div class="palt-k">"palt" <b style="color:#dc0012">-13.08%</b></div><div class="palt-v" style="font-feature-settings:'palt'">日々になる、特殊な鋼。</div></div>
+  </div>
+  <p class="note">実スタック・56px で実測すると、見出しが <b>616.00px → 535.42px（-13.08%）</b>、約物だけの文字列が <b>672.00px → 513.53px（-23.58%）</b>。<b>ヒーローは「palt で詰めた上から 0.28em の字空けを足す」二段構え</b>で、片方だけ再現すると別物になる。</p>
+
+  <p class="note"><b><code>word-break: break-all</code> が <code>body</code> に入っている。</b>日本語の禁則処理を無効にして、<b>行末で熟語の途中でも折り返す</b>指定。製品名や型番が長く並んでも行があふれないが、本文の読みやすさは落ちる。真似する前に確認すること。</p>
+
+  <p class="note"><b>和文 Web フォントは 1 バイトも読み込まれていない。</b><code>Noto Sans JP</code> / <code>Noto Serif JP</code> の <code>@font-face</code> が CSS 全文に <b>886 件</b>あるのに、フォント要求は <b>Poppins の 2 件だけ</b>。実描画は游ゴシック（CDP で全要素 <code>YuGothic</code>）。<b>さらにスタックに <code>"游ゴシック Medium"</code> / <code>"Yu Gothic Medium"</code> が無いまま <code>font-weight: 500</code> を可視 77 要素に当てている</b>ので、Windows では 500 が Regular に落ちて macOS と太さが揃わない。<b>このプレビューでは Medium を補ってある。</b></p>
+</div>
+</section>
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Components</div>
+  <div class="eyebrow">COMPONENTS</div>
+  <h2 class="section-title">角丸はピルだけ</h2>
+  <p class="lead">角丸は <code>160px</code>（22 要素）/ <code>140px</code>（7 要素）/ <code>280px</code> / <code>130px</code> — <b>どれも要素の高さより大きい値＝完全な半円</b>。本来の角丸は <code>25px</code>（8 要素）と <code>40px</code>（3 要素）だけ。<b>ピルを <code>9999px</code> ではなく半端な値で作る</b>のがこのサイトの実装の実態。</p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-red">お見積もり・お問い合わせ</a>
+    <a href="#" class="btn btn-blue">RECRUIT</a>
+    <a href="#" class="btn btn-outline">鉄鋼スラグ使用工事</a>
+    <a href="#" class="btn btn-tag">デジタルデバイス</a>
+    <a href="#" class="btn btn-page">1</a>
+    <a href="#" class="btn btn-blue is-focus">フォーカス状態</a>
+  </div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:160px"></div><div class="radius-label">160px（ピル・22 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:140px"></div><div class="radius-label">140px（ピル・7 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:25px"></div><div class="radius-label">25px（カード・8 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:40px"></div><div class="radius-label">40px（タブ・3 要素）</div></div>
+  </div>
+
+  <h3 style="font-size:2rem;font-weight:500;margin-top:40px;line-height:1.3">Cards</h3>
+  <div class="card-grid" style="margin-top:16px">
+    <a href="#" class="card"><div class="card-title">構造用鋼</div><div class="card-desc">自動車・産業機械の骨格を支える</div></a>
+    <a href="#" class="card"><div class="card-title">ステンレス鋼</div><div class="card-desc">耐食性と加工性を両立する</div></a>
+    <a href="#" class="card"><div class="card-title">工具鋼・金型材料</div><div class="card-desc">ものづくりの現場を支える</div></a>
+    <a href="#" class="card"><div class="card-title">合金粉末</div><div class="card-desc">積層造形・射出成形に使われる</div></a>
+  </div>
+
+  <h3 style="font-size:2rem;font-weight:500;margin-top:40px;line-height:1.3">News</h3>
+  <div class="news" style="margin-top:12px">
+    <div class="news-item"><div class="news-date">2026.11.20</div><div class="news-cat">お知らせ</div><div class="news-title">半期報告書 — 第103期中（2026年4月1日〜9月30日）を掲載しました</div></div>
+    <div class="news-item"><div class="news-date">2026.11.12</div><div class="news-cat">企業</div><div class="news-title">「ハイウェイテクノフェア2026」に出展します — 道路トンネル向け材料を紹介</div></div>
+    <div class="news-item"><div class="news-date">2026.11.05</div><div class="news-cat">IR</div><div class="news-title">2027年3月期 第2四半期決算説明会の動画を追加しました</div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="forms">
+<div class="section-inner">
+  <div class="section-label">04 / Forms</div>
+  <div class="eyebrow">FORMS</div>
+  <h2 class="section-title">入力欄もピル</h2>
+  <p class="lead">検索フォームの角丸は <code>160px</code>。フォーカスは青（<code>#0192be</code>）の 3px アウトライン。</p>
+  <div class="form-grid">
+    <div class="field"><label for="f1">フリーワード検索</label><input id="f1" type="text" placeholder="製品名・型番で探す"><div class="field-msg">半角・全角どちらでも検索できます</div></div>
+    <div class="field is-focus"><label for="f2">会社名（フォーカス）</label><input id="f2" type="text" value="大同特殊鋼株式会社"><div class="field-msg">正式名称でご入力ください</div></div>
+    <div class="field is-error"><label for="f3">お問い合わせ区分（エラー）</label><input id="f3" type="text" value=""><div class="field-msg">区分を選択してください</div></div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="elevation">
+  <div class="section-label">05 / Depth</div>
+  <div class="eyebrow">DEPTH</div>
+  <h2 class="section-title">影を使わない</h2>
+  <p class="lead"><code>box-shadow</code> はサイト本体で <b>0 種</b>。唯一の影 <code>rgba(0,0,0,0.5) 0 5px 15px 0</code> はクッキーバナーのもので、サイトの語彙ではない。</p>
+  <div class="elev-grid">
+    <div class="elev"><div class="elev-name">Level 0</div><div class="elev-val">box-shadow: none（カード・ボタン・ピル）</div></div>
+    <div class="elev" style="background:#eaeaea"><div class="elev-name">Surface Gray</div><div class="elev-val">#eaeaea（可視 69 要素）</div></div>
+    <div class="elev" style="background:#f2f2f2"><div class="elev-name">Surface Light</div><div class="elev-val">#f2f2f2（可視 16 要素）</div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">06 / Layout &amp; Responsive</div>
+  <div class="eyebrow">LAYOUT</div>
+  <h2 class="section-title">崖は 800px の 1 箇所</h2>
+  <p class="lead">コンテナは <b><code>1080px</code></b>。ブレークポイントは <code>screen and (max-width: 800px)</code> の 1 つだけ（CSS 全文で <b>608 件</b>）。</p>
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:100%">viewport</div>
+    <div class="layout-bar" style="width:1080px;max-width:100%">container 1080px</div>
+    <div class="layout-bar" style="width:830px;max-width:100%">narrow 830px</div>
+  </div>
+
+  <table class="cliff">
+    <tr><th>要素</th><th>≥801px</th><th>≤800px</th></tr>
+    <tr><td><code>html</code></td><td>10px（62.5%）</td><td>10px</td></tr>
+    <tr><td><code>body</code></td><td>16px</td><td class="hl">15px</td></tr>
+    <tr><td>ヒーロー</td><td>56px / 15.68px</td><td class="hl">32px / 8.96px（同じ 0.28em）</td></tr>
+    <tr><td><code>h2</code></td><td>14px / 1.4px</td><td>13px / 1.3px</td></tr>
+  </table>
+
+  <p class="note"><b><code>html</code> は 1920px から 374px まで 10px のまま動かない</b>（19 幅で実測）。流体スケーリングは無い。<br>
+  <b>文字サイズ切替はルート側を動かす方式。</b>CSS に <code>html.is-text-large { font-size: 70% }</code>（= 11.2px）があり、<code>html</code> の <code>font-size</code> を差し替えると <code>rem</code> で書かれた全要素が 1.12 倍になる。</p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-head">CONTENTS</div>
+    <div class="footer-cols">
+      <div class="footer-col"><a href="#">特殊鋼とは</a><a href="#">企業情報</a><a href="#">製品情報</a></div>
+      <div class="footer-col"><a href="#">技術・研究情報</a><a href="#">株主・投資家情報</a><a href="#">サステナビリティ</a></div>
+      <div class="footer-col"><a href="#">採用情報</a><a href="#">サイトマップ</a><a href="#">電子公告</a></div>
+    </div>
+    <div class="footer-copy">大同特殊鋼株式会社 ／ このプレビューは実測値の再現で、実サイトのスクリーンショットではありません</div>
+  </div>
+</footer>
+
+</body>
+</html>
