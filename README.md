@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (658 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (661 sites)</a>
 </p>
 
 <table>
@@ -1026,6 +1026,11 @@
 </tr>
 <tr>
 <td align="center"><strong>博展</strong><br><img src="design-md/hakuten/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>北國銀行</strong><br><img src="design-md/hokkokubank/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>国際基督教大学</strong><br><img src="design-md/icu/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>カンロ</strong><br><img src="design-md/kanro/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1745,11 +1750,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [セラミック・ジャパン (Ceramic Japan)](https://ceramic-japan.co.jp/) | Ceramics / Manufacturer | [DESIGN.md](design-md/ceramic-japan/DESIGN.md) | [preview.html](design-md/ceramic-japan/preview.html) |
 | [大同特殊鋼 (Daido Steel)](https://www.daido.co.jp/) | Specialty Steel / Corporate | [DESIGN.md](design-md/daido-steel/DESIGN.md) | [preview.html](design-md/daido-steel/preview.html) |
 | [博展 (HAKUTEN)](https://www.hakuten.co.jp/) | Experience Design / Agency | [DESIGN.md](design-md/hakuten/DESIGN.md) | [preview.html](design-md/hakuten/preview.html) |
+| [北國銀行 (The Hokkoku Bank)](https://www.hokkokubank.co.jp/) | Finance / Bank | [DESIGN.md](design-md/hokkokubank/DESIGN.md) | [preview.html](design-md/hokkokubank/preview.html) |
+| [国際基督教大学 (ICU)](https://www.icu.ac.jp/) | University / Liberal Arts | [DESIGN.md](design-md/icu/DESIGN.md) | [preview.html](design-md/icu/preview.html) |
+| [カンロ (Kanro)](https://www.kanro.co.jp/) | Food & Beverage / Corporate | [DESIGN.md](design-md/kanro/DESIGN.md) | [preview.html](design-md/kanro/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (658 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (661 sites)</a>
 </p>
 
 <table>
@@ -2741,6 +2749,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>博展</strong><br><img src="design-md/hakuten/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>北國銀行</strong><br><img src="design-md/hokkokubank/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>国際基督教大学</strong><br><img src="design-md/icu/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>カンロ</strong><br><img src="design-md/kanro/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

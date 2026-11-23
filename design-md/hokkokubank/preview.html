@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 北國銀行（The Hokkoku Bank）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Zen+Maru+Gothic:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトの CSS Custom Properties そのまま（自社トークン 31 個 / プラットフォーム由来 0）。2026-11-23 */
+    --color_pr_1:      #58bf43;  /* ★ブランド緑。面 7 要素 / 文字 3 要素（トップ） */
+    --color_pr_1_sub:  #1ea603;  /* ★下層ページのブランド緑。文字 29 要素 / 面 4 要素。トップの緑とは別 */
+    --color_pr_2:      #a68a53;  /* ★ベージュゴールド。面 8 要素 / 文字 11 要素 */
+    --color_pr_3:      #d9ceb8;  /* ★厚み（box-shadow の色）。23 要素 */
+    --color_accent:    #f29718;  /* 強調 CTA。面 3 要素 */
+    --color_alart:     #fa3e3e;  /* 警告見出し。文字 17 要素（実サイトの綴りのまま alart） */
+    --color_text:      #333333;  /* ★本文。84 要素 / 58 要素。純黒を使わない */
+    --color_text_sub:  #5f5f5f;  /* フッターのリンク。18 要素 */
+    --color_textHover: #707070;
+    --color_line:      #cccccc;
+    --color_ctg_4:     #3eb395;  /* カテゴリ色（10 色のうち実装で確認できた 1 色）。4 要素 */
+    --color_ctg_new:   #facb3e;  /* NEW バッジの面。3 要素 */
+    --color_ctg_new_t: #336629;  /* NEW バッジの文字 */
+    --surface_light:   #f5f5f5;  /* 副 CTA の面。2 要素 */
+    --surface_blue:    #f2f7fc;  /* お知らせブロック。1 要素（210,120px²） */
+    --color_background:#ffffff;  /* pageBackground.resolved / 根拠 body */
+
+    /* === Fonts ===
+       実サイトは自社ホスト（/assets/fonts/*.woff）に Typekit 風の別名を付けている。
+       --font_1 = noto-sans      → NotoSansJP-Regular.woff
+       --font_2 = noto-sans-bold → NotoSansJP-Bold.woff  ★太字は font-weight ではなくこれ
+       --font_3 = zen-maru-gothic→ ZenMaruGothic-Bold.woff
+       手元では同じ書体を Google Fonts から読む。 */
+    --font_1: "Noto Sans JP", "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", メイリオ, Meiryo, sans-serif;
+    --font_2: "Noto Sans JP", "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", メイリオ, Meiryo, sans-serif;
+    --font_3: "Zen Maru Gothic", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: 無単位の比率。トップは 1.50 が 112 要素で支配的 === */
+    --lh-base: 1.50;   /* body。16px → 24px */
+    --lh-tight: 1.00;  /* ボタン・タグ。トップ 29 要素 */
+    --lh-read: 2.20;   /* 下層の読み物（18px → 39.6px）。6 要素 */
+    --lh-read2: 2.00;  /* 下層の本文（16px）。24 要素 */
+    --lh-mid: 1.80;    /* 下層のキャプション。31 要素 */
+    --lh-1_6: 1.60;    /* 下層の見出し。7 要素 */
+
+    /* === Letter spacing ===
+       トップは normal が 168/168 で 100%。下層の見出しだけ em を各要素が持つ。 */
+    --ls-slogan: 0.30em;  /* 56px → 16.8px */
+    --ls-lead:   0.06em;  /* 42px → 2.52px */
+    --ls-head:   0.10em;  /* 32px → 3.2px */
+
+    /* === Radius: CTA はピル、バッジは角を立てる === */
+    --r-pill: 80px;  /* トップの CTA。20 要素 */
+    --r-pill-s: 39px;/* 下層の CTA。4 要素 */
+    --r-card: 16px;  /* トップのカード。28 要素 */
+    --r-card-s: 12px;/* 下層のカード。13 要素 */
+    --r-btn: 8px;    /* ログイン・枠線ボタン。11 要素 */
+    --r-tag: 2px;    /* ★バッジ。23 要素 */
+
+    /* === Elevation: ぼかし 0 の「厚み」=== */
+    --shadow-card: #d9ceb8 0 4px 0 0;   /* 23 要素 */
+    --shadow-cta:  #c7ba9f 0 4px 0 0;   /* 下層 CTA。4 要素 */
+    --shadow-btn:  #e0d6c2 0 3px 0 0;   /* ログイン。1 要素 */
+
+    --container: 1060px;      /* トップ（6 要素） */
+    --container-sub: 870px;   /* 下層（7 要素） */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* ★実サイトは html { font-size: 16px !important }。16 幅すべてで完全固定・流体なし。
+     ただし !important はユーザーの文字サイズ設定を無視するので、ここでは外す。 */
+  html { font-size: 16px; }
+  body {
+    background: var(--color_background);
+    color: var(--color_text);
+    font-family: var(--font_1);
+    font-size: 16px;
+    line-height: var(--lh-base);
+    letter-spacing: normal;      /* ★トップは normal 168/168 */
+    /* font-feature-settings は書かない。
+       実サイトが配信する .woff 版 Noto Sans JP は palt / halt テーブルを持たず、
+       実スタック 100px で normal 2300.00px → "palt" 2300.00px（±0.00）だった。 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid var(--color_line); }
+  .header-inner { display: flex; align-items: center; max-width: var(--container); margin: 0 auto; padding: 16px 20px; gap: 28px; }
+  .logo { font-family: var(--font_2); font-weight: 700; font-size: 24px; line-height: var(--lh-tight); color: var(--color_text); text-decoration: none; }
+  .logo small { display: block; font-family: var(--font-mono); font-size: 10px; color: var(--color_text_sub); margin-top: 4px; letter-spacing: .08em; }
+  .header-nav { display: flex; gap: 24px; margin-left: auto; }
+  .header-nav a { font-size: 14px; line-height: var(--lh-base); color: var(--color_text); text-decoration: none; }
+  .btn-login { font-family: var(--font_2); font-weight: 700; font-size: 16px; line-height: var(--lh-tight);
+    color: var(--color_text); background: #fff; border: 1px solid #a6926c; border-radius: var(--r-btn);
+    box-shadow: var(--shadow-btn); padding: 12px 22px; text-decoration: none; }
+
+  /* HERO */
+  .hero { background: var(--surface_blue); padding: 56px 20px; }
+  .hero-inner { max-width: var(--container); margin: 0 auto; }
+  .hero-copy { font-family: var(--font_2); font-weight: 700; font-size: 40px; line-height: var(--lh-1_6); color: var(--color_pr_1_sub); }
+  .hero-sub { font-size: 16px; line-height: var(--lh-read2); margin-top: 14px; max-width: 640px; }
+  .hero-note { font-family: var(--font-mono); font-size: 11px; color: var(--color_text_sub); margin-top: 18px; }
+
+  /* SECTIONS */
+  .section { padding: 60px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--surface_light); }
+  .section-alt .section-inner { padding: 60px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; color: var(--color_text_sub); margin-bottom: 12px; }
+  .ttl { font-family: var(--font_2); font-weight: 700; font-size: 26px; line-height: var(--lh-base); margin-bottom: 16px; }
+  .ttl .en { display: block; font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--color_text_sub); margin-top: 6px; letter-spacing: .08em; }
+  .lead { font-size: 16px; line-height: var(--lh-read2); max-width: 760px; margin-bottom: 30px; }
+  .note { font-size: 14px; line-height: 1.9; color: #4a4a4a; margin-top: 20px; max-width: 820px; }
+  code { font-family: var(--font-mono); font-size: 12px; background: #eee; padding: 1px 5px; }
+  .section-alt code { background: #e2e2e2; }
+  b { font-weight: 700; font-family: var(--font_2); }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); gap: 12px; }
+  .swatch { border: 1px solid #e3e3e3; background: #fff; border-radius: var(--r-card-s); overflow: hidden; }
+  .swatch-chip { height: 72px; }
+  .swatch-body { padding: 12px; }
+  .swatch-name { font-family: var(--font_2); font-weight: 700; font-size: 14px; line-height: var(--lh-base); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--color_text_sub); margin-top: 3px; }
+  .swatch-use { font-size: 12px; line-height: 1.6; color: #4a4a4a; margin-top: 6px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 18px 0; border-bottom: 1px solid #e3e3e3; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--color_text_sub); line-height: 1.75; }
+  .type-meta b { display: block; font-family: var(--font_2); font-size: 13px; color: var(--color_text); }
+  .scale-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; align-items: baseline; }
+  .scale-bar span { background: #eee; padding: 8px 14px; line-height: var(--lh-tight); border-radius: var(--r-tag); }
+  .section-alt .scale-bar span { background: #e2e2e2; }
+
+  /* WEIGHT DEMO */
+  .wt-row { display: flex; gap: 30px; flex-wrap: wrap; align-items: baseline; margin-top: 12px; }
+  .wt-item { text-align: center; }
+  .wt-sample { font-size: 30px; line-height: var(--lh-base); }
+  .wt-cap { font-family: var(--font-mono); font-size: 11px; color: var(--color_text_sub); margin-top: 6px; }
+  .wt-bad .wt-cap { color: #a33; }
+  .wt-ok .wt-cap { color: #1f7a16; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 26px; }
+  .btn { font-family: var(--font_2); font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
+    font-size: 16px; line-height: var(--lh-base); }
+  .btn-primary { background: var(--color_pr_1); color: #fff; border: 0; border-radius: var(--r-pill); padding: 12px 30px; }
+  .btn-accent  { background: var(--color_accent); color: #fff; border: 0; border-radius: var(--r-pill); padding: 12px 30px; }
+  .btn-secondary { background: var(--surface_light); color: var(--color_pr_2); border: 0; border-radius: var(--r-pill); padding: 12px 30px; }
+  .section-alt .btn-secondary { background: #fff; }
+  .btn-raised { background: var(--color_pr_1_sub); color: #fff; border: 0; border-radius: var(--r-pill-s);
+    box-shadow: var(--shadow-cta); font-size: 18px; line-height: var(--lh-mid); padding: 12px 30px; }
+  .btn.is-focus { outline: 3px solid var(--color_pr_1_sub); outline-offset: 3px; }
+
+  /* BADGES */
+  .badge-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+  .tag { font-size: 12px; line-height: var(--lh-tight); border-radius: var(--r-tag); padding: 6px 10px; color: #fff; }
+  .tag-ctg { background: var(--color_ctg_4); }
+  .tag-new { background: var(--color_ctg_new); color: var(--color_ctg_new_t); font-family: var(--font_2); font-weight: 700; }
+  .tag-gold { background: var(--color_pr_2); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(236px, 1fr)); gap: 22px; }
+  .card { text-decoration: none; color: var(--color_text); display: block; background: #fff;
+    border-radius: var(--r-card); box-shadow: var(--shadow-card); overflow: hidden; }
+  .card-img { height: 128px; background: linear-gradient(140deg, #cfe3c8, #a9cfa0); }
+  .card-body { padding: 16px; }
+  .card-cat { font-size: 12px; line-height: var(--lh-tight); color: var(--color_text_sub); }
+  .card-title { font-family: var(--font_2); font-weight: 700; font-size: 16px; line-height: var(--lh-base); margin-top: 8px; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+  .field label { display: block; font-family: var(--font_2); font-weight: 700; font-size: 14px; line-height: var(--lh-base); margin-bottom: 8px; }
+  .field input, .field select { width: 100%; background: #fff; color: var(--color_text);
+    border: 1px solid #c4c4c4; border-radius: var(--r-btn); padding: 5px 12px; height: 48px;
+    font-size: 16px; line-height: var(--lh-base); font-family: var(--font_1); }
+  .field.is-focus input { outline: 3px solid var(--color_pr_1); }
+  .field.is-error input { border-color: var(--color_alart); outline: 3px solid var(--color_alart); }
+  .field-msg { font-size: 12px; line-height: 1.6; color: var(--color_text_sub); margin-top: 7px; }
+  .field.is-error .field-msg { color: var(--color_alart); }
+
+  /* RADIUS / ELEVATION */
+  .radius-row { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 20px; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 112px; height: 68px; background: var(--color_pr_1); }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; color: var(--color_text_sub); margin-top: 7px; }
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(226px, 1fr)); gap: 24px; margin-top: 20px; }
+  .elev { background: #fff; border-radius: var(--r-card); padding: 24px; text-align: center; }
+  .elev-1 { box-shadow: var(--shadow-card); }
+  .elev-2 { box-shadow: var(--shadow-cta); }
+  .elev-3 { box-shadow: var(--shadow-btn); }
+  .elev-4 { box-shadow: rgba(0,0,0,.08) 0 5px 10px 0; }
+  .elev-name { font-family: var(--font_2); font-weight: 700; font-size: 16px; line-height: var(--lh-base); }
+  .elev-val { font-family: var(--font-mono); font-size: 11px; color: var(--color_text_sub); margin-top: 8px; }
+
+  /* LAYOUT */
+  .layout-demo { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .layout-bar { background: #eee; height: 36px; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 11px; color: #4a4a4a; border-radius: var(--r-tag); }
+  .section-alt .layout-bar { background: #e2e2e2; }
+
+  /* ACCENT FONT */
+  .accent-box { background: #fff; border-radius: var(--r-card); box-shadow: var(--shadow-card); padding: 26px; margin-top: 18px; }
+  .accent-copy { font-family: var(--font_3); font-weight: 700; font-size: 22px; line-height: var(--lh-base); color: var(--color_text); }
+  .accent-sub  { font-family: var(--font_3); font-weight: 700; font-size: 14px; line-height: var(--lh-base); color: var(--color_pr_1); margin-top: 8px; }
+
+  /* FOOTER */
+  .footer { background: var(--color_text); color: #fff; padding: 42px 20px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-head { font-family: var(--font_2); font-weight: 700; font-size: 22px; line-height: var(--lh-base); }
+  .footer-cols { display: flex; gap: 48px; margin-top: 20px; flex-wrap: wrap; }
+  .footer-col a { display: block; font-size: 14px; line-height: var(--lh-read2); color: #fff; text-decoration: none; }
+  .footer-copy { font-family: var(--font-mono); font-size: 11px; line-height: var(--lh-base); margin-top: 26px; color: #c9c9c9; }
+
+  /* ★実サイトはルートが固定で、変わるのは要素単位の px の階段だけ（768 → 767px） */
+  @media (max-width: 767px) {
+    .section, .section-alt .section-inner { padding: 42px 16px; }
+    .hero-copy { font-size: 28px; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .header-nav { display: none; }
+    .ttl { font-size: 18px; }     /* ★実サイト: h3 22px → 18px（lh 33px → 27px） */
+    .header-inner a.header-nav-link { font-size: 11px; }  /* ★実サイト: a 14px → 11px */
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">北國銀行<small>THE HOKKOKU BANK</small></a>
+    <nav class="header-nav">
+      <a href="#">個人のお客さま</a><a href="#">法人・事業者のお客さま</a><a href="#">北國銀行ってどんな銀行？</a>
+    </nav>
+    <a href="#" class="btn-login">ログイン</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <p class="hero-copy">未来を想う、あなたを想う。</p>
+    <p class="hero-sub">社会が変われば、銀行に求められる役割も変わっていきます。だから北國銀行は、地域の「これから」を見すえて、誰よりもあなたを想う銀行でありたい。</p>
+    <p class="hero-note">40px / font-family: noto-sans-bold（weight ではなく family で太字）/ line-height 1.60 / letter-spacing normal</p>
+  </div>
+</div>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="ttl">緑・ベージュ・橙の 3 系統<span class="en">Color Palette</span></h2>
+  <p class="lead">CSS Custom Properties は<b>自社トークン 31 個（トップ）/ 46 個（下層）、プラットフォーム由来 0</b>。色 26 個に加えて<b>書体 3 個（<code>--font_1</code> / <code>--font_2</code> / <code>--font_3</code>）をトークンにしている</b>のがこのサイトの特徴。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#58bf43"></div><div class="swatch-body"><div class="swatch-name">Green（トップ）</div><div class="swatch-hex">#58bf43 / --color_pr_1</div><div class="swatch-use">★主 CTA。面 7 要素 / 文字 3 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#1ea603"></div><div class="swatch-body"><div class="swatch-name">Green（下層）</div><div class="swatch-hex">#1ea603</div><div class="swatch-use">★<b>トップとは別の緑</b>。下層の見出し 29 要素 / CTA 4 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#a68a53"></div><div class="swatch-body"><div class="swatch-name">Beige Gold</div><div class="swatch-hex">#a68a53 / --color_pr_2</div><div class="swatch-use">面 8 要素（バッジ）/ 文字 11 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#d9ceb8"></div><div class="swatch-body"><div class="swatch-name">Beige Shadow</div><div class="swatch-hex">#d9ceb8 / --color_pr_3</div><div class="swatch-use">★<b>影の色</b>として 23 要素。面としては 4 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f29718"></div><div class="swatch-body"><div class="swatch-name">Orange</div><div class="swatch-hex">#f29718 / --color_accent</div><div class="swatch-use">強調 CTA。面 3 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fa3e3e"></div><div class="swatch-body"><div class="swatch-name">Alert</div><div class="swatch-hex">#fa3e3e / --color_alart</div><div class="swatch-use">警告見出し。文字 17 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#333333 / --color_text</div><div class="swatch-use">★本文 84 要素 / 58 要素。<b>純黒ではない</b></div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffffff;border-bottom:1px solid #e3e3e3"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff / --color_background</div><div class="swatch-use">pageBackground.resolved / 根拠 body</div></div></div>
+  </div>
+
+  <p class="note"><b>トップと下層でブランド緑が違う。</b>トップは <code>#58bf43</code>、下層は <code>#1ea603</code>。同じサイトに 2 つの緑が同居しているので、ページごとに取り違えないこと。</p>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="ttl">太字は font-weight ではなく font-family<span class="en">Typography</span></h2>
+  <p class="lead">自社ホストに <code>noto-sans</code>（= <code>NotoSansJP-Regular.woff</code>）と <b><code>noto-sans-bold</code>（= <code>NotoSansJP-Bold.woff</code>）を別ファミリーとして</b>置き、CSS は <code>font-family: noto-sans-bold, noto-sans, sans-serif</code> と書く（トップ 60 要素 / 下層 15 要素）。Typekit 風のハイフン区切りの名前だが Adobe Fonts ではなく、<b>フォント要求 4 件の host はすべて <code>www.hokkokubank.co.jp</code></b>。</p>
+
+  <div class="scale-bar">
+    <span style="font-size:56px;font-family:var(--font_2);font-weight:700;letter-spacing:var(--ls-slogan)">56</span>
+    <span style="font-size:42px;font-family:var(--font_2);font-weight:700;letter-spacing:var(--ls-lead)">42</span>
+    <span style="font-size:32px;font-family:var(--font_2);font-weight:700;letter-spacing:var(--ls-head)">32</span>
+    <span style="font-size:26px;font-family:var(--font_2);font-weight:700">26</span>
+    <span style="font-size:22px;font-family:var(--font_2);font-weight:700">22</span>
+    <span style="font-size:18px">18</span><span style="font-size:16px">16</span><span style="font-size:14px">14</span><span style="font-size:12px">12</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Slogan（下層・白抜き）</b>noto-sans-bold / 56px<br>lh 1.60 / ls 16.8px（0.30em）</div><div style="font-family:var(--font_2);font-weight:700;font-size:56px;line-height:1.6;letter-spacing:.30em">未来を想う</div></div>
+  <div class="type-row"><div class="type-meta"><b>Lead（下層）</b>noto-sans-bold / 42px<br>lh 1.60 / ls 2.52px（0.06em）</div><div style="font-family:var(--font_2);font-weight:700;font-size:42px;line-height:1.6;letter-spacing:.06em">スローガンを一新しました</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Heading（下層）</b>noto-sans-bold / 32px<br>lh 1.80 / ls 3.2px（0.10em）</div><div style="font-family:var(--font_2);font-weight:700;font-size:32px;line-height:1.8;letter-spacing:.10em">地域の活性化に取り組む</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section Title ★</b>noto-sans-bold / 26px<br>lh 1.50 / ls <b style="display:inline">normal</b></div><div style="font-family:var(--font_2);font-weight:700;font-size:26px;line-height:1.5">おかねの豆知識コラム</div></div>
+  <div class="type-row"><div class="type-meta"><b>Sub Heading</b>noto-sans-bold / 22px<br>lh 1.50</div><div style="font-family:var(--font_2);font-weight:700;font-size:22px;line-height:1.5">テーマ別に探す</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>noto-sans / 16px / 400<br>lh <b style="display:inline">1.50</b> / ls normal</div><div style="font-size:16px;line-height:1.5">新システムへの移行のため、各種サービスを休止いたします。お客さまにはご不便をおかけいたしますが、何卒ご理解を賜りますようお願い申し上げます。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body（下層・読み物）</b>noto-sans / 18px<br>lh <b style="display:inline">2.20</b></div><div style="font-size:18px;line-height:2.2">私たちの暮らしも、それをとりまく環境も。あなたが未来を想うとき、北國銀行はいつもそばにいます。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav / Link</b>noto-sans / 14px<br>lh 1.50</div><div style="font-size:14px;line-height:1.5">個人のお客さま ／ 法人・事業者のお客さま</div></div>
+  <div class="type-row"><div class="type-meta"><b>Tag</b>noto-sans / 12px<br>lh <b style="display:inline">1.00</b></div><div><span class="tag tag-ctg">マイホーム</span></div></div>
+
+  <p class="note"><b><code>font-weight</code> を上げても何も起きない。</b><code>noto-sans</code> は weight <code>normal</code> 1 本しか無いため、<b>100〜900 のどれを当てても字幅が 1px も変わらない</b>（実スタック 100px で和文 2300.00px / 欧文 1134.61px が 9 段すべて一致）。合成太字すら起きない。</p>
+
+  <div class="wt-row">
+    <div class="wt-item wt-bad"><div class="wt-sample" style="font-family:var(--font_1);font-weight:400">地域とともに</div><div class="wt-cap">noto-sans + weight 400</div></div>
+    <div class="wt-item wt-bad"><div class="wt-sample" style="font-family:var(--font_1);font-weight:400">地域とともに</div><div class="wt-cap">noto-sans + weight 700<br>★実サイトの見え方を再現（400 で描画）</div></div>
+    <div class="wt-item wt-ok"><div class="wt-sample" style="font-family:var(--font_2);font-weight:700">地域とともに</div><div class="wt-cap">noto-sans-bold → ★これが正しい太字</div></div>
+  </div>
+
+  <p class="note"><b><code>font-feature-settings: "palt"</code> を足さないこと。</b>実サイトは CSS に 1 件も書いておらず、しかも<b>足しても効かない</b>。実スタック・100px で <code>「あア亜永い組設計展」（株）１２３ＡＢＣ、。・</code> を測ると <code>normal</code> 2300.00px → <code>"palt"</code> <b>2300.00px（±0.00）</b>、<code>"halt"</code> も 2300.00px。配信されている <code>.woff</code> 版 Noto Sans JP が <code>palt</code> テーブルを持っていない。</p>
+
+  <p class="note"><b>本文に康熙部首を混ぜないこと。</b>実サイトの下層本文には <code>⾏ U+2F8F</code>（4 回）/ <code>⾒ U+2F92</code> / <code>⽬ U+2F6C</code> の計 6 文字が混入しており、<b>同じページの見出しは正しい「銀行」（U+884C）</b>という状態になっている。字形はほぼ同じで目では気づけないが、検索・コピー・読み上げが壊れる。</p>
+</div>
+</section>
+
+<section class="section" id="accent">
+  <div class="section-label">03 / Accent Font</div>
+  <h2 class="ttl">相談の誘導だけ丸ゴシック<span class="en">Zen Maru Gothic</span></h2>
+  <p class="lead">相談・問い合わせへの誘導コピーだけ <code>--font_3</code>（<code>zen-maru-gothic</code> = <code>ZenMaruGothic-Bold.woff</code>）に切り替える。トップ 4 要素 / 下層 1 要素と<b>ごく少数にしか当てない</b>のがこの書体の使い方。</p>
+
+  <div class="accent-box">
+    <p class="accent-copy">おかねのこと、気軽に相談してみませんか？</p>
+    <p class="accent-sub">休日でもご相談いただけます</p>
+  </div>
+
+  <p class="note"><b><code>font-family: "Zen Maru Gothic"</code> と正式名で書かないこと。</b>実サイトにはその名前の <code>@font-face</code> も宣言されているが <code>document.fonts</code> で<b>3 回とも <code>unloaded</code></b>。実際に読み込まれるのは別名の <code>zen-maru-gothic</code> だけ。</p>
+</section>
+
+<section class="section-alt" id="buttons">
+<div class="section-inner">
+  <div class="section-label">04 / Components</div>
+  <h2 class="ttl">CTA はピル、バッジは角を立てる<span class="en">Buttons &amp; Badges</span></h2>
+  <p class="lead">角丸は <code>80px</code>（トップの CTA・20 要素）/ <code>39px</code>（下層の CTA）/ <code>16px</code>（カード・28 要素）/ <code>12px</code>（下層のカード）/ <code>8px</code>（枠線ボタン）/ <code>2px</code>（バッジ・23 要素）の 6 段。<b>CTA はピル、バッジだけ角を立てる</b>という使い分けになっている。</p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-primary">予約はこちら</a>
+    <a href="#" class="btn btn-accent">ご意見・ご要望の受付はこちら</a>
+    <a href="#" class="btn btn-secondary">すでに口座をお持ちの方</a>
+    <a href="#" class="btn btn-raised">金融教育について</a>
+    <a href="#" class="btn btn-primary is-focus">フォーカス状態</a>
+  </div>
+
+  <div class="badge-row">
+    <span class="tag tag-ctg">マイホーム</span>
+    <span class="tag tag-new">NEW</span>
+    <span class="tag tag-gold">お知らせ</span>
+  </div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:80px"></div><div class="radius-label">80px（トップ CTA・20 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:39px"></div><div class="radius-label">39px（下層 CTA・4 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:16px"></div><div class="radius-label">16px（カード・28 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">8px（枠線ボタン・11 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:2px"></div><div class="radius-label">2px（バッジ・23 要素）</div></div>
+  </div>
+
+  <div class="card-grid" style="margin-top:34px">
+    <a href="#" class="card"><div class="card-img"></div><div class="card-body"><div class="card-cat">住宅ローン ／ 2026.11.20</div><div class="card-title">金利上昇時代に知っておきたい住宅ローンの選び方</div></div></a>
+    <a href="#" class="card"><div class="card-img" style="background:linear-gradient(140deg,#f6e2c0,#e2c58f)"></div><div class="card-body"><div class="card-cat">教育 ／ 2026.11.18</div><div class="card-title">「教育ローン」と「奨学金」はどう違う？</div></div></a>
+    <a href="#" class="card"><div class="card-img" style="background:linear-gradient(140deg,#ffd9bb,#f6b887)"></div><div class="card-body"><div class="card-cat">マイカー ／ 2026.11.14</div><div class="card-title">カーリース？カーシェア？車の借り方を理解しよう</div></div></a>
+  </div>
+
+  <div class="form-grid" style="margin-top:36px">
+    <div class="field"><label for="f1">お名前</label><input id="f1" type="text" value="北國 太郎"><div class="field-msg">全角でご入力ください</div></div>
+    <div class="field is-focus"><label for="f2">ご相談内容</label><input id="f2" type="text" value="住宅ローンについて"><div class="field-msg">フォーカス状態（3px のアウトライン）</div></div>
+    <div class="field is-error"><label for="f3">ご連絡先</label><input id="f3" type="text" value=""><div class="field-msg">ご連絡先を入力してください</div></div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="elevation">
+  <div class="section-label">05 / Depth &amp; Elevation</div>
+  <h2 class="ttl">影ではなく「厚み」<span class="en">Elevation</span></h2>
+  <p class="lead">本体の影 3 種はすべて <b><code>blur: 0</code> / <code>spread: 0</code></b> で、色はベージュ系。ドロップシャドウではなく<b>下に 4px ずらした面</b>で立体を作っている。ぼかしのある影が出るのはメガメニューとカルーセル矢印だけ。</p>
+
+  <div class="elev-grid">
+    <div class="elev elev-1"><div class="elev-name">Card ★</div><div class="elev-val">#d9ceb8 0 4px 0 0<br>23 要素</div></div>
+    <div class="elev elev-2"><div class="elev-name">CTA（下層）</div><div class="elev-val">#c7ba9f 0 4px 0 0<br>4 要素</div></div>
+    <div class="elev elev-3"><div class="elev-name">Login</div><div class="elev-val">#e0d6c2 0 3px 0 0<br>1 要素</div></div>
+    <div class="elev elev-4"><div class="elev-name">Mega Menu</div><div class="elev-val">rgba(0,0,0,.08) 0 5px 10px<br>1 要素（唯一ぼかす）</div></div>
+  </div>
+
+  <p class="note"><b><code>0 4px 8px rgba(0,0,0,.1)</code> のような一般的な影に置き換えないこと。</b>色をベージュ（<code>#d9ceb8</code>）のまま、<code>blur</code> を 0 のままにする。</p>
+</section>
+
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">06 / Layout &amp; Responsive</div>
+  <h2 class="ttl">ルートは 16 幅すべて固定<span class="en">Layout</span></h2>
+  <p class="lead">コンテナはトップ <b>1060px</b>（6 要素）、下層 <b>870px</b>（7 要素）。ブレークポイントは <code>767px</code> / <code>768px</code> が主で、ほかに <code>1130px</code> と <code>450px</code>。</p>
+
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:1060px;max-width:100%">container 1060px（トップ・6 要素）</div>
+    <div class="layout-bar" style="width:870px;max-width:100%">container 870px（下層・7 要素）</div>
+    <div class="layout-bar" style="width:767px;max-width:100%">breakpoint 767px（max-width 340 件）</div>
+  </div>
+
+  <p class="note"><b>1920 / 1440 / 1200 / 1024 / 992 / 991 / 834 / 769 / 768 / 767 / 600 / 481 / 480 / 414 / 375 / 320px の 16 幅すべてで <code>html: 16px</code> / <code>body: 16px</code> / <code>line-height: 24px</code>。</b><code>vw</code> も <code>clamp()</code> も <code>%</code> の入れ子も無く、1px も動かない。変わるのは要素単位の px の階段だけで、768 → 767px で <code>h3</code> が 22px → 18px、<code>a</code> が 14px → 11px になる。<b><code>rem</code> を使っても追従しない</b>ので、レスポンシブは <code>@media</code> の px 書き換えで作る。</p>
+
+  <p class="note"><b>実サイトの <code>html { font-size: 16px !important }</code> は真似しないこと。</b><code>!important</code> 付きの px 固定なので、ユーザーがブラウザの文字サイズ設定を変えても本文が追従しない。<code>body</code> 側の <code>font-size: 16px; font-size: 1rem</code> という二重宣言も 1 行にまとめてよい。</p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-head">北國銀行</div>
+    <div class="footer-cols">
+      <div class="footer-col"><a href="#">商品・サービス</a><a href="#">金利・手数料</a><a href="#">店舗・ATM</a></div>
+      <div class="footer-col"><a href="#">おかねの豆知識</a><a href="#">会社情報</a><a href="#">採用情報</a></div>
+      <div class="footer-col"><a href="#">サイトマップ</a><a href="#">ニュースリリース</a></div>
+    </div>
+    <div class="footer-copy">金融機関コード：0146 ／ Design System Preview（実測 2026-11-23）</div>
+  </div>
+</footer>
+
+</body>
+</html>

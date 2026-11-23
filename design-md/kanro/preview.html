@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: カンロ（Kanro）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&family=Poppins:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       実サイトの CSS Custom Properties は 74 個と出るが、44 個は Tailwind v4 の @theme 既定値、
+       2 個は Swiper。自社トークンは 28 個だけ。以下はその自社トークン。2026-11-23 */
+    --color-main:      #ea5532;  /* ★ブランドオレンジ。面 18 要素 / 文字 32 要素 / 枠線 */
+    --color-bg:        #ed7750;  /* 面のオレンジ。1 要素（Research and Development） */
+    --color-sub-2:     #f8f5ec;  /* クリーム。1 要素（Company 会社情報） */
+    --color-sub-3:     #fef1ef;  /* 宣言あり・可視 0 */
+    --color-brown:     #9e4a3b;  /* 宣言あり・可視 0 */
+    --color-charcoal:  #333333;  /* ★本文。43 要素 / 12 要素 */
+    --color-graydark:  #202020;  /* 記事タイトル。5 要素 */
+    --color-graylink:  #444444;  /* カテゴリ名。8 要素 */
+    --color-graycustom:#5c5c5c;  /* ヘッダーのサブリンク。4 要素 */
+    --color-graylight: #999999;  /* 日付。9 要素 */
+    --color-graybg:    #f7f7f7;  /* 宣言あり・可視 0 */
+    --color-pdf:       #ee3d23;  /* PDF バッジ。面 10 要素。ブランド色とは別の赤 */
+    --color-healthy01: #fcd6ce;  /* 健康系コンテンツの面（トップ・企業理念では可視 0） */
+    --color-healthy03: #fbe7ce;
+    --color-healthy05: #fcf6d4;
+    --bg:              #ffffff;
+
+    /* === Fonts ===
+       Google Fonts: Noto Sans JP（可変 wght@100..900）のみ描画される。
+       同じ URL で Noto Sans SC / Roboto / Zen Maru Gothic も読んでいるが 1 本も loaded しない。
+       Adobe Fonts: sofia-pro の weight 500 だけが loaded（kit-rounded / kit-sans は未使用）。
+       Adobe Fonts はドメインライセンスなので手元では出ない。ここでは Poppins 500 で代替する。 */
+    --font-noto: "Noto Sans JP", "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN",
+                 "游ゴシック Medium", "Yu Gothic Medium", メイリオ, Meiryo, sans-serif;
+    --font-en:   "Poppins", sans-serif;   /* 実サイトは "sofia-pro", sans-serif */
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: Tailwind の --leading-normal: 1.5 が基準 === */
+    --lh-base: 1.50;   /* 本文。61 要素で最多 */
+    --lh-ui:   1.43;   /* ユーティリティ（14px → 20px）。26 要素 */
+    --lh-item: 1.53;   /* 商品名（15px → 23px）。13 要素 */
+    --lh-tight:1.00;   /* サブ見出し。9 要素 */
+    --lh-read: 1.88;   /* 企業パーパスの読み物。8 要素 */
+    --lh-en:   0.92;   /* ★英語見出し。1 を切る行送り。6 要素 */
+    --lh-card: 1.60;   /* 記事タイトル（18px → 28.8px）。5 要素 */
+
+    /* === Letter spacing: 8 割以上が normal。見出しだけ em を各要素が持つ === */
+    --ls-head: 0.04em;   /* 17px → 0.68px / 19px → 0.76px / 32px → 1.28px */
+    --ls-sec:  0.02em;   /* 21px → 0.42px */
+
+    /* === Radius === */
+    --r-card: 7px;   /* ★枠線ボタン・カード。17 要素 */
+    --r-fill: 5px;   /* 面のボタン */
+    --r-full: calc(infinity * 1px);  /* ★Tailwind v4 の rounded-full。計算値は 33554432px */
+    --r-cmp:  18px;  /* CMP のボタン */
+
+    /* === Weight: Tailwind のトークン。サイト本体に 700 は無い === */
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;   /* ★本文の既定。85 要素で最多 */
+
+    --container: 960px;   /* 下層。トップは max-width の実測 0 件（全幅） */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* ★実サイトのルートは 4 段の階段流体。768px で 10.24px まで縮み、767px で 16px に跳ね戻る */
+  html { font-size: 16px; }
+  @media screen and (max-width: 1200px) { html { font-size: 1.33333vw; } }  /* 設計幅 1200px */
+  @media screen and (max-width: 767px)  { html { font-size: 16px; } }       /* ★1.5625 倍に跳ぶ */
+  @media screen and (max-width: 389px)  { html { font-size: 4.10256vw; } }  /* 設計幅 390px */
+
+  body {
+    background: var(--bg);
+    color: var(--color-charcoal);
+    font-family: var(--font-noto);
+    font-size: 1rem;
+    font-weight: var(--font-weight-medium);   /* ★既定が 500。400 ではない */
+    line-height: var(--lh-base);
+    letter-spacing: normal;
+    /* font-feature-settings は書かない。
+       実サイトは 1 件も宣言していない。書体（Noto Sans JP）は palt を持っていて
+       実スタック 100px で normal 2150.00px → "palt" 1799.91px（−16.28%）と効いてしまうので、
+       足すと別物になる。 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header { border-bottom: 1px solid #e8e8e8; }
+  .header-inner { display: flex; align-items: center; max-width: 1240px; margin: 0 auto; padding: 1rem 1.25rem; gap: 1.75rem; }
+  .logo { font-family: var(--font-en); font-size: 2rem; font-weight: 500; line-height: var(--lh-en); color: var(--color-main); text-decoration: none; }
+  .logo small { display: block; font-family: var(--font-noto); font-size: .75rem; font-weight: 500; color: var(--color-graycustom); margin-top: .35rem; letter-spacing: var(--ls-head); }
+  .header-nav { display: flex; gap: 1.5rem; margin-left: auto; }
+  .header-nav a { font-size: 1rem; font-weight: 500; line-height: var(--lh-base); color: var(--color-charcoal); text-decoration: none; }
+  .header-util { display: flex; gap: .75rem; align-items: center; }
+  .header-util a { font-size: .875rem; font-weight: 500; line-height: var(--lh-ui); color: var(--color-graycustom); text-decoration: none; }
+  .btn-search { background: var(--color-main); color: #fff; border: 1px solid var(--color-main);
+    border-radius: var(--r-cmp); font-size: .875rem; font-weight: 700; line-height: 1.33; padding: .4rem 1rem; }
+
+  /* NOTICE BAR */
+  .notice { background: var(--color-main); color: #fff; text-align: center; padding: .75rem 1.25rem;
+    font-size: 1rem; font-weight: 400; line-height: var(--lh-base); }
+
+  /* HERO */
+  .hero { height: 23.5rem; background:
+      linear-gradient(115deg, #f3b8a6 0%, #f6d9c0 22%, #fbe7a8 44%, #f8c5bb 66%, #efa98d 100%); }
+  .hero-caption { max-width: 1240px; margin: 0 auto; padding: 1rem 1.25rem;
+    font-family: var(--font-mono); font-size: .6875rem; color: var(--color-graylight); }
+
+  /* SECTIONS */
+  .section { padding: 4rem 1.25rem; max-width: 1240px; margin: 0 auto; }
+  .section-cream { background: var(--color-sub-2); }
+  .section-cream .section-inner { padding: 4rem 1.25rem; max-width: 1240px; margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: .75rem; color: var(--color-graylight); margin-bottom: .875rem; }
+  .ttl { margin-bottom: 1.125rem; }
+  .ttl .en { display: block; font-family: var(--font-en); font-size: 3rem; font-weight: 500; line-height: var(--lh-en); color: var(--color-main); }
+  .ttl .jp { display: block; font-size: 1.6875rem; font-weight: 500; line-height: var(--lh-base); color: var(--color-charcoal); margin-top: .625rem; }
+  .lead { font-size: 1rem; font-weight: 500; line-height: var(--lh-base); max-width: 48rem; margin-bottom: 2rem; }
+  .note { font-size: .875rem; font-weight: 400; line-height: 1.8; color: #4a4a4a; margin-top: 1.375rem; max-width: 52rem; }
+  code { font-family: var(--font-mono); font-size: .75rem; background: #f0f0f0; padding: 1px 5px; }
+  .section-cream code { background: #ece7d8; }
+  b { font-weight: 700; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: .75rem; }
+  .swatch { border: 1px solid #e8e8e8; background: #fff; border-radius: var(--r-card); overflow: hidden; }
+  .swatch-chip { height: 4.5rem; }
+  .swatch-body { padding: .75rem; }
+  .swatch-name { font-size: .875rem; font-weight: 500; line-height: var(--lh-ui); }
+  .swatch-hex { font-family: var(--font-mono); font-size: .6875rem; color: var(--color-graylight); margin-top: .2rem; }
+  .swatch-use { font-size: .75rem; font-weight: 400; line-height: 1.6; color: #4a4a4a; margin-top: .4rem; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 15.5rem 1fr; gap: 1.5rem; padding: 1.25rem 0; border-bottom: 1px solid #e8e8e8; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: .6875rem; color: var(--color-graylight); line-height: 1.75; }
+  .type-meta b { display: block; font-family: var(--font-noto); font-size: .8125rem; font-weight: 500; color: var(--color-charcoal); }
+  .scale-bar { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.875rem; align-items: baseline; }
+  .scale-bar span { background: #f0f0f0; padding: .5rem .875rem; line-height: var(--lh-base); border-radius: var(--r-fill); }
+  .section-cream .scale-bar span { background: #ece7d8; }
+
+  /* WEIGHT DEMO */
+  .wt-row { display: flex; gap: 1.75rem; flex-wrap: wrap; align-items: baseline; margin-top: .75rem; }
+  .wt-item { text-align: center; }
+  .wt-sample { font-size: 1.875rem; line-height: var(--lh-base); }
+  .wt-cap { font-family: var(--font-mono); font-size: .6875rem; color: var(--color-graylight); margin-top: .4rem; }
+  .wt-bad .wt-cap { color: #a33; }
+  .wt-ok .wt-cap { color: #1f7a16; }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-bottom: 1.625rem; }
+  .btn { font-family: var(--font-noto); font-weight: 500; cursor: pointer; text-decoration: none;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; line-height: var(--lh-base); }
+  .btn-fill { background: var(--color-main); color: #fff; border: 1px solid var(--color-main); border-radius: var(--r-fill); padding: .75rem 1.875rem; }
+  .btn-outline { background: transparent; color: var(--color-charcoal); border: 1px solid var(--color-main); border-radius: var(--r-card); padding: .75rem 1.875rem; }
+  .btn-outline-lg { background: transparent; color: var(--color-main); border: 2px solid var(--color-main); border-radius: var(--r-card);
+    font-size: 1.3125rem; line-height: 1.33; letter-spacing: var(--ls-sec); padding: .75rem 1.875rem; }
+  .btn-pill-dark { background: var(--color-main); color: #fff; border: 2px solid var(--color-main); border-radius: var(--r-full); padding: .75rem 1.875rem; }
+  .btn.is-focus { outline: 3px solid var(--color-main); outline-offset: 3px; }
+
+  /* BADGES */
+  .badge-row { display: flex; gap: .625rem; flex-wrap: wrap; align-items: center; margin-top: .625rem; }
+  .badge-pdf { background: var(--color-pdf); color: #fff; font-size: .625rem; font-weight: 400; line-height: 1.5; border-radius: 0; padding: .2rem .5rem; }
+  .badge-cat { background: var(--color-sub-2); color: var(--color-graylink); font-size: .875rem; font-weight: 500; line-height: var(--lh-ui); border-radius: var(--r-card); padding: .35rem .75rem; }
+  .section-cream .badge-cat { background: #fff; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 1.25rem; }
+  .card { text-decoration: none; color: var(--color-charcoal); display: block; background: #fff;
+    border: 1px solid #e8e8e8; border-radius: var(--r-card); overflow: hidden; }
+  .card-img { height: 8.5rem; background: linear-gradient(140deg, #fcd6ce, #f3a98f); }
+  .card-body { padding: 1rem; }
+  .card-date { font-size: .8125rem; font-weight: 400; line-height: var(--lh-base); color: var(--color-graylight); }
+  .card-title { font-size: 1.125rem; font-weight: 500; line-height: var(--lh-card); color: var(--color-graydark); margin-top: .5rem; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(17.5rem, 1fr)); gap: 1.5rem; }
+  .field label { display: block; font-size: .875rem; font-weight: 500; line-height: var(--lh-ui); margin-bottom: .5rem; }
+  .field input { width: 100%; background: #fff; color: var(--color-charcoal); border: 1px solid #c8c8c8;
+    border-radius: var(--r-card); padding: .3rem .75rem; height: 3rem; font-size: 1rem; font-weight: 500;
+    line-height: var(--lh-base); font-family: var(--font-noto); }
+  .field.is-focus input { outline: 3px solid var(--color-main); }
+  .field.is-error input { border-color: var(--color-pdf); outline: 3px solid var(--color-pdf); }
+  .field-msg { font-size: .75rem; font-weight: 400; line-height: 1.6; color: var(--color-graylight); margin-top: .45rem; }
+  .field.is-error .field-msg { color: var(--color-pdf); }
+
+  /* RADIUS */
+  .radius-row { display: flex; gap: 1.375rem; flex-wrap: wrap; margin-top: 1.25rem; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 7rem; height: 4.25rem; background: var(--color-main); }
+  .radius-label { font-family: var(--font-mono); font-size: .6875rem; color: var(--color-graylight); margin-top: .45rem; }
+
+  /* ROOT SCALE TABLE */
+  .scale-table { width: 100%; border-collapse: collapse; margin-top: 1.25rem; font-size: .875rem; }
+  .scale-table th, .scale-table td { border: 1px solid #e0e0e0; padding: .5rem .75rem; text-align: left; font-weight: 400; }
+  .scale-table th { background: #f0f0f0; font-weight: 500; }
+  .section-cream .scale-table th { background: #ece7d8; }
+  .scale-table .hit { color: var(--color-pdf); font-weight: 700; }
+  .scale-table .mono { font-family: var(--font-mono); font-size: .75rem; }
+
+  /* LAYOUT */
+  .layout-demo { display: flex; flex-direction: column; gap: .625rem; align-items: center; }
+  .layout-bar { background: #f0f0f0; height: 2.25rem; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: .6875rem; color: #4a4a4a; border-radius: var(--r-fill); }
+  .section-cream .layout-bar { background: #ece7d8; }
+
+  /* UNUSED FONTS */
+  .unused-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; margin-top: 1rem; }
+  .unused { border: 1px dashed #c8c8c8; border-radius: var(--r-card); padding: 1rem; }
+  .unused-name { font-size: 1rem; font-weight: 500; line-height: var(--lh-base); color: var(--color-charcoal); }
+  .unused-val { font-family: var(--font-mono); font-size: .6875rem; color: #a33; margin-top: .4rem; line-height: 1.7; }
+
+  /* FOOTER */
+  .footer { background: var(--color-main); color: #fff; padding: 2.75rem 1.25rem; }
+  .footer-inner { max-width: 1240px; margin: 0 auto; }
+  .footer-head { font-family: var(--font-en); font-size: 2rem; font-weight: 500; line-height: var(--lh-en); }
+  .footer-sub { font-size: .875rem; font-weight: 500; line-height: var(--lh-ui); margin-top: .625rem; letter-spacing: var(--ls-head); }
+  .footer-cols { display: flex; gap: 3rem; margin-top: 1.5rem; flex-wrap: wrap; }
+  .footer-col a { display: block; font-size: .875rem; font-weight: 500; line-height: 2; color: #fff; text-decoration: none; }
+  .footer-copy { font-family: var(--font-mono); font-size: .6875rem; line-height: var(--lh-base); margin-top: 1.75rem; color: #ffd9cf; }
+
+  @media (max-width: 767px) {
+    .section, .section-cream .section-inner { padding: 2.75rem 1rem; }
+    .ttl .en { font-size: 2.25rem; }
+    .type-row { grid-template-columns: 1fr; gap: .5rem; }
+    .header-nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">Kanro<small>カンロ株式会社</small></a>
+    <nav class="header-nav">
+      <a href="#">商品情報</a><a href="#">会社情報</a><a href="#">IR情報</a><a href="#">サステナビリティ</a><a href="#">研究開発</a>
+    </nav>
+    <div class="header-util">
+      <a href="#">お知らせ</a><a href="#">EN | 簡体</a><button class="btn-search">検索</button>
+    </div>
+  </div>
+</header>
+
+<div class="notice">【重要なお知らせ】「グミッツェル」の類似品にご注意ください</div>
+
+<div class="hero"></div>
+<p class="hero-caption">実サイトのヒーローは 5997×750 の横長 JPG（写真モザイク）。文字は入っていない。ロゴ SVG の alt が「心がひとつぶ、大きくなる。」</p>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="ttl"><span class="en">Color Palette</span><span class="jp">キャンディのオレンジひと色</span></h2>
+  <p class="lead">CSS Custom Properties は <code>own: 72</code> と出るが、<b>44 個は Tailwind v4 の <code>@theme</code> 既定値</b>（<code>--color-red-500: oklch(...)</code> <code>--spacing: .25rem</code> <code>--text-xs</code> <code>--radius-sm</code> など）、2 個は Swiper。<b>自社トークンは 28 個だけ</b>。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#ea5532"></div><div class="swatch-body"><div class="swatch-name">Kanro Orange</div><div class="swatch-hex">#ea5532 / --color-main</div><div class="swatch-use">★面 18 要素 / 文字 32 要素 / 枠線 1px・2px</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ed7750"></div><div class="swatch-body"><div class="swatch-name">Orange Light</div><div class="swatch-hex">#ed7750 / --color-bg</div><div class="swatch-use">面 1 要素（Research and Development）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f8f5ec;border-bottom:1px solid #e8e8e8"></div><div class="swatch-body"><div class="swatch-name">Cream</div><div class="swatch-hex">#f8f5ec / --color-sub-2</div><div class="swatch-use">面 1 要素（Company 会社情報）</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ee3d23"></div><div class="swatch-body"><div class="swatch-name">PDF Badge</div><div class="swatch-hex">#ee3d23</div><div class="swatch-use">面 10 要素。<b>ブランドオレンジとは別の赤</b></div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#333333"></div><div class="swatch-body"><div class="swatch-name">Charcoal</div><div class="swatch-hex">#333333 / --color-charcoal</div><div class="swatch-use">★本文 43 要素 / 12 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#202020"></div><div class="swatch-body"><div class="swatch-name">Gray Dark</div><div class="swatch-hex">#202020 / --color-graydark</div><div class="swatch-use">記事タイトル。5 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#999999"></div><div class="swatch-body"><div class="swatch-name">Gray Light</div><div class="swatch-hex">#999999 / --color-graylight</div><div class="swatch-use">日付。9 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fcd6ce"></div><div class="swatch-body"><div class="swatch-name">Healthy 01</div><div class="swatch-hex">#fcd6ce / --color-healthy01</div><div class="swatch-use">健康系コンテンツの面。6 色あるが<b>トップ・企業理念では可視 0</b></div></div></div>
+  </div>
+
+  <p class="note"><b>Nuxt のローディングバーの色（<code>#00dc82 → #34cdfe → #0047e1</code>）を再現しないこと。</b>フレームワークの既定であってカンロの設計ではない。<code>oklab(0.999994 ... / 0.3)</code> のような色も Tailwind v4 が <code>rgb(255 255 255 / 0.3)</code> を変換したものなので、普通に <code>rgba()</code> と書いてよい。</p>
+</section>
+
+<section class="section-cream" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="ttl"><span class="en">Typography</span><span class="jp">本文を weight 500 で組む</span></h2>
+  <p class="lead">可視要素の最多ウェイトが <b>500（85 要素）</b>で、400（52 要素）より多い。700 は CMP の 3 要素だけで、<b>サイト本体には 1 つも無い</b>。和文は Noto Sans JP の可変フォント（<code>wght@100..900</code>）なので、9 段すべてが別々の字幅を持つ。</p>
+
+  <div class="scale-bar">
+    <span style="font-family:var(--font-en);font-size:3.25rem;font-weight:500;line-height:.92">52</span>
+    <span style="font-family:var(--font-en);font-size:3rem;font-weight:500;line-height:.92">48</span>
+    <span style="font-size:2rem;font-weight:500">32</span>
+    <span style="font-size:1.6875rem;font-weight:500">27</span>
+    <span style="font-size:1.3125rem;font-weight:500">21</span>
+    <span style="font-size:1.1875rem;font-weight:500">19</span>
+    <span style="font-size:1.125rem;font-weight:500">18</span>
+    <span style="font-size:1rem;font-weight:500">16</span>
+    <span style="font-size:.9375rem;font-weight:500">15</span>
+    <span style="font-size:.875rem;font-weight:500">14</span>
+    <span style="font-size:.8125rem;font-weight:400">13</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Section (EN) ★</b>sofia-pro / 52px / <b style="display:inline">500</b><br>lh <b style="display:inline">0.92</b>（1 を切る）</div><div style="font-family:var(--font-en);font-size:3.25rem;font-weight:500;line-height:.92;color:var(--color-main)">Pickup</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section (EN)</b>sofia-pro / 48px / 500<br>lh 0.92</div><div style="font-family:var(--font-en);font-size:3rem;font-weight:500;line-height:.92;color:var(--color-main)">Research and Development</div></div>
+  <div class="type-row"><div class="type-meta"><b>Page Title（下層）</b>Noto Sans JP / 32px / 500<br>lh 1.46 / ls 1.28px（0.04em）</div><div style="font-size:2rem;font-weight:500;line-height:1.46;letter-spacing:.04em">企業理念体系</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section (JP) ★</b>Noto Sans JP / 27px / 500<br>lh 1.50</div><div style="font-size:1.6875rem;font-weight:500;line-height:1.5">Sweetな瞬間を創り続けることで人々と社会を幸せに</div></div>
+  <div class="type-row"><div class="type-meta"><b>Sub Heading</b>Noto Sans JP / 21px / 500<br>lh 1.33 / ls 0.42px（0.02em）</div><div style="font-size:1.3125rem;font-weight:500;line-height:1.33;letter-spacing:.02em">企業行動憲章</div></div>
+  <div class="type-row"><div class="type-meta"><b>Label</b>Noto Sans JP / 19px / 500<br>lh <b style="display:inline">1.00</b> / ls 0.76px（0.04em）</div><div style="font-size:1.1875rem;font-weight:500;line-height:1;letter-spacing:.04em">事業内容</div></div>
+  <div class="type-row"><div class="type-meta"><b>Article Title</b>Noto Sans JP / 18px / 500<br>lh <b style="display:inline">1.60</b></div><div style="font-size:1.125rem;font-weight:500;line-height:1.6;color:var(--color-graydark)">ショコラの雪に隠れた、もちっとマシュマロ「スノーボール」</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>Noto Sans JP / 16px / <b style="display:inline">500</b><br>lh 1.50 / ls normal</div><div style="font-size:1rem;font-weight:500;line-height:1.5">カンロは、企業パーパス「Sweeten the Future. 糖から未来をしあわせに。」のもと、糖と向き合い、培ってきたキャンディの技術を社会に広げていきます。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body（読み物）</b>Noto Sans JP / 16px / 400<br>lh <b style="display:inline">1.88</b></div><div style="font-size:1rem;font-weight:400;line-height:1.88">私たちカンロは、不透明で決して明るいことばかりではない時代だからこそ、Sweet な瞬間を創り続けることで人々と社会を幸せにしていきます。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Item</b>Noto Sans JP / 15px / 500<br>lh 1.53</div><div style="font-size:.9375rem;font-weight:500;line-height:1.53">カンロ飴 ／ 金のミルクキャンディ ／ ピュレグミレモン</div></div>
+  <div class="type-row"><div class="type-meta"><b>Utility</b>Noto Sans JP / 14px / 500<br>lh 1.43</div><div style="font-size:.875rem;font-weight:500;line-height:1.43">お知らせ ／ プレスリリース ／ サステナビリティ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Date</b>Noto Sans JP / 13px / <b style="display:inline">400</b><br>lh 1.50</div><div style="font-size:.8125rem;font-weight:400;line-height:1.5;color:var(--color-graylight)">2026.11.20</div></div>
+
+  <p class="note"><b>英語見出しの <code>line-height</code> は 0.92 で 1 を切る。</b>52px / 48px の大きな英字を詰めて置くための行送りで、和文見出し 27px / 1.50 とは別の設計。</p>
+
+  <div class="wt-row">
+    <div class="wt-item"><div class="wt-sample" style="font-weight:400">糖から未来を</div><div class="wt-cap">400 → 日付・コピーライトのみ（52 要素）</div></div>
+    <div class="wt-item wt-ok"><div class="wt-sample" style="font-weight:500">糖から未来を</div><div class="wt-cap">★500 → 本文の既定（85 要素）</div></div>
+    <div class="wt-item wt-bad"><div class="wt-sample" style="font-weight:700">糖から未来を</div><div class="wt-cap">700 → サイト本体に 1 要素も無い</div></div>
+  </div>
+
+  <p class="note"><b><code>font-weight: 700</code> を使わないこと。</b>Noto Sans JP は可変フォントなので、書けば<b>本当に太く出てしまう</b>（欧文実測で <code>100 → 1072.11px</code> … <code>900 → 1228.20px</code> と 9 段すべて別の幅）。</p>
+
+  <p class="note"><b><code>font-feature-settings: "palt"</code> を足さないこと。</b>実サイトは 1 件も宣言していない。ただし書体は機能を持っており、実スタック 100px で <code>normal</code> 2150.00px → <code>"palt"</code> <b>1799.91px（−16.28%）</b>と効いてしまう。「できるのにやっていない」型。</p>
+</div>
+</section>
+
+<section class="section" id="fonts">
+  <div class="section-label">03 / Font Loading</div>
+  <h2 class="ttl"><span class="en">Web Fonts</span><span class="jp">8 ファミリー宣言して 2 つしか使わない</span></h2>
+  <p class="lead">CSS 全文の <code>@font-face</code> は <b>382 件</b>。実際のフォント要求は 44 件で、内訳は <code>fonts.gstatic.com</code>（Noto Sans JP のサブセット）と <code>use.typekit.net</code>（Sofia Pro 1 本）だけ。</p>
+
+  <div class="unused-grid">
+    <div class="unused" style="border-style:solid;border-color:var(--color-main)"><div class="unused-name">Noto Sans JP</div><div class="unused-val" style="color:#1f7a16">★描画される。124 サブセット中 40 本 loaded<br>可変 wght@100..900</div></div>
+    <div class="unused" style="border-style:solid;border-color:var(--color-main)"><div class="unused-name" style="font-family:var(--font-en);font-weight:500">sofia-pro</div><div class="unused-val" style="color:#1f7a16">★描画される。21 宣言中 weight 500 のみ loaded<br>Adobe Fonts キット avb7vnn</div></div>
+    <div class="unused"><div class="unused-name">Zen Maru Gothic</div><div class="unused-val">wght@700 を要求しているが<br>122 サブセットすべて unloaded・可視 0</div></div>
+    <div class="unused"><div class="unused-name">Noto Sans SC</div><div class="unused-val">101 サブセットすべて unloaded・可視 0</div></div>
+    <div class="unused"><div class="unused-name">Roboto</div><div class="unused-val">9 件すべて unloaded・可視 0</div></div>
+    <div class="unused"><div class="unused-name">kit-rounded / kit-sans</div><div class="unused-val">Typekit キットに入っているが<br>各 4 宣言すべて unloaded・可視 0</div></div>
+  </div>
+
+  <p class="note"><b>トークンに名前があっても使われているとは限らない。</b><code>--font-ch</code>（Noto Sans SC）/ <code>--font-roboto</code> / <code>--font-zenmaru</code> は宣言されているが、<b>1 要素も描画していない</b>。判定は常に ①<code>document.fonts</code> ②<code>distributions.fontFamily</code> の可視件数 ③フォント要求の件数 の 3 点で行う。</p>
+
+  <p class="note"><b>和文スタックが <code>"Noto Sans JP", sans-serif</code> の 2 語しかない。</b>ヒラギノも游ゴシックも書かれていないので、Web フォントが落ちると端末既定のサンセリフに落ちる。実サイトはこうだが、<b>正しくは <code>"ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "游ゴシック Medium", "Yu Gothic Medium", メイリオ, Meiryo</code> を足したほうがよい</b>（このプレビューではそうしている）。</p>
+</section>
+
+<section class="section-cream" id="components">
+<div class="section-inner">
+  <div class="section-label">04 / Components</div>
+  <h2 class="ttl"><span class="en">Buttons &amp; Cards</span><span class="jp">角丸 7px と影ゼロ</span></h2>
+  <p class="lead">角丸は <code>7px</code>（枠線ボタン・カード・17 要素）/ <code>5px</code>（面のボタン）/ <code>calc(infinity * 1px)</code>（Tailwind v4 の <code>rounded-full</code>。計算値 33554432px）の 3 段。<b>サイト本体に影は 1 つも無い</b>（唯一の <code>box-shadow</code> は CMP のバナー）。</p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-fill">商品情報はこちら</a>
+    <a href="#" class="btn btn-outline">会社情報一覧へ</a>
+    <a href="#" class="btn btn-outline-lg">企業理念を見る</a>
+    <a href="#" class="btn btn-pill-dark">IR情報</a>
+    <a href="#" class="btn btn-fill is-focus">フォーカス状態</a>
+  </div>
+
+  <div class="badge-row">
+    <span class="badge-pdf">PDF</span>
+    <span class="badge-cat">プレスリリース</span>
+    <span class="badge-cat">サステナビリティ</span>
+  </div>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:7px"></div><div class="radius-label">7px（枠線・カード・17 要素）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:5px"></div><div class="radius-label">5px（面のボタン）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:calc(infinity * 1px)"></div><div class="radius-label">calc(infinity * 1px)（rounded-full）</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:0"></div><div class="radius-label">0（PDF バッジ）</div></div>
+  </div>
+
+  <div class="card-grid" style="margin-top:2.25rem">
+    <a href="#" class="card"><div class="card-img"></div><div class="card-body"><div class="card-date">2026.11.20</div><div class="card-title">ショコラの雪に隠れた、もちっとマシュマロ</div></div></a>
+    <a href="#" class="card"><div class="card-img" style="background:linear-gradient(140deg,#fcf6d4,#f3d98f)"></div><div class="card-body"><div class="card-date">2026.11.19</div><div class="card-title">桑田佳祐さんの楽曲にのせて、Sweetな未来へ</div></div></a>
+    <a href="#" class="card"><div class="card-img" style="background:linear-gradient(140deg,#fbe7ce,#efb98d)"></div><div class="card-body"><div class="card-date">2026.11.18</div><div class="card-title">知っておきたい、カンロノンシュガーキャンディの話</div></div></a>
+  </div>
+
+  <div class="form-grid" style="margin-top:2.25rem">
+    <div class="field"><label for="f1">お名前</label><input id="f1" type="text" value="甘露 花子"></div>
+    <div class="field is-focus"><label for="f2">お問い合わせの種類</label><input id="f2" type="text" value="商品について"><div class="field-msg">フォーカス状態（3px のアウトライン）</div></div>
+    <div class="field is-error"><label for="f3">メールアドレス</label><input id="f3" type="text" value=""><div class="field-msg">メールアドレスを入力してください</div></div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="responsive">
+  <div class="section-label">05 / Responsive</div>
+  <h2 class="ttl"><span class="en">Root Scale</span><span class="jp">ルートは 4 段、崖は 768 → 767px</span></h2>
+  <p class="lead">規定の 4 幅（1440 / 1200 / 834 / 375px）では崖が見えない。<b>768 / 767px を測らないと「ただの流体」に見える</b>。タブレット帯の本文が 10px 台まで縮み、モバイルのほうが大きくなる。</p>
+
+  <table class="scale-table">
+    <thead><tr><th>幅</th><th>html / body</th><th>式</th></tr></thead>
+    <tbody>
+      <tr><td>1920 / 1440 / 1201px</td><td class="mono">16px</td><td class="mono">font-size: 16px</td></tr>
+      <tr><td>1200px</td><td class="mono">16px</td><td class="mono">1.33333vw（設計幅 1200px でちょうど 16px）</td></tr>
+      <tr><td>1024px</td><td class="mono">13.6533px</td><td class="mono">1.33333vw</td></tr>
+      <tr><td>834px</td><td class="mono">11.12px</td><td class="mono">1.33333vw</td></tr>
+      <tr><td>768px</td><td class="mono hit">10.24px ← 最小</td><td class="mono">1.33333vw</td></tr>
+      <tr><td>767px</td><td class="mono hit">16px ← 1.5625 倍に跳ぶ</td><td class="mono">font-size: 16px</td></tr>
+      <tr><td>600 / 481 / 414 / 390px</td><td class="mono">16px</td><td class="mono">font-size: 16px</td></tr>
+      <tr><td>375px</td><td class="mono">15.3846px</td><td class="mono">4.10256vw（設計幅 390px）</td></tr>
+      <tr><td>320px</td><td class="mono">13.1282px</td><td class="mono">4.10256vw</td></tr>
+    </tbody>
+  </table>
+
+  <p class="note"><b><code>1.33333vw</code> = 100vw ÷ 75 → 分母 75 × 16 = 設計幅 1200px。</b><code>4.10256vw</code> = 100vw ÷ 24.375 → 分母 24.375 × 16 = 設計幅 390px で、<b>389px でちょうど 16px に着地するのでモバイル側の境目には段差が無い</b>。</p>
+
+  <p class="note"><b><code>rem</code> を 16px 基準で換算しないこと。</b>サイズ・余白・角丸がすべて <code>rem</code>（Tailwind の <code>--spacing: .25rem</code> 基準）なので、幅を変えると全部が連動する。<b>このプレビューも同じ 4 段のメディアクエリを実装しているので、ブラウザ幅を 768px と 767px で切り替えると崖が確認できる。</b></p>
+
+  <div class="layout-demo" style="margin-top:1.5rem">
+    <div class="layout-bar" style="width:960px;max-width:100%">container 960px（下層。トップは max-width 0 件の全幅）</div>
+    <div class="layout-bar" style="width:768px;max-width:100%">breakpoint 768px（ルート最小 10.24px）</div>
+    <div class="layout-bar" style="width:390px">breakpoint 390px（モバイル設計幅）</div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-head">Kanro</div>
+    <div class="footer-sub">Sweeten the Future. 糖から未来をしあわせに。</div>
+    <div class="footer-cols">
+      <div class="footer-col"><a href="#">商品情報</a><a href="#">会社情報</a><a href="#">IR情報</a></div>
+      <div class="footer-col"><a href="#">サステナビリティ</a><a href="#">研究開発</a><a href="#">採用情報</a></div>
+      <div class="footer-col"><a href="#">ニュースルーム</a><a href="#">サイトマップ</a></div>
+    </div>
+    <div class="footer-copy">Design System Preview（実測 2026-11-23）</div>
+  </div>
+</footer>
+
+</body>
+</html>

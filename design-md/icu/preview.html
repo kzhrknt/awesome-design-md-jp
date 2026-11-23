@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 国際基督教大学（ICU）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Public+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Colors ===
+       CSS Custom Properties は --scrollbarWidth: 0px の 1 個だけ。設計トークンは存在しない。
+       以下は computed style の実測値。2026-11-23 */
+    --icu-blue:   #005abb;   /* ★ブランド青。文字 45 要素 / 面 11 要素 / 枠線 3px */
+    --icu-blue-50: rgba(0, 90, 187, .5);  /* 写真の覆い。面 5 要素 */
+    --navy:       #122b3a;   /* ★濃紺。ICU PLANET のカード。面 18 要素 */
+    --green:      #057837;   /* 記事カテゴリのバッジ。面 3 要素 */
+    --red:        #c90000;   /* 大切なお知らせ。文字 1 要素 */
+    --black:      #000000;   /* ★本文。195 要素 / 87 要素。純黒 */
+    --white:      #ffffff;   /* 面の上の文字。112 要素 / 7 要素 */
+    --muted:      #666666;   /* コピーライト */
+    --divider:    #eeeeee;   /* メガメニューの面。6 要素 */
+    --gray:       #cccccc;   /* ヒーロー画像の背景 */
+    --bg:         #ffffff;   /* pageBackground.resolved / 根拠 body */
+
+    /* === Fonts ===
+       Google Fonts の css2?family=Noto+Sans+JP:wght@400;500;700&family=Public+Sans:wght@400;700
+       1 本の URL で正しく v2 記法。
+       実サイトの html には "Noto Sans" / "Noto Sans CJK JP" / NotoSansCJKjp-Jxck も書かれているが、
+       どれも document.fonts にも @font-face にも存在しない死んだ名前なのでここでは書かない。 */
+    --font-ja: "Noto Sans JP",
+               "游ゴシック Medium", "Yu Gothic Medium", 游ゴシック体, YuGothic,
+               "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN",
+               メイリオ, Meiryo, Verdana, Roboto, "Droid Sans", sans-serif;
+    --font-en: "Public Sans", sans-serif;
+    /* ★ヒーローの明朝は Web フォントではない。OS ローカルに任せる（@font-face 無し） */
+    --font-mincho: YuMincho, 游明朝, "Hiragino Mincho ProN", "ヒラギノ明朝 W3 JIS2004",
+                   "Sawarabi Mincho", "Times New Roman", Times, serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, Courier, monospace;
+
+    /* === Line height: 用途ごとに比率を振り分ける === */
+    --lh-card:  1.20;   /* カード見出し・短いラベル。107 要素で最多 */
+    --lh-nav:   1.30;   /* ナビ。41 要素 */
+    --lh-desc:  1.50;   /* 説明文。88 要素 */
+    --lh-body:  2.00;   /* 長文の本文。55 要素 */
+    --lh-hero:  1.10;   /* 大きい欧文見出し。19 要素 */
+    --lh-en:    1.15;   /* Small Planet など */
+
+    /* === Letter spacing: 各要素が em を持つ。ページで配り方が逆転する === */
+    --ls-nav:  0.02em;  /* = 16px で 0.32px。トップはナビの欧文だけ / 下層は 55 要素 */
+    --ls-vert: 3px;     /* 縦組みラベル（60px）のみ */
+
+    --r-circle: 50%;    /* ★ICU PLANET の円。66 要素 */
+    --r-none:   0;      /* ★CTA は角を丸めない */
+    --shadow-menu: rgba(0, 0, 0, .1) 0 0 10px 0;  /* 唯一の影。メガメニューのみ */
+
+    --container: 1240px;  /* 本文のコンテンツ幅。9 要素 */
+    --card-w:    360px;   /* ★カード幅。24 要素で最多 */
+    --gap-nav:   9.1px;   /* ナビの行間。22 要素 */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* ★実サイト: html { font-size: 62.5% } = 10px / body { font-size: 1.6rem } = 16px
+     16 幅すべて固定。1rem = 10px なので「値 ÷ 10 で px が読める」 */
+  html { font-size: 62.5%; }
+  body {
+    background: var(--bg);
+    color: var(--black);
+    font-family: var(--font-ja);
+    font-size: 1.6rem;
+    line-height: var(--lh-card);
+    letter-spacing: normal;
+    /* font-feature-settings は body に書かない。
+       実サイトの palt 宣言は .g-nav と .p-top-mv__message の 2 箇所だけ。 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER（★ここだけ palt。実サイトの .g-nav と同じ） */
+  .header { border-bottom: 1px solid var(--divider); font-feature-settings: "palt"; }
+  .header-inner { display: flex; align-items: flex-end; max-width: var(--container); margin: 0 auto; padding: 16px 20px; gap: 28px; }
+  .logo { font-family: var(--font-en); font-size: 2.8rem; font-weight: 700; line-height: var(--lh-hero); color: var(--icu-blue); text-decoration: none; letter-spacing: var(--ls-nav); }
+  .logo small { display: block; font-family: var(--font-ja); font-size: 1.3rem; font-weight: 400; color: var(--black); margin-top: 4px; letter-spacing: var(--ls-nav); }
+  .header-nav { display: flex; gap: 28px; margin-left: auto; }
+  .header-nav a { text-decoration: none; display: block; }
+  .nav-en { display: block; font-family: var(--font-ja); font-size: 1.8rem; font-weight: 700; line-height: var(--lh-nav); color: var(--black); letter-spacing: var(--ls-nav); }
+  .nav-jp { display: block; font-size: 1.3rem; font-weight: 400; line-height: var(--lh-nav); color: var(--black); letter-spacing: var(--ls-nav); margin-top: 2px; }
+  .nav-util { display: flex; gap: 14px; }
+  .nav-util a { font-size: 1.2rem; font-weight: 400; line-height: var(--lh-nav); color: var(--black); text-decoration: none; letter-spacing: var(--ls-nav); }
+
+  /* HERO */
+  .hero { position: relative; min-height: 420px; display: flex; align-items: center;
+    background-image:
+      linear-gradient(rgba(0, 0, 0, .34), rgba(0, 0, 0, .40)),
+      linear-gradient(140deg, #3f6b4a 0%, #6a8d6f 40%, #2f5a7a 100%);
+    background-size: cover; padding: 48px 20px; }
+  .hero-inner { max-width: var(--container); margin: 0 auto; width: 100%; }
+  .hero-title { font-family: var(--font-en); font-size: 6.7rem; font-weight: 700; line-height: var(--lh-hero); color: var(--white); letter-spacing: normal; }
+  .hero-msg { font-family: var(--font-mincho); font-size: 2.9rem; font-weight: 700; line-height: 1.38;
+    color: var(--white); font-feature-settings: "palt"; margin-top: 26px; max-width: 760px; }
+  .hero-note { font-family: var(--font-mono); font-size: 1.1rem; color: rgba(255,255,255,.86); margin-top: 20px; }
+
+  /* SECTIONS */
+  .section { padding: 64px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-alt { background: var(--divider); }
+  .section-alt .section-inner { padding: 64px 20px; max-width: var(--container); margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 1.2rem; color: var(--muted); margin-bottom: 14px; }
+  .ttl { margin-bottom: 18px; }
+  .ttl .en { display: block; font-family: var(--font-en); font-size: 3.6rem; font-weight: 700; line-height: var(--lh-hero); color: var(--black); }
+  .ttl .jp { display: block; font-size: 2.1rem; font-weight: 700; line-height: var(--lh-card); color: var(--black); margin-top: 8px; letter-spacing: var(--ls-nav); }
+  .lead { font-size: 1.9rem; line-height: var(--lh-body); max-width: 820px; margin-bottom: 32px; }
+  .note { font-size: 1.5rem; line-height: var(--lh-desc); color: #333; margin-top: 22px; max-width: 860px; }
+  code { font-family: var(--font-mono); font-size: 1.2rem; background: var(--divider); padding: 1px 5px; }
+  .section-alt code { background: #dcdcdc; }
+  b { font-weight: 700; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); gap: 12px; }
+  .swatch { border: 1px solid #dcdcdc; background: var(--bg); }
+  .swatch-chip { height: 74px; }
+  .swatch-body { padding: 12px; }
+  .swatch-name { font-size: 1.4rem; font-weight: 700; line-height: var(--lh-card); }
+  .swatch-hex { font-family: var(--font-mono); font-size: 1.1rem; color: var(--muted); margin-top: 3px; }
+  .swatch-use { font-size: 1.2rem; line-height: 1.6; color: #333; margin-top: 6px; }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid #dcdcdc; align-items: baseline; }
+  .type-meta { font-family: var(--font-mono); font-size: 1.1rem; color: var(--muted); line-height: 1.75; }
+  .type-meta b { display: block; font-family: var(--font-ja); font-size: 1.3rem; font-weight: 700; color: var(--black); }
+  .scale-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 30px; align-items: baseline; }
+  .scale-bar span { background: var(--divider); padding: 8px 14px; line-height: var(--lh-card); }
+  .section-alt .scale-bar span { background: #dcdcdc; }
+
+  /* WEIGHT DEMO */
+  .wt-row { display: flex; gap: 28px; flex-wrap: wrap; align-items: baseline; margin-top: 12px; }
+  .wt-item { text-align: center; }
+  .wt-sample { font-size: 3rem; line-height: var(--lh-card); }
+  .wt-cap { font-family: var(--font-mono); font-size: 1.1rem; color: var(--muted); margin-top: 6px; }
+  .wt-bad .wt-cap { color: #a33; }
+  .wt-ok .wt-cap { color: #1f7a16; }
+
+  /* palt DEMO */
+  .palt-row { display: grid; grid-template-columns: 170px 1fr; gap: 18px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid #dcdcdc; }
+  .palt-label { font-family: var(--font-mono); font-size: 1.1rem; color: var(--muted); }
+  .palt-sample { font-size: 2.4rem; line-height: var(--lh-card); }
+
+  /* BUTTONS */
+  .btn-grid { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 26px; }
+  .btn { cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; }
+  .btn-outline { font-family: var(--font-en); font-size: 1.3rem; line-height: var(--lh-nav);
+    color: var(--icu-blue); background: transparent; border: 3px solid var(--icu-blue);
+    border-radius: var(--r-none); padding: 12px 30px; font-feature-settings: "palt"; }
+  .btn-navy { font-size: 1.3rem; line-height: var(--lh-card); color: var(--white); background: var(--navy);
+    border: 0; border-radius: var(--r-none); padding: 14px 30px; }
+  .btn-blue { font-size: 1.6rem; line-height: var(--lh-desc); color: var(--white); background: var(--icu-blue);
+    border: 0; border-radius: var(--r-none); padding: 13px 30px; }
+  .btn.is-focus { outline: 3px solid var(--navy); outline-offset: 3px; }
+
+  /* BADGES */
+  .badge-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+  .badge { font-size: 1.2rem; line-height: var(--lh-card); padding: 6px 12px; color: var(--white); }
+  .badge-green { background: var(--green); }
+  .badge-blue  { background: var(--icu-blue); }
+  .badge-red   { background: transparent; color: var(--red); font-weight: 700; padding-left: 0; }
+
+  /* CIRCLE CARDS */
+  .circle-row { display: flex; gap: 30px; flex-wrap: wrap; margin-top: 10px; }
+  .circle { width: 180px; height: 180px; border-radius: var(--r-circle); background: var(--navy); color: var(--white);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 18px; }
+  .circle-en { font-family: var(--font-en); font-size: 2.5rem; font-weight: 700; line-height: var(--lh-card); }
+  .circle-jp { font-size: 1.4rem; font-weight: 400; line-height: var(--lh-card); margin-top: 8px; }
+  .circle-blue { background: var(--icu-blue); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; }
+  .card { text-decoration: none; color: var(--black); display: block; }
+  .card-img { height: 160px; background: linear-gradient(140deg, #9fb8c9, #6b8a9e); }
+  .card-cat { font-size: 1.3rem; font-weight: 400; line-height: var(--lh-nav); color: var(--muted); margin-top: 14px; letter-spacing: var(--ls-nav); }
+  .card-title { font-size: 2.1rem; font-weight: 700; line-height: var(--lh-card); margin-top: 6px; letter-spacing: var(--ls-nav); }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 26px; }
+  .field label { display: block; font-size: 1.4rem; font-weight: 700; line-height: var(--lh-nav); margin-bottom: 8px; letter-spacing: var(--ls-nav); }
+  .field input { width: 100%; background: var(--bg); color: var(--black); border: 1px solid #b4b4b4;
+    border-radius: var(--r-none); padding: 5px 12px; height: 48px; font-size: 1.6rem; line-height: var(--lh-nav); font-family: var(--font-ja); }
+  .field.is-focus input { outline: 3px solid var(--icu-blue); }
+  .field.is-error input { border-color: var(--red); outline: 3px solid var(--red); }
+  .field-msg { font-size: 1.2rem; line-height: 1.6; color: var(--muted); margin-top: 7px; }
+  .field.is-error .field-msg { color: var(--red); }
+
+  /* VERTICAL */
+  .vert-row { display: flex; gap: 40px; align-items: flex-start; margin-top: 10px; }
+  .vert-label { writing-mode: vertical-rl; font-family: var(--font-en); font-size: 6rem; font-weight: 700;
+    line-height: 1.00; letter-spacing: var(--ls-vert); color: var(--icu-blue); }
+  .vert-index { writing-mode: vertical-rl; font-size: 2.6rem; font-weight: 700; line-height: 1.00; color: var(--navy); }
+
+  /* ELEVATION / LAYOUT */
+  .elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 20px; }
+  .elev { background: var(--bg); border: 1px solid #dcdcdc; padding: 26px; text-align: center; }
+  .elev-menu { box-shadow: var(--shadow-menu); border: 0; }
+  .elev-name { font-size: 1.6rem; font-weight: 700; line-height: var(--lh-card); }
+  .elev-val { font-family: var(--font-mono); font-size: 1.1rem; color: var(--muted); margin-top: 8px; }
+  .layout-demo { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .layout-bar { background: var(--divider); height: 36px; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 1.1rem; color: #333; }
+  .section-alt .layout-bar { background: #dcdcdc; }
+
+  /* FOOTER */
+  .footer { background: var(--navy); color: var(--white); padding: 46px 20px; }
+  .footer-inner { max-width: var(--container); margin: 0 auto; }
+  .footer-head { font-family: var(--font-en); font-size: 2.8rem; font-weight: 700; line-height: var(--lh-hero); }
+  .footer-sub { font-size: 1.4rem; line-height: var(--lh-nav); margin-top: 8px; letter-spacing: var(--ls-nav); }
+  .footer-cols { display: flex; gap: 48px; margin-top: 24px; flex-wrap: wrap; }
+  .footer-col a { display: block; font-size: 1.4rem; line-height: var(--lh-body); color: var(--white); text-decoration: none; letter-spacing: var(--ls-nav); }
+  .footer-copy { font-family: var(--font-mono); font-size: 1.1rem; line-height: var(--lh-nav); margin-top: 28px; color: #b9c6ce; }
+
+  /* ★実サイトは print, screen and (min-width: 769px) が 784 件。崖は 769 → 768px */
+  @media print, screen and (max-width: 768px) {
+    .section, .section-alt .section-inner { padding: 44px 16px; }
+    .hero-title { font-size: 3.9rem; }          /* ★実サイト: h1 67px → 39px */
+    .ttl .en { font-size: 3.5rem; }             /* ★実サイト: h2 57px → 35px */
+    .lead { font-size: 1.5rem; line-height: var(--lh-body); }  /* ★実サイト: p 19px → 15px */
+    .hero-msg { font-size: 2.1rem; }
+    .type-row { grid-template-columns: 1fr; gap: 8px; }
+    .header-nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">ICU<small>国際基督教大学</small></a>
+    <nav class="header-nav">
+      <a href="#"><span class="nav-en">ABOUT</span><span class="nav-jp">ICUについて</span></a>
+      <a href="#"><span class="nav-en">ACADEMICS</span><span class="nav-jp">ICUの学び</span></a>
+      <a href="#"><span class="nav-en">RESEARCH</span><span class="nav-jp">研究</span></a>
+      <a href="#"><span class="nav-en">ADMISSIONS</span><span class="nav-jp">入学者選抜</span></a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <p class="hero-title">Why ICU ... ?</p>
+    <p class="hero-msg">なぜ、ICU 生は学ぶ事が好きなのか？</p>
+    <p class="hero-note">見出し: Public Sans 67px / 700 / lh 1.10　｜　メッセージ: OS ローカルの明朝 29px / 700 / lh 1.38 / palt（Web フォントではない）</p>
+  </div>
+</div>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="ttl"><span class="en">Color Palette</span><span class="jp">彩度を持つのは 4 色だけ</span></h2>
+  <p class="lead">CSS Custom Properties は <code>--scrollbarWidth: 0px</code> の 1 個だけで、設計トークンは存在しない。色もサイズもすべて CSS に直書きされている。</p>
+
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#005abb"></div><div class="swatch-body"><div class="swatch-name">ICU Blue</div><div class="swatch-hex">#005abb</div><div class="swatch-use">★文字 45 要素 / 面 11 要素 / 枠線 <code>3px solid</code></div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#122b3a"></div><div class="swatch-body"><div class="swatch-name">Deep Navy</div><div class="swatch-hex">#122b3a</div><div class="swatch-use">★ICU PLANET のカード。面 18 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#057837"></div><div class="swatch-body"><div class="swatch-name">Green</div><div class="swatch-hex">#057837</div><div class="swatch-use">記事カテゴリのバッジ。面 3 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#c90000"></div><div class="swatch-body"><div class="swatch-name">Alert</div><div class="swatch-hex">#c90000</div><div class="swatch-use">大切なお知らせ。文字 1 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#000000"></div><div class="swatch-body"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#000000</div><div class="swatch-use">★本文 195 要素 / 87 要素。<b>純黒</b></div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#eeeeee"></div><div class="swatch-body"><div class="swatch-name">Divider / Surface</div><div class="swatch-hex">#eeeeee</div><div class="swatch-use">メガメニューの面。6 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#666666"></div><div class="swatch-body"><div class="swatch-name">Muted</div><div class="swatch-hex">#666666</div><div class="swatch-use">コピーライト。1 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#ffffff;border-bottom:1px solid #dcdcdc"></div><div class="swatch-body"><div class="swatch-name">Background</div><div class="swatch-hex">#ffffff</div><div class="swatch-use">pageBackground.resolved / 根拠 body</div></div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="ttl"><span class="en">Typography</span><span class="jp">英語を大きく、日本語を小さく</span></h2>
+  <p class="lead">ナビは <b>欧文 18px / weight 700</b> の下に <b>和文 13px / weight 400</b> を重ねる 2 段構え。サイズ差 5px、ウェイト差 300 で主従を付ける。欧文は <b>Public Sans</b>、和文は <b>Noto Sans JP</b>（どちらも Google Fonts の <code>css2?family=...</code> v2 記法で 1 本にまとめている）。</p>
+
+  <div class="scale-bar">
+    <span style="font-family:var(--font-en);font-size:6.7rem;font-weight:700">67</span>
+    <span style="font-family:var(--font-en);font-size:5.7rem;font-weight:700">57</span>
+    <span style="font-family:var(--font-mincho);font-size:2.9rem;font-weight:700">29</span>
+    <span style="font-size:2.7rem;font-weight:700">27</span>
+    <span style="font-size:2.1rem;font-weight:700">21</span>
+    <span style="font-size:1.9rem">19</span><span style="font-size:1.8rem;font-weight:700">18</span>
+    <span style="font-size:1.6rem">16</span><span style="font-size:1.3rem">13</span><span style="font-size:1.2rem">12</span>
+  </div>
+
+  <div class="type-row"><div class="type-meta"><b>Hero (EN) ★</b>Public Sans / 67px / 700<br>lh 1.10 / ls normal</div><div style="font-family:var(--font-en);font-size:6.7rem;font-weight:700;line-height:1.1">Why ICU ... ?</div></div>
+  <div class="type-row"><div class="type-meta"><b>Section (EN)</b>Public Sans / 57px / 700<br>lh 1.15</div><div style="font-family:var(--font-en);font-size:5.7rem;font-weight:700;line-height:1.15">Small Planet</div></div>
+  <div class="type-row"><div class="type-meta"><b>Hero Message ★</b>OS ローカルの明朝 / 29px / 700<br>lh 1.38 / <b style="display:inline">palt</b></div><div style="font-family:var(--font-mincho);font-size:2.9rem;font-weight:700;line-height:1.38;font-feature-settings:'palt'">なぜ、ICU は誕生したのか？</div></div>
+  <div class="type-row"><div class="type-meta"><b>Card Title (JP) ★</b>Noto Sans JP / 21px / 700<br>lh <b style="display:inline">1.20</b> / ls 0.02em</div><div style="font-size:2.1rem;font-weight:700;line-height:1.2;letter-spacing:.02em">多様性のなかで学ぶ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body ★</b>Noto Sans JP / 19px / 400<br>lh <b style="display:inline">2.00</b> / ls normal</div><div style="font-size:1.9rem;line-height:2">世界の国・地域、日本各地から学生が集う ICU キャンパス。言語やバックグラウンド、文化を超えて繰り広げられる対話が、学びの起点になります。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav (EN) ★</b>Noto Sans JP / 18px / <b style="display:inline">700</b><br>lh 1.30 / ls 0.02em</div><div style="font-size:1.8rem;font-weight:700;line-height:1.3;letter-spacing:.02em">CAMPUS LIFE &amp; CAREER</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav (JP) ★</b>Noto Sans JP / 13px / 400<br>lh 1.30 / ls 0.02em</div><div style="font-size:1.3rem;font-weight:400;line-height:1.3;letter-spacing:.02em">学生生活 &amp; キャリア</div></div>
+  <div class="type-row"><div class="type-meta"><b>News</b>Noto Sans JP / 15px / 400<br>lh 1.15</div><div style="font-size:1.5rem;line-height:1.15">[更新] 令和8年熊本地震および8月千葉豪雨により被災された皆さまへ</div></div>
+  <div class="type-row"><div class="type-meta"><b>Utility</b>Noto Sans JP / 12px / 400<br>lh 1.30</div><div style="font-size:1.2rem;line-height:1.3">受験志望の方 ／ 在学生（ICU Portal） ／ 卒業生の方</div></div>
+
+  <p class="note"><b>行間の比率を用途で振り分けている。</b>カード見出し <code>1.20</code>（107 要素で最多）／ 説明文 <code>1.50</code>（88）／ 長文の本文 <code>2.00</code>（55）／ ナビ <code>1.30</code>（41）／ 大きい欧文見出し <code>1.10</code>（19）。</p>
+
+  <p class="note"><b>ウェイトは 400 と 700 の 2 段だけ。</b>Google Fonts の URL は <code>wght@400;500;700</code> を要求し、欧文の実測も <code>100〜400 → 1132.98px</code> / <code>500 → 1159.52px</code> / <code>600〜900 → 1193.88px</code> と 3 段が使えるが、<b><code>500</code> は実装で 1 要素も使われていない</b>。</p>
+
+  <div class="wt-row">
+    <div class="wt-item wt-ok"><div class="wt-sample" style="font-weight:400">対話から学ぶ</div><div class="wt-cap">400 → 使う</div></div>
+    <div class="wt-item wt-bad"><div class="wt-sample" style="font-weight:500">対話から学ぶ</div><div class="wt-cap">500 → 読み込んでいるが実装では 0 要素</div></div>
+    <div class="wt-item wt-ok"><div class="wt-sample" style="font-weight:700">対話から学ぶ</div><div class="wt-cap">700 → 使う</div></div>
+    <div class="wt-item wt-bad"><div class="wt-sample" style="font-weight:900">対話から学ぶ</div><div class="wt-cap">900 → URL に無いので 700 に丸められる</div></div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="palt">
+  <div class="section-label">03 / OpenType</div>
+  <h2 class="ttl"><span class="en">font-feature-settings</span><span class="jp">palt はナビとヒーローだけ</span></h2>
+  <p class="lead">CSS の <code>font-feature-settings: "palt"</code> の宣言は <b><code>.g-nav</code> と <code>.p-top-mv__message</code> の 2 箇所しかない</b>。<code>.g-nav</code> の子孫に継承されて実測 1161 要素（うち可視 715 要素）になるだけで、<b>本文・ニュース・カードは <code>normal</code></b>。数字の大きさを見て「全体に詰めている」と読まないこと。</p>
+
+  <div class="palt-row"><div class="palt-label">normal（本文・カード）<br>2150.00px</div><div class="palt-sample" style="font-feature-settings:normal">「あア亜永い組設計展」（株）１２３ＡＢＣ、。・</div></div>
+  <div class="palt-row"><div class="palt-label">"palt"（ナビのみ）<br>1806.91px / <b>−15.96%</b></div><div class="palt-sample" style="font-feature-settings:'palt'">「あア亜永い組設計展」（株）１２３ＡＢＣ、。・</div></div>
+  <div class="palt-row"><div class="palt-label">"halt"（未使用）<br>1950.00px / −9.30%</div><div class="palt-sample" style="font-feature-settings:'halt'">「あア亜永い組設計展」（株）１２３ＡＢＣ、。・</div></div>
+
+  <p class="note"><b>本文に <code>palt</code> を足さないこと。</b>Google Fonts 配信の Noto Sans JP は <code>palt</code> を持っているので、足すと<b>本当に 16% 詰まって</b>実サイトと別物になる。</p>
+</section>
+
+<section class="section-alt" id="components">
+<div class="section-inner">
+  <div class="section-label">04 / Components</div>
+  <h2 class="ttl"><span class="en">Buttons &amp; Cards</span><span class="jp">形は「円」と「直角」の 2 種だけ</span></h2>
+  <p class="lead"><code>border-radius: 50%</code> が <b>66 要素</b>で、ICU PLANET の円形カードに使われる。それ以外は <b><code>border-radius: 0</code></b>。CTA にも角丸を付けない（<code>30px</code> が出るのは CMP のボタン 2 要素だけ）。</p>
+
+  <div class="btn-grid">
+    <a href="#" class="btn btn-outline">NEWS</a>
+    <a href="#" class="btn btn-blue">資料請求</a>
+    <a href="#" class="btn btn-navy">ICU Portal</a>
+    <a href="#" class="btn btn-outline is-focus">フォーカス状態</a>
+  </div>
+
+  <div class="badge-row">
+    <span class="badge badge-green">イベント</span>
+    <span class="badge badge-blue">お知らせ</span>
+    <span class="badge badge-red">大切なお知らせ</span>
+  </div>
+
+  <div class="circle-row" style="margin-top:32px">
+    <div class="circle"><div class="circle-en">Diversity</div><div class="circle-jp">多様性</div></div>
+    <div class="circle"><div class="circle-en">Activity</div><div class="circle-jp">学生活動</div></div>
+    <div class="circle circle-blue"><div class="circle-en">Quality<br>of life</div><div class="circle-jp">より良い生活</div></div>
+  </div>
+
+  <div class="card-grid" style="margin-top:36px">
+    <a href="#" class="card"><div class="card-img"></div><div class="card-cat">キャンパス</div><div class="card-title">ディッフェンドルファー記念館</div></a>
+    <a href="#" class="card"><div class="card-img" style="background:linear-gradient(140deg,#b8c9a0,#7f9a6b)"></div><div class="card-cat">キャンパス</div><div class="card-title">教育寮</div></a>
+    <a href="#" class="card"><div class="card-img" style="background:linear-gradient(140deg,#c6cdb4,#8d9a79)"></div><div class="card-cat">キャンパス</div><div class="card-title">芝生</div></a>
+  </div>
+
+  <div class="form-grid" style="margin-top:36px">
+    <div class="field"><label for="f1">お名前</label><input id="f1" type="text" value="国際 花子"></div>
+    <div class="field is-focus"><label for="f2">ご希望の資料</label><input id="f2" type="text" value="学部入学案内"><div class="field-msg">フォーカス状態（3px のアウトライン）</div></div>
+    <div class="field is-error"><label for="f3">メールアドレス</label><input id="f3" type="text" value=""><div class="field-msg">メールアドレスを入力してください</div></div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="vertical">
+  <div class="section-label">05 / Vertical Writing</div>
+  <h2 class="ttl"><span class="en">writing-mode</span><span class="jp">縦組みはラベルと番号だけ</span></h2>
+  <p class="lead">縦組みは各ページ <b>1 要素</b>しか無い。トップが <code>.p-top-mv__box__index</code>（26px の数字）、下層が <code>.nav-sub-label</code>（<b>60px / <code>letter-spacing: 3px</code></b> の欧文ラベル）。<b>大きな縦組みの和文コピーは存在しない</b>。</p>
+
+  <div class="vert-row">
+    <div class="vert-label">ABOUT</div>
+    <div class="vert-index">73</div>
+    <p class="note" style="margin-top:0">左が下層の <code>.nav-sub-label</code>（60px / 700 / lh 1.00 / ls 3px）、右がトップの <code>.p-top-mv__box__index</code>（26px / 700 / lh 1.00）。<b>縦組みを和文の見出しに使わないこと。</b></p>
+  </div>
+</section>
+
+<section class="section-alt" id="layout">
+<div class="section-inner">
+  <div class="section-label">06 / Layout, Elevation &amp; Responsive</div>
+  <h2 class="ttl"><span class="en">Layout</span><span class="jp">影は 1 種類しか無い</span></h2>
+  <p class="lead">カード幅 <b>360px</b>（24 要素で最多）がコンテンツ幅 <b>1240px</b> に 3 列で入る。gap の最頻は <b><code>9.1px</code></b>（22 要素・13px × 0.7 相当）。</p>
+
+  <div class="layout-demo">
+    <div class="layout-bar" style="width:1240px;max-width:100%">container 1240px（9 要素）</div>
+    <div class="layout-bar" style="width:360px">card 360px（24 要素）</div>
+    <div class="layout-bar" style="width:769px;max-width:100%">breakpoint 769px（min-width 784 件・print を含む）</div>
+  </div>
+
+  <div class="elev-grid">
+    <div class="elev elev-menu"><div class="elev-name">Mega Menu ★</div><div class="elev-val">rgba(0,0,0,.1) 0 0 10px 0<br>唯一の影（各ページ 1 要素）</div></div>
+    <div class="elev"><div class="elev-name">Card</div><div class="elev-val">box-shadow なし<br>階層は面の色と余白で作る</div></div>
+    <div class="elev"><div class="elev-name">Button</div><div class="elev-val">box-shadow なし<br>3px の枠線で立たせる</div></div>
+  </div>
+
+  <p class="note"><b>影は <code>offset 0 0</code> / <code>blur 10px</code> で方向を持たない。</b>ドロップシャドウではなく「浮いている面」の合図として使われている。<b>カードや CTA に影を足さないこと。</b></p>
+
+  <p class="note"><b>ルートは 16 幅すべて固定。</b><code>html { font-size: 62.5% }</code> = 10px、<code>body { font-size: 1.6rem }</code> = 16px が 1920〜320px で 1px も動かない。変わるのは要素単位の px の階段だけで、<b>769 → 768px で <code>h1</code> が 67px → 39px、<code>h2</code> が 57px → 35px、<code>p</code> が 19px → 15px</b> になる。<code>1rem = 10px</code> なので、<b>値 ÷ 10 で px が読める</b>。</p>
+
+  <p class="note">ほぼすべてのメディアクエリに <code>print</code> が入っている（<code>print, screen and (min-width: 769px)</code> が 784 件）。<b>印刷時はデスクトップのレイアウトで出る設計</b>。</p>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-head">ICU</div>
+    <div class="footer-sub">国際基督教大学 / International Christian University</div>
+    <div class="footer-cols">
+      <div class="footer-col"><a href="#">ICUについて</a><a href="#">ICUの学び</a><a href="#">研究</a></div>
+      <div class="footer-col"><a href="#">学生生活 &amp; キャリア</a><a href="#">入学者選抜 &amp; 奨学金</a></div>
+      <div class="footer-col"><a href="#">ご支援</a><a href="#">採用情報</a><a href="#">プレスリリース</a></div>
+    </div>
+    <div class="footer-copy">Design System Preview（実測 2026-11-23）</div>
+  </div>
+</footer>
+
+</body>
+</html>
