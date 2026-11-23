@@ -30,7 +30,7 @@
    - `≤389px`: `html { font-size: 4.10256vw }`（= 100vw ÷ 24.375・**設計幅 390px**。389px でちょうど 16px に着地するので段差は無い）
    - **タブレット帯の本文が 10px 台まで縮み、モバイルのほうが大きい**
 
-**CSS Custom Properties は `own: 72` と出るが、うち 44 個は Tailwind v4 の `@theme` 既定値**（`--color-red-500: oklch(...)` `--spacing: .25rem` `--text-xs` `--radius-sm` `--ease-in-out` など）。**自社トークンは 28 個**（`--color-main` 〜 `--font-zenmaru`）、残り 2 個は Swiper。`own` の数字を「自社の語彙の数」と読まないこと。
+**CSS Custom Properties は 74 個のうち、自社トークンが 28 個**（`--color-main` 〜 `--font-zenmaru`）。残りは **Tailwind v4 の `@theme` 既定値 44 個**（`--color-red-500: oklch(...)` `--spacing: .25rem` `--text-xs` `--radius-sm` `--ease-in-out` など）と Swiper 2 個。**Tailwind v4 の既定は自社トークンと接頭辞が衝突する**（自社は `--color-main` / `--font-noto`）ので、名前の頭だけ見て数えないこと。
 
 ---
 
@@ -292,7 +292,7 @@ body { font-family: var(--font-noto); font-weight: 500; }   /* ← 既定が 500
 - **`"Zen Maru Gothic"` / `"Noto Sans SC"` / `"Roboto"` / `"kit-rounded"` / `"kit-sans"` を使わない。** トークンや `@font-face` には存在するが、**どれも 1 サブセットも読み込まれておらず可視 0**
 - **`--color-healthy01`〜`06` / `--color-talk*` / `--color-sub-3` / `--color-brown` を「このサイトの色」として使わない。** 宣言はあるが、トップ・企業理念ページでは可視 0。別セクション専用
 - **Nuxt のローディングバーのグラデーション（`#00dc82 → #34cdfe → #0047e1`）を再現しない。** フレームワーク既定であってカンロの色ではない
-- **`own: 72` を「自社トークン 72 個」と読まない。** 44 個は Tailwind v4 の `@theme` 既定値、2 個は Swiper、**自社は 28 個**
+- **CSS 変数 74 個を「自社トークン 74 個」と読まない。** 44 個は Tailwind v4 の `@theme` 既定値、2 個は Swiper、**自社は 28 個**
 - **`rem` を 16px 基準で換算しない。** ルートが 4 段の階段流体で、1200〜768px では `1.33333vw`（768px で **10.24px**）になる
 - **和文スタックを `"Noto Sans JP", sans-serif` の 2 語で済ませない。** 実サイトはこうだが、Web フォントが落ちたときに日本語が端末既定に落ちる。ヒラギノ・游ゴシックを足したほうがよい
 - **検索結果の `word-break: break-all` を本体に持ち込まない。** marsflag ウィジェット固有の指定
