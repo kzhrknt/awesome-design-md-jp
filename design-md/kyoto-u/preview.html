@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 京都大学（Kyoto University）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500&family=Noto+Sans+JP:wght@400;500&family=Shippori+Mincho:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* =========================================================================
+     京都大学（Kyoto University） 実測 2026-11-25
+     対象: https://www.kyoto-u.ac.jp/ja , /ja/about
+     CSS Custom Properties は実サイトに 0 個。以下はすべて computed style の実測値。
+     ========================================================================= */
+  :root {
+    /* === Colors === */
+    --kyoto-blue:  #00205b;  /* ★ブランドの紺。見出し・ボタン・下層のセクション面（可視 38 / 22） */
+    --deep-navy:   #001337;  /* ヘッダー・フッター・ヒーロー帯（可視 9 要素・最大面 702,113px²） */
+    --navy-60:     rgba(0,19,55,.6);  /* 写真の上に敷く帯（6 要素） */
+    --text:        #101214;  /* ★本文。下層で可視 87 要素と最多。純黒ではない */
+    --text-sub:    #3f4145;  /* 日付・補助（可視 37 要素） */
+    --white:       #ffffff;
+    --on-dark-mut: #b2bbcd;  /* ヘッダーの小さいリンク（可視 16 要素） */
+    --on-dark-lnk: #d5dae4;  /* アウトラインボタンの文字 */
+    --border-dark: #596e94;  /* 同ボタンの枠線 */
+    --surface:     #d9dbde;  /* 検索欄・セクション見出しの面（可視 13 / 10） */
+    --bg:          #f0f1f2;  /* ★下層のページ背景 */
+
+    /* === Fonts ===
+       ゴシック: Noto Sans JP（Google Fonts の wght@400;500 の 2 本だけ）。
+       明朝:     游明朝。実サイトは @font-face を持たず OS ローカル頼みで、
+                 macOS では CDP 実測で YuMincho が当たっている。
+                 Linux では serif に落ちるため、プレビューでは受け皿に
+                 Shippori Mincho を足してある（実サイトには無い）。
+       英語見出し: Lora 500（CDP 実測で Lora Medium）。 */
+    --font-ja:     "Noto Sans JP", sans-serif;
+    --font-mincho: "Yu Mincho", YuMincho, "Hiragino Mincho ProN", "Shippori Mincho", serif;
+    --font-en:     Lora, "Noto Sans JP", serif;
+
+    /* === Type ===
+       html は宣言が無く UA 既定の 16px（23 幅すべてで 16px）。
+       body は 768px 以上 15px / 1.84、767px 以下 13px / 1.54。どちらも単位なし。 */
+    --lh-body:    1.84;  /* ★トップで 59 要素と最多 */
+    --lh-body-sp: 1.54;
+    --lh-list:    1.40;  /* 下層の記事一覧で 81 要素と最多 */
+    --ls-kifu:    4px;   /* ★サイト全体で唯一の字間。15px に対して 0.267em */
+
+    /* === Shape ===
+       border-radius は両ページとも 0 種。影は「ぼかし 0 の下線代わり」が 1 つだけ。 */
+    --r: 0;
+    --shadow-underline: rgba(0,19,55,.5) 0 16px 0 0;
+
+    --container: 1320px;
+    --container-narrow: 896px;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ja);
+    font-size: 15px;
+    line-height: var(--lh-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 40px; }
+  .narrow { max-width: var(--container-narrow); margin: 0 auto; padding: 0 40px; }
+
+  .section { padding: 64px 0; background: var(--white); }
+  .section-alt { padding: 64px 0; background: var(--bg); }
+  .section-label { font-family: var(--font-en); font-size: 13px; font-weight: 500; line-height: 1.5; color: var(--kyoto-blue); margin-bottom: 6px; }
+  .section-title { font-size: 28px; font-weight: 500; line-height: 1.4; margin: 0 0 14px; color: var(--kyoto-blue); }
+  .section-lead { font-size: 15px; line-height: var(--lh-body); margin: 0 0 32px; max-width: 74ch; }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .92em; background: var(--surface); padding: 2px 6px; border-radius: var(--r); }
+
+  /* ---------- Header ---------- */
+  .site-header { background: var(--deep-navy); color: var(--white); padding: 18px 0; }
+  .site-header .row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .site-header .brand { font-family: var(--font-en); font-size: 22.5px; font-weight: 500; line-height: 1.84; color: var(--white); }
+  .site-header .util { margin-left: auto; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+  .site-header .util a { color: var(--on-dark-mut); font-size: 13px; line-height: 1.84; text-decoration: none; }
+  .site-header .util a:hover { color: var(--white); }
+  .btn-ghost {
+    display: inline-block; background: transparent; color: var(--on-dark-lnk);
+    border: 1px solid var(--border-dark); border-radius: var(--r);
+    padding: 8px 31px; font-size: 13px; font-weight: 500; line-height: 1.84; text-decoration: none;
+  }
+  .btn-ghost:hover { background: var(--kyoto-blue); color: var(--white); }
+  .btn-kifu {
+    display: inline-block; background: var(--white); color: var(--kyoto-blue);
+    border: none; border-radius: var(--r);
+    padding: 10px 24px; font-size: 15px; font-weight: 500; line-height: 1.84;
+    letter-spacing: var(--ls-kifu);   /* ★サイト唯一の字間 */
+    text-decoration: none;
+  }
+
+  /* ---------- Global nav ---------- */
+  .gnav { background: var(--deep-navy); border-top: 1px solid var(--border-dark); }
+  .gnav ul { display: flex; gap: 36px; flex-wrap: wrap; margin: 0; padding: 14px 0; list-style: none; }
+  .gnav a { color: var(--white); font-size: 16px; font-weight: 500; line-height: 1.84; text-decoration: none; }
+
+  /* ---------- Hero ---------- */
+  .hero { background: var(--deep-navy); padding: 0; }
+  .hero .band {
+    /* 面そのものに background-image を持たせる（兄弟の絶対配置ヴェールにしない） */
+    background-image:
+      linear-gradient(var(--navy-60), var(--navy-60)),
+      linear-gradient(118deg, #26406e 0%, #16243f 48%, #0b1426 100%);
+    padding: 96px 0 72px;
+  }
+  .hero h2 {
+    font-family: var(--font-mincho);   /* ★游明朝。Web フォントではない */
+    font-size: 28px; font-weight: 500; line-height: 1.5;
+    color: var(--white); margin: 0; max-width: 42ch;
+  }
+  .hero .tag { font-family: var(--font-en); font-size: 13px; font-weight: 500; color: var(--on-dark-mut); margin: 0 0 10px; line-height: 1.84; }
+
+  /* ---------- Swatches ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+  .sw { border: 1px solid var(--surface); border-radius: var(--r); background: var(--white); }
+  .sw .chip { height: 86px; }
+  .sw .meta { padding: 14px 16px; font-size: 13px; line-height: 1.6; }
+  .sw .meta b { display: block; font-size: 15px; font-weight: 500; }
+  .sw .meta span { font-family: var(--font-en); }
+
+  /* ---------- Specimen ---------- */
+  .spec { border-top: 1px solid var(--surface); padding: 18px 0; display: grid; grid-template-columns: 230px 1fr; gap: 28px; align-items: baseline; }
+  .spec .k { font-family: var(--font-en); font-size: 13px; font-weight: 500; line-height: 1.5; color: var(--kyoto-blue); }
+  .spec .k em { display: block; font-style: normal; font-family: var(--font-ja); font-weight: 400; font-size: 12px; color: var(--text-sub); }
+
+  /* ---------- Weight ladder ---------- */
+  .wrow { display: grid; grid-template-columns: 150px 1fr; gap: 28px; border-top: 1px solid var(--surface); padding: 13px 0; align-items: baseline; }
+  .wrow .k { font-family: var(--font-en); font-size: 13px; font-weight: 500; line-height: 1.5; }
+  .wrow .k span { display: block; font-family: var(--font-ja); font-size: 12px; color: var(--text-sub); }
+  .wrow .v { font-size: 22px; line-height: 1.4; }
+  .wrow.is-off { opacity: .45; }
+
+  /* ---------- Cards ---------- */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 28px; }
+  .card { background: var(--white); border-radius: var(--r); border-bottom: 1px solid var(--surface); padding-bottom: 20px; }
+  .card .date { font-size: 14px; color: var(--text-sub); line-height: var(--lh-list); display: block; margin-bottom: 6px; }
+  .card .badge { display: inline-block; background: var(--kyoto-blue); color: var(--white); font-size: 13px; padding: 2px 4px; border-radius: var(--r); line-height: 1.84; margin-right: 8px; }
+  .card h3 { font-size: 16px; font-weight: 500; line-height: var(--lh-list); margin: 0; color: var(--text); }
+
+  /* ---------- English block titles ---------- */
+  .block-title { font-family: var(--font-en); font-size: 32px; font-weight: 500; line-height: 1.2; color: var(--kyoto-blue); margin: 0 0 20px; }
+
+  /* ---------- Search field ---------- */
+  .field { max-width: 540px; }
+  .field label { display: block; font-size: 14px; font-weight: 500; line-height: var(--lh-body); margin-bottom: 8px; }
+  .field input {
+    width: 100%; background: var(--surface); color: var(--text);
+    border: none; border-radius: var(--r); padding: 12px 16px;
+    font-size: 14px; font-family: var(--font-ja); line-height: var(--lh-body);
+  }
+  .field input.is-focus { box-shadow: var(--shadow-underline); }
+
+  /* ---------- Line-height compare ---------- */
+  .lh-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 28px; }
+  .lh-box { background: var(--white); border: 1px solid var(--surface); border-radius: var(--r); padding: 24px; }
+  .lh-box h4 { font-family: var(--font-en); font-size: 13px; font-weight: 500; margin: 0 0 10px; color: var(--kyoto-blue); line-height: 1.5; }
+  .lh-box p { font-size: 15px; margin: 0; }
+  .lh-184 p { line-height: 1.84; }
+  .lh-154 p { line-height: 1.54; }
+  .lh-140 p { line-height: 1.40; }
+
+  .note-box { background: var(--white); border-left: 4px solid var(--kyoto-blue); border-radius: var(--r); padding: 20px 24px; font-size: 14px; line-height: var(--lh-body); margin-bottom: 20px; }
+
+  footer.site { background: var(--deep-navy); color: var(--white); padding: 48px 0; }
+  footer.site a { color: var(--on-dark-lnk); font-size: 13px; text-decoration: none; margin-right: 22px; line-height: 2; }
+  footer.site p { font-size: 12px; color: var(--on-dark-mut); line-height: 1.84; margin: 20px 0 0; }
+
+  @media (max-width: 47.9375em) {   /* = 767px。実サイトと同じ em 指定 */
+    body { font-size: 13px; line-height: var(--lh-body-sp); }
+    .section-title { font-size: 22px; }
+    .hero h2 { font-size: 20px; }
+    .block-title { font-size: 24px; }
+    .spec, .wrow { grid-template-columns: 1fr; gap: 6px; }
+    .wrap, .narrow { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="row">
+      <span class="brand">KYOTO UNIVERSITY</span>
+      <div class="util">
+        <a href="#colors">イベント</a>
+        <a href="#colors">アクセス</a>
+        <a href="#colors">採用情報</a>
+        <a class="btn-ghost" href="#colors">安否確認システム</a>
+        <a class="btn-ghost" href="#colors">教職員の方へ</a>
+        <a class="btn-kifu" href="#type">寄附</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="gnav">
+  <div class="wrap">
+    <ul>
+      <li><a href="#colors">京大について</a></li>
+      <li><a href="#type">入試・高大連携</a></li>
+      <li><a href="#weight">教育・学生支援</a></li>
+      <li><a href="#lineheight">研究・産官学連携</a></li>
+      <li><a href="#cards">国際交流</a></li>
+      <li><a href="#donts">社会連携</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero">
+  <div class="band">
+    <div class="wrap">
+      <p class="tag">Design System Preview — 実測 2026-11-25</p>
+      <h2>外務省事業「MIRAI-Setu 2026」の一環として、インドの大学4校の学生と教員を受け入れました</h2>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 01 COLORS ============================ -->
+<section class="section" id="colors">
+  <div class="wrap">
+    <div class="section-label">01 / Colors</div>
+    <h2 class="section-title">紺が 2 つ。角丸はゼロ</h2>
+    <p class="section-lead"><code>#00205b</code> が「ブランドの紺」、<code>#001337</code> が「ヘッダー・フッターの紺」で、<b>同じページに並びます</b>。本文は純黒ではなく <code>#101214</code>。<code>border-radius</code> は両ページとも <b>0 種</b>です。</p>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#00205b"></div><div class="meta"><b>京大ブルー</b><span>#00205b</span><br>見出し・ボタン・面（可視 38）</div></div>
+      <div class="sw"><div class="chip" style="background:#001337"></div><div class="meta"><b>Deep Navy</b><span>#001337</span><br>ヘッダー・フッター（可視 9）</div></div>
+      <div class="sw"><div class="chip" style="background:#101214"></div><div class="meta"><b>Text Primary</b><span>#101214</span><br>本文（下層 87 要素・最多）</div></div>
+      <div class="sw"><div class="chip" style="background:#3f4145"></div><div class="meta"><b>Text Secondary</b><span>#3f4145</span><br>日付・補助（可視 37）</div></div>
+      <div class="sw"><div class="chip" style="background:#b2bbcd"></div><div class="meta"><b>Muted on Dark</b><span>#b2bbcd</span><br>ヘッダーの小リンク（16）</div></div>
+      <div class="sw"><div class="chip" style="background:#596e94"></div><div class="meta"><b>Border on Dark</b><span>#596e94</span><br>アウトラインボタンの枠</div></div>
+      <div class="sw"><div class="chip" style="background:#d9dbde"></div><div class="meta"><b>Surface Gray</b><span>#d9dbde</span><br>検索欄・見出しの面（13）</div></div>
+      <div class="sw"><div class="chip" style="background:#f0f1f2;border-bottom:1px solid #d9dbde"></div><div class="meta"><b>Background</b><span>#f0f1f2</span><br>下層のページ背景</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 02 TYPOGRAPHY ============================ -->
+<section class="section-alt" id="type">
+  <div class="wrap">
+    <div class="section-label">02 / Typography</div>
+    <h2 class="section-title">ゴシックは Web フォント、明朝は OS ローカル</h2>
+    <p class="section-lead">ゴシックは Google Fonts の <b>Noto Sans JP</b>（可視 146 要素）。<b>明朝だけ Web フォントを使わず <code>"Yu Mincho", YuMincho, serif</code> で OS に任せています</b>（可視 6 要素 / 28px / weight 500）。フォント要求 44 件はすべて <code>fonts.gstatic.com</code> で、明朝のファイルは 1 バイトも落ちてきません。</p>
+
+    <h3 class="block-title">Announcements</h3>
+    <p class="section-lead" style="margin-top:-8px">↑ 英語のセクション見出しだけ <b>Lora 500 / 32px</b>（CDP 実測で <code>Lora Medium</code>）。可視 5 要素。</p>
+
+    <div class="spec"><div class="k">28px / 500 / 游明朝<em>スライドショー見出し（6 要素）</em></div><div style="font-family:var(--font-mincho);font-size:28px;font-weight:500;line-height:1.5">京都大学の「自由」が生み出す、すべてがここに。</div></div>
+    <div class="spec"><div class="k">22.5px / 500 / Noto<em>グローバルナビ（6 要素）</em></div><div style="font-size:22.5px;font-weight:500;line-height:1.84">研究・産官学連携</div></div>
+    <div class="spec"><div class="k">16px / 500 / Noto<em>見出し・リンク（11 要素）</em></div><div style="font-size:16px;font-weight:500;line-height:1.4">国際卓越研究大学としての取り組み</div></div>
+    <div class="spec"><div class="k">15px / 400 / Noto<em>本文（9 要素）</em></div><div style="font-size:15px;line-height:1.84">本学の組織・規程や取り組み、刊行物などの広報活動について掲載しています。</div></div>
+    <div class="spec"><div class="k">14px / 400 / Noto<em>一覧・日付（19 要素）</em></div><div style="font-size:14px;line-height:1.4;color:var(--text-sub)">2026年9月29日 更新</div></div>
+    <div class="spec"><div class="k">13px / 500 / Noto<em>補助（4 要素）</em></div><div style="font-size:13px;font-weight:500;line-height:1.84">受験生 / 在学生 / 卒業生</div></div>
+
+    <div class="note-box" style="margin-top:32px">
+      <b>游明朝は Linux / Android には入っていません。</b>実サイトは <code>"Yu Mincho", YuMincho, serif</code> の 3 段だけなので、その環境では <code>serif</code> に落ちます。このプレビューでは受け皿に <code>"Hiragino Mincho ProN", "Shippori Mincho"</code> を足していますが、<b>実サイトには無い指定</b>です。
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 03 WEIGHT ============================ -->
+<section class="section" id="weight">
+  <div class="wrap">
+    <div class="section-label">03 / Font Weight</div>
+    <h2 class="section-title">400 と 500 の 2 段しか存在しない</h2>
+    <p class="section-lead">Google Fonts の URL は <code>Noto+Sans+JP:wght@400;500</code>。実測でも字幅は <b>100〜400 → 1267.30px ／ 500〜900 → 1297.22px の 2 面だけ</b>（100px の欧文で測定）で、<b><code>font-weight: 700</code> を当てても 500 で描画され、合成太字も起きません。</b></p>
+    <div class="wrow is-off"><div class="k">100–300<span>400 で出る</span></div><div class="v" style="font-weight:300">自由の学風 Kyoto University 2026</div></div>
+    <div class="wrow"><div class="k">400<span>★本文 61 要素</span></div><div class="v" style="font-weight:400">自由の学風 Kyoto University 2026</div></div>
+    <div class="wrow"><div class="k">500<span>★最多（下層 145 要素）</span></div><div class="v" style="font-weight:500">自由の学風 Kyoto University 2026</div></div>
+    <div class="wrow is-off"><div class="k">700–900<span>500 で出る</span></div><div class="v" style="font-weight:700">自由の学風 Kyoto University 2026</div></div>
+
+    <div class="note-box" style="margin-top:28px">
+      実測で weight 700 の要素は 31 個ありますが、<b>すべて <code>.field__label.visually-hidden</code></b>（<code>position:absolute; width:1px; height:1px; clip:rect(1px,1px,1px,1px)</code> ＝ スクリーンリーダー専用の「画像」「公開日」「タグ」）。<b>画面に出るウェイトは 400 と 500 だけ</b>です。
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 04 LINE HEIGHT ============================ -->
+<section class="section-alt" id="lineheight">
+  <div class="wrap">
+    <div class="section-label">04 / Line Height &amp; Letter Spacing</div>
+    <h2 class="section-title">字間はサイト全体でただ 1 要素</h2>
+    <p class="section-lead">可視 163 要素（下層 185 要素）のうち <code>normal</code> 以外は <b>ヘッダーの「寄附」ボタンの <code>4px</code> だけ</b>（15px に対して <b>0.267em</b>）。密度は <code>line-height</code> だけで作ります。どちらも<b>単位なし</b>です。</p>
+    <div class="lh-grid" style="margin-bottom:32px">
+      <div class="lh-box lh-184"><h4>1.84 — ★本文（≥768px・59 要素）</h4><p>京都大学は、創立以来の自由の学風を継承し発展させつつ、多元的な課題の解決に挑戦し、地球社会の調和ある共存に貢献します。</p></div>
+      <div class="lh-box lh-154"><h4>1.54 — ≤767px</h4><p>京都大学は、創立以来の自由の学風を継承し発展させつつ、多元的な課題の解決に挑戦し、地球社会の調和ある共存に貢献します。</p></div>
+      <div class="lh-box lh-140"><h4>1.40 — 一覧（下層 81 要素）</h4><p>京都大学は、創立以来の自由の学風を継承し発展させつつ、多元的な課題の解決に挑戦し、地球社会の調和ある共存に貢献します。</p></div>
+    </div>
+    <p class="section-lead" style="margin-bottom:12px">「寄附」ボタンだけが字間を持ちます（白地・<code>#00205b</code>・枠なし・角丸 0）。</p>
+    <a class="btn-kifu" href="#lineheight" style="border:1px solid var(--surface)">寄附</a>
+  </div>
+</section>
+
+<!-- ============================ 05 CARDS ============================ -->
+<section class="section" id="cards">
+  <div class="wrap">
+    <div class="section-label">05 / Cards &amp; Badges</div>
+    <h2 class="section-title">角丸も影も使わない</h2>
+    <p class="section-lead">カードは下罫線だけ。バッジは <code>#00205b</code> の塗りに <code>padding: 2px 4px</code>、<b>角丸 0</b>。</p>
+    <div class="cards">
+      <div class="card"><span class="date"><span class="badge">震災対応</span>2026年9月29日 更新</span><h3>令和8年熊本地震への対応について</h3></div>
+      <div class="card"><span class="date">2026年11月12日</span><h3>新規 CDK12/13 阻害剤の創製とがん細胞の新たな脆弱性の発見</h3></div>
+      <div class="card"><span class="date">2026年11月10日</span><h3>ナノ粒子が生まれる過程を X 線で捉える—結晶化の速度を直接計測</h3></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 06 FORMS ============================ -->
+<section class="section-alt" id="forms">
+  <div class="wrap">
+    <div class="section-label">06 / Forms &amp; Elevation</div>
+    <h2 class="section-title">唯一の影は「ぼかし 0 の下線」</h2>
+    <p class="section-lead">サイトで見つかった <code>box-shadow</code> は <code>rgba(0,19,55,.5) 0 16px 0 0</code> の 1 つだけ。<b>ぼかし 0・offset-y 16px</b> で、浮かせるためではなく<b>下線を引くため</b>に使っています。</p>
+    <div class="field" style="margin-bottom:28px">
+      <label for="s1">サイト内検索</label>
+      <input id="s1" type="text" value="自由の学風">
+    </div>
+    <div class="field" style="margin-bottom:28px">
+      <label for="s2">サイト内検索（フォーカス状態の見本）</label>
+      <input id="s2" class="is-focus" type="text" value="国際卓越研究大学">
+    </div>
+    <div class="btns" style="display:flex;gap:16px;flex-wrap:wrap;background:var(--deep-navy);padding:20px;">
+      <a class="btn-ghost" href="#forms">安否確認システム</a>
+      <a class="btn-ghost" href="#forms">教職員の方へ</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 07 DON'T ============================ -->
+<section class="section" id="donts">
+  <div class="narrow">
+    <div class="section-label">07 / Don't</div>
+    <h2 class="section-title">やってはいけないこと</h2>
+    <div class="note-box"><b><code>font-weight: 700</code> 以上を使わない。</b>Google Fonts が 400 と 500 しか配信しておらず、500 で描画されます（合成太字も起きません）。</div>
+    <div class="note-box"><b>明朝を Noto Serif JP 等に差し替えない。</b>このサイトは意図的に OS ローカルの游明朝に任せています。差し替えると字面が別物になります。</div>
+    <div class="note-box"><b><code>border-radius</code> と <code>box-shadow</code> を足さない。</b>角丸は両ページとも 0 種、影は下線代わりの 1 つだけです。</div>
+    <div class="note-box"><b><code>letter-spacing</code> を配らない。</b>サイト全体で「寄附」の <code>4px</code> 1 要素だけです。</div>
+    <div class="note-box"><b><code>font-feature-settings: "palt"</code> を足さない。</b>游明朝 28px の実スタックで <code>normal</code> 2550.00px → <code>"palt"</code> 2194.70px ＝ <b>−13.9%</b> と<b>効く書体</b>ですが、実装は <code>"liga" 1</code> が 5 要素だけで <code>palt</code> は 0 件。「できるのにやっていない」型です。</div>
+    <div class="note-box"><b>ヘッダー左の縦組みロゴをテキストで組まない。</b>実サイトでは画像です（<code>writing-mode: vertical-rl</code> は両ページとも 0 要素）。</div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <a href="#colors">刊行物・資料請求</a><a href="#colors">採用情報</a><a href="#colors">大学施設案内</a><a href="#colors">アクセス</a>
+    <p>〒606-8501 京都府京都市左京区吉田本町</p>
+  </div>
+</footer>
+
+</body>
+</html>

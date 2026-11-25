@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ロジスティード（LOGISTEED）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+<style>
+  /* =========================================================================
+     ロジスティード（LOGISTEED） 実測 2026-11-25
+     対象: https://www.logisteed.com/jp/ , /jp/profile/policy/
+     CSS Custom Properties は実サイトに 0 個（total: 0 / bodyTotal: 0）。
+     以下はすべて computed style と CSS 全文からの実測値。
+     ========================================================================= */
+  :root {
+    /* === Colors === */
+    --navy:    #00132c;  /* ★文字・罫線・暗い面すべて。可視 60 要素（トップ）/ 73（下層）で最多 */
+    --blue:    #1a5fe8;  /* At a Glance の数値とその英語ラベルだけ。可視 12 要素 */
+    --red:     #e60019;  /* New バッジ専用。可視 6 要素 */
+    --white:   #ffffff;
+    --surface: #ebecee;  /* トップのカード面 3 枚 */
+    --surface-light: #f5f5f5; /* 下層のローカルナビ */
+    --navy-30: rgba(0,19,44,.3); /* ページトップへ戻るボタン */
+    --bg:      #ffffff;  /* html/body ともに塗り指定なし＝UA 既定のキャンバス */
+
+    /* === Fonts ===
+       和文: Noto Sans JP を可変フォント（wght@100..900）で 1 本。
+       欧文: Lato（数値と英語見出しだけ。CDP で Lato 描画を確認済み）。
+       実サイトは Urbanist と Adobe Fonts も読み込むが、コーポレート面での可視は 0 要素。 */
+    --font-ja: "Noto Sans JP", "ヒラギノ角ゴ ProN W3", HiraKakuProN-W3, メイリオ, Meiryo, sans-serif;
+    --font-en: Lato, "Noto Sans JP", "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+    /* === Type ===
+       html { font-size: 62.5% } = 10px。1920〜320px の 23 幅すべてで固定。
+       body は 1025px 以上 1.6rem/2、1024px 以下 1.5rem/1.8。 */
+    --lh-body:  2;      /* ★行間比 2.00 が 44 要素で最多。単位なし */
+    --lh-body-sp: 1.8;  /* 1024px 以下 */
+    --lh-head:  1.2;    /* 64px の英語見出し */
+    --ls: 0;            /* ★body に letter-spacing: 0 と明示。可視 85/85 が normal */
+
+    /* === Shape ===
+       影は両ページとも 0 種。角丸はピルの 80px が主役。 */
+    --r-pill: 80px;  /* アウトラインのピル（可視 6 要素） */
+    --r-card: 30px;  /* At a Glance の数値カード（可視 10 要素） */
+    --r-lg:   50px;  /* 大判カード（可視 1 要素） */
+
+    /* === Spacing（gap の実測。トークンは無く値を直書き） === */
+    --sp-xs: 20px; --sp-s: 30px; --sp-m: 36px; --sp-l: 40px; --sp-xl: 50px;
+    --container: 1400px;
+    --container-narrow: 1240px;
+  }
+
+  * { box-sizing: border-box; }
+  html { font-size: 62.5%; }           /* = 10px。実サイトと同じ */
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--navy);
+    font-family: var(--font-ja);
+    font-size: 1.6rem;                  /* = 16px */
+    font-weight: 400;
+    letter-spacing: var(--ls);
+    line-height: var(--lh-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 40px; }
+  .narrow { max-width: var(--container-narrow); margin: 0 auto; padding: 0 40px; }
+
+  .section { padding: 80px 0; }
+  .section-alt { padding: 80px 0; background: var(--surface); }
+  .section-label {
+    font-family: var(--font-en); font-size: 1.2rem; font-weight: 700;
+    line-height: 1.25; color: var(--blue); margin-bottom: 8px;
+  }
+  .section-title { font-size: 4rem; font-weight: 700; line-height: 1.2; margin: 0 0 16px; }
+  .section-lead { font-size: 1.6rem; line-height: var(--lh-body); margin: 0 0 40px; max-width: 72ch; }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .92em; background: var(--surface); padding: 2px 6px; }
+  .section-alt code { background: var(--white); }
+
+  /* ---------- Hero ---------- */
+  .hero { background: var(--navy); color: var(--white); padding: 96px 0 104px; }
+  .hero .catch {
+    font-size: 6.4rem; font-weight: 700; line-height: 1.2; margin: 0 0 24px;
+    letter-spacing: .18em;   /* 実サイトはここが SVG 画像。字空けは SVG 側の値を模した再現 */
+  }
+  .hero .note { font-size: 1.4rem; line-height: var(--lh-body); color: var(--white); opacity: .85; margin: 0 0 40px; max-width: 60ch; }
+  .hero .btn-outline { border-color: var(--white); color: var(--white); }
+
+  /* ---------- Buttons ---------- */
+  .btns { display: flex; flex-wrap: wrap; gap: var(--sp-xs); align-items: center; }
+  .btn-outline {
+    display: inline-block; background: transparent; color: var(--navy);
+    border: 1px solid var(--navy); border-radius: var(--r-pill);
+    padding: 8px 64px; font-size: 1.6rem; font-weight: 700;
+    line-height: var(--lh-body); text-decoration: none;
+    transition: background .2s, color .2s;
+  }
+  .btn-outline:hover { background: var(--navy); color: var(--white); }
+  .hero .btn-outline:hover { background: var(--white); color: var(--navy); }
+  .btn-outline.is-focus { outline: 2px solid var(--blue); outline-offset: 3px; }
+  .btn-nav {
+    display: inline-block; background: var(--surface-light); color: var(--navy);
+    border: 1px solid var(--navy); border-radius: var(--r-pill);
+    padding: 13px 42px 13px 20px; font-size: 1.5rem; font-weight: 700;
+    line-height: 1.5; text-decoration: none;
+  }
+  .btn-sub {
+    display: inline-block; background: var(--surface-light); color: var(--navy);
+    border: none; border-radius: var(--r-pill);
+    padding: 13px 45px 13px 20px; font-size: 1.5rem; line-height: 1.5; text-decoration: none;
+  }
+
+  /* ---------- Swatches ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: var(--sp-xs); }
+  .sw { border: 1px solid var(--navy); border-radius: var(--r-card); overflow: hidden; }
+  .sw .chip { height: 92px; }
+  .sw .meta { padding: 16px 20px; font-size: 1.3rem; line-height: 1.6; }
+  .sw .meta b { display: block; font-size: 1.5rem; }
+  .sw .meta span { font-family: var(--font-en); }
+
+  /* ---------- Type specimen ---------- */
+  .spec { border-top: 1px solid var(--navy); padding: 20px 0; display: grid; grid-template-columns: 220px 1fr; gap: var(--sp-s); align-items: baseline; }
+  .spec .k { font-family: var(--font-en); font-size: 1.2rem; font-weight: 700; line-height: 1.6; }
+  .spec .k em { display: block; font-style: normal; font-family: var(--font-ja); font-weight: 400; }
+
+  /* ---------- Stats ---------- */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: var(--sp-l); }
+  .stat { border: 1px solid var(--navy); border-radius: var(--r-card); padding: 32px 28px; }
+  .stat .en { font-family: var(--font-en); font-size: 1.6rem; font-weight: 700; line-height: 1.88; color: var(--blue); }
+  .stat .num { font-family: var(--font-en); font-size: 7rem; font-weight: 700; line-height: 1.2; color: var(--blue); }
+  .stat .unit { font-size: 1.6rem; line-height: 2.5; }
+
+  /* ---------- Cards ---------- */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--sp-l); }
+  .card { background: var(--surface); border-radius: var(--r-lg); padding: 36px 32px; }
+  .section-alt .card { background: var(--white); }
+  .card h3 { font-size: 2rem; font-weight: 700; line-height: 1.45; margin: 0 0 12px; }
+  .card p { font-size: 1.6rem; line-height: var(--lh-body); margin: 0 0 20px; }
+
+  /* ---------- News ---------- */
+  .news { border-top: 1px solid var(--navy); }
+  .news li { list-style: none; border-bottom: 1px solid var(--navy); padding: 20px 0; display: grid; grid-template-columns: 130px 72px 1fr; gap: var(--sp-xs); align-items: baseline; }
+  .news .date { font-family: var(--font-en); font-size: 1.6rem; font-weight: 700; line-height: 1.5; }
+  .news .new { font-family: var(--font-en); font-size: 1.2rem; font-weight: 700; line-height: 1.25; color: var(--red); }
+  .news .ttl { font-size: 1.6rem; font-weight: 700; line-height: 1.8; }
+  ul.news { margin: 0; padding: 0; }
+
+  /* ---------- Line-height compare ---------- */
+  .lh-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--sp-l); }
+  .lh-box { border: 1px solid var(--navy); border-radius: var(--r-card); padding: 28px; }
+  .lh-box h4 { font-family: var(--font-en); font-size: 1.2rem; font-weight: 700; margin: 0 0 12px; color: var(--blue); line-height: 1.25; }
+  .lh-box p { font-size: 1.6rem; margin: 0; }
+  .lh-2   p { line-height: 2; }
+  .lh-18  p { line-height: 1.8; }
+  .lh-15  p { line-height: 1.5; }
+
+  /* ---------- Weight ladder ---------- */
+  .wrow { display: grid; grid-template-columns: 120px 1fr; gap: var(--sp-s); border-top: 1px solid var(--navy); padding: 14px 0; align-items: baseline; }
+  .wrow .k { font-family: var(--font-en); font-size: 1.2rem; font-weight: 700; line-height: 1.6; }
+  .wrow .v { font-size: 2.4rem; line-height: 1.4; }
+  .wrow.is-off .k, .wrow.is-off .v { opacity: .4; }
+  .wrow .tag { font-size: 1.2rem; font-weight: 400; display: block; }
+
+  /* ---------- Inputs ---------- */
+  .field { max-width: 520px; }
+  .field label { display: block; font-size: 1.4rem; font-weight: 700; line-height: 1.8; margin-bottom: 8px; }
+  .field input {
+    width: 100%; background: var(--white); color: var(--navy);
+    border: 1px solid var(--navy); border-radius: var(--r-pill);
+    padding: 8px 20px; font-size: 1.6rem; font-family: var(--font-ja); line-height: var(--lh-body);
+  }
+  .field input.is-focus { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+  .note-box { border: 1px solid var(--navy); border-radius: var(--r-card); padding: 24px 28px; font-size: 1.5rem; line-height: 1.8; }
+  .note-box b { font-weight: 700; }
+
+  footer.site { background: var(--navy); color: var(--white); padding: 56px 0; }
+  footer.site a { color: var(--white); font-size: 1.4rem; text-decoration: none; margin-right: 24px; line-height: 2; }
+
+  @media screen and (max-width: 1024px) {
+    body { font-size: 1.5rem; line-height: var(--lh-body-sp); }
+    .section-title { font-size: 2.8rem; }
+    .hero .catch { font-size: 3.6rem; letter-spacing: .12em; }
+    .stat .num { font-size: 4.8rem; }
+    .spec { grid-template-columns: 1fr; gap: 8px; }
+    .news li { grid-template-columns: 1fr; gap: 4px; }
+    .wrap, .narrow { padding: 0 16px; }
+    .btn-outline { padding: 12px 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="section-label" style="color:#ffffff">LOGISTEED — Design System Preview</div>
+    <p class="catch">未知に挑む。</p>
+    <p class="note">実サイトではこの大見出しは <code style="background:rgba(255,255,255,.14);color:#fff">text_catch_copy.svg</code>（663×100px / alt="未知に挑む。"）という画像です。ここでは字空けを CSS で近似していますが、<b>再現時にテキストで組み直さないでください。</b></p>
+    <div class="btns">
+      <a class="btn-outline" href="#colors">経営理念・ブランド</a>
+      <a class="btn-outline" href="#type">サービス</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 01 COLORS ============================ -->
+<section class="section" id="colors">
+  <div class="wrap">
+    <div class="section-label">01 / Colors</div>
+    <h2 class="section-title">紺一色。純黒は使わない</h2>
+    <p class="section-lead">文字も罫線も暗い面も、すべて <code>#00132c</code>。<b>可視 60 要素（下層 73 要素）で最多</b>の色で、<code>body { color: #00132c }</code> としてサイト全体に降りています。色が付くのは数値の <code>#1a5fe8</code> と New バッジの <code>#e60019</code> だけ。</p>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#00132c"></div><div class="meta"><b>Navy</b><span>#00132c</span><br>文字・罫線・面（可視 60）</div></div>
+      <div class="sw"><div class="chip" style="background:#1a5fe8"></div><div class="meta"><b>Blue</b><span>#1a5fe8</span><br>数値と英語ラベル（可視 12）</div></div>
+      <div class="sw"><div class="chip" style="background:#e60019"></div><div class="meta"><b>Red</b><span>#e60019</span><br>New バッジのみ（可視 6）</div></div>
+      <div class="sw"><div class="chip" style="background:#ebecee"></div><div class="meta"><b>Surface</b><span>#ebecee</span><br>トップのカード面</div></div>
+      <div class="sw"><div class="chip" style="background:#f5f5f5"></div><div class="meta"><b>Surface Light</b><span>#f5f5f5</span><br>下層のローカルナビ</div></div>
+      <div class="sw"><div class="chip" style="background:#ffffff;border-bottom:1px solid #00132c"></div><div class="meta"><b>Background</b><span>#ffffff</span><br>UA 既定のキャンバス</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 02 TYPOGRAPHY ============================ -->
+<section class="section-alt" id="type">
+  <div class="wrap">
+    <div class="section-label">02 / Typography</div>
+    <h2 class="section-title">和文は Noto Sans JP、数字は Lato</h2>
+    <p class="section-lead">可視内訳は <b>Noto Sans JP 49 要素 / Lato 28 要素</b>。英語のセクション見出し（64px）と At a Glance の数値（70px）は CDP の <code>CSS.getPlatformFontsForNode</code> で <b>Lato 描画を確認済み</b>です。</p>
+
+    <div class="spec"><div class="k">64px / 700 / Lato<em>英語セクション見出し（6 要素）</em></div><div style="font-family:var(--font-en);font-size:6.4rem;font-weight:700;line-height:1.2">Topics</div></div>
+    <div class="spec"><div class="k">40px / 700 / Noto<em>和文の大見出し（1 要素）</em></div><div style="font-size:4rem;font-weight:700;line-height:1.2">物流は新領域へ。</div></div>
+    <div class="spec"><div class="k">24px / 700 / Noto<em>カード見出し（1 要素）</em></div><div style="font-size:2.4rem;font-weight:700;line-height:1.45">物流領域を基点にサプライチェーンをデザインする</div></div>
+    <div class="spec"><div class="k">20px / 700 / Noto<em>小見出し（6 要素）</em></div><div style="font-size:2rem;font-weight:700;line-height:1.45">ロジスティードグループのサステナビリティ</div></div>
+    <div class="spec"><div class="k">16px / 400 / Noto<em>本文（38 要素・最多）</em></div><div style="font-size:1.6rem;line-height:2">ロジスティードグループは、経営理念である「広く未来を見据え、人と物流の力で社会を支える」のもと、事業活動を通じて社会課題の解決に取り組んでいます。</div></div>
+    <div class="spec"><div class="k">14px / 400 / Noto<em>注記（7 要素）</em></div><div style="font-size:1.4rem;line-height:2">※2026年3月末現在</div></div>
+    <div class="spec"><div class="k">12px / 700 / Lato<em>New バッジ（6 要素）</em></div><div style="font-family:var(--font-en);font-size:1.2rem;font-weight:700;line-height:1.25;color:var(--red)">New</div></div>
+  </div>
+</section>
+
+<!-- ============================ 03 WEIGHT ============================ -->
+<section class="section" id="weight">
+  <div class="wrap">
+    <div class="section-label">03 / Font Weight</div>
+    <h2 class="section-title">可変フォントを読んで、2 段しか使わない</h2>
+    <p class="section-lead">Google Fonts から <code>Noto+Sans+JP:wght@100..900</code> の可変フォントを読み込んでおり、実測でも <b>9 ウェイトすべてが別の字幅</b>を返します（100 → 1198.61px ／ 900 → 1374.70px、100px の欧文で測定）。<b>それでもページに出るのは 400 と 700 だけ。</b>下のグレーの段は「指定すれば出てしまうが、このサイトには存在しない」太さです。</p>
+    <div class="wrow is-off"><div class="k">100<span class="tag">未使用</span></div><div class="v" style="font-weight:100">未知に挑む。Handgloves 2026</div></div>
+    <div class="wrow is-off"><div class="k">300<span class="tag">未使用</span></div><div class="v" style="font-weight:300">未知に挑む。Handgloves 2026</div></div>
+    <div class="wrow"><div class="k">400<span class="tag">★本文 34 要素</span></div><div class="v" style="font-weight:400">未知に挑む。Handgloves 2026</div></div>
+    <div class="wrow is-off"><div class="k">500<span class="tag">未使用</span></div><div class="v" style="font-weight:500">未知に挑む。Handgloves 2026</div></div>
+    <div class="wrow is-off"><div class="k">600<span class="tag">未使用</span></div><div class="v" style="font-weight:600">未知に挑む。Handgloves 2026</div></div>
+    <div class="wrow"><div class="k">700<span class="tag">★見出し 51 要素</span></div><div class="v" style="font-weight:700">未知に挑む。Handgloves 2026</div></div>
+    <div class="wrow is-off"><div class="k">900<span class="tag">未使用</span></div><div class="v" style="font-weight:900">未知に挑む。Handgloves 2026</div></div>
+  </div>
+</section>
+
+<!-- ============================ 04 LINE HEIGHT ============================ -->
+<section class="section-alt" id="lineheight">
+  <div class="wrap">
+    <div class="section-label">04 / Line Height</div>
+    <h2 class="section-title">密度は行間だけで作る</h2>
+    <p class="section-lead"><code>body</code> に <b><code>letter-spacing: 0</code></b> と明示的に書いてあり、<b>可視 85 要素すべてが <code>normal</code></b>。そのうえで <code>line-height</code> を <code>1.8</code>（既定）→ <b><code>2</code></b>（1025px 以上）と上げます。どちらも<b>単位なし</b>なので比率が子へ降ります。</p>
+    <div class="lh-grid">
+      <div class="lh-box lh-2"><h4>line-height: 2 — ★実サイト（≥1025px）</h4><p>広く未来を見据え、人と物流の力で社会を支える。ロジスティクスの領域を超えて、ビジネスと生活に新しい未来を実現していく。</p></div>
+      <div class="lh-box lh-18"><h4>line-height: 1.8 — ≤1024px</h4><p>広く未来を見据え、人と物流の力で社会を支える。ロジスティクスの領域を超えて、ビジネスと生活に新しい未来を実現していく。</p></div>
+      <div class="lh-box lh-15"><h4>line-height: 1.5 — 使わない</h4><p>広く未来を見据え、人と物流の力で社会を支える。ロジスティクスの領域を超えて、ビジネスと生活に新しい未来を実現していく。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 05 STATS ============================ -->
+<section class="section" id="stats">
+  <div class="wrap">
+    <div class="section-label">05 / At a Glance</div>
+    <h2 class="section-title">数値だけが青く、Lato で組まれる</h2>
+    <p class="section-lead">サイトで <code>#1a5fe8</code> が出るのはここだけ（可視 12 要素）。数値 70px・英語ラベル 16px、どちらも <b>Lato 700</b>。カードは <code>border-radius: 30px</code> の枠だけで、影はありません。</p>
+    <div class="stats">
+      <div class="stat"><div class="en">Global Locations</div><div class="num">30</div><div class="unit">の国と地域</div></div>
+      <div class="stat"><div class="en">Logistics Centers</div><div class="num">974</div><div class="unit">拠点</div></div>
+      <div class="stat"><div class="en">Total Personnel</div><div class="num">56,240</div><div class="unit">名</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 06 BUTTONS ============================ -->
+<section class="section-alt" id="buttons">
+  <div class="wrap">
+    <div class="section-label">06 / Buttons</div>
+    <h2 class="section-title">塗らない。角丸 80px のピル</h2>
+    <p class="section-lead">主要 CTA は <b>面を塗らず <code>1px solid #00132c</code> ＋ <code>border-radius: 80px</code></b>。padding は <code>8px 64px</code> と左右が極端に広く、ピルの形が際立ちます。<code>.is-focus</code> はフォーカス状態の見本です（<code>autofocus</code> は使っていません）。</p>
+    <div class="btns" style="margin-bottom:28px">
+      <a class="btn-outline" href="#buttons">経営理念・ブランド</a>
+      <a class="btn-outline is-focus" href="#buttons">サービス（focus）</a>
+    </div>
+    <p class="section-lead" style="margin-bottom:16px">下層のローカルナビ。トップ階層だけ枠線を持ち、子項目は面だけで表します。</p>
+    <div class="btns">
+      <a class="btn-nav" href="#buttons">企業情報 トップ</a>
+      <a class="btn-sub" href="#buttons">経営方針・ブランド</a>
+      <a class="btn-sub" href="#buttons">会社概要</a>
+      <a class="btn-sub" href="#buttons">沿革</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 07 CARDS / NEWS ============================ -->
+<section class="section" id="cards">
+  <div class="wrap">
+    <div class="section-label">07 / Cards &amp; News</div>
+    <h2 class="section-title">面は #ebecee、影は 0 種</h2>
+    <p class="section-lead">カードは淡いグレーの面と角丸だけ。<b><code>box-shadow</code> は両ページとも 0 種</b>なので、浮かせる表現は使いません。</p>
+    <div class="cards" style="margin-bottom:56px">
+      <div class="card"><h3>Newsroom</h3><p>ニュースリリース・IR ニュース・お知らせを一覧で掲載しています。</p><a class="btn-outline" style="padding:8px 32px;font-size:1.4rem" href="#cards">一覧へ</a></div>
+      <div class="card"><h3>ロジスティード陸上部</h3><p>千葉県松戸市を本拠地に実業団陸上部として活動しています。</p><a class="btn-outline" style="padding:8px 32px;font-size:1.4rem" href="#cards">一覧へ</a></div>
+      <div class="card"><h3>IR 情報</h3><p>経営方針や IR 資料などの最新情報を掲載しています。</p><a class="btn-outline" style="padding:8px 32px;font-size:1.4rem" href="#cards">一覧へ</a></div>
+    </div>
+    <ul class="news">
+      <li><span class="date">2026.11.18</span><span class="new">New</span><span class="ttl">ロジスティードによる Neovia の買収完了について</span></li>
+      <li><span class="date">2026.11.12</span><span class="new">New</span><span class="ttl">スマートロジスティクスのテクノロジーを公開しました</span></li>
+      <li><span class="date">2026.10.30</span><span class="new"></span><span class="ttl">危険物ソリューションの取り扱い拠点を拡大します</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ 08 FORMS ============================ -->
+<section class="section-alt" id="forms">
+  <div class="wrap">
+    <div class="section-label">08 / Forms</div>
+    <h2 class="section-title">入力欄もピルに揃える</h2>
+    <p class="section-lead">実サイトには検索フォーム以外の入力欄がないため、他コンポーネントに合わせた値です（<code>1px solid #00132c</code> / radius <code>80px</code> / padding <code>8px 20px</code>）。</p>
+    <div class="field" style="margin-bottom:24px">
+      <label for="q">キーワード</label>
+      <input id="q" type="text" value="サプライチェーン">
+    </div>
+    <div class="field">
+      <label for="q2">キーワード（フォーカス状態の見本）</label>
+      <input id="q2" class="is-focus" type="text" value="スマートロジスティクス">
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 09 DON'T ============================ -->
+<section class="section" id="donts">
+  <div class="narrow">
+    <div class="section-label">09 / Don't</div>
+    <h2 class="section-title">実サイトにあるが真似しないもの</h2>
+    <div class="note-box" style="margin-bottom:var(--sp-xs)">
+      <b>Urbanist</b> — Google Fonts の URL に <code>family=Urbanist:wght@100..900</code> と書かれているのに、<code>fonts.gstatic.com</code> からのダウンロードは <b>0 件</b>、可視も <b>0 要素</b>。CSS だけ取得して捨てています。
+    </div>
+    <div class="note-box" style="margin-bottom:var(--sp-xs)">
+      <b>Adobe Fonts（Typekit kit <code>ybx7oxu</code>）</b> — <code>@import</code> で読み込み、<code>use.typekit.net</code> と <code>p.typekit.net</code> に<b>毎ページ 2 リクエスト</b>が飛びます。中身の <code>source-han-sans-japanese</code> / <code>hero</code> を使うのは別サブサイト（LOGISTEED CAFE）だけで、<b>コーポレート面の可視は 0 要素</b>。
+    </div>
+    <div class="note-box">
+      <b><code>font-feature-settings: "palt"</code></b> — CSS 全文に 2 箇所ありますが、どちらも <code>.service_logisteed_cafe_wrap</code> の中で、<b>コーポレート面の実測は 0 件</b>。書体自体は対応しており（実スタック 24px / 700 で <code>normal</code> 2576.86px → <code>"palt"</code> 2273.36px ＝ <b>−11.8%</b>）、<b>「できるのにやっていない」型</b>です。足すと既存と字送りが変わります。
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <a href="#colors">電子公告</a><a href="#colors">サイトの利用条件</a><a href="#colors">個人情報保護に関して</a><a href="#colors">ソーシャルメディアポリシー</a>
+    <p style="font-family:var(--font-en);font-size:1.2rem;line-height:1.25;margin:24px 0 0;opacity:.8">© LOGISTEED, Ltd. All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: マブチモーター（MABUCHI MOTOR）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* =========================================================================
+     マブチモーター（MABUCHI MOTOR） 実測 2026-11-25
+     対象: https://www.mabuchi-motor.co.jp/ , /company/philosophy.html
+     実サイトは CSS 変数 46 個を大文字スネークケースで持つ。以下はその実物。
+     ========================================================================= */
+  :root {
+    /* === Colors（実サイトのトークン名をそのまま使用） === */
+    --COLOR_BASE_LIGHT:      #fff;
+    --COLOR_BRAND_PRIMARY:   #0166b3;   /* ★面を塗るのはこの色だけ。可視 28 要素 */
+    --COLOR_TEXT_PRIMARY:    #333;      /* ★本文。可視 91 要素で最多。純黒ではない */
+    --COLOR_OUTLINE_PRIMARY: #d6d6d6;   /* 罫線・カード枠 */
+    --COLOR_BACKGROUND_GRAY: #ebebeb;   /* 淡い面 */
+
+    /* 画像アイコンを塗り替える filter（fill を持てない img のため） */
+    --FILTER_BLUE:  brightness(0) saturate(100%) invert(25%) sepia(100%) saturate(1137%) hue-rotate(182deg) brightness(100%) contrast(104%);
+    --FILTER_WHITE: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7463%) hue-rotate(324deg) brightness(101%) contrast(98%);
+
+    /* === Spacing: 8px を基点に倍数で積む === */
+    --SPACING: 8px;
+    --OUTSIDE_GUTTER_SP: calc(var(--SPACING) * 2);   /* 16px */
+    --OUTSIDE_GUTTER_PC: calc(var(--SPACING) * 5);   /* 40px */
+    --SIZE_NESTED_MODULE_MARGIN: calc(var(--SPACING) * 10);  /* 80px */
+    --SIZE_MODULE_MARGIN:        calc(var(--SPACING) * 15);  /* 120px */
+
+    /* === Layout === */
+    --MINOR_BREAKPOINT:  1315px;
+    --CONTENT_WIDTH_PC:  1315px;
+    --CONTENT_WIDTH_SP:  calc(375px - (calc(var(--SPACING) * 2) * 2));  /* 343px */
+    --HEADER_HEIGHT:     118px;
+
+    /* === z-index（実サイトの綴りのまま。SERCH は原文ママ） === */
+    --Z_INDEX_OVERLAY: 80;
+    --Z_INDEX_HEADER_SERCH: 90;
+    --Z_INDEX_HEADER: 100;
+    --Z_INDEX_HEADER_SERCH_ICON: 110;
+    --Z_INDEX_HEADER_LANG: 120;
+
+    /* === Fonts ===
+       和文: Noto Sans JP（Google Fonts の wght@400;500;700 の静的 3 本）。
+       欧文: Roboto。実サイトは @font-face を持たずフォント要求も 0 件なので、
+             macOS / iOS では 2 番目の Noto Sans JP で描画される。
+             プレビューでは差を見せるため Roboto を読み込んでいる。 */
+    --FONT-FAMILY_ROBOTO: "Roboto", "Noto Sans JP", sans-serif;
+    --FONT-FAMILY_JA: "Noto Sans JP", "Noto Sans", "Noto Sans SC",
+                      "游ゴシック Medium", "游ゴシック体", "Yu Gothic Medium", YuGothic,
+                      "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, sans-serif;
+
+    /* === Type: px の数値を書いて rem に変換するトークン === */
+    --FONT_SIZE_ROOT: 16;
+    --FONT_SIZE:    calc(16 / var(--FONT_SIZE_ROOT) * 1rem);
+    --FONT_SIZE_10: calc(10 / var(--FONT_SIZE_ROOT) * 1rem);
+    --FONT_SIZE_12: calc(12 / var(--FONT_SIZE_ROOT) * 1rem);
+    --FONT_SIZE_14: calc(14 / var(--FONT_SIZE_ROOT) * 1rem);
+    --FONT_SIZE_16: calc(16 / var(--FONT_SIZE_ROOT) * 1rem);
+    --FONT_SIZE_18: calc(18 / var(--FONT_SIZE_ROOT) * 1rem);
+    --FONT_SIZE_20: calc(20 / var(--FONT_SIZE_ROOT) * 1rem);
+    --FONT_SIZE_22: calc(22 / var(--FONT_SIZE_ROOT) * 1rem);
+    --FONT_SIZE_24: calc(24 / var(--FONT_SIZE_ROOT) * 1rem);
+    --FONT_SIZE_28: calc(28 / var(--FONT_SIZE_ROOT) * 1rem);
+    --FONT_SIZE_32: calc(32 / var(--FONT_SIZE_ROOT) * 1rem);
+    --FONT_SIZE_40: calc(40 / var(--FONT_SIZE_ROOT) * 1rem);
+    --FONT_SIZE_64: calc(64 / var(--FONT_SIZE_ROOT) * 1rem);
+    --FONT_WEIGHT_MEDIUM: 500;
+    --FONT_WEIGHT_BOLD: 700;
+    --LINE_HEIGHT: 1.5;   /* ★可視 165/175 要素。全幅共通で比率は動かない */
+
+    --HOVER_ANIMATION_TRANSITION_TIME: .4s;
+    --r: 4px;             /* 実測 1 種・23 要素 */
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--COLOR_BASE_LIGHT);
+    color: var(--COLOR_TEXT_PRIMARY);
+    font-family: var(--FONT-FAMILY_JA);
+    font-size: var(--FONT_SIZE);
+    line-height: var(--LINE_HEIGHT);
+    letter-spacing: normal;            /* ★可視 175/175 が normal */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: var(--CONTENT_WIDTH_PC); margin: 0 auto; padding: 0 var(--OUTSIDE_GUTTER_PC); }
+  .section { padding: var(--SIZE_NESTED_MODULE_MARGIN) 0; }
+  .section-alt { padding: var(--SIZE_NESTED_MODULE_MARGIN) 0; background: var(--COLOR_BACKGROUND_GRAY); }
+  .section-label { font-family: var(--FONT-FAMILY_ROBOTO); font-size: var(--FONT_SIZE_12); line-height: 1.2; color: var(--COLOR_BRAND_PRIMARY); margin-bottom: var(--SPACING); }
+  .section-title { font-size: var(--FONT_SIZE_32); font-weight: 400; line-height: var(--LINE_HEIGHT); margin: 0 0 var(--SPACING); }
+  .section-lead { font-size: var(--FONT_SIZE_16); line-height: var(--LINE_HEIGHT); margin: 0 0 var(--OUTSIDE_GUTTER_PC); max-width: 76ch; }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .92em; background: var(--COLOR_BACKGROUND_GRAY); padding: 2px 6px; border-radius: var(--r); }
+  .section-alt code { background: var(--COLOR_BASE_LIGHT); }
+
+  /* ---------- Header ---------- */
+  .site-header { border-bottom: 1px solid var(--COLOR_OUTLINE_PRIMARY); padding: var(--SPACING) 0; }
+  .site-header .row { display: flex; align-items: center; gap: var(--OUTSIDE_GUTTER_SP); flex-wrap: wrap; }
+  .site-header .logo { font-family: var(--FONT-FAMILY_ROBOTO); font-size: var(--FONT_SIZE_24); font-weight: 700; color: var(--COLOR_BRAND_PRIMARY); line-height: var(--LINE_HEIGHT); }
+  .site-header nav { margin-left: auto; display: flex; gap: var(--OUTSIDE_GUTTER_SP); flex-wrap: wrap; align-items: center; }
+  .site-header nav a { color: var(--COLOR_TEXT_PRIMARY); font-size: var(--FONT_SIZE_14); line-height: var(--LINE_HEIGHT); text-decoration: none; padding: 0 4px; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-block; background: var(--COLOR_BRAND_PRIMARY); color: var(--COLOR_BASE_LIGHT);
+    border: 1px solid var(--COLOR_BRAND_PRIMARY); border-radius: var(--r);
+    padding: 16px 40px; font-size: var(--FONT_SIZE_16); font-weight: 400;
+    line-height: var(--LINE_HEIGHT); text-decoration: none;
+    transition: opacity var(--HOVER_ANIMATION_TRANSITION_TIME);
+  }
+  .btn:hover { opacity: .8; }
+  .btn-sm { padding: 7px 16px; font-size: var(--FONT_SIZE_14); }
+  .btn.is-focus { outline: 2px solid var(--COLOR_BRAND_PRIMARY); outline-offset: 3px; }
+  .btns { display: flex; gap: var(--OUTSIDE_GUTTER_SP); flex-wrap: wrap; align-items: center; }
+
+  /* ---------- Hero ---------- */
+  .hero { border-bottom: 1px solid var(--COLOR_OUTLINE_PRIMARY); padding: var(--SIZE_NESTED_MODULE_MARGIN) 0; }
+  .hero h1 { font-size: var(--FONT_SIZE_64); font-weight: 400; line-height: 1.2; margin: 0 0 var(--OUTSIDE_GUTTER_SP); }
+  .hero p { font-size: var(--FONT_SIZE_18); line-height: var(--LINE_HEIGHT); margin: 0 0 var(--OUTSIDE_GUTTER_PC); max-width: 62ch; }
+
+  /* ---------- Swatches ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--OUTSIDE_GUTTER_SP); }
+  .sw { border: 1px solid var(--COLOR_OUTLINE_PRIMARY); border-radius: var(--r); overflow: hidden; background: var(--COLOR_BASE_LIGHT); }
+  .sw .chip { height: 84px; }
+  .sw .meta { padding: 14px 16px; font-size: var(--FONT_SIZE_12); line-height: var(--LINE_HEIGHT); }
+  .sw .meta b { display: block; font-size: var(--FONT_SIZE_14); }
+  .sw .meta span { font-family: var(--FONT-FAMILY_ROBOTO); }
+
+  /* ---------- Specimen ---------- */
+  .spec { border-top: 1px solid var(--COLOR_OUTLINE_PRIMARY); padding: var(--OUTSIDE_GUTTER_SP) 0; display: grid; grid-template-columns: 250px 1fr; gap: var(--OUTSIDE_GUTTER_PC); align-items: baseline; }
+  .spec .k { font-family: var(--FONT-FAMILY_ROBOTO); font-size: var(--FONT_SIZE_12); line-height: var(--LINE_HEIGHT); color: var(--COLOR_BRAND_PRIMARY); }
+  .spec .k em { display: block; font-style: normal; font-family: var(--FONT-FAMILY_JA); color: var(--COLOR_TEXT_PRIMARY); }
+
+  /* ---------- Weight ---------- */
+  .wrow { display: grid; grid-template-columns: 160px 1fr; gap: var(--OUTSIDE_GUTTER_PC); border-top: 1px solid var(--COLOR_OUTLINE_PRIMARY); padding: 12px 0; align-items: baseline; }
+  .wrow .k { font-family: var(--FONT-FAMILY_ROBOTO); font-size: var(--FONT_SIZE_12); line-height: var(--LINE_HEIGHT); }
+  .wrow .k span { display: block; font-family: var(--FONT-FAMILY_JA); color: var(--COLOR_BRAND_PRIMARY); }
+  .wrow .v { font-size: var(--FONT_SIZE_22); line-height: var(--LINE_HEIGHT); }
+  .wrow.is-off { opacity: .45; }
+
+  /* ---------- Cards ---------- */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--OUTSIDE_GUTTER_PC); }
+  .card { background: var(--COLOR_BASE_LIGHT); border: 1px solid var(--COLOR_OUTLINE_PRIMARY); border-radius: var(--r); padding: var(--OUTSIDE_GUTTER_SP); }
+  .card .en { font-family: var(--FONT-FAMILY_ROBOTO); font-size: var(--FONT_SIZE_40); line-height: 1.2; color: var(--COLOR_BRAND_PRIMARY); margin-bottom: var(--SPACING); }
+  .card h3 { font-size: var(--FONT_SIZE_20); font-weight: var(--FONT_WEIGHT_MEDIUM); line-height: var(--LINE_HEIGHT); margin: 0 0 var(--SPACING); }
+  .card p { font-size: var(--FONT_SIZE_14); line-height: var(--LINE_HEIGHT); margin: 0; }
+
+  /* ---------- Spacing scale ---------- */
+  .sp-row { display: grid; grid-template-columns: 230px 1fr; gap: var(--OUTSIDE_GUTTER_SP); align-items: center; border-top: 1px solid var(--COLOR_OUTLINE_PRIMARY); padding: 12px 0; }
+  .sp-row .k { font-family: var(--FONT-FAMILY_ROBOTO); font-size: var(--FONT_SIZE_12); line-height: var(--LINE_HEIGHT); }
+  .sp-row .k em { display: block; font-style: normal; font-family: var(--FONT-FAMILY_JA); color: var(--COLOR_TEXT_PRIMARY); }
+  .sp-bar { background: var(--COLOR_BRAND_PRIMARY); height: 16px; border-radius: var(--r); }
+
+  /* ---------- Generations table ---------- */
+  .gen { width: 100%; border-collapse: collapse; font-size: var(--FONT_SIZE_14); line-height: var(--LINE_HEIGHT); }
+  .gen th, .gen td { border: 1px solid var(--COLOR_OUTLINE_PRIMARY); padding: 10px 12px; text-align: left; }
+  .gen thead th { background: var(--COLOR_BRAND_PRIMARY); color: var(--COLOR_BASE_LIGHT); font-weight: var(--FONT_WEIGHT_MEDIUM); }
+  .gen tbody tr.old td { background: var(--COLOR_BACKGROUND_GRAY); }
+  .gen code { background: var(--COLOR_BASE_LIGHT); }
+  /* ヘッダー行の code は白文字のまま。面を淡くして th の青地に乗せる */
+  .gen thead th code { background: rgba(255,255,255,.18); color: var(--COLOR_BASE_LIGHT); }
+
+  /* ---------- Inputs ---------- */
+  .field { max-width: 520px; }
+  .field label { display: block; font-size: var(--FONT_SIZE_14); font-weight: var(--FONT_WEIGHT_MEDIUM); line-height: var(--LINE_HEIGHT); margin-bottom: var(--SPACING); }
+  .field input {
+    width: 100%; background: var(--COLOR_BASE_LIGHT); color: var(--COLOR_TEXT_PRIMARY);
+    border: 1px solid var(--COLOR_OUTLINE_PRIMARY); border-radius: var(--r);
+    padding: var(--SPACING) var(--OUTSIDE_GUTTER_SP);
+    font-size: var(--FONT_SIZE_16); font-family: var(--FONT-FAMILY_JA); line-height: var(--LINE_HEIGHT);
+  }
+  .field input.is-focus { outline: 2px solid var(--COLOR_BRAND_PRIMARY); outline-offset: 2px; }
+
+  .note-box { background: var(--COLOR_BASE_LIGHT); border: 1px solid var(--COLOR_OUTLINE_PRIMARY); border-left: 4px solid var(--COLOR_BRAND_PRIMARY); border-radius: var(--r); padding: var(--OUTSIDE_GUTTER_SP); font-size: var(--FONT_SIZE_14); line-height: var(--LINE_HEIGHT); margin-bottom: var(--OUTSIDE_GUTTER_SP); }
+
+  footer.site { background: var(--COLOR_BRAND_PRIMARY); color: var(--COLOR_BASE_LIGHT); padding: var(--OUTSIDE_GUTTER_PC) 0; }
+  footer.site a { color: var(--COLOR_BASE_LIGHT); font-size: var(--FONT_SIZE_14); text-decoration: none; margin-right: var(--OUTSIDE_GUTTER_SP); line-height: 2; }
+  footer.site p { font-family: var(--FONT-FAMILY_ROBOTO); font-size: var(--FONT_SIZE_12); line-height: var(--LINE_HEIGHT); margin: var(--OUTSIDE_GUTTER_SP) 0 0; }
+
+  @media print, screen and (width <= 767px) {   /* 実サイトと同じレンジ構文 */
+    :root { --FONT_SIZE: calc(14 / var(--FONT_SIZE_ROOT) * 1rem); }
+    .hero h1 { font-size: var(--FONT_SIZE_32); }
+    .section-title { font-size: var(--FONT_SIZE_28); }
+    .spec, .wrow, .sp-row { grid-template-columns: 1fr; gap: 4px; }
+    .wrap { padding: 0 var(--OUTSIDE_GUTTER_SP); }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="row">
+      <span class="logo">MABUCHI MOTOR</span>
+      <nav>
+        <a href="#colors">製品情報</a>
+        <a href="#type">企業情報</a>
+        <a href="#weight">株主・投資家情報</a>
+        <a href="#spacing">サステナビリティ情報</a>
+        <a class="btn btn-sm" href="#buttons">お問い合わせ</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="section-label">Design System Preview — 実測 2026-11-25</div>
+    <h1>動きの感動と、驚きを世界へ</h1>
+    <p>小型・軽量・高効率のモーターをコアに、幅広い分野で「動き」のソリューションをご提供し、人々の豊かな生活や産業の発展に貢献してまいります。</p>
+    <div class="btns">
+      <a class="btn" href="#colors">製品情報</a>
+      <a class="btn" href="#cards">ニュースリリース一覧</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 01 COLORS ============================ -->
+<section class="section" id="colors">
+  <div class="wrap">
+    <div class="section-label">01 / Colors</div>
+    <h2 class="section-title">面を塗るのはブランド青だけ</h2>
+    <p class="section-lead">トップページの <code>uniqueBackgrounds</code> は <b><code>#0166b3</code> ただ 1 色</b>（可視 28 要素）。それ以外は白と <code>#d6d6d6</code> の罫線で組みます。本文は純黒ではなく <code>#333333</code>（可視 91 要素で最多）。</p>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#0166b3"></div><div class="meta"><b>Brand Primary</b><span>#0166b3</span><br>--COLOR_BRAND_PRIMARY（28）</div></div>
+      <div class="sw"><div class="chip" style="background:#333333"></div><div class="meta"><b>Text Primary</b><span>#333333</span><br>--COLOR_TEXT_PRIMARY（91）</div></div>
+      <div class="sw"><div class="chip" style="background:#d6d6d6"></div><div class="meta"><b>Outline</b><span>#d6d6d6</span><br>--COLOR_OUTLINE_PRIMARY</div></div>
+      <div class="sw"><div class="chip" style="background:#ebebeb"></div><div class="meta"><b>Background Gray</b><span>#ebebeb</span><br>--COLOR_BACKGROUND_GRAY</div></div>
+      <div class="sw"><div class="chip" style="background:#ffffff;border-bottom:1px solid #d6d6d6"></div><div class="meta"><b>Base Light</b><span>#ffffff</span><br>--COLOR_BASE_LIGHT</div></div>
+      <div class="sw"><div class="chip" style="background:#0166b4"></div><div class="meta"><b>旧世代の青</b><span>#0166b4</span><br>.html ページのみ・使わない</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 02 GENERATIONS ============================ -->
+<section class="section-alt" id="generations">
+  <div class="wrap">
+    <div class="section-label">02 / Two Generations</div>
+    <h2 class="section-title">URL の形で世代が割れる</h2>
+    <p class="section-lead"><b>ディレクトリの index は新世代、<code>.html</code> は 2003 年型の旧世代。</b>404 ページも旧世代側にあります。<b>新規実装は必ず新世代側に合わせてください。</b></p>
+    <table class="gen">
+      <thead><tr><th>ページ</th><th><code>html</code></th><th><code>body</code></th><th>行間</th><th>和文書体</th><th><code>document.fonts</code></th><th>フォント要求</th></tr></thead>
+      <tbody>
+        <tr><td>/（トップ）</td><td>16px</td><td>16px</td><td>24px</td><td>Noto Sans JP 132 要素</td><td>372 本</td><td>29 件</td></tr>
+        <tr><td>/company/</td><td>16px</td><td>16px</td><td>24px</td><td>Noto Sans JP 115 要素</td><td>372 本</td><td>26 件</td></tr>
+        <tr><td>/product/</td><td>16px</td><td>16px</td><td>24px</td><td>Noto Sans JP 123 要素</td><td>372 本</td><td>25 件</td></tr>
+        <tr class="old"><td>/company/philosophy.html</td><td><b>10px</b></td><td><b>14px</b></td><td>22.4px</td><td><b>ヒラギノ角ゴ Pro W3 124 要素（100%）</b></td><td><b>0 本</b></td><td><b>0 件</b></td></tr>
+        <tr class="old"><td>/company/message.html</td><td><b>10px</b></td><td><b>14px</b></td><td>22.4px</td><td><b>ヒラギノ角ゴ Pro W3 88 要素（100%）</b></td><td><b>0 本</b></td><td><b>0 件</b></td></tr>
+      </tbody>
+    </table>
+    <div class="note-box" style="margin-top:var(--OUTSIDE_GUTTER_SP)">
+      旧世代はメディアクエリも <code>only screen and (max-width: 720px)</code> が 3 件あるだけ。新世代は <b>レンジ構文</b>（<code>print, screen and (width &gt;= 768px)</code>）と <code>any-hover: hover</code> を使います。<b>同じサイトでブレークポイントの数も書き方も違います。</b>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 03 TYPOGRAPHY ============================ -->
+<section class="section" id="type">
+  <div class="wrap">
+    <div class="section-label">03 / Typography</div>
+    <h2 class="section-title">サイズは 16 段のトークンから選ぶ</h2>
+    <p class="section-lead"><code>--FONT_SIZE_10</code> 〜 <code>--FONT_SIZE_64</code> が <code>calc(N / var(--FONT_SIZE_ROOT) * 1rem)</code> で定義されています。<b>px の数値をそのまま書いて <code>rem</code> に変換する</b>書き方です。</p>
+
+    <div class="spec"><div class="k">--FONT_SIZE_64 / 400 / Roboto<em>英語セクション見出し（3 要素）</em></div><div style="font-family:var(--FONT-FAMILY_ROBOTO);font-size:var(--FONT_SIZE_64);line-height:1.2">About Mabuchi</div></div>
+    <div class="spec"><div class="k">--FONT_SIZE_40 / 400 / Roboto<em>英語小見出し（4 要素）</em></div><div style="font-family:var(--FONT-FAMILY_ROBOTO);font-size:var(--FONT_SIZE_40);line-height:1.2">Investor Relations</div></div>
+    <div class="spec"><div class="k">--FONT_SIZE_24 / 400 / Noto<em>見出し（4 要素）</em></div><div style="font-size:var(--FONT_SIZE_24);line-height:var(--LINE_HEIGHT)">製品情報トップ</div></div>
+    <div class="spec"><div class="k">--FONT_SIZE_20 / 500 / Noto<em>中見出し（5 要素）</em></div><div style="font-size:var(--FONT_SIZE_20);font-weight:var(--FONT_WEIGHT_MEDIUM);line-height:var(--LINE_HEIGHT)">ピックアップ</div></div>
+    <div class="spec"><div class="k">--FONT_SIZE_18 / 500 / Noto<em>小見出し（4 要素）</em></div><div style="font-size:var(--FONT_SIZE_18);font-weight:var(--FONT_WEIGHT_MEDIUM);line-height:var(--LINE_HEIGHT)">トップメッセージ</div></div>
+    <div class="spec"><div class="k">--FONT_SIZE_16 / 400 / Noto<em>★本文（62 要素・最多）</em></div><div style="font-size:var(--FONT_SIZE_16);line-height:var(--LINE_HEIGHT)">製品カタログをはじめ、モーターの動作原理や性能表の見方などを掲載しています。</div></div>
+    <div class="spec"><div class="k">--FONT_SIZE_14 / 400 / Noto<em>一覧・ナビ（10 要素）</em></div><div style="font-size:var(--FONT_SIZE_14);line-height:var(--LINE_HEIGHT)">製品・ソリューション / オンラインショップ / カタログ</div></div>
+    <div class="spec"><div class="k">--FONT_SIZE_12 / 400 / Noto<em>補助・メガメニュー（42 要素）</em></div><div style="font-size:var(--FONT_SIZE_12);line-height:var(--LINE_HEIGHT)">ブラシレスモータのご紹介 / ブラシ付モータ・製品検索</div></div>
+
+    <div class="note-box" style="margin-top:var(--OUTSIDE_GUTTER_PC)">
+      <b>Roboto を「確実に出る欧文書体」として扱わないこと。</b>実サイトは <code>@font-face</code> を持たず、フォント要求も Roboto については 0 件。<b>macOS / iOS では 2 番目の Noto Sans JP で描画されます。</b>（このプレビューは差が分かるよう Roboto を読み込んでいます）
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 04 WEIGHT ============================ -->
+<section class="section-alt" id="weight">
+  <div class="wrap">
+    <div class="section-label">04 / Font Weight</div>
+    <h2 class="section-title">静的 3 本。宣言と実装が一致する</h2>
+    <p class="section-lead">Google Fonts の URL は <code>Noto+Sans+JP:wght@400;500;700</code>。実測の字幅も <b>100〜400 → 1267.30px ／ 500 → 1297.22px ／ 600〜900 → 1335.97px の 3 面</b>で対応します。<b>600 を当てると 700 で描画されます。</b></p>
+    <div class="wrow is-off"><div class="k">100–300<span>400 で出る</span></div><div class="v" style="font-weight:300">動きの感動と、驚きを世界へ Handgloves</div></div>
+    <div class="wrow"><div class="k">400<span>★既定・154 要素</span></div><div class="v" style="font-weight:400">動きの感動と、驚きを世界へ Handgloves</div></div>
+    <div class="wrow"><div class="k">500<span>--FONT_WEIGHT_MEDIUM（11）</span></div><div class="v" style="font-weight:500">動きの感動と、驚きを世界へ Handgloves</div></div>
+    <div class="wrow is-off"><div class="k">600<span>700 で出る</span></div><div class="v" style="font-weight:600">動きの感動と、驚きを世界へ Handgloves</div></div>
+    <div class="wrow"><div class="k">700<span>--FONT_WEIGHT_BOLD（1 要素だけ）</span></div><div class="v" style="font-weight:700">動きの感動と、驚きを世界へ Handgloves</div></div>
+    <p class="section-lead" style="margin-top:var(--OUTSIDE_GUTTER_SP)">ウェイトのトークンは <code>--FONT_WEIGHT_MEDIUM: 500</code> と <code>--FONT_WEIGHT_BOLD: 700</code> の 2 つだけ。既定は 400 で、<b>実測は 400 が 154 要素と圧倒的、700 は 1 要素しかありません。ほとんど太らせない設計です。</b></p>
+  </div>
+</section>
+
+<!-- ============================ 05 SPACING ============================ -->
+<section class="section" id="spacing">
+  <div class="wrap">
+    <div class="section-label">05 / Spacing</div>
+    <h2 class="section-title">8px の倍数ですべてを積む</h2>
+    <p class="section-lead">実測の <code>gap</code> は <code>40px</code>（4 件）/ <code>0px 40px</code>（4 件）/ <code>60px</code> / <code>16px</code> — <b>すべて 8 の倍数</b>です。</p>
+    <div class="sp-row"><div class="k">--SPACING<em>基点</em></div><div><div class="sp-bar" style="width:8px"></div> 8px</div></div>
+    <div class="sp-row"><div class="k">--OUTSIDE_GUTTER_SP<em>calc(8px * 2)</em></div><div><div class="sp-bar" style="width:16px"></div> 16px</div></div>
+    <div class="sp-row"><div class="k">--OUTSIDE_GUTTER_PC<em>calc(8px * 5)</em></div><div><div class="sp-bar" style="width:40px"></div> 40px</div></div>
+    <div class="sp-row"><div class="k">--SIZE_NESTED_MODULE_MARGIN<em>calc(8px * 10)</em></div><div><div class="sp-bar" style="width:80px"></div> 80px</div></div>
+    <div class="sp-row"><div class="k">--SIZE_MODULE_MARGIN<em>calc(8px * 15)</em></div><div><div class="sp-bar" style="width:120px"></div> 120px</div></div>
+    <p class="section-lead" style="margin-top:var(--OUTSIDE_GUTTER_PC)">コンテナは <code>--CONTENT_WIDTH_PC: 1315px</code>（<code>--MINOR_BREAKPOINT</code> と同値）、モバイルは <code>calc(375px - 32px)</code> ＝ <b>343px</b>。ヘッダーの高さは <code>--HEADER_HEIGHT: 118px</code>。</p>
+  </div>
+</section>
+
+<!-- ============================ 06 COMPONENTS ============================ -->
+<section class="section-alt" id="buttons">
+  <div class="wrap">
+    <div class="section-label">06 / Buttons &amp; Cards</div>
+    <h2 class="section-title">角丸 4px、影は 0 種</h2>
+    <p class="section-lead">実測の <code>border-radius</code> は <b><code>4px</code> の 1 種だけ</b>（23 要素）。<code>box-shadow</code> は<b>両ページとも 0 種</b>なので、階層は罫線・塗り・余白・角丸の 4 つで作ります。</p>
+    <div class="btns" style="margin-bottom:var(--OUTSIDE_GUTTER_PC)">
+      <a class="btn" href="#buttons">製品情報</a>
+      <a class="btn btn-sm" href="#buttons">お問い合わせ</a>
+      <a class="btn is-focus" href="#buttons">ニュースリリース一覧（focus）</a>
+    </div>
+    <div class="cards">
+      <div class="card"><div class="en">Products</div><h3>製品情報</h3><p>製品カタログをはじめ、モーターの動作原理や性能表の見方などを掲載しています。</p></div>
+      <div class="card"><div class="en">About</div><h3>企業情報</h3><p>経営理念・事業活動・会社概要・沿革などをご案内しています。</p></div>
+      <div class="card"><div class="en">IR</div><h3>株主・投資家情報</h3><p>決算情報、IR 資料、コーポレートガバナンスの取り組みを掲載しています。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 07 LINE HEIGHT / FORMS ============================ -->
+<section class="section" id="forms">
+  <div class="wrap">
+    <div class="section-label">07 / Line Height &amp; Forms</div>
+    <h2 class="section-title">行間比 1.5 は全幅で動かない</h2>
+    <p class="section-lead"><code>--LINE_HEIGHT: 1.5</code>（単位なし）が <b>可視 175 要素中 165 要素</b>に当たります。1440px の <code>16px / 24px</code> も 375px の <code>14px / 21px</code> も <b>比率は 1.50 のまま</b>。<code>letter-spacing</code> は全要素 <code>normal</code> です。</p>
+    <div class="field" style="margin-bottom:var(--OUTSIDE_GUTTER_SP)">
+      <label for="k1">キーワード</label>
+      <input id="k1" type="text" value="ブラシレスモータ">
+    </div>
+    <div class="field">
+      <label for="k2">キーワード（フォーカス状態の見本）</label>
+      <input id="k2" class="is-focus" type="text" value="小型・軽量・高効率">
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 08 DON'T ============================ -->
+<section class="section-alt" id="donts">
+  <div class="wrap">
+    <div class="section-label">08 / Don't</div>
+    <h2 class="section-title">やってはいけないこと</h2>
+    <div class="note-box"><b><code>.html</code> ページのレガシースタックを真似しない。</b><code>ヒラギノ角ゴ Pro W3</code> 先頭・<code>html: 10px</code>・<code>#555555</code>・<code>#0077cc</code> は 2 世代が同居しているだけで、設計として残すものではありません。</div>
+    <div class="note-box"><b><code>#0166b4</code> を使わない。</b>旧世代にだけ出る 1px ずれた青です。正は <code>#0166b3</code>。</div>
+    <div class="note-box"><b><code>font-weight: 600</code> を使わない。</b>Google Fonts が 400/500/700 の 3 本なので 700 で描画されます。</div>
+    <div class="note-box"><b><code>box-shadow</code> を足さない。</b>実測 0 種です。</div>
+    <div class="note-box"><b><code>font-feature-settings: "palt"</code> を足さない。</b>CSS 全文に 1 件も無く実測も 0 件ですが、<b>書体は対応しています</b>（実スタック 24px / 400 で <code>normal</code> 2563.14px → <code>"palt"</code> 2243.94px ＝ <b>−12.5%</b>）。「できるのにやっていない」型なので、足すと既存と字送りが変わります。</div>
+    <div class="note-box"><b><code>rem</code> を直接書かない。</b><code>--FONT_SIZE_N</code> トークン経由にします。なお z-index トークンの綴りは実サイトのまま <code>SERCH</code> です（既存 CSS を編集するときはこの綴りに合わせてください）。</div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <a href="#colors">サイトマップ</a><a href="#colors">個人情報等の保護について</a><a href="#colors">サプライヤー募集</a>
+    <p>© MABUCHI MOTOR CO., LTD.</p>
+  </div>
+</footer>
+
+</body>
+</html>
