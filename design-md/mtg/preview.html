@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: MTG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* =========================================================================
+     MTG 実測 2026-11-26
+     対象: https://www.mtg.gr.jp/ , /company/philosophy/
+     実サイトの CSS Custom Properties は --leading-trim の 1 個だけで、
+     var() の呼び出しが CSS 全文で 0 回（＝1 要素にも効いていない）。
+     以下はすべて computed style と CSS 全文からの実測値。
+     実サイトの Noto Sans JP / Roboto は自社ホスト配信（/assets/font/*.woff2）。
+     ここでは同じ書体を Google Fonts から読んでいる。
+     ========================================================================= */
+  :root {
+    /* === Colors ===
+       実測 uniqueBackgrounds 10 色すべて無彩色。彩度を持つ色は 1 つも無い。 */
+    --ink:        #242424;  /* ★ヘッダー・フッターの面。可視 10 要素（下層 11）で最多 */
+    --ink-light:  #464646;  /* 下層ローカルナビの面（5 要素） */
+    --ink-mid:    #313131;  /* メガメニュー面・Cookie 同意ボタン（2 要素） */
+    --ink-en:     #3c3c3c;  /* 言語切替 EN の面 */
+    --gray:       #919191;  /* 枠線 */
+    --text:       #000000;  /* 本文（可視 34 要素） */
+    --text-sub:   #7b7b7b;  /* 補足・カードの説明（可視 20 要素） */
+    --on-dark:    #ffffff;  /* 暗い面の文字（可視 56 要素） */
+    --surface:    #f4f6f6;  /* セクション面（可視 6 要素） */
+    --surface-warm:  #e8e8e4; /* お知らせブロック */
+    --surface-warm2: #e4e2de; /* 下層の企業情報ブロック */
+    --bg:         #ffffff;  /* body { background-color: #FFF } */
+
+    /* === Fonts ===
+       実サイトは Roboto 側のスタックにも和文フォールバックが丸ごと付いている。 */
+    --font-ja: "Noto Sans JP", YuGothic, "游ゴシック", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    --font-en: Roboto, YuGothic, "游ゴシック", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    /* 64px の大コピーだけ別ファミリー名。実サイトは Roboto-SemiBold.ttf（woff2 なし） */
+    --font-en-semibold: "Roboto SemiBold", Roboto, YuGothic, "Hiragino Sans", sans-serif;
+
+    /* === Type ===
+       html { font-size: 16px }（≥768px）/ 14px（≤767px）。body も同値。
+       16 幅で測定して、動くのはこの 1 段だけ（流体は使っていない）。 */
+    --lh-body: 1.75;  /* ★body に無単位で宣言。16px×1.75 = 28px が全子孫へ */
+    --lh-nav:  1.30;  /* グローバルナビ（36 要素で最多） */
+    --lh-text: 1.80;  /* 本文・ニュース（33 要素） */
+    --lh-brand:1.50;  /* ブランド名（33 要素） */
+    --ls-en:  -0.02em; /* ★欧文は詰める。CSS 全文で 50 箇所すべてこの値 */
+    --ls-ja:   0.1em;  /* ★和文は空ける */
+
+    /* === Shape ===
+       サイト本体に box-shadow は 1 つも無い（唯一の 1 種は Cookie バー＝外部）。 */
+    --r:    4px;   /* カード・ボタン（27 要素で最多） */
+    --r-s:  3px;   /* 小物（12 要素） */
+    --r-xs: 2px;   /* さらに小さいもの（4 要素） */
+
+    /* === Spacing（gap の実測。トークンは無く値を直書き） === */
+    --gap:    20px;  /* 21 要素で最多 */
+    --gap-l:  32px;
+    --gap-xs: 6px;
+    --container: 1440px;       /* 最外 */
+    --container-in: 1360px;    /* セクション内側 */
+    --container-text: 823px;   /* 本文カラム */
+  }
+
+  * { box-sizing: border-box; }
+  html { font-size: 16px; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ja);
+    font-size: 0.875rem;              /* = 14px。実測で最多（79 要素） */
+    font-weight: 400;
+    line-height: var(--lh-body);
+    font-feature-settings: "palt";    /* ★body に 1 行。実測 1563 要素 / -12.2% */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap   { max-width: var(--container-in);  margin: 0 auto; padding: 0 40px; }
+  .narrow { max-width: var(--container-text); margin: 0 auto; padding: 0 40px; }
+
+  .section     { padding: 80px 0; }
+  .section-alt { padding: 80px 0; background: var(--surface); }
+  .section-warm{ padding: 80px 0; background: var(--surface-warm); }
+
+  .section-label {
+    font-family: var(--font-en); font-size: 0.75rem; font-weight: 500;
+    letter-spacing: var(--ls-en); line-height: 1.5; color: var(--text-sub); margin-bottom: 10px;
+  }
+  .section-title {
+    font-family: var(--font-en); font-size: 2.5rem; font-weight: 500;
+    letter-spacing: var(--ls-en); line-height: 1.2; margin: 0 0 8px; color: var(--ink);
+  }
+  .section-title-ja {
+    font-size: 1.125rem; font-weight: 500; letter-spacing: var(--ls-ja);
+    line-height: var(--lh-nav); margin: 0 0 28px; color: var(--text-sub);
+  }
+  .section-lead { font-size: 0.875rem; line-height: var(--lh-text); margin: 0 0 36px; max-width: 70ch; }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .92em; background: var(--surface); padding: 2px 6px; border-radius: var(--r-xs); }
+  .section-alt code, .section-warm code { background: var(--bg); }
+
+  /* ---------- Header ---------- */
+  .site-header { background: var(--ink); color: var(--on-dark); }
+  .site-header .inner { max-width: var(--container); margin: 0 auto; padding: 18px 40px; display: flex; align-items: center; gap: var(--gap-l); }
+  .site-header .logo { font-family: var(--font-en); font-size: 1.5rem; font-weight: 600; letter-spacing: var(--ls-en); line-height: 1; }
+  .site-header nav { display: flex; gap: var(--gap); margin-left: auto; }
+  .site-header nav a {
+    color: var(--on-dark); text-decoration: none;
+    font-size: 0.8125rem; font-weight: 500;
+    letter-spacing: var(--ls-ja);     /* ★和文ナビは +0.1em */
+    line-height: var(--lh-nav);
+  }
+  .site-header nav a:hover { opacity: .7; }
+  .site-header .lang { background: var(--ink-en); color: var(--on-dark); padding: 4px 20px; border-radius: var(--r); font-family: var(--font-en); font-size: 0.75rem; letter-spacing: var(--ls-en); }
+
+  /* ---------- Hero ---------- */
+  .hero { background: var(--ink); color: var(--on-dark); padding: 88px 0 96px; }
+  .hero .copy {
+    font-family: var(--font-en-semibold); font-weight: 600;
+    font-size: 4rem; line-height: 1.08; letter-spacing: var(--ls-en);
+    margin: 0 0 20px;
+  }
+  .hero .sub { font-size: 1rem; line-height: var(--lh-text); letter-spacing: var(--ls-ja); margin: 0 0 32px; max-width: 48ch; color: var(--on-dark); }
+  .hero .note { font-size: 0.8125rem; line-height: var(--lh-text); color: #d4d4d4; margin: 0 0 28px; max-width: 64ch; }
+  .hero code { background: rgba(255,255,255,.14); color: var(--on-dark); }
+
+  /* ---------- Buttons ---------- */
+  .btns { display: flex; flex-wrap: wrap; gap: var(--gap); align-items: center; }
+  .btn-list {
+    display: inline-block; background: var(--ink-light); color: var(--on-dark);
+    border: none; border-radius: var(--r);
+    padding: 16px 12px 16px 20px;
+    font-family: var(--font-en); font-size: 0.875rem; font-weight: 500;
+    letter-spacing: var(--ls-en); line-height: var(--lh-nav); text-decoration: none;
+  }
+  .btn-list:hover { background: var(--ink-mid); }
+  .btn-local {
+    display: inline-block; background: var(--ink-light); color: var(--on-dark);
+    border: none; border-radius: var(--r); padding: 18px 20px;
+    font-size: 0.8125rem; font-weight: 500; letter-spacing: var(--ls-ja);
+    line-height: var(--lh-nav); text-decoration: none;
+  }
+  .btn-outline {
+    display: inline-block; background: transparent; color: var(--text);
+    border: 1px solid var(--gray); border-radius: var(--r);
+    padding: 16px 28px; font-size: 0.8125rem; font-weight: 500;
+    letter-spacing: var(--ls-ja); line-height: var(--lh-nav); text-decoration: none;
+  }
+  .btn-outline:hover { background: var(--ink); color: var(--on-dark); border-color: var(--ink); }
+  .btn-outline.is-focus { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+  /* ---------- Swatches ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(205px, 1fr)); gap: var(--gap); }
+  .sw { border: 1px solid var(--gray); border-radius: var(--r); overflow: hidden; background: var(--bg); }
+  .sw .chip { height: 86px; }
+  .sw .meta { padding: 14px 16px; font-size: 0.75rem; line-height: var(--lh-text); color: var(--text); }
+  .sw .meta b { display: block; font-size: 0.8125rem; letter-spacing: var(--ls-ja); }
+  .sw .meta span { font-family: var(--font-en); letter-spacing: var(--ls-en); color: var(--text-sub); }
+
+  /* ---------- Type specimen ---------- */
+  .spec { border-top: 1px solid var(--gray); padding: 18px 0; display: grid; grid-template-columns: 230px 1fr; gap: var(--gap-l); align-items: baseline; }
+  .spec .k { font-family: var(--font-en); font-size: 0.75rem; font-weight: 500; letter-spacing: var(--ls-en); line-height: 1.6; color: var(--text-sub); }
+  .spec .k em { display: block; font-style: normal; font-family: var(--font-ja); letter-spacing: var(--ls-ja); color: var(--text); }
+
+  /* ---------- 字間の符号比較 ---------- */
+  .ls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--gap-l); }
+  .ls-box { border: 1px solid var(--gray); border-radius: var(--r); padding: 26px 24px; background: var(--bg); }
+  .ls-box h4 { font-family: var(--font-en); font-size: 0.75rem; font-weight: 500; letter-spacing: var(--ls-en); margin: 0 0 14px; color: var(--text-sub); line-height: 1.5; }
+  .ls-box .en { font-family: var(--font-en); font-size: 2.5rem; font-weight: 500; line-height: 1.2; margin: 0 0 6px; }
+  .ls-box .ja { font-size: 1rem; font-weight: 500; line-height: var(--lh-nav); margin: 0; }
+  .ls-tight .en { letter-spacing: -0.02em; }
+  .ls-tight .ja { letter-spacing: -0.02em; }
+  .ls-mtg   .en { letter-spacing: -0.02em; }
+  .ls-mtg   .ja { letter-spacing: 0.1em; }
+  .ls-none  .en { letter-spacing: normal; }
+  .ls-none  .ja { letter-spacing: normal; }
+
+  /* ---------- Weight ladder ---------- */
+  .wrow { display: grid; grid-template-columns: 170px 1fr; gap: var(--gap-l); border-top: 1px solid var(--gray); padding: 14px 0; align-items: baseline; }
+  .wrow .k { font-family: var(--font-en); font-size: 0.75rem; font-weight: 500; letter-spacing: var(--ls-en); line-height: 1.6; color: var(--text-sub); }
+  .wrow .v { font-size: 1.5rem; line-height: 1.4; letter-spacing: var(--ls-ja); }
+  .wrow.is-off .k, .wrow.is-off .v { color: var(--gray); }
+  .wrow .tag { display: block; font-weight: 400; }
+
+  /* ---------- Cards ---------- */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--gap); }
+  .card { background: var(--bg); border-radius: var(--r); padding: 28px 24px; border: 1px solid var(--gray); }
+  .section-alt .card { border-color: #d8dcdc; }
+  .card h3 { font-family: var(--font-en); font-size: 1.5rem; font-weight: 500; letter-spacing: var(--ls-en); line-height: 1.2; margin: 0 0 4px; color: var(--ink); }
+  .card .cat { font-family: var(--font-en); font-size: 0.75rem; font-weight: 500; letter-spacing: var(--ls-en); line-height: 1.75; color: var(--text-sub); margin: 0 0 10px; }
+  .card p { font-size: 0.875rem; line-height: var(--lh-text); margin: 0; color: var(--text-sub); }
+
+  /* ---------- News ---------- */
+  ul.news { margin: 0; padding: 0; border-top: 1px solid var(--gray); }
+  .news li { list-style: none; border-bottom: 1px solid var(--gray); padding: 18px 0; display: grid; grid-template-columns: 120px 1fr; gap: var(--gap); align-items: baseline; }
+  .news .date { font-family: var(--font-en); font-size: 0.875rem; font-weight: 400; letter-spacing: var(--ls-en); line-height: var(--lh-text); color: var(--text-sub); }
+  .news .ttl  { font-size: 0.875rem; font-weight: 500; line-height: var(--lh-text); letter-spacing: var(--ls-ja); }
+
+  /* ---------- グラデーション ---------- */
+  .grad {
+    border-radius: var(--r); padding: 36px 32px; border: 1px solid var(--gray);
+    background-image:
+      linear-gradient(38.63deg, #ebeded 19.823%, #ffffff 81.685%),
+      linear-gradient(90deg, #f4f6f6 0%, #f4f6f6 100%);
+  }
+  .grad b { font-weight: 500; letter-spacing: var(--ls-ja); }
+
+  /* ---------- Inputs ---------- */
+  .field { max-width: 480px; }
+  .field label { display: block; font-size: 0.8125rem; font-weight: 500; letter-spacing: var(--ls-ja); line-height: var(--lh-text); margin-bottom: 8px; }
+  .field input {
+    width: 100%; background: var(--bg); color: var(--text);
+    border: 1px solid var(--gray); border-radius: var(--r);
+    padding: 12px 16px; font-size: 0.875rem; font-family: var(--font-ja);
+    letter-spacing: var(--ls-ja); line-height: var(--lh-body);
+  }
+  .field input.is-focus { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  .note-box { border: 1px solid var(--gray); border-radius: var(--r); padding: 22px 24px; font-size: 0.8125rem; line-height: var(--lh-text); background: var(--bg); }
+  .note-box b { font-weight: 500; }
+
+  footer.site { background: var(--ink); color: var(--on-dark); padding: 48px 0; }
+  footer.site a { color: var(--on-dark); font-size: 0.75rem; text-decoration: none; margin-right: 22px; letter-spacing: var(--ls-ja); line-height: 2; }
+  footer.site .cr { font-size: 0.75rem; letter-spacing: 0.1em; color: #b4b4b4; margin-top: 18px; }
+
+  @media screen and (max-width: 767px) {
+    html { font-size: 14px; }                 /* ★実サイトと同じ 1 段の階段 */
+    .hero .copy { font-size: 2.2857rem; }     /* = 32px */
+    .section-title { font-size: 2.2857rem; }
+    .spec { grid-template-columns: 1fr; gap: 6px; }
+    .wrow { grid-template-columns: 1fr; gap: 4px; }
+    .news li { grid-template-columns: 1fr; gap: 2px; }
+    .wrap, .narrow { padding: 0 16px; }
+    .site-header .inner { padding: 14px 16px; flex-wrap: wrap; gap: var(--gap-xs); }
+    .site-header nav { gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <span class="logo">MTG</span>
+    <nav>
+      <a href="#colors">ブランド</a>
+      <a href="#type">企業情報</a>
+      <a href="#ls">研究開発</a>
+      <a href="#components">サステナビリティ</a>
+    </nav>
+    <span class="lang">EN</span>
+  </div>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="section-label" style="color:#d4d4d4">MTG — Design System Preview</div>
+    <p class="copy">VITAL LIFE</p>
+    <p class="sub">世界中のすべての人々をVITALに。</p>
+    <p class="note">実サイトのこの 64px のコピーは <code>font-family: "Roboto SemiBold"</code> の別ファミリー指定です。<b>weight 600 だけでは Roboto の Medium 止まりになります。</b>背後のキービジュアルは <code>kv-contents-01〜05.webp</code> のスライドショー（いずれも <code>alt=""</code>）。</p>
+    <div class="btns">
+      <a class="btn-list" href="#colors">Brands List</a>
+      <a class="btn-list" href="#type">News List</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 01 COLORS ============================ -->
+<section class="section" id="colors">
+  <div class="wrap">
+    <div class="section-label">01 / Colors</div>
+    <h2 class="section-title">Monochrome</h2>
+    <p class="section-title-ja">彩度を持つ色が 1 つも無い</p>
+    <p class="section-lead">面も文字も、実測 <code>uniqueBackgrounds</code> の 10 色すべてが無彩色です。ReFa・五島の椿・MEGLY といったブランドの色は<b>すべて写真が持っており、UI 側は 1 色も持ちません</b>。彩度のある唯一の色 <code>rgb(0,77,138)</code> は Cookie 同意バーのリンクで、サイト本体ではありません。</p>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#242424"></div><div class="meta"><b>Ink</b><span>#242424</span><br>ヘッダー・フッター面（可視 10）</div></div>
+      <div class="sw"><div class="chip" style="background:#464646"></div><div class="meta"><b>Ink Light</b><span>#464646</span><br>下層ローカルナビ（5）</div></div>
+      <div class="sw"><div class="chip" style="background:#313131"></div><div class="meta"><b>Ink Mid</b><span>#313131</span><br>メガメニュー面（2）</div></div>
+      <div class="sw"><div class="chip" style="background:#7b7b7b"></div><div class="meta"><b>Text Sub</b><span>#7b7b7b</span><br>補足・説明文（可視 20）</div></div>
+      <div class="sw"><div class="chip" style="background:#919191"></div><div class="meta"><b>Border</b><span>#919191</span><br>枠線</div></div>
+      <div class="sw"><div class="chip" style="background:#f4f6f6"></div><div class="meta"><b>Surface</b><span>#f4f6f6</span><br>セクション面（可視 6）</div></div>
+      <div class="sw"><div class="chip" style="background:#e8e8e4"></div><div class="meta"><b>Surface Warm</b><span>#e8e8e4</span><br>お知らせブロック</div></div>
+      <div class="sw"><div class="chip" style="background:#ffffff;border-bottom:1px solid #919191"></div><div class="meta"><b>Background</b><span>#ffffff</span><br>body の地色</div></div>
+    </div>
+
+    <div style="height:36px"></div>
+    <div class="grad">
+      <b>唯一のグラデーション（2 枚重ね）</b>
+      <p style="margin:8px 0 0;font-size:.8125rem;line-height:1.8;color:#000">角度 <code>38.63deg</code>・停止位置 <code>19.823%</code> / <code>81.685%</code>。丸めずそのまま写します。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 02 LETTER-SPACING ============================ -->
+<section class="section-alt" id="ls">
+  <div class="wrap">
+    <div class="section-label">02 / Letter-spacing</div>
+    <h2 class="section-title">Opposite signs</h2>
+    <p class="section-title-ja">欧文は詰め、和文は空ける</p>
+    <p class="section-lead">欧文（Roboto）は <code>-0.02em</code>（CSS 全文で 50 箇所、12px〜64px のすべてで em 比例）、和文（Noto Sans JP）は <code>0.1em</code>。<b>振れ幅 0.12em を 1 ページの中で行き来します。</b>真ん中が実サイトの組み方です。</p>
+    <div class="ls-grid">
+      <div class="ls-box ls-tight">
+        <h4>両方 -0.02em（誤り）</h4>
+        <p class="en">Brand Universe</p>
+        <p class="ja">ブランド開発カンパニー</p>
+      </div>
+      <div class="ls-box ls-mtg">
+        <h4>欧文 -0.02em / 和文 0.1em（実サイト）</h4>
+        <p class="en">Brand Universe</p>
+        <p class="ja">ブランド開発カンパニー</p>
+      </div>
+      <div class="ls-box ls-none">
+        <h4>両方 normal（誤り）</h4>
+        <p class="en">Brand Universe</p>
+        <p class="ja">ブランド開発カンパニー</p>
+      </div>
+    </div>
+
+    <div style="height:32px"></div>
+    <div class="note-box">
+      <b>実測値（すべて em 比例）</b><br>
+      欧文 — 12px → <code>-0.24px</code> ／ 14px → <code>-0.28px</code> ／ 18px → <code>-0.36px</code> ／ 24px → <code>-0.48px</code> ／ 32px → <code>-0.64px</code> ／ 40px → <code>-0.8px</code> ／ 64px → <code>-1.28px</code>（すべて <b>−0.0200em</b>）<br>
+      和文 — 12px → <code>1.2px</code> ／ 14px → <code>1.4px</code> ／ 16px → <code>1.6px</code>（すべて <b>+0.1000em</b>）<br>
+      <code>normal</code> が 92 要素。<b>px に読み替えず em のまま書いてください。</b>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 03 TYPOGRAPHY ============================ -->
+<section class="section" id="type">
+  <div class="wrap">
+    <div class="section-label">03 / Typography</div>
+    <h2 class="section-title">Noto Sans JP + Roboto</h2>
+    <p class="section-title-ja">和文 115 要素 / 欧文 50 要素の二層</p>
+    <p class="section-lead">どちらも<b>自社ホストからの配信</b>（<code>/assets/font/*.woff2</code>）で、Google Fonts ではありません。フォント要求は実測 6 件。<code>Noto Serif JP</code>・<code>Noto Serif</code>・<code>Marcellus</code>・<code>midashi</code>（A-OTF 見出ゴ MB31 Pro）も宣言されていますが、<b>全部 <code>unloaded</code>・可視 0 要素</b>です。</p>
+
+    <div class="spec"><div class="k">64px / 600 / Roboto SemiBold<em>大コピー（2 要素）</em></div><div style="font-family:var(--font-en-semibold);font-size:4rem;font-weight:600;line-height:1.08;letter-spacing:-.02em">VITAL LIFE</div></div>
+    <div class="spec"><div class="k">40px / 500 / Roboto<em>セクション見出し（5 要素）</em></div><div style="font-family:var(--font-en);font-size:2.5rem;font-weight:500;line-height:1.2;letter-spacing:-.02em">Brands</div></div>
+    <div class="spec"><div class="k">24px / 500 / Roboto<em>カード見出し（4 要素）</em></div><div style="font-family:var(--font-en);font-size:1.5rem;font-weight:500;line-height:1.2;letter-spacing:-.02em">Research and Development</div></div>
+    <div class="spec"><div class="k">16px / 400 / Noto Sans JP<em>リード（13 要素）</em></div><div style="font-size:1rem;line-height:1.8;letter-spacing:.1em">ブランド開発カンパニーとして、新たな成長へ。</div></div>
+    <div class="spec"><div class="k">14px / 400 / Noto Sans JP<em>本文・ニュース（79 要素・最多）</em></div><div style="font-size:.875rem;line-height:1.8;letter-spacing:.1em">はじめての世界を、やさしく整える。</div></div>
+    <div class="spec"><div class="k">13px / 500 / Noto Sans JP<em>グローバルナビ（36 要素）</em></div><div style="font-size:.8125rem;font-weight:500;line-height:1.3;letter-spacing:.1em">サステナビリティ</div></div>
+    <div class="spec"><div class="k">12px / 500 / Roboto<em>ラベル（15 要素）</em></div><div style="font-family:var(--font-en);font-size:.75rem;font-weight:500;line-height:1.75;letter-spacing:-.02em">Flagship Brand</div></div>
+  </div>
+</section>
+
+<!-- ============================ 04 WEIGHT ============================ -->
+<section class="section-warm">
+  <div class="wrap">
+    <div class="section-label">04 / Weight</div>
+    <h2 class="section-title">Two steps only</h2>
+    <p class="section-title-ja">実在するのは Noto Sans JP が 3 本、Roboto が 2 本</p>
+    <p class="section-lead">100px の欧文文字列で幅を実測すると、Noto Sans JP は <code>100–400 → 1024.31px</code> / <code>500 → 1047.20px</code> / <code>600–900 → 1093.31px</code> の 3 面、Roboto は <code>100–400 → 1013.28px</code> / <code>500–900 → 1019.83px</code> の 2 面に割れます。</p>
+
+    <div class="wrow is-off"><div class="k">300<span class="tag">→ 400 で出る（実サイトは日付 9 要素でこれを踏んでいる）</span></div><div class="v" style="font-weight:300">2026/11/26 ブランド開発</div></div>
+    <div class="wrow"><div class="k">400<span class="tag">本文・リード（79 要素）</span></div><div class="v" style="font-weight:400">2026/11/26 ブランド開発</div></div>
+    <div class="wrow"><div class="k">500<span class="tag">見出し・ナビ（81 要素・最多）</span></div><div class="v" style="font-weight:500">2026/11/26 ブランド開発</div></div>
+    <div class="wrow is-off"><div class="k">700<span class="tag">宣言はあるが unloaded・可視 0</span></div><div class="v" style="font-weight:700">2026/11/26 ブランド開発</div></div>
+
+    <div style="height:28px"></div>
+    <div class="note-box">
+      <b>font-feature-settings: "palt" は body に 1 行＋コンポーネントにも書き足し。</b>
+      実測 1563 要素（トップ）／ 1249 要素（下層）。効き目は <b>−12.2%</b>（Noto Sans JP・40px・<code>normal</code> 784.41px → <code>"palt"</code> 688.41px）。<b>詰めたうえから和文に +0.1em を足し直しているので、片方だけ再現すると別物になります。</b>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 05 COMPONENTS ============================ -->
+<section class="section" id="components">
+  <div class="wrap">
+    <div class="section-label">05 / Components</div>
+    <h2 class="section-title">No shadow</h2>
+    <p class="section-title-ja">面を塗るボタンが無く、影も 1 つも無い</p>
+    <p class="section-lead">実測の <code>box-shadow</code> は 1 種類だけで、それは Cookie 同意バー（外部スクリプト）のものです。階層は<b>面の明度差と 4px の角丸</b>だけで作ります。</p>
+
+    <div class="btns">
+      <a class="btn-list" href="#">Brands List</a>
+      <a class="btn-local" href="#">ブランドTOP</a>
+      <a class="btn-outline" href="#">お問い合わせ</a>
+      <a class="btn-outline is-focus" href="#">フォーカス状態</a>
+    </div>
+
+    <div style="height:40px"></div>
+    <div class="cards">
+      <div class="card"><p class="cat">Flagship Brand</p><h3>ReFa</h3><p>至高のエアリーコーミング。美容家電のフラッグシップ。</p></div>
+      <div class="card"><p class="cat">Core Brand</p><h3>MEGLY</h3><p>口腔から、美しさの可能性を広げる。</p></div>
+      <div class="card"><p class="cat">Growth Brand</p><h3>Goto Tsubaki</h3><p>五島の椿から生まれた、島のちから。</p></div>
+    </div>
+
+    <div style="height:40px"></div>
+    <ul class="news">
+      <li><span class="date">2026/11/26</span><span class="ttl">至高のエアリーコーミング「ReFa MARQUIS」発売</span></li>
+      <li><span class="date">2026/11/25</span><span class="ttl">2027年9月期 第1四半期決算短信を公開しました</span></li>
+      <li><span class="date">2026/11/24</span><span class="ttl">MTG PARK にウェルビーイングの新スポットが誕生</span></li>
+    </ul>
+
+    <div style="height:40px"></div>
+    <div class="field">
+      <label for="q">お名前</label>
+      <input id="q" type="text" class="is-focus" value="山田 太郎">
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 06 NOTES ============================ -->
+<section class="section-alt">
+  <div class="narrow">
+    <div class="section-label">06 / Notes</div>
+    <h2 class="section-title">Pitfalls</h2>
+    <p class="section-title-ja">このサイトを読むときの落とし穴</p>
+
+    <div class="note-box" style="margin-bottom:20px">
+      <b>CSS 変数は 1 個しか無く、その 1 個が使われていない。</b><br>
+      <code>:root { --leading-trim: calc((1em - 1lh) / 2) }</code> が唯一の宣言ですが、<code>var(--leading-trim)</code> の呼び出しは CSS 全文で <b>0 回</b>。CSS の <code>lh</code> 単位でハーフレディングを打ち消す式を定義したまま、1 要素にも当てていません。<b>「このサイトのトークン」として引用しないでください。</b>
+    </div>
+
+    <div class="note-box" style="margin-bottom:20px">
+      <b><code>color</code> 分布の第 2 位 <code>rgba(0,0,0,0)</code> は透明な文字ではない。</b><br>
+      56 要素ありますが、これはナビの 1 文字ずつを <code>-no0</code> <code>-no1</code> … の span に割った<b>ホバーアニメーションの初期状態</b>です。実際には黒で描画されます。
+    </div>
+
+    <div class="note-box">
+      <b><code>Roboto SemiBold</code> だけ <code>.ttf</code> 直で woff2 が無い。</b><br>
+      他の 2 本は woff2 / woff / ttf の 3 形式を並べているのに、SemiBold は truetype 1 形式のみ。<code>.ttf</code> は woff2 の 2〜3 倍重いので、<b>再現するときは woff2 を用意してください。</b>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <a href="#">サイトのご利用について</a>
+    <a href="#">個人情報保護方針</a>
+    <a href="#">情報セキュリティ基本方針</a>
+    <p class="cr">Copyright © MTG Co., Ltd. All Rights Reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>

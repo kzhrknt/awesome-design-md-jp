@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ニチコン（NICHICON）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* =========================================================================
+     ニチコン（NICHICON） 実測 2026-11-26
+     対象: https://www.nichicon.co.jp/ , /company/about/message/
+     実サイトの CSS Custom Properties は 49 個すべて WordPress / Gutenberg 由来で、
+     自社トークンは 0 個。以下はすべて computed style と CSS 全文からの実測値。
+     実サイトは @font-face を 1 件も書かず、@import で Google Fonts を 3 本読んでいる。
+     ========================================================================= */
+  :root {
+    /* === Colors === */
+    --blue:   #1450e1;  /* ★操作できるもの。リンク・ボタン面・枠線（可視 14 要素） */
+    --navy:   #113293;  /* 下層の見出しとリード（3 要素）。トップには 1 要素も無い */
+    --red:    #b70b0b;  /* NEW バッジ専用（2 要素） */
+    --text:   #111111;  /* 本文・見出し（可視 24 要素）。body { color: #111 } */
+    --text-black: #000000; /* ナビ・言語切替（可視 36 要素） */
+    --text-sub:   #555555; /* 下層のパンくず（4 要素） */
+    --on-dark:    #e0e0e0; /* フッターのポリシーリンク（5 要素） */
+    --on-blue:    #ffffff; /* 青面・暗い面の文字（可視 32 要素） */
+    --border: #d0d0d0;  /* 製品カードの枠線 */
+    --footer-bg: #1a1a1a;
+    --bg:     #ffffff;  /* body { background-color: #fff } */
+    --surface: #f4f6f8;
+
+    /* === Fonts ===
+       ★スタックの先頭が欧文の Open Sans。欧文は Open Sans、和文は Noto Sans JP に
+       自動で分かれる（CDP の CSS.getPlatformFontsForNode で確認済み）。
+       Noto Serif JP も読み込んでいるが可視 0 要素。 */
+    --font: "Open Sans", "Noto Sans JP", "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro",
+            "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+
+    /* === Type ===
+       html { font-size: 62.5% } = 10px。17 幅すべてで固定。
+       body は 1.6rem（16px）、768px 以下だけ 1.4rem（14px）。 */
+    --lh-body: 1.6;   /* ★body に無単位で宣言。81 要素で最多 */
+    --lh-nav:  1.4;   /* ナビ・ボタン（25 要素） */
+    --lh-lead: 1.8;   /* 下層のリード（1 要素） */
+    --ls: 0.05em;     /* ★.l-main にだけ書く。16px に対する 0.8px が px 継承される */
+
+    /* === Shape === */
+    --r-card: 12px;  /* 製品カード（9 要素） */
+    --r-btn:  8px;   /* ボタン（4 要素） */
+    --r-s:    4px;   /* 小物（5 要素） */
+    /* ★影は x も y も 2px ずらす。真下に落とさない */
+    --sh-card: rgba(29, 29, 31, 0.2) 2px 2px 8px 0px;
+    --sh-btn:  rgba(0, 0, 0, 0.16) 2px 2px 10px 0px;
+    --sh-bar:  rgba(0, 0, 0, 0.16) 0px 4px 16px 0px;
+
+    /* === Spacing === */
+    --gap:   16px;   /* 6 要素で最多 */
+    --gap-l: 30px;
+    --container: 1700px;
+    --container-text: 1072px;
+  }
+
+  * { box-sizing: border-box; }
+  html { font-size: 62.5%; }              /* = 10px。実サイトと同じ */
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 1.6rem;                    /* = 16px */
+    line-height: var(--lh-body);
+    word-wrap: break-word;
+    font-feature-settings: "palt";        /* ★body に 1 行。実測 452 要素 / -11.7% */
+    -webkit-font-smoothing: antialiased;
+    /* 実サイトは min-width: 1080px でデスクトップを横スクロールで守る。
+       プレビューでは縮小表示を見せたいので外している */
+  }
+
+  /* ★字間はここ 1 箇所だけ。ヘッダー・フッターには付かない */
+  .l-main { letter-spacing: var(--ls); }
+
+  .wrap   { max-width: var(--container);      margin: 0 auto; padding: 0 40px; }
+  .narrow { max-width: var(--container-text); margin: 0 auto; padding: 0 40px; }
+
+  .section     { padding: 72px 0; }
+  .section-alt { padding: 72px 0; background: var(--surface); }
+
+  .section-label { font-size: 1.3rem; font-weight: 700; line-height: var(--lh-nav); color: var(--blue); margin-bottom: 10px; }
+  .section-title { font-size: 5.4rem; font-weight: 700; line-height: 1.2; letter-spacing: .03em; margin: 0 0 6px; color: var(--text); }
+  .section-title-ja { font-size: 2.2rem; font-weight: 700; line-height: var(--lh-nav); margin: 0 0 24px; color: var(--text); }
+  .section-lead { font-size: 1.6rem; line-height: var(--lh-body); margin: 0 0 36px; max-width: 72ch; }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .92em; background: var(--surface); padding: 2px 6px; border-radius: var(--r-s); letter-spacing: normal; }
+  .section-alt code { background: var(--bg); }
+
+  /* ---------- Header（.l-main の外＝字間なし） ---------- */
+  .site-header { background: var(--bg); border-bottom: 1px solid #e8e8e8; }
+  .site-header .inner { max-width: var(--container); margin: 0 auto; padding: 18px 40px; display: flex; align-items: center; gap: var(--gap-l); }
+  .site-header .logo { font-size: 2.6rem; font-weight: 700; line-height: 1; color: var(--text); }
+  .site-header nav { display: flex; gap: 24px; margin-left: auto; }
+  .site-header nav a { color: var(--text-black); text-decoration: none; font-size: 1.6rem; font-weight: 500; line-height: var(--lh-nav); }
+  .site-header nav a:hover { color: var(--blue); }
+  .site-header .my {
+    border: 1px solid var(--blue); color: var(--blue); border-radius: var(--r-s);
+    padding: 2.8px 9px; font-size: 1.4rem; font-weight: 700; text-decoration: none;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero { background: var(--surface); padding: 64px 0 72px; }
+  .hero .copy { font-size: 4rem; font-weight: 700; line-height: 1.35; margin: 0 0 14px; color: var(--text); }
+  .hero .sub  { font-size: 1.8rem; line-height: var(--lh-body); margin: 0 0 26px; max-width: 48ch; color: var(--text); }
+  .hero .note { font-size: 1.4rem; line-height: var(--lh-body); color: var(--text-sub); margin: 0 0 28px; max-width: 70ch; }
+  .hero code { background: var(--bg); }
+
+  /* ---------- Buttons ---------- */
+  .btns { display: flex; flex-wrap: wrap; gap: var(--gap); align-items: center; }
+  .btn-primary {
+    display: inline-block; background: var(--blue); color: var(--on-blue);
+    border: none; border-radius: var(--r-btn); padding: 8px 36px;
+    font-size: 1.6rem; font-weight: 700; line-height: 1.5; text-decoration: none;
+    box-shadow: var(--sh-btn);
+  }
+  .btn-primary:hover { background: var(--navy); }
+  .btn-outline {
+    display: inline-block; background: var(--bg); color: var(--blue);
+    border: 1px solid var(--blue); border-radius: var(--r-s);
+    padding: 10px 22px; font-size: 1.4rem; font-weight: 700; line-height: 1.5; text-decoration: none;
+  }
+  .btn-outline:hover { background: var(--blue); color: var(--on-blue); }
+  .btn-outline.is-focus { outline: 2px solid var(--navy); outline-offset: 3px; }
+
+  /* ---------- Swatches ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: var(--gap); }
+  .sw { border: 1px solid var(--border); border-radius: var(--r-card); overflow: hidden; background: var(--bg); box-shadow: var(--sh-card); }
+  .sw .chip { height: 88px; }
+  .sw .meta { padding: 14px 18px; font-size: 1.3rem; line-height: var(--lh-body); color: var(--text); }
+  .sw .meta b { display: block; font-size: 1.5rem; }
+  .sw .meta span { color: var(--text-sub); }
+
+  /* ---------- Type specimen ---------- */
+  .spec { border-top: 1px solid var(--border); padding: 18px 0; display: grid; grid-template-columns: 240px 1fr; gap: var(--gap-l); align-items: baseline; }
+  .spec .k { font-size: 1.3rem; font-weight: 700; line-height: 1.6; color: var(--text-sub); }
+  .spec .k em { display: block; font-style: normal; font-weight: 400; color: var(--text); }
+
+  /* ---------- 字間の配り先 ---------- */
+  .ls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: var(--gap-l); }
+  .ls-box { border: 1px solid var(--border); border-radius: var(--r-card); padding: 26px 24px; background: var(--bg); box-shadow: var(--sh-card); }
+  .ls-box h4 { font-size: 1.3rem; font-weight: 700; margin: 0 0 14px; color: var(--blue); line-height: var(--lh-nav); letter-spacing: normal; }
+  .ls-box p { font-size: 1.6rem; line-height: var(--lh-body); margin: 0; }
+  .ls-on  p { letter-spacing: 0.05em; }
+  .ls-off p { letter-spacing: normal; }
+  .ls-big p { letter-spacing: 0.12em; }
+
+  /* ---------- Weight ladder ---------- */
+  .wrow { display: grid; grid-template-columns: 180px 1fr; gap: var(--gap-l); border-top: 1px solid var(--border); padding: 14px 0; align-items: baseline; }
+  .wrow .k { font-size: 1.3rem; font-weight: 700; line-height: 1.6; color: var(--text-sub); }
+  .wrow .v { font-size: 2.4rem; line-height: 1.4; }
+  .wrow.is-off .k, .wrow.is-off .v { color: #9a9a9a; }
+  .wrow .tag { display: block; font-weight: 400; }
+
+  /* ---------- Cards ---------- */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px 28px; }
+  .card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 26px 24px; box-shadow: var(--sh-card);
+  }
+  .card h3 { font-size: 1.8rem; font-weight: 500; line-height: var(--lh-nav); margin: 0 0 10px; color: var(--text); }
+  .card p  { font-size: 1.4rem; line-height: var(--lh-body); margin: 0; color: var(--text-sub); }
+  .card .new { display: inline-block; color: var(--red); font-size: 1.3rem; font-weight: 700; margin-left: 8px; }
+
+  /* ---------- 影の比較 ---------- */
+  .sh-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: var(--gap-l); }
+  .sh-box { background: var(--bg); border-radius: var(--r-card); padding: 28px 22px; font-size: 1.4rem; line-height: var(--lh-body); }
+  .sh-a { box-shadow: rgba(29, 29, 31, 0.2) 2px 2px 8px 0px; }
+  .sh-b { box-shadow: rgba(0, 0, 0, 0.16) 0px 4px 16px 0px; }
+  .sh-c { box-shadow: rgba(0, 0, 0, 0.1) 2px 2px 10px 0px; }
+
+  /* ---------- Inputs ---------- */
+  .field { max-width: 500px; }
+  .field label { display: block; font-size: 1.4rem; font-weight: 700; line-height: var(--lh-body); margin-bottom: 8px; }
+  .field input {
+    width: 100%; background: var(--bg); color: var(--text);
+    border: 1px solid var(--blue); border-radius: var(--r-s);
+    padding: 10px 14px; font-size: 1.6rem; font-family: var(--font); line-height: var(--lh-body);
+  }
+  .field input.is-focus { outline: 2px solid var(--navy); outline-offset: 2px; }
+
+  .note-box { border: 1px solid var(--border); border-radius: var(--r-card); padding: 22px 24px; font-size: 1.5rem; line-height: var(--lh-body); background: var(--bg); box-shadow: var(--sh-card); }
+  .note-box b { font-weight: 700; }
+
+  /* ---------- Side nav（下層） ---------- */
+  .sidenav { border-top: 1px solid var(--border); max-width: 300px; }
+  .sidenav a {
+    display: block; padding: 19px 18px 19px 34px; text-decoration: none;
+    border-bottom: 1px solid var(--border); font-size: 1.6rem; color: var(--text); line-height: var(--lh-nav);
+  }
+  .sidenav a.is-current { color: var(--navy); font-weight: 700; }
+
+  footer.site { background: var(--footer-bg); color: var(--on-dark); padding: 48px 0; }
+  footer.site a { color: var(--on-dark); font-size: 1.3rem; text-decoration: none; margin-right: 24px; line-height: 2; }
+  footer.site .cr { font-size: 1.3rem; color: #a8a8a8; margin-top: 18px; }
+
+  @media screen and (max-width: 48em) {
+    body { font-size: 1.4rem; }            /* ★768px 以下。字間も 0.8px → 0.7px になる */
+    .section-title { font-size: 3.6rem; }
+    .section-title-ja { font-size: 1.8rem; }
+    .hero .copy { font-size: 2.6rem; }
+    .spec { grid-template-columns: 1fr; gap: 6px; }
+    .wrow { grid-template-columns: 1fr; gap: 4px; }
+    .wrap, .narrow { padding: 0 16px; }
+    .site-header .inner { padding: 14px 16px; flex-wrap: wrap; gap: 12px; }
+    .site-header nav { gap: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <span class="logo">nichicon</span>
+    <nav>
+      <a href="#colors">製品一覧</a>
+      <a href="#ls">企業情報</a>
+      <a href="#type">ブランド</a>
+      <a href="#components">採用情報</a>
+    </nav>
+    <a class="my" href="#">my nichicon</a>
+  </div>
+</header>
+
+<main class="l-main">
+
+<!-- ============================ HERO ============================ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="section-label">NICHICON — Design System Preview</div>
+    <p class="copy">くらしに、エネパ。</p>
+    <p class="sub">太陽光発電と蓄電池とEV、3つのエネルギーを賢くコントロール。</p>
+    <p class="note">このヒーローは、実サイトでは <code>kv-newSlider-05_pc-scaled.jpg</code>（<code>&lt;picture&gt;</code> のスライドショー、<code>alt="For a Sustainable Future"</code>）に<b>コピーが焼き込まれた画像</b>です。ここでは実テキストで近似しています。</p>
+    <div class="btns">
+      <a class="btn-primary" href="#components">メッセージを見る</a>
+      <a class="btn-outline" href="#type">製品を探す</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 01 LETTER-SPACING ============================ -->
+<section class="section" id="ls">
+  <div class="wrap">
+    <div class="section-label">01 / Letter-spacing</div>
+    <h2 class="section-title">ONE DECLARATION</h2>
+    <p class="section-title-ja">字間の宣言は CSS 全文でただ 1 箇所</p>
+    <p class="section-lead"><code>.l-main { letter-spacing: 0.05em }</code> だけで、本文 16px に対する <b><code>0.8px</code> という絶対値が 57 要素へ px 継承</b>されます。<code>.l-main</code> の外にあるヘッダー・フッターは <code>normal</code>（55 要素）。<b>「本文領域だけに字間を配る」設計</b>で、<code>body</code> に書く流儀とは配り先が違います。このページのヘッダーとフッターにも字間が付いていないことを確かめてください。</p>
+    <div class="ls-grid">
+      <div class="ls-box ls-off">
+        <h4>normal（.l-main の外＝ヘッダー・フッター）</h4>
+        <p>ニチコンのエネパ！を高める製品</p>
+      </div>
+      <div class="ls-box ls-on">
+        <h4>0.05em = 0.8px（.l-main の中・実サイト）</h4>
+        <p>ニチコンのエネパ！を高める製品</p>
+      </div>
+      <div class="ls-box ls-big">
+        <h4>0.12em（開けすぎ・誤り）</h4>
+        <p>ニチコンのエネパ！を高める製品</p>
+      </div>
+    </div>
+
+    <div style="height:30px"></div>
+    <div class="note-box">
+      <b>em 宣言 → px 継承なので、サイズが違っても字間は 0.8px のまま。</b><br>
+      18px の製品カード名では 0.044em、54px の見出しでは 0.015em に薄まります。<b>さらに <code>body</code> の <code>font-size</code> は 768px 以下で 14px に切り替わるので、モバイルでは字間も <code>0.7px</code> になります。</b>字間を px で直書きすると、この追従が壊れます。
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 02 COLORS ============================ -->
+<section class="section-alt" id="colors">
+  <div class="wrap">
+    <div class="section-label">02 / Colors</div>
+    <h2 class="section-title">TWO BLUES</h2>
+    <p class="section-title-ja">青が 2 つあり、使い分けが決まっている</p>
+    <p class="section-lead"><code>#1450e1</code> は<b>操作できるもの</b>（リンク・ボタン・枠線）、<code>#113293</code> は<b>下層の見出しとリード文</b>。トップページには <code>#113293</code> が 1 要素もありません。</p>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#1450e1"></div><div class="meta"><b>Blue</b><span>#1450e1</span><br>リンク・CTA・枠線（可視 14）</div></div>
+      <div class="sw"><div class="chip" style="background:#113293"></div><div class="meta"><b>Navy</b><span>#113293</span><br>下層の見出しとリード（3）</div></div>
+      <div class="sw"><div class="chip" style="background:#b70b0b"></div><div class="meta"><b>Red</b><span>#b70b0b</span><br>NEW バッジのみ（2）</div></div>
+      <div class="sw"><div class="chip" style="background:#111111"></div><div class="meta"><b>Text</b><span>#111111</span><br>本文・見出し（可視 24）</div></div>
+      <div class="sw"><div class="chip" style="background:#555555"></div><div class="meta"><b>Text Sub</b><span>#555555</span><br>パンくず（4）</div></div>
+      <div class="sw"><div class="chip" style="background:#d0d0d0"></div><div class="meta"><b>Border</b><span>#d0d0d0</span><br>製品カードの枠線</div></div>
+      <div class="sw"><div class="chip" style="background:#e0e0e0"></div><div class="meta"><b>On Dark</b><span>#e0e0e0</span><br>フッターのリンク（5）</div></div>
+      <div class="sw"><div class="chip" style="background:#ffffff;border-bottom:1px solid #d0d0d0"></div><div class="meta"><b>Background</b><span>#ffffff</span><br>body の地色</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 03 TYPOGRAPHY ============================ -->
+<section class="section" id="type">
+  <div class="wrap">
+    <div class="section-label">03 / Typography</div>
+    <h2 class="section-title">OPEN SANS FIRST</h2>
+    <p class="section-title-ja">スタックの先頭が欧文で、和文は 2 番目に落ちる</p>
+    <p class="section-lead"><code>body { font-family: "Open Sans", "Noto Sans JP", … }</code> の 1 行で全体に降ろし、<b>欧文は Open Sans、和文は Noto Sans JP</b> に自動で分かれます。CDP の <code>CSS.getPlatformFontsForNode</code> で <code>ENGLISH</code> <code>my nichicon</code> が Open Sans、<code>重要なお知らせ</code> <code>製品一覧</code> <code>中文</code> が Noto Sans JP 描画であることを確認済みです。</p>
+
+    <div class="spec"><div class="k">54px / 700 / Open Sans<em>英語セクション見出し（3 要素）</em></div><div style="font-size:5.4rem;font-weight:700;line-height:1.2;letter-spacing:.03em">OUR BUSINESS</div></div>
+    <div class="spec"><div class="k">40px / 700 / Noto Sans JP<em>和文セクション見出し（2 要素）</em></div><div style="font-size:4rem;font-weight:700;line-height:1.2">企業情報</div></div>
+    <div class="spec"><div class="k">22px / 700<em>ブロック見出し（2 要素）</em></div><div style="font-size:2.2rem;font-weight:700;line-height:1.4">大切なお知らせ</div></div>
+    <div class="spec"><div class="k">18px / 500<em>製品カード名（22 要素）</em></div><div style="font-size:1.8rem;font-weight:500;line-height:1.4">電子デバイス（アルミ/フィルムコンデンサ）</div></div>
+    <div class="spec"><div class="k">16px / 400<em>本文・ナビ（37 要素・最多）</em></div><div style="font-size:1.6rem;line-height:1.6">社会が劇的な進化を遂げたこの半世紀以上もの間、ニチコンは。</div></div>
+    <div class="spec"><div class="k">14px / 400<em>言語切替・補足（35 要素）</em></div><div style="font-size:1.4rem;line-height:1.6">ENGLISH / 中文</div></div>
+    <div class="spec"><div class="k">12px / 400<em>パンくず（4 要素）</em></div><div style="font-size:1.2rem;line-height:1.6;color:#555">トップ ＞ 企業情報 ＞ ニチコンについて</div></div>
+
+    <div style="height:30px"></div>
+    <div class="note-box">
+      <b>Web フォントの調達は <code>@import</code> の 3 本だけ。<code>@font-face</code> は CSS 全文に 1 件も書かれていません。</b><br>
+      <code>@import url(…css2?family=Noto+Sans+JP:wght@300;400;500;700)</code> ／ <code>Open+Sans:wght@400;600;700;800</code> ／ <code>Noto+Serif+JP:wght@300;400;500;600</code>（<b>可視 0 要素</b>）。<code>@import</code> 先の中身は <code>document.styleSheets</code> を平坦に走査しても見えないので、<b>「<code>@font-face</code> 0 件」を「Web フォント未使用」の根拠にしないでください</b>（フォント要求は実測 37 件）。
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 04 WEIGHT ============================ -->
+<section class="section-alt">
+  <div class="wrap">
+    <div class="section-label">04 / Weight</div>
+    <h2 class="section-title">FOUR WEIGHTS</h2>
+    <p class="section-title-ja">600 は存在せず、700 に丸まる</p>
+    <p class="section-lead">100px の欧文文字列で実測すると、Noto Sans JP は <code>100・300 → 1253.39px</code> / <code>400 → 1291.45px</code> / <code>500 → 1319.59px</code> / <code>600・700・900 → 1356.00px</code> の 4 面に割れます。URL の <code>wght@300;400;500;700</code> と一致します。</p>
+
+    <div class="wrow"><div class="k">300<span class="tag">読み込んでいるが可視 0</span></div><div class="v" style="font-weight:300">ニチコンのエネパ！</div></div>
+    <div class="wrow"><div class="k">400<span class="tag">本文（37 要素）</span></div><div class="v" style="font-weight:400">ニチコンのエネパ！</div></div>
+    <div class="wrow"><div class="k">500<span class="tag">ナビ・カード名（49 要素・最多）</span></div><div class="v" style="font-weight:500">ニチコンのエネパ！</div></div>
+    <div class="wrow is-off"><div class="k">600<span class="tag">実在しない → 700 で出る</span></div><div class="v" style="font-weight:600">ニチコンのエネパ！</div></div>
+    <div class="wrow"><div class="k">700<span class="tag">見出し（29 要素）</span></div><div class="v" style="font-weight:700">ニチコンのエネパ！</div></div>
+
+    <div style="height:26px"></div>
+    <div class="note-box">
+      <b>font-feature-settings: "palt" は body に 1 行だけ。</b>
+      実測 452 要素（トップ）／ 219 要素（下層）。効き目は <b>−11.7%</b>（実スタック・40px・weight 500 で <code>normal</code> 880.00px → <code>"palt"</code> 776.77px）。<b>詰めたうえから <code>.l-main</code> の 0.05em を足し直す二段構えなので、片方だけ再現すると字面が変わります。</b>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 05 COMPONENTS ============================ -->
+<section class="section" id="components">
+  <div class="wrap">
+    <div class="section-label">05 / Components</div>
+    <h2 class="section-title">DIAGONAL SHADOW</h2>
+    <p class="section-title-ja">影のオフセットが x も y も 2px</p>
+    <p class="section-lead">製品カードの影は <code>rgba(29,29,31,.2) 2px 2px 8px 0px</code>。真下に落とす一般的な <code>0 Npx</code> ではありません。影の色も純黒ではなく <code>rgb(29,29,31)</code> です。</p>
+
+    <div class="sh-grid">
+      <div class="sh-box sh-a"><b>カード</b><br><code>rgba(29,29,31,.2) 2px 2px 8px</code><br>9 要素</div>
+      <div class="sh-box sh-b"><b>お知らせバー</b><br><code>rgba(0,0,0,.16) 0 4px 16px</code><br>1 要素</div>
+      <div class="sh-box sh-c"><b>検索ボタン</b><br><code>rgba(0,0,0,.1) 2px 2px 10px</code><br>1 要素</div>
+    </div>
+
+    <div style="height:38px"></div>
+    <div class="btns">
+      <a class="btn-primary" href="#">メッセージを見る</a>
+      <a class="btn-outline" href="#">検索する</a>
+      <a class="btn-outline is-focus" href="#">フォーカス状態</a>
+    </div>
+
+    <div style="height:38px"></div>
+    <div class="cards">
+      <div class="card"><h3>家庭用蓄電システム<span class="new">NEW</span></h3><p>太陽光発電と組み合わせて、つくった電気をためて使う。</p></div>
+      <div class="card"><h3>V2H・V2Lシステム</h3><p>電気自動車を「走る蓄電池」として住まいにつなぐ。</p></div>
+      <div class="card"><h3>EV・PHEV用急速充電器</h3><p>公共施設・商業施設向けの急速充電ソリューション。</p></div>
+    </div>
+
+    <div style="height:38px"></div>
+    <div class="field">
+      <label for="q">シリーズ名で絞り込む</label>
+      <input id="q" type="text" class="is-focus" value="アルミ電解コンデンサ">
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 06 NOTES ============================ -->
+<section class="section-alt">
+  <div class="narrow">
+    <div class="section-label">06 / Notes</div>
+    <h2 class="section-title">PITFALLS</h2>
+    <p class="section-title-ja">このサイトを読むときの落とし穴</p>
+
+    <div class="note-box" style="margin-bottom:20px">
+      <b>下層のサイドナビに康熙部首が 3 種混入している。</b><br>
+      <code>会社沿⾰</code> の <code>⾰</code>（U+2FB0）／ <code>拠点⼀覧</code> の <code>⼀</code>（U+2F00）／ <code>⽣産・品質管理</code> の <code>⽣</code>（U+2F63）。字形はほぼ同じなので目では気づけませんが、<b>検索・コピー・読み上げが壊れます。</b>通常の漢字（革 U+9769 / 一 U+4E00 / 生 U+751F）で書いてください。
+    </div>
+
+    <div class="sidenav" style="margin-bottom:20px">
+      <a href="#" class="is-current">ニチコンについて</a>
+      <a href="#">コーポレートメッセージ</a>
+      <a href="#">経営理念</a>
+      <a href="#">会社沿革</a>
+      <a href="#">拠点一覧</a>
+      <a href="#">生産・品質管理</a>
+    </div>
+
+    <div class="note-box">
+      <b>CSS 変数 49 個はすべて WordPress / Gutenberg 由来で、自社トークンは 0 個。</b><br>
+      <code>--wp--preset--color--*</code> などのプリセットが並ぶだけで、設計に使われている値はすべて CSS に直書きされています。また <code>body { min-width: 1080px }</code> で、デスクトップはこれ以下に縮まず横スクロールで守る設計です（このプレビューでは縮小を見せるため外しています）。
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <a href="#">サイトのご利用について</a>
+    <a href="#">ソーシャルメディアポリシー</a>
+    <a href="#">個人情報保護方針</a>
+    <p class="cr">© NICHICON CORPORATION</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 物質・材料研究機構（NIMS）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  /* =========================================================================
+     物質・材料研究機構（NIMS） 実測 2026-11-26
+     対象: https://www.nims.go.jp/ , /nims/index.html
+     実サイトは :root に 30 個のトークンを持ち、@media (prefers-color-scheme: dark)
+     が CSS 全文に 73 ブロック。30 個のうち 25 個がダークで別の値に差し替わる。
+     以下はすべて computed style と CSS 全文からの実測値。
+     ========================================================================= */
+  :root {
+    /* === Colors（ライト） === */
+    --color-base:   #ffffff;   /* ページ地 */
+    --color-text:   #333333;   /* ★本文。実測 235 要素（下層 239）で最多 */
+    --color-primary01: #15274C;  /* 濃紺の面（22 要素） */
+    /* ★primary01 はダークで #CCCCCC（明るいグレー）に変わるので、
+       その面に載せる文字色もモードで反転させる。実測のダーク面 1 位が rgb(204,204,204) */
+    --on-primary01: #ffffff;
+    --code-on-primary: rgba(255, 255, 255, 0.16);
+    --color-primary02: #00CCFF;  /* アクセントのシアン */
+    --color-corporate01: #335599;
+    --color-corporate02: #335599;  /* ★ライトでは corporate01 と同値 */
+    --color-hover01: #0D41AC;    /* リンク文字（実測 16 要素） */
+    --color-alert:   #FF2626;
+    --color-visited: #551a8b;
+    --color-secondary-gray01: #777777;
+    --color-secondary-gray02: #AAAAAA;
+    --color-secondary-gray03: #CCCCCC;
+    --color-secondary-gray04: #E0E0E0;
+    --color-secondary-gray05: #EFEFEF;
+    --color-secondary-gray06: #F7F7F7;
+    --color-secondary-gray11: #F3F4F6;
+    --color-secondary-blue04: #F1F5FD;
+    /* モード共通（差し替えない 5 個） */
+    --color-primary03: #0044CC;
+    --color-primary04: #002266;
+    --color-primary05: #0D41AC;
+    --color-secondary-gray07: #8892A5;
+    --color-text-sub1: #002266;
+    /* 影：ダークでは alpha を上げる */
+    --sh-card: rgba(0, 0, 0, 0.1) 0px 0px 10px 0px;
+    --sh-badge: rgba(0, 0, 0, 0.7) 0px 0px 10px 0px;
+
+    /* === Type ===
+       html { font-size: 62.5% } = 10px。19 幅すべてで固定。
+       ★実サイトは body に font-size の宣言が無く 10px のまま（13 要素が 10px で出る）。
+       このプレビューでは安全側に 1.6rem を足している。 */
+    --lh-body: 1.5;   /* ★本文・カード（83 要素で最多） */
+    --lh-link: 1.9;   /* サイドナビ・リンク一覧（13px / 29 要素） */
+    --lh-nav:  1.15;  /* グローバルナビ（32 要素） */
+    --lh-long: 1.8;   /* 下層の長い本文（21 要素） */
+
+    /* === Shape === */
+    --r-card: 10px;   /* カード（11 / 19 要素） */
+    --r-pill: 100px;  /* 一覧へのリンク（6 要素） */
+    --r-badge: 50px;  /* カテゴリバッジ（5 要素） */
+    --r-btn:  20px;   /* 寄附ボタン（6 要素） */
+
+    /* === Spacing === */
+    --gap: 18px;      /* 10 要素で最多 */
+    --gap-l: 40px;
+    --sidebar: 180px;
+  }
+
+  /* ★ダークは :root を上書きするだけ。実サイトと同じ作り */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-base:   #222222;
+      --color-text:   #E2E2E2;
+      --color-primary01: #CCCCCC;
+      --on-primary01: #222222;
+      --code-on-primary: rgba(0, 0, 0, 0.12);
+      --color-primary02: #91E9FF;
+      --color-corporate01: #cccccc;
+      --color-corporate02: #00CCFF;   /* ★ライトで同値だった 2 つがここで分岐する */
+      --color-hover01: #5AACFF;
+      --color-alert:   #E62222;
+      --color-visited: #BB83ED;
+      --color-secondary-gray01: #888888;
+      --color-secondary-gray02: #777777;
+      --color-secondary-gray03: #666666;
+      --color-secondary-gray04: #555555;
+      --color-secondary-gray05: #444444;
+      --color-secondary-gray06: #333333;
+      --color-secondary-gray11: #32323B;
+      --color-secondary-blue04: rgba(241, 245, 253, 0.1);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { font-size: 62.5%; }       /* = 10px。実サイトと同じ */
+  body {
+    margin: 0;
+    background-color: var(--color-base);
+    color: var(--color-text);
+    font-family: "Noto Sans JP", sans-serif;   /* ★フォールバックは sans-serif のみ */
+    font-size: 1.6rem;
+    line-height: var(--lh-body);
+    max-width: 100%;
+    /* ★letter-spacing も font-feature-settings も書かない。これが実サイトの字面 */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 100%; margin: 0; padding: 0 40px; }   /* ★最大幅を設けない */
+  .narrow { max-width: 1040px; margin: 0 auto; padding: 0 40px; }
+
+  .section { padding: 64px 0; }
+  .section-alt { padding: 64px 0; background-color: var(--color-secondary-gray11); }
+
+  .section-label { font-size: 1.3rem; font-weight: 500; line-height: var(--lh-link); color: var(--color-hover01); margin-bottom: 8px; }
+  .section-title { font-size: 4rem; font-weight: 500; line-height: 1.3; margin: 0 0 6px; color: var(--color-text); }
+  .section-title-ja { font-size: 2rem; font-weight: 500; line-height: var(--lh-body); margin: 0 0 24px; color: var(--color-text); }
+  .section-lead { font-size: 1.6rem; line-height: var(--lh-body); margin: 0 0 32px; max-width: 76ch; }
+  code { font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .92em; background-color: var(--color-secondary-gray11); color: var(--color-text); padding: 2px 6px; border-radius: 4px; }
+  .section-alt code { background-color: var(--color-base); }
+
+  /* ---------- Layout: 左固定ナビ ---------- */
+  .layout { display: grid; grid-template-columns: var(--sidebar) 1fr; min-height: 100vh; }
+  .sidebar { background-color: var(--color-base); border-right: 1px solid var(--color-secondary-gray04); padding: 28px 20px; }
+  .sidebar .logo { font-size: 2.4rem; font-weight: 700; line-height: 1.2; color: var(--color-primary01); margin-bottom: 28px; }
+  .sidebar nav a {
+    display: block; color: var(--color-text); text-decoration: none;
+    font-size: 1.6rem; line-height: var(--lh-link); padding: 2px 0;
+  }
+  .sidebar nav a:hover { color: var(--color-hover01); }
+  .sidebar .sub { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--color-secondary-gray04); }
+  .sidebar .sub a { font-size: 1.3rem; line-height: var(--lh-link); color: var(--color-secondary-gray01); display: block; text-decoration: none; }
+  .sidebar .donate {
+    display: inline-block; margin-top: 20px; padding: 5px 14px;
+    border: 1px solid var(--color-secondary-gray03); border-radius: var(--r-btn);
+    color: var(--color-text); font-size: 1.3rem; line-height: var(--lh-link); text-decoration: none;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero { background-color: var(--color-primary01); color: var(--on-primary01); padding: 56px 40px 64px; }
+  .hero .copy { font-size: 4rem; font-weight: 500; line-height: 1.3; margin: 0 0 14px; color: var(--on-primary01); }
+  .hero .sub  { font-size: 1.6rem; line-height: var(--lh-long); margin: 0 0 26px; max-width: 54ch; color: var(--on-primary01); }
+  .hero .section-label { color: var(--on-primary01); }
+  .hero code { background-color: var(--code-on-primary); color: var(--on-primary01); }
+
+  /* ---------- Buttons ---------- */
+  .btns { display: flex; flex-wrap: wrap; gap: var(--gap); align-items: center; }
+  .btn-pill {
+    display: inline-block; background-color: var(--color-base); color: var(--color-hover01);
+    border: 1px solid var(--color-secondary-gray03); border-radius: var(--r-pill);
+    padding: 12px 32px; font-size: 1.6rem; line-height: var(--lh-body);
+    text-decoration: none; box-shadow: var(--sh-card);
+  }
+  .btn-pill:hover { background-color: var(--color-secondary-blue04); }
+  .btn-pill.is-focus { outline: 2px solid var(--color-hover01); outline-offset: 3px; }
+  .badge {
+    display: inline-block; padding: 3px 12px; border-radius: var(--r-badge);
+    background-color: var(--color-primary01); color: var(--on-primary01);
+    font-size: 1.3rem; font-weight: 500; line-height: var(--lh-link);
+  }
+
+  /* ---------- Swatches ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--gap); }
+  .sw { border: 1px solid var(--color-secondary-gray04); border-radius: var(--r-card); overflow: hidden; background-color: var(--color-base); }
+  .sw .chip { height: 56px; display: grid; grid-template-columns: 1fr 1fr; }
+  .sw .meta { padding: 12px 16px; font-size: 1.3rem; line-height: var(--lh-body); color: var(--color-text); }
+  .sw .meta b { display: block; font-size: 1.4rem; }
+  .sw .meta span { color: var(--color-secondary-gray01); }
+
+  /* ---------- Light/Dark 対比 ---------- */
+  .modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--gap-l); }
+  .mode { border-radius: var(--r-card); padding: 26px 24px; border: 1px solid var(--color-secondary-gray04); }
+  .mode h4 { font-size: 1.3rem; font-weight: 500; margin: 0 0 14px; line-height: var(--lh-link); }
+  .mode p  { font-size: 1.6rem; line-height: var(--lh-body); margin: 0 0 14px; }
+  .mode .chiprow { display: flex; gap: 8px; flex-wrap: wrap; }
+  .mode .c { width: 44px; height: 44px; border-radius: 6px; }
+  .m-light { background-color: #ffffff; color: #333333; }
+  .m-light h4 { color: #0D41AC; }
+  .m-light .pill { display: inline-block; padding: 8px 22px; border-radius: 100px; background-color: #15274C; color: #ffffff; font-size: 1.4rem; text-decoration: none; }
+  .m-dark { background-color: #222222; color: #E2E2E2; border-color: #50505C; }
+  .m-dark h4 { color: #5AACFF; }
+  .m-dark .pill { display: inline-block; padding: 8px 22px; border-radius: 100px; background-color: #CCCCCC; color: #222222; font-size: 1.4rem; text-decoration: none; }
+
+  /* ---------- Type specimen ---------- */
+  .spec { border-top: 1px solid var(--color-secondary-gray04); padding: 16px 0; display: grid; grid-template-columns: 230px 1fr; gap: var(--gap-l); align-items: baseline; }
+  .spec .k { font-size: 1.3rem; font-weight: 500; line-height: 1.6; color: var(--color-secondary-gray01); }
+  .spec .k em { display: block; font-style: normal; font-weight: 400; color: var(--color-text); }
+
+  /* ---------- 行間の比較 ---------- */
+  .lh-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--gap-l); }
+  .lh-box { border: 1px solid var(--color-secondary-gray04); border-radius: var(--r-card); padding: 24px 22px; background-color: var(--color-base); }
+  .lh-box h4 { font-size: 1.3rem; font-weight: 500; margin: 0 0 12px; color: var(--color-hover01); line-height: var(--lh-link); }
+  .lh-box p { font-size: 1.6rem; margin: 0; }
+  .lh-115 p { line-height: 1.15; }
+  .lh-15  p { line-height: 1.5; }
+  .lh-18  p { line-height: 1.8; }
+  .lh-19  p { line-height: 1.9; font-size: 1.3rem; }
+
+  /* ---------- Weight ladder ---------- */
+  .wrow { display: grid; grid-template-columns: 180px 1fr; gap: var(--gap-l); border-top: 1px solid var(--color-secondary-gray04); padding: 13px 0; align-items: baseline; }
+  .wrow .k { font-size: 1.3rem; font-weight: 500; line-height: 1.6; color: var(--color-secondary-gray01); }
+  .wrow .v { font-size: 2.4rem; line-height: 1.4; }
+  .wrow.is-off .k, .wrow.is-off .v { color: var(--color-secondary-gray02); }
+  .wrow .tag { display: block; font-weight: 400; }
+
+  /* ---------- Cards ---------- */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--gap); }
+  .card { background-color: var(--color-base); border: 1px solid var(--color-secondary-gray04); border-radius: var(--r-card); padding: 20px 20px 23px; box-shadow: var(--sh-card); }
+  .card .date { font-size: 1.3rem; line-height: var(--lh-link); color: var(--color-secondary-gray01); margin: 0 0 8px; }
+  .card h3 { font-size: 2rem; font-weight: 500; line-height: var(--lh-body); margin: 0 0 10px; color: var(--color-text); }
+  .card p { font-size: 1.4rem; line-height: var(--lh-body); margin: 0; color: var(--color-text); }
+
+  .note-box { border: 1px solid var(--color-secondary-gray04); border-radius: var(--r-card); padding: 22px 24px; font-size: 1.5rem; line-height: var(--lh-body); background-color: var(--color-base); }
+  .note-box b { font-weight: 700; }
+
+  footer.site { background-color: var(--color-primary01); color: var(--on-primary01); padding: 44px 40px; }
+  footer.site a { color: var(--on-primary01); font-size: 1.3rem; text-decoration: none; margin-right: 24px; line-height: var(--lh-link); }
+  footer.site .cr { font-size: 1.3rem; color: var(--on-primary01); opacity: .78; margin-top: 16px; }
+
+  @media screen and (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { border-right: none; border-bottom: 1px solid var(--color-secondary-gray04); }
+    .sidebar nav { display: flex; flex-wrap: wrap; gap: 16px; }
+    .section-title { font-size: 2.8rem; }
+    .hero .copy { font-size: 2.6rem; }
+    .spec { grid-template-columns: 1fr; gap: 6px; }
+    .wrow { grid-template-columns: 1fr; gap: 4px; }
+    .wrap, .narrow { padding: 0 16px; }
+    .hero { padding: 40px 16px 48px; }
+    footer.site { padding: 36px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<aside class="sidebar">
+  <div class="logo">NIMS</div>
+  <nav>
+    <a href="#modes">ホーム</a>
+    <a href="#colors">NIMSとは</a>
+    <a href="#type">研究</a>
+    <a href="#lh">企業連携</a>
+    <a href="#components">採用情報</a>
+  </nav>
+  <div class="sub">
+    <a href="#">アクセス</a>
+    <a href="#">お問い合わせ</a>
+    <a href="#">EN</a>
+  </div>
+  <a class="donate" href="#">寄附金等の受付</a>
+</aside>
+
+<main>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero">
+  <div class="section-label">NIMS — Design System Preview</div>
+  <p class="copy">物質・材料科学の研究に特化する</p>
+  <p class="sub">このページは <code>prefers-color-scheme</code> に追従します。OS の外観をダークに切り替えると、<code>:root</code> のトークンだけが差し替わって地と文字が反転します。</p>
+  <div class="btns">
+    <a class="btn-pill" href="#modes">プレスリリースを見る</a>
+    <a class="btn-pill is-focus" href="#type">NIMSで研究する</a>
+  </div>
+</section>
+
+<!-- ============================ 01 TWO MODES ============================ -->
+<section class="section" id="modes">
+  <div class="wrap">
+    <div class="section-label">01 / Two modes</div>
+    <h2 class="section-title">Light &amp; Dark</h2>
+    <p class="section-title-ja">30 個のトークンのうち 25 個が差し替わる</p>
+    <p class="section-lead"><code>@media (prefers-color-scheme: dark)</code> が CSS 全文に <b>73 ブロック</b>あります。<code>body { background-color: var(--color-base); color: var(--color-text) }</code> の 2 行だけで、地色は <code>#fff → #222222</code>、文字は <code>#333333 → #E2E2E2</code> に反転します。下の 2 枚は実測値を固定で並べたものです。</p>
+    <div class="modes">
+      <div class="mode m-light">
+        <h4>LIGHT</h4>
+        <p>物質・材料研究機構は、物質・材料科学の研究に特化した国立研究開発法人です。</p>
+        <div class="chiprow" style="margin-bottom:14px">
+          <div class="c" style="background:#15274C"></div>
+          <div class="c" style="background:#00CCFF"></div>
+          <div class="c" style="background:#335599"></div>
+          <div class="c" style="background:#0D41AC"></div>
+          <div class="c" style="background:#F3F4F6;border:1px solid #CCCCCC"></div>
+        </div>
+        <a class="pill" href="#">プレスリリースを見る</a>
+      </div>
+      <div class="mode m-dark">
+        <h4>DARK</h4>
+        <p>物質・材料研究機構は、物質・材料科学の研究に特化した国立研究開発法人です。</p>
+        <div class="chiprow" style="margin-bottom:14px">
+          <div class="c" style="background:#CCCCCC"></div>
+          <div class="c" style="background:#91E9FF"></div>
+          <div class="c" style="background:#00CCFF"></div>
+          <div class="c" style="background:#5AACFF"></div>
+          <div class="c" style="background:#32323B;border:1px solid #50505C"></div>
+        </div>
+        <a class="pill" href="#">プレスリリースを見る</a>
+      </div>
+    </div>
+
+    <div style="height:32px"></div>
+    <div class="note-box">
+      <b>読み替えのルールが 3 つある。</b><br>
+      ① <b>濃い色は捨ててグレーに退避する</b> — <code>--color-primary01</code> は <code>#15274C → #CCCCCC</code>、<code>--color-corporate01</code> は <code>#335599 → #cccccc</code><br>
+      ② <b>青い面は塗らずに透かす</b> — <code>--color-secondary-blue01〜04</code> は不透明の青から<b>同じ色の alpha 0.1</b> に置き換わる<br>
+      ③ <b>グレーのランプは明度の順序ごと反転する</b> — <code>gray01</code> <code>#777777 → #888888</code> ／ <code>gray06</code> <code>#F7F7F7 → #333333</code>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 02 COLORS ============================ -->
+<section class="section-alt" id="colors">
+  <div class="wrap">
+    <div class="section-label">02 / Colors</div>
+    <h2 class="section-title">Token pairs</h2>
+    <p class="section-title-ja">同じトークン名がモードで別の色を指す</p>
+    <p class="section-lead">左半分がライト、右半分がダークの値です。<b><code>--color-corporate01</code> と <code>--color-corporate02</code> はライトでは両方 <code>#335599</code> ですが、ダークで <code>#cccccc</code> と <code>#00CCFF</code> に分岐します。</b>同じ色として扱わないでください。</p>
+    <div class="swatches">
+      <div class="sw"><div class="chip"><div style="background:#ffffff"></div><div style="background:#222222"></div></div><div class="meta"><b>--color-base</b><span>#ffffff / #222222</span><br>ページ地</div></div>
+      <div class="sw"><div class="chip"><div style="background:#333333"></div><div style="background:#E2E2E2"></div></div><div class="meta"><b>--color-text</b><span>#333333 / #E2E2E2</span><br>本文（可視 235 / 239）</div></div>
+      <div class="sw"><div class="chip"><div style="background:#15274C"></div><div style="background:#CCCCCC"></div></div><div class="meta"><b>--color-primary01</b><span>#15274C / #CCCCCC</span><br>濃紺の面（22 要素）</div></div>
+      <div class="sw"><div class="chip"><div style="background:#00CCFF"></div><div style="background:#91E9FF"></div></div><div class="meta"><b>--color-primary02</b><span>#00CCFF / #91E9FF</span><br>アクセント</div></div>
+      <div class="sw"><div class="chip"><div style="background:#335599"></div><div style="background:#cccccc"></div></div><div class="meta"><b>--color-corporate01</b><span>#335599 / #cccccc</span><br>ダークでグレーへ</div></div>
+      <div class="sw"><div class="chip"><div style="background:#335599"></div><div style="background:#00CCFF"></div></div><div class="meta"><b>--color-corporate02</b><span>#335599 / #00CCFF</span><br>ダークでシアンへ分岐</div></div>
+      <div class="sw"><div class="chip"><div style="background:#0D41AC"></div><div style="background:#5AACFF"></div></div><div class="meta"><b>--color-hover01</b><span>#0D41AC / #5AACFF</span><br>リンク（可視 16）</div></div>
+      <div class="sw"><div class="chip"><div style="background:#551a8b"></div><div style="background:#BB83ED"></div></div><div class="meta"><b>--color-visited</b><span>#551a8b / #BB83ED</span><br>訪問済みリンク</div></div>
+      <div class="sw"><div class="chip"><div style="background:#FF2626"></div><div style="background:#E62222"></div></div><div class="meta"><b>--color-alert</b><span>#FF2626 / #E62222</span><br>警告</div></div>
+      <div class="sw"><div class="chip"><div style="background:#0044CC"></div><div style="background:#0044CC"></div></div><div class="meta"><b>--color-primary03</b><span>#0044CC（共通）</span><br>差し替えない 5 個の 1 つ</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 03 TYPOGRAPHY ============================ -->
+<section class="section" id="type">
+  <div class="wrap">
+    <div class="section-label">03 / Typography</div>
+    <h2 class="section-title">No spacing</h2>
+    <p class="section-title-ja">字間も OpenType 機能も一切使わない</p>
+    <p class="section-lead"><code>letter-spacing</code> の宣言は CSS 全文で <b>5 つだけ</b>で、可視要素に 1 つも当たっていません（実測 <code>normal</code> が 148/150 要素・下層 153/155 要素。残り 2 つは Cookie 同意バー）。<code>font-feature-settings</code> も CSS 全文に <b>0 件</b>です。</p>
+
+    <div class="spec"><div class="k">48px / 500<em>ページ見出し（下層・1 要素）</em></div><div style="font-size:4.8rem;font-weight:500;line-height:1.3">NIMSとは</div></div>
+    <div class="spec"><div class="k">40px / 500<em>セクション見出し（6 要素）</em></div><div style="font-size:4rem;font-weight:500;line-height:1.3">Press Release</div></div>
+    <div class="spec"><div class="k">20px / 400<em>カード見出し（14 / 19 要素）</em></div><div style="font-size:2rem;line-height:1.5">熱電材料「ZnSb」、低コストと発電性能の両立を実証</div></div>
+    <div class="spec"><div class="k">16px / 400<em>本文・ナビ（42 / 46 要素・最多）</em></div><div style="font-size:1.6rem;line-height:1.5">NIMS（ニムス）は、物質・材料科学の研究に特化した研究所です。</div></div>
+    <div class="spec"><div class="k">14px / 400<em>リンク一覧（33 / 38 要素）</em></div><div style="font-size:1.4rem;line-height:1.5">エネルギー・環境材料研究センター</div></div>
+    <div class="spec"><div class="k">13px / 500<em>サイドナビ・補足（33 / 28 要素）</em></div><div style="font-size:1.3rem;font-weight:500;line-height:1.9">アクセス／お問い合わせ</div></div>
+    <div class="spec"><div class="k">10px / 400<em>補助テキスト（13 / 8 要素）</em></div><div style="font-size:1rem;line-height:1.5">メインコンテンツへ移動（別ウィンドウで開きます）</div></div>
+
+    <div style="height:28px"></div>
+    <div class="note-box">
+      <b><code>font-feature-settings: "palt"</code> は CSS 全文に 0 件。ただし効かないわけではない。</b><br>
+      Noto Sans JP で実測すると <code>normal</code> 816.95px → <code>"palt"</code> 709.00px ＝ <b>−13.2%</b>（40px・weight 400）。<b>「書体が対応していないから使っていない」のではなく「できるのに使っていない」</b>ので、親切のつもりで足すと和文が 13% 詰まり、カードの折り返し位置が全部変わります。
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 04 LINE-HEIGHT ============================ -->
+<section class="section-alt" id="lh">
+  <div class="wrap">
+    <div class="section-label">04 / Line-height</div>
+    <h2 class="section-title">Four steps</h2>
+    <p class="section-title-ja">密度は行間だけで作る</p>
+    <p class="section-lead">字間を触らないぶん、行間を 4 段に分けて密度を作ります。</p>
+    <div class="lh-grid">
+      <div class="lh-box lh-115"><h4>1.15 — グローバルナビ（32 要素）</h4><p>NIMSとは／研究／企業連携／大学院プログラム／採用情報</p></div>
+      <div class="lh-box lh-15"><h4>1.50 — 本文・カード（83 要素・最多）</h4><p>物質・材料科学の研究に特化した国立研究開発法人として、基礎研究から実用化まで一貫して取り組んでいます。</p></div>
+      <div class="lh-box lh-18"><h4>1.80 — 下層の長い本文（21 要素）</h4><p>物質・材料科学の研究に特化した国立研究開発法人として、基礎研究から実用化まで一貫して取り組んでいます。</p></div>
+      <div class="lh-box lh-19"><h4>1.90 — リンク一覧（13px / 29 要素）</h4><p>アクセス／お問い合わせ／寄附金等の受付／法人番号／プライバシーポリシー</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 05 WEIGHT ============================ -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">05 / Weight</div>
+    <h2 class="section-title">Three of four</h2>
+    <p class="section-title-ja">4 本読んで 3 本しか使わない</p>
+    <p class="section-lead">Google Fonts の URL は <code>wght@400;500;700;900</code>。100px の欧文文字列で実測すると <code>100・300・400 → 1059.58px</code> / <code>500 → 1084.28px</code> / <code>600・700 → 1116.25px</code> / <code>800・900 → 1148.20px</code> の 4 面に割れます。</p>
+
+    <div class="wrow"><div class="k">400<span class="tag">本文（102 / 120 要素・最多）</span></div><div class="v" style="font-weight:400">物質・材料研究機構</div></div>
+    <div class="wrow"><div class="k">500<span class="tag">見出し・サイドナビ（39 / 25 要素）</span></div><div class="v" style="font-weight:500">物質・材料研究機構</div></div>
+    <div class="wrow is-off"><div class="k">600<span class="tag">実在しない → 700 で出る</span></div><div class="v" style="font-weight:600">物質・材料研究機構</div></div>
+    <div class="wrow"><div class="k">700<span class="tag">強調（7 / 8 要素）</span></div><div class="v" style="font-weight:700">物質・材料研究機構</div></div>
+    <div class="wrow is-off"><div class="k">900<span class="tag">読み込んでいるが可視 0</span></div><div class="v" style="font-weight:900">物質・材料研究機構</div></div>
+  </div>
+</section>
+
+<!-- ============================ 06 COMPONENTS ============================ -->
+<section class="section-alt" id="components">
+  <div class="wrap">
+    <div class="section-label">06 / Components</div>
+    <h2 class="section-title">Blur only</h2>
+    <p class="section-title-ja">影はぼかしだけで offset は 0</p>
+    <p class="section-lead">実測は <code>rgba(0,0,0,.1) 0 0 10px</code>（7 要素）と <code>rgba(0,0,0,.7) 0 0 10px</code>（5 要素）の 2 種。真下に落とさず四方に均等に広げます。<b>ダークでは地が暗いぶん alpha を 0.1 → 0.7 まで上げて輪郭を立てています。</b></p>
+
+    <div class="btns">
+      <a class="btn-pill" href="#">プレスリリースを見る</a>
+      <a class="btn-pill" href="#">採用情報一覧</a>
+      <span class="badge">NEWS</span>
+      <span class="badge">RECRUIT</span>
+    </div>
+
+    <div style="height:36px"></div>
+    <div class="cards">
+      <div class="card"><p class="date">2026年11月26日</p><h3>熱電材料「ZnSb」、低コストと発電性能の両立を実証</h3><p>最高性能だけでなく「性能対コスト」で熱電材料を選ぶ指針を示しました。</p></div>
+      <div class="card"><p class="date">2026年11月30日</p><h3>実験計画から実行までを支える NIMO シリーズ</h3><p>プログラミング不要の実験計画アプリと生成AIを組み合わせました。</p></div>
+      <div class="card"><p class="date">2026年11月24日</p><h3>超分子技術で量子マテリアルを構築</h3><p>分子の自己組織化を使い、量子機能をもつ材料を設計します。</p></div>
+    </div>
+
+    <div style="height:36px"></div>
+    <div class="note-box">
+      <b><code>html { font-size: 62.5% }</code> だけを書き、<code>body</code> に <code>font-size</code> の宣言が無い。</b><br>
+      19 幅すべてで <code>html: 10px</code> / <code>body: 10px</code>。各要素が <code>1.6rem</code> のように直書きしているので大半は実害が出ていませんが、<b>宣言を書き忘れた要素は 10px で出ます</b>（実測で <code>fontSize</code> 分布に 10px が 13 要素）。<b>再現するなら <code>body { font-size: 1.6rem }</code> を足してください</b>（このプレビューはそうしています）。<br><br>
+      <b><code>var(--color-primary00)</code> はライトモードで空文字です。</b>ダークでだけ <code>#15274C</code> が入るので、単独で使うとライトで無効になります。
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <a href="#">プライバシーポリシー</a>
+  <a href="#">法人番号</a>
+  <a href="#">アクセス</a>
+  <p class="cr">© 2026 National Institute for Materials Science</p>
+</footer>
+
+</main>
+</div>
+
+</body>
+</html>
