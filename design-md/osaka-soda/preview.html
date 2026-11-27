@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: 大阪ソーダ（OSAKA SODA）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&family=Hind:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* =========================================================================
+     大阪ソーダ（OSAKA SODA） 実測 2026-11-27
+     対象: https://www.osaka-soda.co.jp/ja/index.html , /ja/prd.html
+
+     ★実サイトのスタックは 6 番目に sans-serif が入っており、それ以降の 7 語
+       （YuGothicM / 游ゴシック Medium / YuGothic / Yu Gothic / -apple-system /
+        system-ui / Helvetica Neue）に一生たどり着かない。
+       このプレビューは sans-serif を末尾に 1 回だけ置いた「正しい形」で書いている。
+     ★実サイトは Google Fonts で wght@300;400;500;700;900 を宣言するが、
+       実測のウェイトは 400 と 700 の 2 段だけ（900 は loaded だが可視 0）。
+     ========================================================================= */
+  :root {
+    /* === Colors === */
+    --key-color: #DF003A;   /* ★唯一の赤。var 参照 95 回。明度違いの派生を持たない */
+    --text-color: #333333;  /* 本文・ナビ（47 要素・参照 16 回） */
+    --text-warm:  #463535;  /* ★変数に無いハードコード。製品検索まわり 35 要素 */
+    --text-muted: #686868;  /* IR のタグ */
+    --text-light: #727272;  /* パンくず */
+    --text-inverse: #ffffff;
+
+    --surface:      #ffffff;
+    --surface-fa:   #fafafa;  /* セクションの面（最大面積） */
+    --surface-f7:   #f7f7f7;  /* 下層のページ導入部 */
+    --surface-f5:   #f5f5f5;  /* メガメニューの面 */
+    --border:       #cccccc;
+
+    /* === Type ===
+       ★字間はこの 1 つのトークンを「各要素に」当てる。body から px で継承させない */
+    --text-letter-spacing: 0.06em;   /* 参照 45 回 */
+
+    /* === Layout === */
+    --mainarea-width-pc: 1210px;   /* 参照 66 回。実測のコンテナ 24 要素で最多 */
+    --mainarea-width-sp: 500px;
+    --mainarea-width: var(--mainarea-width-pc);
+    --mainarea-base: 1.00;         /* ★22 箇所から参照されるが全幅で常に 1.00。真似しない */
+    --column-side-margin: 30px;    /* 参照 45 回。768px 以下で 20px */
+    --parts-side-margin: 30px;
+    --parts-common-margin-top: 30px;
+    --header-height-pc: 100px;
+    --header-height-sp: 60px;
+    --header-height: var(--header-height-pc);
+
+    /* === Elevation === 影は 3 種類 */
+    --sh-card:   rgba(0, 0, 0, .15) 0 12px 15px 0;   /* カード（12 要素） */
+    --sh-header: rgba(0, 0, 0, .2) 0 0 6px 0;        /* ヘッダー（2 要素） */
+    --sh-skip:   rgba(0, 0, 0, .3) 2px 2px 15px 0;   /* スキップリンク（1 要素） */
+  }
+
+  * { box-sizing: border-box; }
+  html { font-size: 62.5%; }    /* ★= 10px。1rem = 10px。1920〜374px で固定 */
+  body {
+    margin: 0;
+    background-color: var(--surface);
+    color: var(--text-color);
+    /* ★sans-serif は末尾に 1 回だけ（実サイトは 6 番目に置いてしまっている） */
+    font-family: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN",
+                 "Hiragino Kaku Gothic", メイリオ, Meiryo, sans-serif;
+    font-size: 1.8rem;          /* = 18px */
+    line-height: 1.75;          /* ★無単位。各要素が自分のサイズで再計算する */
+    /* ★letter-spacing は body に書かない。各要素が var(--text-letter-spacing) を持つ */
+    /* ★font-feature-settings も書かない（CSS 全文 0 件） */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: var(--mainarea-width); margin: 0 auto; padding: 0 var(--column-side-margin); }
+
+  .section     { padding: 6rem 0; background-color: var(--surface); }
+  .section-alt { padding: 6rem 0; background-color: var(--surface-fa); }
+
+  .section-label {
+    font-family: Hind, sans-serif;   /* ★欧文は Hind。短い語だけ */
+    font-size: 1.4rem; font-weight: 700; line-height: 1.4;
+    letter-spacing: var(--text-letter-spacing);
+    color: var(--key-color); margin-bottom: .8rem;
+  }
+  .section-title {
+    font-size: 4.8rem; line-height: 1.2; font-weight: 700;
+    letter-spacing: var(--text-letter-spacing); margin: 0 0 .6rem; color: var(--text-color);
+  }
+  .section-title-ja {
+    font-size: 2.4rem; line-height: 1.33; font-weight: 700;
+    letter-spacing: var(--text-letter-spacing); margin: 0 0 2.4rem; color: var(--text-color);
+  }
+  .section-lead {
+    font-size: 1.8rem; line-height: 1.75; letter-spacing: var(--text-letter-spacing);
+    margin: 0 0 3rem; max-width: 70ch; color: var(--text-color);
+  }
+  code {
+    font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .92em;
+    background-color: var(--surface-f5); color: var(--text-color);
+    padding: .2rem .6rem; border-radius: .5rem; letter-spacing: normal;
+  }
+  .section-alt code { background-color: var(--surface); }
+
+  /* ---------- Header（下端を大きく丸める。このサイトの看板） ---------- */
+  header.site {
+    height: var(--header-height);
+    background-color: var(--surface);
+    border-radius: 0 0 100px 100px;      /* ★0 0 100px 100px */
+    box-shadow: var(--sh-header);
+    display: flex; align-items: center;
+    position: relative; z-index: 2;
+  }
+  header.site .inner { max-width: var(--mainarea-width); margin: 0 auto; padding: 0 5rem; display: flex; align-items: center; gap: 3rem; width: 100%; }
+  header.site .logo {
+    font-family: Hind, sans-serif; font-size: 2.4rem; font-weight: 700;
+    letter-spacing: 1.44px; color: var(--key-color); line-height: 1.4;
+  }
+  header.site nav { margin-left: auto; display: flex; align-items: center; gap: 2.4rem; }
+  header.site nav a {
+    color: var(--text-color); text-decoration: none; font-weight: 700;
+    /* ★ナビだけが vw 流体。設計幅 1700px で 18px、下限 12px */
+    font-size: max(12px, 1.0588vw);
+    letter-spacing: var(--text-letter-spacing);
+    line-height: 1.25;
+  }
+  header.site .lang { font-family: Hind, sans-serif; font-size: 1.4rem; letter-spacing: .84px; color: var(--text-color); }
+  header.site .lang b { color: var(--key-color); }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    background-image:
+      linear-gradient(rgba(0, 0, 0, .18), rgba(0, 0, 0, .32)),
+      linear-gradient(115deg, #7c8ea0 0%, #b9c4cd 48%, #5d6b78 100%);
+    background-size: cover;
+    padding: 10rem 0 12rem;
+    margin-top: -3rem;
+  }
+  .hero .inner { max-width: var(--mainarea-width); margin: 0 auto; padding: 0 var(--column-side-margin); }
+  .hero .copy {
+    font-size: 4.8rem; line-height: 1.2; font-weight: 700;
+    letter-spacing: var(--text-letter-spacing);
+    color: var(--text-inverse); margin: 0 0 1.6rem; max-width: 20ch;
+  }
+  .hero .sub { font-size: 2rem; line-height: 1.75; letter-spacing: var(--text-letter-spacing); color: var(--text-inverse); margin: 0; max-width: 42ch; }
+
+  /* ---------- Buttons ---------- */
+  .btns { display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; }
+  .btn-primary {
+    display: inline-block; background-color: var(--key-color); color: var(--text-inverse);
+    font-size: 1.9rem; font-weight: 700; line-height: 1.75;
+    letter-spacing: var(--text-letter-spacing);
+    border-radius: 100px;    /* ★完全なピル */
+    padding: .8rem 3.2rem; text-decoration: none;
+  }
+  .btn-outline {
+    display: inline-block; background-color: var(--surface); color: var(--text-color);
+    font-family: Hind, sans-serif; font-size: 2.4rem; font-weight: 700; line-height: 1.4;
+    letter-spacing: 1.44px;
+    border: 1px solid var(--key-color); border-radius: 100px;
+    padding: .6rem 3.2rem; text-decoration: none;
+  }
+  .btn-small {
+    display: inline-block; background-color: var(--surface); color: var(--text-color);
+    font-size: 1.8rem; font-weight: 700; line-height: 1.4;
+    letter-spacing: var(--text-letter-spacing);
+    border: 1px solid var(--border); border-radius: 50px;
+    padding: .4rem 2.4rem; text-decoration: none;
+  }
+  .btn-primary.is-focus { outline: 2px solid var(--text-color); outline-offset: 3px; }
+
+  /* ---------- Tabs（片側だけ丸める） ---------- */
+  .tabs { display: flex; }
+  .tab {
+    flex: 1; text-align: center; background-color: var(--surface); color: var(--text-warm);
+    border: 1px solid var(--key-color); border-right: none;
+    font-size: 1.6rem; font-weight: 700; line-height: 1.4;
+    letter-spacing: var(--text-letter-spacing);
+    padding: 1.8rem 1rem; text-decoration: none; border-radius: 0;
+  }
+  .tab:first-child { border-radius: 100px 0 0; }       /* ★左上だけ */
+  .tab:last-child  { border-radius: 0 100px 0 0; border-right: 1px solid var(--key-color); }
+  .tab.is-active { background-color: var(--key-color); color: var(--text-inverse); }
+
+  /* ---------- Cards ---------- */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0 var(--column-side-margin); row-gap: var(--column-side-margin); }
+  .card {
+    background-color: var(--surface); border: 1px solid var(--key-color);
+    border-radius: 30px;                 /* ★カードは 30px（10 要素） */
+    box-shadow: var(--sh-card);
+    padding: 3rem 2rem; text-align: center; text-decoration: none; display: block;
+  }
+  .card .ttl {
+    font-size: 2.2rem; font-weight: 700; line-height: 1.4;
+    letter-spacing: var(--text-letter-spacing);   /* = 1.32px */
+    color: var(--text-warm); margin: 1.2rem 0 0;
+  }
+  .card .icon { width: 56px; height: 56px; margin: 0 auto; border: 2px solid var(--border); border-radius: 50%; }
+
+  /* ---------- 大きな片側角丸の帯 ---------- */
+  .band {
+    background-color: var(--key-color); color: var(--text-inverse);
+    border-radius: 0 0 50px 50px;        /* ★0 0 50px 50px */
+    padding: 4rem var(--column-side-margin);
+  }
+  .band h3 { font-size: 2.4rem; font-weight: 700; line-height: 1.33; letter-spacing: var(--text-letter-spacing); margin: 0 0 1rem; }
+  .band p { font-size: 1.8rem; line-height: 1.75; letter-spacing: var(--text-letter-spacing); margin: 0; }
+
+  /* ---------- Swatches ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: var(--column-side-margin); }
+  .sw { border: 1px solid var(--border); border-radius: 20px; overflow: hidden; background-color: var(--surface); }
+  .sw .chip { height: 56px; }
+  .sw .meta { padding: 1.2rem 1.4rem; font-size: 1.2rem; line-height: 1.5; letter-spacing: var(--text-letter-spacing); color: var(--text-muted); }
+  .sw .meta b { display: block; font-size: 1.6rem; line-height: 1.5; color: var(--text-color); }
+
+  /* ---------- 字間ラダー ---------- */
+  .ls { border-top: 1px solid var(--border); padding: 1.4rem 0; display: grid; grid-template-columns: 260px 1fr; gap: var(--column-side-margin); align-items: baseline; }
+  .ls .k { font-size: 1.2rem; line-height: 1.5; letter-spacing: var(--text-letter-spacing); color: var(--text-muted); }
+  .ls .k em { display: block; font-style: normal; color: var(--text-color); font-size: 1.4rem; margin-top: .3rem; }
+  .l-60 { font-family: Hind, sans-serif; font-size: 6rem; line-height: 1.33; font-weight: 700; letter-spacing: var(--text-letter-spacing); color: var(--key-color); }
+  .l-54 { font-size: 5.4rem; line-height: 1.2; font-weight: 700; letter-spacing: var(--text-letter-spacing); }
+  .l-24 { font-size: 2.4rem; line-height: 1.33; font-weight: 700; letter-spacing: var(--text-letter-spacing); }
+  .l-22 { font-size: 2.2rem; line-height: 1.4;  font-weight: 700; letter-spacing: var(--text-letter-spacing); color: var(--text-warm); }
+  .l-18 { font-size: 1.8rem; line-height: 1.75; font-weight: 400; letter-spacing: var(--text-letter-spacing); }
+  .l-16 { font-size: 1.6rem; line-height: 1.5;  font-weight: 400; letter-spacing: var(--text-letter-spacing); }
+  .l-14 { font-size: 1.4rem; line-height: 1.5;  font-weight: 700; letter-spacing: var(--text-letter-spacing); }
+  .l-12 { font-size: 1.2rem; line-height: 1.5;  font-weight: 400; letter-spacing: var(--text-letter-spacing); color: var(--text-muted); }
+  .l-sus { font-family: Hind, sans-serif; font-size: 4.8rem; line-height: .88; font-weight: 700; letter-spacing: 0.12em; color: var(--key-color); }
+
+  /* ---------- 角丸の見本 ---------- */
+  .shapes { display: flex; flex-wrap: wrap; gap: 2.4rem; }
+  .shape { width: 132px; }
+  .shape .box { height: 72px; background-color: var(--key-color); }
+  .shape .cap { display: block; font-size: 1.2rem; line-height: 1.5; letter-spacing: var(--text-letter-spacing); color: var(--text-muted); margin-top: .8rem; }
+  .s-30  { border-radius: 30px; }
+  .s-100 { border-radius: 100px; }
+  .s-20  { border-radius: 20px; }
+  .s-hdr { border-radius: 0 0 100px 100px; }
+  .s-top { border-radius: 50px 50px 0 0; }
+  .s-bot { border-radius: 0 0 50px 50px; }
+  .s-tl  { border-radius: 100px 0 0; }
+  .s-tr  { border-radius: 0 100px 0 0; }
+
+  /* ---------- 影の見本 ---------- */
+  .shadows { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 3rem; }
+  .shbox { background-color: var(--surface); border-radius: 30px; padding: 2.4rem; font-size: 1.4rem; line-height: 1.5; letter-spacing: var(--text-letter-spacing); color: var(--text-muted); }
+  .shbox b { display: block; color: var(--text-color); font-size: 1.6rem; margin-bottom: .6rem; letter-spacing: normal; }
+  .sh-1 { box-shadow: var(--sh-card); }
+  .sh-2 { box-shadow: var(--sh-header); }
+  .sh-3 { box-shadow: var(--sh-skip); }
+
+  /* ---------- 流体ナビの表 ---------- */
+  .fl { border-collapse: collapse; width: 100%; max-width: 620px; }
+  .fl th, .fl td { border-top: 1px solid var(--border); padding: .9rem .6rem; text-align: left; font-size: 1.6rem; line-height: 1.5; letter-spacing: var(--text-letter-spacing); }
+  .fl th { font-size: 1.4rem; font-weight: 700; color: var(--text-muted); }
+  .fl td.n { font-family: Hind, sans-serif; letter-spacing: normal; }
+
+  .note-box {
+    border-left: 4px solid var(--key-color); background-color: var(--surface-f7);
+    padding: 2.4rem 3rem; font-size: 1.8rem; line-height: 1.75;
+    letter-spacing: var(--text-letter-spacing); color: var(--text-color);
+    border-radius: 0 20px 20px 0;
+  }
+
+  footer.site {
+    background-color: var(--text-color); padding: 5rem 0 4rem;
+    border-radius: 50px 50px 0 0;   /* ★50px 50px 0 0 */
+  }
+  footer.site .inner { max-width: var(--mainarea-width); margin: 0 auto; padding: 0 var(--column-side-margin); }
+  footer.site a { color: var(--text-inverse); font-size: 1.4rem; line-height: 1.75; letter-spacing: var(--text-letter-spacing); text-decoration: none; margin-right: 3rem; }
+  footer.site .cr { font-family: Hind, sans-serif; color: var(--text-inverse); font-size: 1.2rem; line-height: 1.5; margin-top: 2rem; opacity: .8; }
+
+  /* ★崖は 769/768px の 1 箇所。body が 18px → 16px に下がるだけ */
+  @media screen and (max-width: 768px) {
+    :root {
+      --mainarea-width: var(--mainarea-width-sp);
+      --column-side-margin: 20px;
+      --header-height: var(--header-height-sp);
+    }
+    body { font-size: 1.6rem; }
+    .section-title { font-size: 3rem; }
+    .section-title-ja { font-size: 2rem; }
+    .hero .copy { font-size: 2.6rem; }
+    .l-60 { font-size: 3.4rem; }
+    .l-54 { font-size: 2.6rem; }
+    .l-sus { font-size: 3rem; }
+    .ls { grid-template-columns: 1fr; gap: .6rem; }
+    .tabs { flex-wrap: wrap; }
+    header.site nav a:not(.lang) { display: none; }
+    header.site .inner { padding: 0 2rem; }
+  }
+  /* ★ヘッダー高の切り替えは 1190/1189px と、body の崖より手前にある */
+  @media screen and (max-width: 1189px) {
+    :root { --header-height: var(--header-height-sp); }
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="inner">
+    <div class="logo">OSAKA SODA</div>
+    <nav>
+      <a href="#font">製品情報</a>
+      <a href="#color">研究開発</a>
+      <a href="#type">サステナビリティ</a>
+      <a href="#parts">企業情報</a>
+      <a href="#depth">採用情報</a>
+      <span class="lang"><b>JA</b> / EN</span>
+    </nav>
+  </div>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero">
+  <div class="inner">
+    <div class="section-label" style="color:#fff">OSAKA SODA — Design System Preview</div>
+    <p class="copy">知るほど、<br>なるほど！<br>大阪ソーダ</p>
+    <p class="sub">実測 2026-11-27 ／ 白地に赤 1 色、角は片側だけ大きく丸める</p>
+  </div>
+</section>
+
+<!-- ============================ 01 LETTER-SPACING ============================ -->
+<section class="section" id="ls">
+  <div class="wrap">
+    <div class="section-label">01 / Letter-spacing</div>
+    <h2 class="section-title">One token</h2>
+    <p class="section-title-ja">字間は <code>0.06em</code> を 1 トークンで全要素に配る</p>
+    <p class="section-lead"><code>var(--text-letter-spacing)</code> の参照は CSS 全文で <b>45 回</b>。<code>body</code> に書いて px で継承させるのではなく、<b>各要素が <code>em</code> を持ち直す</b>ので、サイズに比例して値が変わります。<b><code>0.06em</code> を px に読み替えないでください。</b>px にすると 22px の見出しと 12px の注記で同じ値になってしまいます。</p>
+
+    <div class="ls"><div class="k">60px（Hind）<em>letter-spacing: 3.6px</em></div><div class="l-60">PRODUCT</div></div>
+    <div class="ls"><div class="k">54px / h1（下層のページタイトル）<em>letter-spacing: 3.24px</em></div><div class="l-54">製品情報</div></div>
+    <div class="ls"><div class="k">24px / カードの見出し<em>letter-spacing: 1.44px</em></div><div class="l-24">ニュース＆トピックス</div></div>
+    <div class="ls"><div class="k">22px / カテゴリ名（実測 8 要素）<em>letter-spacing: 1.32px・色は #463535</em></div><div class="l-22">工業用化学品 ／ 電気・電子 ／ 自動車</div></div>
+    <div class="ls"><div class="k">18px / 本文（body）<em>letter-spacing: 1.08px</em></div><div class="l-18">大阪ソーダは、実は化学のキープレイヤー。見えないけれど、暮らしのあちこちで働いています。</div></div>
+    <div class="ls"><div class="k">16px / タブ・フォーム（実測 36 要素で最多）<em>letter-spacing: 0.96px（実測 35 要素）</em></div><div class="l-16">用途から探す ／ 機能から探す ／ 事業部門から探す</div></div>
+    <div class="ls"><div class="k">14px / 補助・ナビ<em>letter-spacing: 0.84px</em></div><div class="l-14">一覧 ／ TOP ／ 製品名で探す</div></div>
+    <div class="ls"><div class="k">12px / 注記<em>letter-spacing: 0.72px</em></div><div class="l-12">有価証券報告書 ／ 適時開示 ／ （98KB）</div></div>
+    <div class="ls"><div class="k">48px / 欧文の大見出しだけ例外<em>letter-spacing: 5.76px = 0.12em・行間比 0.88</em></div><div class="l-sus">SUSTAINABILITY</div></div>
+  </div>
+</section>
+
+<!-- ============================ 02 FONT ============================ -->
+<section class="section-alt" id="font">
+  <div class="wrap">
+    <div class="section-label">02 / Font</div>
+    <h2 class="section-title">Dead stack</h2>
+    <p class="section-title-ja">スタックが途中の <code>sans-serif</code> で死んでいる</p>
+    <p class="section-lead">実装のスタックは <code>"Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Hiragino Kaku Gothic", メイリオ, Meiryo, <b>sans-serif</b>, YuGothicM, "游ゴシック Medium", YuGothic, "Yu Gothic", -apple-system, "system-ui", "Helvetica Neue"</code>。<b>6 番目の <code>sans-serif</code> がどんな文字にも必ずマッチするため、それ以降の 7 語に一生たどり着きません。</b>わざわざ <code>@font-face { font-family: YuGothicM; src: local("Yu Gothic Medium") }</code> を宣言しているのに、その別名も死んでいます。</p>
+
+    <div class="note-box">
+      <b><code>body</code> に書いてあるスタックと、実際に当たるスタックが別物です。</b>
+      <code>body</code> の宣言は <code>YuGothicM, "游ゴシック Medium", YuGothic, "Yu Gothic", -apple-system, …</code>（Zen Kaku Gothic New が入っていない旧世代）で、その上から別セレクタが Zen Kaku Gothic New 先頭のスタックを <b>106/114 要素</b>に当てています。<code>body</code> の宣言を読んで書体を判断すると間違えます。<br><br>
+      <b>正しくは <code>sans-serif</code> をスタックの末尾に 1 回だけ置いてください。</b>いまの並びでは Windows の游ゴシック Medium 対策がまったく効かず、Zen Kaku Gothic New が落ちてこなかった環境ではメイリオに落ちます。
+    </div>
+
+    <div style="margin-top:3rem">
+      <div class="ls"><div class="k">weight 400 — 本文（52 要素）</div><div class="l-18" style="font-weight:400">創業110年、革新と挑戦を、これからも。</div></div>
+      <div class="ls"><div class="k">weight 700 — 見出し・ボタン（62 要素）</div><div class="l-18" style="font-weight:700">創業110年、革新と挑戦を、これからも。</div></div>
+      <div class="ls"><div class="k">weight 900 — <b>loaded だが可視 0 要素</b>。当てない</div><div class="l-18" style="font-weight:900;color:var(--text-muted)">創業110年、革新と挑戦を、これからも。</div></div>
+      <div class="ls"><div class="k">Hind（欧文専用・短い語だけ）</div><div class="l-18" style="font-family:Hind,sans-serif;font-weight:700">NEWS / PRODUCT / ABOUT / JA / EN</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 03 COLORS ============================ -->
+<section class="section" id="color">
+  <div class="wrap">
+    <div class="section-label">03 / Colors</div>
+    <h2 class="section-title">One red</h2>
+    <p class="section-title-ja">赤は <code>#DF003A</code> の 1 色だけ。黒は 2 つある</p>
+    <p class="section-lead"><code>var(--key-color)</code> の参照は <b>95 回</b>で、明度違いの派生を持ちません。一方で黒は <b><code>#333</code>（本文 47 要素）と <code>#463535</code>（製品検索まわり 35 要素）の 2 つが併存</b>します。<code>#463535</code> は変数に無いハードコードで、<code>#333</code> よりわずかに赤みを帯びています。<b>1 つに統一しないでください。</b></p>
+
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background-color:#DF003A"></div><div class="meta"><b>#DF003A</b>--key-color / 参照 95 回</div></div>
+      <div class="sw"><div class="chip" style="background-color:#333333"></div><div class="meta"><b>#333333</b>--text-color / 本文 47 要素</div></div>
+      <div class="sw"><div class="chip" style="background-color:#463535"></div><div class="meta"><b>#463535</b>ハードコード / 35 要素</div></div>
+      <div class="sw"><div class="chip" style="background-color:#686868"></div><div class="meta"><b>#686868</b>IR のタグ文字</div></div>
+      <div class="sw"><div class="chip" style="background-color:#727272"></div><div class="meta"><b>#727272</b>パンくず</div></div>
+      <div class="sw"><div class="chip" style="background-color:#fafafa;border-bottom:1px solid #cccccc"></div><div class="meta"><b>#fafafa</b>セクションの面</div></div>
+      <div class="sw"><div class="chip" style="background-color:#f7f7f7;border-bottom:1px solid #cccccc"></div><div class="meta"><b>#f7f7f7</b>下層の導入部</div></div>
+      <div class="sw"><div class="chip" style="background-color:#cccccc"></div><div class="meta"><b>#cccccc</b>区切り線</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 04 SHAPE ============================ -->
+<section class="section-alt" id="parts">
+  <div class="wrap">
+    <div class="section-label">04 / Shape</div>
+    <h2 class="section-title">One corner</h2>
+    <p class="section-title-ja">角を「片側だけ」大きく丸めるのがこのサイトの文法</p>
+    <p class="section-lead"><code>border-radius</code> 10 種のうち、<b>半分以上が一部の角だけを指定</b>しています。均等な角丸は <code>30px</code>（カード 10 要素）、<code>100px</code>（ピルボタン 5 要素）、<code>20px</code>（IR のタグ 4 要素）だけ。<b>角を 4 つとも大きく丸めないでください。</b></p>
+
+    <div class="shapes">
+      <div class="shape"><div class="box s-30"></div><span class="cap">30px — カード（10）</span></div>
+      <div class="shape"><div class="box s-100"></div><span class="cap">100px — ピル（5）</span></div>
+      <div class="shape"><div class="box s-20"></div><span class="cap">20px — IR タグ（4）</span></div>
+      <div class="shape"><div class="box s-hdr"></div><span class="cap">0 0 100px 100px — ヘッダー下端</span></div>
+      <div class="shape"><div class="box s-top"></div><span class="cap">50px 50px 0 0 — 上端</span></div>
+      <div class="shape"><div class="box s-bot"></div><span class="cap">0 0 50px 50px — 帯の下端</span></div>
+      <div class="shape"><div class="box s-tl"></div><span class="cap">100px 0 0 — タブ左上</span></div>
+      <div class="shape"><div class="box s-tr"></div><span class="cap">0 100px 0 0 — タブ右上</span></div>
+    </div>
+
+    <h3 class="section-title-ja" style="margin:4rem 0 2rem">製品検索のタブ（左端と右端だけ外側の角を落とす）</h3>
+    <div class="tabs">
+      <a class="tab is-active" href="#parts">用途</a>
+      <a class="tab" href="#parts">機能</a>
+      <a class="tab" href="#parts">事業部門/グループ会社</a>
+      <a class="tab" href="#parts">製品名</a>
+    </div>
+
+    <h3 class="section-title-ja" style="margin:4rem 0 2rem">カテゴリカード（30px ＋ 赤い枠 ＋ 影）</h3>
+    <div class="cards">
+      <a class="card" href="#parts"><div class="icon"></div><p class="ttl">工業用化学品</p></a>
+      <a class="card" href="#parts"><div class="icon"></div><p class="ttl">電気・電子</p></a>
+      <a class="card" href="#parts"><div class="icon"></div><p class="ttl">自動車</p></a>
+      <a class="card" href="#parts"><div class="icon"></div><p class="ttl">塗料・インキ・印刷</p></a>
+    </div>
+
+    <h3 class="section-title-ja" style="margin:4rem 0 2rem">ボタン</h3>
+    <div class="btns">
+      <a class="btn-primary" href="#parts">お問い合わせ</a>
+      <a class="btn-primary is-focus" href="#parts">フォーカス時</a>
+      <a class="btn-outline" href="#parts">MORE</a>
+      <a class="btn-small" href="#parts">安全データシート（SDS）</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 05 BAND ============================ -->
+<section class="section" id="band" style="padding-top:0">
+  <div class="wrap" style="padding-left:0;padding-right:0">
+    <div class="band">
+      <h3>当社を深く知る</h3>
+      <p>事業内容、技術、歴史。大阪ソーダのことをもっと知っていただくためのコンテンツです。<code style="background-color:rgba(255,255,255,.22);color:#fff">border-radius: 0 0 50px 50px</code> の帯。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 06 ELEVATION ============================ -->
+<section class="section-alt" id="depth">
+  <div class="wrap">
+    <div class="section-label">06 / Elevation</div>
+    <h2 class="section-title">Three shadows</h2>
+    <p class="section-title-ja">影は 3 種類。カードの影はオフセットが大きい</p>
+    <p class="section-lead">カードの影は <code>0 12px 15px</code> で、<b>オフセットがぼかしとほぼ同じ</b>です（浮かせるというより下に置く）。</p>
+
+    <div class="shadows">
+      <div class="shbox sh-1"><b>rgba(0,0,0,.15) 0 12px 15px 0</b>カード（12 要素）</div>
+      <div class="shbox sh-2"><b>rgba(0,0,0,.2) 0 0 6px 0</b>ヘッダー（2 要素）</div>
+      <div class="shbox sh-3"><b>rgba(0,0,0,.3) 2px 2px 15px 0</b>スキップリンク（1 要素）</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 07 RESPONSIVE ============================ -->
+<section class="section" id="type">
+  <div class="wrap">
+    <div class="section-label">07 / Responsive</div>
+    <h2 class="section-title">Nav only</h2>
+    <p class="section-title-ja">root も body も固定なのに、グローバルナビだけが <code>vw</code> 流体</p>
+    <p class="section-lead"><code>html: 10px</code>（<code>62.5%</code>）／ <code>body: 18px</code>（<code>1.8rem</code>）は 1920〜374px で 1px も動きません。ところが<b>ナビの文字だけが <code>max(12px, 1.0588vw)</code></b>（= 設計幅 1700px で 18px、下限 12px）。<code>fontSize</code> 分布に <code>15.2471px</code> という端数が出るのはこれが原因で、<b>字間も <code>0.914824px</code>（= 0.06em）と追従します。</b></p>
+
+    <table class="fl">
+      <tr><th>画面幅</th><th>ナビの実測</th><th>字間（= 0.06em）</th></tr>
+      <tr><td class="n">1920px</td><td class="n">20.33px</td><td class="n">1.22px</td></tr>
+      <tr><td class="n">1600px</td><td class="n">16.9412px</td><td class="n">1.01647px</td></tr>
+      <tr><td class="n">1440px</td><td class="n"><b>15.2471px</b></td><td class="n"><b>0.914824px</b></td></tr>
+      <tr><td class="n">1280px</td><td class="n">13.5529px</td><td class="n">0.813176px</td></tr>
+      <tr><td class="n">1200px</td><td class="n">12.7059px</td><td class="n">0.762353px</td></tr>
+      <tr><td class="n">1134px 以下</td><td class="n"><b>12px（下限）</b></td><td class="n">0.72px</td></tr>
+    </table>
+
+    <div class="note-box" style="margin-top:3rem">
+      <b>崖は 769/768px の 1 箇所だけ</b>で、<code>body</code> が 18px → 16px に下がります（1.125 倍）。急激な跳ね上がりはありません。ただし <b><code>--header-height</code> の切り替えは 1190/1189px</b> と、<code>body</code> の崖より手前にあり 2 段で縮みます。<br><br>
+      <b><code>--mainarea-base</code> は「コンテンツ幅の倍率」として 22 箇所から参照されているのに、1920〜375px のどの幅でも <code>1.00</code> のままです。</b>仕組みだけあって動いていないので真似しないでください。<code>--box-column-padding</code> / <code>--box-columns-padding</code> / <code>--box-column-border-width</code> / <code>--box-columns-border-width</code> の 4 個は <b>var 参照 0 回</b>の死に変数です。
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="inner">
+    <a href="#font">サイトマップ</a>
+    <a href="#color">サイトのご利用について</a>
+    <a href="#parts">プライバシーポリシー</a>
+    <a href="#depth">お問い合わせ</a>
+    <p class="cr">Design System Preview — 実測 2026-11-27 / osaka-soda.co.jp</p>
+  </div>
+</footer>
+
+</body>
+</html>

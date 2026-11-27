@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (667 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (670 sites)</a>
 </p>
 
 <table>
@@ -1041,6 +1041,11 @@
 </tr>
 <tr>
 <td align="center"><strong>物質・材料研究機構</strong><br><img src="design-md/nims/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>OpenWork</strong><br><img src="design-md/openwork/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>大阪芸術大学</strong><br><img src="design-md/osaka-geidai/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>大阪ソーダ</strong><br><img src="design-md/osaka-soda/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1769,11 +1774,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [MTG](https://www.mtg.gr.jp/) | Beauty &amp; Wellness / Corporate | [DESIGN.md](design-md/mtg/DESIGN.md) | [preview.html](design-md/mtg/preview.html) |
 | [ニチコン (NICHICON)](https://www.nichicon.co.jp/) | Electronic Components / Corporate | [DESIGN.md](design-md/nichicon/DESIGN.md) | [preview.html](design-md/nichicon/preview.html) |
 | [物質・材料研究機構 (NIMS)](https://www.nims.go.jp/) | Research Institute | [DESIGN.md](design-md/nims/DESIGN.md) | [preview.html](design-md/nims/preview.html) |
+| [OpenWork（オープンワーク）](https://www.openwork.jp/) | Career Review / Recruiting | [DESIGN.md](design-md/openwork/DESIGN.md) | [preview.html](design-md/openwork/preview.html) |
+| [大阪芸術大学 (Osaka University of Arts)](https://www.osaka-geidai.ac.jp/) | University / Art Education | [DESIGN.md](design-md/osaka-geidai/DESIGN.md) | [preview.html](design-md/osaka-geidai/preview.html) |
+| [大阪ソーダ (OSAKA SODA)](https://www.osaka-soda.co.jp/ja/index.html) | Chemicals / Corporate | [DESIGN.md](design-md/osaka-soda/DESIGN.md) | [preview.html](design-md/osaka-soda/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (667 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (670 sites)</a>
 </p>
 
 <table>
@@ -2780,6 +2788,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>物質・材料研究機構</strong><br><img src="design-md/nims/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>OpenWork</strong><br><img src="design-md/openwork/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>大阪芸術大学</strong><br><img src="design-md/osaka-geidai/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>大阪ソーダ</strong><br><img src="design-md/osaka-soda/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 

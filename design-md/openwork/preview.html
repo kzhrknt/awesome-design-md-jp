@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: OpenWork（オープンワーク）</title>
+<style>
+  /* =========================================================================
+     OpenWork（オープンワーク） 実測 2026-11-27
+     対象: https://www.openwork.jp/ , /guide/scout
+
+     ★実サイトには CSS Custom Property が 1 個も無い（:root も body も 0 個）。
+       このプレビューでは値を読みやすくするため :root にまとめているが、
+       実装を真似るときは hex と em の直書きでよい。
+     ★実サイトにはメディアクエリも 1 件も無い（PC 専用）。
+       このプレビューは閲覧性のため末尾に 1 ブロックだけ足している。
+     ========================================================================= */
+
+  /* ★このサイトの要。OS 同梱ヒラギノの W3 / W6 を PostScript 名で別名にして
+     1 つのファミリーに 2 ウェイトを束ねる。Web フォントは 1 バイトも読まない。
+     該当書体が無い環境（Windows）では下のスタックの メイリオ に落ちる。 */
+  @font-face { font-family: "Hiragino Sans"; font-weight: 400; src: local(HiraginoSans-w3); }
+  @font-face { font-family: "Hiragino Sans"; font-weight: 700; src: local(HiraginoSans-w6); }
+
+  :root {
+    /* === Colors ===
+       青は 3 つあり役割で使い分ける。1 つに丸めない。 */
+    --blue-header: #1579c0;   /* ヘッダーの地・ヒーローのグラデーション下端 */
+    --blue-fill:   #1b7fbe;   /* 面の青（30 要素）／反転ハイライトの文字（19 要素） */
+    --blue-text:   #166c9d;   /* ★文字の青。実測 115 要素で色の 3 位 */
+    --blue-top:    #2ab0f0;   /* ヒーローのグラデーション上端 */
+    --blue-pager:  #97c1de;   /* ページャの「次へ」 */
+    --green-cta:   #3aa131;   /* ★無料登録の CTA 専用（3 要素）。青の面に置く唯一の別色 */
+
+    --text:        #000000;   /* 本文・見出し。#333 ではなく純黒（146 要素） */
+    --text-2:      #777777;   /* 評価軸ラベル・補足。★実測 156 要素で最多 */
+    --text-3:      #555555;   /* クチコミの回答日・属性行（24 要素） */
+    --text-4:      #333333;   /* 推薦コメント本文（10 要素） */
+
+    --surface:       #ffffff;
+    --surface-tint:  #f2f6fa;  /* 淡い青みのグレー面（23 要素） */
+    --surface-gray:  #f9f9f9;  /* セクション区切り（4 要素） */
+    --surface-blue:  #edf2f6;  /* タブ・バッジ（4 要素） */
+    --border:        #d4dbdf;
+
+    /* ランキングのメダル。彩度を落とした金銀銅 */
+    --medal-1: #bcaf89;
+    --medal-2: #c3c3c3;
+    --medal-3: #d8c1a9;
+    /* 求人タグの 4 色。どれも中間色でブランド青とぶつからない */
+    --tag-mid:   #9a9bc5;
+    --tag-reg:   #999999;
+    --tag-direct:#c98061;
+    --tag-agent: #29a089;
+
+    /* === Shape ===
+       角丸 8 種。50% / 100% 100% 0 0 は「上半分だけの半円」 */
+    --r-card: 4px;    /* 既定。実測 65 要素で最多 */
+    --r-pill: 30px;   /* 登録導線のピル（48 要素） */
+    --r-tag:  2px;    /* 求人タグ（18 要素） */
+
+    /* === Elevation ===
+       影は 3 種類だけ。alpha はどちらも .1 */
+    --sh-btn:  rgba(0, 0, 0, .1) 1px 1px 2px 0;     /* 職種リンク（14 要素） */
+    --sh-card: rgba(0, 0, 0, .1) 0 2px 4px 0;       /* 推薦コメント（10 要素） */
+    --sh-wall: rgb(255, 255, 255) -5px -5px 10px 4px inset;  /* ★ペイウォール（10 要素） */
+
+    --container: 1000px;
+  }
+
+  * { box-sizing: border-box; }
+  html { font-size: 100%; }     /* = 16px。15 幅すべてで固定 */
+  body {
+    margin: 0;
+    background-color: var(--surface);
+    color: var(--text);
+    /* ★スタックは 7 語。実際に当たるのは Hiragino Sans（macOS）か メイリオ（Windows） */
+    font-family: "Hiragino Sans", ヒラギノ角ゴシック, "Hiragino Kaku Gothic ProN",
+                 "ヒラギノ角ゴ ProN W3", メイリオ, Meiryo, sans-serif;
+    font-size: .8125em;         /* ★16px × 0.8125 = 13px。すべての em の分母になる */
+    line-height: 1.666;         /* ★無単位。各要素が自分のサイズで再計算する */
+    /* ★letter-spacing は書かない。実測 557/561 要素が normal */
+    /* ★font-feature-settings も書かない（CSS 全文 0 件） */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 20px; }
+
+  .section     { padding: 3.6923em 0; background-color: var(--surface); }      /* 48px */
+  .section-alt { padding: 3.6923em 0; background-color: var(--surface-gray); }
+
+  .section-label { font-size: .923em; font-weight: 700; color: var(--blue-text); margin-bottom: .5em; }   /* 11.999px */
+  .section-title { font-size: 2.4615em; font-weight: 700; line-height: 1.3; margin: 0 0 .15em; color: var(--text); }  /* 31.9995px */
+  .section-title-ja { font-size: 1.3846em; font-weight: 700; margin: 0 0 .9em; color: var(--text); }      /* 17.9998px */
+  .section-lead { font-size: 1em; margin: 0 0 2em; max-width: 72ch; color: var(--text-4); }               /* 13px */
+  code {
+    font-family: SFMono-Regular, Consolas, Menlo, monospace; font-size: .92em;
+    background-color: var(--surface-tint); color: var(--text);
+    padding: 1px 5px; border-radius: var(--r-tag);
+  }
+  .section-alt code { background-color: var(--surface); }
+
+  /* ---------- Header ---------- */
+  header.site {
+    background-color: var(--blue-header);
+    padding: 1.0769em 0;      /* 14px */
+  }
+  header.site .inner { max-width: var(--container); margin: 0 auto; padding: 0 20px; display: flex; align-items: center; gap: 1.5385em; }
+  header.site .logo { color: #fff; font-size: 1.6923em; font-weight: 700; line-height: 1.3; }
+  header.site nav { margin-left: auto; display: flex; align-items: center; gap: 1.5385em; }
+  header.site nav a { color: #fff; font-size: 1em; text-decoration: none; }
+  header.site nav a.strong { font-weight: 700; }
+
+  /* 検索欄とボタンを角丸で連結する（4px 0 0 4px ／ 0 4px 4px 0） */
+  .search { display: flex; width: 320px; }
+  .search input {
+    flex: 1; border: 1px solid var(--border); border-right: none;
+    border-radius: var(--r-card) 0 0 var(--r-card);
+    padding: .6154em .7692em; font-size: 1em; font-family: inherit;
+    background-color: #fff; color: var(--text);
+  }
+  .search button {
+    border: none; background-color: var(--blue-header); color: #fff;
+    border-radius: 0 var(--r-card) var(--r-card) 0;
+    padding: 0 1.1538em; font-size: 1em; font-family: inherit; font-weight: 700; cursor: pointer;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    /* ★単色ではなく 0deg のグラデーション。下が明るい */
+    background: linear-gradient(0deg, var(--blue-top), var(--blue-header));
+    padding: 3.0769em 0 3.8462em;
+  }
+  .hero .inner { max-width: var(--container); margin: 0 auto; padding: 0 20px; }
+  .hero .kicker {
+    color: #fff; font-size: 2.846em; font-weight: 700; line-height: 1.3;
+    letter-spacing: 4px;              /* ★唯一 letter-spacing を書く場所 */
+    margin: 0 0 .22em;
+  }
+  .hero .copy {
+    color: #fff; font-size: 5.375em;  /* ★69.875px。13 × 5.375 */
+    font-weight: 700; line-height: 1.3; letter-spacing: 4px; margin: 0;
+  }
+  /* 白地に青文字の反転ハイライト。実サイトの「確かな情報」と同じ作り */
+  .hero .hl { background-color: #fff; color: var(--blue-fill); padding: 0 .06em; }
+
+  /* ---------- Buttons ---------- */
+  .btns { display: flex; flex-wrap: wrap; gap: 1.2308em; align-items: center; }
+  .btn-primary {
+    display: inline-block; background-color: var(--green-cta); color: #fff;
+    font-size: 1.1538em; font-weight: 700; line-height: 1.5;
+    border-radius: var(--r-pill); padding: .5333em 2em; text-decoration: none;
+  }
+  .btn-secondary {
+    display: inline-block; background-color: var(--blue-fill); color: #fff;
+    font-size: 1.1538em; font-weight: 700; line-height: 1.6667;
+    border-radius: var(--r-card); padding: .5333em 1.6em; text-decoration: none;
+  }
+  .btn-tertiary {
+    display: inline-block; background-color: var(--surface-tint); color: var(--text);
+    font-size: 1em; font-weight: 700; border-radius: var(--r-card);
+    padding: .6154em 1.5385em; text-decoration: none;
+  }
+  .btn-outline {
+    display: inline-block; background-color: #fff; color: var(--blue-fill);
+    font-size: 1.076em; font-weight: 700; border-radius: var(--r-card);
+    border: 1px solid var(--blue-fill); padding: .5714em 1.7143em; text-decoration: none;
+  }
+  .btn-primary.is-focus { outline: 2px solid var(--blue-text); outline-offset: 3px; }
+
+  /* ---------- Swatches ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.2308em; }
+  .sw { border: 1px solid var(--border); border-radius: var(--r-card); overflow: hidden; background-color: #fff; }
+  .sw .chip { height: 52px; }
+  .sw .meta { padding: .7692em .9231em; font-size: .923em; color: var(--text-2); }
+  .sw .meta b { display: block; font-size: 1.0833em; color: var(--text); }
+
+  /* ---------- em ladder ---------- */
+  .ladder { border-collapse: collapse; width: 100%; }
+  .ladder th, .ladder td { border-top: 1px solid var(--border); padding: .6154em .5em; text-align: left; vertical-align: baseline; }
+  .ladder th { font-size: .923em; font-weight: 700; color: var(--text-2); white-space: nowrap; }
+  .ladder td.v { color: var(--text); }
+  .ladder td.n { font-size: .923em; color: var(--text-2); white-space: nowrap; }
+  .e-5375 { font-size: 5.375em; font-weight: 700; line-height: 1.3; letter-spacing: 4px; }
+  .e-2846 { font-size: 2.846em; font-weight: 700; line-height: 1.3; }
+  .e-2461 { font-size: 2.4615em; line-height: 1.3; }
+  .e-1692 { font-size: 1.6923em; font-weight: 700; }
+  .e-1461 { font-size: 1.4615em; font-weight: 700; }
+  .e-1384 { font-size: 1.3846em; font-weight: 700; }
+  .e-1230 { font-size: 1.2308em; font-weight: 700; }
+  .e-1153 { font-size: 1.1538em; font-weight: 700; }
+  .e-1076 { font-size: 1.076em; }
+  .e-1000 { font-size: 1em; }
+  .e-0923 { font-size: .923em; }
+  .e-0846 { font-size: .846em; }
+
+  /* ---------- Cards ---------- */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.2308em; }
+  .card {
+    background-color: #fff; border-radius: var(--r-card);
+    box-shadow: var(--sh-card); padding: 1.3846em 1.3846em 1.5385em;
+  }
+  .card .who { font-size: .846em; color: var(--text-3); margin: 0 0 .7273em; }
+  .card p { font-size: 1em; color: var(--text-4); margin: 0; }
+
+  /* ペイウォール：不透明な白の inset 影で下端をぼかす */
+  .card.is-walled { position: relative; box-shadow: var(--sh-card), var(--sh-wall); }
+  .card.is-walled .more {
+    display: inline-block; margin-top: 1.0769em;
+    font-size: 1.1538em; font-weight: 700; color: #fff;
+    background-color: var(--green-cta); border-radius: var(--r-pill);
+    padding: .4em 1.4667em; text-decoration: none;
+  }
+
+  /* ---------- 評価スコア ---------- */
+  .score { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .9231em; }
+  .score .row { display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: .4615em; }
+  .score .k { font-size: .923em; color: var(--text-2); }
+  .score .v { font-size: 1.076em; font-weight: 700; color: var(--text); }
+
+  /* ---------- タグ ---------- */
+  .tags { display: flex; flex-wrap: wrap; gap: .6154em; align-items: center; }
+  .tag { font-size: .846em; line-height: 1.6; border-radius: var(--r-tag); border: 1px solid currentColor; padding: .0909em .5455em; background-color: #fff; }
+  .t-mid    { color: var(--tag-mid); }
+  .t-reg    { color: var(--tag-reg); }
+  .t-direct { color: var(--tag-direct); }
+  .t-agent  { color: var(--tag-agent); }
+
+  /* ---------- ランキング ---------- */
+  .rank { list-style: none; margin: 0; padding: 0; }
+  .rank li { display: flex; align-items: center; gap: .9231em; border-top: 1px solid var(--border); padding: .7692em 0; }
+  .rank .no {
+    width: 24px; height: 24px; border-radius: 50%; color: #fff;
+    font-size: .923em; font-weight: 700; display: grid; place-items: center; flex: none;
+  }
+  .rank .no1 { background-color: var(--medal-1); }
+  .rank .no2 { background-color: var(--medal-2); }
+  .rank .no3 { background-color: var(--medal-3); }
+  .rank .no4 { background-color: var(--blue-text); }
+  .rank .name { font-size: 1em; font-weight: 700; color: var(--blue-text); }
+  .rank .pt { margin-left: auto; font-size: 1.076em; color: var(--text-2); }
+
+  /* ---------- 角丸の見本 ---------- */
+  .shapes { display: flex; flex-wrap: wrap; gap: 1.5385em; }
+  .shape { width: 112px; }
+  .shape .box { height: 64px; background-color: var(--blue-fill); }
+  .shape .cap { font-size: .846em; color: var(--text-2); margin-top: .5455em; display: block; }
+  .s-4   { border-radius: 4px; }
+  .s-30  { border-radius: 30px; }
+  .s-2   { border-radius: 2px; }
+  .s-50  { border-radius: 50%; width: 64px; }
+  .s-half{ border-radius: 50% / 100% 100% 0 0; }
+  .s-tab { border-radius: 4px 4px 0 0; }
+
+  /* ---------- 影の見本 ---------- */
+  .shadows { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1.5385em; }
+  .shbox { background-color: #fff; border-radius: var(--r-card); padding: 1.3846em; font-size: .923em; color: var(--text-2); }
+  .sh-1 { box-shadow: var(--sh-btn); }
+  .sh-2 { box-shadow: var(--sh-card); }
+  .sh-3 { box-shadow: var(--sh-wall); }
+  .shbox b { display: block; color: var(--text); font-size: 1.0833em; margin-bottom: .4em; }
+
+  .note-box { border-left: 3px solid var(--blue-fill); background-color: var(--surface-tint); padding: 1.3846em 1.5385em; font-size: 1em; color: var(--text-4); }
+  .note-box b { color: var(--text); }
+
+  footer.site { background-color: var(--blue-header); padding: 2.6154em 0; }
+  footer.site .inner { max-width: var(--container); margin: 0 auto; padding: 0 20px; }
+  footer.site a { color: #fff; font-size: .923em; text-decoration: none; margin-right: 1.5385em; }
+  footer.site .cr { color: #fff; font-size: .846em; margin-top: 1.0769em; opacity: .82; }
+
+  /* ★実サイトにはメディアクエリが 1 件も無い（PC 専用）。
+     これはプレビューの閲覧性のためだけに足した 1 ブロック。 */
+  @media screen and (max-width: 768px) {
+    .section-title { font-size: 1.8462em; }
+    .hero .copy { font-size: 2.4615em; }
+    .hero .kicker { font-size: 1.3846em; }
+    .e-5375 { font-size: 2.4615em; }
+    .e-2846 { font-size: 1.6923em; }
+    header.site nav { display: none; }
+    .search { width: 100%; }
+    .ladder th, .ladder td { display: block; border-top: none; padding: .2em .5em; }
+    .ladder tr { display: block; border-top: 1px solid var(--border); padding: .6154em 0; }
+    .wrap, header.site .inner, .hero .inner, footer.site .inner { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="inner">
+    <div class="logo">openwork</div>
+    <div class="search">
+      <input type="text" placeholder="社名から検索" aria-label="社名から検索">
+      <button type="button">検索</button>
+    </div>
+    <nav>
+      <a href="#type">検索</a>
+      <a href="#color">採用企業様</a>
+      <a href="#parts" class="strong">ログイン</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero">
+  <div class="inner">
+    <p class="kicker">転職する？ 社内で磨く？</p>
+    <p class="copy">キャリアの選択に<br><span class="hl">確かな情報</span>を。</p>
+  </div>
+</section>
+
+<!-- ============================ 01 FONT ============================ -->
+<section class="section" id="font">
+  <div class="wrap">
+    <div class="section-label">01 / Font</div>
+    <h2 class="section-title">No webfont</h2>
+    <p class="section-title-ja">和文 Web フォントを 1 本も読まない</p>
+    <p class="section-lead">CSS 全文の <code>@font-face</code> は 4 件だけで、うち 2 件が OS 同梱ヒラギノの別名宣言です。<b>PostScript 名で W3（Regular）と W6（Bold）を名指しし、1 つのファミリー名に 2 ウェイトを束ねています。</b>フォントファイルの実リクエストは <b>2 件</b>で、どちらも自社ホストのアイコンフォント（<code>vorkercon.ttf</code> / <code>vorkers-pc-icon.ttf</code>）。和文は 1 バイトも落ちてきません。</p>
+
+    <div class="note-box">
+      <b>この 2 行を省かないでください。</b>省くと <code>font-weight: 700</code> がブラウザの合成太字になり、W6 の字面と変わります。<code>src</code> が <code>local()</code> だけなので <code>document.fonts</code> 上は macOS で <code>loaded</code>、該当書体の無い環境では <code>error</code> になりますが、これは異常ではありません。
+    </div>
+
+    <div style="margin-top:1.5385em">
+      <div class="section-label">weight 400 → local(HiraginoSans-w3)</div>
+      <p style="font-size:1.6923em;font-weight:400;margin:0 0 .6em">社員による会社評価スコア 2200万件のクチコミ</p>
+      <div class="section-label">weight 700 → local(HiraginoSans-w6)</div>
+      <p style="font-size:1.6923em;font-weight:700;margin:0">社員による会社評価スコア 2200万件のクチコミ</p>
+      <p style="font-size:.923em;color:var(--text-2);margin:.9em 0 0">ウェイトはこの 2 段だけ（実測 400: 389 要素 / 700: 172 要素）。<code>500</code> や <code>600</code> を当てても 400 で出ます。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 02 EM SCALE ============================ -->
+<section class="section-alt" id="type">
+  <div class="wrap">
+    <div class="section-label">02 / Scale</div>
+    <h2 class="section-title">Divide by 13</h2>
+    <p class="section-title-ja">サイズはすべて 13px を分母にした em</p>
+    <p class="section-lead"><code>body { font-size: .8125em }</code>（= 16px × 0.8125 = <b>13px</b>）を起点に、各要素が <code>em</code> を重ねます。実測が <code>13.988px</code> <code>14.9994px</code> <code>17.9998px</code> <code>69.875px</code> のような<b>半端な端数だらけ</b>になるのはこのため。<b>13 で割ると設計値が出ます。</b></p>
+
+    <table class="ladder">
+      <tr><th>宣言</th><th>実測 px</th><th>用途</th></tr>
+      <tr><td class="n"><code>5.375em</code></td><td class="n">69.875px</td><td class="v e-5375">キャリア</td></tr>
+      <tr><td class="n"><code>2.846em</code></td><td class="n">36.9993px</td><td class="v e-2846">転職する？</td></tr>
+      <tr><td class="n"><code>2.4615em</code></td><td class="n">31.9995px</td><td class="v e-2461">無料で2200万件のクチコミが見放題</td></tr>
+      <tr><td class="n"><code>1.6923em</code></td><td class="n">21.9999px</td><td class="v e-1692">OpenWorkが選ばれる理由</td></tr>
+      <tr><td class="n"><code>1.4615em</code></td><td class="n">18.9995px</td><td class="v e-1461">無料ユーザー登録はこちら</td></tr>
+      <tr><td class="n"><code>1.3846em</code></td><td class="n">17.9998px</td><td class="v e-1384">情報収集にも転職・就活にもご利用いただけます</td></tr>
+      <tr><td class="n"><code>1.2308em</code></td><td class="n">16.0004px</td><td class="v e-1230">企業研究</td></tr>
+      <tr><td class="n"><code>1.1538em</code></td><td class="n">14.9994px</td><td class="v e-1153">無料登録</td></tr>
+      <tr><td class="n"><code>1.076em</code></td><td class="n">13.988px</td><td class="v e-1076">総合評価： 4.86</td></tr>
+      <tr><td class="n"><code>.8125em</code>（body）</td><td class="n">13px</td><td class="v e-1000">様々な企業の内側まで言語化されているので、キャリア形成の選択をより手堅く歩むことができます。</td></tr>
+      <tr><td class="n"><code>.923em</code></td><td class="n">11.999px</td><td class="v e-0923">待遇面の満足度 / 社員の士気 / 風通しの良さ（実測 191 要素で最多）</td></tr>
+      <tr><td class="n"><code>.846em</code></td><td class="n">10.998px</td><td class="v e-0846">中途 / 正社員 / 直接応募</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============================ 03 SPACING ============================ -->
+<section class="section" id="spacing">
+  <div class="wrap">
+    <div class="section-label">03 / Letter-spacing</div>
+    <h2 class="section-title">Normal everywhere</h2>
+    <p class="section-title-ja">字間を設計していない。例外はヒーローだけ</p>
+    <p class="section-lead"><code>letter-spacing</code> の宣言は CSS 全文で <b>12 件</b>、可視要素の実測は <b><code>normal</code> が 557/561 要素</b>です。唯一の例外がヒーローの大見出し 4 要素の <code>4px</code>（69.875px に対して約 0.057em）。<b>本文に字間を足さないでください。</b></p>
+
+    <div class="cards">
+      <div class="card">
+        <p class="who">letter-spacing: normal（実装）</p>
+        <p style="font-size:1.3846em;font-weight:700;line-height:1.666">社員による会社評価スコアは八種類の評価軸から導かれます</p>
+      </div>
+      <div class="card">
+        <p class="who">letter-spacing: .05em（やってはいけない）</p>
+        <p style="font-size:1.3846em;font-weight:700;line-height:1.666;letter-spacing:.05em">社員による会社評価スコアは八種類の評価軸から導かれます</p>
+      </div>
+    </div>
+
+    <p class="section-lead" style="margin-top:2em">行間は <code>body</code> に <code>line-height: 1.666</code> を<b>無単位で 1 回だけ</b>書いて継承させます。実測の行間比は <b>1.67 が 509/561 要素</b>。例外は <code>1.60</code>（タグ 18）・<code>1.50</code>（ボタン 15）・<code>1.80</code>（職種リンク 14）・<code>1.30</code>（ヒーロー 4）です。</p>
+  </div>
+</section>
+
+<!-- ============================ 04 COLORS ============================ -->
+<section class="section-alt" id="color">
+  <div class="wrap">
+    <div class="section-label">04 / Colors</div>
+    <h2 class="section-title">Three blues</h2>
+    <p class="section-title-ja">青が 3 つあり、役割で使い分けられている</p>
+    <p class="section-lead"><b>ヘッダーの <code>#1579c0</code>、面の <code>#1b7fbe</code>、文字の <code>#166c9d</code> を 1 つに丸めないでください。</b>登録を促す緑 <code>#3aa131</code> だけが、青の面に置かれる唯一の別色です。</p>
+
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background-color:#1579c0"></div><div class="meta"><b>#1579c0</b><span>ヘッダーの地・グラデ下端</span></div></div>
+      <div class="sw"><div class="chip" style="background-color:#1b7fbe"></div><div class="meta"><b>#1b7fbe</b><span>面の青（30 要素）</span></div></div>
+      <div class="sw"><div class="chip" style="background-color:#166c9d"></div><div class="meta"><b>#166c9d</b><span>文字の青（115 要素）</span></div></div>
+      <div class="sw"><div class="chip" style="background-color:#2ab0f0"></div><div class="meta"><b>#2ab0f0</b><span>グラデ上端</span></div></div>
+      <div class="sw"><div class="chip" style="background-color:#3aa131"></div><div class="meta"><b>#3aa131</b><span>登録 CTA 専用（3 要素）</span></div></div>
+      <div class="sw"><div class="chip" style="background-color:#777777"></div><div class="meta"><b>#777777</b><span>補足（156 要素で最多）</span></div></div>
+      <div class="sw"><div class="chip" style="background-color:#000000"></div><div class="meta"><b>#000000</b><span>本文（146 要素）</span></div></div>
+      <div class="sw"><div class="chip" style="background-color:#f2f6fa;border-bottom:1px solid #d4dbdf"></div><div class="meta"><b>#f2f6fa</b><span>淡い青みの面（23 要素）</span></div></div>
+    </div>
+
+    <h3 style="font-size:1.2308em;font-weight:700;margin:2.2em 0 .8em">求人タグの 4 色</h3>
+    <div class="tags">
+      <span class="tag t-mid">中途</span>
+      <span class="tag t-reg">正社員</span>
+      <span class="tag t-direct">直接応募</span>
+      <span class="tag t-agent">エージェント紹介</span>
+      <span style="font-size:.923em;color:var(--text-2)">面を持たず、文字色だけで種別を分ける</span>
+    </div>
+
+    <h3 style="font-size:1.2308em;font-weight:700;margin:2.2em 0 .8em">ランキングのメダル（彩度を落とした金銀銅）</h3>
+    <ul class="rank">
+      <li><span class="no no1">1</span><span class="name">株式会社エヌ・ティ・ティ・データ</span><span class="pt">4.86</span></li>
+      <li><span class="no no2">2</span><span class="name">アクセンチュア株式会社</span><span class="pt">4.81</span></li>
+      <li><span class="no no3">3</span><span class="name">日本電気株式会社</span><span class="pt">4.72</span></li>
+      <li><span class="no no4">4</span><span class="name">株式会社ニトリ</span><span class="pt">4.68</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ 05 COMPONENTS ============================ -->
+<section class="section" id="parts">
+  <div class="wrap">
+    <div class="section-label">05 / Components</div>
+    <h2 class="section-title">Pill or 4px</h2>
+    <p class="section-title-ja">ピルは登録導線だけ、それ以外は角丸 4px</p>
+    <p class="section-lead">面の色と角丸の組み合わせが 3 種類あります。<b><code>border-radius: 30px</code> のピルは登録・申込の導線専用</b>で、それ以外はすべて <code>4px</code>。下層ページの CTA は面を持たず、白地に <code>#1b7fbe</code> の文字と枠になります。</p>
+
+    <div class="btns">
+      <a class="btn-primary" href="#">無料ユーザー登録はこちら</a>
+      <a class="btn-primary is-focus" href="#">フォーカス時</a>
+      <a class="btn-secondary" href="#">総合評価ランキング一覧へ</a>
+      <a class="btn-tertiary" href="#">ご利用案内はこちら</a>
+      <a class="btn-outline" href="#">まずはWeb履歴書を登録</a>
+    </div>
+
+    <h3 style="font-size:1.2308em;font-weight:700;margin:2.4em 0 .8em">評価スコア（11.999px / weight 400 / #777）</h3>
+    <div class="score">
+      <div class="row"><span class="k">待遇面の満足度</span><span class="v">4.5</span></div>
+      <div class="row"><span class="k">社員の士気</span><span class="v">4.9</span></div>
+      <div class="row"><span class="k">風通しの良さ</span><span class="v">4.6</span></div>
+      <div class="row"><span class="k">社員の相互尊重</span><span class="v">4.7</span></div>
+      <div class="row"><span class="k">20代成長環境</span><span class="v">4.3</span></div>
+      <div class="row"><span class="k">人材の長期育成</span><span class="v">4.1</span></div>
+      <div class="row"><span class="k">法令遵守意識</span><span class="v">4.8</span></div>
+      <div class="row"><span class="k">人事評価の適正感</span><span class="v">4.4</span></div>
+    </div>
+
+    <h3 style="font-size:1.2308em;font-weight:700;margin:2.4em 0 .8em">角丸 8 種</h3>
+    <div class="shapes">
+      <div class="shape"><div class="box s-4"></div><span class="cap">4px（65 要素）</span></div>
+      <div class="shape"><div class="box s-30"></div><span class="cap">30px（48 要素）</span></div>
+      <div class="shape"><div class="box s-2"></div><span class="cap">2px（18 要素）</span></div>
+      <div class="shape"><div class="box s-50"></div><span class="cap">50%（10 要素）</span></div>
+      <div class="shape"><div class="box s-half"></div><span class="cap">50% / 100% 100% 0 0</span></div>
+      <div class="shape"><div class="box s-tab"></div><span class="cap">4px 4px 0 0</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 06 ELEVATION ============================ -->
+<section class="section-alt" id="depth">
+  <div class="wrap">
+    <div class="section-label">06 / Elevation</div>
+    <h2 class="section-title">Three shadows</h2>
+    <p class="section-title-ja">影は 3 種類だけ。うち 1 つはペイウォール専用</p>
+    <p class="section-lead">alpha はどちらも <code>.1</code> で、濃い影を落としません。3 つ目の <code>rgb(255,255,255) -5px -5px 10px 4px inset</code> は<b>グラデーションのマスクではなく、不透明な白の内側の影でクチコミの続きを消す</b>ための影です。</p>
+
+    <div class="shadows">
+      <div class="shbox sh-1"><b>rgba(0,0,0,.1) 1px 1px 2px 0</b>職種リンクのボタン（14 要素）</div>
+      <div class="shbox sh-2"><b>rgba(0,0,0,.1) 0 2px 4px 0</b>推薦コメントのカード（10 要素）</div>
+      <div class="shbox sh-3"><b>rgb(255,255,255) -5px -5px 10px 4px inset</b>ペイウォールの白ぼかし（10 要素）</div>
+    </div>
+
+    <h3 style="font-size:1.2308em;font-weight:700;margin:2.4em 0 .8em">ペイウォールの実装</h3>
+    <div class="cards">
+      <div class="card">
+        <p class="who">回答日：2026年11月26日／エンジニア、在籍3〜5年、現職</p>
+        <p>様々な企業の内側まで言語化されているので、キャリア形成の選択をより手堅く歩むことができるため便利なサービスだと思います。</p>
+      </div>
+      <div class="card is-walled">
+        <p class="who">回答日：2026年11月25日／管理・事務、在籍5〜10年、退職済み</p>
+        <p>特に社員のクチコミは非常に参考になっています。退職検討理由や、社内のカルチャーに関するコメントはよく拝見しました。転職を検討している、いないに関わらず情報収集のために普段からログイン</p>
+        <a class="more" href="#">無料登録して続きを見る</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 07 FIXED ============================ -->
+<section class="section" id="fixed">
+  <div class="wrap">
+    <div class="section-label">07 / Responsive</div>
+    <h2 class="section-title">No breakpoints</h2>
+    <p class="section-title-ja">メディアクエリが 1 件も無い PC 専用ページ</p>
+    <p class="section-lead">1920 / 1440 / 1280 / 1200 / 1024 / 992 / 991 / 834 / 769 / 768 / 767 / 600 / 480 / 375 / 374px の <b>15 幅すべてで <code>html: 16px</code> / <code>body: 13px</code> / <code>h2: 21.9999px</code> / <code>h3: 16.0004px</code> が 1px も動きません。</b>CSS 全文にメディアクエリが存在せず、スマートフォンは別テンプレートで配信されます。本文カラムは <code>1000px</code> 固定です。</p>
+
+    <div class="note-box">
+      <b>CSS Custom Property も 1 個もありません。</b><code>:root</code> にも <code>body</code> にも宣言が 0 個で、色もサイズも hex と <code>em</code> の直書きです。デザイントークンという層が存在しません。<br>
+      <b><code>font-feature-settings</code> も CSS 全文に 0 件。</b>ヒラギノ角ゴシックは <code>palt</code> を持つので効かせられますが、既存のレイアウトは詰めない前提で組まれています。
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="inner">
+    <a href="#font">ご利用案内</a>
+    <a href="#type">運営ポリシー</a>
+    <a href="#color">運営会社</a>
+    <a href="#parts">利用規約</a>
+    <a href="#depth">プライバシーポリシー</a>
+    <p class="cr">Design System Preview — 実測 2026-11-27 / openwork.jp</p>
+  </div>
+</footer>
+
+</body>
+</html>
