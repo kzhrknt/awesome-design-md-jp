@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ラクス（RAKUS）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ルートは実サイトと同じ 62.5% ＝ 10px。1rem = 10px で全サイズを書く。
+     1920〜320px の 25 幅すべてで動かない（実測 2026-11-28）。 */
+  html { font-size: 62.5%; }
+
+  :root {
+    /* === Colors ===
+       実サイトの :root 宣言をそのまま写した（自社トークン 39 個 / Tailwind v4 @theme 既定 16 個）。
+       可視で確認できたものに ★ を付けている。 */
+    --color-white:             #ffffff;
+    --color-white-opacity-900: rgba(255, 255, 255, 0.9);   /* 追従ヘッダーの面 */
+
+    --color-orange-700: #f08300;   /* ★ブランド。可視 33 要素。CTA の面・欧文大見出しの文字色 */
+    --color-orange-600: #f39b33;   /* 宣言のみ */
+    --color-orange-500: #f6b466;   /* 宣言のみ */
+    --color-orange-400: #f9cd99;   /* 宣言のみ */
+    --color-orange-300: #fce6cc;   /* 宣言のみ */
+    --color-orange-200: #fef2e5;   /* 宣言のみ */
+    --color-orange-100: #fff9f2;   /* ★下層ページのセクション地色 */
+
+    --color-gray-700: #323232;   /* ★本文。可視 128 要素で最多。純黒は使わない */
+    --color-gray-600: #5a5a5a;
+    --color-gray-500: #6e6e6e;
+    --color-gray-400: #bebebe;   /* ★言語切替の非選択 */
+    --color-gray-300: #d2d2d2;   /* 入力欄・ボタンの枠 */
+    --color-gray-200: #e6e6e6;   /* 定義リストの区切り線 */
+    --color-gray-100: #f5f5f5;   /* ★カードの面。--color-gray-50 と同値 */
+
+    --color-blue:   #2531b7;
+    --color-notice: #aa0000;
+
+    /* サービス別の識別色（実サイトは 12 サービス分。うち 5 つが -light の対を持つ） */
+    --color-seisan:        #007bc7;   --color-seisan-light:       #73c4ff;
+    --color-meisai:        #267d00;   --color-meisai-light:       #86e026;
+    --color-hanbai:        #f53c20;   --color-hanbai-light:       #ff8181;
+    --color-jidou:         #f08300;   --color-jidou-light:        #ffc266;
+    --color-denshihozon:   #a43fd1;   --color-denshihozon-light:  #d078ff;
+    --color-mail:          #172a88;
+    --color-seikyu:        #0ba578;
+    --color-saimu:         #00ad0e;
+    --color-kintai:        #2531b7;
+
+    --color-shadow:  rgba(0, 0, 0, 0.15);
+    --color-overlay: rgba(32, 32, 32, 0.5);
+
+    /* === Fonts ===
+       和欧を 2 変数で分け、要素ごとにどちらかを当てる（混植のスタックを作らない）。
+       実サイトは Google Fonts の可変フォント（wght@100..900）を読むが、
+       使うのは 400 / 500 / 700 の 3 段だけ。 */
+    --font-jp: "Noto Sans JP", sans-serif;
+    --font-en: "Roboto", sans-serif;
+    --font-mono: SFMono-Regular, Consolas, Menlo, monospace;
+
+    /* 実サイトに存在するが var() の参照が CSS 全文で 0 回の死に変数（再現しない）:
+         --font: "游ゴシック体", YuGothic, … ;
+         --vw: 1600;  （768 / 430 の上書きもあるが参照 0 回） */
+
+    /* === Weights ===
+       実サイトの宣言をそのまま。--fw-regular は数値ではなく initial。 */
+    --fw-bold:    bold;
+    --fw-regular: initial;
+    --fw-medium:  500;
+
+    /* === Line height（無単位・6 段） === */
+    --lh-2xl: 2;      /* 読ませる長文。実測 8〜21 要素 */
+    --lh-xl:  1.8;
+    --lh-lg:  1.6;
+    --lh-md:  1.5;    /* ★既定。実測 125/184 要素 */
+    --lh-sm:  1.25;
+    --lh-xs:  1;
+
+    /* === Letter spacing ===
+       body は normal。各要素が em を持つ型。和文は正・欧文の大見出しは負。 */
+    --ls-en-display: -0.02em;   /* 35px 以上の Roboto 見出し */
+    --ls-ja-s:        0.02em;
+    --ls-ja-m:        0.03em;
+    --ls-ja-l:        0.05em;   /* CTA */
+    --ls-abs:         0.1rem;   /* = 1px の絶対値 */
+
+    --r:     0.5rem;   /* 5px。可視 206 要素。このサイトの角丸はほぼこれ 1 種 */
+    --r-cut: 0 9.5rem; /* 0px 95px。左上 0・右上 95px。可視 48 要素 */
+
+    --shadow: 0 0 1.3rem 0.2rem var(--color-shadow);  /* 唯一の影。可視 144 要素 */
+
+    --container:    120rem;    /* 1200px。実測 13〜15 件で最多 */
+    --container-sm: 100rem;    /* 1000px */
+    --pc-width:     102.4rem;  /* 1024px */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--color-white);
+    color: var(--color-gray-700);
+    font-family: var(--font-jp);
+    font-size: 1.4rem;              /* 14px */
+    font-weight: 400;
+    line-height: var(--lh-md);      /* 1.5 */
+    letter-spacing: normal;         /* 実サイトの body は normal。継承させない */
+    -webkit-font-smoothing: antialiased;
+    /* font-feature-settings は書かない。実サイトは AI 戦略ページの 1 クラスのみで、
+       計測した 2 ページとも実測 0 要素（palt 自体は Noto Sans JP で -18.4% 効く）。 */
+  }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 10; background: var(--color-white-opacity-900); backdrop-filter: blur(4px); border-bottom: 0.1rem solid var(--color-gray-200); }
+  .header-inner { display: flex; align-items: center; gap: 3rem; max-width: var(--container); margin: 0 auto; padding: 1.6rem 3rem; }
+  .logo { display: flex; align-items: center; gap: 0.8rem; text-decoration: none; }
+  .logo-mark { width: 3.6rem; height: 3.6rem; border-radius: var(--r); background: var(--color-orange-700); color: var(--color-white); font-family: var(--font-jp); font-size: 2rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .logo-text { font-family: var(--font-jp); font-size: 1.4rem; font-weight: 700; color: var(--color-gray-700); letter-spacing: var(--ls-ja-m); }
+  .header-nav { display: flex; gap: 2.4rem; margin-left: auto; }
+  .header-nav a { font-size: 1.7rem; font-weight: var(--fw-medium); line-height: var(--lh-md); letter-spacing: var(--ls-ja-m); color: var(--color-gray-700); text-decoration: none; }
+  .lang { display: flex; }
+  .lang span { font-family: var(--font-en); font-size: 1.6rem; font-weight: 700; line-height: 2.4rem; padding: 0.8rem 1.2rem; }
+  .lang .on  { background: var(--color-orange-700); color: var(--color-white); }
+  .lang .off { background: var(--color-gray-100); color: var(--color-gray-400); }
+
+  /* SECTIONS */
+  .section { max-width: var(--container); margin: 0 auto; padding: 7rem 3rem; }
+  .section-alt { background: var(--color-orange-100); }
+  .section-alt .section-inner { max-width: var(--container); margin: 0 auto; padding: 7rem 3rem; }
+  .section-label { font-family: var(--font-mono); font-size: 1.2rem; color: var(--color-gray-500); margin-bottom: 1rem; }
+  .display-en { font-family: var(--font-en); font-size: 10rem; font-weight: 700; line-height: var(--lh-sm); letter-spacing: var(--ls-en-display); color: var(--color-orange-700); }
+  .display-en.sm { font-size: 3.5rem; }
+  .section-title { font-size: 3.2rem; font-weight: 700; line-height: 1.2; letter-spacing: var(--ls-ja-s); margin: 0.6rem 0 1.6rem; }
+  .section-lead { font-size: 1.6rem; line-height: var(--lh-2xl); max-width: 86rem; margin-bottom: 3.6rem; }
+  .note { font-size: 1.4rem; line-height: var(--lh-lg); color: var(--color-gray-600); max-width: 86rem; margin-top: 2rem; }
+  code { font-family: var(--font-mono); font-size: 1.2rem; background: var(--color-gray-100); padding: 0.1rem 0.5rem; border-radius: 0.2rem; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr)); gap: 1.5rem; }
+  .swatch { border: 0.1rem solid var(--color-gray-300); border-radius: var(--r); overflow: hidden; background: var(--color-white); }
+  .swatch-chip { height: 7.6rem; }
+  .swatch-body { padding: 1.2rem; }
+  .swatch-name { font-size: 1.4rem; font-weight: 700; }
+  .swatch-hex { font-family: var(--font-mono); font-size: 1.1rem; color: var(--color-gray-500); margin-top: 0.3rem; }
+  .swatch-use { font-size: 1.2rem; line-height: var(--lh-lg); color: var(--color-gray-600); margin-top: 0.6rem; }
+
+  .service-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 1.5rem; }
+  .service { border-radius: var(--r); overflow: hidden; border: 0.1rem solid var(--color-gray-200); }
+  .service-bar { height: 1.2rem; }
+  .service-body { padding: 1rem 1.2rem; }
+  .service-name { font-size: 1.4rem; font-weight: 700; }
+  .service-hex { font-family: var(--font-mono); font-size: 1.1rem; color: var(--color-gray-500); }
+
+  /* TYPOGRAPHY */
+  .type-row { display: grid; grid-template-columns: 26rem 1fr; gap: 2.4rem; align-items: baseline; padding: 2rem 0; border-bottom: 0.1rem solid var(--color-gray-200); }
+  .type-meta { font-family: var(--font-mono); font-size: 1.1rem; color: var(--color-gray-500); line-height: 1.75; }
+  .type-meta b { display: block; font-family: var(--font-jp); font-size: 1.3rem; font-weight: 700; color: var(--color-gray-700); }
+  .t-display-en { font-family: var(--font-en); font-size: 10rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; color: var(--color-orange-700); }
+  .t-h1 { font-size: 3.6rem; font-weight: 700; line-height: 1.2; letter-spacing: 0.02em; }
+  .t-h2 { font-size: 3.2rem; font-weight: 700; line-height: 1.2; letter-spacing: 0.02em; }
+  .t-h3 { font-size: 2.4rem; font-weight: 700; line-height: var(--lh-md); }
+  .t-lead { font-size: 2rem; font-weight: 700; line-height: var(--lh-md); letter-spacing: 0.02em; }
+  .t-nav { font-size: 1.7rem; font-weight: 500; line-height: var(--lh-md); letter-spacing: 0.03em; }
+  .t-body { font-size: 1.6rem; font-weight: 400; line-height: var(--lh-2xl); }
+  .t-base { font-size: 1.4rem; font-weight: 400; line-height: var(--lh-md); letter-spacing: var(--ls-abs); }
+  .t-caption { font-size: 1.2rem; font-weight: 400; line-height: var(--lh-md); color: var(--color-gray-500); }
+
+  .weights { display: flex; gap: 2.4rem; flex-wrap: wrap; align-items: baseline; margin-bottom: 2.4rem; }
+  .weights div { font-size: 2.4rem; }
+
+  /* TRACKING DEMO */
+  .ls-demo { display: grid; gap: 1.2rem; }
+  .ls-demo .row { display: grid; grid-template-columns: 14rem 1fr; gap: 1.6rem; align-items: baseline; padding: 1.2rem 1.6rem; background: var(--color-gray-100); border-radius: var(--r); }
+  .ls-demo .k { font-family: var(--font-mono); font-size: 1.2rem; color: var(--color-gray-600); }
+  .ls-demo .v-en { font-family: var(--font-en); font-size: 3.5rem; font-weight: 700; color: var(--color-orange-700); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  .card { background: var(--color-white); border-radius: var(--r); box-shadow: var(--shadow); overflow: hidden; }
+  .card-thumb { height: 14rem; border-radius: var(--r-cut); background-image: linear-gradient(135deg, #f9cd99 0%, #f08300 100%); display: flex; align-items: flex-end; padding: 1.6rem 2rem; }
+  .card-thumb span { color: var(--color-white); font-size: 1.4rem; font-weight: 700; letter-spacing: 0.05em; }
+  .card-body { padding: 2rem; }
+  .card-title { font-size: 2rem; font-weight: 700; line-height: var(--lh-md); letter-spacing: 0.02em; margin-bottom: 0.8rem; }
+  .card-text { font-size: 1.4rem; line-height: var(--lh-md); color: var(--color-gray-600); }
+  .card-tag { display: inline-block; margin-bottom: 1rem; font-size: 1.2rem; font-weight: 700; line-height: 1; padding: 0.5rem 1rem; border-radius: var(--r); color: var(--color-white); }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 1.6rem; flex-wrap: wrap; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 1rem;
+    background: var(--color-orange-700); color: var(--color-white);
+    border: 0.2rem solid var(--color-orange-700); border-radius: var(--r);
+    padding: 1rem 1.8rem 1rem 2rem;
+    font-family: var(--font-jp); font-size: 1.6rem; font-weight: 700;
+    line-height: 2.4rem; letter-spacing: var(--ls-ja-l);
+    text-decoration: none; cursor: pointer;
+  }
+  .btn--outline { background: var(--color-white); color: var(--color-orange-700); }
+  .btn--ghost { background: var(--color-white); color: var(--color-gray-700); border-color: var(--color-gray-300); }
+  .btn.is-focus { outline: 0.3rem solid var(--color-blue); outline-offset: 0.2rem; }
+
+  /* FORMS */
+  .form { display: grid; gap: 1.6rem; max-width: 52rem; }
+  .field label { display: block; font-size: 1.4rem; font-weight: 500; margin-bottom: 0.6rem; }
+  .field input, .field select {
+    width: 100%; background: var(--color-white);
+    border: 0.1rem solid var(--color-gray-300); border-radius: 0.2rem;
+    padding: 1.2rem 1rem 1.2rem 1.5rem;
+    font-family: var(--font-jp); font-size: 1.4rem; color: var(--color-gray-700);
+  }
+  .field input.is-focus { border-color: var(--color-orange-700); outline: 0.2rem solid var(--color-orange-300); }
+  .field .help { font-size: 1.2rem; color: var(--color-gray-500); margin-top: 0.4rem; }
+  .field .err { font-size: 1.2rem; color: var(--color-notice); margin-top: 0.4rem; }
+
+  /* DATA */
+  .dl { display: grid; grid-template-columns: 26rem 1fr; }
+  .dl dt, .dl dd { padding: 2rem 0; border-bottom: 0.1rem solid var(--color-gray-200); font-size: 1.4rem; }
+  .dl dt { color: var(--color-gray-500); font-weight: var(--fw-regular); }
+
+  /* ELEVATION / RADIUS */
+  .demo-row { display: flex; gap: 2.4rem; flex-wrap: wrap; }
+  .demo-box { width: 18rem; height: 11rem; background: var(--color-white); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: var(--color-gray-600); text-align: center; padding: 1rem; }
+  .demo-box.shadow { border-radius: var(--r); box-shadow: var(--shadow); }
+  .demo-box.flat   { border-radius: var(--r); border: 0.1rem solid var(--color-gray-300); }
+  .demo-box.cut    { border-radius: var(--r-cut); background: var(--color-orange-700); color: var(--color-white); }
+
+  /* SCROLL (縦組みの唯一の用例) */
+  .scroll-demo { display: inline-flex; align-items: center; gap: 1rem; }
+  .scroll-demo .label { writing-mode: vertical-lr; font-family: var(--font-en); font-size: 1.2rem; line-height: 1.8rem; letter-spacing: 0.6px; color: var(--color-gray-600); }
+  .scroll-demo .bar { width: 0.1rem; height: 6rem; background: var(--color-gray-300); }
+
+  /* FOOTER */
+  .footer { background: var(--color-gray-700); color: var(--color-white); }
+  .footer-inner { max-width: var(--container); margin: 0 auto; padding: 5rem 3rem; }
+  .footer h3 { font-size: 1.6rem; font-weight: 700; letter-spacing: 0.03em; margin-bottom: 1.2rem; }
+  .footer p { font-size: 1.2rem; line-height: var(--lh-lg); color: #d2d2d2; }
+
+  @media screen and (max-width: 768px) {
+    .card-grid { grid-template-columns: 1fr; }
+    .type-row, .dl { grid-template-columns: 1fr; }
+    .display-en { font-size: 6rem; }
+    .section-title { font-size: 2.6rem; }   /* 実サイトも 36px → 26px に落とす */
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <span class="logo-mark">楽</span>
+      <span class="logo-text">RAKUS</span>
+    </a>
+    <nav class="header-nav">
+      <a href="#colors">ラクスの想い</a>
+      <a href="#typography">ラクスのサービス</a>
+      <a href="#components">会社情報</a>
+    </nav>
+    <div class="lang"><span class="on">JP</span><span class="off">EN</span></div>
+  </div>
+</header>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <div class="display-en">About</div>
+  <h2 class="section-title">白地にオレンジ 1 色</h2>
+  <p class="section-lead">ブランド色は <b>ラクスオレンジ <code>#f08300</code></b> ひとつ。オレンジは 700 → 100 の 7 段ランプとして宣言されているが、<b>可視で確認できたのは 700 と 100 の 2 つだけ</b>。本文は純黒ではなく <code>#323232</code>。</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="swatch-chip" style="background:#f08300"></div><div class="swatch-body"><div class="swatch-name">Orange 700 ★</div><div class="swatch-hex">#f08300</div><div class="swatch-use">CTA の面、欧文大見出しの文字色、メガメニュー。可視 33 要素</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#fff9f2"></div><div class="swatch-body"><div class="swatch-name">Orange 100 ★</div><div class="swatch-hex">#fff9f2</div><div class="swatch-use">下層ページのセクション地色</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#323232"></div><div class="swatch-body"><div class="swatch-name">Gray 700 ★</div><div class="swatch-hex">#323232</div><div class="swatch-use">本文。可視 128 要素で最多。純黒は 1 要素も使わない</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#5a5a5a"></div><div class="swatch-body"><div class="swatch-name">Gray 600</div><div class="swatch-hex">#5a5a5a</div><div class="swatch-use">日付・補助テキスト</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#bebebe"></div><div class="swatch-body"><div class="swatch-name">Gray 400 ★</div><div class="swatch-hex">#bebebe</div><div class="swatch-use">言語切替の非選択</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#d2d2d2"></div><div class="swatch-body"><div class="swatch-name">Gray 300</div><div class="swatch-hex">#d2d2d2</div><div class="swatch-use">入力欄・ボタンの枠</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#f5f5f5"></div><div class="swatch-body"><div class="swatch-name">Gray 100 ★</div><div class="swatch-hex">#f5f5f5</div><div class="swatch-use">カードの面。<code>--color-gray-50</code> と同値</div></div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#aa0000"></div><div class="swatch-body"><div class="swatch-name">Notice</div><div class="swatch-hex">#aa0000</div><div class="swatch-use">注意喚起</div></div></div>
+  </div>
+
+  <h3 class="section-title" style="font-size:2.4rem;margin-top:5rem">サービスごとに識別色を持つ</h3>
+  <p class="note" style="margin-bottom:2.4rem">12 サービス分の色が CSS 変数として並び、うち 5 つは <code>-light</code> の対を持つ。<b>コーポレートのオレンジとは別系統として扱う。</b>問い合わせ自動応対だけがブランドと同じ <code>#f08300</code>。</p>
+  <div class="service-grid">
+    <div class="service"><div class="service-bar" style="background:#007bc7"></div><div class="service-body"><div class="service-name">楽楽精算</div><div class="service-hex">#007bc7 / #73c4ff</div></div></div>
+    <div class="service"><div class="service-bar" style="background:#267d00"></div><div class="service-body"><div class="service-name">楽楽明細</div><div class="service-hex">#267d00 / #86e026</div></div></div>
+    <div class="service"><div class="service-bar" style="background:#f53c20"></div><div class="service-body"><div class="service-name">楽楽販売</div><div class="service-hex">#f53c20 / #ff8181</div></div></div>
+    <div class="service"><div class="service-bar" style="background:#a43fd1"></div><div class="service-body"><div class="service-name">電子帳簿保存</div><div class="service-hex">#a43fd1 / #d078ff</div></div></div>
+    <div class="service"><div class="service-bar" style="background:#0ba578"></div><div class="service-body"><div class="service-name">楽楽請求</div><div class="service-hex">#0ba578</div></div></div>
+    <div class="service"><div class="service-bar" style="background:#172a88"></div><div class="service-body"><div class="service-name">メールマーケ</div><div class="service-hex">#172a88</div></div></div>
+    <div class="service"><div class="service-bar" style="background:#2531b7"></div><div class="service-body"><div class="service-name">勤怠管理</div><div class="service-hex">#2531b7</div></div></div>
+    <div class="service"><div class="service-bar" style="background:#464646"></div><div class="service-body"><div class="service-name">従業員ポータル</div><div class="service-hex">#464646</div></div></div>
+  </div>
+</section>
+
+<section class="section-alt" id="typography">
+<div class="section-inner">
+  <div class="section-label">02 / Typography</div>
+  <div class="display-en">Type</div>
+  <h2 class="section-title">可変フォント 1 本ずつ、使うのは 3 段</h2>
+  <p class="section-lead">和文は <b>Noto Sans JP（<code>wght@100..900</code>）</b>、欧文は <b>Roboto（同）</b>。可変軸を持っているのに、<b>実装で使うのは 400 / 500 / 700 の 3 段だけ</b>。ルートは <code>html { font-size: 62.5% }</code> ＝ 10px で、<b>1920〜320px の 25 幅すべてで動かない</b>。</p>
+
+  <div class="weights">
+    <div style="font-weight:400">400 Regular — 働く人を「楽！」にする</div>
+    <div style="font-weight:500">500 Medium — 働く人を「楽！」にする</div>
+    <div style="font-weight:700">700 Bold — 働く人を「楽！」にする</div>
+  </div>
+  <p class="note" style="margin-bottom:3rem"><b>300 や 600 は使わない。</b>可変フォントを読んでいても実装は 3 段で、段を増やすと既存ページと揃わなくなる。</p>
+
+  <div class="type-row"><div class="type-meta"><b>Display (EN)</b>Roboto / 100px (10rem)<br>700 / 1.20 / -0.02em</div><div class="t-display-en">About</div></div>
+  <div class="type-row"><div class="type-meta"><b>Heading 1 (JA)</b>Noto Sans JP / 36px (3.6rem)<br>700 / 1.20 / 0.02em</div><div class="t-h1">働く人を「楽！」にする</div></div>
+  <div class="type-row"><div class="type-meta"><b>Heading 2 (JA)</b>32px (3.2rem) → 26px (≤768px)<br>700 / 1.20 / 0.02em</div><div class="t-h2">ラクスのカルチャー</div></div>
+  <div class="type-row"><div class="type-meta"><b>Heading 3 (JA)</b>24px (2.4rem)<br>700 / 1.50</div><div class="t-h3">ゴールオリエンテッド</div></div>
+  <div class="type-row"><div class="type-meta"><b>Lead</b>20px (2rem)<br>700 / 1.50 / 0.02em</div><div class="t-lead">楽楽クラウドバックオフィス</div></div>
+  <div class="type-row"><div class="type-meta"><b>Nav / Label</b>17px (1.7rem)<br>500 / 1.50 / 0.03em</div><div class="t-nav">ラクスのサービス</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body（長文）</b>16px (1.6rem)<br>400 / <b>2.00</b>（--lh-2xl）</div><div class="t-body">企業で働く一人ひとりの業務が、ラクスが提供する IT サービスによって楽になる。そんな驚きと感動を届け続けます。業務効率化を通じて企業の成長を支援します。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Body（既定）</b>14px (1.4rem)<br>400 / 1.50 / 0.1rem（= 1px）</div><div class="t-base">少子化が進み、労働人口の減少が続く日本では、いかに生産性を高めるかが問われています。</div></div>
+  <div class="type-row"><div class="type-meta"><b>Caption</b>12px (1.2rem)<br>400 / 1.50</div><div class="t-caption">2026年11月27日</div></div>
+
+  <h3 class="section-title" style="font-size:2.4rem;margin-top:5rem">字間は和文が正・欧文の大見出しが負</h3>
+  <p class="note" style="margin-bottom:2.4rem"><code>body</code> は <code>normal</code> で、<b>継承させずに各要素が <code>em</code> を持つ</b>。35px 以上の Roboto 見出しだけが <code>-0.02em</code> で、和文はすべて正の値。</p>
+  <div class="ls-demo">
+    <div class="row"><span class="k">-0.02em（欧文）</span><span class="v-en" style="letter-spacing:-0.02em">Mission &amp; Vision</span></div>
+    <div class="row"><span class="k">normal（比較）</span><span class="v-en" style="letter-spacing:normal">Mission &amp; Vision</span></div>
+    <div class="row"><span class="k">+0.02em（和文）</span><span style="font-size:3.2rem;font-weight:700;letter-spacing:0.02em">ラクスのカルチャー</span></div>
+    <div class="row"><span class="k">+0.05em（CTA）</span><span style="font-size:1.6rem;font-weight:700;letter-spacing:0.05em">ミッション・ビジョン</span></div>
+    <div class="row"><span class="k">0.1rem（= 1px）</span><span style="font-size:1.4rem;letter-spacing:0.1rem">絶対値なので文字サイズが変わると比率が変わる</span></div>
+  </div>
+  <p class="note"><b><code>font-feature-settings: "palt"</code> は書かない。</b>実サイトは AI 戦略ページの 1 クラスにしか宣言が無く、計測した 2 ページとも実測 0 要素。書体側は対応しており、同一スタック・40px の実測で <code>normal</code> 759.20px → <code>"palt"</code> 619.20px（<b>−18.4%</b>）。足すと既存ページと別物になる。同じ宣言ブロックの <code>ext-spacing-trim</code> は <code>text-spacing-trim</code> のタイプミスで、何も起きない。</p>
+</div>
+</section>
+
+<section class="section" id="components">
+  <div class="section-label">03 / Components</div>
+  <div class="display-en">UI</div>
+  <h2 class="section-title">角丸は 5px の 1 種、影も 1 種</h2>
+  <p class="section-lead">サイト全体で <code>border-radius: 5px</code> が可視 206 要素。例外はサービスカードのサムネイルに使う <code>0px 95px</code>（可視 48 要素）だけ。影は <code>rgba(0,0,0,0.15) 0 0 13px 2px</code> の 1 種類しかない。</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-thumb"><span>楽楽精算</span></div>
+      <div class="card-body">
+        <span class="card-tag" style="background:#007bc7">経費精算</span>
+        <div class="card-title">申請から承認まで</div>
+        <p class="card-text">交通費や経費の申請・承認・仕訳までを一気通貫で自動化します。</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb" style="background-image:linear-gradient(135deg,#86e026 0%,#267d00 100%)"><span>楽楽明細</span></div>
+      <div class="card-body">
+        <span class="card-tag" style="background:#267d00">電子請求書</span>
+        <div class="card-title">請求書の発行を自動化</div>
+        <p class="card-text">郵送・メール・Web を自動で振り分け、発行業務を大幅に削減します。</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-thumb" style="background-image:linear-gradient(135deg,#ff8181 0%,#f53c20 100%)"><span>楽楽販売</span></div>
+      <div class="card-body">
+        <span class="card-tag" style="background:#f53c20">販売管理</span>
+        <div class="card-title">受注から請求まで</div>
+        <p class="card-text">販売管理のワークフローを自社の運用に合わせて組み立てられます。</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="section-title" style="font-size:2.4rem;margin-top:5rem">Buttons</h3>
+  <div class="btn-row">
+    <a class="btn" href="#">サービス一覧はこちら</a>
+    <a class="btn btn--outline" href="#">資料をダウンロード</a>
+    <a class="btn btn--ghost" href="#">お問い合わせ</a>
+    <a class="btn is-focus" href="#">フォーカス状態</a>
+  </div>
+  <p class="note"><code>background #f08300</code> / <code>border 2px solid #f08300</code> / <code>border-radius 5px</code> / <code>padding 0 18px 0 20px</code>（右に矢印が入るので左右非対称） / 16px / 700 / <code>letter-spacing 0.05em</code>。</p>
+
+  <h3 class="section-title" style="font-size:2.4rem;margin-top:5rem">Forms</h3>
+  <div class="form">
+    <div class="field">
+      <label for="f-company">会社名</label>
+      <input id="f-company" type="text" value="株式会社サンプル">
+      <div class="help">全角 100 文字以内でご入力ください</div>
+    </div>
+    <div class="field">
+      <label for="f-mail">メールアドレス</label>
+      <input id="f-mail" class="is-focus" type="text" value="sample@example.co.jp">
+      <div class="help">フォーカス状態（実サイトは <code>autofocus</code> を使わない）</div>
+    </div>
+    <div class="field">
+      <label for="f-plan">ご検討中のサービス</label>
+      <select id="f-plan"><option>楽楽精算</option><option>楽楽明細</option><option>楽楽販売</option></select>
+      <div class="err">必須項目です</div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt" id="elevation">
+<div class="section-inner">
+  <div class="section-label">04 / Radius &amp; Elevation</div>
+  <div class="display-en">Form</div>
+  <h2 class="section-title">片側だけ 95px の角丸</h2>
+  <p class="section-lead">影はオフセット <code>0 0</code>・ぼかし 13px・広がり 2px で<b>四方に均等に広がる</b>。真下に落とす一般的な影に置き換えると別物になる。</p>
+  <div class="demo-row">
+    <div class="demo-box shadow">radius 5px<br>影あり（唯一の影）</div>
+    <div class="demo-box flat">radius 5px<br>枠線のみ</div>
+    <div class="demo-box cut">radius 0 95px<br>サムネイル専用</div>
+    <div class="demo-box" style="border-radius:50%;border:0.1rem solid var(--color-gray-300)">50%<br>アバター</div>
+  </div>
+
+  <h3 class="section-title" style="font-size:2.4rem;margin-top:5rem">定義リスト</h3>
+  <dl class="dl">
+    <dt>設立</dt><dd>2000年11月</dd>
+    <dt>事業内容</dt><dd>クラウドサービスの開発・販売</dd>
+    <dt>従業員数</dt><dd>3,086 名（連結）</dd>
+  </dl>
+
+  <h3 class="section-title" style="font-size:2.4rem;margin-top:5rem">縦組みの唯一の用例</h3>
+  <p class="note" style="margin-bottom:2rem">このサイトで <code>writing-mode</code> を使うのは、ヒーローのスクロールインジケータ 4 要素だけ。しかも <code>vertical-lr</code>（左→右）で、<b>和文の縦組みは 1 要素も無い</b>。</p>
+  <div class="scroll-demo"><span class="label">SCROLL</span><span class="bar"></span></div>
+</div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <h3>働く人を「楽！」にする</h3>
+    <p>実サイトではこのコピーは <code style="background:#5a5a5a;color:#fff">&lt;video&gt;</code>（<code style="background:#5a5a5a;color:#fff">rakus_kv_pc_jp.mp4</code> / 1104×524）に焼き込まれており、DOM 上の <code style="background:#5a5a5a;color:#fff">h1</code> は 1×1px の <code style="background:#5a5a5a;color:#fff">u-visually-hidden</code> な代替テキスト。ここを Web フォントで実装しないこと。</p>
+    <p style="margin-top:1.2rem">実測日 2026-11-28 / 対象 https://www.rakus.co.jp/ ・ /about/</p>
+  </div>
+</footer>
+
+</body>
+</html>

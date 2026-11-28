@@ -34,7 +34,7 @@
 各 DESIGN.md のデザイントークンを可視化したショーケースページ（`preview.html`）を同梱しています。
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (670 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (673 sites)</a>
 </p>
 
 <table>
@@ -1046,6 +1046,11 @@
 </tr>
 <tr>
 <td align="center"><strong>大阪ソーダ</strong><br><img src="design-md/osaka-soda/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ラクス</strong><br><img src="design-md/rakus/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>立教大学</strong><br><img src="design-md/rikkyo/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>ルネサス</strong><br><img src="design-md/renesas/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
@@ -1777,11 +1782,14 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 | [OpenWork（オープンワーク）](https://www.openwork.jp/) | Career Review / Recruiting | [DESIGN.md](design-md/openwork/DESIGN.md) | [preview.html](design-md/openwork/preview.html) |
 | [大阪芸術大学 (Osaka University of Arts)](https://www.osaka-geidai.ac.jp/) | University / Art Education | [DESIGN.md](design-md/osaka-geidai/DESIGN.md) | [preview.html](design-md/osaka-geidai/preview.html) |
 | [大阪ソーダ (OSAKA SODA)](https://www.osaka-soda.co.jp/ja/index.html) | Chemicals / Corporate | [DESIGN.md](design-md/osaka-soda/DESIGN.md) | [preview.html](design-md/osaka-soda/preview.html) |
+| [ラクス (RAKUS)](https://www.rakus.co.jp/) | SaaS / Corporate | [DESIGN.md](design-md/rakus/DESIGN.md) | [preview.html](design-md/rakus/preview.html) |
+| [立教大学 (RIKKYO UNIVERSITY)](https://www.rikkyo.ac.jp/) | University / Corporate | [DESIGN.md](design-md/rikkyo/DESIGN.md) | [preview.html](design-md/rikkyo/preview.html) |
+| [ルネサス エレクトロニクス (Renesas)](https://www.renesas.com/ja) | Semiconductor / Corporate | [DESIGN.md](design-md/renesas/DESIGN.md) | [preview.html](design-md/renesas/preview.html) |
 
 ### Previews
 
 <p align="center">
-  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (670 sites)</a>
+  <a href="https://kzhrknt.github.io/awesome-design-md-jp/gallery.html">Gallery (673 sites)</a>
 </p>
 
 <table>
@@ -2793,6 +2801,11 @@ Without these specifications, AI agents produce Japanese UI with broken typograp
 </tr>
 <tr>
 <td align="center"><strong>大阪ソーダ</strong><br><img src="design-md/osaka-soda/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>ラクス</strong><br><img src="design-md/rakus/preview-screenshot.png" width="120"></td>
+<td align="center"><strong>立教大学</strong><br><img src="design-md/rikkyo/preview-screenshot.png" width="120"></td>
+</tr>
+<tr>
+<td align="center"><strong>ルネサス</strong><br><img src="design-md/renesas/preview-screenshot.png" width="120"></td>
 </tr>
 </table>
 
